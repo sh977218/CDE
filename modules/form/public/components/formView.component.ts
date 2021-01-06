@@ -103,6 +103,14 @@ export class FormViewComponent implements OnInit, OnDestroy {
     ) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
         this.onResize();
+        this.route.fragment.subscribe(() => {
+            if (this.elt) {
+                setTimeout(() => {
+                    this.title.setTitle('Form: ' + Elt.getLabel(this.elt));
+                    this.scrollService.scroll();
+                }, 0);
+            }
+        });
     }
 
     ngOnInit() {
@@ -237,7 +245,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 735;
+        this.isMobile = window.innerWidth < 768;
     }
 
     hasDraftsAndLoggedIn() {
@@ -576,7 +584,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             path = path.substr(0, loc);
         }
         this.tocService.genToc(document.getElementsByTagName('main')[0], path);
-        this.scrollService.scrollAfterRender(0);
+        // this.scrollService.scrollAfterRender(0);
+        this.scrollService.scroll();
     }
-
 }

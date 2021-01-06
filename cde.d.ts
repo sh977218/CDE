@@ -3,6 +3,7 @@ declare let APPLICATION_NAME: string;
 declare let INACTIVE_TIMEOUT: number;
 declare let PRODUCTION: boolean;
 declare let NAVIGATION_HEIGHT: number;
+declare let NAVIGATION_HEIGHT_MOBILE: number;
 
 // Workaround missing types
 declare module 'async/forEach';

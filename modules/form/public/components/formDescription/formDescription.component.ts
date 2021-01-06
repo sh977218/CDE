@@ -1,6 +1,6 @@
 import './formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
@@ -30,16 +30,19 @@ import { canEditCuratedItem } from 'shared/system/authorizationShared';
     providers: [DeCompletionService],
     styleUrls: ['./formDescription.component.scss'],
 })
-export class FormDescriptionComponent implements OnInit, AfterViewInit {
+export class FormDescriptionComponent implements OnInit {
     elt: any;
     @ViewChild(TreeComponent) tree!: TreeComponent;
     @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
     @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
+    navHeight = NAVIGATION_HEIGHT - 4 + 'px';
+    navHeightMobile = NAVIGATION_HEIGHT_MOBILE - 4 + 'px';
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
+    isMobile = false;
     isModalOpen = false;
     newDataElement: DataElement = this.initNewDataElement();
     questionModelMode = 'search';
@@ -117,10 +120,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         CdeForm.validate(this.elt);
     }
 
-    @HostListener('window:scroll', ['$event']) scrollEvent() {
-        this.scrollToolbar();
-    }
-
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
@@ -147,10 +146,6 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
 
     canEdit() {
         return canEditCuratedItem(this.userService.user, this.elt);
-    }
-
-    ngAfterViewInit(): void {
-        this.scrollToolbar();
     }
 
     addExpanded(fe: FormOrElement) {
@@ -245,11 +240,9 @@ export class FormDescriptionComponent implements OnInit, AfterViewInit {
         }
     }
 
-    scrollToolbar() {
-        if (this?.descToolbox?.nativeElement) {
-            this.descToolbox.nativeElement.style.top = (window.pageYOffset > NAVIGATION_HEIGHT ? 0
-                : (NAVIGATION_HEIGHT - window.pageYOffset)) + 'px';
-        }
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isMobile = window.innerWidth < 768;
     }
 
     setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {

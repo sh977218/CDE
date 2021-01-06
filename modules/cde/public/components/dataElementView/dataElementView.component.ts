@@ -103,6 +103,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             if (this.elt) {
                 setTimeout(() => {
                     this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
+                    this.scrollService.scroll();
                 }, 0);
             }
         });
@@ -184,7 +185,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 735;
+        this.isMobile = window.innerWidth < 768;
     }
 
     publish() {
@@ -366,6 +367,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             path = path.substr(0, loc);
         }
         this.tocService.genToc(document.getElementsByTagName('main')[0], path);
-        this.scrollService.scrollAfterRender(0);
+        // this.scrollService.scrollAfterRender(0);
+        this.scrollService.scroll();
     }
 }

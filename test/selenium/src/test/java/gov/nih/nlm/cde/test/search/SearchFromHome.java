@@ -20,7 +20,7 @@ public class SearchFromHome extends NlmCdeBaseTest {
         goHome();
         findElement(By.xpath("//input[@data-placeholder='Search CDEs']"));
         clickElement(By.xpath("//mat-icon[. = 'keyboard_arrow_down']"));
-        clickElement(By.xpath("//button/span[. = 'Forms']"));
+        clickElement(By.xpath("//button[@role='menuitem']/span[. = 'Forms']"));
         findElement(By.xpath("//input[@data-placeholder='Search Forms']"));
         findElement(By.id("ftsearch-input")).sendKeys("Blood Pressure");
         clickElement(By.id("search.submit"));

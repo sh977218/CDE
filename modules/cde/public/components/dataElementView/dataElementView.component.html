@@ -2,15 +2,12 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button mat-mini-fab style="position: fixed; right: 5px; top: 5px; z-index: 2" (click)="gotoTop()">
-    <mat-icon>keyboard_arrow_up</mat-icon>
-</button>
 <button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
-    <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0"
+    <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0" [style.right]="isMobile ? 0 : '17px'"
                  [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
-                 fixedInViewport="true" [fixedTopGap]="isMobile ? 0 : 103" [fixedBottomGap]="isMobile ? 0 : 109">
+                 fixedInViewport="true" [fixedTopGap]="isMobile ? 80 : 103" [fixedBottomGap]="isMobile ? 0 : 130">
         <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
             <aio-toc></aio-toc>
         </div>
@@ -65,7 +62,7 @@
                     <div class="h1Like">
                         <cde-draft-slider class="mr-2" [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
                                           [hidden]="!hasDrafts"></cde-draft-slider>
-                        <h1 class="d-inline">{{elt?.designations[0]?.designation}}</h1>
+                        <h1 id="top-of-page" class="d-inline">{{elt?.designations[0]?.designation}}</h1>
                     </div>
                     <nav class="noPrint">
                         <button mat-raised-button id="export" #exportMenuTrigger="matMenuTrigger" title="Export"

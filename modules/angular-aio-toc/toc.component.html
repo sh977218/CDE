@@ -16,7 +16,8 @@
         <ng-container *ngFor="let toc of tocList; let i = index">
             <li #tocItem title="{{toc.title}}" *ngIf="type === 'Floating' || toc.level !== 'h1'"
                 class="{{toc.level}}" [class.secondary]="type === 'EmbeddedExpandable' && i >= primaryMax" [class.active]="i === activeIndex">
-                <a class="fake-link" (click)="navigateTo(toc.href)" [innerHTML]="toc.content"></a>
+                <a class="fake-link" (click)="navigateTo(toc.level === 'h1' ? toc.href.substr(0, toc.href.indexOf('#')) : toc.href)"
+                   [innerHTML]="toc.level === 'h1' ? (toc.href.startsWith('/deView') ? 'Data Element' : 'Form') : toc.content"></a>
             </li>
         </ng-container>
     </ul>

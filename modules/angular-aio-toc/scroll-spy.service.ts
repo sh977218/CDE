@@ -118,7 +118,7 @@ export class ScrollSpyService {
     private spiedElementGroups: ScrollSpiedElementGroup[] = [];
     private onStopListening = new Subject();
     private resizeEvents = fromEvent(window, 'resize').pipe(auditTime(300), takeUntil(this.onStopListening));
-    private scrollEvents = fromEvent(window, 'scroll').pipe(auditTime(10), takeUntil(this.onStopListening));
+    private scrollEvents = fromEvent(this.scrollService.scrollElement, 'scroll').pipe(auditTime(10), takeUntil(this.onStopListening));
     private lastContentHeight!: number;
     private lastMaxScrollTop!: number;
 
@@ -160,11 +160,15 @@ export class ScrollSpyService {
     }
 
     private getContentHeight() {
-        return this.doc.body.scrollHeight || Number.MAX_SAFE_INTEGER;
+        return (
+            this.scrollService.scrollElement === window
+                ? this.doc.body.scrollHeight
+                : (this.scrollService.scrollElement as Element).scrollHeight
+        ) || Number.MAX_SAFE_INTEGER;
     }
 
     private getScrollTop() {
-        return window && window.pageYOffset || 0;
+        return this.scrollService.getScrollTop() || 0;
     }
 
     private getTopOffset() {
@@ -172,7 +176,11 @@ export class ScrollSpyService {
     }
 
     private getViewportHeight() {
-        return this.doc.body.clientHeight || 0;
+        return (
+            this.scrollService.scrollElement === window
+                ? this.doc.body.clientHeight
+                : (this.scrollService.scrollElement as Element).clientHeight
+        ) || 0;
     }
 
     /*

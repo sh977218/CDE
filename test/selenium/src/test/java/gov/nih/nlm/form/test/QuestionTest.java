@@ -82,6 +82,7 @@ public class QuestionTest extends BaseFormTest {
         openQuestionEdit(questionId);
         String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdePvs')]//input";
         findElement(By.xpath(xpath)).sendKeys(pv + Keys.ENTER);
+        checkAlert("Saved");
     }
 
     public void deleteCdePvById(String questionId, String pv) {
