@@ -11,7 +11,7 @@ public class IncreaseLockoutLogin extends NlmCdeBaseTest {
         goToCdeSearch();
 
         openLogin();
-        clickElement(By.linkText("sign in now"));
+        clickElement(By.id("logInButton"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(lockout_increase_username);

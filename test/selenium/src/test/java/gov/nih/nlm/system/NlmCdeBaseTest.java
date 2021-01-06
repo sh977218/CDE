@@ -838,12 +838,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void isLoginPage() {
-        textPresent("UMLS Terminology Services (UTS) accounts for authentication");
+        textPresent("We are migrating UMLS Terminology Service (UTS) accounts to a service that will allow you to sign in to UTS using your NIH credentials, Google, Microsoft, Facebook, or another identity provider of your choice.");
     }
 
     protected void login(String username, String password) {
         openLogin();
-        clickElement(By.linkText("sign in now"));
+        clickElement(By.id("logInButton"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
@@ -854,7 +854,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
-        clickElement(By.linkText("sign in now"));
+        clickElement(By.id("logInButton"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
