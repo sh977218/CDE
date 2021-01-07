@@ -13,26 +13,31 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   background-clip: padding-box;
   z-index: 9;
-}
 
-.descriptionToolbox .btn {
-  margin-left: 4px;
-  padding: 0;
-}
+  .btn {
+    font-size: 14px;
+    margin-left: 4px;
+    padding: 0;
 
-.descriptionToolbox .btn.formDescriptionTool {
-  touch-action: auto;
-  cursor: move;
-}
+    mat-icon.mat-icon {
+      line-height: 20px;
+    }
 
-.descriptionToolbox .btn.formDescriptionTool:hover {
-  background-color: #ddffee;
-}
+    &.formDescriptionTool {
+      touch-action: auto;
+      cursor: move;
 
-.descriptionToolbox .btn.formDescriptionTool:hover span:before {
-  content: ' Drag';
-  font-weight: 900;
-  line-height: initial;
+      &:hover {
+        background-color: #ddffee;
+
+        span:before {
+          content: ' Drag';
+          font-weight: 900;
+          line-height: initial;
+        }
+      }
+    }
+  }
 }
 
 .toolSection:before {

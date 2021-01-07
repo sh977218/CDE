@@ -1015,14 +1015,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void scrollDownBy(Integer y) {
-        String jsScroll = "window.scrollBy(0," + Integer.toString(y) + ");";
+        String jsScroll = "document.getElementById('scrollRoot').scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
-        hangon(5);
     }
 
     protected void scrollToView(By by) {
         JavascriptExecutor je = (JavascriptExecutor) driver;
-        je.executeScript("window.scrollTo(0, arguments[0].getBoundingClientRect().top + window.pageYOffset - (window.innerHeight / 2));", findElement(by));
+        je.executeScript("arguments[0].scrollIntoView();", findElement(by));
+        scrollDownBy(-50); // clear form edit toolbar
     }
 
     protected void scrollToViewById(String id) {

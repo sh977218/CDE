@@ -1,58 +1,45 @@
-<header style="z-index: 5">
-    <uswds-banner></uswds-banner>
+<header class="app-toolbar" style="z-index: 5">
+    <uswds-banner class="d-none d-md-block"></uswds-banner>
     <cde-ie-banner></cde-ie-banner>
     <mat-toolbar class="noPrint">
         <mat-toolbar-row class="cde-nav-major">
-            <a href="https://www.nih.gov/" target="_blank" rel="noopener noreferrer"
-               class="d-none d-md-inline">
+            <a href="https://www.nih.gov/" target="_blank" rel="noopener noreferrer">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                      viewBox="0 0 1224 792" style="enable-background:new 0 0 1224 792;" xml:space="preserve">
-                <style type="text/css">
-	                .st0 {
-                        fill: #5E5F5F;
-                    }
-                </style>
+                    <style type="text/css">
+	                    .st0 {
+                            fill: #5E5F5F;
+                        }
+                    </style>
                     <path class="st0" d="M1041.9,395.4L840.2,758.9H101c-36.9,0-66.9-29.9-66.9-66.9V99.2c0-36.9,29.9-66.9,66.9-66.9h740L1041.9,395.4
 	L1041.9,395.4z M410.1,558.9V234.1H356v239.2h-1L206.8,234.1l0,0h-60l0,0v324.8l0,0H201V320h1.4l147.9,238.9H410.1L410.1,558.9
 	L410.1,558.9z M523,558.9V234.1h-56.8v324.8H523L523,558.9L523,558.9z M841.5,234.1h-56.8l0,0v129.2H636.8V234.1h-56.8v324.8h56.8
 	V412.5h147.9v146.5l0,0h56.8V234.1L841.5,234.1z"/>
                     <path class="st0" d="M890.7,759.1L1092,395.4L891.4,32.3h50.3c27.5,0,61,19.7,74.3,43.8l176.5,319.2l-177.2,319.9
 	c-13.3,24-46.8,43.7-74.3,43.7L890.7,759.1L890.7,759.1z"/>
-            </svg>
+                </svg>
             </a>
             <a href="https://www.nlm.nih.gov/" target="_blank" rel="noopener noreferrer"
-               class="d-none d-md-inline no-link"
+               class="no-link"
                style="font-size: 12px; font-weight: 700; padding: 11px 10px 10px 10px; margin-left: -5px; line-height: 19px">
-                <span class="d-none d-md-inline">National Library of Medicine</span>
-                <span class="d-inline d-md-none">NLM</span>
-            </a>
-            <span class="d-inline d-md-none">
-            <span class="mobile-icon">
-                <ng-container *ngTemplateOutlet="homeLink"></ng-container>
-            </span>
-        </span>
-            <a routerLink="/" title="Common Data Elements" class="d-inline d-md-none no-link"
-               style="font-size: 24px; font-weight: 700; padding: 11px 10px 10px 10px; margin-left: -10px; line-height: 19px">
-                <span class="d-none d-md-inline">NIH CDE Repository</span>
-                <span class="d-inline d-md-none">CDE</span>
+                <span class="d-none d-sm-inline">National Library of Medicine</span>
+                <span class="d-inline d-sm-none">NLM</span>
             </a>
 
             <span class="spacer"></span>
-            <button mat-icon-button class="d-md-none" aria-label="Menu" (click)="sidenav.toggle()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <div class="d-none d-md-block">
-                <button mat-icon-button id="notificationLink" (click)="notificationService.drawerToggle(); interruptEvent($event)">
+            <div>
+                <button mat-icon-button id="notificationLink" title="Banner Notifications"
+                        (click)="notificationService.drawerToggle(); interruptEvent($event)">
                     <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
                               [matBadgeHidden]="notificationService.getBadge() === '0'"
                               style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
                 </button>
-                <button mat-icon-button routerLink="/searchPreferences" id="searchSettings">
+                <button mat-icon-button routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
                     <mat-icon>settings</mat-icon>
                 </button>
                 <button mat-button *ngIf="!userService.user" (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login">
-                    LOGIN
+                    <span>Login</span>
                 </button>
                 <button mat-button *ngIf="userService.user" id="username_link"
                         [matMenuTriggerFor]="loginMenu">
@@ -66,26 +53,26 @@
                 </mat-menu>
             </div>
         </mat-toolbar-row>
-        <mat-toolbar-row class="d-none d-md-flex cde-nav-minor">
-            <ng-container *ngTemplateOutlet="homeLink"></ng-container>
-            <a routerLink="/" title="Common Data Elements" class="d-none d-md-inline no-link"
-               style="font-size: 24px; font-weight: 700; padding: 11px 10px 10px 10px; margin-left: -5px; line-height: 19px">
-                <span class="d-none d-md-inline">NIH CDE Repository</span>
-                <span class="d-inline d-md-none">CDE</span>
+        <mat-toolbar-row class="cde-nav-minor">
+            <a routerLink="/" title="Common Data Elements">
+                <img src="/cde/public/assets/img/min/NIH-CDE.png" alt="NIH Common Data Elements (CDE) logo" style="height: 39px">
             </a>
             <span class="spacer"></span>
+            <button mat-icon-button class="d-md-none" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
             <div class="d-none d-md-block">
-                <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDES</button>
-                <button mat-button id="menu_forms_link" routerLink="/form/search">FORMS</button>
+                <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDEs</button>
+                <button mat-button id="menu_forms_link" routerLink="/form/search">Forms</button>
                 <button mat-button id="createEltLink" *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">
-                    CREATE<mat-icon>expand_more</mat-icon>
+                    Create<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #createMenu="matMenu">
                     <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
                     <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
                 </mat-menu>
                 <button mat-button [matMenuTriggerFor]="boardMenu" id="boardsMenu">
-                    BOARDS<mat-icon>expand_more</mat-icon>
+                    Boards<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #boardMenu="matMenu">
                     <button mat-menu-item id="menu_qb_link" routerLink="/quickBoard">{{quickBoardMetaInfo()}}</button>
@@ -94,19 +81,19 @@
                 </mat-menu>
                 <button mat-button id="apiLink" routerLink="/api">API</button>
                 <button mat-button id="helpLink" [matMenuTriggerFor]="helpMenu">
-                    HELP<mat-icon>expand_more</mat-icon>
+                    Help<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #helpMenu="matMenu">
-                    <button mat-menu-item id="videosLink" routerLink="/videos">VIDEO TUTORIALS</button>
-                    <button mat-menu-item id="guidesLink" routerLink="/guides">GUIDES</button>
-                    <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">NEW FEATURES</button>
-                    <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">TAKE A TOUR
+                    <button mat-menu-item id="videosLink" routerLink="/videos">Video Tutorials</button>
+                    <button mat-menu-item id="guidesLink" routerLink="/guides">Guides</button>
+                    <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">New Features</button>
+                    <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">Take a Tour
                     </button>
-                    <button mat-menu-item id="resourcesLink" routerLink="/resources">RESOURCES</button>
-                    <button mat-menu-item id="contactUsLink" routerLink="/contactUs">CONTACT US</button>
+                    <button mat-menu-item id="resourcesLink" routerLink="/resources">Resources</button>
+                    <button mat-menu-item id="contactUsLink" routerLink="/contactUs">Contact Us</button>
                     <button mat-menu-item id="reportAProblemLink" feedback (send)="onFeedback($event)"
                             [placeholder]="feedbackDescription">
-                        REPORT A PROBLEM
+                        Report a Problem
                     </button>
                 </mat-menu>
             </div>
@@ -116,17 +103,17 @@
 <mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1">
     <mat-sidenav #sidenav mode="over" position="end">
         <mat-nav-list>
-            <a mat-list-item routerLink="/cde/search" (click)="sidenav.close()">CDES</a>
-            <a mat-list-item routerLink="/form/search" (click)="sidenav.close()">FORMS</a>
+            <a mat-list-item routerLink="/cde/search" (click)="sidenav.close()">CDEs</a>
+            <a mat-list-item routerLink="/form/search" (click)="sidenav.close()">Forms</a>
             <a mat-list-item *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="mobileCreateMenu">
-                CREATE<mat-icon>expand_more</mat-icon>
+                Create<mat-icon>expand_more</mat-icon>
             </a>
             <mat-menu #mobileCreateMenu="matMenu">
                 <button mat-menu-item routerLink="/createCde" (click)="sidenav.close()">CDE</button>
                 <button mat-menu-item routerLink="/createForm" (click)="sidenav.close()">Form</button>
             </mat-menu>
             <a mat-list-item [matMenuTriggerFor]="mobileBoardMenu">
-                BOARDS<mat-icon>expand_more</mat-icon>
+                Boards<mat-icon>expand_more</mat-icon>
             </a>
             <mat-menu #mobileBoardMenu="matMenu">
                 <button mat-menu-item routerLink="/quickBoard" (click)="sidenav.close()">{{quickBoardMetaInfo()}}</button>
@@ -135,91 +122,30 @@
             </mat-menu>
             <a mat-list-item routerLink="/api" (click)="sidenav.close()">API</a>
             <a mat-list-item [matMenuTriggerFor]="mobileHelpMenu">
-                HELP<mat-icon>expand_more</mat-icon>
+                Help<mat-icon>expand_more</mat-icon>
             </a>
             <mat-menu #mobileHelpMenu="matMenu">
-                <button mat-menu-item routerLink="/videos" (click)="sidenav.close()">VIDEO TUTORIALS</button>
-                <button mat-menu-item routerLink="/guides" (click)="sidenav.close()">GUIDES</button>
-                <button mat-menu-item routerLink="/whatsNew" (click)="sidenav.close()">NEW FEATURES</button>
-                <button mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}" (click)="sidenav.close()">TAKE A TOUR</button>
-                <button mat-menu-item routerLink="/resources" (click)="sidenav.close()">RESOURCES</button>
-                <button mat-menu-item routerLink="/contactUs" (click)="sidenav.close()">CONTACT US</button>
-                <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription" (click)="sidenav.close()">REPORT A PROBLEM</button>
-            </mat-menu>
-            <a mat-list-item (click)="notificationService.drawerToggle(); interruptEvent($event)">
-                <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
-                          [matBadgeHidden]="!notificationService.getBadge()"
-                          style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
-            </a>
-            <a mat-list-item routerLink="/searchPreferences"><mat-icon>settings</mat-icon></a>
-            <a mat-list-item *ngIf="!userService.user" (click)="loginSvc.goToLogin(); sidenav.close()" routerLink="/login">LOGIN</a>
-            <a mat-list-item *ngIf="userService.user" [matMenuTriggerFor]="mobileLoginMenu">
-                {{userService.user.username | uppercase | cdeTruncateLongName}}<mat-icon>expand_more</mat-icon>
-            </a>
-            <mat-menu #mobileLoginMenu="matMenu">
-                <button mat-menu-item routerLink="/settings/profile" (click)="sidenav.close()">Settings</button>
-                <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement" (click)="sidenav.close()">Classifications</button>
-                <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" (click)="sidenav.close()">Audit</button>
-                <button mat-menu-item (click)="loginSvc.logout(); sidenav.close()" target="_self">Log Out</button>
+                <button mat-menu-item routerLink="/videos" (click)="sidenav.close()">Video Tutorials</button>
+                <button mat-menu-item routerLink="/guides" (click)="sidenav.close()">Guides</button>
+                <button mat-menu-item routerLink="/whatsNew" (click)="sidenav.close()">New Features</button>
+                <button mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}" (click)="sidenav.close()">Take a Tour</button>
+                <button mat-menu-item routerLink="/resources" (click)="sidenav.close()">Resources</button>
+                <button mat-menu-item routerLink="/contactUs" (click)="sidenav.close()">Contact Us</button>
+                <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription" (click)="sidenav.close()">Report a Problem</button>
             </mat-menu>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content style="display: flex; flex-direction: column; flex-grow: 1">
+    <mat-sidenav-content id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
         <router-outlet></router-outlet>
         <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
         <div class="d-flex"></div>
     </mat-sidenav-content>
 </mat-sidenav-container>
 
-<ng-template #homeLink>
-    <a routerLink="/" title="Common Data Elements">
-        <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.66 15.59">
-            <defs>
-                <style>
-                    .cls-1 {
-                        fill: #b8cfe6;
-                        stroke: #b8cfe6;
-                    }
-
-                    .cls-1, .cls-2, .cls-3, .cls-4 {
-                        stroke-miterlimit: 10;
-                        stroke-width: 0.25px;
-                    }
-
-                    .cls-1, .cls-2, .cls-3 {
-                        isolation: isolate;
-                    }
-
-                    .cls-2 {
-                        fill: #739fcf;
-                        stroke: #739fcf;
-                    }
-
-                    .cls-3 {
-                        fill: #326295;
-                    }
-
-                    .cls-3, .cls-4 {
-                        stroke: #326295;
-                    }
-
-                    .cls-4 {
-                        fill: #fff;
-                    }
-                </style>
-            </defs>
-            <rect class="cls-1" x="5.21" y="0.89" width="5.62" height="5.62" rx="1.46" transform="translate(-0.45 6.55) rotate(-45)"/>
-            <rect class="cls-2" x="0.87" y="5.21" width="5.62" height="5.62" rx="1.46" transform="translate(-4.78 4.75) rotate(-45)"/>
-            <rect class="cls-3" x="5.18" y="9.53" width="5.62" height="5.57" rx="1.45" transform="translate(-6.55 9.06) rotate(-45)"/>
-            <rect class="cls-4" x="9.54" y="5.21" width="5.62" height="5.62" rx="1.46" transform="translate(-2.24 10.88) rotate(-45)"/>
-        </svg>
-    </a>
-</ng-template>
-
 <ng-template #cdeFooter>
     <footer>
         <mat-toolbar class="footer noPrint">
-            <mat-toolbar-row class="d-none d-md-flex cde-nav-minor">
+            <mat-toolbar-row class="cde-nav-minor">
                 <div style="display: none">Hidden Text Ensures 100% SEO. Thank you!</div>
                 <div class="grid-container">
                     <div class="grid-item">
@@ -247,7 +173,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="grid-item" style="grid-column: 2; padding: 0 25px">
+                    <div class="grid-item" style="grid-column: 2; padding-right: 8vw">
                         <p>National Library of Medicine</p>
                         <p>8600 Rockville Pike, Bethesda, MD 20894</p>
                     </div>
@@ -295,5 +221,6 @@
                 </div>
             </mat-toolbar-row>
         </mat-toolbar>
+        <uswds-banner class="d-block d-md-none"></uswds-banner>
     </footer>
 </ng-template>

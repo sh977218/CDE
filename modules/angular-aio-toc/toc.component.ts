@@ -31,7 +31,7 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isEmbedded = elementRef.nativeElement.className.indexOf('embedded') !== -1;
     }
 
-    /* custom, not part of original component */
+    /* CDE custom, not part of original component */
     navigateTo(url: string) {
         this.router.navigateByUrl(url, {replaceUrl: true});
     }

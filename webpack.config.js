@@ -63,7 +63,8 @@ module.exports = {
         new ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new DefinePlugin({
             INACTIVE_TIMEOUT: config.inactivityTimeout,
-            NAVIGATION_HEIGHT: 56,
+            NAVIGATION_HEIGHT: 102,
+            NAVIGATION_HEIGHT_MOBILE: 80,
         }),
     ],
     performance: {hints: false},

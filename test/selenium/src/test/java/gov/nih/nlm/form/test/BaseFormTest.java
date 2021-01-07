@@ -50,9 +50,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
                 searchString = "//tree-viewport/div/div/tree-node-collection/div/tree-node/div/tree-node-drop-slot/*[@class='node-drop-slot']";
 
             try {
-
                 By sourceBy = By.xpath("//*[@id='addSectionTop']");
                 By targetBy = By.xpath("(" + searchString + ")[" + (sectionNumber + 1) + "]");
+                scrollToView(targetBy);
                 dragAndDrop(sourceBy, targetBy);
                 textPresent("N/A", By.id(sectionId));
                 i = 10;
@@ -137,6 +137,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         } else {
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//mat-icon[normalize-space() = 'add']"));
         }
+        checkAlert("Saved");
     }
 
     protected void setRepeat(String sectionId, String repeat) {
@@ -148,8 +149,9 @@ public class BaseFormTest extends NlmCdeBaseTest {
             nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
         } else {
             nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
-            findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat);
+            findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat + Keys.ENTER);
         }
+        checkAlert("Saved");
     }
 
     public void togglePrintableLogic() {

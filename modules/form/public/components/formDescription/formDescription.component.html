@@ -26,7 +26,8 @@
     </button>
     <div class="row">
         <div class="col-12">
-            <div class="descriptionToolbox" *ngIf="canEdit()" #descToolbox>
+            <div #descToolbox *ngIf="canEdit()" class="descriptionToolbox"
+                 [style.top]="isMobile ? navHeightMobile : navHeight" [style.right]="isMobile ? 0 : '17px'">
                 <button role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"

@@ -18,6 +18,7 @@ export class ScrollService implements OnDestroy {
     private _topOffset!: number|null;
     private _topOfPageElement!: Element;
     private onDestroy = new Subject<void>();
+    scrollElement: Element | Window = window; // CDE implemented
     private storage: Storage;
 
     // The scroll position which has to be restored, after a `popstate` event.
@@ -46,6 +47,8 @@ export class ScrollService implements OnDestroy {
     constructor(
         @Inject(DOCUMENT) private document: any, private platformLocation: PlatformLocation,
         private viewportScroller: ViewportScroller, private location: Location) {
+        this.scrollElement = window.document.getElementById('scrollRoot') || window;
+
         try {
             this.storage = window.sessionStorage;
         } catch {
@@ -66,7 +69,7 @@ export class ScrollService implements OnDestroy {
             .pipe(takeUntil(this.onDestroy))
             .subscribe(() => this._topOffset = null);
 
-        fromEvent(window, 'scroll')
+        fromEvent(this.scrollElement, 'scroll')
             .pipe(debounceTime(250), takeUntil(this.onDestroy))
             .subscribe(() => this.updateScrollPositionInHistory());
 
@@ -105,6 +108,12 @@ export class ScrollService implements OnDestroy {
 
     ngOnDestroy() {
         this.onDestroy.next();
+    }
+
+    getScrollTop(): number {
+        return this.scrollElement
+            ? (this.scrollElement === window ? window.pageYOffset : (this.scrollElement as Element).scrollTop)
+            : 0;
     }
 
     /**
@@ -164,17 +173,24 @@ export class ScrollService implements OnDestroy {
         if (element) {
             element.scrollIntoView();
 
-            if (window && window.scrollBy) {
+            if (this.scrollElement && this.scrollElement.scrollBy) {
                 // Scroll as much as necessary to align the top of `element` at `topOffset`.
                 // (Usually, `.top` will be 0, except for cases where the element cannot be scrolled all the
                 //  way to the top, because the viewport is larger than the height of the content after the
                 //  element.)
-                window.scrollBy(0, element.getBoundingClientRect().top - (this.topOffset || 0));
+                this.scrollElement.scrollBy(0, element.getBoundingClientRect().top - (this.topOffset || 0));
 
                 // If we are very close to the top (<20px), then scroll all the way up.
                 // (This can happen if `element` is at the top of the page, but has a small top-margin.)
-                if (window.pageYOffset < 20) {
-                    window.scrollBy(0, -window.pageYOffset);
+                if (this.scrollElement === window) {
+                    if (window.pageYOffset < 20) {
+                        window.scrollBy(0, -window.pageYOffset);
+                    }
+                } else {
+                    const scrollElement: Element = this.scrollElement as Element;
+                    if (scrollElement.scrollTop < 20) {
+                        scrollElement.scrollBy(0, -scrollElement.scrollTop);
+                    }
                 }
             }
         }

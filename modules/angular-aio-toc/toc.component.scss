@@ -56,9 +56,10 @@ a, a>em, input, input>em, li, li>em, ol, ol>em, p, p>em, ul, ul>em {
   font-size: 1.6 * $fontSize;
 }
 
-.toc-inner ul.toc-list li.h1 {
-  display: table-column; // size 0x0 but still exist
-}
+///* CDE: hide the title */
+//.toc-inner ul.toc-list li.h1 {
+//  display: table-column; // size 0x0 but still exist
+//}
 
 .toc-inner ul.toc-list li.h1:after {
   content: "";
