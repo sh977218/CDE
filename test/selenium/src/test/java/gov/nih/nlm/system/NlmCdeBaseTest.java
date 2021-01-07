@@ -303,6 +303,20 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//button[normalize-space(text())='Settings']"));
     }
 
+    protected void goToAudit() {
+        clickElement(By.id("username_link"));
+        clickElement(By.id("user_audit"));
+    }
+
+    protected void goToServerLog() {
+        goToAudit();
+        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
+        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
+        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
+        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
+        clickElement(By.xpath("//div[. = 'Server Errors']"));
+    }
+
     protected void goToHelp() {
         clickElement(By.id("helpLink"));
     }

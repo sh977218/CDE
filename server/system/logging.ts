@@ -73,6 +73,7 @@ mongoErrorLogger.prototype.log = (level: string, msg: string, meta: any) => {
         const message: any = {
             message: msg,
             origin: meta.origin,
+            badInput: meta.badInput,
             stack: meta.stack || new Error().stack,
             details: processDetails(meta.details),
         };

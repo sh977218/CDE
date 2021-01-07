@@ -31,6 +31,7 @@ export const logErrorSchema = new Schema({ // server
     details: StringType,
     origin: StringType,
     stack: StringType,
+    badInput: Boolean,
     request: {
         url: StringType,
         method: StringType,
