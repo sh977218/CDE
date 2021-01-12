@@ -2,6 +2,8 @@ const bodyParser = require('body-parser');
 const config = require('config');
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
+const path = require('path');
+const favicon = require('serve-favicon');
 
 const database = config.database.appData;
 const url = 'mongodb://' + database.username + ':' + database.password + '@'
@@ -45,6 +47,8 @@ app.get('/', function (req, res) {
         </html>
     `);
 });
+
+app.use(favicon(path.resolve(__dirname, '../modules/cde/public/assets/img/favicon.ico')));
 
 const tokens = {};
 

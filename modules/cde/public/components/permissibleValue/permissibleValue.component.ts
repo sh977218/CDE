@@ -70,7 +70,7 @@ export class PermissibleValueComponent {
                 : empty()
             )
         ).subscribe((res: any) => {
-            if (res.result && res.result.results) {
+            if (res?.result?.results) {
                 this.umlsTerms = res.result.results;
             } else {
                 this.umlsTerms = [];
@@ -311,7 +311,7 @@ export class PermissibleValueComponent {
                 } else if (src === 'UMLS') {
                     this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
                         .subscribe(res => {
-                            if (res && res.result.results.length > 0) {
+                            if (res?.result?.results?.length > 0) {
                                 res.result.results.forEach((r: any) => {
                                     this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
                                 });
@@ -339,7 +339,7 @@ export class PermissibleValueComponent {
                             }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
                 } else {
                     const umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
-                    if (umlsResult.result.results.length > 0) {
+                    if (umlsResult?.result?.results?.length > 0) {
                         const umlsCui = umlsResult.result.results[0].ui;
                         try {
                             const srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
