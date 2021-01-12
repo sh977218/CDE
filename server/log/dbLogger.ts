@@ -231,8 +231,8 @@ export function httpLogs(body: AuditLog, callback: CbError1<AuditLogResponse>) {
     });
 }
 
-export function appLogs(body: {currentPage: string, fromDate: number, toDate: number},
-                        callback: CbError1<{logs: (Document & ConsoleLog)[], totalItems: number}>) {
+export function appLogs(body: { currentPage: string, fromDate: number, toDate: number },
+                        callback: CbError1<{ logs: (Document & ConsoleLog)[], totalItems: number }>) {
     let currentPage = 0;
     if (body.currentPage) {
         currentPage = parseInt(body.currentPage, 10);
@@ -268,7 +268,7 @@ export function getClientErrorsNumber(user: UserFull): Promise<number> {
     ).exec();
 }
 
-export function getServerErrors(params: { limit: number, skip: number, excludeOrigin: string[]},
+export function getServerErrors(params: { limit: number, skip: number, badInput: boolean, excludeOrigin: string[] },
                                 callback: CbError1<(Document & ErrorMessage)[]>) {
     if (!params.limit) {
         params.limit = 20;
@@ -276,7 +276,17 @@ export function getServerErrors(params: { limit: number, skip: number, excludeOr
     if (!params.skip) {
         params.skip = 0;
     }
-    const filter: any = {};
+    if (!params.badInput) {
+        params.badInput = false;
+    }
+    const filter: any = {
+        badInput: {
+            $ne: true
+        }
+    };
+    if (params.badInput) {
+        delete filter.badInput;
+    }
     if (params.excludeOrigin && params.excludeOrigin.length > 0) {
         filter.origin = {$nin: params.excludeOrigin};
     }

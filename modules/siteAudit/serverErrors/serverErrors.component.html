@@ -1,3 +1,4 @@
+<mat-checkbox [checked]="badInput" id="enableBadInput" (change)="badInputChanged($event.checked)">Including user's bad inputs?</mat-checkbox>
 <table class="table table-responsive">
     <thead>
     <tr>
@@ -26,7 +27,7 @@
         <td class="error_cell">{{err.stack | slice:0:500 }}</td>
         <td class="error_cell">
             <div *ngIf="err.message"><b>Message: </b>{{err.message | slice:0:500}}</div>
-            <div *ngIf="err.details"><b>Details: </b>{{err.details | slice:0:500}}</div>
+            <div *ngIf="err.details"><b>Details: </b>{{err.details | slice:0:2000}}</div>
         </td>
     </tr>
     </tbody>

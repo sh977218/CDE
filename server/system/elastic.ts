@@ -16,12 +16,8 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError, CbError1, ElasticQueryError, ElasticQueryResponse, ElasticQueryResponseAggregations, Item,
-    ItemElastic,
-    ModuleItem,
-    SearchResponseAggregationDe, SearchResponseAggregationForm,
-    SearchResponseAggregationItem,
-    User
+    Cb, Cb1, CbError1, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic, ModuleItem, SearchResponseAggregationDe,
+    SearchResponseAggregationForm, SearchResponseAggregationItem, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { orderedList } from 'shared/system/regStatusShared';
@@ -690,16 +686,15 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
     search.body.track_total_hits = true;
     esClient.search(search, (error: any, resp: any) => {
         if (error) {
-            const response = resp as any as ElasticQueryError;
-            if (response && response.status) {
-                if (response.status === 400 && response.error.type !== 'search_phase_execution_exception') {
-                    errorLogger.error('Error: ElasticSearch Error',
-                        {
-                            origin: 'system.elastic.elasticsearch',
-                            stack: error.stack,
-                            details: JSON.stringify(query)
-                        });
-                }
+            const response = resp as any;
+            if (response && response.statusCode) {
+                const errorObj =                         {
+                    origin: 'system.elastic.elasticsearch',
+                    badInput: response.body.error.type === 'search_phase_execution_exception',
+                    stack: error.stack,
+                    details: JSON.stringify(query)
+                };
+                errorLogger.error('Error: ElasticSearch Error', errorObj);
                 cb(new Error('Invalid Query'));
             } else {
                 let querystr = 'cannot stringify query';
