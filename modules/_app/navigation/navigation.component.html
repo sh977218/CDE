@@ -35,13 +35,17 @@
                               [matBadgeHidden]="notificationService.getBadge() === '0'"
                               style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
                 </button>
-                <button mat-icon-button routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
+                <button mat-icon-button [class.active]="sectionActive === SECTIONS.searchSettings"
+                        routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
                     <mat-icon>settings</mat-icon>
                 </button>
-                <button mat-button *ngIf="!userService.user" (click)="loginSvc.goToLogin()" id="login_link" routerLink="/login">
+                <button mat-button *ngIf="!userService.user" id="login_link"
+                        [class.active]="sectionActive === SECTIONS.user"
+                        (click)="loginSvc.goToLogin()" routerLink="/login">
                     <span>Login</span>
                 </button>
                 <button mat-button *ngIf="userService.user" id="username_link"
+                        [class.active]="sectionActive === SECTIONS.user"
                         [matMenuTriggerFor]="loginMenu">
                     {{userService.user.username | uppercase | cdeTruncateLongName}}<mat-icon>expand_more</mat-icon>
                 </button>
@@ -62,16 +66,21 @@
                 <mat-icon>menu</mat-icon>
             </button>
             <div class="d-none d-md-block">
-                <button mat-button id="menu_cdes_link" routerLink="/cde/search">CDEs</button>
-                <button mat-button id="menu_forms_link" routerLink="/form/search">Forms</button>
-                <button mat-button id="createEltLink" *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="createMenu">
+                <button mat-button id="menu_cdes_link" [class.active]="sectionActive === SECTIONS.de"
+                        routerLink="/cde/search">CDEs</button>
+                <button mat-button id="menu_forms_link" [class.active]="sectionActive === SECTIONS.form"
+                        routerLink="/form/search">Forms</button>
+                <button mat-button *ngIf="isOrgCurator(userService.user)" id="createEltLink"
+                        [class.active]="sectionActive === SECTIONS.create"
+                        [matMenuTriggerFor]="createMenu">
                     Create<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #createMenu="matMenu">
                     <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
                     <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
                 </mat-menu>
-                <button mat-button [matMenuTriggerFor]="boardMenu" id="boardsMenu">
+                <button mat-button id="boardsMenu" [class.active]="sectionActive === SECTIONS.board"
+                        [matMenuTriggerFor]="boardMenu">
                     Boards<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #boardMenu="matMenu">
@@ -79,8 +88,10 @@
                     <button mat-menu-item id="publicBoardsLink" routerLink="/boardList">Public Boards</button>
                     <button mat-menu-item *ngIf="userService.user" id="myBoardsLink" routerLink="/myBoards">My Boards</button>
                 </mat-menu>
-                <button mat-button id="apiLink" routerLink="/api">API</button>
-                <button mat-button id="helpLink" [matMenuTriggerFor]="helpMenu">
+                <button mat-button id="apiLink" [class.active]="sectionActive === SECTIONS.api"
+                        routerLink="/api">API</button>
+                <button mat-button id="helpLink" [class.active]="sectionActive === SECTIONS.help"
+                        [matMenuTriggerFor]="helpMenu">
                     Help<mat-icon>expand_more</mat-icon>
                 </button>
                 <mat-menu #helpMenu="matMenu">
@@ -147,8 +158,8 @@
         <mat-toolbar class="footer noPrint">
             <mat-toolbar-row class="cde-nav-minor">
                 <div style="display: none">Hidden Text Ensures 100% SEO. Thank you!</div>
-                <div class="grid-container">
-                    <div class="grid-item">
+                <div class="sub-footer">
+                    <div>
                         <p>
                             <a href="https://www.nlm.nih.gov/socialmedia/index.html"
                                target="_blank" rel="noopener noreferrer">Follow NLM</a>
@@ -173,39 +184,35 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="grid-item" style="grid-column: 2; padding-right: 8vw">
-                        <p>National Library of Medicine</p>
-                        <p>8600 Rockville Pike, Bethesda, MD 20894</p>
+                    <div></div>
+                    <div>
+                        <span class="d-block">National Library of Medicine</span>
+                        <span class="address">8600 Rockville Pike, </span>
+                        <span class="address">Bethesda, MD 20894</span>
                     </div>
-                    <div class="grid-item">
-                        <p>
-                            <a href="https://www.nlm.nih.gov/copyright.html"
-                               target="_blank" rel="noopener noreferrer">Copyright</a>
-                        </p>
-                        <p>
-                            <a href="https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office"
-                               target="_blank" rel="noopener noreferrer">FOIA</a>
-                        </p>
+                    <div>
+                        <a href="https://www.nlm.nih.gov/copyright.html"
+                           target="_blank" rel="noopener noreferrer">Copyright</a>
                     </div>
-                    <div class="grid-item">
-                        <p>
-                            <a href="https://www.nlm.nih.gov/privacy.html"
-                               target="_blank" rel="noopener noreferrer">Privacy</a>
-                        </p>
-                        <p>
-                            <a href="https://www.nlm.nih.gov/accessibility.html"
-                               target="_blank" rel="noopener noreferrer">Accessibility</a>
-                        </p>
+                    <div>
+                        <a href="https://www.nlm.nih.gov/privacy.html"
+                           target="_blank" rel="noopener noreferrer">Privacy</a>
                     </div>
-                    <div class="grid-item">
-                        <p>
-                            <a href="https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/"
-                               target="_blank" rel="noopener noreferrer">Help</a>
-                        </p>
-                        <p>
-                            <a href="https://www.nlm.nih.gov/careers/careers.html"
-                               target="_blank" rel="noopener noreferrer">Careers</a>
-                        </p>
+                    <div>
+                        <a href="https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/"
+                           target="_blank" rel="noopener noreferrer">Help</a>
+                    </div>
+                    <div>
+                        <a href="https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office"
+                           target="_blank" rel="noopener noreferrer">FOIA</a>
+                    </div>
+                    <div>
+                        <a href="https://www.nlm.nih.gov/accessibility.html"
+                           target="_blank" rel="noopener noreferrer">Accessibility</a>
+                    </div>
+                    <div>
+                        <a href="https://www.nlm.nih.gov/careers/careers.html"
+                           target="_blank" rel="noopener noreferrer">Careers</a>
                     </div>
                 </div>
             </mat-toolbar-row>
