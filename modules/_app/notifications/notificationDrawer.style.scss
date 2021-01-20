@@ -72,24 +72,24 @@ $width: 800px;
     }
   }
 
-  .notificationDrawerPointer {
-    height: $pointerSize;
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    right: 67px;
-    top: -$pointerSize;
-    width: 1px;
-
-    &::before {
-      @extend %pointer;
-      top: 0;
-    }
-
-    &::after {
-      @extend %pointer;
-      border-bottom-color: #fff;
-      top: 1px;
-    }
-  }
+  //.notificationDrawerPointer { // not usable in this theme with variable length login to right
+  //  height: $pointerSize;
+  //  margin: 0;
+  //  padding: 0;
+  //  position: absolute;
+  //  right: 150px;
+  //  top: -$pointerSize;
+  //  width: 1px;
+  //
+  //  &::before {
+  //    @extend %pointer;
+  //    top: 0;
+  //  }
+  //
+  //  &::after {
+  //    @extend %pointer;
+  //    border-bottom-color: #fff;
+  //    top: 1px;
+  //  }
+  //}
 }

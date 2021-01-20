@@ -50,8 +50,7 @@ public class MiscTests extends NlmCdeBaseTest {
 
     @Test
     public void checkTicketValid() {
-        String username = "cdevsacprod";
-        String password = "Aa!!!000";
+        String apikey = "64c6db1d-70ef-4f65-b952-c3296cffe8bb";
         String tgtUrl = "https://vsac.nlm.nih.gov:443/vsac/ws/Ticket";
 
         // Test to make sure user isn't logged in
@@ -59,20 +58,23 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertEquals(notLoggedInResponse, "");
 
         Header header = new Header("Content-Type", "application/x-www-form-urlencoded");
-        Response tpgResponse = RestAssured.given().formParam("username", username).formParam("password", password).header(header).request().post(tgtUrl);
+        Response tpgResponse = RestAssured.given().formParam("apikey", apikey).header(header).request().post(tgtUrl);
+        Assert.assertEquals(tpgResponse.statusCode(), 200, tpgResponse.getStatusLine() + " : " + tpgResponse.asString());
         String tgt = tpgResponse.asString();
         System.out.println("got tgt: " + tgt);
+        Assert.assertTrue(tgt.length() > 0, "Tgt not received");
 
         String ticketUrl = "https://vsac.nlm.nih.gov/vsac/ws/Ticket/" + tgt;
         Response ticketResponse = RestAssured.given().formParam("service", "http://umlsks.nlm.nih.gov").header(header).request().post(ticketUrl);
+        Assert.assertEquals(ticketResponse.statusCode(), 200, ticketResponse.getStatusLine() + " : " + ticketResponse.asString());
         String ticket = ticketResponse.asString();
         System.out.println("got ticket: " + ticket);
         Assert.assertTrue(ticket.length() > 0, "Ticket not received");
 
         String actualResponse = given().queryParam("ticket", ticket).get(baseUrl + "/server/system/user/me").asString();
         Assert.assertTrue(actualResponse.contains("_id"), "actualResponse: " + actualResponse);
-        Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
-        Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
+//        Assert.assertTrue(actualResponse.contains(username), "actualResponse: " + actualResponse);
+//        Assert.assertFalse(actualResponse.contains(password), "actualResponse: " + actualResponse);
     }
 
     @Test

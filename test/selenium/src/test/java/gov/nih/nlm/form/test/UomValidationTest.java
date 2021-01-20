@@ -31,7 +31,7 @@ public class UomValidationTest extends BaseFormTest {
                 "span[contains(@class,'badge badge-info') and contains(normalize-space(.),'inches')]/mat-icon"));
         saveEditQuestionById("question_0-3");
         textNotPresent("inches");
-        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='UCUM/ kg']"));
+        findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='UCUM/kg']"));
         findElement(By.xpath("//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='Kilo']"));
 
         saveFormEdit();

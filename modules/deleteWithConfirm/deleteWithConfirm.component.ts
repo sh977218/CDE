@@ -6,7 +6,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
     styles: [`
         .cdeMatIcon {
             font-size: 14px;
-            height: 14px
+            height: 14px;
+            line-height: 14px;
         }
     `]
 })

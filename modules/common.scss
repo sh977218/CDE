@@ -188,11 +188,6 @@ h2, h3 {
   margin-bottom: 12px;
 }
 
-mat-icon.mat-icon,
-mat-icon.material-icons {
-  line-height: 22px;
-}
-
 .mdl-layout__header { /* fix navbar height so form description toolbar can float consistently */
   min-height: 56px;
 }
@@ -759,6 +754,9 @@ dl.cde-property-lg {
   }
 }
 
+.move-handle {
+  cursor: move;
+}
 
 .spacer {
   flex: 1 1 auto;

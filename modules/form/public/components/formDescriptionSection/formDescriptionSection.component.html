@@ -2,7 +2,7 @@
     <div class="text-truncate p-1"
          [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit" class="float-left">
-            <mat-icon class="question-move-handle ml-1"
+            <mat-icon class="move-handle ml-1"
                       [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
             </mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
@@ -40,7 +40,7 @@
                 View Form
             </a>
             <ng-container *ngIf="!isSubForm && canEdit">
-                <mat-icon *ngIf="section.elementType === 'section'" title="Copy section"
+                <mat-icon *ngIf="section.elementType === 'section'" title="Copy section" class="hand-cursor"
                           (click)="copySection(section)">content_copy
                 </mat-icon>
                 <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>

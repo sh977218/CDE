@@ -34,7 +34,8 @@ const dataTypeArray = DATA_TYPE_ARRAY.filter(d => ignoreDatatypeArray.indexOf(d)
 
 @Component({
     selector: 'cde-form-description-question-detail',
-    templateUrl: 'formDescriptionQuestionDetail.component.html'
+    templateUrl: 'formDescriptionQuestionDetail.component.html',
+    styleUrls: ['./formDescriptionQuestionDetail.component.scss'],
 })
 export class FormDescriptionQuestionDetailComponent implements OnInit {
     @Input() set node(node: TreeNode) {
@@ -91,7 +92,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             .pipe(
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(value => value.length < 3 ? [] : this.ucumService.searchUcum(value)
+                switchMap(value => typeof value !== 'string' || value.length < 3
+                    ? [] : this.ucumService.searchUcum(value)
                 )
             ).subscribe(uoms => this.filteredUoms = uoms);
     }

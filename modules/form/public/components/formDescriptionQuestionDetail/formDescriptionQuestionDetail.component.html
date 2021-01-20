@@ -24,7 +24,7 @@
             Repeats: {{repeatFeLabel(question)}} times
         </span>
         <span *ngIf="isScore(question.question)" class="badge badge-primary formViewSummaryLabel">
-            Score: <span [textContent]="question.question.scoreFormula"></span>
+            Score: <span [textContent]="question.question.scoreFormula" style="margin-left: .25em"></span>
         </span>
         <span *ngIf="question.question.required" class="badge badge-danger formViewSummaryLabel">
             Required
@@ -80,7 +80,7 @@
                       class="badge badge-info formViewSummaryLabel"
                       [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
                     <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
-                    {{u.code}}
+                    <ng-container>{{u.code}}</ng-container>
                     <ng-container
                             *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}}
                         )</ng-container>
@@ -157,12 +157,12 @@
             <dt class="col-2">Units of Measure:</dt>
             <dd class="col-10 questionUom">
                 <div class="border rounded p-1">
-                    <span *ngFor="let u of question.question.unitsOfMeasure;let i = index;"
+                    <span *ngFor="let u of question.question.unitsOfMeasure; index as i"
                           class="badge badge-info formViewSummaryLabel">
-                        <mat-icon class="hand-cursor dark-icon pl-1" style="font-size: 14px; height: 14px"
+                        <mat-icon class="action-icon-dark" title="Remove UOM"
                                   (click)="removeUomByIndex(i)">cancel</mat-icon>
                         <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
-                        {{u.code}}
+                        <ng-container>{{u.code}}</ng-container>
                     </span>
                     <div class="p-1">
                         Add

@@ -13,6 +13,9 @@ import { TourService } from 'home/tour.service';
             margin-right: auto;
             width: 50%;
         }
+        #quickSearchForm .mat-form-field-infix {
+            padding: .3rem 0;
+        }
     `]
 })
 export class HomeComponent implements OnInit {
