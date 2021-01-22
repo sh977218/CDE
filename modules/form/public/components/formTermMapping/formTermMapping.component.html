@@ -1,7 +1,8 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
-    <legend>Mesh Descriptors:
-        <button id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" mat-raised-button color="primary"
-                (click)="openAddTermMap()"><mat-icon>edit</mat-icon> Add</button>
+    <legend (click)="isAllowedModel.isAllowed(elt) && openAddTermMap()"
+            [style.cursor]="isAllowedModel.isAllowed(elt) ? 'pointer' : 'auto'">Mesh Descriptors:
+        <button id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" mat-raised-button
+                color="primary"><mat-icon>edit</mat-icon> Add</button>
     </legend>
     <ul>
         <li *ngFor="let desc of mapping.meshDescriptors; let i = index">

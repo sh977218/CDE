@@ -50,6 +50,20 @@ mat-toolbar {
     &:hover {
       background-color: unquote($navColor + '10');
     }
+
+    &.nlmLink {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 19px;
+      margin-left: -5px;
+      padding: 11px 10px 10px 10px;
+
+      @media (max-width: 380px) {
+        & {
+          display: none;
+        }
+      }
+    }
   }
 
   button {

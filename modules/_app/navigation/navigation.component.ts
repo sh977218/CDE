@@ -93,6 +93,7 @@ const SECTION_LIST: readonly string[] = Object.freeze([
     // form
     '/form/search',
     '/formView',
+    '/formEdit',
     // create
     '/createCde',
     '/createForm',
@@ -144,13 +145,13 @@ const SECTION_LIST: readonly string[] = Object.freeze([
 enum SECTIONS { // one more than last index
     home = 2,
     de  = 4,
-    form = 6,
-    create  = 8,
-    board = 12,
-    api = 13,
-    help = 18,
-    searchSettings = 19,
-    user = 46,
+    form = 7,
+    create = 9,
+    board = 13,
+    api = 14,
+    help = 19,
+    searchSettings = 20,
+    user = 47,
 }
 
 function getWebsiteSection(path: string): SECTIONS {

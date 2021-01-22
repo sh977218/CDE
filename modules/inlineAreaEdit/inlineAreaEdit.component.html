@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
-        <mat-icon title="Edit" role="link" *ngIf="isAllowed" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" role="link" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
         <span *ngIf="localFormat !== 'html'">
             <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate">
             </cde-text-truncate>

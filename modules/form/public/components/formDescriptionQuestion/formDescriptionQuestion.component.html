@@ -1,7 +1,7 @@
 <div class="p-1"
      [ngClass]="{'outdated-bg': question.question.cde.outdated && !question.hover,'hover-bg': question.hover}">
     <div *ngIf="!isSubForm && canEdit" class="d-inline-block">
-        <mat-icon class="question-move-handle ui-sortable-handle"
+        <mat-icon class="move-handle ui-sortable-handle"
                   [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
         </mat-icon>
         <mat-icon *ngIf="question.skipLogic?.condition?.length > 0" class="updatedSkipLogicIcon"

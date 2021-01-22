@@ -1,6 +1,6 @@
 <span>
     <span *ngIf="!editMode">
-        <mat-icon *ngIf="isAllowed" title="Edit" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
         <span *ngIf="!linkSource">
             <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
             <ng-template #NAvalue><span>N/A</span></ng-template>

@@ -24,8 +24,9 @@ import * as _cloneDeep from 'lodash/cloneDeep';
 
         mat-icon {
             font-size: 16px;
-            height: 16px;
-            width: 16px;
+            height: 1em;
+            line-height: 1.5em;
+            width: 1.2em;
             vertical-align: top;
         }
     `]

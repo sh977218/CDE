@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode">
-        <mat-icon *ngIf="isAllowed" title="Edit" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
         <span>{{value}}</span>
     </div>
     <div *ngIf="editMode">

@@ -1,5 +1,9 @@
 @import "../../../../theme";
 
+::ng-deep .angular-tree-component {
+  cursor: inherit;
+}
+
 .descriptionToolbox {
   color: #9d9d9d;
   background-color: #343a40;
