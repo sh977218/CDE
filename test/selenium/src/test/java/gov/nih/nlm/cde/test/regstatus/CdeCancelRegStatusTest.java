@@ -12,7 +12,7 @@ public class CdeCancelRegStatusTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigAdmin_username, password);
         goToCdeByName(cdeName);
         textPresent("Qualified");
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Recorded");
         clickElement(By.id("cancelRegStatus"));
         modalGone();
