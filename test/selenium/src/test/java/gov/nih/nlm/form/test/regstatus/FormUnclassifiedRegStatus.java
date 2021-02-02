@@ -13,10 +13,9 @@ public class FormUnclassifiedRegStatus extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("UnclassifiedForm");
         goToGeneralDetail();
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         textPresent("Elements that are not classified (or only classified by TEST");
         Assert.assertEquals(new Select(driver.findElement(By.name("newRegistrationStatus"))).getOptions().size(), 2);
     }
-
 
 }

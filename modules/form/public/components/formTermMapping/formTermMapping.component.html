@@ -1,7 +1,7 @@
 <fieldset class="cdeFieldset" id="formTermMapping">
     <legend (click)="isAllowedModel.isAllowed(elt) && openAddTermMap()"
             [style.cursor]="isAllowedModel.isAllowed(elt) ? 'pointer' : 'auto'">Mesh Descriptors:
-        <button id="addTermMap" *ngIf="isAllowedModel.isAllowed(elt)" mat-raised-button
+        <button *ngIf="isAllowedModel.isAllowed(elt)" mat-raised-button
                 color="primary"><mat-icon>edit</mat-icon> Add</button>
     </legend>
     <ul>

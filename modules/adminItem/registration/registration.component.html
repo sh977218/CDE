@@ -1,6 +1,6 @@
 <fieldset class="cdeFieldset" id="registrationStateDiv">
     <legend (click)="canEdit && openRegStatusUpdate()" [style.cursor]="canEdit ? 'pointer' : 'auto'">Registration State:
-        <button title="Edit Status" role="link" id="editStatus" *ngIf="canEdit" mat-raised-button color="primary">
+        <button title="Edit Status" role="link" *ngIf="canEdit" mat-raised-button color="primary">
             <mat-icon>edit</mat-icon> Edit
         </button>
     </legend>

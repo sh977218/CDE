@@ -11,7 +11,7 @@ public class FormAddMeshTermMappingTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Written Verbal Fluency Test");
         goToGeneralDetail();
-        clickElement(By.id("addTermMap"));
+        startEditMeshDescriptors();
         findElement(By.id("mesh.search")).sendKeys("fingers");
         textPresent("D005385 -- Fingers");
         clickElement(By.id("addMeshDescButton"));
@@ -20,7 +20,7 @@ public class FormAddMeshTermMappingTest extends NlmCdeBaseTest {
         textPresent("D005385 - Fingers");
 
         // check can't add dups
-        clickElement(By.id("addTermMap"));
+        startEditMeshDescriptors();
         findElement(By.id("mesh.search")).sendKeys("toes");
         textPresent("D014034 -- Toes");
         findElement(By.id("mesh.search")).clear();
