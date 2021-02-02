@@ -17,7 +17,7 @@ public class WorkingGroupRegStatus extends NlmCdeBaseTest {
         goToCdeByName("WG Test CDE");
 
 
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         List<WebElement> options = new Select(driver.findElement(By.name("newRegistrationStatus"))).getOptions();
         for (WebElement option : options) {
             Assert.assertNotEquals("Qualified", option.getText());

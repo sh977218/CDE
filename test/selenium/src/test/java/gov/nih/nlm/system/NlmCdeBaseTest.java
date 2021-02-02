@@ -1456,7 +1456,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
      * @param unresolvedIssue    Unresolved Issue.
      */
     protected void editRegistrationStatus(String status, String effectiveDate, String untilDate, String administrativeNote, String unresolvedIssue) {
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText(status);
         if (status.equals("Preferred Standard"))
             textPresent("Preferred Standard elements cannot be edited by their stewards");
@@ -1979,6 +1979,22 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.name("searchUsersInput")).sendKeys(username);
         findElements(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
         clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
+    }
+
+    protected void startEditMeshDescriptors() {
+        clickElement(By.xpath(xpathMeshDescriptorsEditable()));
+    }
+
+    protected void startEditRegistrationStatus() {
+        clickElement(By.xpath(xpathRegistrationStatusEditable()));
+    }
+
+    protected String xpathMeshDescriptorsEditable() {
+        return "//legend[contains(text(),'Mesh Descriptors:')][button]";
+    }
+
+    protected String xpathRegistrationStatusEditable() {
+        return "//legend[contains(text(),'Registration State:')][button]";
     }
 
     protected void createBoardFromQuickBoard(String boardName, String boardDescription) {

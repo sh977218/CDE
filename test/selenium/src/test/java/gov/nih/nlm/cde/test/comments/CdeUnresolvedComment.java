@@ -11,7 +11,7 @@ public class CdeUnresolvedComment extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Cancer history indicator");
 
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         textPresent("Update Registration Status");
         textNotPresent("There are unresolved comments");
         clickElement(By.id("cancelRegStatus"));
@@ -19,11 +19,10 @@ public class CdeUnresolvedComment extends NlmCdeBaseTest {
         goToDiscussArea();
         addComment("Simple comment");
 
-        clickElement(By.id("editStatus"));
+        startEditRegistrationStatus();
         textPresent("Update Registration Status");
         clickElement(By.id("cancelRegStatus"));
         checkAlert("There are unresolved comments");
     }
-
 
 }

@@ -11,10 +11,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         goToGeneralDetail();
         textPresent("Qualified");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Retired");
-        textPresent("Retired elements are not returned in searches");
-        clickElement(By.id("saveRegStatus"));
+        editRegistrationStatus("Retired", null, null, null, null);
         version();
         waitForESUpdate();
         goToEltSearch();
@@ -30,10 +27,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         goToGeneralDetail();
         textPresent("Qualified");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Retired");
-        textPresent("Retired elements are not returned in searches");
-        clickElement(By.id("saveRegStatus"));
+        editRegistrationStatus("Retired", null, null, null, null);
         version();
         waitForESUpdate();
         goToEltSearch();
@@ -48,10 +42,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         goToGeneralDetail();
         textPresent("Qualified");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Standard");
-        textPresent("Standard elements cannot be edited by their stewards");
-        clickElement(By.id("saveRegStatus"));
+        editRegistrationStatus("Standard", null, null, null, null);
         closeAlert();
         goToEltByName(eltName);
         goToGeneralDetail();
@@ -63,10 +54,7 @@ public abstract class RegStatusTest extends CommonTest {
         goToEltByName(eltName);
         goToGeneralDetail();
         textPresent("Qualified");
-        clickElement(By.id("editStatus"));
-        new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Standard");
-        textPresent("Standard elements cannot be edited by their stewards");
-        clickElement(By.id("saveRegStatus"));
+        editRegistrationStatus("Standard", null, null, null, null);
         closeAlert();
         goToEltByName(eltName);
         goToGeneralDetail();
