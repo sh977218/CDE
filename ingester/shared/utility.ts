@@ -208,7 +208,7 @@ export async function createForm(form: any) {
     await new formModel(form).save();
 }
 
-export function updateCde(elt: any, user: any, options = {}) {
+export function updateCde(elt: any, user: any = BATCHLOADER, options = {}) {
     fixElt(elt);
     elt.lastMigrationScript = lastMigrationScript;
     return new Promise((resolve, reject) => {
