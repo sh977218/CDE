@@ -79,6 +79,7 @@ async function runDataElement(formMap: any) {
 
 async function runOneNhlbiForm(row: any, nhlbiCdes: any[]) {
     const nlmId = trim(row['NLM ID']);
+    const formId = trim(row.CrfId);
     if (!isEmpty(nlmId) && nlmId[0] !== '—') {
         const cond = {
             archived: false,
@@ -96,9 +97,12 @@ async function runOneNhlbiForm(row: any, nhlbiCdes: any[]) {
             const crfId = row.CrfId;
             if (!isEmpty(phenxProtocolId) && !isEmpty(crfId)) {
                 existingFormObj.ids.push({source: 'NINDS', id: trim(crfId)});
-                existingForm.ids = existingFormObj.ids;
                 console.log(`Map PhenX ${phenxProtocolId} to NINDS ${crfId}`);
+            } else {
+                existingFormObj.ids.push({source: 'NHLBI', id: formId});
+                console.log(`Assign NHLBI ${formId}`);
             }
+            existingForm.ids = existingFormObj.ids;
 
             await existingForm.save();
             existingFormCount++;
