@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { handleError, handleErrorVoid, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
 import {
-    byId as deById, byTinyId as deByTinyId, byTinyIdAndVersion as deByTinyIdAndVersion, byTinyIdList as deByTinyIdList,
+    byId as deById, byTinyId as deByTinyId, byTinyIdAndVersion as deByTinyIdAndVersion,
+    byTinyIdListElastic as deByTinyIdListElastic,
     create as deCreate,
     DataElementDraft,
     dataElementModel, draftById as deDraftById, draftByTinyId as deDraftByTinyId, draftDelete as deDraftDelete,
@@ -199,7 +200,7 @@ export function viewHistory(req: Request, res: Response) {
             tinyIdList.push(splice);
         }
     });
-    deByTinyIdList(tinyIdList, handleNotFound({req, res}, dataElements => {
+    deByTinyIdListElastic(tinyIdList, handleNotFound({req, res}, dataElements => {
         dataElements.forEach(de => hideProprietaryCodes(de, req.user));
         return res.send(dataElements);
     }));

@@ -345,6 +345,11 @@ app.use(((err, req, res, next) => {
         return res.status(401).send('CSRF Error');
     }
 
+    if (err instanceof SyntaxError && ['/api/de/searchDoc'].includes(req.url)) {
+        res.status(400).send('Malformed JSON');
+        return;
+    }
+
     if (err.type === 'entity.parse.failed') {
         const ip = getRealIp(req);
         banIp(ip, req.originalUrl);

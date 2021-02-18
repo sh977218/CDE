@@ -100,7 +100,7 @@ export async function classifyEltsInBoard(req: Request, dao: any, cb: CbErr) {
         return;
     }
     const tinyIds = board.pins.map(p => p.tinyId);
-    dao.byTinyIdList(tinyIds, (err?: Error, elts?: Item[]) => {
+    dao.byTinyIdListElastic(tinyIds, (err?: Error, elts?: Item[]) => {
         if (err || !elts) {
             cb('elts not retrieved');
             return;

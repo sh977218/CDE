@@ -7,22 +7,22 @@ info:
 host: "localhost:3001"
 basePath: "/"
 schemes:
-- "http"
+  - "http"
 produces:
-- "application/json"
+  - "application/json"
 paths:
   /api/de/{tinyId}:
     get:
       tags:
-      - "CDE"
+        - "CDE"
       summary: "CDE element"
       description: "A single data element.\n"
       parameters:
-      - name: "tinyId"
-        in: "path"
-        description: "identifier"
-        required: true
-        type: "string"
+        - name: "tinyId"
+          in: "path"
+          description: "identifier"
+          required: true
+          type: "string"
       responses:
         200:
           description: "CDE"
@@ -36,20 +36,20 @@ paths:
   /api/de/{tinyId}/version/{version}:
     get:
       tags:
-      - "CDE"
+        - "CDE"
       summary: "CDE element"
       description: "A single data element.\n"
       parameters:
-      - name: "tinyId"
-        in: "path"
-        description: "identifier"
-        required: true
-        type: "string"
-      - name: "version"
-        in: "path"
-        description: "version"
-        required: true
-        type: "string"
+        - name: "tinyId"
+          in: "path"
+          description: "identifier"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "path"
+          description: "version"
+          required: true
+          type: "string"
       responses:
         200:
           description: "CDE"
@@ -60,18 +60,36 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
+  /api/de/search:
+    post:
+      tags:
+        - "CDE"
+      summary: "Data Element document search"
+      description: "Full-text search for Data Element documents"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: "Search Options"
+          schema:
+            $ref: "#/definitions/SearchApiOptions"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SearchDocumentResponse"
   /api/form/{tinyId}:
     get:
       tags:
-      - "Form"
+        - "Form"
       summary: "CDE Form"
       description: "Form template for data collection.\n"
       parameters:
-      - name: "tinyId"
-        in: "path"
-        description: "identifier"
-        required: true
-        type: "string"
+        - name: "tinyId"
+          in: "path"
+          description: "identifier"
+          required: true
+          type: "string"
       responses:
         200:
           description: "CDE Form"
@@ -85,20 +103,20 @@ paths:
   /api/form/{tinyId}/version/{version}:
     get:
       tags:
-      - "Form"
+        - "Form"
       summary: "CDE Form"
       description: "Form template for data collection.\n"
       parameters:
-      - name: "tinyId"
-        in: "path"
-        description: "identifier"
-        required: true
-        type: "string"
-      - name: "version"
-        in: "path"
-        description: "version"
-        required: true
-        type: "string"
+        - name: "tinyId"
+          in: "path"
+          description: "identifier"
+          required: true
+          type: "string"
+        - name: "version"
+          in: "path"
+          description: "version"
+          required: true
+          type: "string"
       responses:
         200:
           description: "CDE Form"
@@ -658,6 +676,16 @@ definitions:
         usename:
           type: "string"
           example: "jdoe"
+  CurationStatus:
+    type: "string"
+    enum:
+      - "Incomplete"
+      - "Recorded"
+      - "Candidate"
+      - "Qualified"
+      - "Standard"
+      - "Preferred Standard"
+      - "Retired"
   DataSets:
     type: "array"
     items:
@@ -675,6 +703,18 @@ definitions:
         studyUri:
           type: "string"
           example: "http://www.ninds.org/15232523"
+  Datatype:
+    type: string
+    enum:
+      - "Date"
+      - "Dynamic Code List"
+      - "Externally Defined"
+      - "File"
+      - "Geo Location"
+      - "Number"
+      - "Text"
+      - "Time"
+      - "Value List"
   History:
     type: "array"
     items:
@@ -843,6 +883,70 @@ definitions:
       untilDate:
         type: "string"
         format: "date-time"
+  SearchDocumentResponse:
+    type: object
+    properties:
+      resultsTotal:
+        type: integer
+        format: int32
+      resultsRetrieved:
+        type: integer
+        format: int32
+      from:
+        type: integer
+        format: int32
+      docs:
+        type: "array"
+        items:
+          $ref: "#/definitions/De"
+    required: [ "resultsTotal", "resultsRetrieved", "from", "docs" ]
+  SearchApiOptions:
+    type: object
+    properties:
+      excludeAllOrgs:
+        description: "Exclude documents with more than 1 organization"
+        type: boolean
+      excludeOrgs:
+        description: "Exclude document from specific organizations"
+        type: array
+        items:
+          type: string
+      page:
+        description: "Specify page of result set, starting with 1"
+        type: integer
+      resultPerPage:
+        description: "Number of results to retrieve at one time, maximum 100"
+        type: integer
+      searchTerm:
+        description: "Search Query, see examples at https://cde.nlm.nih.gov/guides"
+        type: string
+      selectedDatatypes:
+        description: "Data Elements with specific datatype"
+        type: array
+        items:
+          $ref: "#/definitions/Datatype"
+      selectedElements:
+        description: "Classification"
+        type: array
+        items:
+          type: string
+      selectedElementsAlt:
+        description: "Second Classification"
+        type: array
+        items:
+          type: string
+      selectedOrg:
+        description: "Classifying Organization, not to be confused with steward"
+        type: string
+      selectedOrgAlt:
+        description: "Second Classifying Organization, not to be confused with steward"
+        type: string
+      selectedStatuses:
+        description: "Registration Status"
+        type: array
+        items:
+          $ref: "#/definitions/CurationStatus"
+        uniqueItems: true
   Source:
     type: "object"
     properties:

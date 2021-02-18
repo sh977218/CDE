@@ -55,7 +55,7 @@ export function module() {
         if (!isEmpty(intersectionCdes)) {
             return res.status(409).send('Already added');
         }
-        getDao(type).byTinyIdList(tinyIdList, handleNotFound<ItemDocument[]>({req, res}, elts => {
+        getDao(type).byTinyIdListElastic(tinyIdList, handleNotFound<ItemDocument[]>({req, res}, elts => {
             const newPins: any[] = elts.map(e => ({
                 pinnedDate: new Date(),
                 type,

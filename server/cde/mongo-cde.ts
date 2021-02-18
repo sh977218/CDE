@@ -109,9 +109,21 @@ export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | unde
     });
 }
 
-export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElementElastic[] | void>): void {
-    dataElementModel.find({archived: false}).where('tinyId')
-        .in(tinyIdList)
+export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElement[] | void>): void {
+    dataElementModel.find({archived: false})
+        .where('tinyId').in(tinyIdList)
+        .exec((err, docs) => {
+            /* istanbul ignore if */
+            if (err) {
+                return cb(err);
+            }
+            cb(err, tinyIdList.map(t => docs.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
+        });
+}
+
+export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<DataElementElastic[] | void>): void {
+    dataElementModel.find({archived: false})
+        .where('tinyId').in(tinyIdList)
         .slice('valueDomain.permissibleValues', 10)
         .exec((err, docs) => {
             /* istanbul ignore if */
@@ -122,6 +134,7 @@ export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElementElast
             cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
         });
 }
+
 export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
     const cond = {
         archived: false,
