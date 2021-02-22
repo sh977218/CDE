@@ -101,6 +101,8 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
     ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.png'))
             .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
+        streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.svg'))
+            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.ico'))
             .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
         streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.gif'))
