@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
+import { AlertService } from 'alert/alert.service';
 import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
@@ -19,6 +20,7 @@ export class UserService {
     logoutTimeout?: number;
 
     constructor(
+        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
         @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog,
     ) {
@@ -73,6 +75,16 @@ export class UserService {
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
         this.promise.then(cb, cb);
+    }
+
+    save() {
+        this.http.post('/server/user/', this.user).subscribe(
+            () => {
+                this.reload();
+                this.alert.addAlert('success', 'Saved');
+            },
+            (err) => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     setOrganizations() {

@@ -272,11 +272,7 @@ export function initEs(cb: Cb = () => {
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
                                   indexName: string, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
-    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
-    if (settings.includeRetired) {
-        allowedStatuses.push('Retired');
-    }
-
+    const allowedStatuses = getAllowedStatuses(user, settings);
     const suggestQuery = {
         query: {
             match: {
@@ -310,6 +306,18 @@ function termRegStatus(regStatus: CurationStatus) {
     return {term: {'registrationState.registrationStatus': regStatus}};
 }
 
+function getAllowedStatuses(user: User, settings: SearchSettingsElastic): CurationStatus[] {
+    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
+    if (user && user.viewDrafts) {
+        allowedStatuses.push('Recorded');
+        allowedStatuses.push('Candidate');
+    }
+    if (settings.includeRetired) {
+        allowedStatuses.push('Retired');
+    }
+    return allowedStatuses;
+}
+
 export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
     let filterRegStatusTerms: ElasticCondition = allowedStatuses.map(termRegStatus);
 
@@ -331,10 +339,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         return !settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1 || !isOrgAuthority(user);
     }
 
-    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
-    if (settings.includeRetired) {
-        allowedStatuses.push('Retired');
-    }
+    const allowedStatuses = getAllowedStatuses(user, settings);
 
     // Increase ranking score for high registration status
     const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";

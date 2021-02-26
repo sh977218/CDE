@@ -438,6 +438,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         textPresent("Add New Rule", By.id("settingsContent"));
     }
 
+    protected void goToSearchSettings() {
+        goToSettings();
+        clickElement(By.xpath("//mat-list-item[normalize-space()='Search Settings']"));
+        textPresent("Search Settings", By.cssSelector("#settingsContent h1"));
+    }
+
     protected void goToServerStatus() {
         goToSettings();
         clickElement(By.id("serverStatus"));

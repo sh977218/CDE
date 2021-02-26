@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <h1>My Published Forms</h1>
-    <div>
+    <div *ngIf="user">
         <span *ngIf="!user?.publishedForms?.length">You have no published forms.</span>
         <ul class="list-group">
             <li class="list-group-item" *ngFor="let pf of user.publishedForms">
                 <a href="/server/system/data/{{pf.id}}?submit" target="_blank">{{pf.name}}</a>
                 &nbsp; &nbsp;
-                <mat-icon title="Remove" (click)="removePublishedForm(pf)">delete_outline</mat-icon>
+                <mat-icon title="Remove" (click)="removePublishedForm(user, pf)">delete_outline</mat-icon>
             </li>
         </ul>
     </div>

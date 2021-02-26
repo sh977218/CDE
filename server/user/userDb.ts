@@ -99,6 +99,7 @@ const userSchema = new Schema({
             linkedForms: Boolean
         }
     },
+    viewDrafts: Boolean,
     accessToken: StringType,
     refreshToken: StringType,
     avatarUrl: StringType,
@@ -144,8 +145,8 @@ export function find(crit: any, cb: CbError1<UserDocument[]>) {
 }
 
 // cb(err, {nMatched, nUpserted, nModified})
-export async function updateUser(user: User, fields: any, callback?: CbError) {
-    const update: any = {};
+export async function updateUser(user: User, fields: Partial<UserFull>, callback?: CbError) {
+    const update: Partial<UserFull> = {};
     if (fields.commentNotifications) {
         update.commentNotifications = fields.commentNotifications;
     }
@@ -170,6 +171,9 @@ export async function updateUser(user: User, fields: any, callback?: CbError) {
     }
     if (fields.publishedForms) {
         update.publishedForms = fields.publishedForms;
+    }
+    if (typeof fields.viewDrafts !== 'undefined') {
+        update.viewDrafts = fields.viewDrafts;
     }
     return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
 }
