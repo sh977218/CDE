@@ -26,7 +26,7 @@ export interface UserFull extends User {
     lastLogin: Date | number;
     lockCounter: number;
     knownIPs: string[];
-    notificationDate: {
+    notificationDate?: {
         serverLogDate: Date | number,
         clientLogDate: Date | number
     };
@@ -77,9 +77,7 @@ const userSchema = new Schema({
     knownIPs: [StringType],
     roles: [{type: StringType, enum: rolesEnum}],
     searchSettings: {
-        version: Number,
         defaultSearchView: {type: StringType, enum: ['accordion', 'table', 'summary']},
-        lowestRegistrationStatus: StringType,
         tableViewFields: {
             name: {type: Boolean, default: true},
             naming: Boolean,
@@ -116,7 +114,7 @@ export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
 
-export function addUser(user: Omit<User, '_id'>, callback: CbError1<UserDocument>) {
+export function addUser(user: Omit<UserFull, '_id'>, callback: CbError1<UserDocument>) {
     user.username = user.username.toLowerCase();
     new userModel(user).save(callback);
 }

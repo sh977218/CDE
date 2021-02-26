@@ -13,7 +13,6 @@
     ],
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "noImplicitAny": false,
     "outDir": "./buildNode",
     "pretty": false,
     "rootDir": ".",
@@ -31,6 +30,8 @@
   },
   "exclude": [
     "build",
+    "buildNode",
+    "buildWebStorm",
     "deploy",
     "dist",
     "frontEnd",

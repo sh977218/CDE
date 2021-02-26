@@ -12,7 +12,7 @@
     ],
     "module": "ESNext",
     "moduleResolution": "Node",
-    "outDir": "./buildNode",
+    "outDir": "./buildWebStorm",
     "pretty": true,
     "resolveJsonModule": true,
     "rootDir": ".",
@@ -30,13 +30,13 @@
   },
   "exclude": [
     "build",
+    "buildNode",
+    "buildWebStorm",
     "deploy",
     "dist",
-    "ingester",
-    "modules",
+    "modules/form/public/assets",
     "node_modules",
     "protractor",
-    "scripts",
     "test"
   ]
 }

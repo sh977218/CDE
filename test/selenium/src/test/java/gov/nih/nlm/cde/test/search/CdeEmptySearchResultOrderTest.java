@@ -11,7 +11,7 @@ public class CdeEmptySearchResultOrderTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeEmptySearchResultOrder() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("search_by_classification_GRDR"));
         List<WebElement> registrationStatusList = findElements(By.xpath("//*[contains(@id,'registrationStatus_')]"));

@@ -8,7 +8,6 @@ public class UrlSearch extends NlmCdeBaseTest {
 
     @Test
     public void urlSearch() {
-        setVisibleStatus("minStatus-Qualified");
         goToCdeSearch();
         String curUrl = driver.getCurrentUrl();
         driver.get(curUrl + "?regStatuses=Candidate&selectedOrg=caBIG");

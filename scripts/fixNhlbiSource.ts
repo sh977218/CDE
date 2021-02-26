@@ -1,6 +1,5 @@
 import { Model } from 'mongoose';
 import { CdeFormDocument, formModel, formSourceModel } from 'server/form/mongo-form';
-import { formRawArtifact } from 'ingester/shared/utility';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);

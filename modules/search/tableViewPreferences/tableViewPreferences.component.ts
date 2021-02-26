@@ -15,15 +15,16 @@ export abstract class TableViewPreferencesComponent {
     searchSettings: UserSearchSettings;
     placeHolder = 'Optional: select identifiers to include (default: all)';
 
-    constructor(@Inject(MAT_DIALOG_DATA) data: {searchSettings: UserSearchSettings},
+    constructor(@Inject(MAT_DIALOG_DATA) data: {},
                 private alert: AlertService,
+                public esService: ElasticService,
                 private http: HttpClient) {
         this.http.get<Source[]>('/server/system/idSources').subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
-        this.searchSettings = data.searchSettings;
+        this.searchSettings = this.esService.searchSettings;
     }
 
     loadDefault() {
-        this.searchSettings = ElasticService.getDefault();
+        this.searchSettings = this.esService.searchSettings = ElasticService.getDefault();
         this.alert.addAlert('info', 'Default settings loaded. Press Save to persist them.');
         this.changed.emit();
     }

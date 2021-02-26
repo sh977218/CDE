@@ -26,10 +26,10 @@ export class SearchSettingsElastic {
     [key: string]: any;
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
-    filter?: any; // server-side, ElasticCondition
     filterDatatype?: any; // server-side, ElasticCondition
     fullRecord?: boolean;
     includeAggregations?: boolean;
+    includeRetired?: boolean;
     meshTree = '';
     page?: number = 1;
     q?: string;
@@ -42,11 +42,9 @@ export class SearchSettingsElastic {
     selectedOrg?: string;
     selectedOrgAlt?: string;
     selectedStatuses: CurationStatus[] = [];
-    visibleStatuses?: CurationStatus[];
 
-    constructor(selectedStatuses: CurationStatus[] = [], resultPerPage = 20) {
+    constructor(resultPerPage = 20) {
         this.resultPerPage = resultPerPage;
-        this.selectedStatuses = selectedStatuses;
     }
 }
 

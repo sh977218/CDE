@@ -57,7 +57,8 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
     @Test
     public void regStatusFacets() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch("cde");
         clickElement(By.id("browseOrg-caBIG"));
         clickElement(By.id("classif-ASCO"));
         textPresent("Agent Physical Appearance Type");

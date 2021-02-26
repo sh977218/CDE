@@ -1033,7 +1033,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void scrollDownBy(Integer y) {
-        String jsScroll = "document.getElementById('scrollRoot').scrollBy(0," + Integer.toString(y) + ");";
+        String jsScroll = "document.getElementById('scrollRoot')?.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
 
@@ -1067,7 +1067,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
      */
     protected void switchTabAndClose(int switchTo) {
         hangon(1);
-        ArrayList<String> tabs2 = new ArrayList(driver.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<String>(driver.getWindowHandles());
         driver.close();
         driver.switchTo().window(tabs2.get(switchTo));
         hangon(3);
@@ -1075,14 +1075,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void switchTab(int i) {
         hangon(1);
-        List<String> tabs = new ArrayList(driver.getWindowHandles());
+        List<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(i));
     }
 
     protected int switchTabToLast() {
         hangon(1);
         String currentTab = driver.getWindowHandle();
-        List<String> tabs = new ArrayList(driver.getWindowHandles());
+        List<String> tabs = new ArrayList<String>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(tabs.size() - 1));
         return tabs.indexOf(currentTab);
     }
@@ -1168,20 +1168,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         openAudit("Form", name);
     }
 
-    protected void setVisibleStatus(String id) {
-        goToSearch("cde");
-        clickElement(By.id("searchSettings"));
-        clickElement(By.id(id));
-        hangon(1);
-        clickElement(By.id("saveSettings"));
-        checkAlert("Settings saved");
-        goToSearch("cde");
-    }
-
-    protected void setLowStatusesVisible() {
-        setVisibleStatus("minStatus-Incomplete");
-    }
-
     protected void downloadAsFile() {
         clickElement(By.id("searchSettings"));
         clickElement(By.xpath("//label[contains(.,'File')]"));
@@ -1196,7 +1182,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     protected void includeRetiredSetting() {
         clickElement(By.id("searchSettings"));
-        clickElement(By.id("includeRetired"));
+        clickElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
         clickElement(By.id("saveSettings"));
     }
 

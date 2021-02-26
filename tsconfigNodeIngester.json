@@ -31,6 +31,8 @@
   },
   "exclude": [
     "build",
+    "buildNode",
+    "buildWebStorm",
     "deploy",
     "dist",
     "frontEnd",

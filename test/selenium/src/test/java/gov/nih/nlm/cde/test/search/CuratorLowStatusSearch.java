@@ -8,22 +8,21 @@ public class CuratorLowStatusSearch extends NlmCdeBaseTest {
 
     @Test
     public void curatorLowStatusSearch() {
-        setVisibleStatus("minStatus-Qualified");
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("java");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         textPresent("Qualified (");
         textNotPresent("Candidate (");
-        setVisibleStatus("minStatus-Candidate");
+
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch("cde");
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("java");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         findElement(By.id("regstatus-Candidate"));
         textPresent("caCORE (");
 
-        mustBeLoggedInAs(cabigAdmin_username, password);
-        setVisibleStatus("minStatus-Qualified");
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("java");

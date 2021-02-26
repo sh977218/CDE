@@ -4,8 +4,8 @@ import { Response } from 'express';
 import * as session from 'express-session';
 import * as Grid from 'gridfs-stream';
 import { escape, findIndex } from 'lodash';
-import * as mongo from 'mongodb2';
-import { connect, MongoClient } from 'mongodb2';
+import * as mongo from 'mongodb2'; // Mongo 2 used by gridfs
+import { connect, MongoClientOptions } from 'mongodb2';
 import { Document, Model, Types } from 'mongoose';
 import { diff } from 'server/cde/cdediff';
 import { ObjectId } from 'server';
@@ -111,7 +111,7 @@ export const messageModel: Model<MessageDocument> = conn.model('Message', messag
 const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
 
 export let gfs: Grid.Grid;
-connect(config.database.appData.uri, (err?: Error, client?: MongoClient) => {
+connect(config.database.appData.uri, (err?: Error, client?: MongoClientOptions) => {
     if (err) {
         noDbLogger.info('Error connection open to legacy mongodb: ' + err);
     } else {

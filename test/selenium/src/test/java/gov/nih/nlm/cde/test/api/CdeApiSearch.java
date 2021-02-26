@@ -26,11 +26,11 @@ public class CdeApiSearch extends NlmCdeBaseTest {
         Assert.assertFalse(resp.contains("flatClassifications"));
 
         resp = given().contentType(ContentType.JSON)
-                .body("{\"selectedStatuses\": [\"Recorded\"], \"searchTerm\": \"race\"}")
+                .body("{\"selectedStatuses\": [\"Standard\"], \"searchTerm\": \"race\"}")
                 .post(searchUrl).asString();
         Assert.assertTrue(resp.contains("\"resultsTotal\":1,"));
-        Assert.assertTrue(resp.contains("\"registrationStatus\":\"Recorded\""));
-        Assert.assertTrue(resp.contains("\"datatype\":\"Externally Defined\","));
+        Assert.assertTrue(resp.contains("\"registrationStatus\":\"Standard\""));
+        Assert.assertTrue(resp.contains("\"datatype\":\"Value List\","));
 
         resp = given().contentType(ContentType.JSON)
                 .body("{\"selectedDatatypes\": [\"Number\"], \"searchTerm\": \"race\"}")

@@ -55,11 +55,9 @@ export class TableListComponent implements OnInit {
     private _elts!: ItemElastic[];
     headings!: string[];
     rows!: Row[][];
-    searchSettings: UserSearchSettings;
 
     constructor(public dialog: MatDialog,
                 public esService: ElasticService) {
-        this.searchSettings = this.esService.searchSettings;
     }
 
     ngOnInit() {
@@ -353,14 +351,17 @@ export class TableListComponent implements OnInit {
         const dialogRef = this.dialog.open(viewComponent, {
             width: '550px',
             data: {
-                searchSettings: this.searchSettings
             }
         });
         dialogRef.componentInstance.changed.subscribe(() => {
             this.render();
-            this.esService.saveConfiguration(this.searchSettings);
+            this.esService.saveConfiguration();
         });
         dialogRef.componentInstance.closed.subscribe(() => dialogRef.close());
+    }
+
+    get searchSettings(): UserSearchSettings {
+        return this.esService.searchSettings;
     }
 
     static readonly maxLines = 5;

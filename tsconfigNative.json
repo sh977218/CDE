@@ -31,6 +31,7 @@
     "app.ts",
     "build",
     "buildNode",
+    "buildWebStorm",
     "deploy",
     "dist",
     "gulpfile.ts",

@@ -1,41 +1,13 @@
 <div class="container">
     <h2><mat-icon style="vertical-align: baseline">search</mat-icon> Search Results</h2>
-    <h3><mat-icon style="vertical-align: baseline">check_box</mat-icon> Registration Statuses</h3>
-    <div class="form-group">
-        <span>I want my search results to include these statuses</span>
-        <div class="radio indent">
-            <label>
-                <input type="radio" [(ngModel)]="searchSettings.lowestRegistrationStatus" id="minStatus-Qualified"
-                       value="Qualified">
-                Preferred Standard, Standard, Qualified
-            </label>
-        </div>
-        <div class="radio indent">
-            <label>
-                <input type="radio" [(ngModel)]="searchSettings.lowestRegistrationStatus" id="minStatus-Recorded"
-                       value="Recorded">
-                Preferred Standard, Standard, Qualified, Recorded
-            </label>
-        </div>
-        <div class="radio indent">
-            <label>
-                <input type="radio" [(ngModel)]="searchSettings.lowestRegistrationStatus" id="minStatus-Candidate"
-                       value="Candidate">
-                Preferred Standard, Standard, Qualified, Recorded, Candidate
-            </label>
-        </div>
-        <div class="radio indent">
-            <label>
-                <input id="minStatus-Incomplete" type="radio" [(ngModel)]="searchSettings.lowestRegistrationStatus"
-                       value="Incomplete">
-                Preferred Standard, Standard, Qualified, Recorded, Candidate, Incomplete
-            </label>
-        </div>
 
-        <label for="includeRetired">
-            <input id="includeRetired" type="checkbox" [(ngModel)]="searchSettings.includeRetired">
-            Include Retired Content (this session only)</label>
-    </div>
+    <ng-container *ngIf="isOrgAuthority(userService.user)">
+        <h3><mat-icon style="vertical-align: baseline">check_box</mat-icon>Retired Documents</h3>
+        <label>
+            <input type="checkbox" [(ngModel)]="esService.includeRetired">
+            Include Retired Content (this session only)
+        </label>
+    </ng-container>
 
     <h3><mat-icon style="vertical-align: baseline">sort</mat-icon> Default Search Results View</h3>
     <div class="form-group">

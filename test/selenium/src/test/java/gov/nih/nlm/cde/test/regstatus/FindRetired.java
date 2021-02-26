@@ -9,6 +9,7 @@ public class FindRetired extends NlmCdeBaseTest {
 
     @Test
     public void findRetired() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textNotPresent("Retired (");

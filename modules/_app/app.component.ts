@@ -25,7 +25,7 @@ export class CdeAppComponent {
         @Inject(forwardRef(() => Title)) private title: Title,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) {
-        this.userService.subscribe(() => {
+        this.userService.subscribe((user) => {
             this.userService.catch((err?: HttpErrorResponse) => {
                 if (err && err.status === 0 && err.statusText === 'Unknown Error') {
                     this.router.navigate(['/offline'], {skipLocationChange: true});

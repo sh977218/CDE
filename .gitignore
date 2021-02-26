@@ -6,6 +6,7 @@
 bin
 build/
 buildNode/
+buildWebStorm/
 dependencies/
 dist/
 !dist/launch/
