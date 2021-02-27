@@ -21,11 +21,9 @@ public class CopyFormButton extends NlmCdeBaseTest {
     public void regUserCantCopy() {
         mustBeLoggedInAs(reguser_username, password);
         goToCdeByName("Ethnic Group Category Text");
-        findElement(By.id("addToBoard"));
         Assert.assertEquals(driver.findElements(By.id("copyCdeBtn")).size(), 0);
 
         goToFormByName("Patient Health Questionnaire-2 (PHQ-2) More Questions");
-        findElement(By.id("addToBoard"));
         Assert.assertEquals(driver.findElements(By.id("copyFormBtn")).size(), 0);
     }
 

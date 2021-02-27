@@ -98,19 +98,6 @@ export function byExisting(elt: CdeForm, cb: CbError1<CdeFormDocument>) {
 
 export const byId = (id: string, cb: CbError1<CdeFormDocument>) => formModel.findById(id).exec(cb);
 
-export function byTinyIdList(tinyIdList: string[], cb: CbError1<CdeFormElastic[] | void>): void {
-    formModel.find({archived: false}).where('tinyId')
-        .in(tinyIdList)
-        .slice('valueDomain.permissibleValues', 10)
-        .exec((err, docs) => {
-            if (err) {
-                return cb(err);
-            }
-            const cdes = docs.map(formatElt);
-            cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
-        });
-}
-
 export const byTinyId = (tinyId: string, cb?: CbError1<CdeFormDocument | null>) => formModel.findOne({
     tinyId,
     archived: false
@@ -132,6 +119,19 @@ export function byTinyIdAndVersion(tinyId: string, version: string | undefined, 
         query.$or = [{version: null}, {version: ''}];
     }
     return formModel.findOne(query).sort({updated: -1}).limit(1).exec(callback);
+}
+
+export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<CdeFormElastic[] | void>): void {
+    formModel.find({archived: false})
+        .where('tinyId').in(tinyIdList)
+        .slice('valueDomain.permissibleValues', 10)
+        .exec((err, docs) => {
+            if (err) {
+                return cb(err);
+            }
+            const cdes = docs.map(formatElt);
+            cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
+        });
 }
 
 export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>) {
@@ -276,7 +276,7 @@ export function create(elt: CdeForm, user: User, callback: CbError1<CdeFormDocum
 }
 
 export function byTinyIdListInOrder(idList: string[], callback: CbError1<(CdeFormElastic | undefined)[] | void>) {
-    byTinyIdList(idList, (err, forms) => {
+    byTinyIdListElastic(idList, (err, forms) => {
         if (err || !forms) {
             return callback(err || new Error('forms not found'));
         }

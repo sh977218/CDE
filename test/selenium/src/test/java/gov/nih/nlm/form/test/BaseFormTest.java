@@ -232,28 +232,35 @@ public class BaseFormTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).clear();
         findElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//input[@type='text']")).sendKeys(name);
         clickElement(By.xpath("//*[@id='profileNameEdit_" + index + "']//button/mat-icon[normalize-space() = 'check']"));
+        hangon(1);
         if (!matrix) {
             clickElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//input")).getAttribute("aria-checked"), "false");
         }
         if (displayValues) {
             clickElement(By.xpath("//*[@id='displayValues_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayValues_" + index + "']//input")).getAttribute("aria-checked"), "true");
         }
         if (!instructions) {
             clickElement(By.xpath("//*[@id='displayInstructions_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInstructions_" + index + "']//input")).getAttribute("aria-checked"), "false");
         }
         if (!numbering) {
             clickElement(By.xpath("//*[@id='displayNumbering_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayNumbering_" + index + "']//input")).getAttribute("aria-checked"), "false");
         }
         if (displayMetadataDevice) {
             clickElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//input")).getAttribute("aria-checked"), "true");
         }
 
         nonNativeSelect("//*[@id='profile_" + index + "']", "Default View", displayType);
+        hangon(1);
 
         clickElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
         int currentNbOfCols = Integer.valueOf(findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText());
@@ -261,16 +268,19 @@ public class BaseFormTest extends NlmCdeBaseTest {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
             findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']")).sendKeys(key);
         }
+        hangon(1);
         textPresent("Number of Columns: " + numberOfColumns, By.id("profile_" + index));
 
         if (displayInvisible) {
             clickElement(By.xpath("//*[@id='displayInvisible_" + index + "']//label"));
+            hangon(1);
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInvisible_" + index + "']//input")).getAttribute("aria-checked"), "true");
         }
 
         if (answerDropdownLimit > 0) {
             findElement(By.id("displayAnswerDropdownLimit_" + index)).clear();
             findElement(By.id("displayAnswerDropdownLimit_" + index)).sendKeys(String.valueOf(answerDropdownLimit));
+            hangon(1);
         }
 
         clickElement(By.xpath("//*[@id='profile_" + index + "']//*[text()='View Specific Settings']")); // un-focus

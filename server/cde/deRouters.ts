@@ -13,6 +13,7 @@ import { elasticsearch } from 'server/cde/elastic';
 import * as mongoCde from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, nocacheMiddleware
@@ -22,8 +23,8 @@ import {
 } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
-import { respondHomeFull } from 'server/system/appRouters';
 
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
@@ -101,11 +102,49 @@ export function module() {
     router.get('/server/de/viewingHistory', nocacheMiddleware, viewHistory);
     router.get('/server/de/moreLike/:tinyId', nocacheMiddleware, moreLikeThis);
     router.post('/server/de/byTinyIdList', (req, res) => {
-        mongoCde.byTinyIdList(req.body, handleError({req, res}, cdes => res.send(cdes)));
+        mongoCde.byTinyIdListElastic(req.body, handleError({req, res}, cdes => res.send(cdes)));
     });
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
     /* ---------- PUT NEW REST API above ---------- */
+    router.post('/api/de/search', (req, res) => {
+        const settings: SearchSettingsElastic = req.body;
+        settings.includeAggregations = false;
+        if (!settings.resultPerPage) {
+            settings.resultPerPage = 20;
+        }
+        if (settings.resultPerPage > 100) {
+            settings.resultPerPage = 100;
+        }
+        if (!Array.isArray(settings.selectedElements)) {
+            settings.selectedElements = [];
+        }
+        if (!Array.isArray(settings.selectedElementsAlt)) {
+            settings.selectedElementsAlt = [];
+        }
+        if (!Array.isArray(settings.selectedStatuses)) {
+            settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
+        }
+        elasticsearch(req.user, settings, (err, result) => {
+            if (err || !result) {
+                return res.status(400).send('invalid query');
+            }
+            mongoCde.byTinyIdList(result.cdes.map(item => item.tinyId), handleError({req, res}, data => {
+                if (!data) {
+                    res.status(404).send();
+                    return;
+                }
+                hideProprietaryCodes(data, req.user);
+                const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                res.send({
+                    resultsTotal: result.totalNumber,
+                    resultsRetrieved: data.length,
+                    from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                    docs: data,
+                });
+            }));
+        });
+    });
 
     router.post('/server/de/search', (req, res) => {
         elasticsearch(req.user, req.body, (err, result) => {

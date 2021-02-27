@@ -560,6 +560,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
                 textNotPresent("is archived");
             }
         }
+        isView();
+    }
+
+    protected void isView() {
+        findElement(By.id("addToBoard"));
     }
 
     protected void openCdeInList(String name) {
@@ -594,7 +599,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
             textPresent("results for");
         }
     }
-
 
     protected void searchElt(String name, String type) {
         goToSearch(type);

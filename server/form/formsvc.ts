@@ -4,7 +4,7 @@ import { readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    byId as formById, byTinyId as formByTinyId, byTinyIdList as formByTinyIdList,
+    byId as formById, byTinyId as formByTinyId, byTinyIdListElastic as formByTinyIdListElastic,
     byTinyIdAndVersion as formByTinyIdAndVersion,
     create as formCreate, draftById, draftByTinyId, draftDelete as formDraftDelete, draftSave as formDraftSave,
     formModel,
@@ -295,7 +295,7 @@ export function byTinyIdList(req: Request, res: Response) {
         return res.status(400).send();
     }
     const tinyIdList = req.params.tinyIdList.split(',');
-    formByTinyIdList(tinyIdList, handleNotFound({req, res}, forms => {
+    formByTinyIdListElastic(tinyIdList, handleNotFound({req, res}, forms => {
         res.send(forms.map(formatElt));
     }));
 }
