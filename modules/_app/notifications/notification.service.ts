@@ -43,6 +43,15 @@ function tasksEqualAndState(l: Task, r: Task): {state?: number} | undefined {
 
 @Injectable()
 export class NotificationService {
+    drawerMouseOver = false;
+    private drawerState = false;
+    funcMergeTaskMessages = this.mergeTaskMessages.bind(this);
+    funcReloadFinished = this.reloadFinished.bind(this);
+    funcUpdateTaskMessages = this.updateTaskMessages.bind(this);
+    hasCriticalError = false;
+    reloading = false;
+    tasks: NotificationTask[] = [];
+
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => ApprovalService)) private approvalService: ApprovalService,
@@ -53,15 +62,6 @@ export class NotificationService {
     ) {
         this.userService.subscribe(this.funcReload);
     }
-    drawerMouseOver = false;
-    private drawerState = false;
-    funcMergeTaskMessages = this.mergeTaskMessages.bind(this);
-    funcReload = this.reload.bind(this);
-    funcReloadFinished = this.reloadFinished.bind(this);
-    funcUpdateTaskMessages = this.updateTaskMessages.bind(this);
-    hasCriticalError = false;
-    reloading = false;
-    tasks: NotificationTask[] = [];
 
     authorizeToComment(username: string) {
         this.http.post('/server/user/addCommentAuthor', {username}).subscribe(() => {
@@ -223,6 +223,10 @@ export class NotificationService {
         } else {
             this.drawerOpen();
         }
+    }
+
+    funcReload = () => {
+        this.reload();
     }
 
     getBadge(): string {

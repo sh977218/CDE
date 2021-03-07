@@ -64,7 +64,7 @@ export class ClassificationService {
     }
 
     removeOrgClassification(deleteClassification: ItemClassification, next: Cb1<string>) {
-        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const settings = new SearchSettingsElastic(10000);
         this.http.post('/server/classification/deleteOrgClassification/', {
             orgName: deleteClassification.orgName,
             deleteClassification,
@@ -76,7 +76,7 @@ export class ClassificationService {
     }
 
     reclassifyOrgClassification(oldClassification: ItemClassification, newClassification: ItemClassification, next: Cb1<string>) {
-        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const settings = new SearchSettingsElastic(10000);
         this.http.post('/server/classification/reclassifyOrgClassification/', {
             settings,
             oldClassification,
@@ -89,7 +89,7 @@ export class ClassificationService {
     }
 
     renameOrgClassification(newClassification: ItemClassificationNew, next: Cb1<string>) {
-        const settings = new SearchSettingsElastic(this.esService.getUserDefaultStatuses(), 10000);
+        const settings = new SearchSettingsElastic(10000);
         this.http.post('/server/classification/renameOrgClassification', {
             settings,
             orgName: newClassification.orgName,

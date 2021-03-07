@@ -5,16 +5,16 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
 import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
-import { Cb, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
+import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
 import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority } from 'shared/system/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
 export class UserService {
-    private listeners: Cb[] = [];
+    private _user?: User | null;
+    private listeners: Cb1<User | null>[] = [];
     private mailSubscription?: Subscription;
     private promise!: Promise<User>;
-    user?: User;
     userOrgs: string[] = [];
     logoutTimeout?: number;
 
@@ -36,7 +36,7 @@ export class UserService {
     }
 
     clear() {
-        this.user = undefined;
+        this._user = undefined;
         this.userOrgs.length = 0;
         if (this.mailSubscription) {
             this.mailSubscription.unsubscribe();
@@ -57,15 +57,19 @@ export class UserService {
         this.promise = new Promise<User>((resolve, reject) => {
             this.http.get<User>('/server/user/').subscribe(response => {
                 if (!response || !response.username) {
+                    this._user = null;
                     return reject();
                 }
-                this.user = UserService.validate(response);
+                this._user = UserService.validate(response);
                 this.setOrganizations();
-                resolve(this.user);
+                if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
+                    this._user.searchSettings.defaultSearchView = 'summary';
+                }
+                resolve(this._user);
             }, reject);
         });
         this.promise.finally(() => {
-            this.listeners.forEach(listener => listener());
+            this.listeners.forEach(listener => listener(this._user || null));
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
         this.promise.then(cb, cb);
@@ -84,8 +88,17 @@ export class UserService {
         }
     }
 
-    subscribe(cb: Cb) {
+    subscribe(cb: Cb1<User | null>) {
+        if (this._user !== undefined) {
+            cb(this._user);
+        }
         this.listeners.push(cb);
+        return () => {
+            const i = this.listeners.indexOf(cb);
+            if (i > -1) {
+                this.listeners.splice(i, 1);
+            }
+        };
     }
 
     resetInactivityTimeout() {
@@ -107,7 +120,11 @@ export class UserService {
         return this.promise.then(cb, errorCb);
     }
 
-    static validate(user: User) {
+    get user(): User | undefined {
+        return this._user || undefined;
+    }
+
+    static validate(user: User): User {
         if (!user.orgAdmin) {
             user.orgAdmin = [];
         }

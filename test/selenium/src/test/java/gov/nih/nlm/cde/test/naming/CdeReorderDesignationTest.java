@@ -9,7 +9,6 @@ public class CdeReorderDesignationTest extends NlmCdeBaseTest {
     @Test
     public void cdeReorderDesignationTest() {
         String cdeName = "Reorder designations cde";
-        setLowStatusesVisible();
         mustBeLoggedInAs(testAdmin_username, password);
 
         goToCdeByName(cdeName);

@@ -9,7 +9,7 @@ public class ResetPageNumberTest extends NlmCdeBaseTest {
 
     @Test
     public void resetPageNumber() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         includeRetiredSetting();
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("patient");

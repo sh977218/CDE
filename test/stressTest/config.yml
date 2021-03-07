@@ -37,10 +37,6 @@ scenarios:
                 - 'Qualified'
               'selectedDatatypes':
                 - ''
-              'visibleStatuses':
-                - 'Preferred Standard'
-                - 'Standard'
-                - 'Qualified'
               'searchToken': 'idecb7b901ab572'
           capture:
             json: "$.cdes[0].tinyId"

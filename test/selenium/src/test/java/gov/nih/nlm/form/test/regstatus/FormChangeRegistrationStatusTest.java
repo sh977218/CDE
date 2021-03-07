@@ -13,8 +13,8 @@ public class FormChangeRegistrationStatusTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         editRegistrationStatus("Recorded", "09/15/2013", "10/31/2014", "Admin Note 1", "Unresolved Issue 1");
         newFormVersion();
-        setLowStatusesVisible();
 
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToGeneralDetail();
         textPresent("Recorded");

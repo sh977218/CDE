@@ -33,6 +33,8 @@ public class DisplayProfilesMatrixTest extends BaseFormTest {
 
         goToDisplayProfiles();
         deleteDisplayProfile(0);
+        assertNoElt(By.xpath("//*[@id='profileNameEdit_0']"));
+
         DisplayProfile noMatrixDisplayProfile = new DisplayProfile(0,
                 "No Matrix Display Profile",
                 "Digital (Dynamic style)",

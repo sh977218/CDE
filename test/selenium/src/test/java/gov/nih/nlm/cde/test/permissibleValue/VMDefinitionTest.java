@@ -8,7 +8,7 @@ public class VMDefinitionTest extends NlmCdeBaseTest {
 
     @Test
     public void vmDefinitions() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Specimen Integrity Type SpecimenIntegrity");
         goToPermissibleValues();
         textPresent("Undamaged in any way; whole");

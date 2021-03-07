@@ -14,11 +14,11 @@ public class FormSearchInputs extends NlmCdeBaseTest {
         String formSearchUrl = baseUrl + "/server/form/search";
 
         given().contentType(ContentType.JSON)
-                .body("{\"page\": 600, \"resultPerPage\": 20, \"selectedStatuses\": [], \"visibleStatuses\": []}")
+                .body("{\"page\": 600, \"resultPerPage\": 20, \"selectedStatuses\": []}")
                 .post(formSearchUrl).then().statusCode(422);
 
         String resp = given().contentType(ContentType.JSON)
-                .body("{\"fullRecord\": true, \"selectedStatuses\": [], \"visibleStatuses\": []}")
+                .body("{\"fullRecord\": true, \"selectedStatuses\": []}")
                 .post(formSearchUrl).asString();
         Assert.assertTrue(resp.contains("flatProperties"));
     }

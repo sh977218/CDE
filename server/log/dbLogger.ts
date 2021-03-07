@@ -262,7 +262,7 @@ export function getClientErrors(params: { limit: number, skip: number }, callbac
 
 export function getClientErrorsNumber(user: UserFull): Promise<number> {
     return clientErrorModel.countDocuments(
-        user.notificationDate.clientLogDate
+        user.notificationDate && user.notificationDate.clientLogDate
             ? {date: {$gt: user.notificationDate.clientLogDate}}
             : {}
     ).exec();
@@ -300,7 +300,7 @@ export function getServerErrors(params: { limit: number, skip: number, badInput:
 
 export function getServerErrorsNumber(user: UserFull): Promise<number> {
     return logErrorModel.countDocuments(
-        user.notificationDate.serverLogDate
+        user.notificationDate && user.notificationDate.serverLogDate
             ? {date: {$gt: user.notificationDate.serverLogDate}} as any
             : {}
     ).exec();

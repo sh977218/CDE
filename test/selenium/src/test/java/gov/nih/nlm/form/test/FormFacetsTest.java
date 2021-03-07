@@ -7,7 +7,7 @@ public class FormFacetsTest extends BaseFormTest {
 
     @Test
     public void formFacets() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormSearch();
         searchForm("FormSearchTest");
         textPresent("Skin Cancer Patient");

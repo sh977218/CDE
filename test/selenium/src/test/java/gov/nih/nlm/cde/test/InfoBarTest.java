@@ -9,7 +9,8 @@ public class InfoBarTest extends NlmCdeBaseTest {
 
     @Test
     public void infoBarStatus() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
+        goToSearch("cde");
         clickElement(By.id("browseOrg-caBIG"));
         Assert.assertEquals(driver.findElements(By.id("status_crumb")).size(), 0);
         clickElement(By.id("regstatus-Standard"));

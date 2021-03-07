@@ -9,6 +9,7 @@ import * as mongo_cde from 'server/cde/mongo-cde';
 import { respondError } from 'server/errorHandler/errorHandler';
 import * as mongo_form from 'server/form/mongo-form';
 import { consoleLog, logError } from 'server/log/dbLogger';
+import { myOrgs } from 'server/orgManagement/orgSvc';
 import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
@@ -16,12 +17,12 @@ import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
-    Cb, Cb1, CbError1, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic, ModuleItem, SearchResponseAggregationDe,
+    Cb, Cb1, CbError1, CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic,
+    ModuleItem, SearchResponseAggregationDe,
     SearchResponseAggregationForm, SearchResponseAggregationItem, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { orderedList } from 'shared/system/regStatusShared';
-import { myOrgs } from 'server/orgManagement/orgSvc';
+import { isOrgAuthority } from 'shared/system/authorizationShared';
 
 type ElasticCondition = any;
 type MongoCondition = any;
@@ -271,6 +272,11 @@ export function initEs(cb: Cb = () => {
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
                                   indexName: string, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
+    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
+    if (settings.includeRetired) {
+        allowedStatuses.push('Retired');
+    }
+
     const suggestQuery = {
         query: {
             match: {
@@ -282,7 +288,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         post_filter: {
             bool: {
                 filter: [
-                    {bool: {should: regStatusFilter(user, settings)}}
+                    {bool: {should: regStatusFilter(user, settings, allowedStatuses)}}
                 ]
             }
         }
@@ -300,30 +306,34 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
     });
 }
 
+function termRegStatus(regStatus: CurationStatus) {
+    return {term: {'registrationState.registrationStatus': regStatus}};
+}
 
-export function regStatusFilter(user: User, settings: SearchSettingsElastic) {
-    // Filter by selected Statuses
-    if (settings.selectedStatuses.length > 0) {
-        return settings.selectedStatuses.map(
-            regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
+export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
+    let filterRegStatusTerms: ElasticCondition = allowedStatuses.map(termRegStatus);
+
+    // Add by Steward
+    if (user) {
+        filterRegStatusTerms = filterRegStatusTerms.concat(
+            myOrgs(user).map(o => ({term: {'stewardOrg.name': o}}))
         );
-    } else {
-        let filterRegStatusTerms: ElasticCondition = (settings.visibleStatuses || []).map(
-            regStatus => ({term: {'registrationState.registrationStatus': regStatus}})
-        );
-        // Filter by Steward
-        if (user) {
-            filterRegStatusTerms = filterRegStatusTerms.concat(
-                myOrgs(user).map(o => ({term: {'stewardOrg.name': o}}))
-            );
-        }
-        return filterRegStatusTerms;
     }
+    return filterRegStatusTerms;
 }
 
 export function buildElasticSearchQuery(user: User, settings: SearchSettingsElastic) {
     function escapeRegExp(str: string) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
+    }
+
+    function hideRetired() {
+        return !settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1 || !isOrgAuthority(user);
+    }
+
+    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
+    if (settings.includeRetired) {
+        allowedStatuses.push('Retired');
     }
 
     // Increase ranking score for high registration status
@@ -336,14 +346,9 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     let sort = !hasSearchTerm;
 
     // (function setFilters() {
-    const filterRegStatusTerms = regStatusFilter(user, settings);
+    const filterRegStatusTerms = regStatusFilter(user, settings, allowedStatuses);
 
-    // Filter by selected Datatypes
-    const filterDatatypeTerms = settings.selectedDatatypes && settings.selectedDatatypes.map(datatype => {
-        return {term: {'valueDomain.datatype': datatype}};
-    });
-
-    settings.filter = {
+    const elasticFilter: ElasticCondition['post_filter'] = {
         bool: {
             filter: [
                 {bool: {should: filterRegStatusTerms}}
@@ -351,22 +356,36 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         }
     };
 
-    if (filterDatatypeTerms && filterDatatypeTerms.length > 0) {
-        settings.filter.bool.filter.push({bool: {should: filterDatatypeTerms}});
-    }
-
-    if (settings.visibleStatuses
-        && settings.visibleStatuses.indexOf('Retired') === -1
-        && settings.selectedStatuses.indexOf('Retired') === -1) {
-        settings.filter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
-    }
-
     settings.filterDatatype = {
-        bool: {should: filterRegStatusTerms}
+        bool: {
+            filter: [
+                {bool: {should: filterRegStatusTerms}}
+            ]
+        }
     };
 
+    // Filter by selected Registration Statuses
+    const filterStatus = (settings.selectedStatuses || [])
+        .map(termRegStatus);
+    if (filterStatus.length > 0) {
+        elasticFilter.bool.filter.push({bool: {should: filterStatus}});
+        settings.filterDatatype.bool.filter.push({bool: {should: filterStatus}})
+    }
+
+    // Filter by selected Datatypes
+    const filterDatatypeTerms = (settings.selectedDatatypes || [])
+        .map(datatype => ({term: {'valueDomain.datatype': datatype}}));
+    if (filterDatatypeTerms.length > 0) {
+        elasticFilter.bool.filter.push({bool: {should: filterDatatypeTerms}});
+    }
+
+    if (hideRetired()) {
+        elasticFilter.bool.filter.push({bool: {must_not: termRegStatus('Retired')}});
+    }
+
+
     const queryStuff: ElasticCondition = {
-        post_filter: settings.filter,
+        post_filter: elasticFilter,
         query: {
             bool: {
                 must: [
@@ -490,32 +509,26 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
     }
 
-    if (!settings.visibleStatuses || settings.visibleStatuses.length === 0) {
-        settings.visibleStatuses = orderedList;
-    }
-
     // show statuses that either you selected, or it's your org and it's not retired.
     const regStatusAggFilter: ElasticCondition = {
         bool: {
             filter: [
                 {
                     bool: {
-                        should: settings.visibleStatuses.concat(settings.selectedStatuses).map(regStatus => {
-                            return {term: {'registrationState.registrationStatus': regStatus}};
-                        })
+                        should: allowedStatuses.map(termRegStatus)
                     }
                 }
             ]
         }
     };
     if (myOrgs(user).length > 0) {
-        myOrgs(user).map((org: string) => {
+        myOrgs(user).map((org) => {
             regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
         });
     }
 
-    if (settings.visibleStatuses.indexOf('Retired') === -1 && settings.selectedStatuses.indexOf('Retired') === -1) {
-        regStatusAggFilter.bool.filter.push({bool: {must_not: {term: {'registrationState.registrationStatus': 'Retired'}}}});
+    if (hideRetired()) {
+        regStatusAggFilter.bool.filter.push({bool: {must_not: termRegStatus('Retired')}});
     }
 
     if (sort) {
@@ -530,7 +543,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     if (settings.includeAggregations) {
         queryStuff.aggregations = {
             orgs: {
-                filter: settings.filter,
+                filter: elasticFilter,
                 aggs: {
                     orgs: {
                         terms: {
@@ -569,7 +582,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                     + escapeRegExp(selectionString) + ';[^;]+';
             }
             queryStuff.aggregations[variableName] = {
-                filter: settings.filter,
+                filter: elasticFilter,
                 aggs: {}
             };
             queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
@@ -582,7 +595,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         }
 
         queryStuff.aggregations.meshTrees = {
-            filter: settings.filter,
+            filter: elasticFilter,
             aggs: {
                 meshTrees: {
                     terms: {
@@ -599,7 +612,7 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         }
 
         queryStuff.aggregations.twoLevelMesh = {
-            filter: settings.filter,
+            filter: elasticFilter,
             aggs: {
                 twoLevelMesh: {
                     terms: {
@@ -819,8 +832,8 @@ export const queryMostViewed = {
                 {
                     bool: {
                         should: [
-                            {term: {'registrationState.registrationStatus': 'Standard'}},
-                            {term: {'registrationState.registrationStatus': 'Qualified'}}
+                            termRegStatus('Standard'),
+                            termRegStatus('Qualified'),
                         ]
                     }
                 }
@@ -840,8 +853,8 @@ export const queryNewest = {
                 {
                     bool: {
                         should: [
-                            {term: {'registrationState.registrationStatus': 'Standard'}},
-                            {term: {'registrationState.registrationStatus': 'Qualified'}}
+                            termRegStatus('Standard'),
+                            termRegStatus('Qualified'),
                         ]
                     }
                 }

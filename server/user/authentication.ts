@@ -166,6 +166,10 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbError1<UserDoc
                     refreshToken: profile.refreshToken,
                     orgAdmin: [],
                     orgCurator: [],
+                    commentNotifications: [],
+                    lastLogin: 0,
+                    lockCounter: 0,
+                    knownIPs: [],
                 },
                 (err, user) => {
                     /* istanbul ignore if */

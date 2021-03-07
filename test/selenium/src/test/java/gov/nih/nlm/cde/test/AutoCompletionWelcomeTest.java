@@ -10,13 +10,13 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
     @Test
     public void AutoCompletionWelcome() {
         goToCdeSearch();
-        findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
+        findElement(By.id("ftsearch-input")).sendKeys("specimen lat*");
         textNotPresent("Specimen Laterality");
         textPresent("Cell Specimen");
         clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Cell Specimen Requirement')]"));
         textPresent("The smallest units of living structure capable of independent existence");
 
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textPresent("Specimen Laterality");
@@ -32,7 +32,7 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Multiple Sclerosis Quality of Life')]"));
         textPresent("Rendering has been disabled for this form.");
 
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
         clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'MultiSelect Logic')]"));

@@ -11,7 +11,7 @@ public class FormEmptySearchResultOrderTest extends NlmCdeBaseTest {
 
     @Test
     public void formEmptySearchResultOrder() {
-        setLowStatusesVisible();
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormSearch();
         clickElement(By.id("search_by_classification_TEST"));
         List<WebElement> registrationStatusList = findElements(By.xpath("//*[contains(@id,'registrationStatus_')]"));

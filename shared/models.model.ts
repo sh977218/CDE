@@ -686,6 +686,7 @@ export interface User {
     notificationSettings?: NotificationSettings;
     orgAdmin: string[];
     orgCurator: string[];
+    // password should not be here
     publishedForms?: PublishedForm[];
     quota?: number;
     refreshToken?: string;
@@ -695,7 +696,7 @@ export interface User {
     tasks?: Task[];
     tester?: boolean;
     username: string;
-    password: string;
+    viewDrafts?: boolean;
     viewHistory?: string[];
 }
 
@@ -711,10 +712,7 @@ export interface UserRefSecondary {
 
 export interface UserSearchSettings {
     defaultSearchView: ListTypes;
-    includeRetired?: boolean;
-    lowestRegistrationStatus: CurationStatus;
     tableViewFields: TableViewFields;
-    version?: number;
 }
 
 export interface UsersOrgQuery {

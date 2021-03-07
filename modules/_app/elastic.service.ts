@@ -1,13 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
-
+import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import {
-    CbErr,
-    Cb1,
-    CurationStatus,
     ItemElastic,
     UserSearchSettings,
     SearchResponseAggregationItem,
@@ -15,13 +12,15 @@ import {
     SearchResponseAggregationDe, CbErr2, Cb2, CbErr1
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
-import { orderedList } from 'shared/system/regStatusShared';
-import { LocalStorageService } from 'non-core/localStorage.service';
+
+const includeRetiredSessionKey = 'nlmcde.includeRetired';
 
 @Injectable()
-export class ElasticService {
+export class ElasticService implements OnDestroy {
+    includeRetired?: boolean;
     searchSettings!: UserSearchSettings;
     searchToken = 'id' + Math.random().toString(16).slice(2);
+    unsubscribeUser?: () => void;
 
     constructor(
         @Inject(forwardRef(() => HttpClient)) public http: HttpClient,
@@ -29,6 +28,13 @@ export class ElasticService {
         @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) {
         this.loadSearchSettings();
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
+        }
     }
 
     buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
@@ -39,6 +45,7 @@ export class ElasticService {
             selectedOrgAlt: queryParams.selectedOrgAlt,
             excludeAllOrgs: queryParams.excludeAllOrgs,
             excludeOrgs: queryParams.excludeOrgs || [],
+            includeRetired: this.includeRetired,
             selectedElements: queryParams.classification || [],
             selectedElementsAlt: queryParams.classificationAlt || [],
             page: queryParams.page,
@@ -46,7 +53,6 @@ export class ElasticService {
             meshTree: queryParams.meshTree,
             selectedStatuses: queryParams.regStatuses || [],
             selectedDatatypes: queryParams.datatypes || [],
-            visibleStatuses: this.getUserDefaultStatuses(),
             searchToken: this.searchToken,
             fullRecord: undefined,
         };
@@ -111,58 +117,34 @@ export class ElasticService {
         );
     }
 
-    getUserDefaultStatuses(): CurationStatus[] {
-        let overThreshold = false;
-        const result = orderedList.filter(status => {
-            if (overThreshold) {
-                return false;
-            }
-            overThreshold = this.searchSettings.lowestRegistrationStatus === status;
-            return true;
-        });
-        if (this.searchSettings.includeRetired) {
-            result.push('Retired');
-        }
-        return result;
-    }
-
     loadSearchSettings() {
-        if (!this.searchSettings) {
-            this.searchSettings = this.localStorageService.getItem('SearchSettings');
-            if (!this.searchSettings) {
-                this.searchSettings = ElasticService.getDefault();
-            }
+        this.searchSettings = this.localStorageService.getItem('SearchSettings') || ElasticService.getDefault();
 
-            this.userService.then(user => {
-                if (!user.searchSettings) {
-                    user.searchSettings = ElasticService.getDefault();
-                }
-                this.searchSettings = user.searchSettings;
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
-            }, () => {
-                if (this.searchSettings.version !== ElasticService.getDefault().version) {
-                    this.searchSettings = ElasticService.getDefault();
-                }
+        if (!this.unsubscribeUser) {
+            this.unsubscribeUser = this.userService.subscribe((user) => {
+                this.searchSettings = user?.searchSettings || ElasticService.getDefault();
             });
         }
+
+        this.includeRetired = !!window.sessionStorage.getItem(includeRetiredSessionKey);
     }
 
-    saveConfiguration(settings: UserSearchSettings) {
-        this.searchSettings = settings;
-        const savedSettings = JSON.parse(JSON.stringify(this.searchSettings));
-        delete savedSettings.includeRetired;
-        this.localStorageService.setItem('SearchSettings', savedSettings);
+    saveConfiguration() {
+        this.localStorageService.setItem('SearchSettings', this.searchSettings);
         if (this.userService.user) {
-            this.http.post('/server/user/', {searchSettings: savedSettings}).subscribe();
+            this.http.post('/server/user/', {searchSettings: this.searchSettings}).subscribe();
+        }
+
+        if (this.includeRetired) {
+            window.sessionStorage.setItem(includeRetiredSessionKey, 'true');
+        } else {
+            window.sessionStorage.removeItem(includeRetiredSessionKey);
         }
     }
 
     static getDefault(): UserSearchSettings {
         return {
             defaultSearchView: 'summary',
-            lowestRegistrationStatus: 'Qualified',
             tableViewFields: {
                 name: true,
                 naming: false,
@@ -182,7 +164,6 @@ export class ElasticService {
                 numQuestions: true,
                 tinyId: false
             },
-            version: 20160329,
         };
     }
 
