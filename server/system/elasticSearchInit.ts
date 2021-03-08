@@ -1,7 +1,7 @@
 import * as Config from 'config';
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
-import { Cb, Cb1, CbError, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
+import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
 import { CdeForm, FormElement, FormQuestion } from 'shared/form/form.model';
 
 const config = Config as any;
@@ -299,7 +299,7 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
 
         const formQuestions: FormQuestion[] = [];
 
-        function findFormQuestions(fe: ItemElastic|FormElement) {
+        function findFormQuestions(fe: ItemElastic | FormElement) {
             if (fe.formElements) {
                 fe.formElements.forEach((fee: FormElement) => {
                     if (fee.elementType === 'question') {
@@ -369,20 +369,22 @@ export const shortHash = (content: any) => {
         .substr(0, 5).toLowerCase();
 };
 
+const esIndexVersion = 'v6';
+
 if (config.elastic.index.name === 'auto') {
-    config.elastic.index.name = 'cde_v5_' + shortHash(createIndexJson);
+    config.elastic.index.name = 'cde_' + esIndexVersion + '_' + shortHash(createIndexJson);
 }
 if (config.elastic.formIndex.name === 'auto') {
-    config.elastic.formIndex.name = 'form_v5_' + shortHash(createFormIndexJson);
+    config.elastic.formIndex.name = 'form_' + esIndexVersion + '_' + shortHash(createFormIndexJson);
 }
 if (config.elastic.boardIndex.name === 'auto') {
-    config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);
+    config.elastic.boardIndex.name = 'board_' + esIndexVersion + '_' + shortHash(boardCreateIndexJson);
 }
 if (config.elastic.cdeSuggestIndex.name === 'auto') {
-    config.elastic.cdeSuggestIndex.name = 'cdesuggest_v5_' + shortHash(createSuggestIndexJson);
+    config.elastic.cdeSuggestIndex.name = 'cdesuggest_' + esIndexVersion + '_' + shortHash(createSuggestIndexJson);
 }
 if (config.elastic.formSuggestIndex.name === 'auto') {
-    config.elastic.formSuggestIndex.name = 'formsuggest_v5_' + shortHash(createSuggestIndexJson);
+    config.elastic.formSuggestIndex.name = 'formsuggest_' + esIndexVersion + '_' + shortHash(createSuggestIndexJson);
 }
 
 export interface ElasticIndex {

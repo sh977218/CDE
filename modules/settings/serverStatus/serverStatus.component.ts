@@ -99,4 +99,7 @@ export class ServerStatusComponent {
         }, 1000);
     }
 
+    deleteNonUsedIndex() {
+        this.http.delete('/server/siteAdmin/deleteEsIndex').subscribe();
+    }
 }
