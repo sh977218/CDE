@@ -1,6 +1,40 @@
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
@@ -16,12 +50,13 @@ import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
+import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
 import { CommentsComponent } from 'settings/comments/comments.component';
-import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
-import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
-import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
+import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { DraftsService } from 'settings/drafts/drafts.service';
+import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
+import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
 import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
@@ -35,6 +70,8 @@ import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
 import { ProfileComponent } from 'settings/profile/profile.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
+import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
+import { SearchSettingsComponent } from 'settings/search/searchSettings.component';
 import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
 import { SettingsComponent } from 'settings/settings.component';
 import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
@@ -44,42 +81,6 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
-import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
-import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatTreeModule } from '@angular/material/tree';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatInputModule } from '@angular/material/input';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatSortModule } from '@angular/material/sort';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatTableModule } from '@angular/material/table';
-import { MatCardModule } from '@angular/material/card';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
 
 const appRoutes: Routes = [
     {
@@ -92,6 +93,12 @@ const appRoutes: Routes = [
                 component: ProfileComponent,
                 canLoad: [LoggedInGuard],
                 data: {title: 'Profile'}
+            },
+            {
+                path: 'search',
+                component: SearchSettingsComponent,
+                canLoad: [LoggedInGuard],
+                data: {title: 'Search Settings'},
             },
             {
                 path: 'notification',
@@ -317,6 +324,7 @@ const appRoutes: Routes = [
         PropertiesManagementComponent,
         ResourcesHelpDialogComponent,
         ResourcesAdminComponent,
+        SearchSettingsComponent,
         ServerStatusComponent,
         SettingsComponent,
         StatusValidationRulesComponent,

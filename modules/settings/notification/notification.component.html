@@ -1,20 +1,20 @@
-<div class="container-fluid" *ngIf="user">
+<div class="container-fluid">
     <h1>Notifications</h1>
-    <div>
+    <div *ngIf="user">
         <dl>
             <dt class="col-sm-3">Server Event Subscription Status:</dt>
             <dd class="col-sm-9">
                     <span class="align-middle">
                         {{subscriptionStatusServer || (subscriptionStatusClient() ? 'Subscribed' : 'Not Subscribed')}}
                     </span>
-                <button mat-raised-button (click)="checkSubscriptionServerStatus()">Check Server
+                <button mat-raised-button (click)="checkSubscriptionServerStatus(user)">Check Server
                     <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
                 </button>
                 <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
-                        mat-raised-button (click)="pushSubscribe()">Subscribe
+                        mat-raised-button (click)="pushSubscribe(user)">Subscribe
                 </button>
                 <button *ngIf="subscriptionStatusServer === 'Subscribed'"
-                        mat-raised-button (click)="pushUnsubscribe()">Unsubscribe
+                        mat-raised-button (click)="pushUnsubscribe(user)">Unsubscribe
                 </button>
             </dd>
         </dl>
@@ -38,13 +38,13 @@
                 </td>
                 <td>
                     <mat-slide-toggle [checked]="user.notificationSettings.comment.drawer"
-                                      (change)="user.notificationSettings.comment.drawer = $event.checked; saveProfile()">
+                                      (change)="user.notificationSettings.comment.drawer = $event.checked; userService.save()">
                         {{booleanSettingOptions[user.notificationSettings.comment.drawer ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
                 <td>
                     <mat-slide-toggle [checked]="user.notificationSettings.comment.push"
-                                      (change)="user.notificationSettings.comment.push = $event.checked; saveProfile()">
+                                      (change)="user.notificationSettings.comment.push = $event.checked; userService.save()">
                         {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
@@ -70,7 +70,7 @@
                 </td>
                 <td>
                     <mat-slide-toggle [checked]="user.notificationSettings.approvalAttachment.push"
-                                      (change)="user.notificationSettings.approvalAttachment.push = $event.checked; saveProfile()">
+                                      (change)="user.notificationSettings.approvalAttachment.push = $event.checked; userService.save()">
                         {{booleanSettingOptions[user.notificationSettings.approvalAttachment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>
@@ -96,7 +96,7 @@
                 </td>
                 <td>
                     <mat-slide-toggle [checked]="user.notificationSettings.approvalComment.push"
-                                      (change)="user.notificationSettings.approvalComment.push = $event.checked; saveProfile()">
+                                      (change)="user.notificationSettings.approvalComment.push = $event.checked; userService.save()">
                         {{booleanSettingOptions[user.notificationSettings.approvalComment.push ? 1 : 0]}}
                     </mat-slide-toggle>
                 </td>

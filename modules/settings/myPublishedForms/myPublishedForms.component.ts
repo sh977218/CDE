@@ -9,26 +9,18 @@ import { PublishedForm, User } from 'shared/models.model';
     templateUrl: 'myPublishedForms.component.html'
 })
 export class MyPublishedFormsComponent {
-    user!: User;
-
     constructor(private http: HttpClient,
                 private alert: AlertService,
                 private userService: UserService) {
-        if (this.userService.user) {
-            this.user = this.userService.user;
-        }
     }
 
-    removePublishedForm(pf: PublishedForm) {
-        this.user.publishedForms = this.user.publishedForms ? this.user.publishedForms.filter(p =>
+    removePublishedForm(user: User, pf: PublishedForm) {
+        user.publishedForms = user.publishedForms ? user.publishedForms.filter(p =>
             p.id !== pf.id) : [];
-        this.saveProfile();
+        this.userService.save();
     }
 
-    saveProfile() {
-        this.http.post('/server/user/', this.user)
-            .subscribe(() => this.alert.addAlert('success', 'Saved'),
-                err => this.alert.httpErrorMessageAlert(err)
-            );
+    get user(): User | undefined {
+        return this.userService.user;
     }
 }

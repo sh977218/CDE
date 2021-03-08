@@ -345,7 +345,7 @@ app.use(((err, req, res, next) => {
         return res.status(401).send('CSRF Error');
     }
 
-    if (err instanceof SyntaxError && ['/api/de/searchDoc'].includes(req.url)) {
+    if (err instanceof SyntaxError && ['/api/de/search'].includes(req.url)) {
         res.status(400).send('Malformed JSON');
         return;
     }

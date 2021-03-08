@@ -42,4 +42,48 @@ public class SearchSettings extends NlmCdeBaseTest {
         textPresent("Incomplete (", By.id("registrationStatusListHolder"));
     }
 
+    private void noDrafts() {
+        driver.get(baseUrl + "/cde/search?selectedOrg=ACRIN");
+        textPresent("0 data element results for");
+        driver.get(baseUrl + "/form/search?selectedOrg=NINDS");
+        textNotPresent("Recorded (", By.id("registrationStatusListHolder"));
+    }
+
+    private void drafts() {
+        driver.get(baseUrl + "/cde/search?selectedOrg=ACRIN");
+        textPresent("3 data element results for"); // 3 Candidate, 1 Incomplete not shown
+        driver.get(baseUrl + "/form/search?selectedOrg=NINDS");
+        textPresent("Recorded (", By.id("registrationStatusListHolder"));
+    }
+
+    @Test
+    public void searchSettings() {
+        noDrafts();
+
+        mustBeLoggedInAs(ninds_username, password);
+        noDrafts();
+
+        goToSearchSettings();
+        findElement(By.cssSelector("mat-radio-button input[value='false']:checked"));
+        clickElement(By.xpath("//mat-radio-button[*//input[@value='true']]"));
+        hangon(1);
+        findElement(By.cssSelector("mat-radio-button input[value='true']:checked"));
+        drafts();
+
+        logout();
+        noDrafts();
+
+        mustBeLoggedInAs(ninds_username, password);
+        drafts();
+
+        goToSearchSettings();
+        findElement(By.cssSelector("mat-radio-button input[value='true']:checked"));
+        clickElement(By.xpath("//mat-radio-button[*//input[@value='false']]"));
+        hangon(1);
+        findElement(By.cssSelector("mat-radio-button input[value='false']:checked"));
+        noDrafts();
+
+        logout();
+        noDrafts();
+    }
 }

@@ -679,13 +679,9 @@ definitions:
   CurationStatus:
     type: "string"
     enum:
-      - "Incomplete"
-      - "Recorded"
-      - "Candidate"
       - "Qualified"
       - "Standard"
       - "Preferred Standard"
-      - "Retired"
   DataSets:
     type: "array"
     items:
