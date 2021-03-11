@@ -1,5 +1,7 @@
 import { Express, Request, RequestHandler } from 'express';
-import { deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse} from 'passport';
+import {
+    deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
+} from 'passport';
 import { get, post } from 'request';
 import { consoleLog } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
@@ -85,43 +87,18 @@ export function umlsAuth(username: string, password: string, cb: Cb1<any>) {
 }
 
 export function authBeforeVsac(req: Request, username: string, password: string,
-                               done: CbError2<UserDocument | null | void, {message: string} | void>) {
+                               done: CbError2<UserDocument | null | void, { message: string } | void>) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(() => {
         /* istanbul ignore if */
         if (req.body.federated !== true) {
             throw new Error('local authentication unimplemented');
-            // // Find the user by username in local datastore first and perform authentication.
-            // // If user is not found, authenticate with UMLS. If user is authenticated with UMLS,
-            // // add user to local datastore. Else, don't authenticate user and send error message.
-            // userByName(username, (err, user) => {
-            //     // If user was not found in local datastore || an error occurred || user was found and password equals 'umls'
-            //     if (err || !user || (user && user.password === 'umls')) {
-            //         umlsAuth(username, password, result => {
-            //             if (result === undefined) {
-            //                 done(null, null, {message: 'UMLS UTS login server is not available.'});
-            //             } else if (result.indexOf('true') > 0) {
-            //                 findAddUserLocally({username, ip: req.ip}, (err, user) => done(err, user));
-            //             } else {
-            //                 done(null, null, {message: 'Incorrect username or password'});
-            //             }
-            //         });
-            //     } else { // If user was found in local datastore and password != 'umls'
-            //         if (user.lockCounter === 300) {
-            //             done(null, null, {message: 'User is locked out'});
-            //         } else if (user.password !== password) {
-            //             // Initialize the lockCounter if it hasn't been
-            //             (user.lockCounter >= 0 ? user.lockCounter += 1 : user.lockCounter = 1);
-            //
-            //             user.save(() => done(null, null, {message: 'Incorrect username or password'}));
-            //         } else {
-            //             // Update user info in datastore
-            //             updateUserAfterLogin(user, req.ip, (err, user) => done(err, user));
-            //         }
-            //     }
-            // });
         }
-        get(`${config.uts.federatedServiceValidate}?service=${config.publicUrl}/loginFederated&ticket=${req.body.ticket}`,
+        let service = config.publicUrl;
+        if (req.body.green) {
+            service = config.greenPublicUrl;
+        }
+        get(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`,
             (error, response, body) => {
                 try {
                     body = JSON.parse(body);
