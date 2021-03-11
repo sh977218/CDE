@@ -188,7 +188,7 @@ export function module() {
                 req.logIn(user, err => {
                     if (err) {
                         respondError(err);
-                        return res.status(403).send(err);
+                        return res.status(403).send();
                     }
                     if (req.session) {
                         req.session.passport = {user: req.user._id};

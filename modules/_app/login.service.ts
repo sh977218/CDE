@@ -88,7 +88,6 @@ export class LoginService {
 
     openLogin() {
         this.federatedUrl = `${window.federatedLogin}?service=${window.location.origin}/loginFederated`;
-        console.log(`federatedUrl: ${this.federatedUrl}`);
         this.loginWindow = window.open(this.federatedUrl, '_blank');
         if (this.loginWindow) {
             window.loggedIn = () => {
