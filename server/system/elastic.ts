@@ -134,7 +134,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                             cb();
                         }
                     } else {
-                        consoleLog('ingested: ' + dbStream.indexes[i].count);
+                        consoleLog(`ingested  ${dbStream.indexes[i].indexJson}: ${dbStream.indexes[i].count}`);
                         cb();
                     }
                 });
@@ -706,7 +706,7 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
         if (error) {
             const response = resp as any;
             if (response && response.statusCode) {
-                const errorObj =                         {
+                const errorObj = {
                     origin: 'system.elastic.elasticsearch',
                     badInput: response.body.error.type === 'search_phase_execution_exception',
                     stack: error.stack,

@@ -19,7 +19,7 @@ function paramToQueryString(p: Params | null) {
 
 @Injectable()
 export class LoginService {
-    federatedUrl: string = `${window.federatedLogin}?service=${window.publicUrl}/loginFederated`;
+    federatedUrl: string = '';
     lastRoute?: SavedRoute;
     loginWindow: Window | null = null;
 
@@ -30,7 +30,8 @@ export class LoginService {
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
         @Inject(forwardRef(() => NgZone)) public ngZone: NgZone
-    ) {}
+    ) {
+    }
 
     getPreviousRoute(): SavedRoute {
         if (this.lastRoute) {
@@ -86,6 +87,8 @@ export class LoginService {
     }
 
     openLogin() {
+        this.federatedUrl = `${window.federatedLogin}?service=${window.location.origin}/loginFederated`;
+        console.log(`federatedUrl: ${this.federatedUrl}`);
         this.loginWindow = window.open(this.federatedUrl, '_blank');
         if (this.loginWindow) {
             window.loggedIn = () => {
