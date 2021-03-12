@@ -290,3 +290,11 @@ router-outlet ::ng-deep + *:not(nav) {
   flex-direction: column;
   flex-grow: 1;
 }
+
+.mat-menu-item:hover {
+  background-color: #DEDEDE;
+  font-weight: bold;
+  font-size: 14px;
+  color: #0258BB;
+  border-bottom: 3px #025FCC solid;
+}
