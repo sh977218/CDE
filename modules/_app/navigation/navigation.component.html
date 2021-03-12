@@ -62,7 +62,7 @@
             <button mat-icon-button class="d-md-none" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <div class="d-none d-md-block" id="navigationButtonDiv">
+            <div class="d-none d-md-block">
                 <button mat-button id="menu_cdes_link" [class.active]="sectionActive === SECTIONS.de"
                         routerLink="/cde/search">CDEs</button>
                 <button mat-button id="menu_forms_link" [class.active]="sectionActive === SECTIONS.form"
