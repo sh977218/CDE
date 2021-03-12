@@ -44,10 +44,6 @@
     "testLoginServer": {
       "port": 3002
     }
-  },
-  "uts": {
-    "federatedLogin": "http://localhost:3002",
-    "federatedServiceValidate": "http://localhost:3002/serviceValidate"
   }
 }
 

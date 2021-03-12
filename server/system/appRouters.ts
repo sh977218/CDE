@@ -95,18 +95,22 @@ export function module() {
                             const loginChild = document.createElement('p');
                             loginChild.textContent = 'Logging in...';
                             document.querySelector('body').appendChild(loginChild);
+                            const body = {
+                                    ticket,
+                                    username: 'x',
+                                    password: 'x',
+                                    federated: true
+                                };
+                            if(window.location.href.indexOf('-green.') !== -1){
+                                body.green = true;
+                            }
                             fetch('/server/system/login', {
                                 method: 'post',
                                 headers: {
                                     'Content-type': 'application/json'
                                 },
                                 credentials: 'include',
-                                body: JSON.stringify({
-                                    ticket,
-                                    username: 'x',
-                                    password: 'x',
-                                    federated: true
-                                }),
+                                body: JSON.stringify(body),
                             })
                                 .then(res => res.text())
                                 .then(text => {
@@ -115,6 +119,7 @@ export function module() {
                                     document.querySelector('body').appendChild(authChild);
                                     const thisRoute = '/loginFederated';
                                     const service = window.location.href.substr(0, window.location.href.indexOf(thisRoute));
+                                    console.log('text: '+ text + ' service: ' + service);
                                     if (text === 'OK' && service) {
                                         if (window.opener && window.opener.loggedIn) {
                                             try {
@@ -143,7 +148,7 @@ export function module() {
                                         }
                                     } else {
                                         const child = document.createElement('h1');
-                                        child.textContent = 'Login Failed';
+                                        child.textContent = 'Login Failed ' + ' text: '+ text + ' service: ' + service ;
                                         document.querySelector('body').appendChild(child);
                                     }
                                 }, err => {

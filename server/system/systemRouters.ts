@@ -1,4 +1,3 @@
-import { series } from 'async';
 import { CronJob } from 'cron';
 import { Request, RequestHandler, Response } from 'express';
 import { authenticate } from 'passport';
@@ -11,11 +10,11 @@ import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import { DataElementDocument, dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { disableRule, enableRule } from 'server/system/systemSvc';
-import { banIp, getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 import { orgByName } from 'server/orgManagement/orgDb';
 import {
@@ -112,10 +111,10 @@ export function module() {
         return res.send();
     });
 
-    const failedIps: {ip: string, nb: number}[] = [];
+    const failedIps: { ip: string, nb: number }[] = [];
 
     router.get('/csrf', csrf(), nocacheMiddleware, (req, res) => {
-        const resp: {csrf: string, showCaptcha?: boolean} = {csrf: req.csrfToken()};
+        const resp: { csrf: string, showCaptcha?: boolean } = {csrf: req.csrfToken()};
         const realIp = getRealIp(req);
         const failedIp = findFailedIp(realIp);
         if ((failedIp && failedIp.nb > 2)) {
