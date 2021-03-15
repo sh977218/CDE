@@ -69,7 +69,8 @@ app.post('/login', (req, res) => {
 app.get('/serviceValidate', (req, res) => {
     const username = tokens[req.query.ticket];
     res.send({
-        utsUser: username ? {username} : undefined
+        idpUserOrg: 'testServer',
+        utsUser: username ? {username} : undefined,
     });
 });
 

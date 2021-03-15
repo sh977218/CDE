@@ -9,7 +9,7 @@ public class OrgAuthCanAudit extends NlmCdeBaseTest {
     @Test
     public void orgAuthCanAudit() {
         mustBeLoggedInAs("theOrgAuth", password);
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
 
         clickElement(By.xpath("//div[. = 'CDE Audit Log']"));

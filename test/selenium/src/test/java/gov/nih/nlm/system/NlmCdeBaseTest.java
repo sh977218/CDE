@@ -290,21 +290,34 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'check']"));
     }
 
+    protected void goToUserMenu() {
+        hoverOverElement(findElement(By.id("username_link")));
+    }
+
     protected void gotoClassificationMgt() {
-        clickElement(By.id("username_link"));
-        hangon(.5);
+        goToUserMenu();
         clickElement(By.xpath("//button[normalize-space(text())='Classifications']"));
         textPresent("Classifications");
     }
 
     protected void goToSettings() {
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         textPresent("Settings");
         clickElement(By.xpath("//button[normalize-space(text())='Settings']"));
+
+        hangon(.5);
+        if (driver.findElements(By.xpath("//button[normalize-space()='Video Tutorials']")).size() > 0) {
+            clickElement(By.id("helpLink"));
+        }
+        textNotPresent("Video Tutorials");
+        if (driver.findElements(By.xpath("//button[normalize-space()='My Boards']")).size() > 0) {
+            clickElement(By.id("boardsMenu"));
+        }
+        textNotPresent("My Boards");
     }
 
     protected void goToAudit() {
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
     }
 
@@ -318,7 +331,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void goToHelp() {
-        clickElement(By.id("helpLink"));
+        hoverOverElement(findElement(By.id("helpLink")));
     }
 
     protected void goToContactUs() {
@@ -891,7 +904,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void logout() {
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
         isLoggedOut();
         isLoginPage();
@@ -911,7 +924,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToCdeByName(cdeName);
         clickElement(By.id("addToQuickBoard"));
         checkAlert("Added to QuickBoard!");
-
     }
 
     protected void addFormToQuickBoard(String formName) {
@@ -935,18 +947,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     public void goToQuickBoard() {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("menu_qb_link"));
     }
 
     public void goToQuickBoardByModule(String module) {
-        goToQuickBoardByModule(module, false);
-    }
-
-    public void goToQuickBoardByModule(String module, Boolean menuOpened) {
-        if (!menuOpened) {
-            clickElement(By.id("boardsMenu"));
-        }
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("menu_qb_link"));
         if (module.equals("cde")) {
             clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
@@ -959,9 +965,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void emptyQuickBoardByModule(String module) {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
-        goToQuickBoardByModule(module, true);
+        goToQuickBoardByModule(module);
         clickElement(By.id("qb_" + module + "_empty"));
         textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
         goToQuickBoard();
@@ -969,13 +975,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addCdeToCompare(String cdeName1, String cdeName2) {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
         addCdeToQuickBoard(cdeName1);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (1)");
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(cdeName1);
@@ -986,13 +992,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void addFormToCompare(String formName1, String formName2) {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
         addFormToQuickBoard(formName1);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (1)");
         addFormToQuickBoard(formName2);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
         textPresent(formName1);
@@ -1145,7 +1151,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
 
     private void openAudit(String type, String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
@@ -1397,8 +1403,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     }
 
     protected void gotoMyBoards() {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
+        textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
+        textPresent("Add Board");
+        textNotPresent("Sign up for an account");
     }
 
     /**

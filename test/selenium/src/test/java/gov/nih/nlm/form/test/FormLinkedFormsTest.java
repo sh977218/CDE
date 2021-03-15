@@ -10,7 +10,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
     public void formLinkedForms() {
         String formName = "Neurological Assessment: TBI Symptoms and Signs";
         goToFormByName(formName);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
         findElement(By.cssSelector("#menu_qb_link")).sendKeys(Keys.ESCAPE);
         goToGeneralDetail();
@@ -20,7 +20,7 @@ public class FormLinkedFormsTest extends BaseFormTest {
         textNotPresent("Neurological Assessment: TBI Symptoms and Signs", By.id("linkedFormsAccordionList"));
         clickElement(By.id("addToCompare_0"));
         clickElement(By.id("closeLinkedFormsModalBtn"));
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (1)");
     }
 

@@ -13,9 +13,9 @@ public class CdeMoreElementsNoSideBySideCompareTest extends NlmCdeBaseTest {
         addCdeToQuickBoard(cdeName1);
         addCdeToQuickBoard(cdeName2);
         addCdeToQuickBoard(cdeName3);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (3)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_elt_compare_2"));

@@ -28,7 +28,7 @@ public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
         textPresent(newClassification);
         textPresent(oldClassification);
 
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
         textPresent("Gastrointestinal therapy water flush status");

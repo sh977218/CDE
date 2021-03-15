@@ -2,7 +2,6 @@
     <h2><mat-icon style="vertical-align: baseline">search</mat-icon> Search Results</h2>
 
     <ng-container *ngIf="isOrgAuthority(userService.user)">
-        <h3><mat-icon style="vertical-align: baseline">check_box</mat-icon>Retired Documents</h3>
         <label>
             <input type="checkbox" [(ngModel)]="esService.includeRetired">
             Include Retired Content (this session only)
@@ -14,14 +13,14 @@
         <span>By default, I want to see results as </span>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" value="summary">
+                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType" value="summary">
                 <mat-icon>view_list</mat-icon>
                 Summary
             </label>
         </div>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" value="table">
+                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType" value="table">
                 <mat-icon>table_chart</mat-icon>
                 Table
             </label>
@@ -31,14 +30,14 @@
         <span>When possible, I want to download data as: </span>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="exportToTab" value="">
+                <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="">
                 <mat-icon>attachment</mat-icon>
                 File (default)
             </label>
         </div>
         <div class="radio indent">
             <label>
-                <input type="radio" [(ngModel)]="exportToTab" value="tab">
+                <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="tab">
                 <mat-icon>tab</mat-icon>
                 New Tab
             </label>

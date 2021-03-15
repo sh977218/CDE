@@ -9,12 +9,12 @@ public class AddToQuickBoardFromView extends NlmCdeBaseTest {
     @Test
     public void addFormToQuickBoardFromView() {
         goToCdeSearch();
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
         goToFormByName("Vessel Imaging Angiography");
         clickElement(By.id("addToQuickBoard"));
         checkAlert("Added to QuickBoard");
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (1)");
         clickElement(By.id("menu_qb_link"));
         clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));

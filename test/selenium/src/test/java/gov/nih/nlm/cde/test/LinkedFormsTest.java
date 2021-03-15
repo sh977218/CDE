@@ -11,7 +11,7 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
     public void linkedForms() {
         String cdeName = "Psychiatric history clinical depression past year indicator";
         goToCdeByName(cdeName);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
         findElement(By.cssSelector("#menu_qb_link")).sendKeys(Keys.ESCAPE);
         clickElement(By.id("openLinkedFormsModalBtn"));
@@ -21,9 +21,8 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
         clickElement(By.id("addToCompare_0"));
         clickElement(By.id("closeLinkedFormsModalBtn"));
         checkAlert("Added to QuickBoard!");
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (1)");
     }
-
 
 }

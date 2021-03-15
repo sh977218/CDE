@@ -13,9 +13,9 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(testAdmin_username, password);
         addCdeToQuickBoard(cdeName1);
         addCdeToQuickBoard(cdeName2);
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (2)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));

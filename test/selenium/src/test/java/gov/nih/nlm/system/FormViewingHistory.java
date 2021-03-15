@@ -15,7 +15,7 @@ public class FormViewingHistory extends NlmCdeBaseTest {
         hangon(4);
 
         try {
-            clickElement(By.id("username_link"));
+            goToUserMenu();
             clickElement(By.linkText("Profile"));
             textPresent("User Profile");
             textPresent("Skip Logic No Label Form");

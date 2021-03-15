@@ -23,9 +23,9 @@ public class CdeQuickboardExport extends NlmCdeBaseTest {
         addCdeToQuickBoard(cdeName2);
         addCdeToQuickBoard(cdeName3);
 
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (3)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         loadDefaultTableViewSettings();
         textPresent("Export Quick Board");
 

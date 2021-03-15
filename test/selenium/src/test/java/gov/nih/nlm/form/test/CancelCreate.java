@@ -10,7 +10,7 @@ public class CancelCreate extends NlmCdeBaseTest {
     public void cancelCreate() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
-        clickElement(By.id("createEltLink"));
+        hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createFormLink"));
         clickElement(By.cssSelector("button[color='warn']"));
         textPresent("Browse by Classification");

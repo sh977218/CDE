@@ -32,7 +32,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         logout();
 
         loginAs(test_username, password);
-        clickElement(By.id("createEltLink"));
+        hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createCDELink"));
         // following will assert that test user was indeed promoted
         new Select(driver.findElement(By.id("eltStewardOrgName"))).selectByVisibleText(testOrg);

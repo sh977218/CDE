@@ -15,7 +15,7 @@ public class CreateCde extends BaseClassificationTest {
         String cdeDef = "Fill out carefully!";
         String cdeOrg = "TEST";
 
-        clickElement(By.id("createEltLink"));
+        hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createCDELink"));
         textPresent("Please enter a name for the new CDE");
 

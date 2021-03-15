@@ -18,7 +18,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
     @Test
     public void searchHttpLog() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
         clickElement(By.id("searchBtn"));
 
