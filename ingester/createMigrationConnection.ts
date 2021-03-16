@@ -46,11 +46,14 @@ let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
 let SocialDeterminantsOfHealthCsv = 'S:/MLB/CDE/NINR/SocialDeterminantsOfHealth_06152020.csv';
 let SocialDeterminantsOfHealthXlsx = 'S:/MLB/CDE/NINR/BRICSNINRSocDetHealth_NLM_2020-11-30.xlsx';
 
+let RED_CAP_CSV = "S:/MLB/CDE/REDCap/RADxUPDev_DataDictionary_2020-12-30.csv";
+
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
     sickleCellDataElementsXlsx = 'C:/Users/Peter/Downloads/SickleCellDataElements_20200305.xlsx';
     sickleCellFormMappingXlsx = 'C:/Users/Peter/Downloads/SickleCell_NLM_FormMapping.xlsx';
     SocialDeterminantsOfHealthXlsx = 'C:/Users/Peter/Downloads/BRICSNINRSocDetHealth_NLM_2020-11-30.xlsx';
+    RED_CAP_CSV = 'C:/Users/Peter/Downloads/RADxUPDev_DataDictionary_2020-12-30.csv';
 }
 export {
     redCapZipFolder,
@@ -58,5 +61,6 @@ export {
     sickleCellFormMappingXlsx,
     krabbeDataElementsXlsx,
     SocialDeterminantsOfHealthCsv,
-    SocialDeterminantsOfHealthXlsx
+    SocialDeterminantsOfHealthXlsx,
+    RED_CAP_CSV
 };

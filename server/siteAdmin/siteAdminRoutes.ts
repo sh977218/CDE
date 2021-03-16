@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
-import { getStatus } from 'server/siteAdmin/status';
+import { deleteEsIndex, getStatus } from 'server/siteAdmin/status';
 import { indices } from 'server/system/elasticSearchInit';
 import { orgAuthorities, siteAdmins, userByUsername, UserDocument, usernamesByIp } from 'server/user/userDb';
 
@@ -38,6 +38,10 @@ export function module() {
     router.get('/serverStatuses', (req, res) => {
         getStatus(() => res.send({esIndices: indices}));
     });
+
+    router.delete('/deleteEsIndex', async (req, res) => {
+        await deleteEsIndex((result: string) => res.send(result));
+    })
 
     router.get('/usernamesByIp/:ip', (req, res) => {
         usernamesByIp(req.params.ip, handleError({req, res}, result => res.send(result)));

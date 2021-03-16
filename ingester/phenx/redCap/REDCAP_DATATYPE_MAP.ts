@@ -4,11 +4,13 @@ export const map = {
     integer: 'Number',
     yesno: 'Value List',
     calc: 'Text',
+    descriptive: 'Text',
     radio: 'Value List',
     text: 'Text',
     checkbox: 'Value List',
     file: 'File',
     notes: 'Text',
+    date: 'Date',
     dropdown: 'Value List',
     '': 'Text'
 };

@@ -165,7 +165,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                     // end
                     eachOf(dbStream.indexes, (index: ElasticIndex, i, doneOne) => {
                         inject(i as number, () => {
-                            const info = 'done ingesting ' + index.name + ' in : '
+                            const info = 'done ingesting ' + index.name + ' ' + index.indexName + ' in : '
                                 + (new Date().getTime() - startTime) / 1000 + ' secs. count: ' + index.count;
                             noDbLogger.info(info);
                             consoleLog(info);

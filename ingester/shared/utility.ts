@@ -30,7 +30,7 @@ export const sourceMap: any = {
     NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NINR on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load RADx-UP on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {

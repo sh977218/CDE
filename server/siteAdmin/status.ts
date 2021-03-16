@@ -1,4 +1,5 @@
 import { series } from 'async';
+import { find } from 'lodash';
 import { Request, Response } from 'express';
 import { count as boardCount } from 'server/board/boardDb';
 import { dataElementModel } from 'server/cde/mongo-cde';
@@ -17,7 +18,7 @@ interface IndexStatus {
     message?: string;
 }
 
-export const statusReport: {elastic: {up: boolean | string, indices: IndexStatus[], message?: string}} = {
+export const statusReport: { elastic: { up: boolean | string, indices: IndexStatus[], message?: string } } = {
     elastic: {
         up: false,
         indices: []
@@ -37,7 +38,7 @@ export function status(req: Request, res: Response) {
 }
 
 export function checkElasticCount(count: number, index: string, type: string, cb: (status: boolean, errMsg?: string) => void) {
-    esClient.count({index}, (err, response: {body: ElasticQueryResponse<ItemElastic>}) => {
+    esClient.count({index}, (err, response: { body: ElasticQueryResponse<ItemElastic> }) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
         } else {
@@ -75,6 +76,17 @@ export function isElasticUp(cb: Cb1<boolean | void>) {
             }
         }
     });
+}
+
+export async function deleteEsIndex(deleteIndexDone) {
+    const clusterIndices = await esClient.cat.indices({format: 'json'});
+    for (const index of clusterIndices.body) {
+        const found = find(indices, (i) => i.indexName === index.index);
+        if (!found) {
+            await esClient.indices.delete({index: index.index});
+        }
+    }
+    deleteIndexDone('success.');
 }
 
 export function getStatus(getStatusDone: Cb) {

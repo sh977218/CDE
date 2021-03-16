@@ -1,0 +1,15 @@
+const DEFAULT_RADX_UP_REGISTRATION_STATUS = 'Qualified';
+const DEFAULT_RADX_UP_CLASSIFICATION_ORG_NAME = 'RADx-UP';
+const DEFAULT_RADX_UP_CLASSIFICATION_ARRAY: string[] = [];
+const DEFAULT_RADX_UP_STEWARD_ORG_NAME = 'RADx-UP';
+const DEFAULT_RADX_UP_SOURCE = 'RADx-UP';
+
+export class RadxUpConfig {
+    registrationStatus = DEFAULT_RADX_UP_REGISTRATION_STATUS;
+    classificationOrgName = DEFAULT_RADX_UP_CLASSIFICATION_ORG_NAME;
+    classificationArray: string[] = DEFAULT_RADX_UP_CLASSIFICATION_ARRAY;
+    source = DEFAULT_RADX_UP_SOURCE;
+    stewardOrg = DEFAULT_RADX_UP_STEWARD_ORG_NAME;
+}
+
+export const DEFAULT_RADX_UP_CONFIG = new RadxUpConfig();
