@@ -76,6 +76,7 @@ mat-toolbar {
     &:hover {
       background-color: unquote($navColor + '10');
       border-bottom: $navColor 4px solid;
+      font-weight: bold;
     }
 
     &#login_link {
@@ -123,6 +124,7 @@ mat-toolbar {
     &:hover {
       background-color: unquote($navSecondColor + '10');
       border-bottom: $navSecondColor 4px solid;
+      font-weight: bold;
     }
 
     &.active {
@@ -289,6 +291,10 @@ router-outlet ::ng-deep + *:not(nav) {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+}
+
+.mat-menu-item {
+  color: $navSecondColor;
 }
 
 .mat-menu-item:hover {
