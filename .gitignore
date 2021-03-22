@@ -28,6 +28,7 @@ ssl/
 ## Local Files
 my-*
 config/cluster.json
+config/local.json
 config/prod.json
 config/prod-live.json
 config/qa-live.json

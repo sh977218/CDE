@@ -56,6 +56,7 @@ export type CbErrorObj<E = string | undefined> = (error: E) => void;
 export type CbErrorObj1<E = string | undefined, T = void> = (error: E, t: T) => void;
 export type CbErrorObj2<E = string | undefined, T = void, U = void> = (error: E, t: T, u: U) => void;
 export type CbErrorObj3<E = string | undefined, T = void, U = void, V = void> = (error: E, t: T, u: U, v: V) => void;
+export type CbNode<T = void> = CbError1<T | null | void>;
 export type CbRet<R = void> = () => R;
 export type CbRet1<R = void, T = void> = (t: T) => R;
 export type CbRet2<R = void, T = void, U = void> = (t: T, u: U) => R;

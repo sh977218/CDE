@@ -3,10 +3,9 @@ import {
     deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
 } from 'passport';
 import { get, post } from 'request';
-import { consoleLog } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb1, CbErr1, CbError1, CbError2, User } from 'shared/models.model';
+import { Cb1, CbErr1, CbError2, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { Parser } from 'xml2js';
 
@@ -60,7 +59,7 @@ export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
     });
 }
 
-export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbError1<UserDocument | null>) {
+export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<UserDocument>) {
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
@@ -100,15 +99,17 @@ export function authBeforeVsac(req: Request, username: string, password: string,
         }
         get(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`,
             (error, response, body) => {
+                let domain: string = '';
                 try {
                     body = JSON.parse(body);
                     username = body.utsUser.username;
+                    domain = body.idpUserOrg
                 } catch (e) {
                     done(new Error('UMLS authentication failed'));
                 }
                 /* istanbul ignore else */
                 if (username) {
-                    findAddUserLocally({username, ip: req.ip}, (err, user) => done(err, user));
+                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user));
                 } else {
                     done(new Error('No UMLS User'));
                 }
@@ -120,13 +121,14 @@ export function authBeforeVsac(req: Request, username: string, password: string,
 passportUse(new localStrategy({passReqToCallback: true}, authBeforeVsac));
 
 export interface UserAddProfile {
+    domain?: string
     username: string;
     ip: string;
     accessToken?: string;
     refreshToken?: string;
 }
 
-export function findAddUserLocally(profile: UserAddProfile, cb: CbError1<UserDocument | null | void>) {
+export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocument>) {
     userByName(profile.username, (err, user) => {
         /* istanbul ignore if */
         if (err) {

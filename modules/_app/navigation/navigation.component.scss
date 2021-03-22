@@ -11,8 +11,6 @@
 //}
 
 mat-toolbar {
-  z-index: $navZIndex;
-
   button.mat-button-base {
     margin: 0 !important;
   }
@@ -293,14 +291,25 @@ router-outlet ::ng-deep + *:not(nav) {
   flex-grow: 1;
 }
 
-.mat-menu-item {
-  color: $navSecondColor;
+::ng-deep div.mat-menu-content:not(:empty) {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
-.mat-menu-item:hover {
-  background-color: #DEDEDE;
-  font-weight: bold;
-  font-size: 14px;
-  color: #0258BB;
-  border-bottom: 3px #025FCC solid;
+.mat-menu-item {
+  width: 144px; // size fits "Report a Problem"
+}
+
+.mat-list-item,
+.mat-menu-item {
+  color: $navSecondColor;
+  letter-spacing: .007rem;
+
+  &:hover {
+    background-color: #DEDEDE;
+    border-bottom: 3px #025FCC solid;
+    color: #0258BB;
+    font-weight: bold;
+    letter-spacing: normal;
+  }
 }

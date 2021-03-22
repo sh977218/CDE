@@ -11,7 +11,7 @@ public class CreateCdeValidationErrorsTest extends BaseClassificationTest {
     public void createCdeValidationErrors() {
         mustBeLoggedInAs(nlm_username,nlm_password);
         goHome();
-        clickElement(By.id("createEltLink"));
+        hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createCDELink"));
         textPresent("Please enter a name for the new CDE");
         Assert.assertFalse(findElement(By.id("submit")).isEnabled());

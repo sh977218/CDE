@@ -65,7 +65,7 @@ public class WhatsNew extends NlmCdeBaseTest {
         clickElement(By.xpath("//mat-icon[normalize-space() = 'check']"));
         checkAlert("Saved");
         logout();
-        clickElement(By.id("helpLink"));
+        goToHelp();
         clickElement(By.id("whatsNewLink"));
         textPresent("June 28, 2018");
         textPresent("Usability improvements in form editor.");

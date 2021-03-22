@@ -13,7 +13,7 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         textPresent("received");
 
         driver.get(baseUrl);
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
 
         // put tab within display

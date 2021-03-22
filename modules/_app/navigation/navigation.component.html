@@ -1,8 +1,8 @@
-<header class="app-toolbar" style="z-index: 5">
+<header class="app-toolbar">
     <uswds-banner class="d-none d-md-block"></uswds-banner>
     <cde-ie-banner></cde-ie-banner>
     <mat-toolbar class="noPrint">
-        <mat-toolbar-row class="cde-nav-major">
+        <mat-toolbar-row #majorBar class="cde-nav-major">
             <a href="https://www.nih.gov/" target="_blank" rel="noopener noreferrer">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -36,25 +36,32 @@
                         routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
                     <mat-icon>settings</mat-icon>
                 </button>
-                <button mat-button *ngIf="!userService.user" id="login_link"
+                <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
                         [class.active]="sectionActive === SECTIONS.user"
                         (click)="loginSvc.goToLogin()" routerLink="/login">
                     <span>Login</span>
                 </button>
-                <button mat-button *ngIf="userService.user" id="username_link"
-                        [class.active]="sectionActive === SECTIONS.user"
-                        [matMenuTriggerFor]="loginMenu">
-                    {{userService.user.username | uppercase | cdeTruncateLongName}}<mat-icon>expand_more</mat-icon>
-                </button>
-                <mat-menu #loginMenu="matMenu">
-                    <button mat-menu-item routerLink="/settings/profile">Settings</button>
-                    <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement">Classifications</button>
-                    <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
-                    <button mat-menu-item (click)="loginSvc.logout()">Log Out</button>
-                </mat-menu>
+                <ng-template #loggedInButton>
+                    <button #userButton mat-button  id="username_link"
+                            [class.active]="sectionActive === SECTIONS.user"
+                            [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
+                            (mouseenter)="menuEnter(majorBar, userMenuTrigger, loginMenu)"
+                            (mouseleave)="menuLeave(majorBar, userMenuTrigger, userButton)">
+                        {{userService.user.username | uppercase | cdeTruncateLongName}}
+                        <mat-icon>expand_more</mat-icon>
+                    </button>
+                    <mat-menu #loginMenu="matMenu">
+                        <div (mouseenter)="menu1Enter(majorBar)" (mouseleave)="menu1Leave(majorBar, userMenuTrigger, userButton)">
+                            <button mat-menu-item routerLink="/settings/profile">Settings</button>
+                            <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement">Classifications</button>
+                            <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
+                            <button mat-menu-item (click)="loginSvc.logout()">Log Out</button>
+                        </div>
+                    </mat-menu>
+                </ng-template>
             </div>
         </mat-toolbar-row>
-        <mat-toolbar-row class="cde-nav-minor">
+        <mat-toolbar-row #minorBar class="cde-nav-minor">
             <a routerLink="/" title="Common Data Elements">
                 <img src="/cde/public/assets/img/min/NIH-CDE.svg" alt="NIH Common Data Elements (CDE) logo" style="height: 39px">
             </a>
@@ -63,47 +70,60 @@
                 <mat-icon>menu</mat-icon>
             </button>
             <div class="d-none d-md-block">
-                <button mat-button id="menu_cdes_link" [class.active]="sectionActive === SECTIONS.de"
-                        routerLink="/cde/search">CDEs</button>
-                <button mat-button id="menu_forms_link" [class.active]="sectionActive === SECTIONS.form"
-                        routerLink="/form/search">Forms</button>
-                <button mat-button *ngIf="isOrgCurator(userService.user)" id="createEltLink"
-                        [class.active]="sectionActive === SECTIONS.create"
-                        [matMenuTriggerFor]="createMenu">
-                    Create<mat-icon>expand_more</mat-icon>
-                </button>
-                <mat-menu #createMenu="matMenu">
-                    <button mat-menu-item id="createCDELink" routerLink="/createCde">CDE</button>
-                    <button mat-menu-item id="createFormLink" routerLink="/createForm">Form</button>
-                </mat-menu>
-                <button mat-button id="boardsMenu" [class.active]="sectionActive === SECTIONS.board"
-                        [matMenuTriggerFor]="boardMenu">
-                    Boards<mat-icon>expand_more</mat-icon>
-                </button>
-                <mat-menu #boardMenu="matMenu">
-                    <button mat-menu-item id="menu_qb_link" routerLink="/quickBoard">{{quickBoardMetaInfo()}}</button>
-                    <button mat-menu-item id="publicBoardsLink" routerLink="/boardList">Public Boards</button>
-                    <button mat-menu-item *ngIf="userService.user" id="myBoardsLink" routerLink="/myBoards">My Boards</button>
-                </mat-menu>
-                <button mat-button id="apiLink" [class.active]="sectionActive === SECTIONS.api"
-                        routerLink="/api">API</button>
-                <button mat-button id="helpLink" [class.active]="sectionActive === SECTIONS.help"
-                        [matMenuTriggerFor]="helpMenu">
-                    Help<mat-icon>expand_more</mat-icon>
-                </button>
-                <mat-menu #helpMenu="matMenu">
-                    <button mat-menu-item id="videosLink" routerLink="/videos">Video Tutorials</button>
-                    <button mat-menu-item id="guidesLink" routerLink="/guides">Guides</button>
-                    <button mat-menu-item id="whatsNewLink" routerLink="/whatsNew">New Features</button>
-                    <button mat-menu-item id="takeATourLink" routerLink="/home" [queryParams]="{tour: 'yes'}">Take a Tour
-                    </button>
-                    <button mat-menu-item id="resourcesLink" routerLink="/resources">Resources</button>
-                    <button mat-menu-item id="contactUsLink" routerLink="/contactUs">Contact Us</button>
-                    <button mat-menu-item id="reportAProblemLink" feedback (send)="onFeedback($event)"
-                            [placeholder]="feedbackDescription">
-                        Report a Problem
-                    </button>
-                </mat-menu>
+                <ng-container *ngFor="let menuItem of menuList">
+                    <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
+                        <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
+                            <button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                                    [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null">
+                                {{menuItem.label || menuItem.labelFn()}}
+                            </button>
+                        </ng-container>
+                    </ng-container>
+                    <ng-template #dropdownWithChildren>
+                        <button #button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                                [matMenuTriggerFor]="levelOne" #levelOneTrigger="matMenuTrigger"
+                                (click)="menuClickCleanup(minorBar, levelOneTrigger, button, levelOne)"
+                                (mouseenter)="menuEnter(minorBar, levelOneTrigger, levelOne)"
+                                (mouseleave)="menuLeave(minorBar, levelOneTrigger, button)">
+                            {{menuItem.label || menuItem.labelFn()}}
+                            <mat-icon>expand_more</mat-icon>
+                        </button>
+                        <mat-menu #levelOne="matMenu" direction="down" yPosition="below">
+                            <div (mouseenter)="menu1Enter(minorBar)" (mouseleave)="menu1Leave(minorBar, levelOneTrigger, button)">
+                                <ng-container *ngFor="let childL1 of menuItem.children">
+                                    <ng-container *ngIf="childL1.label === 'Report a Problem'; else menuItemStandard">
+                                        <button mat-menu-item feedback id="reportAProblemLink"
+                                                [placeholder]="feedbackDescription" (send)="onFeedback($event)">
+                                            Report a Problem
+                                        </button>
+                                    </ng-container>
+                                    <ng-template #menuItemStandard>
+                                        <ng-container *ngIf="!childL1.children || !childL1.children.length; else menuItemWithChildren">
+                                            <button mat-menu-item [id]="childL1.id"
+                                                    [routerLink]="childL1.link"  [queryParams]="childL1.queryParams || null">
+                                                {{childL1.label || childL1.labelFn()}}
+                                            </button>
+                                        </ng-container>
+                                    </ng-template>
+                                    <ng-template #menuItemWithChildren>
+                                        <li mat-menu-item #levelTwoTrigger="matMenuTrigger"
+                                            [matMenuTriggerFor]="levelTwo">{{childL1.label}}</li>
+                                        <mat-menu #levelTwo="matMenu">
+                                        <span (mouseenter)="menu2Enter(minorBar)"
+                                              (mouseleave)="menu2Leave(minorBar, levelOneTrigger,levelTwoTrigger, button)">
+                                            <ng-container *ngFor="let childL2 of childL1.children">
+                                                <li class="p-0" mat-menu-item>
+                                                    <a class="nav-link">{{childL2.label || childL2.labelFn()}}</a>
+                                                </li>
+                                            </ng-container>
+                                        </span>
+                                        </mat-menu>
+                                    </ng-template>
+                                </ng-container>
+                            </div>
+                        </mat-menu>
+                    </ng-template>
+                </ng-container>
             </div>
         </mat-toolbar-row>
     </mat-toolbar>
@@ -111,36 +131,40 @@
 <mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1">
     <mat-sidenav #sidenav mode="over" position="end">
         <mat-nav-list>
-            <a mat-list-item routerLink="/cde/search" (click)="sidenav.close()">CDEs</a>
-            <a mat-list-item routerLink="/form/search" (click)="sidenav.close()">Forms</a>
-            <a mat-list-item *ngIf="isOrgCurator(userService.user)" [matMenuTriggerFor]="mobileCreateMenu">
-                Create<mat-icon>expand_more</mat-icon>
-            </a>
-            <mat-menu #mobileCreateMenu="matMenu">
-                <button mat-menu-item routerLink="/createCde" (click)="sidenav.close()">CDE</button>
-                <button mat-menu-item routerLink="/createForm" (click)="sidenav.close()">Form</button>
-            </mat-menu>
-            <a mat-list-item [matMenuTriggerFor]="mobileBoardMenu">
-                Boards<mat-icon>expand_more</mat-icon>
-            </a>
-            <mat-menu #mobileBoardMenu="matMenu">
-                <button mat-menu-item routerLink="/quickBoard" (click)="sidenav.close()">{{quickBoardMetaInfo()}}</button>
-                <button mat-menu-item routerLink="/boardList" (click)="sidenav.close()">Public Boards</button>
-                <button mat-menu-item *ngIf="userService.user" routerLink="/myBoards" (click)="sidenav.close()">My Boards</button>
-            </mat-menu>
-            <a mat-list-item routerLink="/api" (click)="sidenav.close()">API</a>
-            <a mat-list-item [matMenuTriggerFor]="mobileHelpMenu">
-                Help<mat-icon>expand_more</mat-icon>
-            </a>
-            <mat-menu #mobileHelpMenu="matMenu">
-                <button mat-menu-item routerLink="/videos" (click)="sidenav.close()">Video Tutorials</button>
-                <button mat-menu-item routerLink="/guides" (click)="sidenav.close()">Guides</button>
-                <button mat-menu-item routerLink="/whatsNew" (click)="sidenav.close()">New Features</button>
-                <button mat-menu-item routerLink="/home" [queryParams]="{tour: 'yes'}" (click)="sidenav.close()">Take a Tour</button>
-                <button mat-menu-item routerLink="/resources" (click)="sidenav.close()">Resources</button>
-                <button mat-menu-item routerLink="/contactUs" (click)="sidenav.close()">Contact Us</button>
-                <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription" (click)="sidenav.close()">Report a Problem</button>
-            </mat-menu>
+            <ng-container *ngFor="let menuItem of menuList">
+                <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
+                    <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else mobileMenuWithChildren">
+                        <a mat-list-item [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null" (click)="sidenav.close()">
+                            {{menuItem.label || menuItem.labelFn()}}
+                        </a>
+                    </ng-container>
+                    <ng-template #mobileMenuWithChildren>
+                        <a mat-list-item [matMenuTriggerFor]="mLevelOne">
+                            {{menuItem.label || menuItem.labelFn()}}<mat-icon>expand_more</mat-icon>
+                        </a>
+                        <mat-menu #mLevelOne="matMenu">
+                            <ng-container *ngFor="let child of menuItem.children">
+                                <ng-container *ngIf="!child.condition || child.condition()">
+                                    <ng-container *ngIf="child.label === 'Report a Problem'; else mobileMenuItemStandard">
+                                        <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription"
+                                                (click)="sidenav.close()">
+                                            Report a Problem
+                                        </button>
+                                    </ng-container>
+                                    <ng-template #mobileMenuItemStandard>
+                                        <ng-container *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
+                                            <button mat-menu-item [routerLink]="child.link" [queryParams]="child.queryParams || null"
+                                                    (click)="sidenav.close()">
+                                                {{child.label || child.labelFn()}}
+                                            </button>
+                                        </ng-container>
+                                    </ng-template>
+                                </ng-container>
+                            </ng-container>
+                        </mat-menu>
+                    </ng-template>
+                </ng-container>
+            </ng-container>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">

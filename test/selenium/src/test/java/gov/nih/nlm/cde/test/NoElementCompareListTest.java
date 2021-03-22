@@ -10,7 +10,7 @@ public class NoElementCompareListTest extends NlmCdeBaseTest {
     @Test
     public void noElementCompareList() {
         goToCdeSearch();
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("menu_qb_link"));
         textPresent("The quick board is empty.");
     }

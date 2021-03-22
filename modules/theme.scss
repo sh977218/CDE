@@ -10,7 +10,7 @@ $theme-banner-link-color: $navBackgroundColor;
 /* Links */
 $linkColor: #0f4e9d;
 
-$navZIndex: 10;
+$navZIndex: 1050; // more than overlay backdrop z-index: 1000
 
 $widthSm: 659px;
 $widthMd: 845px;

@@ -9,9 +9,9 @@ public class QuickboardButtons extends NlmCdeBaseTest{
     @Test
     public void quickBoardButtons() {
         goHome();
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (0)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         textNotPresent("Side by Side View");
         textNotPresent("Table View");
         textNotPresent("Empty Quick Board");
@@ -25,9 +25,9 @@ public class QuickboardButtons extends NlmCdeBaseTest{
 
         addCdeToQuickBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage");
         addCdeToQuickBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value");
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (2)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         textPresent("Prostate Cancer American Joint Committee");
         textPresent("Fluorescence in situ");
         clickElement(By.id("qb_compare"));

@@ -9,7 +9,7 @@ public class TourFromMenu extends NlmCdeBaseTest {
     @Test
     public void tourFromMenu () {
         goHome();
-        clickElement(By.id("helpLink"));
+        goToHelp();
         clickElement(By.id("takeATourLink"));
         textPresent("This tour will guide you through");
     }

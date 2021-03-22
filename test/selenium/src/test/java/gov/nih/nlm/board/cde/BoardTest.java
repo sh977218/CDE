@@ -21,17 +21,8 @@ public class BoardTest extends NlmCdeBaseTest {
         editBoardByName(boardName, null, null, true, null, response);
     }
 
-    public void gotoMyBoards() {
-        goHome();
-        clickElement(By.id("boardsMenu"));
-        textPresent("My Boards");
-        clickElement(By.id("myBoardsLink"));
-        textPresent("Add Board");
-        textNotPresent("Sign up for an account");
-    }
-
     protected void gotoPublicBoards() {
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         clickElement(By.id("publicBoardsLink"));
     }
 

@@ -10,7 +10,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
     @Test
     public void report() {
         goToCdeSearch();
-        clickElement(By.id("helpLink"));
+        goToHelp();
         clickElement(By.id("reportAProblemLink"));
         findElement(By.cssSelector("textarea.description")).sendKeys("I don't like this website.");
         clickElement(By.cssSelector("button.submit-button"));
@@ -18,7 +18,7 @@ public class ReportIssueTest extends NlmCdeBaseTest {
         checkAlert("Thank you for your feedback");
 
         loginAs("theOrgAuth", password);
-        clickElement(By.id("username_link"));
+        goToUserMenu();
         clickElement(By.id("user_audit"));
         clickElement(By.xpath("//div[. = 'Reported Issues']"));
         textPresent("I don't like this website.");

@@ -16,9 +16,9 @@ public class compareMeWithMltTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='mltAccordion']//div[contains(@class, 'card')]/div[span[contains(.,'Common Toxicity Criteria Adverse Event Platelet Count Grade')]]//mat-icon[@title='Add to Quick Board']"));
         clickElement(By.id("closeMoreLikeThisBtn"));
         checkAlert("Added to QuickBoard");
-        clickElement(By.id("boardsMenu"));
+        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("Quick Board (2)");
-        goToQuickBoardByModule("cde", true);
+        goToQuickBoardByModule("cde");
         clickElement(By.id("qb_elt_compare_0"));
         clickElement(By.id("qb_elt_compare_1"));
         clickElement(By.id("qb_compare"));
