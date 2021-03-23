@@ -196,7 +196,7 @@
                         <div class="mb-3">
                             <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()"></cde-derivation-rules>
-                            <cde-valid-rules [elt]="elt"></cde-valid-rules>
+<!--                            <cde-valid-rules *ngIf="isOrgCurator(userService.user, elt.stewardOrg.name)" [elt]="elt"></cde-valid-rules>-->
                         </div>
                     </article>
                     <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()" (save)="saveDataElement()"></cde-save-modal>

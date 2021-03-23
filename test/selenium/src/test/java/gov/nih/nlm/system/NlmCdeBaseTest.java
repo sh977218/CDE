@@ -887,6 +887,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         findElement(By.name("password")).sendKeys(password);
         clickElement(By.cssSelector("input[type='submit']"));
         switchTab(sourceTabIndex);
+        textPresent(username.toUpperCase(), By.id("username_link"));
     }
 
     protected void loginAs(String username, String password) {
