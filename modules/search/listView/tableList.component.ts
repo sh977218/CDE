@@ -37,11 +37,7 @@ type Row = {
 
 @Component({
     templateUrl: './tableList.component.html',
-    styles: [`
-        :host >>> ul {
-            padding-left: 15px;
-        }
-    `]
+    styleUrls: ['./tableList.component.scss'],
 })
 export class TableListComponent implements OnInit {
     @Input() set elts(elts: ItemElastic[]) {
