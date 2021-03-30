@@ -1,4 +1,3 @@
-import { CbRet, CbRet1, CbRet3 } from 'shared/models.model';
 import { isEqual, union } from 'lodash';
 
 export function capCase(str: string): string {
@@ -20,46 +19,6 @@ export function decamelize(str: string = '', sep: string = ' '): string {
 
 export function deepCopy<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
-}
-
-export function partition<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]>): [T[], T[]] {
-    return arr.reduce((result: [T[], T[]], e: T, i: number, arr: T[]) => {
-        condition(e, i, arr)
-            ? result[0].push(e)
-            : result[1].push(e);
-
-        return result;
-    }, [[], []]);
-}
-
-export function promiseArrayMapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U>, T, number, T[]>): Promise<U[]> {
-    return array.reduce(
-        (ready, code, i, array) => ready.then(
-            results => iterCb(code, i, array).then(result => [...results, result])
-        ),
-        Promise.resolve<U[]>([])
-    );
-}
-
-export function promiseDelay<T>(duration: number): (arg: T) => Promise<T> {
-    return (arg: T) => new Promise<T>((resolve, reject) => {
-        setTimeout(() => {
-            resolve(arg);
-        }, duration);
-    });
-}
-
-export function push2<T>(array: T[], ...element: T[]): T[] {
-    array.push(...element);
-    return array;
-}
-
-export function range(num: number): number[] { // 0..num-1
-    return Array.apply(null, Array(num)).map((dummy: any, i: number) => i);
-}
-
-export function reduceOptionalArray<T, U>(arr: U[], cb: (a: T, c: U) => T, initialValue: T): T {
-    return Array.isArray(arr) ? arr.reduce(cb, initialValue) : initialValue;
 }
 
 export function stringCompare(a: string, b: string): number {

@@ -7,8 +7,8 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
 import * as _noop from 'lodash/noop';
+import { partition } from 'shared/array';
 import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
-import { partition } from 'shared/system/util';
 
 const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 

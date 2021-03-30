@@ -78,7 +78,7 @@ export function isElasticUp(cb: Cb1<boolean | void>) {
     });
 }
 
-export async function deleteEsIndex(deleteIndexDone) {
+export async function deleteEsIndex(deleteIndexDone: Cb1<string>) {
     const clusterIndices = await esClient.cat.indices({format: 'json'});
     for (const index of clusterIndices.body) {
         const found = find(indices, (i) => i.indexName === index.index);

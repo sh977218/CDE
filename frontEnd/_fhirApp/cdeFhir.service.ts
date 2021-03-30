@@ -25,6 +25,7 @@ import * as diff from 'deep-diff';
 import * as _intersectionWith from 'lodash/intersectionWith';
 import * as _noop from 'lodash/noop';
 import * as _uniq from 'lodash/uniq';
+import { reduce } from 'shared/array';
 import {
     assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
     PermissibleValue
@@ -48,7 +49,7 @@ import {
 } from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
 import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
-import { deepCopy, reduceOptionalArray } from 'shared/system/util';
+import { deepCopy } from 'shared/system/util';
 import { isArray } from 'util';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
@@ -554,7 +555,7 @@ export class CdeFhirService {
                     });
                 }, () => {
                     const s = 'http://hl7.org/fhir/observation-category';
-                    const existingCodes = reduceOptionalArray<string[], FhirCodeableConcept>(categoryAble.category || [],
+                    const existingCodes = reduce<string[], FhirCodeableConcept>(categoryAble.category,
                         (a, concept) => {
                             return a.concat(reduceConcept<string[]>(concept,
                                 (ac, c) => {

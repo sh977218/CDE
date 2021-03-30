@@ -1,5 +1,5 @@
 import { PermissibleValue } from 'shared/models.model';
-import { promiseArrayMapSeries } from 'shared/system/util';
+import { mapSeries } from 'shared/promise';
 import { searchBySystemAndCode, CDE_SYSTEM_TO_UMLS_SYSTEM_MAP } from 'server/uts/utsSvc';
 import { umlsPvFilter } from 'shared/de/umls';
 
@@ -19,7 +19,7 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
     if (!system) {
         return Promise.resolve();
     }
-    return promiseArrayMapSeries(
+    return mapSeries(
         pv.valueMeaningCode ? pv.valueMeaningCode.split(/[,:]/) : [],
         code => searchBySystemAndCode(system, code).then(
             dataRes => {
