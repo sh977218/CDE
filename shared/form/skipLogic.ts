@@ -1,6 +1,6 @@
+import { range } from 'shared/array';
 import { getLabel as getLabelShared, iterateFesSync } from 'shared/form/fe';
 import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
-import { range } from 'shared/system/util';
 
 type filter = (fe: FormQuestion) => boolean;
 export type SkipLogicOperators = '=' | '!=' | '>' | '<' | '>=' | '<=';

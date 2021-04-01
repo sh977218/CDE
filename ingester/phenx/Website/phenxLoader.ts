@@ -1,7 +1,8 @@
 import * as cheerio from 'cheerio';
-import { get } from 'request';
 import { getDomainCollectionSite } from 'ingester/shared/utility';
 import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import fetch from 'node-fetch';
+import { handleErrors, text } from 'shared/fetch';
 
 const SECTIONS: any[] = [
     {
@@ -144,36 +145,36 @@ function doOneProtocol(protocol) {
     return new Promise((resolve, reject) => {
         const protocolLink = protocol.protocolLink;
         console.log('protocolLink: ' + protocolLink);
-        get(protocolLink, async (err, response, body) => {
-            if (err) {
-                reject(err);
-            }
-            const $ = cheerio.load(body, {normalizeWhitespace: true});
+        fetch(protocolLink)
+            .then(handleErrors)
+            .then(text)
+            .then(async body => {
+                const $ = cheerio.load(body, {normalizeWhitespace: true});
 
-            protocol.protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
+                protocol.protocolName = $('#main-content > div > div.row.mb-2 > div > h1').text().trim();
 
-            protocol.classification = $('#page-header > div > p').text().trim();
+                protocol.classification = $('#page-header > div > p').text().trim();
 
-            for (const SECTION of SECTIONS) {
-                const selector = SECTION.domId + ' h5';
-                for (const section of SECTION.sections) {
-                    for (const k in section) {
-                        if (section.hasOwnProperty(k)) {
-                            const value = section[k];
-                            const node = $(selector).filter(function () {
-                                return $(this).text().trim() === value;
-                            });
-                            if (!section.fn) {
-                                protocol[k] = findNextText(node);
-                            } else {
-                                protocol[k] = await section.fn(node);
+                for (const SECTION of SECTIONS) {
+                    const selector = SECTION.domId + ' h5';
+                    for (const section of SECTION.sections) {
+                        for (const k in section) {
+                            if (section.hasOwnProperty(k)) {
+                                const value = section[k];
+                                const node = $(selector).filter(function () {
+                                    return $(this).text().trim() === value;
+                                });
+                                if (!section.fn) {
+                                    protocol[k] = findNextText(node);
+                                } else {
+                                    protocol[k] = await section.fn(node);
+                                }
                             }
                         }
                     }
                 }
-            }
-            resolve();
-        });
+                resolve();
+            }, reject);
     });
 }
 

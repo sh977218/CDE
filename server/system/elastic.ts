@@ -1,9 +1,10 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client } from '@elastic/elasticsearch';
+import { Agent } from 'https';
 import { noop } from 'lodash';
 import { Cursor } from 'mongodb';
 import { Document } from 'mongoose';
-import { post } from 'request';
+import fetch from 'node-fetch';
 import * as boardDb from 'server/board/boardDb';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { respondError } from 'server/errorHandler/errorHandler';
@@ -15,6 +16,7 @@ import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
+import { handleErrors, json } from 'shared/fetch';
 import { CdeFormElastic } from 'shared/form/form.model';
 import {
     Cb, Cb1, CbError1, CurationStatus, ElasticQueryResponse, ElasticQueryResponseAggregations, Item, ItemElastic,
@@ -92,6 +94,10 @@ export function reIndex(index: ElasticIndex, cb: Cb) {
 const BUFFER_MAX_SIZE = 10000000; // ~10MB
 const DOC_MAX_SIZE = BUFFER_MAX_SIZE;
 
+const httpsAgent = new Agent({
+    rejectUnauthorized: false,
+});
+
 export function reIndexStream(dbStream: DbStream, cb?: Cb) {
     createIndex(dbStream, () => {
         const riverFunctions = dbStream.indexes.map(index => index.filter || ((elt: ItemElastic, cb: Cb1<ItemElastic>) => cb(elt)));
@@ -108,36 +114,38 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
 
         const inject = (i: number, cb = noop) => {
             (function bulkIndex(req, cb, retries = 1) {
-                post(config.elastic.hosts + '/_bulk', {
+                fetch(config.elastic.hosts[0] + '/_bulk', {
+                    method: 'POST',
                     headers: {'Content-Type': 'application/x-ndjson'},
-                    agentOptions: {
-                        rejectUnauthorized: false
-                    },
-                    body: req
-                }, (err: Error | undefined, response) => {
-                    if (err || response.body.errors) {
-                        if (retries) {
-                            setTimeout(() => {
-                                bulkIndex(req, cb, --retries);
-                            }, 2000);
-                        } else {
-                            let bodyErr;
-                            if (response && response.body && response.body.err) {
-                                bodyErr = response.body.err;
-                            }
-                            logError({
-                                message: 'Unable to Index in bulk',
-                                origin: 'system.elastic.inject',
-                                stack: err && err.stack,
-                                details: bodyErr
-                            });
-                            cb();
+                    agent: /^https:\/\//i.test(config.elastic.hosts[0]) ? httpsAgent : undefined,
+                    body: req,
+                })
+                    .then(handleErrors)
+                    .then(json)
+                    .then(body => {
+                        if (body.errors) {
+                            errorHandler(body.err);
+                            return;
                         }
-                    } else {
                         consoleLog(`ingested  ${dbStream.indexes[i].indexJson}: ${dbStream.indexes[i].count}`);
                         cb();
+                    }, errorHandler);
+
+                function errorHandler(err?: string) {
+                    if (retries) {
+                        setTimeout(() => {
+                            bulkIndex(req, cb, --retries);
+                        }, 2000);
+                    } else {
+                        logError({
+                            message: 'Unable to Index in bulk',
+                            origin: 'system.elastic.inject',
+                            stack: undefined,
+                            details: err
+                        });
+                        cb();
                     }
-                });
+                }
             })(buffers[i].toString(undefined, 0, bufferOffsets[i]), cb);
             // reset
             bufferOffsets[i] = 0;

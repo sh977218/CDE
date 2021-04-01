@@ -1,6 +1,6 @@
+import { reduce as reduceArray } from 'shared/array';
 import { FhirCodeableConcept, FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { getTextFromArray as codingGetTextFromArray } from 'shared/mapping/fhir/datatype/fhirCoding';
-import { reduceOptionalArray } from 'shared/system/util';
 
 export function getText(concept?: FhirCodeableConcept): string {
     return concept && (concept.text || codingGetTextFromArray(concept.coding)) || '';
@@ -24,5 +24,5 @@ export function newCodeableConcept(coding: FhirCoding[], text?: string): FhirCod
 }
 
 export function reduce<T>(concept: FhirCodeableConcept, codingCb: (a: T, c: FhirCoding) => T, initialValue: T): T {
-    return concept.coding ? reduceOptionalArray(concept.coding, codingCb, initialValue) : initialValue;
+    return concept.coding ? reduceArray(concept.coding, codingCb, initialValue) : initialValue;
 }

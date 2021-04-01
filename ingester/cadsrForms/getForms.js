@@ -22,8 +22,9 @@
 //    db.dataelements.updateOne({tinyId: cde.tinyId}, cde);
 //});
 
-import { addCategory } from 'shared/system/classificationShared';
+import fetch from 'node-fetch';
 import { BATCHLOADER } from 'ingester/shared/utility';
+import { addCategory } from 'shared/system/classificationShared';
 
 var formIncrement = 100;
 var startPage = process.argv[2];
@@ -32,8 +33,7 @@ console.log("Loading pages " + startPage + " to " + endPage);
 startPage--;
 endPage--;
 
-var request = require('request')
-    , parseString = require('xml2js').parseString
+var parseString = require('xml2js').parseString
     , mongoose = require('mongoose')
     , async = require('async')
     , mongo_form = require('../../server/form/mongo-form.js')
@@ -98,22 +98,27 @@ var getResource = function (url, cb) {
         if (err) throw err;
         if (page) processResource(page.content, cb);
         else {
-            var ro = {url: url, timeout: 120000};
-            request(ro, function (error, response, body) {
-                var pageLoadSuccess = function (url, body, cb) {
+            var ro = {timeout: 120000};
+            fetch(url, ro)
+                .then(res => {
+                  if (!res.ok) {
+                      return Promise.reject();
+                  }
+                  return res.text();
+                })
+                .catch(() =>
+                    fetch(url, ro).then(res => {
+                        if (!res.ok) {
+                            throw new Error(res.status + ' ' + res.statusText);
+                        }
+                        return res.text();
+                    })
+                )
+                .then(body => {
                     processResource(body, cb);
                     var page = new CachedPage({url: url, content: body});
                     page.save();
-                };
-                if (error) {
-                    request(ro, function (error, response, body) {
-                        if (error) throw error;
-                        else pageLoadSuccess(url, body, cb);
-                    });
-                } else {
-                    pageLoadSuccess(url, body, cb);
-                }
-            });
+                });
         }
     });
 

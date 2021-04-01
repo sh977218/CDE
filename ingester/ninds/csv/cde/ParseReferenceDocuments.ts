@@ -1,8 +1,9 @@
 import { isEmpty, isEqual, trim, uniqWith } from 'lodash';
-import { get } from 'request';
 import * as cheerio from 'cheerio';
 import { EXCLUDE_REF_DOC, sortReferenceDocuments } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
+import fetch from 'node-fetch';
+import { handle200, text } from 'shared/fetch';
 
 const PUBMED_REF_DOC_CACHE: any = {};
 
@@ -15,11 +16,14 @@ function fetchPubmedRef(pmId: string) {
             const pubmedUrl = 'https://www.ncbi.nlm.nih.gov/pubmed/?term=';
             const uri = pubmedUrl + pmId.trim();
             const refDoc: any = {};
-            get(uri, (err, response, body) => {
-                if (err) {
+            fetch(uri)
+                .catch(err => {
                     console.log('fetchPubmedRef Error: ' + err);
                     process.exit(1);
-                } else if (response.statusCode === 200) {
+                })
+                .then(handle200)
+                .then(text)
+                .then(body => {
                     const $ = cheerio.load(body);
                     const title = $('.rprt_all h1').text();
                     const trimTitle = trim(title);
@@ -39,11 +43,10 @@ function fetchPubmedRef(pmId: string) {
                     }
                     PUBMED_REF_DOC_CACHE[pmId] = refDoc;
                     resolve(refDoc);
-                } else {
-                    console.log(`http.get.status error: uri: ${uri}  statusCode:${response.statusCode}`);
+                }, err => {
+                    console.log(`http.get.status error: uri: ${uri}  statusCode: ${err}`);
                     resolve({});
-                }
-            });
+                });
         }
     });
 }

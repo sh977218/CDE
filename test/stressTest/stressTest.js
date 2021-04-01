@@ -9,7 +9,7 @@ var waitFromListToDetail = 2000;
 var responseLengthToCompare = 300;
 var nrOfCdesInDb = 10000;
 
-var request = require('request');
+var fetch = require('node-fetch');
 require('log-buffer');
 
 var queriesViewHomepage = [
@@ -78,32 +78,42 @@ var releaseUsers = function() {
         setTimeout(function() {
             viewDetailPage();
         }, delayedStart + waitFromHomeToList + waitFromListToDetail);        
-    };
+    }
 };
 
 var performRequest = function(location, cb) {
     var startTime = new Date().getTime();
+    var url = serverUrl + location.uri;
     var options = {
-        url: serverUrl + location.uri
-        , headers: {            
+        headers: {
         }
     };    
     if (location.isApi && curentCde) options.url += curentCde._id;
     var isNewUser = Math.random()*100 < percentNewUsers;
     if (location.etag && !isNewUser) options.headers['If-None-Match'] = location.etag;
-    request(options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+    fetch(url, options)
+        .then(res => {
+            if (res.status !== 200) {
+                throw res.status + ' ' + res.statusText;
+            }
+            if (res.headers.get('etag')) {
+                location.etag = res.headers.get('etag');
+            }
+            return res.text();
+        })
+        .then(body => {
             var endTime = new Date().getTime();
             var durationMs = endTime - startTime;
-            if (response.headers.etag) location.etag = response.headers.etag;
+
             if (location.response) {
-                if (!location.response.substr(0,responseLengthToCompare) == body.substr(0,responseLengthToCompare)) throw new Error('Response from server does not match previous!')
+                if (location.response.substr(0, responseLengthToCompare) !== body.substr(0, responseLengthToCompare)) {
+                    throw new Error('Response from server does not match previous!')
+                }
             } else {
-                location.response = body.substr(0,responseLengthToCompare);
+                location.response = body.substr(0, responseLengthToCompare);
             }
-            cb(durationMs, body, location.uri.substr(-30,30));
-        }
-    });   
+            cb(durationMs, body, location.uri.substr(-30, 30));
+        });
 };
 
 var printQueryOutput = function(durationMs, body, uri) {
@@ -123,18 +133,23 @@ var viewHomePage = function() {
 
 var queryElastic = function(elasticQuery, cb) {
     var startTime = new Date().getTime();
-    request.post(serverUrl + 'elasticSearch/cde', elasticQuery, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+    fetch(serverUrl + 'elasticSearch/cde', {method: 'POST', body: JSON.stringify(elasticQuery)})
+        .then(res => {
+            if (res.status !== 200) {
+                throw res.status + ' ' + res.statusText;
+            }
+            return res.json();
+        })
+        .then(function (body) {
             var endTime = new Date().getTime();
             var durationMs = endTime - startTime;
             try {
-                curentCde = JSON.parse(body).cdes[0];
+                curentCde = body.cdes[0];
             } catch(err){
                 console.log(err);
             }
             cb(durationMs, body, 'elasticSearch/cde');
-        }
-    });    
+        });
 };
 
 var viewListPage = function() {    
