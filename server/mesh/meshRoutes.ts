@@ -1,10 +1,11 @@
 import { Dictionary, each } from 'async';
 import { RequestHandler, Router } from 'express';
-import { get } from 'request';
+import fetch from 'node-fetch';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
 import { byEltId, byFlatClassification, byId, findAll, MeshClassificationDocument, newMesh } from 'server/mesh/meshDb';
 import { config } from 'server/system/parseConfig';
+import { handleErrors, json } from 'shared/fetch';
 import { Cb1 } from 'shared/models.model';
 
 const meshTopTreeMap: Dictionary<string> = {
@@ -81,19 +82,25 @@ export function module(roleConfig: {allowSyncMesh: RequestHandler}) {
 function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb1<string[]>) {
     const allTrees = new Set<string>();
     each(descArr, (desc, oneDescDone) => {
-        get(config.mesh.baseUrl + '/api/record/ui/' + desc, {json: true}, (err, response, oneDescBody) => {
-            each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber: any, tnDone) => {
-                get(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t, {json: true}, (err, response, oneTreeBody) => {
-                    let flatTree: string = meshTopTreeMap[treeNumber.t.substr(0, 1)];
-                    if (oneTreeBody && oneTreeBody.length > 0) {
-                        flatTree = flatTree + ';' + oneTreeBody.map((a: any) => {
-                            return a.RecordName;
-                        }).join(';');
-                    }
-                    flatTree = flatTree + ';' + oneDescBody.DescriptorName.String.t;
-                    allTrees.add(flatTree);
-                    tnDone();
-                });
+        fetch(config.mesh.baseUrl + '/api/record/ui/' + desc)
+            .then(handleErrors)
+            .then(json)
+            .then(oneDescBody => {
+                each(oneDescBody.TreeNumberList.TreeNumber, (treeNumber: any, tnDone) => {
+                    fetch(config.mesh.baseUrl + '/api/tree/parents/' + treeNumber.t)
+                        .then(handleErrors)
+                        .then(json)
+                        .then(oneTreeBody => {
+                            let flatTree: string = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                            if (oneTreeBody && oneTreeBody.length > 0) {
+                                flatTree = flatTree + ';' + oneTreeBody.map((a: any) => {
+                                    return a.RecordName;
+                                }).join(';');
+                            }
+                            flatTree = flatTree + ';' + oneDescBody.DescriptorName.String.t;
+                            allTrees.add(flatTree);
+                            tnDone();
+                        });
             }, function allTnDone() {
                 oneDescDone();
             });

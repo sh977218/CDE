@@ -1,12 +1,11 @@
-const request = require('request');
 import { forEachSeries } from 'async';
+import fetch, { RequestInit } from 'node-fetch';
+import { handle200, json } from 'shared/fetch';
 
-exports.runArray = (loincArray, doneOne, doneAll) => {
-    const results = [];
-    const options: any = {
+exports.runArray = (loincArray: string[], doneOne: any, doneAll: any) => {
+    const results: any[] = [];
+    const options: RequestInit = {
         method: 'GET',
-        url: 'https://forms.loinc.org/panel/def',
-        qs: {p_num: ''},
         headers: {
             'postman-token': '06c6fe3c-20c8-56dd-db0f-58b05d398418',
             'cache-control': 'no-cache',
@@ -15,15 +14,13 @@ exports.runArray = (loincArray, doneOne, doneAll) => {
         }
     };
     forEachSeries(loincArray, (loinc, doneOneLoinc) => {
-        options.qs.p_num = loinc;
-        request(options, (error, response, body) => {
-            if (error) {
-                throw new Error(error);
-            }
-            const lform = JSON.parse(body);
-            results.push(lform);
-            doneOne(lform, doneOneLoinc);
-        });
+        fetch('https://forms.loinc.org/panel/def?p_num=' + loinc, options)
+            .then(handle200)
+            .then(json)
+            .then(lform => {
+                results.push(lform);
+                doneOne(lform, doneOneLoinc);
+            });
     }, function doneAllLoincs() {
         doneAll(results);
     });

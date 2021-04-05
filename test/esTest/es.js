@@ -17,21 +17,27 @@ var queryTimeSpan = timeSpanMS/numberOfQueries;
 
 var query = permissibleValuesQuery;
 
-var request = require("request");
+var fetch = require("node-fetch");
 
 var queryTimes = [];
 var queryTime = {start:null, end:null};
 
 var queryElastic = function() {
     var startTime = new Date().getTime();
-    request.post(elasticUrl, {body: JSON.stringify(query)}, function (error, response, body) {
-        if (error || response.statusCode!==200) throw new Error(body);
-        console.log("\nQuery Result: " + body.substr(0, 300));
-        var endTime = new Date().getTime();
-        queryTimes.push({start:startTime, end:endTime});
-        var totalTime = endTime - startTime;
-        console.log("Query Time: " + totalTime);                
-    });
+    fetch(elasticUrl, {method: 'POST', body: JSON.stringify(query)})
+        .then(res => {
+            if (res.status !== 200) {
+                throw new Error(res.status + ' ' + res.statusText);
+            }
+            return res.text();
+        })
+        .then(body => {
+            console.log("\nQuery Result: " + body.substr(0, 300));
+            var endTime = new Date().getTime();
+            queryTimes.push({start:startTime, end:endTime});
+            var totalTime = endTime - startTime;
+            console.log("Query Time: " + totalTime);
+        });
 };
 
 for (var i=0; i<numberOfQueries; i++) {

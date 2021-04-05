@@ -2,7 +2,7 @@
 // node ingester/promis/getPromis.js ../promis/ 2014-01
 
 var fs = require('fs');
-var request = require('request');
+var fetch = require('node-fetch');
 
 var promisDir = process.argv[2];
 var formsDate = process.argv[3];
@@ -13,24 +13,28 @@ var sec = require('./sec');
 var base64 = new Buffer(sec.regOID + ":" + sec.token).toString('base64');
 var header = {'Authorization': "Basic " + base64};
 
-var options = {
+var request = {
     url: 'https://www.assessmentcenter.net/ac_api/' + formsDate + '/Forms/.json',
     port: 443,
     headers: header
 };
 
 
-var req = request(options, function (err, res, body) {
-    console.log("statusCode: ", res.statusCode);
-    fs.writeFile(allFiles, body);
-    processForms();
-});
+var req = fetch(request)
+    .then(res => {
+        console.log("statusCode: ", res.statusCode);
+        return res.buffer();
+    })
+    .then(buffer => {
+        fs.writeFile(allFiles, buffer);
+        processForms();
+    });
 
 var processForms = function(){
     fs.readFile(allFiles, function(err, data) {
         var allForms = JSON.parse(data);
         allForms.Form.forEach(function(form) {
-            var options = {
+            var request = {
                 url: 'https://www.assessmentcenter.net' + '/ac_api/' + formsDate + '/Forms/' + form.OID + '.json',
                 port: 443,
                 headers: header
@@ -38,15 +42,17 @@ var processForms = function(){
 
             console.log(form.Name);
 
-            var req = request(options, function (err, res, body) {
-                if (res) {
+            var req = fetch(request)
+                .then(res => {
                     console.log("statusCode: ", res.statusCode);
+                    return res.text();
+                })
+                .then(body => {
                     fs.writeFile(promisDir + "/forms" + formsDate + "/" + form.OID + ".json",
                         "{\"name\": \"" + form.Name + "\", \"content\":" + body + "}");
-                } else {
+                }, err => {
                     console.log("**** no response for " + form.Name);
-                }
-            });
+                });
         });
 
     });

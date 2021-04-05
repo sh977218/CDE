@@ -1,33 +1,39 @@
 const fs = require('fs');
-const request = require('request');
 const beautify = require("json-beautify");
+const fetch = require('node-fetch');
 const parseString = require('xml2js').parseString;
 
 function retrieveClassificationMapping() {
     let url = 'http://cadsrapi.nci.nih.gov/cadsrapi41/GetXML?query=gov.nih.nci.cadsr.domain.ClassificationScheme&gov.nih.nci.cadsr.domain.ClassificationScheme&startIndex=0&pageSize=2000&resultCounter=2000';
     return new Promise((resolve, reject) => {
-        request(url, function (error, response, body) {
-            let finalMapping = {};
-            if (error || response.statusCode !== 200) reject(error);
-            parseString(body, function (err, jsonRes) {
-                jsonRes['xlink:httpQuery'].queryResponse[0]['class'].forEach(function (thisClass) {
-                    let returnObj = {};
-                    thisClass.field.forEach(function (field) {
-                        if (field['$'].name === "publicID") returnObj.publicID = field['_'];
-                        if (field['$'].name === "version") returnObj.version = field['_'];
-                        if (field['$'].name === "longName") returnObj.longName = field['_'];
-                        if (field['$'].name === "workflowStatusName") returnObj.workflowStatusName = field['_'];
+        fetch(url)
+            .then(res => {
+                if (res.status !== 200) {
+                    reject(res.status + ' ' + res.statusText);
+                    return;
+                }
+                return res.text();
+            })
+            .then(body => {
+                let finalMapping = {};
+                parseString(body, function (err, jsonRes) {
+                    jsonRes['xlink:httpQuery'].queryResponse[0]['class'].forEach(function (thisClass) {
+                        let returnObj = {};
+                        thisClass.field.forEach(function (field) {
+                            if (field['$'].name === "publicID") returnObj.publicID = field['_'];
+                            if (field['$'].name === "version") returnObj.version = field['_'];
+                            if (field['$'].name === "longName") returnObj.longName = field['_'];
+                            if (field['$'].name === "workflowStatusName") returnObj.workflowStatusName = field['_'];
+                        });
+                        finalMapping[returnObj.publicID + "v" + returnObj.version] = {
+                            longName: returnObj.longName,
+                            workflowStatusName: returnObj.workflowStatusName
+                        };
                     });
-                    finalMapping[returnObj.publicID + "v" + returnObj.version] = {
-                        longName: returnObj.longName,
-                        workflowStatusName: returnObj.workflowStatusName
-                    };
                 });
-            });
-            console.log("Classifications obtained.");
-            resolve(finalMapping);
-        });
-
+                console.log("Classifications obtained.");
+                resolve(finalMapping);
+            }, reject);
     })
 }
 

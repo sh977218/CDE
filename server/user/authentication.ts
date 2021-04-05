@@ -1,12 +1,13 @@
-import { Express, Request, RequestHandler } from 'express';
+import { Express, Request, RequestHandler } from 'express'
+import fetch from 'node-fetch';
 import {
     deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
 } from 'passport';
-import { get, post } from 'request';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { Cb1, CbErr1, CbError2, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
+import { handle200, json, text } from 'shared/fetch';
 import { Parser } from 'xml2js';
 
 const localStrategy = require('passport-local').Strategy;
@@ -30,33 +31,34 @@ export function init(app: Express) {
 }
 
 export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
-    get(config.uts.ticketValidation + '?service=' + config.uts.service + '&ticket=' + tkt, (error, response, body) => {
-        /* istanbul ignore if */
-        if (error) {
-            errorLogger.error('getTgt: ERROR with request: ' + error, {stack: new Error().stack});
-            return cb(error);
-        }
-        // Parse xml result from ticket validation
-        parser.parseString(body, (err?: Error, jsonResult?: any) => {
-            /* istanbul ignore if */
-            if (err) {
-                return cb('ticketValidate: ' + err);
-            }
-            if (jsonResult['cas:serviceResponse'] &&
-                jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
-                // This statement gets the error message
-                return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
-            }
-            /* istanbul ignore else */
-            if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
-                jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
-                // Returns the username
-                return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
-            }
+    fetch(config.uts.ticketValidation + '?service=' + config.uts.service + '&ticket=' + tkt)
+        .then(handle200)
+        .then(text)
+        .then((body) => {
+            // Parse xml result from ticket validation
+            parser.parseString(body, (err?: Error, jsonResult?: any) => {
+                /* istanbul ignore if */
+                if (err) {
+                    return cb('ticketValidate: ' + err);
+                }
+                if (jsonResult['cas:serviceResponse'] &&
+                    jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
+                    // This statement gets the error message
+                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
+                }
+                /* istanbul ignore else */
+                if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
+                    jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
+                    // Returns the username
+                    return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
+                }
 
-            return cb('ticketValidate: invalid XML response!');
+                return cb('ticketValidate: invalid XML response!');
+            });
+        }, err => {
+            errorLogger.error('getTgt: ERROR with request: ' + err, {stack: new Error().stack});
+            return cb(err);
         });
-    });
 }
 
 export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<UserDocument>) {
@@ -68,21 +70,6 @@ export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<
     }
 
     updateUserIps(user._id, user.knownIPs, cb);
-}
-
-export function umlsAuth(username: string, password: string, cb: Cb1<any>) {
-    post(
-        config.umls.wsHost + '/restful/isValidUMLSUser',
-        {
-            form: {
-                licenseCode: config.umls.licenseCode,
-                user: username,
-                password,
-            }
-        }, (error, response, body) => {
-            cb(!error && response.statusCode === 200 ? body : undefined);
-        }
-    );
 }
 
 export function authBeforeVsac(req: Request, username: string, password: string,
@@ -97,11 +84,12 @@ export function authBeforeVsac(req: Request, username: string, password: string,
         if (req.body.green) {
             service = config.greenPublicUrl;
         }
-        get(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`,
-            (error, response, body) => {
+        fetch(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`)
+            .then(handle200)
+            .then(json)
+            .then((body) => {
                 let domain: string = '';
                 try {
-                    body = JSON.parse(body);
                     username = body.utsUser.username;
                     domain = body.idpUserOrg
                 } catch (e) {
@@ -113,8 +101,7 @@ export function authBeforeVsac(req: Request, username: string, password: string,
                 } else {
                     done(new Error('No UMLS User'));
                 }
-            }
-        );
+            });
     });
 }
 

@@ -2,13 +2,13 @@ import { Component, Input } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { pvGetLabel } from 'core/de/deShared';
 import { repeatFe, repeatFeQuestion } from 'core/form/fe';
+import { range } from 'shared/array';
 import {
     FormElement, FormElementFollow, FormQuestion, FormSectionOrFormFollow, PermissibleFormValue, QuestionValue
 } from 'shared/form/form.model';
 import { isInForm, isQuestion, isSection, iterateFeSync, questionMulti } from 'shared/form/fe';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { assertUnreachable } from 'shared/models.model';
-import { range } from 'shared/system/util';
 
 interface Style {
     backgroundColor?: string;
