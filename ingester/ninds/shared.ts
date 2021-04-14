@@ -1,13 +1,13 @@
+import * as DiffJson from 'diff-json';
 import { isEmpty } from 'lodash';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, findOneCde, findOneForm, formRawArtifact, imported, lastMigrationScript,
-    mergeElt,
-    updateCde, updateForm, updateRawArtifact
+    BATCHLOADER, compareElt, findOneCde, findOneForm, formRawArtifact, imported, lastMigrationScript, mergeElt, updateCde, updateForm,
+    updateRawArtifact
 } from 'ingester/shared/utility';
 import { formModel } from 'server/form/mongo-form';
 import { commentModel } from 'server/discuss/discussDb';
-import * as DiffJson from 'diff-json';
+import { CdeForm } from 'shared/form/form.model';
 
 export function doNindsClassification(existingCde: any, newCdeObj: any) {
     const nindsClassifications = existingCde.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
@@ -108,9 +108,15 @@ export async function loadNindsForm(nindsForm: any, cond: any, source: string) {
     return savedForm;
 }
 
-async function updateFormOption(existingFormObj, source) {
+async function updateFormOption(existingFormObj: CdeForm, source: string) {
     const options: any = {updateSource: true};
-    const currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
+    let currentRawArtifact = await formRawArtifact(existingFormObj.tinyId, source);
+    if (!currentRawArtifact) {
+        currentRawArtifact = {
+            formElements: []
+        };
+        console.log(`no raw artifact: tinyId ${existingFormObj.tinyId} source: ${source}.`);
+    }
     const diff = DiffJson.diff(currentRawArtifact.formElements, existingFormObj.formElements);
     if (!isEmpty(diff)) {
         options.skipFormElements = true;

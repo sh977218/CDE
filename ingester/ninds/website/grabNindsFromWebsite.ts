@@ -1,4 +1,4 @@
-import { Builder, By, until } from 'selenium-webdriver';
+import { Builder, By } from 'selenium-webdriver';
 import { NindsModel } from 'ingester/createMigrationConnection';
 
 require('chromedriver');
@@ -170,7 +170,6 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
         const trElements = await subDomainTable.findElements(By.xpath('./tbody/tr'));
         for (const trElement of trElements) {
             const tds = await trElement.findElements(By.xpath('./td'));
-            const formName = await tds[0].getText();
             const formIdElements = await tds[0].findElements(By.xpath('./a'));
             let formId = '';
             let downloadLink = '';
@@ -181,6 +180,7 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
                 console.log('No formId found.');
                 process.exit(1);
             }
+            const formName = await tds[0].getText();
             const ninds: any = {
                 url: disorder.url,
                 diseaseName: disorder.disorderName,
@@ -191,7 +191,7 @@ async function doDomainTable(disorder: any, domainElement: any, domainName: stri
                 formId,
                 downloadLink
             };
-            const existingNinds = await NindsModel.findOne(ninds);
+            const existingNinds = await NindsModel.findOne(ninds).lean();
             if (existingNinds) {
                 // tslint:disable-next-line:max-line-length
                 console.log(`| ${disorder.disorderName} | ${subDiseaseName} |  ${domainName} | ${subDomainName} | ${formId} | ${formName} | has loaded. Skipping...`);
@@ -257,12 +257,20 @@ async function doDisorder(disorder: any) {
     await driver.close();
 }
 
+async function fixNindsIssue() {
+    const f1006: any = await NindsModel.findOne({formId: 'F1006'});
+    await NindsModel.updateMany({formId: {$in: ['F0807']}}, {cdes: f1006.cdes});
+    console.log('Fixed issues from README.');
+}
+
 async function run() {
     console.log(`Start loader at ${new Date()}`);
 //    for (const disorder of DISORDERS.slice(0, 1)) {
     for (const disorder of DISORDERS) {
         await doDisorder(disorder);
     }
+    // some issue in README
+    await fixNindsIssue();
 }
 
 run().then(() => {

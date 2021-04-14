@@ -30,7 +30,7 @@ export const sourceMap: any = {
     NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load RADx-UP on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NINDS on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {
@@ -797,15 +797,14 @@ export function sortIds(ids: any, source: string) {
     return sortSourceIdentifiers.concat(sortOtherSourceIdentifiers);
 }
 
-export function findOneCde(cdes: any[], variableName = '') {
+export function findOneCde(cdes: any[]) {
     const cdesLength = cdes.length;
     if (cdesLength === 0) {
         return null;
     } else if (cdesLength === 1) {
         return cdes[0];
     } else {
-        console.log(`Multiple cdes found. variableName: ${variableName}`);
-        process.exit(1);
+        throw new Error(`Multiple cdes found. variableName: ${cdes[0].tinyId}`);
     }
 }
 
@@ -816,8 +815,7 @@ export function findOneForm(forms: any[]) {
     } else if (formsLength === 1) {
         return forms[0];
     } else {
-        console.log(`Multiple forms found. TinyIds: ${forms[0].tinyId}`);
-        process.exit(1);
+        throw new Error(`Multiple forms found. TinyIds: ${forms[0].tinyId}`);
     }
 }
 

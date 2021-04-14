@@ -5,11 +5,11 @@ import { createNindsCde } from 'ingester/ninds/website/cde/cde';
 import { createNindsForm } from 'ingester/ninds/website/form/form';
 import { doNindsClassification, loadNindsCde, loadNindsForm } from 'ingester/ninds/shared';
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { formModel } from 'server/form/mongo-form';
 import {
     BATCHLOADER, findOneCde, findOneForm, imported, lastMigrationScript, retiredElt, updateCde, updateForm,
     updateRawArtifact
 } from 'ingester/shared/utility';
-import { formModel } from 'server/form/mongo-form';
 
 function removeNindsNonePreclinicalClassification(elt: any) {
     const nindsClassifications = elt.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');
@@ -24,16 +24,17 @@ function removeNindsNonePreclinicalClassification(elt: any) {
     elt.classification = otherClassification;
 }
 
-function isPhq9(nindsForms) {
+function isPhq9(nindsForms: any[]) {
     const phq9FormIds = ['F2032', 'F0374'];
     return nindsForms.filter(nindsForm => phq9FormIds.indexOf(nindsForm.formId) !== -1).length > 0;
 }
 
 function loadNindsCdes() {
     return new Promise(async (resolve, reject) => {
+
         const cdeIds = await NindsModel.distinct('cdes.CDE ID');
 //        const cdeIds = await NindsModel.distinct('cdes.CDE ID', {formId: 'F0004'});
-//        const cdeIds = ['C00708'];
+//        const cdeIds = ['C19372'];
         eachLimit(cdeIds, 500, async cdeId => {
             const nindsForms = await NindsModel.find({'cdes.CDE ID': cdeId},
                 {
@@ -48,7 +49,12 @@ function loadNindsCdes() {
             const de = await createNindsCde(nindsForms);
             const cond = {
                 archived: false,
-                'ids.id': cdeId,
+                ids: {
+                    $elemMatch: {
+                        source: 'NINDS',
+                        id: cdeId
+                    }
+                },
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
             if (isPhq9(nindsForms)) {
@@ -79,12 +85,18 @@ function loadNindsCdes() {
 
 const sameFormIdsMap: any = {};
 
-async function duplicateFormIds(formIds) {
+async function duplicateFormIds(formIds: string[]) {
     const duplicateFormIds = [];
     for (const formId of formIds) {
         const cond = {
             archived: false,
             'ids.id': formId,
+            ids: {
+                $elemMatch: {
+                    source: 'NINDS',
+                    id: formId
+                }
+            },
             $where: 'this.ids.length > 1',
             'registrationState.registrationStatus': {$ne: 'Retired'}
         };
@@ -96,7 +108,11 @@ async function duplicateFormIds(formIds) {
             process.exit(1);
         } else {
             const formObj = forms[0].toObject();
-            const nindsIds = formObj.ids.filter(i => i.source === 'NINDS');
+            const nindsIds = formObj.ids.filter((i: any) => i.source === 'NINDS');
+            if (nindsIds.length === 0) {
+                console.log(`form ${formId} has 0 NINDS ID`);
+                process.exit(1);
+            }
             sameFormIdsMap[nindsIds[0].id] = [];
             for (let i = 1; i < nindsIds.length; i++) {
                 const id = nindsIds[i];
@@ -113,14 +129,19 @@ function loadNindsForms() {
     return new Promise(async (resolve, reject) => {
         const formIds = await NindsModel.distinct('formId', {'cdes.0': {$exists: true}});
 //        const formIds = await NindsModel.distinct('formId');
-//        const formIds = ['F0004'];
+//        const formIds = ['F2105'];
         formIds.sort();
         await duplicateFormIds(formIds);
 //        eachLimit(formIds.filter(formId => ['F0807', 'F1006'].indexOf(formId) !== -1), 1, async formId => {
         eachLimit(formIds, 1, async formId => {
             const cond: any = {
                 archived: false,
-                'ids.id': formId,
+                ids: {
+                    $elemMatch: {
+                        source: 'NINDS',
+                        id: formId
+                    }
+                },
                 'registrationState.registrationStatus': {$ne: 'Retired'}
             };
             const sameFormIds: any = sameFormIdsMap[formId];
@@ -174,9 +195,7 @@ function retireNindsCdes() {
                     console.log(`retire Cde: ${cdeObj.tinyId}`);
                     await updateCde(cdeObj, BATCHLOADER);
                 }
-                if (retiredCdeCount % 100 === 0) {
-                    console.log('retiredCdeCount: ' + retiredCdeCount);
-                }
+                console.log('retiredCdeCount: ' + retiredCdeCount);
             })
             .then(() => {
                 console.log('retiredCdeCount: ' + retiredCdeCount);
@@ -208,9 +227,7 @@ function retireNindsForms() {
                     console.log(`retire Form: ${formObj.tinyId}`);
                     await updateForm(formObj, BATCHLOADER);
                 }
-                if (retiredFormCount % 100 === 0) {
-                    console.log('retiredFormCount: ' + retiredFormCount);
-                }
+                console.log('retiredFormCount: ' + retiredFormCount);
             })
             .then(() => {
                 console.log('retiredFormCount: ' + retiredFormCount);
