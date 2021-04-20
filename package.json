@@ -117,7 +117,7 @@
     "md5-file": "3.1.1",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
-    "mongodb": "^3.6.2",
+    "mongodb": "3.6.5",
     "mongodb2": "npm:mongodb@^2.*",
     "mongoose": "5.6.7",
     "mongoose-schema-jsonschema": "^1.2.1",
