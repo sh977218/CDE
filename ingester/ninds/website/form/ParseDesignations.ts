@@ -11,7 +11,7 @@ export function parseDesignations(nindsForms: any[]) {
 
     const _formNameArray: string[] = uniq(formNameArray);
     if (_formNameArray.length !== 1) {
-        console.log(nindsForms[0].formId + ' _formNameArray not good');
+        console.log(nindsForms[0].formId + ' _formNameArray not good' + nindsForms[0].formId);
         process.exit(1);
     }
     const designations: any[] = [];

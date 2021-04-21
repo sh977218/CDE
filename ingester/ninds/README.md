@@ -16,9 +16,8 @@ The data is grabbed from this link: https://www.commondataelements.ninds.nih.gov
 * Copy 'Domain' under 'Disease'.
 
 ## Fixes
-* F0807 and F1006 is merged on CDE production, but F0807 on NINDS is empty.
-https://www.commondataelements.ninds.nih.gov/Parkinson%27s%20Disease
-run`db.getCollection('NINDS').find({formId:{$in:['F0807', 'F1006']}})` and copy cdes from F1006 to F0807
+* F0807 and F1006 is merged on CDE production, but F0807 on NINDS is empty. https://www.commondataelements.ninds.nih.gov/Parkinson%27s%20Disease \
+run `db.getCollection('NINDS').find({formId:{$in:['F0807', 'F1006']}})` and copy cdes from F1006 to F0807.
 
 # Why not load data from exports
 export files are under S:\MLB\CDE\NINDS\export\
