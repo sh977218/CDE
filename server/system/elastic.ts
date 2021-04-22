@@ -772,16 +772,25 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
 
 let lock = false;
 
+function releaseElasticSearchExportLock() {
+    lock = false;
+}
+
+function lockElasticSearchExportLock() {
+    lock = true;
+}
+
 export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError1<DataElementElastic | void>): void;
 export function elasticSearchExport(type: 'form', query: any, dataCb: CbError1<CdeFormElastic | void>): void;
 export async function elasticSearchExport(type: ModuleItem, query: any,
                                           dataCb: CbError1<DataElementElastic | void> | CbError1<CdeFormElastic | void>) {
+    setTimeout(releaseElasticSearchExportLock, 60 * 60 * 5);
     const streamCb = dataCb as CbError1<ItemElastic | void>;
     if (lock) {
         return streamCb(new Error('Servers busy'));
     }
 
-    lock = true;
+    lockElasticSearchExportLock();
 
     query.size = 500;
     delete query.aggregations;
@@ -793,7 +802,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
     function scrollThrough(response: any) {
         esClient.scroll({scrollId: response._scroll_id, scroll: '1m'} as any, (err: Error | null, response: any) => {
             if (err) {
-                lock = false;
+                releaseElasticSearchExportLock();
                 errorLogger.error('Error: Elastic Search Scroll Access Error',
                     {
                         origin: 'system.elastic.elasticsearch',
@@ -808,7 +817,7 @@ export async function elasticSearchExport(type: ModuleItem, query: any,
 
     function processScroll(response: any) {
         if (response.hits.hits.length === 0) {
-            lock = false;
+            releaseElasticSearchExportLock();
             streamCb(null);
         } else {
             for (const hit of response.hits.hits) {
