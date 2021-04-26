@@ -57,7 +57,7 @@
     "/windows"
   ],
   "vsac": {
-    "host": "vsac.nlm.nih.gov",
+    "host": "https://vsac.nlm.nih.gov",
     "ticket": {
       "path": "/vsac/ws/Ticket"
     },

@@ -2,6 +2,7 @@ import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 
 export type ObjectId = any; // string(client and transport) mongoose.Types.ObjectId(server) but not at the same time
+export type ArrayToType<U extends readonly string[]> = U[number];
 
 export function assertThrow(): void {
     throw new Error('Please submit a bug report.');
