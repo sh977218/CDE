@@ -1,15 +1,17 @@
 import { Response } from 'node-fetch';
 
-export function handle200(res: Response) {
-    if (res.status !== 200) {
-        throw new Error(res.status + ' ' + res.statusText);
+export function isStatus(status: number[]) {
+    return (res: Response): Response => {
+        if (!status.includes(res.status)) {
+            throw `http status code expected ${status}, got ${res.status}(${res.statusText})`;
+        }
+        return res;
     }
-    return res;
 }
 
-export function handleErrors(res: Response) {
+export function handleErrors(res: Response): Response {
     if (!res.ok) { // status 200-299
-        throw new Error(res.status + ' ' + res.statusText);
+        throw 'http error code ' + res.status + ' ' + res.statusText;
     }
     return res;
 }

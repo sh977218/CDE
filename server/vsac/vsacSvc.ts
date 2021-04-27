@@ -24,7 +24,7 @@ function getJwt(): Promise<string> {
     }).then(res => {
         const bearer = res.headers.raw()['authorization'][0];
         if (!bearer.startsWith('Bearer ')) {
-            throw 'not logged in';
+            throw 'vsac not logged in';
         }
         jwt = bearer.substr(7);
         return jwt;

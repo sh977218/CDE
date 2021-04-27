@@ -4,7 +4,7 @@ import { searchBySystemAndCode, CDE_SYSTEM_TO_UMLS_SYSTEM_MAP } from 'server/uts
 import { umlsPvFilter } from 'shared/de/umls';
 
 export function validatePvs(permissibleValues: PermissibleValue[]): Promise<void> {
-    if (!permissibleValues) {
+    if (!Array.isArray(permissibleValues)) {
         return Promise.resolve();
     }
     return permissibleValues
@@ -27,9 +27,13 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
                     return Promise.reject('connection error');
                 }
                 if (dataRes.startsWith('<html')) {
-                    return Promise.reject('does not exist ' + code);
+                    return Promise.reject('does not exist: error page');
                 }
-                return JSON.parse(dataRes).result.map((r: any) => r.name);
+                const response = JSON.parse(dataRes);
+                if (!Array.isArray(response.result)) {
+                    return Promise.reject('does not exist: ' + response.error);
+                }
+                return (response.result as any[]).map((r: any) => r.name as string);
             }
         )
     ).then(

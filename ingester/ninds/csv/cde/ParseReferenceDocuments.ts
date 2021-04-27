@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio';
 import { EXCLUDE_REF_DOC, sortReferenceDocuments } from 'ingester/shared/utility';
 import { getCell } from 'ingester/ninds/csv/shared/utility';
 import fetch from 'node-fetch';
-import { handle200, text } from 'shared/fetch';
+import { isStatus, text } from 'shared/fetch';
 
 const PUBMED_REF_DOC_CACHE: any = {};
 
@@ -21,7 +21,7 @@ function fetchPubmedRef(pmId: string) {
                     console.log('fetchPubmedRef Error: ' + err);
                     process.exit(1);
                 })
-                .then(handle200)
+                .then(isStatus([200]))
                 .then(text)
                 .then(body => {
                     const $ = cheerio.load(body);

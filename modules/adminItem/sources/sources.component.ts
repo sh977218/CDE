@@ -12,10 +12,7 @@ export class SourcesComponent {
 
     @Input() set elt(e: Item) {
         e.sources.forEach((s: any) => {
-            let url = `/server/de/originalSource/${s.sourceName}/${e.tinyId}`;
-            if (e.elementType === 'form') {
-                url = `/server/form/originalSource/${s.sourceName}/${e.tinyId}`;
-            }
+            const url = `/server/${e.elementType === 'form' ? 'form' : 'de'}/originalSource/${s.sourceName}/${e.tinyId}`;
             this.http.head(url).subscribe(
                 () => this.sourceUrls[s.sourceName] = url,
                 err => delete this.sourceUrls[s.sourceName]

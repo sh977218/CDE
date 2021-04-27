@@ -7,7 +7,7 @@ import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { Cb1, CbErr1, CbError2, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
-import { handle200, json, text } from 'shared/fetch';
+import { isStatus, json, text } from 'shared/fetch';
 import { Parser } from 'xml2js';
 
 const localStrategy = require('passport-local').Strategy;
@@ -32,7 +32,7 @@ export function init(app: Express) {
 
 export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
     fetch(config.uts.ticketValidation + '?service=' + config.uts.service + '&ticket=' + tkt)
-        .then(handle200)
+        .then(isStatus([200]))
         .then(text)
         .then((body) => {
             // Parse xml result from ticket validation
@@ -85,7 +85,7 @@ export function authBeforeVsac(req: Request, username: string, password: string,
             service = config.greenPublicUrl;
         }
         fetch(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`)
-            .then(handle200)
+            .then(isStatus([200]))
             .then(json)
             .then((body) => {
                 let domain: string = '';

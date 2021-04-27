@@ -29,8 +29,12 @@ public class ValidRulesPvUmls extends NlmCdeBaseTest {
         clickElement(By.id("selectStatus"));
         clickElement(By.xpath("//*[contains(@class,'mat-option-text') and contains(.,'Incomplete')]"));
         clickElement(By.id("exportVR"));
+        textNotPresent("Validation finished with Errors");
         textPresent("Pv Umls");
         int numberResults = driver.findElements(By.xpath("//tr[td]")).size();
-        Assert.assertTrue(numberResults == 2 || numberResults == 3, "2 or 3 depending on test order");
+        textPresent("bzGjaFPtQCs");
+        textPresent("eAKm4RYdgeB");
+        // possibly HvzRPSbkUgc
+        Assert.assertTrue(numberResults == 2 || numberResults == 3, "2 or 3 depending on test order, but got " + numberResults);
     }
 }
