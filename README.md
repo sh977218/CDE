@@ -20,11 +20,11 @@ export NODE_ENV=test
 ```
 The NODE_CONFIG credentials are used for UMLS and VSAC ticket service validation and TGT used in the application whether the user is signed in or not. (Federated service validation is used for user sign in.)
 
-### Configure Elastic Search
+### Configure Mongo db
 **MongoDB** must run in **Replicate mode**. 
 In a separate terminal, run  
 ```sh
-$> mongod --replSet rs0
+$> mongod --replSet rs0 --dbpath /path/to/data/db
 ```
 
 In another terminal, open up mongo. 
@@ -63,7 +63,7 @@ db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", 
 
 ## Restart mongo server with auth on.
 ```sh
-$> mongod --auth
+$> mongod --auth --replSet rs0 --dbpath /path/to/data/db
 ```
 
 ## Preparing to run

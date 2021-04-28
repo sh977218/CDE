@@ -17,6 +17,11 @@ const appRoutes: Routes = [
         data: {title: 'API Documentation', preload: false}
     },
     {
+        path: 'about',
+        loadChildren: () => import('system/public/about.module').then(m => m.AboutModule),
+        data: {title: 'About', preload: false}
+    },
+    {
         path: 'boardList',
         loadChildren: () => import('board/public/boardList.module').then(m => m.BoardListModule),
         data: {title: 'Public Boards', preload: false}
