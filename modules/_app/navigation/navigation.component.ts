@@ -112,6 +112,12 @@ export class NavigationComponent {
             link: '/api',
         },
         {
+            label: 'About',
+            id: 'aboutLink',
+            section: SECTIONS.api,
+            link: '/about',
+        },
+        {
             label: 'Help',
             id: 'helpLink',
             section: SECTIONS.help,
