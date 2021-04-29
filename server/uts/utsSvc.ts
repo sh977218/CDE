@@ -4,9 +4,7 @@ import { Agent } from 'https';
 import fetch from 'node-fetch';
 import { respondError } from 'server/errorHandler/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
-import { json, text } from 'shared/fetch';
-import { Cookie, CookieJar } from 'tough-cookie';
-import { promisify } from 'util';
+import { text } from 'shared/fetch';
 
 export const config = Config as any;
 
@@ -27,7 +25,6 @@ function handleReject(message: string) {
 setInterval(async () => {
     _TGT = undefined;
     await getTGT().catch(() => _TGT = undefined);
-    getVsacCookies().catch(handleReject('get vsac cookies ERROR'));
 }, 60 * 60 * 6 * 1000);
 
 let _TGT: Promise<string> | undefined; // TGT string is tgtUrl + '/' + TGTCode
@@ -65,27 +62,6 @@ function getTGT() {
         );
 }
 
-function getVsacCookies(): Promise<string[]> {
-    if (_vsacCookies) {
-        return _vsacCookies;
-    }
-    return _vsacCookies = fetch('https://vsac.nlm.nih.gov/vsac/login', {
-        // body: stringify({
-        //     username: config.vsac.username,
-        //     password: config.vsac.password
-        // }),
-        method: 'POST',
-        body: `username=${config.vsac.username}&password=${config.vsac.password}`,
-        headers: {
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    }).then(
-        response => response.headers.raw()['set-cookie'] || [],
-        handleReject('get vsac cookies ERROR')
-    );
-}
-
 function getTicket(): Promise<string> {
     return getTGT()
         .then(tgt => fetch(config.uts.tgtUrl + '/' + tgt + '?service=' + config.uts.service, {
@@ -96,58 +72,6 @@ function getTicket(): Promise<string> {
         }))
         .then(text)
         .then(checkForVsacErrorPage, handleReject('get ticket ERROR'));
-}
-
-function getRevision(oid: string, uri: string, j: CookieJar): Promise<string> {
-    return fetch(`https://vsac.nlm.nih.gov/vsac/pc/vs/valueset/${oid}/detail?label=Latest`, {
-        method: 'GET',
-        headers: {
-            cookie: j.getCookieStringSync(uri)
-        }
-    })
-        .then(json)
-        .then(
-            body => body.revision,
-            handleReject('get revision ERROR')
-        );
-
-}
-
-export function searchValueSet(oid: string, term = '', page = '1'): Promise<string> {
-    const uri = 'https://vsac.nlm.nih.gov/vsac/pc/code/codes';
-    return getVsacCookies()
-        .then(vsacCookies => {
-            const j = new CookieJar();
-            vsacCookies.forEach(cookieString => {
-                const c = Cookie.parse(cookieString);
-                if (c) {
-                    j.setCookieSync(c, uri);
-                }
-            });
-            return j;
-        })
-        .then(j => {
-            return getRevision(oid, uri, j)
-                .then(revision => fetch(uri, {
-                    method: 'POST',
-                    body: (term
-                            /* tslint:disable */
-                            ? '{"_search":true,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[{\\"field\\":\\"displayname\\",\\"op\\":\\"cn\\",\\"data\\":\\"$term\\"}]}","filterFields":{"groupOp":"AND","rules":[{"field":"displayname","op":"cn","data":"$term"}]}}: '
-                            : '{"_search":false,"rows":"120","page":"$page","sortName":"code","sortOrder":"asc","oid":"$oid","revision":"$revision","expRevision":null,"label":"Latest","effDate":null,"filters":"{\\"groupOp\\":\\"AND\\",\\"rules\\":[]}","filterFields":{"groupOp":"AND","rules":[]}}:'
-                            /* tslint:enable */
-                    )
-                        .replace('$oid', oid)
-                        .replace('$page', page)
-                        .replace('$revision', revision)
-                        .replace(/\$term/g, term),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        cookie: j.getCookieStringSync(uri)
-                    }
-                }))
-                .then(text)
-                .then(checkForVsacErrorPage, handleReject('get revision ERROR'));
-        });
 }
 
 export function getValueSet(oid: string): Promise<string> {

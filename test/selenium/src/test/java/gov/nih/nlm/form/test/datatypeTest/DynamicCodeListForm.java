@@ -4,6 +4,7 @@ import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class DynamicCodeListForm extends NlmCdeBaseTest {
 
@@ -19,13 +20,13 @@ public class DynamicCodeListForm extends NlmCdeBaseTest {
                 "Actually Contains: " + options2);
     }
 
-//    @Test
-//    public void dynamicCodeListFormTest() {
-//        try {
-//            doIt();
-//        } catch (Throwable e) {
-//            doIt();
-//        }
-//    }
+    @Test
+    public void dynamicCodeListFormTest() {
+        try {
+            doIt();
+        } catch (Throwable e) {
+            doIt();
+        }
+    }
 
 }

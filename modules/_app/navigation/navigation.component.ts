@@ -15,10 +15,95 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Feedback } from 'ngx-feedback2/entity/feedback';
 import { interruptEvent } from 'non-core/browser';
+import { cumulative, range } from 'shared/array';
+import { assertTrue } from 'shared/models.model';
 import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
 
 const NAV_Z_INDEX_STANDARD = '1000';
 const NAV_Z_INDEX_ACTIVE = '1050';
+enum SECTIONS {
+    home,
+    de,
+    form,
+    create,
+    board,
+    api,
+    about,
+    help,
+    searchSettings,
+    user,
+}
+const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
+    home: [
+        '/home',
+        '/404',
+    ],
+    de: [
+        '/cde/search',
+        '/deView',
+    ],
+    form: [
+        '/form/search',
+        '/formView',
+        '/formEdit',
+    ],
+    create: [
+        '/createCde',
+        '/createForm',
+    ],
+    board: [
+        '/quickBoard',
+        '/board',
+        '/boardList',
+        '/myBoards',
+    ],
+    api: [
+        '/api',
+    ],
+    about: [
+        '/about',
+    ],
+    help: [
+        '/videos',
+        '/guides',
+        '/whatsNew',
+        '/resources',
+        '/contactUs',
+    ],
+    searchSettings: [
+        '/searchPreferences',
+    ],
+    user: [
+        '/login',
+        '/settings/profile',
+        '/settings/notification',
+        '/settings/viewingHistory',
+        '/settings/publishedForms',
+        '/settings/myDrafts',
+        '/settings/myOrgDrafts',
+        '/settings/allDrafts',
+        '/settings/myComments',
+        '/settings/myOrgComments',
+        '/settings/allComments',
+        '/settings/orgAdmin',
+        '/settings/orgCurator',
+        '/settings/orgsEdit',
+        '/settings/tagsManagement',
+        '/settings/propertiesManagement',
+        '/settings/statusValidationRules',
+        '/settings/stewardOrgTransfer',
+        '/settings/users',
+        '/settings/articles',
+        '/settings/resources',
+        '/settings/siteAdmins',
+        '/settings/serverStatus',
+        '/settings/fhirApps',
+        '/settings/idSources',
+        '/classificationManagement',
+        '/siteAudit',
+    ],
+};
+const [sections, sectionIndexes, sectionLabels] = scanSections(SECTIONS_MAP);
 
 type CdeNavMenuItem = ({ label: string } | { labelFn: () => string }) &
     {
@@ -114,7 +199,7 @@ export class NavigationComponent {
         {
             label: 'About',
             id: 'aboutLink',
-            section: SECTIONS.api,
+            section: SECTIONS.about,
             link: '/about',
         },
         {
@@ -188,7 +273,7 @@ export class NavigationComponent {
 
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                this.sectionActive = getWebsiteSection(window.location.pathname);
+                this.sectionActive = getWebsiteSection(window.location.pathname, sections, sectionIndexes, sectionLabels);
             }
         });
     }
@@ -326,108 +411,22 @@ export class NavigationComponent {
     }
 }
 
-const SECTION_LIST: readonly string[] = Object.freeze([
-    // home
-    '/home',
-    '/404',
-    // de
-    '/cde/search',
-    '/deView',
-    // form
-    '/form/search',
-    '/formView',
-    '/formEdit',
-    // create
-    '/createCde',
-    '/createForm',
-    // board
-    '/quickBoard',
-    '/board',
-    '/boardList',
-    '/myBoards',
-    // api
-    '/api',
-    // help
-    '/videos',
-    '/guides',
-    '/whatsNew',
-    '/resources',
-    '/contactUs',
-    // search settings
-    '/searchPreferences',
-    // user
-    '/login',
-    '/settings/profile',
-    '/settings/notification',
-    '/settings/viewingHistory',
-    '/settings/publishedForms',
-    '/settings/myDrafts',
-    '/settings/myOrgDrafts',
-    '/settings/allDrafts',
-    '/settings/myComments',
-    '/settings/myOrgComments',
-    '/settings/allComments',
-    '/settings/orgAdmin',
-    '/settings/orgCurator',
-    '/settings/orgsEdit',
-    '/settings/tagsManagement',
-    '/settings/propertiesManagement',
-    '/settings/statusValidationRules',
-    '/settings/stewardOrgTransfer',
-    '/settings/users',
-    '/settings/articles',
-    '/settings/resources',
-    '/settings/siteAdmins',
-    '/settings/serverStatus',
-    '/settings/fhirApps',
-    '/settings/idSources',
-    '/classificationManagement',
-    '/siteAudit',
-]);
-
-enum SECTIONS { // one more than last index
-    home = 2,
-    de  = 4,
-    form = 7,
-    create = 9,
-    board = 13,
-    api = 14,
-    help = 19,
-    searchSettings = 20,
-    user = 47,
-}
-
-function getWebsiteSection(path: string): SECTIONS {
+function getWebsiteSection(path: string, sections: string[], bucketIndexes: number[], bucketLabels: SECTIONS[]): SECTIONS {
     if (!path) {
         return SECTIONS.home;
     }
-    const index = SECTION_LIST.indexOf(path);
-    if (index < 0) {
-        return SECTIONS.home;
+    const index = sections.indexOf(path);
+    const size = bucketIndexes.length;
+    let j = 0;
+    while (index >= bucketIndexes[j]) {
+        assertTrue(j < size);
+        j++;
     }
-    if (index < SECTIONS.home) {
-        return SECTIONS.home;
-    }
-    if (index < SECTIONS.de) {
-        return SECTIONS.de;
-    }
-    if (index < SECTIONS.form) {
-        return SECTIONS.form;
-    }
-    if (index < SECTIONS.create) {
-        return SECTIONS.create;
-    }
-    if (index < SECTIONS.board) {
-        return SECTIONS.board;
-    }
-    if (index < SECTIONS.api) {
-        return SECTIONS.api;
-    }
-    if (index < SECTIONS.help) {
-        return SECTIONS.help;
-    }
-    if (index < SECTIONS.searchSettings) {
-        return SECTIONS.searchSettings;
-    }
-    return SECTIONS.user;
+    return bucketLabels[j];
+}
+
+function scanSections(sections: typeof SECTIONS_MAP): [string[], number[], number[]] {
+    const sectionsArray = Object.values(sections);
+    const indexSums = cumulative(sectionsArray, (a, s) => a + s.length, 0);
+    return [([] as string[]).concat(...sectionsArray), indexSums, range(indexSums.length)];
 }

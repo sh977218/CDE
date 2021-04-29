@@ -2,13 +2,11 @@ package gov.nih.nlm.cde.test.datatype;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
     @Test
-    public void dynamicCodeLisDatatype() {
+    public void dynamicCodeListDatatype() {
         String cdeName = "Surgical Procedure Hand Laparoscopic Port Anatomic Site";
         String datatype = "Dynamic Code List";
 
