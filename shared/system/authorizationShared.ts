@@ -1,12 +1,11 @@
 import * as _intersection from 'lodash/intersection';
 import * as _union from 'lodash/union';
-import { Board, Comment, Item, User } from 'shared/models.model';
+import { ArrayToType, Board, Comment, Item, User } from 'shared/models.model';
 
-export type UserRoles = 'DocumentationEditor' | 'BoardPublisher' | 'CommentAuthor' |
-    'CommentReviewer' | 'AttachmentReviewer' | 'OrgAuthority';
+export const rolesEnum = ['DocumentationEditor', 'BoardPublisher', 'CommentAuthor',
+    'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority'] as const;
 
-export const rolesEnum: string[] = ['DocumentationEditor', 'BoardPublisher', 'CommentAuthor',
-    'CommentReviewer', 'AttachmentReviewer', 'OrgAuthority'];
+export type UserRoles = ArrayToType<typeof rolesEnum>;
 
 export function canComment(user?: User): boolean {
     return hasRole(user, 'CommentAuthor') || hasRole(user, 'CommentReviewer') || isOrgCurator(user);
@@ -52,7 +51,7 @@ export function addRole(user: User, role: UserRoles) {
     }
 }
 
-export function hasRole(user?: User, role?: string): boolean {
+export function hasRole(user?: User, role?: UserRoles): boolean {
     if (!user || !role) {
         return false;
     }

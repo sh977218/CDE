@@ -26,20 +26,19 @@ public class MiscUTS extends NlmCdeBaseTest{
         get(baseUrl + "/server/uts/umlsAtomsBridge/111/LNC").then().statusCode(403);
     }
 
-    // TODO Re-enable
-//    @Test
-//    public void valueSetTerm() {
-//        String response = get(baseUrl + "/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?" +
-//                "term=azilsartan%20medoxomil%2040%20MG%20Oral%20Tablet").asString();
-//        Assert.assertTrue(response.contains("records\":1"));
-//        Assert.assertTrue(response.contains("displayname\":\"azilsartan medoxomil 40 MG Oral Tablet\""));
-//    }
-//
-//    @Test
-//    public void valueSetPage() {
-//        String response = get(baseUrl + "/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?page=2").asString();
-//        Assert.assertTrue(response.contains("page\":2"), "actual: " + response);
-//    }
-//
+    @Test
+    public void valueSetTerm() {
+        String response = get(baseUrl + "/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?" +
+                "term=azilsartan%20medoxomil%2040%20MG%20Oral%20Tablet").asString();
+        Assert.assertTrue(response.contains("records\":1"));
+        Assert.assertTrue(response.contains("displayname\":\"azilsartan medoxomil 40 MG Oral Tablet\""));
+    }
+
+    @Test
+    public void valueSetPage() {
+        String response = get(baseUrl + "/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?page=2").asString();
+        Assert.assertTrue(response.contains("page\":2"), "actual: " + response);
+    }
+
 
 }

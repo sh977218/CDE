@@ -2,8 +2,9 @@ import { Router } from 'express';
 import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import { config } from 'server/system/parseConfig';
 import {
-    getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, searchValueSet, umlsCuiFromSrc
+    getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, umlsCuiFromSrc
 } from 'server/uts/utsSvc';
+import { searchValueSet } from 'server/vsac/vsacSvc';
 import { parseString } from 'xml2js';
 
 export function module() {

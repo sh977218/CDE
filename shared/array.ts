@@ -1,5 +1,13 @@
 import { CbRet3 } from 'shared/models.model';
 
+export function cumulative<T, U>(array: U[],
+                                 mappingFn: (previousValue: T, currentValue: U, currentIndex: number, array: U[]) => T,
+                                 initialValue : T
+) {
+    let accumulator = initialValue;
+    return array.map((a, i, array) => accumulator = mappingFn(accumulator, a, i, array));
+}
+
 export function partition<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]>): [T[], T[]] {
     return arr.reduce((result: [T[], T[]], e: T, i: number, arr: T[]) => {
         condition(e, i, arr)
