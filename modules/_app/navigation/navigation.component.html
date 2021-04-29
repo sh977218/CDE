@@ -1,5 +1,5 @@
 <header class="app-toolbar">
-    <uswds-banner class="d-md-block"></uswds-banner>
+    <uswds-banner *ngIf="!isMobile"></uswds-banner>
     <cde-ie-banner></cde-ie-banner>
     <mat-toolbar class="noPrint">
         <mat-toolbar-row #majorBar class="cde-nav-major">
@@ -249,5 +249,6 @@
                 </div>
             </mat-toolbar-row>
         </mat-toolbar>
+        <uswds-banner *ngIf="isMobile"></uswds-banner>
     </footer>
 </ng-template>
