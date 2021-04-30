@@ -1,7 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import {
     ApplicationRef,
-    Component, ComponentFactoryResolver, ElementRef, EmbeddedViewRef, EventEmitter, forwardRef, Inject, Injector, Output, Renderer2
+    Component,
+    ComponentFactoryResolver,
+    ElementRef,
+    EmbeddedViewRef,
+    EventEmitter,
+    forwardRef,
+    HostListener,
+    Inject,
+    Injector,
+    Output,
+    Renderer2
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu'
@@ -136,6 +146,7 @@ export class NavigationComponent {
     isOrgAuthority = isOrgAuthority;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
+    isMobile: boolean = (window.innerWidth < 768);
     menuList: CdeNavMenu = [
         {
             label: 'CDEs',
@@ -276,6 +287,11 @@ export class NavigationComponent {
                 this.sectionActive = getWebsiteSection(window.location.pathname, sections, sectionIndexes, sectionLabels);
             }
         });
+    }
+
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isMobile = window.innerWidth < 768;
     }
 
     checkNotificationDrawer() {
