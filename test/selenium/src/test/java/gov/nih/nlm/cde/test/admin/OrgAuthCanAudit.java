@@ -20,8 +20,6 @@ public class OrgAuthCanAudit extends NlmCdeBaseTest {
         clickElement(By.cssSelector("mat-panel-title"));
         findElement(By.xpath("//dt[. = 'User:']"));
 
-        clickElement(By.xpath("//div[. = 'Reported Issues']"));
-        textPresent("Screenshot");
     }
 
 }

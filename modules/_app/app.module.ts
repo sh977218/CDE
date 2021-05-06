@@ -26,7 +26,6 @@ import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
-import { FeedbackModule } from 'ngx-feedback2';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -39,7 +38,6 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
-        FeedbackModule,
         HttpClientModule,
         MatBadgeModule,
         MatButtonModule,

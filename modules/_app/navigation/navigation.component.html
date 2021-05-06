@@ -91,11 +91,12 @@
                         <mat-menu #levelOne="matMenu" direction="down" yPosition="below">
                             <div (mouseenter)="menu1Enter(minorBar)" (mouseleave)="menu1Leave(minorBar, levelOneTrigger, button)">
                                 <ng-container *ngFor="let childL1 of menuItem.children">
-                                    <ng-container *ngIf="childL1.label === 'Report a Problem'; else menuItemStandard">
-                                        <button mat-menu-item feedback id="reportAProblemLink"
-                                                [placeholder]="feedbackDescription" (send)="onFeedback($event)">
-                                            Report a Problem
-                                        </button>
+                                    <ng-container *ngIf="childL1.label === 'Contact Us'; else menuItemStandard">
+                                        <a mat-menu-item [id]="childL1.id" [href]="childL1.link"
+                                           target="_blank" rel="noopener noreferrer"
+                                        >
+                                            Contact Us
+                                        </a>
                                     </ng-container>
                                     <ng-template #menuItemStandard>
                                         <ng-container *ngIf="!childL1.children || !childL1.children.length; else menuItemWithChildren">
@@ -145,11 +146,12 @@
                         <mat-menu #mLevelOne="matMenu">
                             <ng-container *ngFor="let child of menuItem.children">
                                 <ng-container *ngIf="!child.condition || child.condition()">
-                                    <ng-container *ngIf="child.label === 'Report a Problem'; else mobileMenuItemStandard">
-                                        <button mat-menu-item feedback (send)="onFeedback($event)" [placeholder]="feedbackDescription"
-                                                (click)="sidenav.close()">
-                                            Report a Problem
-                                        </button>
+                                    <ng-container *ngIf="child.label === 'Contact Us'; else mobileMenuItemStandard">
+                                        <a mat-menu-item [id]="child.id" [href]="child.link"
+                                           target="_blank" rel="noopener noreferrer"
+                                        >
+                                            Contact Us
+                                        </a>
                                     </ng-container>
                                     <ng-template #mobileMenuItemStandard>
                                         <ng-container *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">

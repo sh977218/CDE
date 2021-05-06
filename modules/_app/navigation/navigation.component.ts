@@ -23,7 +23,6 @@ import { NotificationDrawerPaneComponent } from '_app/notifications/notification
 import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { Feedback } from 'ngx-feedback2/entity/feedback';
 import { interruptEvent } from 'non-core/browser';
 import { cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
@@ -133,7 +132,6 @@ type CdeNavMenu = (CdeNavMenuItem & {
 export class NavigationComponent {
     @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
     @Output() logout: EventEmitter<void> = new EventEmitter<void>();
-    feedbackDescription = `Describe your issue here. Please include a way to contact you, it will help us troubleshoot the issue. `;
     interruptEvent = interruptEvent;
     barStates: {
         bar: HTMLElement,
@@ -219,25 +217,20 @@ export class NavigationComponent {
             section: SECTIONS.help,
             children: [
                 {
-                    label: 'Video Tutorials',
-                    id: 'videosLink',
-                    link: '/videos',
-                },
-                {
                     label: 'Guides',
                     id: 'guidesLink',
                     link: '/guides',
-                },
-                {
-                    label: 'New Features',
-                    id: 'whatsNewLink',
-                    link: '/whatsNew',
                 },
                 {
                     label: 'Take a Tour',
                     id: 'takeATourLink',
                     link: '/home',
                     queryParams: {tour: 'yes'}
+                },
+                {
+                    label: 'New Features',
+                    id: 'whatsNewLink',
+                    link: '/whatsNew',
                 },
                 {
                     label: 'Resources',
@@ -247,13 +240,8 @@ export class NavigationComponent {
                 {
                     label: 'Contact Us',
                     id: 'contactUsLink',
-                    link: '/contactUs'
+                    link: 'https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/'
                 },
-                {
-                    label: 'Report a Problem',
-                    id: '',
-                    link: '',
-                }
             ],
         }
     ];
@@ -408,17 +396,6 @@ export class NavigationComponent {
     }
 
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
-
-    onFeedback(event: Feedback) {
-        this.http.post('/server/log/feedback/report', {
-            feedback: {
-                description: event.description,
-                screenshot: event.screenshot,
-                userAgent: window.navigator.userAgent
-            },
-        }).subscribe(() =>
-            this.alert.addAlert('success', 'Thank you for your feedback'));
-    }
 
     unfocusButton(button: MatButton) {
         this.ren.removeClass(button._elementRef.nativeElement, 'cdk-focused');

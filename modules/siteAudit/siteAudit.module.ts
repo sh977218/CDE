@@ -11,7 +11,6 @@ import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { ClientErrorsComponent } from 'siteAudit/clientErrors/clientErrors.component';
 import { DailyUsageComponent } from 'siteAudit/dailyUsage/dailyUsage.component';
-import { FeedbackIssuesComponent } from 'siteAudit/feedbackIssues/feedbackIssues.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
 import { LogAuditComponent } from 'siteAudit/logAudit/logAudit.component';
@@ -53,7 +52,6 @@ const appRoutes: Routes = [
         ClientErrorsComponent,
         DailyUsageComponent,
         DataElementLogComponent,
-        FeedbackIssuesComponent,
         FormLogComponent,
         LogAuditComponent,
         ServerErrorsComponent,

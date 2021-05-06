@@ -127,11 +127,6 @@ const appRoutes: Routes = [
         data: {title: 'Guides', article: 'guides', preload: false}
     },
     {
-        path: 'contactUs',
-        loadChildren: () => import('system/public/contactUs.module').then(m => m.ContactUsModule),
-        data: {title: 'Contact Us', preload: false}
-    },
-    {
         path: 'videos',
         loadChildren: () => import('system/public/videos.module').then(m => m.VideosModule),
         data: {title: 'Videos', preload: false}

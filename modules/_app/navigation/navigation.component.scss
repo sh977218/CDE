@@ -300,6 +300,11 @@ router-outlet ::ng-deep + *:not(nav) {
   width: 144px; // size fits "Report a Problem"
 }
 
+#contactUsLink
+{
+  text-decoration: none;
+}
+
 .mat-list-item,
 .mat-menu-item {
   color: $navSecondColor;
