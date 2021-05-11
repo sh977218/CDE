@@ -221,11 +221,10 @@ export function module() {
         }
     });
 
-
     router.post('/server/de/umls', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
-            err => res.status(400).send(err)
+            validationErrors => res.status(400).send(validationErrors)
         );
     });
     return router;

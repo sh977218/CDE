@@ -10,6 +10,7 @@ let expectedContent = {
         'the server responded with a status of 403 (Forbidden)',
         'You don\'t have permission to make boards public!'
     ],
+    cantEditInCompare: '/server/uts/vsacBridge/invalidId - Failed to load resource: the server responded with a status of 404 (Not Found)',
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeChangeDefinitionFormat: '*', // ckeditor
     cdeLiveCommentTest: '*',
@@ -24,6 +25,7 @@ let expectedContent = {
     cdeTruncatePlainPropertiesTest: '*', // ckeditor
     cdeTruncateRichPropertiesTest: '*', // ckeditor
     checkDuplicatesClassification: 'Failed to load resource: the server responded with a status of 409 (Conflict)',
+    codesFromNCI: '/server/uts/umlsPtSource/',
     contactUs: '*', // ckeditor
     createUser: 'with a status of 409',
     dupStewardValidation: [

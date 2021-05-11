@@ -62,7 +62,16 @@ function lookForPropertyInNestedObject(cde: any, rule: StatusValidationRules, ob
                     credentials: 'include',
                     body: JSON.stringify(obj[key]),
                 })
-                    .then(res => res.ok ? '' : res.text(), err => err);
+                    .then(res => {
+                        if (res.status === 200) {
+                            return ''; // validation passed
+                        }
+                        if (res.status === 400) {
+                            return res.text(); // validation failed, don't cache
+                        }
+                        return Promise.reject(res.text()); // error
+                    })
+                    .catch(str => str); // convert error to data
             }
         }
         return Promise.resolve('field validation not found');

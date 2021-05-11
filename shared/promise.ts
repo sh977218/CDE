@@ -6,10 +6,16 @@ export function delay(ms: number): Promise<void> {
     });
 }
 
+export function delayFulfilled<T>(ms: number): (t: T) => Promise<T> {
+    return (t: T) => new Promise((resolve, reject) => {
+        setTimeout(resolve, ms, t);
+    });
+}
+
 export function mapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U>, T, number, T[]>): Promise<U[]> {
     return array.reduce(
-        (ready, code, i, array) => ready.then(
-            results => iterCb(code, i, array).then(result => [...results, result])
+        (ready, code, i, array) => ready.then(results =>
+            iterCb(code, i, array).then(result => [...results, result])
         ),
         Promise.resolve<U[]>([])
     );
@@ -21,8 +27,10 @@ export async function withRetry<T>(cb: () => Promise<T>, retries: number = 1, wa
     }
     catch (e) {
         if (retries) {
-            return delay(waitMs).then(() => withRetry(cb, retries - 1, waitMs));
+            return delay(waitMs).then(() =>
+                withRetry(cb, retries - 1, waitMs)
+            );
         }
-        return e;
+        throw e;
     }
 }

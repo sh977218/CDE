@@ -88,9 +88,18 @@ app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));
 
+process.on('unhandledRejection', (err) => {
+    // Promise Error events are not Node Error objects, they are usually strings
+    const message = `Error: Unhandled Promise Rejection: ${err}`;
+    console.error(message);
+    errorLogger.error(message, {
+        origin: 'app.process.unhandledRejection'
+    });
+});
+
 process.on('uncaughtException', (err) => {
-    console.log('Error: Process Uncaught Exception');
-    console.log(err.stack || err);
+    console.error('Error: Process Uncaught Exception');
+    console.error(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
         stack: err.stack || err,
         origin: 'app.process.uncaughtException'
@@ -98,8 +107,8 @@ process.on('uncaughtException', (err) => {
 });
 
 domain.on('error', (err) => {
-    console.log('Error: Domain Error');
-    console.log(err.stack || err);
+    console.error('Error: Domain Error');
+    console.error(err.stack || err);
     errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
 });
 
@@ -324,7 +333,7 @@ try {
     }));
 
 } catch (e) {
-    console.log(e.stack);
+    console.error(e.stack);
     process.exit();
 }
 
@@ -363,8 +372,8 @@ app.use(((err, req, res, next) => {
     }
 
     // Do Log Errors
-    console.log('ERROR3: ' + err);
-    console.log(err.stack);
+    console.error('ERROR3: ' + err);
+    console.error(err.stack);
     if (req && req.body && req.body.password) {
         req.body.password = '';
     }

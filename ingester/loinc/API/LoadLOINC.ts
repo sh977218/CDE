@@ -1,6 +1,6 @@
 import { forEachSeries } from 'async';
 import fetch, { RequestInit } from 'node-fetch';
-import { handle200, json } from 'shared/fetch';
+import { isStatus, json } from 'shared/fetch';
 
 exports.runArray = (loincArray: string[], doneOne: any, doneAll: any) => {
     const results: any[] = [];
@@ -15,7 +15,7 @@ exports.runArray = (loincArray: string[], doneOne: any, doneAll: any) => {
     };
     forEachSeries(loincArray, (loinc, doneOneLoinc) => {
         fetch('https://forms.loinc.org/panel/def?p_num=' + loinc, options)
-            .then(handle200)
+            .then(isStatus([200]))
             .then(json)
             .then(lform => {
                 results.push(lform);
