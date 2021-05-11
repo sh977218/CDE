@@ -7,7 +7,8 @@ import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
-import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority } from 'shared/system/authorizationShared';
+import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority, hasPrivilege } from 'shared/system/authorizationShared';
+import { Organization } from 'shared/system/organization';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()
@@ -88,14 +89,21 @@ export class UserService {
     }
 
     setOrganizations() {
-        if (this.user && this.user.orgAdmin) {
-            this.userOrgs = this.user.orgAdmin.slice(0);
-            if (this.user.orgCurator) {
-                this.user.orgCurator.forEach(c => {
-                    if (this.userOrgs.indexOf(c) < 0) {
-                        this.userOrgs.push(c);
-                    }
+        if (hasPrivilege(this.user, 'universalCreate')) {
+            this.http.get<Organization[]>('/server/orgManagement/managedOrgs')
+                .subscribe(orgs => {
+                    this.userOrgs = orgs.map(org => org.name);
                 });
+        } else {
+            if (this.user && this.user.orgAdmin) {
+                this.userOrgs = this.user.orgAdmin.slice(0);
+                if (this.user.orgCurator) {
+                    this.user.orgCurator.forEach(c => {
+                        if (this.userOrgs.indexOf(c) < 0) {
+                            this.userOrgs.push(c);
+                        }
+                    });
+                }
             }
         }
     }

@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
-import { UserService } from '_app/user.service';
-import { User } from 'shared/models.model';
-import { rolesEnum } from 'shared/system/authorizationShared';
 import { MatDialog } from '@angular/material/dialog';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
+import { rolesEnum, User } from 'shared/models.model';
 
 type FullUser = User & {
     lastLogin: string;

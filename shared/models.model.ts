@@ -163,10 +163,6 @@ export type CurationStatus =
     'Preferred Standard' |
     'Retired';
 
-export enum CurationStatusEnum {
-    'Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired'
-}
-
 export class DataSource {
     copyright?: FormattedValue;
     created?: Date;
@@ -679,6 +675,10 @@ export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TASK_STATE_UNREAD = 1;
 
+export type UserRoles = ArrayToType<typeof rolesEnum>;
+export const rolesEnum = ['AttachmentReviewer', 'BoardPublisher', 'CommentAuthor',
+    'CommentReviewer', 'DocumentationEditor', 'NlmCurator', 'OrgAuthority'] as const;
+
 export interface User {
     _id: ObjectId;
     accessToken?: string;
@@ -692,7 +692,7 @@ export interface User {
     publishedForms?: PublishedForm[];
     quota?: number;
     refreshToken?: string;
-    roles?: string[];
+    roles?: UserRoles[];
     searchSettings?: UserSearchSettings;
     siteAdmin?: boolean;
     tasks?: Task[];

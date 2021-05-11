@@ -1,5 +1,9 @@
 import { CbRet3 } from 'shared/models.model';
 
+export function concat<T>(...lists: T[][]): T[] {
+    return ([] as T[]).concat(...lists);
+}
+
 export function cumulative<T, U>(array: U[],
                                  mappingFn: (previousValue: T, currentValue: U, currentIndex: number, array: U[]) => T,
                                  initialValue : T
