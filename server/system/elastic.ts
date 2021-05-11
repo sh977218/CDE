@@ -15,6 +15,7 @@ import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
+import { concat } from 'shared/array';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { handleErrors, json } from 'shared/fetch';
 import { CdeFormElastic } from 'shared/form/form.model';
@@ -24,7 +25,7 @@ import {
     SearchResponseAggregationForm, SearchResponseAggregationItem, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { isOrgAuthority } from 'shared/system/authorizationShared';
+import { hasPrivilege, isOrgAuthority } from 'shared/system/authorizationShared';
 
 type ElasticCondition = any;
 type MongoCondition = any;
@@ -315,27 +316,24 @@ function termRegStatus(regStatus: CurationStatus) {
 }
 
 function getAllowedStatuses(user: User, settings: SearchSettingsElastic): CurationStatus[] {
-    const allowedStatuses: CurationStatus[] = ['Preferred Standard', 'Standard', 'Qualified'];
-    if (user && user.viewDrafts) {
-        allowedStatuses.push('Recorded');
-        allowedStatuses.push('Candidate');
-    }
-    if (settings.includeRetired) {
-        allowedStatuses.push('Retired');
-    }
-    return allowedStatuses;
+    return concat(
+        ['Preferred Standard', 'Standard', 'Qualified'],
+        user && user.viewDrafts ? ['Recorded', 'Candidate'] : [],
+        settings.includeRetired ? ['Retired'] : []
+    )
 }
 
 export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
-    let filterRegStatusTerms: ElasticCondition = allowedStatuses.map(termRegStatus);
-
-    // Add by Steward
-    if (user) {
-        filterRegStatusTerms = filterRegStatusTerms.concat(
-            myOrgs(user).map(o => ({term: {'stewardOrg.name': o}}))
-        );
+    if (hasPrivilege(user, 'universalSearch')) {
+        return ((settings.includeRetired
+            ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']
+            : ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete']
+        ) as CurationStatus[]).map(termRegStatus);
     }
-    return filterRegStatusTerms;
+    return concat<{term: any}>(
+        allowedStatuses.map(termRegStatus),
+        myOrgs(user).map(org => ({term: {'stewardOrg.name': org}}))
+    );
 }
 
 export function buildElasticSearchQuery(user: User, settings: SearchSettingsElastic) {
@@ -528,17 +526,12 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             filter: [
                 {
                     bool: {
-                        should: allowedStatuses.map(termRegStatus)
+                        should: regStatusFilter(user, settings, allowedStatuses)
                     }
                 }
             ]
         }
     };
-    if (myOrgs(user).length > 0) {
-        myOrgs(user).map((org) => {
-            regStatusAggFilter.bool.filter[0].bool.should.push({term: {'stewardOrg.name': org}});
-        });
-    }
 
     if (hideRetired()) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: termRegStatus('Retired')}});

@@ -6,7 +6,6 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { UsersOrgQuery } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-org-admin',
     templateUrl: './orgAdmin.component.html'
 })
 export class OrgAdminComponent {

@@ -13,6 +13,7 @@ export function myOrgs(user: User): string[] {
     if (!user) {
         return [];
     }
+
     return user.orgAdmin.concat(user.orgCurator);
 }
 

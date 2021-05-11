@@ -52,6 +52,7 @@ public interface USERNAME {
 
     // One user only has one role, test management page authorization.
     String documentationEditorUser_username = "documentationEditorUser";
+    String nlmCuratorUser_username = "nlmCurator";
     String orgAdminUser_username = "orgAdminUser";
     String orgCuratorUser_username = "orgCuratorUser";
     String orgAuthorityUser_username = "orgAuthorityUser";

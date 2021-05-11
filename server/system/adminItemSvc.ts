@@ -10,8 +10,7 @@ import {
 import { exists } from 'server/system/mongooseHelper';
 import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
-import { Attachment, CbError, CbError1, Elt, Item, ModuleAll, User } from 'shared/models.model';
-import { UserRoles } from 'shared/system/authorizationShared';
+import { Attachment, CbError, CbError1, Elt, Item, ModuleAll, User, UserRoles } from 'shared/models.model';
 import { Organization } from 'shared/system/organization';
 import { usersToNotify } from 'shared/user';
 import { capString } from 'shared/system/util';
