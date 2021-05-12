@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CreateEditSection2 extends BaseFormTest {
     @Test
     public void createEditSection2() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "Section Test Form2";
 
         goToFormByName(formName);

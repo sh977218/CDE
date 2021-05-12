@@ -23,6 +23,14 @@ declare module 'js-toggle-switch/dist/toggle-switch';
 declare module 'jxon';
 declare module 'lodash/clone';
 declare module 'lodash/cloneDeep';
+declare module 'lodash/curry' {
+    import { curry } from 'lodash';
+    export = curry;
+}
+declare module 'lodash/curryRight' {
+    import { curryRight } from 'lodash';
+    export = curryRight;
+}
 declare module 'lodash/differenceWith';
 declare module 'lodash/find';
 declare module 'lodash/findEach';

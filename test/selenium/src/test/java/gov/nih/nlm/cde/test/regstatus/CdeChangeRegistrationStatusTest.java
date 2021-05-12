@@ -7,7 +7,7 @@ public class CdeChangeRegistrationStatusTest extends NlmCdeBaseTest {
     @Test
     void cdeChangeRegistrationStatus() {
         String cdeName = "Investigator Identifier java.lang.Integer";
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToCdeByName(cdeName);
         textPresent("Qualified");
         editRegistrationStatus("Recorded", "09152013", "10312014", "Admin Note 1", "Unresolved Issue 1");

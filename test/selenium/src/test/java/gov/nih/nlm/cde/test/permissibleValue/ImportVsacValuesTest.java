@@ -9,7 +9,7 @@ public class ImportVsacValuesTest extends NlmCdeBaseTest {
 
     @Test
     public void importPermissibleValuesFromVsacValues() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName("Patient Race Category");
         goToPermissibleValues();
         textPresent("Native Hawaiian or other Pacific Islander");

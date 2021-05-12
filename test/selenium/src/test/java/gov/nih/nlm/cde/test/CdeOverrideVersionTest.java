@@ -11,7 +11,7 @@ public class CdeOverrideVersionTest extends NlmCdeBaseTest {
         String cdeName = "ATRA Agent Current Report Period Administered Ind-2";
         String nameChange = "[name change number 1]";
 
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToNaming();
         editDesignationByIndex(0, nameChange,null);

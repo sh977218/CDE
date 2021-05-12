@@ -12,7 +12,7 @@ public class MyOrgIncomplete extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-ONC"));
         textNotPresent("Incomplete (");
 
-        mustBeLoggedInAs("testAdmin", password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-ONC"));
         textPresent("Incomplete (");

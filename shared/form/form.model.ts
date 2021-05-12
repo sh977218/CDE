@@ -133,7 +133,12 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
                     case 'Time':
                         break;
                     default:
-                        (q.question as any).datatype = 'Text';
+                        // treat as Text
+                        const questionText = q.question as QuestionText;
+                        questionText.datatype = 'Text';
+                        if (!questionText.datatypeText) {
+                            questionText.datatypeText = new QuestionTypeText();
+                        }
                 }
             }
         );

@@ -11,7 +11,7 @@ public class CdeChangeDefinitionFormat extends NlmCdeBaseTest {
         String cdeName = "Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator";
         String definitionChange = "[def change: adding html characters][<b>bold</b>]";
 
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToNaming();
         editDefinitionByIndex(0, definitionChange, false);

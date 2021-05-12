@@ -19,7 +19,7 @@ public class FormRegStatusTest extends RegStatusTest {
 
     @Test
     public void retire() {
-        retireForm("Form Retire Test", ctepCurator_username);
+        retireForm("Form Retire Test", ctepEditor_username);
     }
 
     @Test

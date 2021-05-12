@@ -22,7 +22,7 @@ $width: 800px;
   right: $cornerOffset;
   top: $navigationHeight + $cornerOffset;
   width: $width + 2 * $borderSize;
-  z-index: 5; /* to beat material mobile navigation */
+  z-index: 1000; /* 1000 to beat hover menu when not hovered */ /* 5 to beat material mobile navigation */
 
   .notificationDrawerBox {
     border: $borderSize solid $borderColor;

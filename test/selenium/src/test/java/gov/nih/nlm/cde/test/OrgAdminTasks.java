@@ -12,7 +12,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
 
     @Test
     public void orgAdminTasks() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCurators();
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         searchUsername("userToPromote");
@@ -72,7 +72,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
 
     @Test
     public void transferStewardError() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs("ctepAdmin", password);
         Cookie myCookie = getCurrentCookie();
 
         given().cookie(myCookie).contentType(ContentType.JSON).body("{\"from\": \"NINDS\", \"to\": \"ACRIN\"}")

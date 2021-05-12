@@ -9,7 +9,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
     @Test
     public void dragQuestionDropTest() {
 
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "Drag Question Test";
         goToFormByName(formName);
         goToFormDescription();

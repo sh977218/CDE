@@ -9,7 +9,7 @@ public class ReorderConceptTest extends NlmCdeBaseTest {
     @Test
     public void reorderConceptTest() {
         String cdeName = "Reorder concept cde";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
         goToConcepts();
 

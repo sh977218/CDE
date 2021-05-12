@@ -11,7 +11,7 @@ public class FormEditSectionAndQuestionsTest extends BaseFormTest {
     public void formEditSectionAndQuestions() {
         String formName = "Form Edit Section And Question Test";
         String newQuestionInstruction = "New Question Instruction";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToFormDescription();
         Assert.assertEquals(driver.getTitle(), "Form: " + formName);

@@ -14,7 +14,7 @@ import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
 import { byUsername } from 'server/user/userDb';
 import { Board, BoardUser, Cb, Cb1, User } from 'shared/models.model';
-import { canComment, canRemoveComment } from 'shared/system/authorizationShared';
+import { canComment, canCommentManage } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
 
@@ -70,7 +70,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
         fetchItem<ItemDocument>(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
-            if (!canComment(req.user)) {
+            if (!canComment(req.user, elt)) {
                 comment.pendingApproval = true;
             }
             save(comment, handleNotFound(handlerOptions, savedComment => {
@@ -107,48 +107,48 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
-            if (!canComment(req.user)) {
-                reply.pendingApproval = true;
-            }
-            comment.replies.push(reply);
-            save(comment, handleNotFound(handlerOptions, savedComment => {
-                ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                if (reply.pendingApproval) {
-                    createTask(req.user, 'CommentReviewer', 'approval', eltModule,
-                        eltTinyId, 'comment');
-                } else {
-                    fetchItem<ItemDocument | BoardDocument>(eltModule, eltTinyId, handleNotFound({}, elt => {
+            fetchItem<ItemDocument | BoardDocument>(eltModule, eltTinyId, handleNotFound({}, elt => {
+                if (!canComment(req.user, elt)) {
+                    reply.pendingApproval = true;
+                }
+                comment.replies.push(reply);
+                save(comment, handleNotFound(handlerOptions, savedComment => {
+                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                    if (reply.pendingApproval) {
+                        createTask(req.user, 'CommentReviewer', 'approval', eltModule,
+                            eltTinyId, 'comment');
+                    } else {
                         getEltUsers(elt as BoardDocument, userIds => {
                             notifyForComment({},
                                 savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
                                 eltModule, eltTinyId,
                                 (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, userIds as any[]);
                         });
-                    }));
-                }
-                if (req.user.username !== savedComment.user.username) {
-                    const message: Omit<Message, '_id'> = {
-                        author: {authorType: 'user', name: req.user.username},
-                        date: new Date(),
-                        recipient: {recipientType: 'user', name: savedComment.user.username},
-                        type: 'CommentReply',
-                        typeCommentReply: {
-                            // TODO change this when you merge board comments
-                            element: {
-                                eltType: savedComment.element.eltType,
-                                eltId: savedComment.element.eltId,
-                                name: req.body.eltName
+                    }
+                    if (req.user.username !== savedComment.user.username) {
+                        const message: Omit<Message, '_id'> = {
+                            author: {authorType: 'user', name: req.user.username},
+                            date: new Date(),
+                            recipient: {recipientType: 'user', name: savedComment.user.username},
+                            type: 'CommentReply',
+                            typeCommentReply: {
+                                // TODO change this when you merge board comments
+                                element: {
+                                    eltType: savedComment.element.eltType,
+                                    eltId: savedComment.element.eltId,
+                                    name: req.body.eltName
+                                },
+                                comment: {
+                                    commentId: savedComment._id,
+                                    text: reply.text
+                                }
                             },
-                            comment: {
-                                commentId: savedComment._id,
-                                text: reply.text
-                            }
-                        },
-                        states: []
-                    };
-                    createMessage(message);
-                }
-                res.send({});
+                            states: []
+                        };
+                        createMessage(message);
+                    }
+                    res.send({});
+                }));
             }));
         }));
     });
@@ -156,29 +156,23 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     router.post('/deleteComment', loggedInMiddleware, (req, res) => {
         const commentId = req.body.commentId;
         byId(commentId, handleNotFound({req, res}, comment => {
-            const dao = getDao(comment.element.eltType);
-            const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-            const eltId = comment.element.eltId;
-            idRetrievalFunc(eltId, handleNotFound<ItemDocument>({req, res}, element => {
-                if (!canRemoveComment(req.user, comment, element)) {
+            getCommentItem({req, res}, comment, element => {
+                if (!canCommentManage(req.user, element, comment)) {
                     return res.status(403).send('You can only remove ' + element.elementType + 's you own.');
                 }
                 comment.remove(handleError({req, res}, () => {
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
-            }));
+            });
         }));
     });
 
     router.post('/deleteReply', loggedInMiddleware, (req, res) => {
         const replyId = req.body.replyId;
         byReplyId(replyId, handleNotFound({req, res}, comment => {
-            const dao = getDao(comment.element.eltType);
-            const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
-            const eltId = comment.element.eltId;
-            idRetrievalFunc(eltId, handleNotFound<ItemDocument>({req, res}, element => {
-                if (!canRemoveComment(req.user, comment, element)) {
+            getCommentItem({req, res}, comment, element => {
+                if (!canCommentManage(req.user, element, comment)) {
                     return res.status(403).send('You can only remove ' + element.elementType + 's you own.');
                 }
                 comment.replies = comment.replies.filter(r => r._id.toString() !== replyId) as CommentReply[];
@@ -186,7 +180,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
                 }));
-            }));
+            });
         }));
     });
 
@@ -249,25 +243,49 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 
     router.post('/resolveComment', loggedInMiddleware, (req, res) => {
         byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
-            replyTo(req, res, comment, 'resolved');
+            getCommentItem({req, res}, comment, item => {
+                if (!canCommentManage(req.user, item, comment)) {
+                    res.status(403).send();
+                    return;
+                }
+                replyTo(req, res, comment, 'resolved');
+            });
         }));
     });
 
     router.post('/reopenComment', loggedInMiddleware, (req, res) => {
         byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
-            replyTo(req, res, comment, 'active');
+            getCommentItem({req, res}, comment, item => {
+                if (!canCommentManage(req.user, item, comment)) {
+                    res.status(403).send();
+                    return;
+                }
+                replyTo(req, res, comment, 'active');
+            });
         }));
     });
 
     router.post('/resolveReply', loggedInMiddleware, (req, res) => {
         byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
-            replyTo(req, res, comment, undefined, 'resolved');
+            getCommentItem({req, res}, comment, item => {
+                if (!canCommentManage(req.user, item, comment)) {
+                    res.status(403).send();
+                    return;
+                }
+                replyTo(req, res, comment, undefined, 'resolved');
+            });
         }));
     });
 
     router.post('/reopenReply', loggedInMiddleware, (req, res) => {
         byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
-            replyTo(req, res, comment, undefined, 'active');
+            getCommentItem({req, res}, comment, item => {
+                if (!canCommentManage(req.user, item, comment)) {
+                    res.status(403).send();
+                    return;
+                }
+                replyTo(req, res, comment, undefined, 'active');
+            });
         }));
     });
 
@@ -276,6 +294,13 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 
 const ioServerCommentUpdated = (username: string, roomId: string) =>
     ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
+
+function getCommentItem(handlerOptions: {req: Request, res: Response}, comment: CommentDocument, cb: Cb1<ItemDocument>): void {
+    const dao = getDao(comment.element.eltType);
+    const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+    const eltId = comment.element.eltId;
+    idRetrievalFunc(eltId, handleNotFound<ItemDocument>(handlerOptions, cb));
+}
 
 function replyTo(req: Request, res: Response, comment: CommentDocument, status?: string, repliesStatus?: string, send = {}) {
     if (status) {

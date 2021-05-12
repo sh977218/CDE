@@ -13,6 +13,8 @@
                 <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
                                  (modelChange)="userService.save()"></cde-inline-edit>
             </dd>
+            <dt class="col-sm-3">Editor for:</dt>
+            <dd id="editorFor" class="col-sm-9">{{user.orgEditor.join(', ')}}</dd>
             <dt class="col-sm-3">Curator for:</dt>
             <dd id="curatorFor" class="col-sm-9">{{user.orgCurator.join(', ')}}</dd>
             <dt class="col-sm-3">Admin for:</dt>

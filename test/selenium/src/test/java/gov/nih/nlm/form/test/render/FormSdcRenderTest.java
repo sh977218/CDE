@@ -10,7 +10,7 @@ public class FormSdcRenderTest extends NlmCdeBaseTest {
     @Test
     public void sdcFormRenderTest() {
         String formName = "Loinc Widget Test Form";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'XML File, SDC Schema with XSL Transform')]"));

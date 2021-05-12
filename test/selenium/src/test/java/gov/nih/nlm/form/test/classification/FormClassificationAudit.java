@@ -9,7 +9,7 @@ public class FormClassificationAudit extends NlmCdeBaseTest {
     @Test
     public void formClassificationAudit() {
         String formName = "Functional Imaging";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToGeneralDetail();
         textNotPresent("Updated:", By.id("generalDiv"));

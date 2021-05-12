@@ -10,12 +10,12 @@ public class UserTest extends NlmCdeBaseTest {
 
     @Test
     public void curatorProfile() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToProfile();
-        textPresent("cabigAdmin", By.id("username"));
+        textPresent("cabigEditor", By.id("username"));
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
-        textPresent("caBIG", By.id("adminFor"));
+        textPresent("caBIG", By.id("editorFor"));
     }
 
     @Test

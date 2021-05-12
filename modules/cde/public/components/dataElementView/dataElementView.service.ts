@@ -4,7 +4,7 @@ import { Params } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
-import { isOrgCurator } from 'shared/system/authorizationShared';
+import { canEditCuratedItem } from 'shared/system/authorizationShared';
 
 @Injectable()
 export class DataElementViewService {
@@ -16,36 +16,28 @@ export class DataElementViewService {
         if (!queryParams.tinyId) {
             return this.fetchPublished(queryParams);
         }
-        return this.userService.then(user => {
-            if (!isOrgCurator(user)) {
-                return this.fetchPublished(queryParams);
-            }
-            return this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams.tinyId).toPromise()
-                .then(elt => {
-                    if (!elt) {
-                        return this.fetchPublished(queryParams);
-                    }
+        return this.fetchPublished(queryParams).then(elt => {
+            return this.userService.then(user => {
+                if (!canEditCuratedItem(user, elt)) {
                     return elt;
-                })
-                .catch((err: HttpErrorResponse) => {
-                    if (err.status === 403) {
-                        return this.fetchPublished(queryParams);
-                    }
-                    throw err;
-                });
-        }, () => this.fetchPublished(queryParams));
+                }
+                return this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams.tinyId).toPromise()
+                    .then(draft => draft || elt)
+                    .catch((err: HttpErrorResponse) => {
+                        if (err.status === 403) {
+                            return elt;
+                        }
+                        throw err;
+                    });
+            }, () => elt);
+        });
     }
 
     fetchPublished(queryParams: Params): Promise<DataElement> {
-        let url;
-        if (queryParams.cdeId) {
-            url = ITEM_MAP.cde.apiById + queryParams.cdeId;
-        } else {
-            url = ITEM_MAP.cde.api + queryParams.tinyId;
-            if (queryParams.version) {
-                url = url + '/version/' + queryParams.version;
-            }
-        }
-        return this.http.get<DataElement>(url).toPromise();
+        return this.http.get<DataElement>(
+            queryParams.cdeId
+                ? ITEM_MAP.cde.apiById + queryParams.cdeId
+                : ITEM_MAP.cde.api + queryParams.tinyId + (queryParams.version ? '/version/' + queryParams.version : '')
+        ).toPromise();
     }
 }

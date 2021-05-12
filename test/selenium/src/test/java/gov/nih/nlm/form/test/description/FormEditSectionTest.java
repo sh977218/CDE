@@ -7,7 +7,7 @@ public class FormEditSectionTest extends BaseFormTest {
     @Test
     public void formEditSection() {
         String formName = "Form Edit Section And Question Test";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToFormDescription();
         editSection("section_0", "New Main Section", "New Section Instruction", false, "1");

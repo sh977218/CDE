@@ -16,9 +16,10 @@ export function assertTrue(x: boolean): void {
     }
 }
 
-export function assertUnreachable(x: void) {
+export function assertUnreachable(x: void): never {
     console.error('Unreachable ' + JSON.stringify(x));
     // handleError(new Error('Unreachable ' + JSON.stringify(x)));
+    throw new Error('unreachable');
 }
 
 export interface Attachment {
@@ -515,6 +516,10 @@ export type Board = BoardDe | BoardForm;
 export type BoardDe = BoardPart & { elts: DataElement[] };
 export type BoardForm = BoardPart & { elts: CdeForm[] };
 
+export function isBoard(b: Item | Board): b is Board {
+    return !!(b as Board).owner;
+}
+
 export interface IdVersion {
     id: string;
     version?: string;
@@ -689,6 +694,7 @@ export interface User {
     notificationSettings?: NotificationSettings;
     orgAdmin: string[];
     orgCurator: string[];
+    orgEditor: string[];
     // password should not be here
     publishedForms?: PublishedForm[];
     quota?: number;

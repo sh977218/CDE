@@ -28,10 +28,19 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         goToAdmins();
         new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         searchUsername(test_username);
-        clickElement(By.id("newOrgAdminSubmit"));
+        clickElement(By.xpath("//button[contains(.,'Make Admin')]"));
         logout();
 
         loginAs(test_username, password);
+        goToAdmins();
+        new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
+        goToEditors();
+        new Select(driver.findElement(By.id("newOrgEditorOrgName"))).selectByVisibleText(testOrg);
+        searchUsername(testEditor_username);
+        clickElement(By.xpath("//button[contains(.,'Make Editor')]"));
+        logout();
+
+        loginAs(testEditor_username, password);
         hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createCDELink"));
         // following will assert that test user was indeed promoted

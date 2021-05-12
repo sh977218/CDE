@@ -8,7 +8,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
 
     @Test
     public void draftsViewCde() {
-        mustBeLoggedInAs("ctepOnlyCurator", password);
+        mustBeLoggedInAs(ctepOnlyCurator, password);
         goToMyDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
         textPresent("HrVtaZ7EtxQ");
@@ -16,11 +16,11 @@ public class DraftsViewCde extends NlmCdeBaseTest {
 
         mustBeLoggedInAs("ctepAdmin", password);
         goToMyDrafts();
-        textNotPresent("Person Elevated Uring");
+        textNotPresent("Person Elevated Urine");
 
         goToMyOrgDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
-        textPresent("ctepOnlyCurator");
+        textPresent(ctepOnlyCurator);
         logout();
 
         mustBeLoggedInAs(nlm_username, nlm_password);
@@ -28,7 +28,7 @@ public class DraftsViewCde extends NlmCdeBaseTest {
         textNotPresent("Person Elevated Uring");
         goToAllDrafts();
         findElement(By.linkText("Person Elevated Urine Protein Measurement Clinical Trial Eligibility Criteria Yes No Indicator"));
-        textPresent("ctepOnlyCurator");
+        textPresent(ctepOnlyCurator);
     }
 
 }

@@ -10,7 +10,7 @@
                 <mat-icon id="resolveComment_{{i}}" class="float-right iconButton" *ngIf="canResolveComment(comment)" title="Resolve"
                           role="button" tabindex="0" (click)="resolveComment(comment._id)">check_circle_outline
                 </mat-icon>
-                <mat-icon id="removeComment_{{i}}" class="float-right iconButton" *ngIf="canRemoveComment(comment)"
+                <mat-icon id="removeComment_{{i}}" class="float-right iconButton" *ngIf="canManageComment(comment)"
                           role="button" tabindex="0" (click)="removeComment(comment._id)">delete_outline
                 </mat-icon>
                 <div class="d-inline-block">
@@ -33,7 +33,7 @@
                         <mat-icon *ngIf="canResolveComment(reply)" id="resolveReply_{{i}}_{{j}}" class="float-right iconButton"
                                   role="button" tabindex="0" (click)="resolveReply(reply._id)">check_circle_outline
                         </mat-icon>
-                        <mat-icon *ngIf="canRemoveComment(reply)" id="removeReply_{{i}}_{{j}}" class="float-right iconButton"
+                        <mat-icon *ngIf="canManageComment(reply)" id="removeReply_{{i}}_{{j}}" class="float-right iconButton"
                                   role="button" tabindex="0" (click)="removeReply(reply._id)">delete_outline
                         </mat-icon>
                         <div class="d-inline-block">

@@ -70,7 +70,7 @@ type CommentWithShowReplies = Comment & {
 export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltId!: string;
     @Input() eltName!: string;
-    @Input() ownElt!: boolean;
+    @Input() canManageComment!: (comment: Comment) => boolean;
     @Input() set currentTab(t: string) {
         this._currentTab = t;
         this.comments.forEach(c => {
@@ -133,18 +133,12 @@ export class CommentsComponent implements OnInit, OnDestroy {
             });
     }
 
-
-    canRemoveComment(comment: Comment) {
-        return this.ownElt
-            || (this.userService.user && this.userService.user._id === comment.user.userId);
-    }
-
     canReopenComment(comment: Comment) {
-        return comment.status === 'resolved' && this.canRemoveComment(comment);
+        return comment.status === 'resolved' && this.canManageComment(comment);
     }
 
     canResolveComment(comment: Comment) {
-        return comment.status !== 'resolved' && this.canRemoveComment(comment);
+        return comment.status !== 'resolved' && this.canManageComment(comment);
     }
 
     removeComment(commentId: string) {

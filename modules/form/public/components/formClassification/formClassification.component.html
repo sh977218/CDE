@@ -3,11 +3,11 @@
     Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
 </h4>
 <ng-container *ngIf="!elt.isDraft">
-    <button *ngIf="isAllowedModel.isOrgCurator()" mat-raised-button id="openClassificationModalBtn"
+    <button *ngIf="canClassify(userService.user)" mat-raised-button id="openClassificationModalBtn"
             (click)="openClassifyItemModal()" color="primary">
         <mat-icon>folder_open</mat-icon> Classify this Form
     </button>
-    <button *ngIf="isAllowedModel.isOrgCurator() && elt.formElements.length > 0"
+    <button *ngIf="canClassify(userService.user) && elt.formElements.length > 0"
             mat-raised-button id="openClassifyCdesModalBtn" color="primary"
             (click)="openClassifyCdesModal()">
         <mat-icon>folder_open</mat-icon> Classify CDEs

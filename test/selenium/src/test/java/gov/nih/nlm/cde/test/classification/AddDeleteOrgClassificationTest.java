@@ -15,7 +15,7 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
         String[] classificationArray4 = new String[]{"Disease", "Myasthenia Gravis"};
         String[] classificationArray5 = new String[]{"Disease", "Myasthenia Gravis", "Classification"};
 
-        mustBeLoggedInAs("classMgtUser", "pass");
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToClassification();
         addClassificationByTree("NINDS", classificationArray1);
@@ -30,7 +30,7 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
         addExistingClassification("NINDS", classificationArray1);
 
         openAuditClassification("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
-        textPresent("classMgtUser");
+        textPresent(nlm_username);
         textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
         textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
     }

@@ -8,7 +8,7 @@ public class FormSideBySideCompare2 extends NlmCdeBaseTest {
 
     @Test
     public void formSideBySideCompare2() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         addFormToQuickBoard("compareForm1");
         addFormToQuickBoard("emptyForm");
         hoverOverElement(findElement(By.id("boardsMenu")));

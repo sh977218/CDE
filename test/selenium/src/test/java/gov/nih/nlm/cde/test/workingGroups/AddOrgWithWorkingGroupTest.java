@@ -13,7 +13,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         // Create some classifications for working group
         String classification = "DISEASE";
         String subClassification = "Phase II Lung Cancer";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         gotoClassificationMgt();
         nonNativeSelect("", "Start by choosing your Organization", orgWG);
 
@@ -34,7 +34,7 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         goToClassification();
         addClassificationByTree(orgWG, new String[]{classification, subClassification});
         waitForESUpdate();
-        // Make sure ctepCurator user can see it
+        // Make sure ctepEditor user can see it
         goToCdeSearch();
         findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
@@ -44,9 +44,9 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         goToCdeSearch();
         findElement(By.xpath("//*[@id='browseOrg-" + orgWG + "']"));
 
-        // Make sure cabigAdmin can't
+        // Make sure cabigEditor can't
         logout();
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeSearch();
         textNotPresent(orgWG);
 

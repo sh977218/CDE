@@ -9,7 +9,7 @@ public class FormDefinitionReorder extends NlmCdeBaseTest {
     @Test
     public void formReorderDefinitionTest() {
         String formName = "Reorder definition form";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToNaming();
         textPresent("Definition:");

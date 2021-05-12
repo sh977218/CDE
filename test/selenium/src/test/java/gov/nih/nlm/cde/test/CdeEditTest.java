@@ -11,7 +11,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
 
     @Test
     public void editCdeSinceModified() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         String cdeName = "Mediastinal Lymph Node Physical Examination Specify";
         String cdeDesignationChange = "[designation change number 1]";
         String cdeDefinitionChange = "[definition change number 1]";

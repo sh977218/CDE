@@ -1,7 +1,15 @@
 import { Router } from 'express';
 import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    addNewOrg, addOrgAdmin, addOrgCurator, myOrgsAdmins, orgAdmins, orgCurators, removeOrgAdmin, removeOrgCurator,
+    addNewOrg,
+    addOrgAdmin,
+    addOrgCurator, addOrgEditor,
+    myOrgsAdmins,
+    orgAdmins,
+    orgCurators,
+    orgEditors,
+    removeOrgAdmin,
+    removeOrgCurator, removeOrgEditor,
     transferSteward
 } from 'server/orgManagement/orgSvc';
 import { listOrgsDetailedInfo, managedOrgs, orgByName, updateOrg } from 'server/orgManagement/orgDb';
@@ -44,6 +52,10 @@ export function module() {
     router.get('/orgCurators', nocacheMiddleware, isOrgAdminMiddleware, orgCurators);
     router.post('/addOrgCurator', isOrgAdminMiddleware, addOrgCurator);
     router.post('/removeOrgCurator', isOrgAdminMiddleware, removeOrgCurator);
+
+    router.get('/orgEditors', nocacheMiddleware, isOrgAdminMiddleware, orgEditors);
+    router.post('/addOrgEditor', isOrgAdminMiddleware, addOrgEditor);
+    router.post('/removeOrgEditor', isOrgAdminMiddleware, removeOrgEditor);
 
     router.get('/listOrgsDetailedInfo', nocacheMiddleware, async (req, res) => {
         const orgs = await listOrgsDetailedInfo();

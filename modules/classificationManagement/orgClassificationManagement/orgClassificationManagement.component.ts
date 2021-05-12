@@ -23,7 +23,6 @@ const actionMapping: IActionMapping = {
 };
 
 @Component({
-    selector: 'cde-org-classification-management',
     templateUrl: './orgClassificationManagement.component.html',
     styleUrls: ['./orgClassificationManagement.component.scss'],
 })

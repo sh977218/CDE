@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CanEditInCompareTest extends NlmCdeBaseTest {
     @Test
     public void cantEditInCompare() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         addCdeToCompare("Person Birth Date", "Patient Ethnic Group Category");
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpathRegistrationStatusEditable())));
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//button[contains(.,'Add Name')]")));

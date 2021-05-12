@@ -92,7 +92,7 @@ export class OrgHelperService {
         if (isOrgCurator(this.userService.user, parentOrgOfThisClass)) { return true; }
 
         let isSisterOfWg = false;
-        this.userService.user.orgAdmin.concat(this.userService.user.orgCurator)
+        this.userService.user.orgAdmin.concat(this.userService.user.orgCurator, this.userService.user.orgEditor)
             .filter(org => this.orgsDetailedInfo[org] && this.orgsDetailedInfo[org].workingGroupOf)
             .map(org => this.orgsDetailedInfo[org].workingGroupOf)
             .forEach(parentOrg => {

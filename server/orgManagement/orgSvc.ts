@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
-import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators, userById, userByName } from 'server/user/userDb';
-import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
-import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
-import { addRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
 import { formModel } from 'server/form/mongo-form';
+import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
+import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,  orgEditors as userOrgEditors, userById, userByName } from 'server/user/userDb';
+import { concat } from 'shared/array';
 import { User } from 'shared/models.model';
+import { addRole, isOrgAdmin } from 'shared/system/authorizationShared';
 import { Organization } from 'shared/system/organization';
 
 
@@ -14,7 +15,7 @@ export function myOrgs(user: User): string[] {
         return [];
     }
 
-    return user.orgAdmin.concat(user.orgCurator);
+    return concat(user.orgAdmin, user.orgCurator, user.orgEditor);
 }
 
 export async function myOrgsAdmins(user: User) {
@@ -63,6 +64,23 @@ export async function orgAdmins() {
     }));
 }
 
+export function orgEditors(req: Request, res: Response) {
+    userOrgEditors(req.user.orgAdmin, handleNotFound({req, res}, users => {
+        res.send((req.user as User).orgAdmin
+            .map(org => ({
+                name: org,
+                users: users
+                    .filter(user => user.orgEditor.indexOf(org) > -1)
+                    .map(user => ({
+                        _id: user._id,
+                        username: user.username,
+                    })),
+            }))
+            .filter(org => org.users.length > 0)
+        );
+    }));
+}
+
 export function addOrgAdmin(req: Request, res: Response) {
     userByName(req.body.username, handleNotFound({req, res}, user => {
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
@@ -99,6 +117,26 @@ export function addOrgCurator(req: Request, res: Response) {
 export function removeOrgCurator(req: Request, res: Response) {
     userById(req.body.userId, handleNotFound({req, res}, user => {
         user.orgCurator = user.orgCurator.filter(a => a !== req.body.org);
+        user.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
+}
+
+export function addOrgEditor(req: Request, res: Response) {
+    userByName(req.body.username, handleNotFound({req, res}, user => {
+        if (user.orgEditor.indexOf(req.body.org) === -1) {
+            user.orgEditor.push(req.body.org);
+        }
+        user.save(handleError({req, res}, () => {
+            res.send();
+        }));
+    }));
+}
+
+export function removeOrgEditor(req: Request, res: Response) {
+    userById(req.body.userId, handleNotFound({req, res}, user => {
+        user.orgEditor = user.orgEditor.filter(a => a !== req.body.org);
         user.save(handleError({req, res}, () => {
             res.send();
         }));

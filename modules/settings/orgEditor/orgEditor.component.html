@@ -1,0 +1,36 @@
+<h1>My Organizations' Editors</h1>
+<form class="form-inline pt40 pb40" #newEditorForm="ngForm" id="newOrgEditorForm" novalidate>
+    <span class="mr-2"></span>
+    <div class="form-group">
+        <cde-username-autocomplete (selected)="newUsername = $event"></cde-username-autocomplete>
+    </div>
+    <span class="mx-2">an editor for</span>
+    <div *ngIf="userService.user" class="form-group">
+        <select id="newOrgEditorOrgName" name="newOrgEditorOrgName" class="form-control"
+                [(ngModel)]="newOrgName" required>
+            <option value="">select organization</option>
+            <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
+        </select>
+    </div>
+    <button type="submit" (click)="addOrgEditor()"
+            [disabled]="!newEditorForm.valid" mat-raised-button color="primary">
+        Make Editor
+    </button>
+</form>
+<table class="table table-border">
+    <tr>
+        <th>Organization Name:</th>
+        <th>Editors for this Organization:</th>
+    </tr>
+    <tr *ngFor="let orgEditor of orgEditors; let $pindex = index">
+        <td id="existingOrgEditorOrgName-{{orgEditor.name}}">{{orgEditor.name}}</td>
+        <td>
+            <div *ngFor="let user of orgEditor.users; let $index = index">
+                <span id="existingOrgEditorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
+                <mat-icon (click)="removeOrgEditor(orgEditor.name, user._id)"
+                          id="removeOrgEditorUsername-{{$pindex}}-{{$index}}">delete_outline
+                </mat-icon>
+            </div>
+        </td>
+    </tr>
+</table>

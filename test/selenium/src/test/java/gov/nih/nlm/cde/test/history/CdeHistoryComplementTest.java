@@ -10,7 +10,7 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
     @Test
     public void cdeHistoryComplement() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         String cdeName = "Metastatic Disease or Disorder Magnetic Resonance Imaging Cerebrospinal Fluid Diagnosis Ind-2";
         String newStatus = "Recorded";
         String oldStatus = "Qualified";

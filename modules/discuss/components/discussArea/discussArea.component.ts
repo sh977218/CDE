@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Board, Comment, Item } from 'shared/models.model';
+import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
+import { IsAllowedService } from 'non-core/isAllowed.service';
+import { curry } from 'shared/composition';
+import { Board, Comment, Item } from 'shared/models.model';
+import { canCommentManage } from 'shared/system/authorizationShared';
 
 const tabMap: Dictionary<string> = {
     preview_tab: 'preview',
@@ -29,7 +31,7 @@ const tabMap: Dictionary<string> = {
 })
 export class DiscussAreaComponent {
     @Input() set elt(e: Item | Board) {
-        this.ownElt = this.isAllowedModel.doesUserOwnElt(e);
+        this.canManageComment = curry(canCommentManage)(this.userService.user)(e);
         if (!this.newComment.element) { this.newComment.element = {eltType: 'cde', eltId: ''}; }
         this.newComment.element.eltType = e.elementType;
         const id = e.elementType === 'cde' || e.elementType === 'form' ? e.tinyId : e.id;
@@ -51,9 +53,9 @@ export class DiscussAreaComponent {
     @Output() highlightedTabsChange = new EventEmitter<string[]>(); // unused
     private _currentTab: string = 'general_tab';
     private _elt!: Item | Board;
+    canManageComment!: (comment: Comment) => boolean;
     eltId!: string;
     newComment: Comment = new Comment();
-    private ownElt!: boolean;
 
     constructor(private http: HttpClient,
                 public isAllowedModel: IsAllowedService,

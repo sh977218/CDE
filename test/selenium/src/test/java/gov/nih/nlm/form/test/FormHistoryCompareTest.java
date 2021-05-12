@@ -9,7 +9,7 @@ public class FormHistoryCompareTest extends BaseFormTest {
     @Test
     public void formHistoryCompare() {
         String formName = "Form History Compare Test";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
 
         goToHistory();

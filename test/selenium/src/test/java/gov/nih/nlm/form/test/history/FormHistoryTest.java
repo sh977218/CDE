@@ -11,7 +11,7 @@ public class FormHistoryTest extends NlmCdeBaseTest {
     public void formHistory() {
         String formName = "Form History Test";
         String newFormDef = "this is new form def";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
 
         goToFormByName(formName);
         goToHistory();

@@ -8,7 +8,7 @@ public class ClassifyCdesInLargeForm extends NlmCdeBaseTest {
     @Test
     public void classifyCdesInLargeForm() {
         String formName = "Magnetic Resonance Spectroscopy (MRS)";
-        mustBeLoggedInAs("ctepOnlyCurator", password);
+        mustBeLoggedInAs(ctepOnlyEditor, password);
 
         goToFormByName(formName);
         goToClassification();

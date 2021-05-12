@@ -13,9 +13,11 @@ public interface USERNAME {
     String empty_roles_username  ="emptyRolesUser";
     String empty_avatar_username  ="emptyAvatarUser";
 
-    String cabigAdmin_username = "cabigAdmin";
+    String cabigEditor_username = "cabigEditor";
     String promis_username = "promis";
-    String ctepCurator_username = "ctepCurator";
+    String ctepEditor_username = "ctepEditor";
+    String ctepOnlyCurator = "ctepOnlyCurator";
+    String ctepOnlyEditor = "ctepOnlyEditor";
     String test_username = "testuser";
     String history_username = "historyuser";
     String ninds_username = "ninds";
@@ -41,7 +43,7 @@ public interface USERNAME {
     String ctep_fileCurator_username = "ctep_fileCurator";
     String tableViewUser_username = "tableViewUser";
     String pinAllBoardUser_username = "pinAllBoardUser";
-    String testAdmin_username = "testAdmin";
+    String testEditor_username = "testEditor";
     String classifyBoardUser_username = "classifyBoardUser";
     String oldUser_username = "oldUser";
     String boardPublisherTest_username = "boardPublisherTest";

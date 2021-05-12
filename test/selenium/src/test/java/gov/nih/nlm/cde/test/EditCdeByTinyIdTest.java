@@ -10,7 +10,7 @@ public class EditCdeByTinyIdTest extends NlmCdeBaseTest {
     public void editCdeByTinyId() {
         String cdeName = "Left Lymph Node Positive Total Count";
         String nameChange = "[name change number 1]";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
 
         goToCdeByName(cdeName);
         goToNaming();

@@ -70,6 +70,7 @@ const userSchema = new Schema({
     },
     orgAdmin: [StringType],
     orgCurator: [StringType],
+    orgEditor: [StringType],
     siteAdmin: Boolean,
     quota: Number,
     viewHistory: [StringType],
@@ -218,4 +219,8 @@ export function orgAdmins() {
 
 export function orgCurators(orgs: string[], callback: CbError1<UserDocument[]>) {
     userModel.find().where('orgCurator').in(orgs).exec(callback);
+}
+
+export function orgEditors(orgs: string[], callback: CbError1<UserDocument[]>) {
+    userModel.find().where('orgEditor').in(orgs).exec(callback);
 }

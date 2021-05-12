@@ -132,6 +132,7 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocum
                     refreshToken: profile.refreshToken,
                     orgAdmin: [],
                     orgCurator: [],
+                    orgEditor: [],
                     commentNotifications: [],
                     lastLogin: 0,
                     lockCounter: 0,

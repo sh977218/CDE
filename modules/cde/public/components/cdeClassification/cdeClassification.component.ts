@@ -8,6 +8,7 @@ import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Cb, ClassificationClassified } from 'shared/models.model';
+import { canClassify } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-cde-classification',
@@ -24,6 +25,7 @@ export class CdeClassificationComponent {
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter<DataElement>();
     @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
+    canClassify = canClassify;
 
     constructor(
         private alert: AlertService,

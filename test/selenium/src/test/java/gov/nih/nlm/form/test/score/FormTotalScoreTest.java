@@ -10,7 +10,7 @@ public class FormTotalScoreTest extends BaseFormTest {
     @Test
     public void formTotalScore() {
         String formName = "Apathy Scale (AS)";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         clickElement(By.xpath("//*[@id='Apathy Scale (AS) - effort indicator_0-0']//label[contains(.,'2')]"));
         clickElement(By.xpath("//*[@id='Apathy Scale (AS) - indifference indicator_0-1']//label[contains(.,'1')]"));

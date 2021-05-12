@@ -9,7 +9,7 @@ public class CreateEditSection3 extends BaseFormTest {
 
     @Test
     public void createEditSection3() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "Section Test Form3";
 
         goToFormByName(formName);

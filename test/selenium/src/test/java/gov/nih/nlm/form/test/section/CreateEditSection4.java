@@ -7,7 +7,7 @@ public class CreateEditSection4 extends QuestionTest {
 
     @Test
     public void createEditSection4() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String cdeName = "Race Category Text";
         String formName = "Section Test Form4";
 

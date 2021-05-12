@@ -38,6 +38,7 @@ import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { AdminItemModule } from 'adminItem/adminItem.module';
@@ -64,9 +65,10 @@ import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.componen
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
 import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
 import { NotificationComponent } from 'settings/notification/notification.component';
-import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
 import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
+import { OrgEditorComponent } from 'settings/orgEditor/orgEditor.component';
+import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ProfileComponent } from 'settings/profile/profile.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
 import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
@@ -84,102 +86,108 @@ import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocom
 const appRoutes: Routes = [
     {
         path: '', component: SettingsComponent,
-        canLoad: [LoggedInGuard],
+        canActivate: [LoggedInGuard],
         children: [
             // All User Can Access
             {
                 path: 'profile',
                 component: ProfileComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'Profile'}
             },
             {
                 path: 'search',
                 component: SearchSettingsComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'Search Settings'},
             },
             {
                 path: 'notification',
                 component: NotificationComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'Notification'}
             },
             {
                 path: 'viewingHistory',
                 component: ViewingHistoryComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'Viewing History'}
             },
             {
                 path: 'publishedForms',
                 component: MyPublishedFormsComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'My Published Forms'}
             },
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
                 resolve: {drafts: MyDraftsResolve},
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'My Drafts'}
             },
             {
                 path: 'myComments',
                 component: CommentsComponent,
-                canLoad: [LoggedInGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'My Comments', commentsUrl: '/server/discuss/myComments/'}
             },
             // Org Authority Can Access
             {
                 path: 'orgAdmin',
                 component: OrgAdminComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAdminGuard],
                 data: {title: 'Org Admin'}
             },
             {
                 path: 'orgCurator',
                 component: OrgCuratorComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAdminGuard],
                 data: {title: 'Org Curator'}
+            },
+            {
+                path: 'orgEditor',
+                component: OrgEditorComponent,
+                canActivate: [OrgAdminGuard],
+                data: {title: 'Org Editor'}
             },
             {
                 path: 'stewardOrgTransfer',
                 component: StewardOrgTransferComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAdminGuard],
                 data: {title: 'Steward Org Transfer'}
             },
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
                 resolve: {drafts: MyOrgDraftsResolve},
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'My Organizations\' Drafts'}
             },
             {
                 path: 'myOrgComments',
                 component: CommentsComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [LoggedInGuard],
                 data: {title: 'My Organizations\' Comments', commentsUrl: '/server/discuss/orgComments/'}
             },
             {
                 path: 'tagsManagement',
                 component: TagsManagementComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAuthorityGuard],
                 resolve: {managedOrgs: ManagedOrgsResolve},
                 data: {title: 'Tags Management'}
             },
             {
                 path: 'propertiesManagement',
                 component: PropertiesManagementComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAuthorityGuard],
                 resolve: {managedOrgs: ManagedOrgsResolve},
                 data: {title: 'Properties Management'}
             },
             {
                 path: 'orgsEdit',
                 component: OrgsEditComponent,
-                canLoad: [OrgAuthorityGuard],
+                canActivate: [OrgAuthorityGuard],
                 data: {title: 'Organizations'}
             },
 
@@ -188,56 +196,56 @@ const appRoutes: Routes = [
             {
                 path: 'siteAdmins',
                 component: EditSiteAdminsComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Site Admins'}
             },
             {
                 path: 'users',
                 component: UsersMgtComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [OrgAdminGuard],
                 data: {title: 'Users'}
             },
             {
                 path: 'allComments',
                 component: CommentsComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [OrgAuthorityGuard],
                 data: {title: 'All Comments', commentsUrl: '/server/discuss/allComments/'}
             },
             {
                 path: 'allDrafts',
                 component: DraftsComponent,
                 resolve: {drafts: AllDraftsResolve},
-                canLoad: [SiteAdminGuard],
+                canActivate: [OrgAuthorityGuard],
                 data: {title: 'All Drafts'}
             },
             {
                 path: 'serverStatus',
                 component: ServerStatusComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Server Status'}
             },
             {
                 path: 'articles',
                 component: ArticleAdminComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Articles'}
             },
             {
                 path: 'resources',
                 component: ResourcesAdminComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Resources'}
             },
             {
                 path: 'fhirApps',
                 component: FhirAppsComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Fhir Apps'}
             },
             {
                 path: 'idSources',
                 component: IdSourcesComponent,
-                canLoad: [SiteAdminGuard],
+                canActivate: [SiteAdminGuard],
                 data: {title: 'Id Sources'}
             },
         ]
@@ -313,6 +321,7 @@ const appRoutes: Routes = [
         OrgsEditComponent,
         OrgAdminComponent,
         OrgCuratorComponent,
+        OrgEditorComponent,
         ProfileComponent,
         PropertiesManagementComponent,
         ResourcesHelpDialogComponent,

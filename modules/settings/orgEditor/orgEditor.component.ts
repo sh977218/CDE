@@ -15,10 +15,10 @@ interface OrgUsers {
 }
 
 @Component({
-    templateUrl: './orgCurator.component.html'
+    templateUrl: './orgEditor.component.html'
 })
-export class OrgCuratorComponent {
-    orgCurators?: OrgUsers[];
+export class OrgEditorComponent {
+    orgEditors?: OrgUsers[];
     newUsername!: string;
     newOrgName!: string;
 
@@ -26,35 +26,35 @@ export class OrgCuratorComponent {
                 private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
                 public userService: UserService) {
-        this.getOrgCurators();
+        this.getOrgEditors();
 
     }
 
-    getOrgCurators() {
-        this.http.get<OrgUsers[]>('/server/orgManagement/orgCurators').subscribe(response => {
-            this.orgCurators = response.sort((a, b) => stringCompare(a.org, b.org));
+    getOrgEditors() {
+        this.http.get<OrgUsers[]>('/server/orgManagement/orgEditors').subscribe(response => {
+            this.orgEditors = response.sort((a, b) => stringCompare(a.org, b.org));
         });
     }
 
-    addOrgCurator() {
-        this.http.post('/server/orgManagement/addOrgCurator', {
+    addOrgEditor() {
+        this.http.post('/server/orgManagement/addOrgEditor', {
             username: this.newUsername,
             org: this.newOrgName
         }, {responseType: 'text'}).subscribe(() => {
                 this.alert.addAlert('success', 'Saved');
-                this.getOrgCurators();
+                this.getOrgEditors();
             }, () => this.alert.addAlert('danger', 'There was an issue saving.')
         );
         this.newOrgName = '';
     }
 
-    removeOrgCurator(orgName: string, userId: string) {
-        this.http.post('/server/orgManagement/removeOrgCurator', {
+    removeOrgEditor(orgName: string, userId: string) {
+        this.http.post('/server/orgManagement/removeOrgEditor', {
             org: orgName,
             userId
         }, {responseType: 'text'}).subscribe(() => {
             this.alert.addAlert('success', 'Removed');
-            this.getOrgCurators();
+            this.getOrgEditors();
         }, () => this.alert.addAlert('danger', 'An error occured.'));
     }
 }
