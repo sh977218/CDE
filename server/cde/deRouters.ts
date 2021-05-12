@@ -224,7 +224,7 @@ export function module() {
     router.post('/server/de/umls', (req, res) => {
         validatePvs(req.body).then(
             () => res.send(),
-            validationErrors => res.status(400).send(validationErrors)
+            validationErrors => res.send(validationErrors)
         );
     });
     return router;

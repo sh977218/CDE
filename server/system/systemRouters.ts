@@ -13,7 +13,6 @@ import {
 import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { myOrgs } from 'server/orgManagement/orgSvc';
-import { disableRule, enableRule } from 'server/system/systemSvc';
 import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 import { orgByName } from 'server/orgManagement/orgDb';
@@ -233,30 +232,6 @@ export function module() {
     router.post('/getClassificationAuditLog', isOrgAuthorityMiddleware, async (req, res) => {
         const records = await getClassificationAuditLog(req.body);
         res.send(records);
-    });
-
-    router.post('/disableRule', isOrgAuthorityMiddleware, async (req, res) => {
-        const org = await orgByName(req.body.orgName);
-        /* istanbul ignore if */
-        if (!org) {
-            res.status(404).send();
-            return;
-        }
-        await disableRule(org, req.body.rule.id);
-        const savedOrg = await org.save();
-        res.send(savedOrg);
-    });
-
-    router.post('/enableRule', isOrgAuthorityMiddleware, async (req, res) => {
-        const org = await orgByName(req.body.orgName);
-        /* istanbul ignore if */
-        if (!org) {
-            res.status(404).send();
-            return;
-        }
-        await enableRule(org, req.body.rule);
-        const savedOrg = await org.save();
-        res.send(savedOrg);
     });
 
     router.get('/activeBans', isSiteAdminMiddleware, async (req, res) => {

@@ -74,7 +74,6 @@ import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDia
 import { SearchSettingsComponent } from 'settings/search/searchSettings.component';
 import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
 import { SettingsComponent } from 'settings/settings.component';
-import { StatusValidationRulesComponent } from 'settings/statusValidationRules/statusValidationRules.component';
 import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
 import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
 import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
@@ -162,12 +161,6 @@ const appRoutes: Routes = [
                 component: CommentsComponent,
                 canLoad: [OrgAuthorityGuard],
                 data: {title: 'My Organizations\' Comments', commentsUrl: '/server/discuss/orgComments/'}
-            },
-            {
-                path: 'statusValidationRules',
-                component: StatusValidationRulesComponent,
-                canLoad: [OrgAuthorityGuard],
-                data: {title: 'Status Validation Rules'}
             },
             {
                 path: 'tagsManagement',
@@ -327,7 +320,6 @@ const appRoutes: Routes = [
         SearchSettingsComponent,
         ServerStatusComponent,
         SettingsComponent,
-        StatusValidationRulesComponent,
         StewardOrgTransferComponent,
         TagsManagementComponent,
         UsersMgtComponent,
