@@ -306,10 +306,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//button[normalize-space(text())='Settings']"));
 
         hangon(.5);
-        if (driver.findElements(By.xpath("//button[normalize-space()='Video Tutorials']")).size() > 0) {
+        if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
             clickElement(By.id("helpLink"));
         }
-        textNotPresent("Video Tutorials");
+        textNotPresent("Guides");
         if (driver.findElements(By.xpath("//button[normalize-space()='My Boards']")).size() > 0) {
             clickElement(By.id("boardsMenu"));
         }
@@ -337,11 +337,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
     protected void goToContactUs() {
         goToHelp();
         clickElement(By.id("contactUsLink"));
-    }
-
-    protected void goToVideos() {
-        goToHelp();
-        clickElement(By.id("videosLink"));
     }
 
     protected void goToStewardTransfer() {

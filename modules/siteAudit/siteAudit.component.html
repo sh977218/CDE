@@ -41,12 +41,6 @@
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Reported Issues">
-        <ng-template matTabContent>
-            <cde-feedback-issues></cde-feedback-issues>
-        </ng-template>
-    </mat-tab>
-
     <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab>
         <ng-template matTabContent>
             <cde-server-errors></cde-server-errors>

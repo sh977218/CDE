@@ -56,19 +56,3 @@ export const clientErrorSchema = new Schema({
     username: StringType,
     ip: StringType
 }, {w: 0, capped: cappedSize} as any);
-
-export const feedbackIssueSchema = new Schema({
-    date: {type: Date, default: Date.now, index: true},
-    user: {
-        username: StringType,
-        ip: StringType
-    },
-    screenshot: {
-        id: StringType,
-        content: StringType
-    },
-    rawHtml: StringType,
-    userMessage: StringType,
-    browser: StringType,
-    reportedUrl: StringType
-});

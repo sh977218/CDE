@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Document, Model } from 'mongoose';
 import { handleConsoleError } from 'server/errorHandler/errorHandler';
 import {
-    clientErrorSchema, consoleLogSchema, feedbackIssueSchema, logErrorSchema, logSchema
+    clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';
 import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
@@ -33,18 +33,6 @@ export interface ConsoleLog {
     level: 'debug' | 'info' | 'warning' | 'error';
 }
 
-interface FeedbackMessage {
-    user: {
-        username: string | null
-    };
-    reportedUrl: string;
-    userMessage: string;
-    screenshot: {
-        content: string;
-    };
-    browser: string;
-}
-
 export interface ErrorLog {
     message: string;
     date: Date;
@@ -69,7 +57,6 @@ const conn = establishConnection(config.database.log);
 const logModel: Model<Document & LogMessage> = conn.model('DbLogger', logSchema);
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
-const feedbackModel: Model<Document & FeedbackMessage> = conn.model('FeedbackIssue', feedbackIssueSchema);
 const consoleLogModel: Model<Document & ConsoleLog> = conn.model('consoleLogs', consoleLogSchema);
 const userAgent = require('useragent');
 
@@ -306,15 +293,6 @@ export function getServerErrorsNumber(user: UserFull): Promise<number> {
     ).exec();
 }
 
-export function getFeedbackIssues(params: { skip: number, limit: number }, callback: CbError1<any[]>) {
-    feedbackModel
-        .find()
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
-}
-
 interface LogAggregate {
     _id: { ip: string, year: number, month: number, dayOfMonth: number };
     number: number;
@@ -339,14 +317,3 @@ export function usageByDay(callback: CbError1<LogAggregate>) {
         }], callback);
 }
 
-export function saveFeedback(req: Request, cb: CbError1<Document & FeedbackMessage>) {
-    const report = req.body.feedback;
-    const issue = new feedbackModel({
-        user: {username: req.user && req.user._doc ? req.user._doc.username : null}
-        , reportedUrl: req.url
-        , userMessage: report.description
-        , screenshot: {content: report.screenshot}
-        , browser: report.userAgent
-    });
-    issue.save(cb);
-}

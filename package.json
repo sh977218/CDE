@@ -284,7 +284,6 @@
     "ng-router-loader": "^2.1.0",
     "ng2-ckeditor": "^1.2.9",
     "ngx-bootstrap": "^5.6.1",
-    "ngx-feedback2": "^1.1.0",
     "ngx-text-diff": "file:./packages/ngx-text-diff-9.0.0.tgz",
     "node-sass": "^4.14.1",
     "nodemon": "^1.18.11",
