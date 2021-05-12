@@ -12,5 +12,6 @@ export const map = {
     Multipart: 'property',
     Challenge: 'property',
     Suffix: 'property',
-    Quotients: 'property'
+    Quotients: 'property',
+    Class: 'property',
 };

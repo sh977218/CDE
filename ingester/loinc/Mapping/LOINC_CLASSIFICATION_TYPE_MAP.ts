@@ -1,4 +1,4 @@
-export const map = {
+export const loinc_classification_type_map = {
     Lab: 'Laboratory Term Classes',
     Laboratory: 'Laboratory Term Classes',
     'Laboratory Term Classes': 'Laboratory Term Classes',

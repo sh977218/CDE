@@ -3,11 +3,9 @@ import { map as MULTISELECT_MAP } from 'ingester/loinc/Mapping/LOINC_MULTISELECT
 import { map as REQUIRED_MAP } from 'ingester/loinc/Mapping/LOINC_REQUIRED_MAP';
 import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
 import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel } from 'server/form/mongo-form';
-import { fixValueDomainOrQuestion, sortProp, sortRefDoc } from 'ingester/shared/utility';
+import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
 
-export async function parseFormElements(loinc, classificationOrgName, classificationArray) {
+export async function parseFormElements(loinc, config = DEFAULT_LOINC_CONFIG) {
     const panelHierarchy = loinc['Panel Hierarchy'];
     if (!panelHierarchy) {
         console.log(`${loinc['LOINC Code']} does not have panelHierarchy`);
@@ -38,10 +36,10 @@ export async function parseFormElements(loinc, classificationOrgName, classifica
     for (const element of elements) {
         const isElementForm = element.elements.length > 0;
         if (isElementForm) {
-            const formElement = await loadForm(element, classificationOrgName, classificationArray);
+            const formElement = await loadForm(element, config);
             tempFormElements.push(formElement);
         } else {
-            const formElement = await loadCde(element, classificationOrgName, classificationArray);
+            const formElement = await loadCde(element, config);
             tempFormElements.push(formElement);
         }
     }
@@ -84,8 +82,8 @@ function elementToQuestion(existingCde, element) {
     };
 }
 
-async function loadCde(element, classificationOrgName, classificationArray) {
-    const existingCde = await runOneCde(element.loinc, classificationOrgName, classificationArray);
+async function loadCde(element, config=DEFAULT_LOINC_CONFIG) {
+    const existingCde = await runOneCde(element.loinc, config);
     return elementToQuestion(existingCde, element);
 }
 
@@ -110,7 +108,7 @@ function elementToInForm(existingForm, element) {
     };
 }
 
-async function loadForm(element, classificationOrgName, classificationArray) {
-    const existingForm = await runOneForm(element.loinc, classificationOrgName, classificationArray);
+async function loadForm(element, config=DEFAULT_LOINC_CONFIG) {
+    const existingForm = await runOneForm(element.loinc, config);
     return elementToInForm(existingForm, element);
 }

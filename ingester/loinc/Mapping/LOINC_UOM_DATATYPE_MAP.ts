@@ -45,6 +45,7 @@ export const map = {
     'mm[Hg]': 'Number',
     cm: 'Number',
     '[diop]': 'Number',
+    '[lb_av];kg;g': 'Number',
     deg: 'Number',
     a: 'Number',
     mv: 'Number',

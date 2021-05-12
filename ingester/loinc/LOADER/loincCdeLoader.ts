@@ -5,13 +5,14 @@ import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
+import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
 
-export async function runOneCde(loinc, classificationOrgName, classificationArray = []) {
-    if (!classificationOrgName) {
+export async function runOneCde(loinc, config = DEFAULT_LOINC_CONFIG) {
+    if (!config.classificationOrgName) {
         console.log('loincCdeLoader.ts classificationOrgName is empty.');
         process.exit(1);
     }
-    const loincCde = await createLoincCde(loinc, classificationOrgName, classificationArray);
+    const loincCde = await createLoincCde(loinc, config);
     const newCde = new dataElementModel(loincCde);
     const newCdeObj = newCde.toObject();
     let existingCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
@@ -24,7 +25,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
         LoincLogger.createdLoincCdes.push(existingCde.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
         const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'LOINC');
-        mergeClassification(existingCde, newCde.toObject(), classificationOrgName);
+        mergeClassification(existingCde, newCde.toObject(), config.classificationOrgName);
         if (isEmpty(diff)) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
@@ -48,7 +49,7 @@ export async function runOneCde(loinc, classificationOrgName, classificationArra
             LoincLogger.changedLoincCdes.push(existingCde.tinyId);
         }
     }
-    await updateRawArtifact(existingCde, newCdeObj, 'LOINC', classificationOrgName);
+    await updateRawArtifact(existingCde, newCdeObj, 'LOINC', config.classificationOrgName);
     const savedCde: any = await dataElementModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
     return savedCde;
 }
