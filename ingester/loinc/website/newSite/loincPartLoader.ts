@@ -29,7 +29,7 @@ export async function loadLoincPartById(partId) {
         pageError = true;
     });
 
-    const pageNotFoundElements = await driver.findElements(By.xpath("//*[text() = 'Page Not Found']"))
+    const pageNotFoundElements = await driver.findElements(By.xpath("//*[text() = 'Page Not Found' or text() = 'No details available']"))
 
     if (pageError || pageNotFoundElements.length) {
         partDescription = {};

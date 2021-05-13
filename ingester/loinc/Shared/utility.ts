@@ -1,0 +1,15 @@
+const DEFAULT_LOINC_REGISTRATION_STATUS = 'Qualified';
+const DEFAULT_LOINC_CLASSIFICATION_ORG_NAME = 'PhenX';
+const DEFAULT_LOINC_CLASSIFICATION_ARRAY: string[] = [];
+const DEFAULT_LOINC_STEWARD_ORG_NAME = 'LOINC';
+const DEFAULT_LOINC_SOURCE = 'LOINC';
+
+export class LoincConfig {
+    registrationStatus = DEFAULT_LOINC_REGISTRATION_STATUS;
+    classificationOrgName = DEFAULT_LOINC_CLASSIFICATION_ORG_NAME;
+    classificationArray: string[] = DEFAULT_LOINC_CLASSIFICATION_ARRAY;
+    source = DEFAULT_LOINC_SOURCE;
+    stewardOrg = DEFAULT_LOINC_STEWARD_ORG_NAME;
+}
+
+export const DEFAULT_LOINC_CONFIG = new LoincConfig();

@@ -16,7 +16,7 @@ export async function loadPhenxById(phenxId: string) {
     console.log('Start protocol: ' + protocolId);
     let existingForm: any = await formModel.findOne({archived: false, 'ids.id': protocolId});
     const isExistingFormQualified = existingForm && existingForm.registrationState.registrationStatus === 'Qualified';
-    const phenxForm: any = await createPhenxForm(protocol, isExistingFormQualified);
+    const phenxForm: any = await createPhenxForm(protocol, isExistingFormQualified, 'Qualified');
 
     /*
         const emptyCsvCommentText = 'PhenX Batch loader was not able to find instrument.csv';

@@ -1,10 +1,12 @@
+import { isEmpty } from 'lodash';
 import { LoincModel } from 'ingester/createMigrationConnection';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
+import { runOneForm } from 'ingester/loinc/LOADER/loincFormLoader';
+import { formModel } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/cde/mongo-cde';
+import { DEFAULT_LOINC_CONFIG, LoincConfig } from 'ingester/loinc/Shared/utility';
 
-// const loincIds = ['19925-7'];
-/*
-
-const loincIds = ['69865-4',
+const LOINC_IDS = ['69865-4',
     '62945-1',
     '64713-1',
     '62750-5',
@@ -844,28 +846,60 @@ const loincIds = ['69865-4',
     '63492-3',
     '56093-8',
     '24547-2'];
-*/
 
-const loincIds= ['66067-0'];
+let deCount = 0;
+let existingDeCount = 0;
+let newDeCount = 0;
 
-async function run() {
-    console.log(`Starting fetching LOINCs ${loincIds}`);
+let formCount = 0;
+let existingFormCount = 0;
+let newFormCount = 0;
+
+let totalLoincProcessed = 0;
+
+
+const loincConfig = new LoincConfig();
+loincConfig.registrationStatus = 'Qualified';
+
+async function run(config = DEFAULT_LOINC_CONFIG) {
+    const loincIds = LOINC_IDS;
+    console.log(`total LOINC: ${loincIds.length}`);
     for (const loincId of loincIds) {
-        const existingLoincs = await LoincModel.find({'LOINC Code': loincId});
-        if (existingLoincs.length) {
-            console.log(`LOINC ${loincId} is loaded. Skipping.`);
+        const loinc: any = await LoincModel.findOne({'LOINC Code': loincId}).lean();
+        const isPanel = !isEmpty(loinc['Panel Hierarchy']);
+        if (!isPanel) {
+            deCount++;
+            const existingCdes = await dataElementModel.find({archived: false, 'ids.id': loincId});
+            if (existingCdes.length) {
+                existingDeCount++;
+                console.log(`existing de: ${loincId}.`)
+            } else {
+                newDeCount++;
+                console.log(`new de: ${loincId}.`)
+            }
+            await runOneCde(loinc, config);
         } else {
-            const loinc = await loadLoincById(loincId);
-            console.log(`Finished fetching LOINC ${loincId}`);
-            await new LoincModel(loinc).save().catch(e => {
-                throw new Error('new LoincModel(loinc).save() Error: ' + e);
-            });
-            console.log(`Finished saving LOINC ${loincId}`);
+            formCount++;
+            const existingForms = await formModel.find({archived: false, 'ids.id': loincId});
+            if (existingForms.length) {
+                existingFormCount++;
+                console.log(`existing form: ${loincId}.`)
+            } else {
+                newFormCount++;
+                console.log(`new form: ${loincId}.`)
+            }
+            await runOneForm(loinc, config);
         }
+        totalLoincProcessed++;
+        console.log(`count: ${totalLoincProcessed}.`)
     }
 }
 
-run().then(() => process.exit(0), err => {
-    console.log(err);
-    process.exit(1);
+run(loincConfig).then(() => {
+    console.log('Finished loadLoincByIds.');
+    console.log(`newDeCount: ${newDeCount}.`)
+    console.log(`existingDeCount: ${existingDeCount}.`)
+    console.log(`newFormCount ${newFormCount}.`)
+    console.log(`existingFormCount ${existingFormCount}.`)
+    process.exit(0);
 });

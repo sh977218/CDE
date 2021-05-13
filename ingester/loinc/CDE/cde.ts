@@ -11,8 +11,9 @@ import { parseConcepts } from 'ingester/loinc/CDE/ParseConcept';
 import { parseValueDomain } from 'ingester/loinc/CDE/ParseValueDomain';
 
 import { BATCHLOADER, created, imported, lastMigrationScript, version } from 'ingester/shared/utility';
+import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
 
-export async function createLoincCde(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
+export async function createLoincCde(loinc, config = DEFAULT_LOINC_CONFIG) {
     const designations = parseDesignations(loinc);
     const definitions = parseDefinitions(loinc);
     const ids = parseIds(loinc);
@@ -20,7 +21,7 @@ export async function createLoincCde(loinc, classificationOrgName = 'LOINC', cla
     const referenceDocuments = parseReferenceDocuments(loinc);
     const valueDomain = parseValueDomain(loinc);
     const concepts = parseConcepts(loinc);
-    const stewardOrg = parseStewardOrg();
+    const stewardOrg = parseStewardOrg(config);
     const sources = parseSources(loinc);
 
     const cde = {
@@ -31,7 +32,7 @@ export async function createLoincCde(loinc, classificationOrgName = 'LOINC', cla
         changeNote: lastMigrationScript,
         source: 'LOINC',
         version,
-        registrationState: {registrationStatus: 'Standard'},
+        registrationState: {registrationStatus: config.registrationStatus},
         sources,
         designations,
         definitions,
@@ -47,6 +48,6 @@ export async function createLoincCde(loinc, classificationOrgName = 'LOINC', cla
         attachments: []
     };
 
-    await parseClassification(cde, classificationOrgName, classificationArray);
+    await parseClassification(cde, loinc, config);
     return cde;
 }

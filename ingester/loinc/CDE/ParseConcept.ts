@@ -8,6 +8,13 @@ export function parseConcepts(loinc) {
             const basicAttributes = pd['Basic Attributes'];
             if (basicAttributes) {
                 const type = CONCEPT_TYPE_MAP[basicAttributes.Type];
+                if (!concepts[type]) {
+                    console.log(`loincCode: ${loinc['LOINC Code']}.`);
+                    console.log(`concepts: ${concepts}.`);
+                    console.log(`type: ${type}.`);
+                    console.log(`${concepts[type]} is null.`);
+                    throw new Error(`${concepts[type]} is null.`);
+                }
                 concepts[type].push({
                     name: basicAttributes.Name,
                     origin: pd.text,

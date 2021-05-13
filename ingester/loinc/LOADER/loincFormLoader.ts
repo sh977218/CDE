@@ -5,9 +5,10 @@ import {
     BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
 } from 'ingester/shared/utility';
 import { LoincLogger } from 'ingester/log/LoincLogger';
+import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
 
-export async function runOneForm(loinc, classificationOrgName = 'LOINC', classificationArray = []) {
-    const loincForm = await createLoincForm(loinc, classificationOrgName, classificationArray);
+export async function runOneForm(loinc, config = DEFAULT_LOINC_CONFIG) {
+    const loincForm = await createLoincForm(loinc, config);
     const newForm = new formModel(loincForm);
     const newFormObj = newForm.toObject();
     let existingForm = await formModel.findOne({archived: false, 'ids.id': loinc['LOINC Code']});
@@ -17,7 +18,7 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
         LoincLogger.createdLoincForms.push(existingForm.tinyId + `[${loinc['LOINC Code']}]`);
     } else {
         const diff = compareElt(newForm.toObject(), existingForm.toObject(), 'LOINC');
-        mergeClassification(existingForm, newForm.toObject(), classificationOrgName);
+        mergeClassification(existingForm, newForm.toObject(), config.classificationOrgName);
         if (isEmpty(diff)) {
             existingForm.lastMigrationScript = lastMigrationScript;
             existingForm.imported = imported;
@@ -32,7 +33,7 @@ export async function runOneForm(loinc, classificationOrgName = 'LOINC', classif
             LoincLogger.changedLoincForms.push(existingForm.tinyId);
         }
 
-        await updateRawArtifact(existingForm, newFormObj, 'LOINC', classificationOrgName);
+        await updateRawArtifact(existingForm, newFormObj, 'LOINC', config.classificationOrgName);
     }
     return existingForm;
 }

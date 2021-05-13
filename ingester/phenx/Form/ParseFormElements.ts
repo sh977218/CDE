@@ -2,7 +2,7 @@ import { find, isEmpty } from 'lodash';
 import { parseFormElements as parseRedcapFormElements } from 'ingester/phenx/redCap/ParseRedCap';
 import { parseFormElements as parseLoincFormElements } from 'ingester/loinc/Form/ParseFormElements';
 
-export async function parseFormElements(protocol, attachments, newForm, isExistingFormQualified) {
+export async function parseFormElements(protocol, registrationStatus, attachments, newForm, isExistingFormQualified) {
     let formElements: any[] = [];
     if (isExistingFormQualified) {
         newForm.formElements = formElements;
@@ -15,7 +15,7 @@ export async function parseFormElements(protocol, attachments, newForm, isExisti
             if (isEmpty(loinc['Panel Hierarchy'])) {
                 console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
             } else {
-                formElements = await parseLoincFormElements(loinc, 'PhenX', [protocol.domainCollection]);
+                formElements = await parseLoincFormElements(loinc,registrationStatus, 'PhenX', [protocol.domainCollection]);
             }
             newForm.formElements = formElements;
         }
