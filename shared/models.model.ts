@@ -274,6 +274,7 @@ export abstract class Elt {
     /* tslint:enable */
     _id!: ObjectId;
     archived: boolean = false;
+    NIH_Endorsed: boolean = false;
     attachments: Attachment[] = [];
     changeNote?: string;
     checked?: boolean; // volatile, used by quickboard
