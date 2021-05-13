@@ -219,6 +219,7 @@ function getSampleElt(): CdeForm {
         _id: '',
         __v: 0,
         archived: false,
+        NIH_Endorsed: false,
         attachments: [],
         classification: [],
         comments: [],

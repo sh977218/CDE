@@ -21,6 +21,7 @@ const conceptSchema = new Schema({
 
 export const deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
+    NIH_Endorsed: {type: Boolean, default: false},
     tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     designations: {
         type: [designationSchema],
