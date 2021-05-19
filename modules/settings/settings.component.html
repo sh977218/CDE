@@ -80,10 +80,6 @@
                                        [routerLinkActive]="['isActive']" routerLink="propertiesManagement">
                             Properties
                         </mat-list-item>
-                        <mat-list-item id="validationRules" *ngIf="userSvc.isOrgAuthority()"
-                                       [routerLinkActive]="['isActive']" routerLink="statusValidationRules">
-                            Validation Rules
-                        </mat-list-item>
                         <mat-list-item id="stewardTransfer" *ngIf="userSvc.user?.orgAdmin.length > 1"
                                        [routerLinkActive]="['isActive']" routerLink="stewardOrgTransfer">
                             Steward Transfer

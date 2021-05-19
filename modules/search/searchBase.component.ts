@@ -162,7 +162,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() searchSettingsInput?: SearchSettings;
     @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
-    @ViewChild('validRulesModal', {static: true}) validRulesModal!: TemplateRef<any>;
     @ViewChild('autoCompleteInput', {
         read: MatAutocompleteTrigger,
         static: true
@@ -641,30 +640,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.pinModalComponent) {
             this.pinAll(this.pinModalComponent.instance.open());
         }
-    }
-
-    openValidRulesModal() {
-        this.orgHelperService.then(orgsDetailedInfo => {
-            this.validRulesOrgs = Object.keys(orgsDetailedInfo).sort();
-            this.validRulesStatus = 'Incomplete';
-            this.validRulesOrg = orgsDetailedInfo[this.searchSettings.selectedOrg || '']
-                ? this.searchSettings.selectedOrg
-                : this.validRulesOrgs[0];
-            this.dialog.open(this.validRulesModal).afterClosed().subscribe((submitted: boolean) => {
-                if (!submitted) {
-                    return;
-                }
-                const searchSettings = {...this.searchSettings};
-                searchSettings.selectedOrg = this.validRulesOrg;
-                this.router.navigate(['/cdeStatusReport'], {
-                    queryParams: {
-                        searchSettings: JSON.stringify(searchSettings),
-                        status: this.validRulesStatus
-                    }
-                });
-            }, () => {
-            });
-        }, _noop);
     }
 
     pageChange(newPage: PageEvent) {

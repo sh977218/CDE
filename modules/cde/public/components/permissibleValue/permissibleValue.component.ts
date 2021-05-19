@@ -89,6 +89,8 @@ export class PermissibleValueComponent {
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
     editMode = false;
+    umlsValidationResults: any;
+    umlsValidationLoading: boolean = false;
     keys = Object.keys;
     newPermissibleValue: any = {};
     modalRef!: MatDialogRef<TemplateRef<any>>;
@@ -447,5 +449,15 @@ export class PermissibleValueComponent {
         fixDatatype(this.elt.valueDomain);
         this.runManualValidation();
         this.eltChange.emit();
+    }
+
+    async validatePVAgainstUMLS(){
+        const pvs: PermissibleValue[] = (this.elt.valueDomain as ValueDomainValueList).permissibleValues;
+        this.umlsValidationLoading = true;
+        this.umlsValidationResults = await this.http.post(
+            '/server/de/umls',
+            pvs,
+            {responseType: 'text'}).toPromise();
+        this.umlsValidationLoading = false;
     }
 }

@@ -154,8 +154,6 @@
                 <ng-template #exportFormNotAuthorized>
                     <a routerLink="/login" mat-menu-item>Please login to export forms.</a>
                 </ng-template>
-                <a *ngIf="displayValidation()" id="exportValidRule" mat-menu-item
-                   (click)="openValidRulesModal()"> Validation Rules</a>
             </mat-menu>
         </div>
     </nav>
@@ -390,39 +388,4 @@
         </div>
     </div>
     <ng-container #pinModal></ng-container>
-</ng-template>
-
-<ng-template #validRulesModal>
-    <h3 mat-dialog-title>
-        Export CDEs not passing validation rules
-    </h3>
-    <div mat-dialog-content>
-        <p>The export will list the CDE(s) that fail registration status rules for:</p>
-        <div>
-            Organization:
-            <mat-form-field>
-                <mat-select id="selectOrg" placeholder="Organization" [(ngModel)]="validRulesOrg">
-                    <mat-option *ngFor="let org of validRulesOrgs" [value]="org">{{org}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div>
-            Status:
-            <mat-form-field>
-                <mat-select id="selectStatus" placeholder="Registration Status" [(ngModel)]="validRulesStatus">
-                    <mat-option [value]="'Incomplete'">Incomplete</mat-option>
-                    <mat-option [value]="'Candidate'">Candidate</mat-option>
-                    <mat-option id="recorded" [value]="'Recorded'">Recorded</mat-option>
-                    <mat-option [value]="'Qualified'">Qualified</mat-option>
-                    <mat-option [value]="'Standard'">Standard</mat-option>
-                    <mat-option [value]="'Preferred Standard'">Preferred Standard</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelCopy">Cancel</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="true" id="exportVR">Export
-        </button>
-    </div>
 </ng-template>
