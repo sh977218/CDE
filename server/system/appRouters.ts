@@ -6,6 +6,7 @@ import { existsSync, writeFileSync } from 'fs';
 import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
+import { gfs } from './mongo-data';
 
 require('express-async-errors');
 
@@ -53,6 +54,18 @@ export function module() {
         } else {
             respondHomeFull(req, res);
         }
+    });
+
+    router.get('/sitemap.txt', (req, res) => {
+        gfs.exist({filename: '/app/sitemap.txt'}, (err, found) => {
+            if (err || !found) {
+                res.status(404).send('File not found.');
+            } else {
+                gfs.findOne({filename: '/app/sitemap.txt'}, (err, file) => {
+                    gfs.createReadStream({filename: '/app/sitemap.txt'}).pipe(res);
+                });
+            }
+        });
     });
 
     router.get('/tour', (req, res) => res.redirect('/home?tour=yes'));

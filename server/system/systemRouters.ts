@@ -23,12 +23,14 @@ import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
 import { syncWithMesh } from 'server/mesh/elastic';
 import { consoleLog } from 'server/log/dbLogger';
-import { getFile, ItemDocument, jobStatus } from 'server/system/mongo-data';
+import { addFile, getFile, gfs, ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import { CbError } from 'shared/models.model';
+import { Model } from 'mongoose';
+import { Readable } from 'stream';
 
 require('express-async-errors');
 
@@ -43,38 +45,84 @@ export function module() {
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
-        consoleLog('Creating sitemap');
-        promisify(access)('dist/app', constants.R_OK)
-            .catch(() => promisify(mkdir)('dist/app', {recursive: true})) // Node 12
-            .then(() => {
-                const wstream = createWriteStream('./dist/app/sitemap.txt');
-                const cond = {
-                    archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
-                };
+        setTimeout(()=>{
+            try{
+                jobStatus('SiteMap', (err, j) => {
+                    if (err) {
+                        consoleLog(`Error getting SiteMap job status: ${err}`, 'error');
+                        return;
+                    }
+                    if (j) {
+                        return;
+                    }
+                    gfs.findOne({filename: '/app/sitemap.txt'}, (err, file) => {
+                        if(!!file && fileCreatedToday(file)){
+                            return;
+                        }
+                        else{
+                            updateJobStatus('SiteMap', 'Generating');
+                            consoleLog('Creating sitemap');
+                            const readable = new Readable();
+                            const siteMapLines: string[] = [];
+                            const cond = {
+                                archived: false,
+                                'registrationState.registrationStatus': 'Qualified'
+                            };
 
-                function handleStream(stream: QueryCursor<ItemDocument>, formatter: (doc: ItemDocument) => string, cb: CbError) {
-                    stream.on('data', doc => wstream.write(formatter(doc)));
-                    stream.on('err', cb);
-                    stream.on('end', cb);
-                }
+                            function handleStream(stream: QueryCursor<ItemDocument>,
+                                                  formatter: (doc: ItemDocument) => string, cb: CbError) {
+                                stream.on('data', doc => siteMapLines.push(formatter(doc)));
+                                stream.on('err', cb);
+                                stream.on('end', cb);
+                            }
 
-                Promise.all([
-                    promisify(handleStream)(
-                        dataElementModel.find(cond, 'tinyId').cursor(),
-                        doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId + '\n'
-                    ),
-                    promisify(handleStream)(
-                        formModel.find(cond, 'tinyId').cursor(),
-                        doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId + '\n'
-                    )
-                ]).then(() => {
-                    consoleLog('done with sitemap');
-                    wstream.end();
+                            Promise.all([
+                                promisify(handleStream)(
+                                    dataElementModel.find(cond, 'tinyId').cursor(),
+                                    doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId
+                                ),
+                                promisify(handleStream)(
+                                    formModel.find(cond, 'tinyId').cursor(),
+                                    doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId
+                                )
+                            ]).then(() => {
+                                readable.push(siteMapLines.join('\n'));
+                                readable.push(null);
+                                const streamDescription = {
+                                    filename: '/app/sitemap.txt',
+                                    mode: 'w',
+                                    content_type: 'plain/text'
+                                };
+                                const file = {
+                                    stream: readable
+                                };
+                                gfs.remove({filename: '/app/sitemap.txt'}, (err) => {
+                                    if(err){
+                                        consoleLog(`Error removing old sitemap file: ${err}`, 'error');
+                                        return;
+                                    }
+                                    addFile(file,streamDescription, (err,newFile)=>{
+                                        consoleLog('done with sitemap');
+                                        removeJobStatus('SiteMap', ()=>{});
+                                    });
+                                });
+                            });
+                        }
+                    });
                 });
-            })
-            .catch((err: string) => consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err));
+            }catch(err){
+                consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err);
+                removeJobStatus('SiteMap', ()=>{});
+            }
+        }, process.env.NODE_ENV === 'dev-test' ? 0 : Math.floor(Math.random() * 3600000) + 1);
     }, null, true, 'America/New_York', undefined, true).start();
+
+    function fileCreatedToday(file: any): boolean{
+        const today = new Date();
+        return (file.uploadDate.getDate() === today.getDate()
+            && file.uploadDate.getMonth() === today.getMonth()
+            && file.uploadDate.getFullYear() === today.getFullYear());
+    }
 
     router.get('/jobStatus/:type', (req, res) => {
         const jobType = req.params.type;

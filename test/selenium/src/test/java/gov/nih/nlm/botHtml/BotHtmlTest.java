@@ -62,7 +62,7 @@ public class BotHtmlTest extends NlmCdeBaseTest {
 
     @Test
     public void siteMap() {
-        Assert.assertTrue(get(baseUrl + "/app/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
+        Assert.assertTrue(get(baseUrl + "/sitemap.txt").asString().contains("/deView?tinyId=rkh4tQrOgTw"));
     }
 
 }
