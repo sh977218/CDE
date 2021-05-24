@@ -69,6 +69,10 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
         universalComment: true,
     },
     DocumentationEditor: {}, // token role
+    GovernanceGroup: {
+        universalComment: true,
+        universalSearch: true,
+    },
     NlmCurator: {
         universalAttach: true,
         universalComment: true,
@@ -76,10 +80,6 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
         universalEdit: true,
         universalSearch: true,
     },
-    // Governance: CDE-2351 {
-        // universalSearch: true,
-        // universalComment: true,
-    // }
     OrgAuthority: {}, // token role
 });
 
