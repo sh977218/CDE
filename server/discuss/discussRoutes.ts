@@ -203,7 +203,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     });
 
     router.get('/myComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
-        respondCommentOrgsByCriteria(req, res, {username: req.user.username});
+        respondCommentOrgsByCriteria(req, res, {'user.username': req.user.username});
     });
 
     router.get('/orgComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {

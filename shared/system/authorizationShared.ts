@@ -80,7 +80,14 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
         universalEdit: true,
         universalSearch: true,
     },
-    OrgAuthority: {}, // token role
+    OrgAuthority: {
+        universalAttach: true,
+        universalComment: true,
+        universalCommentManage: true,
+        universalCreate: true,
+        universalEdit: true,
+        universalSearch: true,
+    }, // token role
 });
 
 export const canAttach = canEditCuratedItem;
