@@ -1,7 +1,15 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import {
-    canComment, canEditCuratedItem, hasRole, isOrgAdmin, isOrgAuthority, isOrgCurator, isSiteAdmin
+    canEditCuratedItem,
+    hasPrivilegeForOrg,
+    hasPrivilegeInRoles,
+    hasRole,
+    isOrg,
+    isOrgAdmin,
+    isOrgAuthority,
+    isOrgCurator,
+    isSiteAdmin
 } from 'shared/system/authorizationShared';
 import { Board, Item, User } from 'shared/models.model';
 
@@ -22,7 +30,7 @@ export function nocacheMiddleware(req: Request, res: Response, next: NextFunctio
 
 export const canCreateMiddleware: RequestHandler = (req, res, next) => {
     loggedInMiddleware(req, res, () => {
-        if (!canEditCuratedItem(req.user, req.body)) {
+        if (!hasPrivilegeForOrg(req.user, 'create', req.body.stewardOrg.name)) {
             // TODO: consider ban
             res.status(403).send();
             return;
@@ -61,7 +69,11 @@ export const canEditByTinyIdMiddleware = (db: any) => (req: RequestWithItem, res
         res.status(400).send();
         return;
     }
-    isOrgCuratorMiddleware(req, res, () => {
+    if (hasPrivilegeInRoles(req.user, 'edit')) {
+        next();
+        return;
+    }
+    isOrgMiddleware(req, res, () => {
         db.byTinyId(req.params.tinyId, handleNotFound({req, res}, (item: Item) => {
             if (!canEditCuratedItem(req.user, item)) {
                 return res.status(403).send();
@@ -70,15 +82,6 @@ export const canEditByTinyIdMiddleware = (db: any) => (req: RequestWithItem, res
             next();
         }));
     });
-};
-
-export const canCommentMiddleware: RequestHandler = (req, res, next) => {
-    // TODO: not logged in should return 401, call loggedInMiddleware
-    if (!canComment(req.user)) {
-        res.status(403).send();
-        return;
-    }
-    next();
 };
 
 export const canApproveCommentMiddleware: RequestHandler = (req, res, next) => {
@@ -121,6 +124,14 @@ export const isOrgCuratorMiddleware: RequestHandler = (req, res, next) => {
     next();
 };
 
+export const isOrgMiddleware: RequestHandler = (req, res, next) => {
+    if (!isOrg(req.user)) {
+        res.status(403).send();
+        return;
+    }
+    next();
+};
+
 export const isSiteAdminMiddleware: RequestHandler = (req, res, next) => {
     if (!isSiteAdmin(req.user)) {
         res.status(403).send();
@@ -144,8 +155,8 @@ export function isDocumentationEditor(elt: Item, user?: User) {
     return hasRole(user, 'DocumentationEditor');
 }
 
-export function checkOwnership(elt: Item, user?: User) {
-    return isOrgCurator(user, elt.stewardOrg.name);
+export function checkEditing(elt: Item, user?: User) {
+    return canEditCuratedItem(user, elt);
 }
 
 export function checkBoardOwnerShip(board?: Board, user?: User) {

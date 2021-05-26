@@ -18,7 +18,7 @@ public class OrgAdminSeeCommentsInOrgManagement extends NlmCdeBaseTest {
 
     @Test
     public void orgAdminCanSeeCommentsInOrgManagementTest2() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToMyOrgComments();
         textNotPresent(nindsComment);
         textPresent(caBIGComment);

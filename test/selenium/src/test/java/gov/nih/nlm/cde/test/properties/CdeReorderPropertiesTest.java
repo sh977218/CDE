@@ -8,7 +8,7 @@ public class CdeReorderPropertiesTest extends NlmCdeBaseTest {
     @Test
     public void cdeReorderProperties() {
         String cdeName = "Reorder properties cde";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
         goToProperties();
         reorderBySection("properties", "down", 0);

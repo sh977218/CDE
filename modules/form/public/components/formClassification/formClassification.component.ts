@@ -8,6 +8,7 @@ import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
+import { canClassify } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-form-classification',
@@ -18,6 +19,7 @@ export class FormClassificationComponent {
     @Output() eltChange = new EventEmitter<CdeForm>();
     @ViewChild('classifyCdesComponent', {static: true}) public classifyCdesComponent!: ClassifyItemComponent;
     @ViewChild('classifyItemComponent', {static: true}) public classifyItemComponent!: ClassifyItemComponent;
+    canClassify = canClassify;
     showProgressBar = false;
 
     constructor(private alert: AlertService,

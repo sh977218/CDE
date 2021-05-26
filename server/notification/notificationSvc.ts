@@ -28,7 +28,8 @@ export function typeToCriteria(type: NotificationType,
                 $or: [
                     {_id: {$in: users}},
                     {orgAdmin: org},
-                    {orgCurator: org}
+                    {orgCurator: org},
+                    {orgEditor: org}
                 ]
             };
     }

@@ -9,7 +9,7 @@ public class CdeReopenReply extends NlmCdeBaseTest {
     public void cdeReopenReplyTest() {
         String cdeName = "In the past 7 days, when I was in pain I moved slower";
         String reply = "This reply will be reopen";
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(promis_username, password);
         goToCdeByName(cdeName);
         goToDiscussArea();
         isReplyStrike(reply, true);

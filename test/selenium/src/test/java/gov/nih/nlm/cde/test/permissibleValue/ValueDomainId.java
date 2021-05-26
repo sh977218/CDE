@@ -10,7 +10,7 @@ public class ValueDomainId extends NlmCdeBaseTest {
 
     @Test
     public void valueDomainIdVisible() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String cdeName = "Gender Self-Identified";
         goToCdeByName(cdeName);
         goToPermissibleValues();

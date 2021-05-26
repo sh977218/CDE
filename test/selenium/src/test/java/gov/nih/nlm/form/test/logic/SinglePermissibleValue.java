@@ -8,7 +8,7 @@ public class SinglePermissibleValue extends BaseFormTest {
 
     @Test
     public void singlePermissibleValueTest() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "Cancer Screening Test";
         goToFormByName(formName);
         textPresent("Female Patient Screening", By.xpath("//div[" + byValueListValueXPath("Female Gender") + "]"));

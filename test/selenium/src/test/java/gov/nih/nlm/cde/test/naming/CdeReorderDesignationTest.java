@@ -9,7 +9,7 @@ public class CdeReorderDesignationTest extends NlmCdeBaseTest {
     @Test
     public void cdeReorderDesignationTest() {
         String cdeName = "Reorder designations cde";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
 
         goToCdeByName(cdeName);
         goToNaming();

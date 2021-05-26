@@ -14,7 +14,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
     public void reorderAnswerList() {
         String formName = "Answer List Test";
 
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToFormDescription();
 
@@ -45,7 +45,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
     public void deleteFormAnswerList() {
         String formName = "Answer List Test";
 
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToFormDescription();
 

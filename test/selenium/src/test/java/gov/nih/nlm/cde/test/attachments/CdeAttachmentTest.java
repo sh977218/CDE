@@ -20,7 +20,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
     public void cdeAttachment() {
         String cdeName = "Family Assessment Device (FAD) - Discuss problem indicator";
 
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
         textNotPresent("Upload more files");

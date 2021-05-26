@@ -380,11 +380,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.id("apiLink"));
     }
 
-    protected void goToCurators() {
-        goToSettings();
-        clickElement(By.id("curators"));
-    }
-
     protected void goToSiteAdmins() {
         goToSettings();
         clickElement(By.id("siteAdmins"));
@@ -406,6 +401,18 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         goToSettings();
         clickElement(By.id("admins"));
         textPresent("Admins for this Organization:", By.id("settingsContent"));
+    }
+
+    protected void goToCurators() {
+        goToSettings();
+        clickElement(By.id("curators"));
+        textPresent("Curators for this Organization:", By.id("settingsContent"));
+    }
+
+    protected void goToEditors() {
+        goToSettings();
+        clickElement(By.id("editors"));
+        textPresent("Editors for this Organization:", By.id("settingsContent"));
     }
 
     protected void goToMyDrafts() {
@@ -1381,7 +1388,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
         clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
         textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
         clickElement(By.id("confirmDeleteClassificationBtn"));
-        closeAlert();
+        checkAlert("Classification removed.");
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='" + selector + "']"));
     }
 

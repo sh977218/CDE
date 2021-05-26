@@ -16,7 +16,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
                 "http://cde.nlm.nih.gov/formView?tinyId={{id}}&version={{version}}");
 
         logout();
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
 
         goToFormByName(formName);
         goToIdentifiers();

@@ -16,7 +16,7 @@ import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, nocacheMiddleware
+    isOrgAuthorityMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import {
     buildElasticSearchQuery, completionSuggest, elasticSearchExport, removeElasticFields
@@ -28,6 +28,7 @@ import { stripBsonIdsElt } from 'shared/system/exportShared';
 
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
+const canViewDraftMiddlewareDe = canEditByTinyIdMiddlewareDe;
 
 const daoManager = require('../system/moduleDaoManager');
 
@@ -95,7 +96,7 @@ export function module() {
     router.get('/server/de/list/:tinyIdList?', nocacheMiddleware, byTinyIdList);
     router.get('/server/de/originalSource/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
 
-    router.get('/server/de/draft/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.get('/server/de/draft/:tinyId', canViewDraftMiddlewareDe, draftForEditByTinyId);
     router.put('/server/de/draft/:tinyId', canEditMiddlewareDe, draftSave);
     router.delete('/server/de/draft/:tinyId', canEditByTinyIdMiddlewareDe, draftDelete);
 

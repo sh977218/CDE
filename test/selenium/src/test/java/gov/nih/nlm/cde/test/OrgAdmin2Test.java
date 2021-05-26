@@ -9,12 +9,12 @@ public class OrgAdmin2Test extends BaseClassificationTest {
 
     @Test
     public void adminProfile() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToProfile();
-        Assert.assertEquals("cabigAdmin", findElement(By.id("username")).getText());
+        Assert.assertEquals("cabigEditor", findElement(By.id("username")).getText());
         textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
-        textPresent("caBIG", By.id("adminFor"));
+        textPresent("caBIG", By.id("editorFor"));
     }
 
     @Test
@@ -49,10 +49,12 @@ public class OrgAdmin2Test extends BaseClassificationTest {
 
     @Test
     public void noTabIfSingleOrg() {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
 
         goToSettings();
-        textPresent("Admins");
+        textNotPresent("Admins");
+        textNotPresent("Curators");
+        textNotPresent("Editors");
         textNotPresent("Steward Transfer");
 
     }

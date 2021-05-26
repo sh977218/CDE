@@ -9,7 +9,7 @@ public class ScoreTest extends NlmCdeBaseTest {
 
     @Test
     public void cannotCreateWithZeroCdes() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         emptyQuickBoardByModule("cde");
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
 

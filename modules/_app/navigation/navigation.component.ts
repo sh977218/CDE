@@ -26,7 +26,13 @@ import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
 import { cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
-import { isOrgAuthority, isOrgCurator, isSiteAdmin } from 'shared/system/authorizationShared';
+import {
+    canClassify,
+    hasPrivilege,
+    isOrgAuthority,
+    isOrgCurator,
+    isSiteAdmin
+} from 'shared/system/authorizationShared';
 
 const NAV_Z_INDEX_STANDARD = '1000';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -96,6 +102,7 @@ const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
         '/settings/allComments',
         '/settings/orgAdmin',
         '/settings/orgCurator',
+        '/settings/orgEditor',
         '/settings/orgsEdit',
         '/settings/tagsManagement',
         '/settings/propertiesManagement',
@@ -141,6 +148,7 @@ export class NavigationComponent {
         isMatMenu2Open?: boolean,
         prevButtonTrigger?: MatMenuTrigger,
     }[] = [];
+    canClassify = canClassify;
     isOrgAuthority = isOrgAuthority;
     isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
@@ -162,7 +170,7 @@ export class NavigationComponent {
             label: 'Create',
             id: 'createEltLink',
             section: SECTIONS.create,
-            condition: () => isOrgCurator(this.userService.user),
+            condition: () => hasPrivilege(this.userService.user, 'create'),
             children: [
                 {
                     label: 'CDE',

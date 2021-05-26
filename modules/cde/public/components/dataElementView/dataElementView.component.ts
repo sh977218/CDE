@@ -21,7 +21,12 @@ import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
-import { canEditCuratedItem, isOrgCurator, isOrgAuthority } from 'shared/system/authorizationShared';
+import {
+    canEditCuratedItem,
+    isOrgCurator,
+    isOrgAuthority,
+    hasPrivilegeForOrg
+} from 'shared/system/authorizationShared';
 import { WINDOW } from 'window.service';
 
 const TAB_COMMENT_MAP: any = {
@@ -150,7 +155,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 if (!this.elt || this.elt.archived || this.userService.user && isOrgAuthority(this.userService.user)) {
                     return false;
                 }
-                return isOrgCurator(this.userService.user, this.elt.stewardOrg.name) &&
+                return hasPrivilegeForOrg(this.userService.user, 'edit', this.elt.stewardOrg.name) &&
                     (this.elt.registrationState.registrationStatus === 'Standard' ||
                         this.elt.registrationState.registrationStatus === 'Preferred Standard');
             })();

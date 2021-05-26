@@ -8,7 +8,7 @@ import org.testng.Assert;
 public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
     void adminCantEditStandardCde(String cdeName) {
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToCdeByName(cdeName);
         // CDE is Standard.
 
@@ -35,9 +35,9 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         findElement(By.xpath("//*[@itemprop='definition_0' and not(//mat-icon[contains(., 'edit')])]"));
         checkElementDoesNotExistByLocator(By.xpath("//*[@id='tags_0']//input"));
 
-        // Can edit classifications
+        // can classify
         goToClassification();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("openClassificationModalBtn")));
+        findElement(By.id("openClassificationModalBtn"));
 
         // Can't edit Concepts
         goToConcepts();
@@ -47,6 +47,13 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         // Can't add Attachments
         goToAttachments();
         assertNoElt(By.xpath("mat-icon[contains(., 'cloud_upload')]"));
+        logout();
+
+        // Can edit classifications
+        mustBeLoggedInAs(classificationMgtUser_username, password);
+        goToCdeByName(cdeName);
+        goToClassification();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("openClassificationModalBtn")));
     }
 
 

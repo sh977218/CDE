@@ -15,7 +15,7 @@ public class CdeAddRemoveNameTest extends NlmCdeBaseTest {
         String newDefinitionChange = " Change";
         String newTag = "Health Changed";
 
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToCdeByName(cdeName);
         goToNaming();
         addNewDesignation(newName, null);

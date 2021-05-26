@@ -17,7 +17,7 @@ import {
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
-    isOrgAuthorityMiddleware, isOrgCuratorMiddleware, loggedInMiddleware, nocacheMiddleware
+    isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
 import { registerDao } from 'server/system/moduleDaoManager';
@@ -31,6 +31,7 @@ const {checkSchema, check} = require('express-validator');
 
 const canEditMiddlewareForm = canEditMiddleware(mongoForm);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongoForm);
+const canViewDraftMiddlewareForm = canEditByTinyIdMiddlewareForm;
 
 // ucum from lhc uses IndexDB
 (global as any).location = {origin: 'localhost'};
@@ -116,7 +117,7 @@ export function module() {
     router.get('/server/form/list/:tinyIdList?', nocacheMiddleware, byTinyIdList);
     router.get('/server/form/originalSource/:sourceName/:tinyId', originalSourceByTinyIdSourceName);
 
-    router.get('/server/form/draft/:tinyId', isOrgCuratorMiddleware, draftForEditByTinyId);
+    router.get('/server/form/draft/:tinyId', canViewDraftMiddlewareForm, draftForEditByTinyId);
     router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, draftSave);
     router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, draftDelete);
 

@@ -8,7 +8,7 @@ public class QuestionRepeatTest extends BaseFormTest {
 
     @Test
     public void questionRepeat() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "Question Repeat";
         goToFormByName(formName);
         textNotPresent("If 1: DCE-MRI Kinetics T1 Mapping Quality Type", By.xpath("//*[@id='Visible Tumor Anterior-Posterior Orientation Size 3 Digit Number_0-0-0']"));

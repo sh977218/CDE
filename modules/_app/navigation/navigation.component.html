@@ -53,7 +53,7 @@
                     <mat-menu #loginMenu="matMenu">
                         <div (mouseenter)="menu1Enter(majorBar)" (mouseleave)="menu1Leave(majorBar, userMenuTrigger, userButton)">
                             <button mat-menu-item routerLink="/settings/profile">Settings</button>
-                            <button mat-menu-item *ngIf="isOrgCurator(userService.user)" routerLink="/classificationManagement">Classifications</button>
+                            <button mat-menu-item *ngIf="canClassify(userService.user)" routerLink="/classificationManagement">Classifications</button>
                             <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
                             <button mat-menu-item (click)="loginSvc.logout()">Log Out</button>
                         </div>

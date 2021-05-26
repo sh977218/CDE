@@ -8,7 +8,7 @@ public class CdeRemoveIdentifierTest extends NlmCdeBaseTest {
     @Test
     public void cdeRemoveIdentifier() {
         String cdeName = "Malignant Neoplasm Surgical Margin Distance Value";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         removeIdentifier(0);
 

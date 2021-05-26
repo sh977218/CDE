@@ -7,18 +7,6 @@ import { canEditCuratedItem, isOrgCurator, isSiteAdmin, hasRole } from 'shared/s
 export class IsAllowedService {
     constructor(private userService: UserService) {}
 
-    doesUserOwnElt(elt: Item | Board) {
-        const user = this.userService.loggedIn();
-        if (!user) {
-            return false;
-        }
-        if (elt.elementType === 'board') {
-            return user.siteAdmin || user.username === elt.owner.username;
-        } else {
-            return user.siteAdmin || user.orgAdmin.indexOf(elt.stewardOrg.name || '') > -1;
-        }
-    }
-
     hasRole(role: UserRoles) {
         return hasRole(this.userService.user, role);
     }

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class StatusValidationRenderTest extends BaseClassificationTest {
 //    @Test
 //    public void rulesRender(){
-//        mustBeLoggedInAs(testAdmin_username, password);
+//        mustBeLoggedInAs(testEditor_username, password);
 //        goToCdeByName("Reg Status Lift");
 //
 //        clickElement(By.xpath("//li//a[text()='Rules']"));

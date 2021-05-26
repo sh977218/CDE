@@ -7,7 +7,7 @@ public class FormChangeRegistrationStatusTest extends NlmCdeBaseTest {
     @Test
     void formChangeRegistrationStatus() {
         String formName = "Form Status Test";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToFormByName(formName);
         goToGeneralDetail();
         textPresent("Qualified");

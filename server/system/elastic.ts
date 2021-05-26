@@ -25,7 +25,7 @@ import {
     SearchResponseAggregationForm, SearchResponseAggregationItem, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { hasPrivilege, isOrgAuthority } from 'shared/system/authorizationShared';
+import { hasRolePrivilege, isOrgAuthority } from 'shared/system/authorizationShared';
 
 type ElasticCondition = any;
 type MongoCondition = any;
@@ -324,7 +324,7 @@ function getAllowedStatuses(user: User, settings: SearchSettingsElastic): Curati
 }
 
 export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
-    if (hasPrivilege(user, 'universalSearch')) {
+    if (hasRolePrivilege(user, 'universalSearch')) {
         return ((settings.includeRetired
             ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']
             : ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete']

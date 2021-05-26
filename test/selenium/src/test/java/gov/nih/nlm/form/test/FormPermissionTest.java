@@ -20,7 +20,7 @@ public class FormPermissionTest extends BaseFormTest {
         newFormVersion();
 
         logout();
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToFormByName(formName);
         formEditNotAvailable();
     }

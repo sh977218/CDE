@@ -9,7 +9,7 @@ public class CdeCancelRegStatusTest extends NlmCdeBaseTest {
     @Test
     public void cdeCancelRegistrationStatus() {
         String cdeName = "Form Form Element Administered Item Modified By java.lang.String";
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(cabigEditor_username, password);
         goToCdeByName(cdeName);
         textPresent("Qualified");
         startEditRegistrationStatus();

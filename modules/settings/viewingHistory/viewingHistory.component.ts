@@ -14,7 +14,6 @@ class FormUI extends CdeForm {
 }
 
 @Component({
-    selector: 'cde-viewing-history',
     templateUrl: './viewingHistory.component.html'
 })
 export class ViewingHistoryComponent {

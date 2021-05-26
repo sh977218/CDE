@@ -14,7 +14,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         String cdeName = "ImgTagTest";
         String attachmentName = "nih-logo-color.png";
 
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
         // probably an issue with the clamAv mock. So we try twice.
@@ -34,7 +34,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         logout();
         reviewAttachment(attachmentName);
         logout();
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
 
         goToAttachments();

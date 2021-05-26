@@ -72,7 +72,7 @@ export class CdeAppComponent {
         iconReg.addSvgIconLiteral('thumb_tack', sanitizer.bypassSecurityTrustHtml(
             /* tslint:disable */
             `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"\n\t viewBox=\"0 0 96 96\" style='enable-background:new 0 0 96 96; vertical-align: baseline' xml:space=\"preserve\">\n`
-            + `<style type="text/css">.st0{fill:#FFFFFF;}</style>`
+            + `<style type="text/css">.st0{fill: inherit;}</style>`
             + `<g id="XMLID_2_">`
             + `<path id="XMLID_6_" class="st0" d="M44.5,44.5V28.4c0-0.3-0.1-0.6-0.3-0.8s-0.5-0.3-0.8-0.3c-0.3,0-0.6,0.1-0.8,0.3\nc-0.2,0.2-0.3,0.5-0.3,0.8v16.2c0,0.3,0.1,0.6,0.3,0.8c0.2,0.2,0.5,0.3,0.8,0.3c0.3,0,0.6-0.1,0.8-0.3\nC44.4,45.2,44.5,44.9,44.5,44.5z M68.8,57.2c0,0.6-0.2,1.2-0.7,1.6c-0.5,0.5-1,0.7-1.6,0.7H51L49.2,77c0,0.3-0.2,0.5-0.4,0.7\nC48.6,77.9,48.3,78,48,78h0c-0.6,0-1-0.3-1.2-1l-2.7-17.5H29.5c-0.6,0-1.2-0.2-1.6-0.7c-0.5-0.5-0.7-1-0.7-1.6c0-3,0.9-5.6,2.8-8\nc1.9-2.4,4-3.6,6.4-3.6V27.2c-1.3,0-2.3-0.5-3.2-1.4s-1.4-2-1.4-3.2c0-1.3,0.5-2.3,1.4-3.2c0.9-0.9,2-1.4,3.2-1.4h23.1\nc1.3,0,2.3,0.5,3.2,1.4c0.9,0.9,1.4,2,1.4,3.2c0,1.3-0.5,2.3-1.4,3.2s-2,1.4-3.2,1.4v18.5c2.4,0,4.5,1.2,6.4,3.6\nC67.8,51.6,68.8,54.3,68.8,57.2z"/>`
             + `</g>`

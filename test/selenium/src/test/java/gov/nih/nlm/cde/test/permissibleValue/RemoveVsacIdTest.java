@@ -10,7 +10,7 @@ public class RemoveVsacIdTest extends NlmCdeBaseTest {
     @Test
     public void removeVsacId() {
         String cdeName = "Left Colon Excision Ind-2";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
         clickElement(By.id("updateOIDBtn"));

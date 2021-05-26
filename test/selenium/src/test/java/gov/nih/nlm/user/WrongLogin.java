@@ -24,7 +24,7 @@ public class WrongLogin extends NlmCdeBaseTest {
         isLoggedOut();
         isLoginPage();
 
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
     }
 
 }

@@ -13,7 +13,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
     @Test
     public void assignVsacId() {
         String cdeName = "Patient Ethnic Group Category";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
         textPresent("No Value Set specified.");

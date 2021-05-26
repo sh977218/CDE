@@ -246,7 +246,7 @@
                     <mat-select [(value)]="question.question.defaultAnswer" placeholder="Select Default Answer"
                                 (selectionChange)="eltChange.emit()">
                         <mat-option value=""></mat-option>
-                        <mat-option *ngFor="let pv of  question.question.answers"
+                        <mat-option *ngFor="let pv of question.question.answers"
                                     [value]="pv.permissibleValue">{{pvGetLabel(pv)}}</mat-option>
                     </mat-select>
                 </mat-form-field>

@@ -8,7 +8,7 @@ public class FormScoreTest extends QuestionTest {
 
     @Test
     public void formScore() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "ALS Score Form";
         goToFormByName(formName);
 

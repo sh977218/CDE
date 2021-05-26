@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CreateFormFromBoardTest extends NlmCdeBaseTest {
     @Test
     public void createFormFromBoard() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToBoard("Form Board");
         clickElement(By.id("createFormBtn"));
         new Select(findElement(By.id("eltStewardOrgName"))).selectByVisibleText("TEST");

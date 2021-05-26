@@ -8,7 +8,7 @@ public class FormReorderPropertiesTest extends NlmCdeBaseTest {
     @Test
     public void formReorderProperties() {
         String formName = "form for test cde reorder detail tabs";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToProperties();
         reorderBySection("properties", "down", 0);

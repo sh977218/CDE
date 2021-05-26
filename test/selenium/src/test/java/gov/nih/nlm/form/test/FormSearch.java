@@ -8,7 +8,7 @@ public class FormSearch extends BaseFormTest {
 
     @Test
     public void findFormByCde() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
         String formName = "Find By CDE";
         goToCdeByName(cdeName);

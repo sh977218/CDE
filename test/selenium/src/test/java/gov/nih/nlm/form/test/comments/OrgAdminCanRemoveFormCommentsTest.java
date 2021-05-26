@@ -9,7 +9,7 @@ public class OrgAdminCanRemoveFormCommentsTest extends NlmCdeBaseTest {
     public void orgAdminCanRemoveFormComment() {
         String formName = "Form Comment Test";
         String commentText = "Inappropriate Comment";
-        mustBeLoggedInAs(cabigAdmin_username, password);
+        mustBeLoggedInAs(classificationMgtUser_username, password);
         goToFormByName(formName);
         removeComment(commentText);
     }

@@ -10,7 +10,7 @@ public class NativeRenderTest extends BaseFormTest {
 
     @Test
     public void oneLiner() {
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         String formName = "SDC Adrenal";
         goToFormByName(formName);
 

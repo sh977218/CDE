@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ClassifyGuard } from '_app/routerGuard/classifyGuard';
 import { OfflineComponent } from '_app/routing/offline.component';
 import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
 import { IEGuard } from '_app/routerGuard/ieGuard';
@@ -45,7 +46,7 @@ const appRoutes: Routes = [
     {
         path: 'classificationManagement',
         loadChildren: () => import('classificationManagement/classificationManagement.module').then(m => m.ClassificationManagementModule),
-        canLoad: [OrgCuratorGuard],
+        canLoad: [ClassifyGuard],
         data: {title: 'Manage Classification', preload: false},
     },
     {
@@ -162,6 +163,7 @@ const appRoutes: Routes = [
         PageNotFoundComponent,
     ],
     providers: [
+        ClassifyGuard,
         IEGuard,
         LoggedInGuard,
         OrgAdminGuard,

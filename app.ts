@@ -40,7 +40,7 @@ import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRo
 import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
-    canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkOwnership, isDocumentationEditor,
+    canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkEditing, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware
 } from 'server/system/authorization';
 import { initEs } from 'server/system/elastic';
@@ -51,7 +51,7 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { ModuleAll } from 'shared/models.model';
-import { isOrgAuthority, isOrgCurator } from 'shared/system/authorizationShared';
+import { canClassifyOrg, isOrgAuthority } from 'shared/system/authorizationShared';
 
 const flash = require('connect-flash');
 const hsts = require('hsts');
@@ -278,13 +278,15 @@ express.response.render = function renderEjsUsingThis(this: any, view: string, m
     originalRender.call(this, path.join(__dirname, '/modules/' + module + '/views/' + view), msg as any);
 } as any;
 
+
+
 try {
     app.use('/', appModule());
     app.use('/server/attachment', [loggedInMiddleware], attachmentModule({
         attachmentApproval: [canApproveAttachmentMiddleware]
     }, [
-        {module: 'cde', db: mongo_cde, crudPermission: checkOwnership},
-        {module: 'form', db: mongo_form, crudPermission: checkOwnership},
+        {module: 'cde', db: mongo_cde, crudPermission: checkEditing},
+        {module: 'form', db: mongo_form, crudPermission: checkEditing},
         {module: 'article', db: articleDb, crudPermission: isDocumentationEditor}
     ]));
     app.use('/server/discuss', discussModule({
@@ -298,7 +300,7 @@ try {
     app.use('/server/uts', utsModule());
     app.use('/server/classification', classificationModule({
         allowClassify: (req, res, next) => {
-            if (!isOrgCurator(req.user, req.body.orgName)) {
+            if (!canClassifyOrg(req.user, req.body.orgName)) {
                 return res.status(401).send();
             }
             next();
@@ -325,7 +327,7 @@ try {
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
     app.use('/server/orgManagement', orgManagementModule());
-    app.use('/server/notification', isSiteAdminMiddleware, notificationModule({
+    app.use('/server/notification', notificationModule({
         notificationDate: isSiteAdminMiddleware
     }));
     app.use('/server/article', articleModule({

@@ -10,7 +10,7 @@ public class MltDoesntShowRetired extends NlmCdeBaseTest {
     public void mltDoesntShowRetired() {
         // data has 2, one is retired
         String cdeName = "MltTest";
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
 
         clickElement(By.id("mltButton"));

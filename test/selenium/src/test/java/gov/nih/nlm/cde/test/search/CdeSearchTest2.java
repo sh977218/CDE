@@ -22,7 +22,7 @@ public class CdeSearchTest2 extends NlmCdeBaseTest {
         
         // Check that a Standard CDE have warning message
         logout();
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName("Person Birth Date");
         textPresent("Note: You may not edit this CDE because it is standard.");
     }

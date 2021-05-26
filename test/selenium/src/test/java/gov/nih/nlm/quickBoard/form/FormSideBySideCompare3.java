@@ -10,7 +10,7 @@ public class FormSideBySideCompare3 extends NlmCdeBaseTest {
     public void formSideBySideCompare3() {
         String formName1 = "compareForm3";
         String formName2 = "compareForm4";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         addFormToQuickBoard(formName1);
         addFormToQuickBoard(formName2);
         hoverOverElement(findElement(By.id("boardsMenu")));

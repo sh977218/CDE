@@ -9,7 +9,7 @@ public class TwoLabelsNoVersionTest extends NlmCdeBaseTest {
     @Test
     public void twoLabelsNoVersion() {
         String formName = "NoVersionCdeFormTest";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");

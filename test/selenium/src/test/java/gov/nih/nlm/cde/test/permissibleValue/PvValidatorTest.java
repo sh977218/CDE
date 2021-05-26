@@ -38,7 +38,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
     @Test
     public void pvValidation() {
         String cdeName = "PvValidatorCde";
-        mustBeLoggedInAs("selenium", password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
         textNotPresent("There are validation errors");

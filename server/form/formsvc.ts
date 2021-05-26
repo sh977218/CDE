@@ -19,7 +19,7 @@ import { getFormForPublishing } from 'server/form/publishForm';
 import { formToSDC } from 'server/form/sdcForm';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
-import { checkOwnership, RequestWithItem } from 'server/system/authorization';
+import { RequestWithItem } from 'server/system/authorization';
 import { addFormToViewHistory, formatElt, sortArrayByArray } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
@@ -99,7 +99,7 @@ function fetchWholeFormOutdated(form: CdeForm, callback: CbError1<CdeForm>) {
 }
 
 function wipeRenderDisallowed(form: CdeForm, user: User) {
-    if (form && form.noRenderAllowed && !checkOwnership(form, user)) {
+    if (form && form.noRenderAllowed && !canEditCuratedItem(user, form)) {
         form.formElements = [];
     }
 }

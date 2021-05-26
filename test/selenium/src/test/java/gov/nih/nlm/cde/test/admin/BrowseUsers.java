@@ -14,8 +14,8 @@ public class BrowseUsers extends NlmCdeBaseTest {
         searchUsername("cabig");
         clickElement(By.id("searchUsersSubmit"));
 
-        Assert.assertEquals("cabigAdmin", findElement(By.id("user_username")).getText());
-        Assert.assertEquals("caBIG", findElement(By.id("user_orgadmin")).getText());
+        Assert.assertEquals(findElement(By.id("user_username")).getText(), "cabigEditor");
+        Assert.assertEquals(findElement(By.id("user_editor")).getText(), "caBIG");
         Assert.assertEquals(findElement(By.id("user_siteadmin")).getText(), "No");
 
         searchUsername("nlm");

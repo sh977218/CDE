@@ -8,7 +8,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
 
     @Test
     public void editConcepts() {
-        mustBeLoggedInAs(ctepCurator_username, password);
+        mustBeLoggedInAs(ctepEditor_username, password);
         String cdeName = "Patient Photograph Malignant Neoplasm Assessment Date";
 
         String newDataElementConceptName = "DEC1";

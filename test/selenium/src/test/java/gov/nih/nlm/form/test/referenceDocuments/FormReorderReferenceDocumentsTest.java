@@ -9,7 +9,7 @@ public class FormReorderReferenceDocumentsTest extends NlmCdeBaseTest {
     public void formReorderReferenceDocuments() {
         String formName = "Reorder reference document form";
 
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
 
         goToReferenceDocuments();

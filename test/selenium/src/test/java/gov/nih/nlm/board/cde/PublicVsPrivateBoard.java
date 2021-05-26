@@ -24,7 +24,7 @@ public class PublicVsPrivateBoard extends BoardTest {
         checkAlert("Board Not Found");
         textNotPresent("MUGA");
 
-        loginAs(ctepCurator_username, password);
+        loginAs(ctepEditor_username, password);
         driver.get(url);
         // logged in as someone else, I can't see
         checkAlert("Board Not Found");

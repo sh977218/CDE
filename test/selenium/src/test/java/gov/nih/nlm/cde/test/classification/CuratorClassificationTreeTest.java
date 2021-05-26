@@ -9,17 +9,16 @@ public class CuratorClassificationTreeTest extends NlmCdeBaseTest {
 
     @Test
     public void curatorCantEditClassificationTree() {
-        mustBeLoggedInAs("ctepOnlyCurator", password);
+        mustBeLoggedInAs(ctepOnlyEditor, password);
         gotoClassificationMgt();
 
         nonNativeSelect("", "Start by choosing your Organization", "CTEP");
         textPresent("CRF_TTU");
 
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'subdirectory_arrow_left']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'edit']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'delete_outline']")).size());
-        Assert.assertEquals(0, driver.findElements(By.xpath("//mat-icon[normalize-space() = 'transform']")).size());
-
+        assertNoElt(By.xpath("//mat-icon[normalize-space() = 'subdirectory_arrow_left']"));
+        assertNoElt(By.xpath("//mat-icon[normalize-space() = 'edit']"));
+        assertNoElt(By.xpath("//mat-icon[normalize-space() = 'delete_outline']"));
+        assertNoElt(By.xpath("//mat-icon[normalize-space() = 'transform']"));
     }
 
 }

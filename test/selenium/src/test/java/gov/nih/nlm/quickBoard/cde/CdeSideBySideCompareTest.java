@@ -10,7 +10,7 @@ public class CdeSideBySideCompareTest extends NlmCdeBaseTest {
     public void cdeSideBySideCompare() {
         String cdeName1 = "cdeCompare1";
         String cdeName2 = "cdeCompare2";
-        mustBeLoggedInAs(testAdmin_username, password);
+        mustBeLoggedInAs(testEditor_username, password);
         addCdeToQuickBoard(cdeName1);
         addCdeToQuickBoard(cdeName2);
         hoverOverElement(findElement(By.id("boardsMenu")));
