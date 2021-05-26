@@ -18,6 +18,7 @@ public interface USERNAME {
     String ctepEditor_username = "ctepEditor";
     String ctepOnlyCurator = "ctepOnlyCurator";
     String ctepOnlyEditor = "ctepOnlyEditor";
+    String governanceUser = "governanceUser";
     String test_username = "testuser";
     String history_username = "historyuser";
     String ninds_username = "ninds";
