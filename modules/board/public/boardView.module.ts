@@ -8,6 +8,7 @@ import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/public/board.module';
 import { BoardViewComponent } from 'board/public/components/boardView/boardView.component';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
+import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
 import { FormSearchModule } from 'form/public/formSearch.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
@@ -41,7 +42,8 @@ const boardRoutes: Routes = [
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        CompareModule
     ],
     declarations: [
         BoardViewComponent,
