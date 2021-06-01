@@ -1,6 +1,7 @@
 <h4>
     <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView">
         <span class="summary-list-before">
+            <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" [(ngModel)]="elt.checked"/>
             <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
                            [currentPage]="boardListService.currentPage" [totalItems]="boardListService.totalItems"></cde-list-sort>
         </span>
