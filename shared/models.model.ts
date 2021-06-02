@@ -707,6 +707,8 @@ export interface User {
     username: string;
     viewDrafts?: boolean;
     viewHistory?: string[];
+    cdeDefaultBoard?: string;
+    formDefaultBoard?: string;
 }
 
 export interface UserRef {

@@ -30,8 +30,13 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
         String formName1 = "compareForm1";
         String formName2 = "compareForm2";
 
-        pinFormToBoard(formName1, boardName);
-        pinFormToBoard(formName2, boardName);
+        goToFormByName(formName1);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+
+        goToFormByName(formName2);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
 
 
         goToBoard(boardName);
@@ -58,8 +63,14 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
     private void formBoardSideBySideCompare2(String boardName) {
         String formName3 = "compareForm3";
         String formName4 = "compareForm4";
-        pinFormToBoard(formName3, boardName);
-        pinFormToBoard(formName4, boardName);
+
+        goToFormByName(formName3);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+
+        goToFormByName(formName4);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
 
         goToBoard(boardName);
 
@@ -96,7 +107,10 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
 
     private void formBoardSideBySideCompare3(String boardName) {
         String formName = "emptyForm";
-        pinFormToBoard(formName, boardName);
+
+        goToFormByName(formName);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
         goToBoard(boardName);
 
         clickElement(By.id("elt_compare_0"));
@@ -116,13 +130,11 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
     private void formBoardSideBySideIds(String boardName) {
         driver.get(baseUrl + "/form/search?q=7JUBzySHFg");
         clickElement(By.id("pinToBoard_0"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        textPresent("Added to " + boardName);
 
         driver.get(baseUrl + "/form/search?q=my7rGyrBYx");
         clickElement(By.id("pinToBoard_0"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        textPresent("Added to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("elt_compare_5"));

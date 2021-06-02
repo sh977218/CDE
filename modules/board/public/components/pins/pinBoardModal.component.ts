@@ -26,23 +26,70 @@ export class PinBoardModalComponent {
                 private userService: UserService) {
     }
 
-
-    pinMultiple(elts: {tinyId: string}[], promise: Promise<any>) {
-        promise.then(board => {
-            this.http.put('/server/board/pinToBoard/', {
-                boardId: board._id,
-                tinyIdList: elts.map(e => e.tinyId),
-                type: this.module
-            }, {observe: 'response', responseType: 'text'}).subscribe(() => {
-                if (elts.length === 1) {
-                    this.alert.addAlert('success', 'Added to Board');
-                } else { this.alert.addAlert('success', 'All elements pinned.'); }
-                this.dialogRef.close();
-            }, err => this.alert.httpErrorMessageAlert(err));
-        }, err => {
-            if (err) { this.alert.httpErrorMessageAlert(err); }
-        });
+    pinMultiple(elts: {tinyId: string}[]){
+        if (this.userService.user) {
+            this.myBoardsSvc.loadMyBoards(this.module, ()=> {
+                if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 0){
+                    const newBoard = {
+                        type:this.module,
+                        pins:[],
+                        name:'Board 1',
+                        description:'',
+                        shareStatus:'Private'
+                    };
+                    this.http.post('/server/board', newBoard, {responseType: 'text'}).subscribe(() => {
+                        this.myBoardsSvc.loadMyBoards(this.module,() => {
+                            const board = this.myBoardsSvc.boards?.[0];
+                            this.http.put('/server/board/pinToBoard/', {
+                                boardId: board._id,
+                                tinyIdList: elts.map(e => e.tinyId),
+                                type: this.module
+                            }).subscribe(() => {
+                                if (elts.length === 1) {
+                                    this.alert.addAlert('success', 'Added to new board: Board 1');
+                                } else { this.alert.addAlert('success', 'All elements pinned to new board: Board 1'); }
+                            }, err => this.alert.httpErrorMessageAlert(err));
+                        });
+                    }, err => this.alert.httpErrorMessageAlert(err));
+                }
+                else if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 1){
+                    const board = this.myBoardsSvc.boards?.[0];
+                    this.http.put('/server/board/pinToBoard/', {
+                        boardId: board._id,
+                        tinyIdList: elts.map(e => e.tinyId),
+                        type: this.module
+                    }).subscribe(() => {
+                        if (elts.length === 1) {
+                            this.alert.addAlert('success', 'Added to ' + board.name);
+                        } else { this.alert.addAlert('success', 'All elements pinned to ' + board.name); }
+                    }, err => this.alert.httpErrorMessageAlert(err));
+                }
+                else{
+                    this.open().then((board: any) => {
+                        this.http.put('/server/board/pinToBoard/', {
+                            boardId: board._id,
+                            tinyIdList: elts.map(e => e.tinyId),
+                            type: this.module
+                        }).subscribe(() => {
+                            if (this.userService.user) {
+                                const body = this.module === 'cde' ? {cdeDefaultBoard: board._id} : {formDefaultBoard: board._id}
+                                this.http.post('/server/user/', body).subscribe(() => this.userService.reload());
+                            }
+                            if (elts.length === 1) {
+                                this.alert.addAlert('success', 'Added to Board');
+                            } else { this.alert.addAlert('success', 'All elements pinned.'); }
+                            this.dialogRef.close();
+                        }, err => this.alert.httpErrorMessageAlert(err));
+                    }, err => {
+                        if (err) { this.alert.httpErrorMessageAlert(err); }
+                    });
+                }
+            });
+        } else {
+            this.dialog.open(this.ifYouLoginModal);
+        }
     }
+
 
     open() {
         return new Promise((resolve, reject) => {

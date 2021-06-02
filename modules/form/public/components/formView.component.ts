@@ -311,7 +311,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
 
         this.elt.formElements.forEach(doFormElement);
-        this.mltPinModalCde.pinMultiple(cdes, this.mltPinModalCde.open());
+        this.mltPinModalCde.pinMultiple(cdes);
     }
 
     publish() {

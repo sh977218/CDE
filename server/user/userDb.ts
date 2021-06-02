@@ -104,7 +104,9 @@ const userSchema = new Schema({
     accessToken: StringType,
     refreshToken: StringType,
     avatarUrl: StringType,
-    publishedForms: [publishedFormSchema]
+    publishedForms: [publishedFormSchema],
+    cdeDefaultBoard: StringType,
+    formDefaultBoard: StringType
 }, {usePushEach: true});
 
 export const userRefSchema = {
@@ -172,6 +174,12 @@ export async function updateUser(user: User, fields: Partial<UserFull>, callback
     }
     if (typeof fields.viewDrafts !== 'undefined') {
         update.viewDrafts = fields.viewDrafts;
+    }
+    if(fields.cdeDefaultBoard){
+        update.cdeDefaultBoard = fields.cdeDefaultBoard;
+    }
+    if(fields.formDefaultBoard){
+        update.formDefaultBoard = fields.formDefaultBoard;
     }
     return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as _noop from 'lodash/noop';
 import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
 import { Dictionary } from 'async';
+import { UserService } from '_app/user.service';
 
 export interface BoardFilter {
     search?: string;
@@ -35,7 +36,7 @@ export class MyBoardsService {
     };
     reloading = false;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private userService: UserService) {
     }
 
     loadMyBoards(type?: ModuleItem, cb = _noop) {
@@ -58,8 +59,19 @@ export class MyBoardsService {
             }
             this.reloading = false;
             if (type && this.boards) { this.boards = this.boards.filter(b => b.type === type); }
+            this.sortBoardList(type);
             cb();
         }, cb);
+    }
+
+    sortBoardList(type?: ModuleItem){
+        const defaultBoardId = type === 'form' ? this.userService.user?.formDefaultBoard : this.userService.user?.cdeDefaultBoard;
+        if(type && defaultBoardId && this.boards){
+            const boardIdx = this.boards.findIndex(b => b._id === defaultBoardId);
+            if(boardIdx > 0){
+                this.boards.splice(0, 0, this.boards.splice(boardIdx, 1)[0]);
+            }
+        }
     }
 
     waitAndReload(cb = _noop) {

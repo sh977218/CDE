@@ -7,7 +7,7 @@ import { interruptEvent } from 'non-core/browser';
     selector: 'cde-pin-board',
     template: `
         <mat-icon id="pinToBoard_{{eltIndex}}" class="hand-cursor" title="Attach to Board" role="link"
-           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt], mltPinModal.open())" svgIcon="thumb_tack"></mat-icon>
+           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt])" svgIcon="thumb_tack"></mat-icon>
         <cde-pin-board-modal #mltPinModal [module]="module"></cde-pin-board-modal>
     `
 })
