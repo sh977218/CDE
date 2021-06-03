@@ -49,32 +49,6 @@
                     </mat-slide-toggle>
                 </td>
             </tr>
-            <tr *ngIf="hasRole(user, 'AttachmentReviewer')">
-                <td>
-                    Attachment Approval
-                    <mat-icon class="infoIcon"
-                              aria-label="You have been designated the responsibility to approve attachments for unprivileged users."
-                              matTooltip="You have been designated the responsibility to approve attachments for unprivileged users."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
-                    </mat-icon>
-                </td>
-                <td>
-                    <mat-slide-toggle checked="true" disabled>
-                        <span class="disabled">Enabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="Required to complete approvals"
-                              matTooltip="Required to complete approvals"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
-                    </mat-icon>
-                </td>
-                <td>
-                    <mat-slide-toggle [checked]="user.notificationSettings.approvalAttachment.push"
-                                      (change)="user.notificationSettings.approvalAttachment.push = $event.checked; userService.save()">
-                        {{booleanSettingOptions[user.notificationSettings.approvalAttachment.push ? 1 : 0]}}
-                    </mat-slide-toggle>
-                </td>
-            </tr>
             <tr *ngIf="hasRole(user, 'CommentReviewer')">
                 <td>
                     Comment Approval

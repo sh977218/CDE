@@ -40,7 +40,7 @@ import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRo
 import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
-    canApproveAttachmentMiddleware, canApproveCommentMiddleware, checkEditing, isDocumentationEditor,
+    canApproveCommentMiddleware, checkEditing, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware, loggedInMiddleware
 } from 'server/system/authorization';
 import { initEs } from 'server/system/elastic';
@@ -282,9 +282,7 @@ express.response.render = function renderEjsUsingThis(this: any, view: string, m
 
 try {
     app.use('/', appModule());
-    app.use('/server/attachment', [loggedInMiddleware], attachmentModule({
-        attachmentApproval: [canApproveAttachmentMiddleware]
-    }, [
+    app.use('/server/attachment', [loggedInMiddleware], attachmentModule( [
         {module: 'cde', db: mongo_cde, crudPermission: checkEditing},
         {module: 'form', db: mongo_form, crudPermission: checkEditing},
         {module: 'article', db: articleDb, crudPermission: isDocumentationEditor}

@@ -152,9 +152,6 @@ export class UserService {
         if (!user.notificationSettings) {
             user.notificationSettings = newNotificationSettings();
         }
-        if (!user.notificationSettings.approvalAttachment && hasRole(user, 'AttachmentReviewer')) {
-            user.notificationSettings.approvalAttachment = newNotificationSettingsMediaDrawer();
-        }
         if (!user.notificationSettings.approvalComment && hasRole(user, 'CommentReviewer')) {
             user.notificationSettings.approvalComment = newNotificationSettingsMediaDrawer();
         }

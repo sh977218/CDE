@@ -302,20 +302,13 @@ export function getFile(user: User, id: string, res: Response) {
             res.status(404).send('File not found.');
         } else {
             gfs.findOne({_id: id}, (err, file) => {
-                if (!file.metadata
-                    || !file.metadata.status
-                    || file.metadata.status === 'approved'
-                    || hasRole(user, 'AttachmentReviewer')) {
-                    if (file.contentType.indexOf('csv') !== -1) {
-                        res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
-                    }
-                    res.contentType(file.contentType);
-                    res.header('Accept-Ranges', 'bytes');
-                    res.header('Content-Length', file.length);
-                    gfs.createReadStream({_id: id}).pipe(res);
-                } else {
-                    res.status(403).send('This file has not been approved yet.');
+                if (file.contentType.indexOf('csv') !== -1) {
+                    res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
                 }
+                res.contentType(file.contentType);
+                res.header('Accept-Ranges', 'bytes');
+                res.header('Content-Length', file.length);
+                gfs.createReadStream({_id: id}).pipe(res);
             });
         }
     });

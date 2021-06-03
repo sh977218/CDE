@@ -27,30 +27,6 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         textPresent(name);
     }
 
-    protected void checkAttachmentReviewed(String name) {
-        goToAttachments();
-        clickElement(By.linkText(name));
-        switchTab(1);
-        textNotPresent("File not found");
-        textNotPresent("This file has not been approved yet");
-        switchTabAndClose(0);
-    }
-
-    protected void reviewAttachment(String fileName) {
-        mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.id("notificationLink"));
-        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
-                + "')]]//button[*[contains(text(),'Approve')]]"));
-        checkAlert("Attachment approved");
-    }
-
-    protected void declineAttachment(String fileName) {
-        mustBeLoggedInAs(attachmentReviewer_username, password);
-        clickElement(By.id("notificationLink"));
-        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'" + fileName
-                + "')]]//button[*[contains(text(),'Reject')]]"));
-    }
-
     public void setAttachmentDefault() {
         goToAttachments();
         textPresent("Upload more files");

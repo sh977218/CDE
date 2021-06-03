@@ -1,16 +1,13 @@
-import { each, ErrorCallback, map } from 'async';
+import { map } from 'async';
 import * as Config from 'config';
 import { Request, Response } from 'express';
 import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
-import { ObjectId } from 'bson';
-import { hasRole } from 'shared/system/authorizationShared';
-import { handleError, handleErrorVoid, handleNotFound } from 'server/errorHandler/errorHandler';
-import { attachmentApproved, attachmentRemove, createTask, fileUsed } from 'server/system/adminItemSvc';
+import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { fileUsed } from 'server/system/adminItemSvc';
 import { getDaoList } from 'server/system/moduleDaoManager';
 import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
-import { alterAttachmentStatus } from 'server/attachment/attachmentDb';
-import { Attachment, Cb1, Cb3, CbError, CbError1, Item, User } from 'shared/models.model';
+import { Attachment, Cb1, Cb3, CbError1, Item, User } from 'shared/models.model';
 
 const createScanner = require('clamav.js').createScanner;
 const createReadStream = require('streamifier').createReadStream;
@@ -48,10 +45,6 @@ export function add(req: Request & { files: any }, res: Response, db: any,
                     md5(file.originalname, (err, hash) => {
                         file.md5 = hash;
                         addToItem(elt, file, req.user, 'some comment', (attachment?: Attachment, requiresApproval?: boolean) => {
-                            if (requiresApproval) {
-                                createTask(req.user, 'AttachmentReviewer', 'approval', db.type,
-                                    elt.tinyId, 'attachment');
-                            }
                             res.send(elt);
                         });
                     });
@@ -89,15 +82,12 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
         mode: 'w',
         content_type: attachment.filetype,
         metadata: {
-            status: file.scanned ? 'scanned' : (hasRole(user, 'AttachmentReviewer') ? 'approved' : 'uploaded')
+            status: file.scanned ? 'approved' : 'uploaded'
         }
     };
 
     addFile(file, streamDescription, (err, newFile, isNew) => {
         if (isNew) {
-            if (!hasRole(user, 'AttachmentReviewer')) {
-                attachment.pendingApproval = true;
-            }
             attachment.scanned = file.scanned;
         }
         if (newFile) {
@@ -105,24 +95,6 @@ export function addToItem(item: ItemDocument, file: any, user: User, comment: st
             linkAttachmentToAdminItem(item, attachment, !!isNew, cb);
         }
     });
-}
-
-export function approvalApprove(req: Request, res: Response) {
-    alterAttachmentStatus(new ObjectId(req.params.id), 'approved', handleErrorVoid({req, res}, () => {
-        const asyncAttachmentApproved = (dao: any, done: CbError1<Attachment>) => attachmentApproved(dao.dao, req.params.id, done);
-        each(getDaoList(), asyncAttachmentApproved, handleErrorVoid({req, res}, () => {
-            res.send('Attachment approved.');
-        }) as ErrorCallback);
-    }));
-}
-
-export function approvalDecline(req: Request, res: Response) {
-    const asyncAttachmentRemove = (dao: any, done: CbError) => attachmentRemove(dao.dao, req.params.id, done);
-    each(getDaoList(), asyncAttachmentRemove, handleErrorVoid({req, res}, () => {
-        deleteFileById(req.params.id, handleErrorVoid({req, res}, () => {
-            res.send('Attachment declined');
-        }));
-    }) as ErrorCallback);
 }
 
 export function remove(req: Request, res: Response, db: any, crudPermission: (item: ItemDocument, user: User) => boolean) {

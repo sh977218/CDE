@@ -10,17 +10,13 @@
         <dl id="attachment_{{i}}" class="cde-property">
             <dt>Filename:</dt>
             <dd>
-                <div *ngIf="!attachment.pendingApproval || canReviewAttachment; else pendingApprovalTpl">
-                    <a id="attachment_file_url_{{i}}" class="mr-1"
-                       href="/server/system/data/{{attachment.fileid}}"
-                       target="_blank">{{attachment.filename}}</a>
-                    <button (click)="copyUrl(attachment)" mat-raised-button color="primary">
-                        <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon> Copy URL
-                    </button>
-                </div>
-                <ng-template #pendingApprovalTpl>{{attachment.filename}} - This attachment cannot be
-                    downloaded because it is pending approval.
-                </ng-template>
+                <a id="attachment_file_url_{{i}}" class="mr-1"
+                   href="/server/system/data/{{attachment.fileid}}"
+                   target="_blank">{{attachment.filename}}</a>
+                <button (click)="copyUrl(attachment)" mat-raised-button color="primary">
+                    <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon>
+                    Copy URL
+                </button>
             </dd>
             <ng-container *ngIf="!attachment.pendingApproval">
                 <dt>Default Image:</dt>
@@ -62,8 +58,12 @@
         <hr>
     </ng-container>
     <div *ngIf="canEdit">
-        <label for="fileToUpload"><button color="primary" mat-raised-button (click)="openFileDialog()">
-            <mat-icon>cloud_upload</mat-icon> Upload more files</button></label>
+        <label for="fileToUpload">
+            <button color="primary" mat-raised-button (click)="openFileDialog()">
+                <mat-icon>cloud_upload</mat-icon>
+                Upload more files
+            </button>
+        </label>
         <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
     </div>
 </ng-container>

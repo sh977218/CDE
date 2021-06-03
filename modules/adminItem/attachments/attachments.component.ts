@@ -13,10 +13,8 @@ export class AttachmentsComponent {
     @Output() removeAttachment = new EventEmitter<number>();
     @Output() setDefault = new EventEmitter<number>();
     @Output() upload = new EventEmitter<Event>();
-    canReviewAttachment: boolean;
 
     constructor(private userService: UserService) {
-        this.canReviewAttachment = hasRole(this.userService.user, 'AttachmentReviewer');
     }
 
     copyUrl(attachment: Attachment) {

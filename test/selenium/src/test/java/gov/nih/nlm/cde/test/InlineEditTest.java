@@ -17,22 +17,9 @@ public class InlineEditTest extends BaseAttachmentTest {
         mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
-        // probably an issue with the clamAv mock. So we try twice.
-        try {
-            addAttachment(attachmentName);
-            textPresent(attachmentName + " - This attachment cannot");
-        } catch (Exception e) {
-            goToCdeByName(cdeName);
-            goToAttachments();
-
-            addAttachment(attachmentName);
-            textPresent(attachmentName + " - This attachment cannot");
-        }
-        // wait before checking inbox
+        addAttachment(attachmentName);
         hangon(5);
 
-        logout();
-        reviewAttachment(attachmentName);
         logout();
         mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
