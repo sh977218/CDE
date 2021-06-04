@@ -92,14 +92,6 @@ export const canApproveCommentMiddleware: RequestHandler = (req, res, next) => {
     next();
 };
 
-export const canApproveAttachmentMiddleware: RequestHandler = (req, res, next) => {
-    if (!hasRole(req.user, 'AttachmentReviewer')) {
-        res.send(403).send();
-        return;
-    }
-    next();
-};
-
 export const isOrgAdminMiddleware: RequestHandler = (req, res, next) => {
     if (!isOrgAdmin(req.user, req.body.org)) {
         res.status(403).send();

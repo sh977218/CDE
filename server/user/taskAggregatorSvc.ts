@@ -92,49 +92,6 @@ export async function taskAggregator(user: UserDocument, clientVersion: string):
         });
     }
 
-    // TODO: implement org boundaries
-    if (hasRole(user, 'AttachmentReviewer')) { // required, req.user.notificationSettings.approvalAttachment.drawer not used
-        unapprovedAttachmentsPromise = (promisify(attachmentUnapproved)() as Promise<any>).then((attachmentElts: ItemDocument[]) => {
-            if (Array.isArray(attachmentElts)) {
-                attachmentElts.forEach(elt => {
-                    const eltModule = getModule(elt);
-                    const eltTinyId = elt.tinyId;
-                    elt.attachments
-                        .filter(a => !!a.pendingApproval)
-                        .forEach(a => {
-                            const task: Task = {
-                                date: new Date(),
-                                id: a.fileid,
-                                idType: 'attachment',
-                                name: '',
-                                properties: [
-                                    {
-                                        key: capString(eltModule),
-                                        value: eltTinyId,
-                                    }
-                                ],
-                                source: 'calculated',
-                                text: a.filetype + '\n' + a.filename + '\n' + a.comment,
-                                type: 'approve',
-                                url: uriView(eltModule, eltTinyId)
-                            };
-                            if (a.uploadedBy && a.uploadedBy.username) {
-                                task.properties.unshift({
-                                    key: 'User',
-                                    value: a.uploadedBy.username
-                                });
-                            }
-                            if (!a.scanned) {
-                                task.properties.push({
-                                    key: 'NOT VIRUS SCANNED'
-                                });
-                            }
-                            tasks.push(task);
-                        });
-                });
-            }
-        });
-    }
     if (hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
         unapprovedCommentsPromise = discussUnapproved().then(comments => {
             if (Array.isArray(comments)) {

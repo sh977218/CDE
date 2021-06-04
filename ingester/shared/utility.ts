@@ -35,7 +35,7 @@ export const lastMigrationScript = `load LOINC on ${moment().format('DD MMMM YYY
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
-    roles: ['AttachmentReviewer']
+    roles: []
 };
 
 export const created = TODAY;

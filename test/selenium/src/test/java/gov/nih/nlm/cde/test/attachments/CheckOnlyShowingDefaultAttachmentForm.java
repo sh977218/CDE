@@ -17,25 +17,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         goToAttachments();
-
         addAttachment("defaultAttachmentForForm.jpg");
-        try {
-            textPresent("This attachment cannot be downloaded because it is pending approval.");
-        } catch (TimeoutException e) {
-            // redo because sometimes mock does not work
-            goToFormByName(formName);
-            goToAttachments();
-
-            addAttachment("defaultAttachmentForForm.jpg");
-            textPresent("This attachment cannot be downloaded because it is pending approval.");
-        }
-
-        logout();
-        reviewAttachment("defaultAttachmentForForm.jpg");
-
-        logout();
-        mustBeLoggedInAs(ninds_username, password);
-        goToFormByName(formName);
         setAttachmentDefaultForm();
         goToFormByName(formName);
         goToAttachments();

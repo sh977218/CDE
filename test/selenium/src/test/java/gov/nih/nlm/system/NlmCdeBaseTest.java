@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
 @Listeners({ScreenShotListener.class})
-public class NlmCdeBaseTest implements USERNAME, MAP_HELPER {
+public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     public static WebDriver driver;
     public static WebDriverWait wait;

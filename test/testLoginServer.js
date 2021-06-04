@@ -53,7 +53,10 @@ app.use(favicon(path.resolve(__dirname, '../modules/cde/public/assets/img/favico
 const tokens = {};
 
 app.post('/login', (req, res) => {
-    db.collection('users').countDocuments({username: req.body.username, password: req.body.password || 'failme'}).then(count => {
+    db.collection('users').countDocuments({
+        username: req.body.username,
+        password: req.body.password || 'failme'
+    }).then(count => {
         if (count) {
             const token = 'CDE-' + Math.random().toString(36).substr(2) + '-localhost'
             tokens[token] = req.body.username;
@@ -74,10 +77,10 @@ app.get('/serviceValidate', (req, res) => {
     });
 });
 
-if (['dev-test', 'test'].includes(process.env.NODE_ENV) && config.test && config.test.testLoginServer.port) {
+if (['dev-test', 'test', 'my-test'].includes(process.env.NODE_ENV) && config.test && config.test.testLoginServer.port) {
     const port = config.test.testLoginServer.port;
     app.listen(port);
     console.log('TEST Login Server running on port ' + port);
 } else {
-    console.error('Test Login Server not started. Check test configuration.');
+    console.error(`Test Login Server not started. Check test configuration. Current process.env.NODE_ENV: ${process.env.NODE_ENV}`);
 }

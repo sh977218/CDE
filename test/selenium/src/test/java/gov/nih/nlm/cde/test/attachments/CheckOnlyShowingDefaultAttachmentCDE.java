@@ -16,11 +16,7 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
-
         addAttachment("default.jpg");
-
-        logout();
-        reviewAttachment("default.jpg");
 
         logout();
         mustBeLoggedInAs(ninds_username, password);

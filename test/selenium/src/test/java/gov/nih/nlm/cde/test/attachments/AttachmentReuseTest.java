@@ -14,10 +14,6 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         goToAttachments();
 
         addAttachment("painLocation.jpg");
-        textPresent("cannot be downloaded");
-
-        logout();
-        reviewAttachment("painLocation.jpg");
 
         logout();
         mustBeLoggedInAs(ninds_username, password);
@@ -25,13 +21,11 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         goToAttachments();
 
         addAttachment("painLocation.jpg");
-        checkAttachmentReviewed("painLocation.jpg");
 
         goToCdeByName(cde1);
         removeAttachment("painLocation.jpg");
 
         goToCdeByName(cde2);
-        checkAttachmentReviewed("painLocation.jpg");
     }
 
 }

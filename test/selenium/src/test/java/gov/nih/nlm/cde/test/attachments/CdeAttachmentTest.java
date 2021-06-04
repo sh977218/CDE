@@ -24,35 +24,17 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         goToCdeByName(cdeName);
         goToAttachments();
         textNotPresent("Upload more files");
-
         logout();
+
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
-
         addAttachment("glass.jpg");
-        textPresent("cannot be downloaded");
-
-        logout();
-        mustBeLoggedInAs(attachmentReviewer_username, password);
-
-        goToCdeByName(cdeName);
-        goToAttachments();
-        findElement(By.linkText("glass.jpg"));
-        clickElement(By.id("notificationLink"));
-        clickElement(By.xpath("//div[contains(@class, 'taskItem')][*//div[contains(text(),'glass.jpg')]]//button[*[contains(text(),'Approve')]]"));
-
-        logout();
-        mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName(cdeName);
-
         setAttachmentDefault();
         logout();
         openCdeInList(cdeName);
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         goToCdeByName(cdeName);
-
-        checkAttachmentReviewed("glass.jpg");
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);

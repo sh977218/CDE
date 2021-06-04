@@ -7,11 +7,11 @@ import org.testng.annotations.Test;
 public class UpdateUserRoles extends NlmCdeBaseTest {
     @Test
     void updateUserRoles() {
-        mustBeLoggedInAs(nlm_username,nlm_password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToUsers();
         searchUsername(empty_roles_username);
         clickElement(By.id("searchUsersSubmit"));
         clickElement(By.id("user_roles_0"));
-        selectMatDropdownByText("AttachmentReviewer");
+        selectMatDropdownByText(BOARD_PUBLISHER);
     }
 }
