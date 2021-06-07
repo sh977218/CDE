@@ -30,7 +30,6 @@ import {
     canClassify,
     hasPrivilege,
     isOrgAuthority,
-    isOrgCurator,
     isSiteAdmin
 } from 'shared/system/authorizationShared';
 
@@ -150,7 +149,6 @@ export class NavigationComponent {
     }[] = [];
     canClassify = canClassify;
     isOrgAuthority = isOrgAuthority;
-    isOrgCurator = isOrgCurator;
     isSiteAdmin = isSiteAdmin;
     isMobile: boolean = (window.innerWidth < 768);
     menuList: CdeNavMenu = [

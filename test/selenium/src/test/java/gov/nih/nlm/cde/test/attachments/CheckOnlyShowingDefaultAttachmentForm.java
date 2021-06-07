@@ -14,7 +14,7 @@ public class CheckOnlyShowingDefaultAttachmentForm extends BaseAttachmentTest {
     @Test
     public void checkOnlyShowingDefaultAttachmentForm() {
         String formName = "Pre-Hospital/Emergency Medical Service (EMS) Course";
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToFormByName(formName);
         goToAttachments();
         addAttachment("defaultAttachmentForForm.jpg");

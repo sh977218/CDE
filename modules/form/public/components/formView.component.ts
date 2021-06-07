@@ -33,7 +33,7 @@ import {
     QuestionCdeValueList
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
-import { canEditCuratedItem, isOrgCurator } from 'shared/system/authorizationShared';
+import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/system/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
@@ -74,9 +74,9 @@ export class FormViewComponent implements OnInit, OnDestroy {
     formInput!: Dictionary<string>;
     hasComments = false;
     hasDrafts = false;
+    hasPrivilegeForOrg = hasPrivilegeForOrg;
     highlightedTabs: string[] = [];
     isIe = isIe;
-    isOrgCurator = isOrgCurator;
     savingText = '';
     tabsCommented: string[] = [];
     unsaved = false;

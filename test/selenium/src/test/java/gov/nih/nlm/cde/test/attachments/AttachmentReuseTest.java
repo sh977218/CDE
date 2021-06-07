@@ -9,14 +9,14 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
     public void reuseAttachments() {
         String cde1 = "Brief Pain Inventory (BPI) - pain area indicator";
         String cde2 = "Brief Pain Inventory (BPI) - other pain indicator";
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         goToCdeByName(cde1);
         goToAttachments();
 
         addAttachment("painLocation.jpg");
 
         logout();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         goToCdeByName(cde2);
         goToAttachments();
 

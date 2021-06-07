@@ -77,7 +77,11 @@ app.get('/serviceValidate', (req, res) => {
     });
 });
 
-if (['dev-test', 'test', 'my-test'].includes(process.env.NODE_ENV) && config.test && config.test.testLoginServer.port) {
+if ([
+    'dev-test', // CI
+    'my-test', // additional local
+    'test' // default local
+].includes(process.env.NODE_ENV) && config.test && config.test.testLoginServer.port) {
     const port = config.test.testLoginServer.port;
     app.listen(port);
     console.log('TEST Login Server running on port ' + port);

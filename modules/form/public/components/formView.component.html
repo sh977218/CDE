@@ -230,7 +230,7 @@
                             <mat-icon>add_shopping_cart</mat-icon>
                             <span class="d-none d-md-inline ml-1">Pin CDEs</span>
                         </button>
-                        <button *ngIf="isOrgCurator(userService.user)" id="copyFormBtn" mat-raised-button
+                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)" id="copyFormBtn" mat-raised-button
                                 color="primary"
                                 (click)="openCopyElementModal()">
                             <mat-icon>content_copy</mat-icon>

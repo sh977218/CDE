@@ -8,7 +8,7 @@ public class OrgAuthCanEditStandard extends NlmCdeBaseTest {
 
     @Test
     public void orgAuthCanEditStandard() {
-        mustBeLoggedInAs("theOrgAuth", password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         goToCdeByName("Patient Visual Change Chief Complaint Indicator");
         findElement(By.cssSelector("mat-icon[title = 'Edit']"));
     }

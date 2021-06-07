@@ -9,7 +9,7 @@ public class BrowseUsers extends NlmCdeBaseTest {
 
     @Test
     public void browseUsers() {
-        mustBeLoggedInAs("theOrgAuth", password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         goToUsers();
         searchUsername("cabig");
         clickElement(By.id("searchUsersSubmit"));

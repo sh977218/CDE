@@ -227,13 +227,13 @@ const appRoutes: Routes = [
             {
                 path: 'articles',
                 component: ArticleAdminComponent,
-                canActivate: [SiteAdminGuard],
+                canActivate: [OrgAuthorityGuard],
                 data: {title: 'Articles'}
             },
             {
                 path: 'resources',
                 component: ResourcesAdminComponent,
-                canActivate: [SiteAdminGuard],
+                canActivate: [OrgAuthorityGuard],
                 data: {title: 'Resources'}
             },
             {

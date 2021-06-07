@@ -111,7 +111,7 @@
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="d-none d-md-inline-block">Add to Board</span>
                         </button>
-                        <button *ngIf="isOrgCurator(userService.user)" id="copyCdeBtn" mat-raised-button
+                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)" id="copyCdeBtn" mat-raised-button
                                 title="Copy CDE" (click)="openCopyElementModal()" color="primary">
                             <mat-icon>content_copy</mat-icon>
                             <span class="d-none d-md-inline-block"> Copy</span>
@@ -196,7 +196,7 @@
                         <div class="mb-3">
                             <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()"></cde-derivation-rules>
-<!--                            <cde-valid-rules *ngIf="isOrgCurator(userService.user, elt.stewardOrg.name)" [elt]="elt"></cde-valid-rules>-->
+<!--                            <cde-valid-rules *ngIf="isSiteAdmin(userService.user, elt.stewardOrg.name)" [elt]="elt"></cde-valid-rules>-->
                         </div>
                     </article>
                     <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()" (save)="saveDataElement()"></cde-save-modal>
