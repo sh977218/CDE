@@ -11,8 +11,15 @@ public class CdeBoardSideBySideCompareTest extends BoardTest{
         String boardName = "CDE Compare Board";
         mustBeLoggedInAs(testEditor_username, password);
         createBoard(boardName, "Test Compare", "cde");
-        pinCdeToBoard(cdeName1, boardName);
-        pinCdeToBoard(cdeName2, boardName);
+
+        goToCdeByName(cdeName1);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+
+        goToCdeByName(cdeName2);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+
         goToBoard(boardName);
         clickElement(By.id("elt_compare_0"));
         clickElement(By.id("elt_compare_1"));

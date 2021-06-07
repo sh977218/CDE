@@ -10,18 +10,18 @@ public class NoDoublePinTest extends BoardTest {
     public void noDoublePin() {
         mustBeLoggedInAs(doublepinuser_username, password);
         goToCdeSearch();
-        String cdeName = "Specimen Array";
+        String cdeName = "Specimen Inflammation Change Type";
         String boardName = "Double Pin Board";
 
-        pinCdeToBoard(cdeName, boardName);
+        goToCdeByName(cdeName);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
 
         goToCdeSearch();
         openCdeInList(cdeName);
         clickElement(By.id("pinToBoard_0"));
-        clickBoardHeaderByName(boardName);
 
         textPresent("Already added");
-        modalGone();
 
         goToBoard(boardName);
         Assert.assertEquals(driver.findElements(By.cssSelector("div.singleSearchResult")).size(), 1);

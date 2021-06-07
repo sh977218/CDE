@@ -14,9 +14,17 @@ public class FormBoardNotTwoElementsNoSideBySideCompareTest extends BoardTest {
         String boardName = "Form Compare Board";
         mustBeLoggedInAs(boarduser1_username, password);
         createBoard(boardName, "Test Compare", "form");
-        pinFormToBoard(formName1, boardName);
-        pinFormToBoard(formName2, boardName);
-        pinFormToBoard(formName3, boardName);
+
+        goToFormByName(formName1);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+        goToFormByName(formName2);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+        goToFormByName(formName3);
+        clickElement(By.id("addToBoard"));
+        textPresent("Added to " + boardName);
+
         goToBoard(boardName);
         clickElement(By.id("elt_compare_0"));
         clickElement(By.id("qb_compare"));
