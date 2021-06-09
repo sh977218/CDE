@@ -3,7 +3,7 @@ import * as _union from 'lodash/union';
 import { concat } from 'shared/array';
 import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRoles } from 'shared/models.model';
 
-export type Privilege = 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
+export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
 type Privileges = Record<Privilege, boolean>;
 type PrivilegesRegistry = Record<string, Privileges>;
 
@@ -17,6 +17,7 @@ type RolePrivileges = Partial<Record<RolePrivilege, boolean>>;
 type RolePrivilegesRegistry = Record<UserRoles, RolePrivileges>;
 
 const orgEditorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
+    attach: false,
     changeStatus: true,
     comment: true,
     commentManage: false,
@@ -24,6 +25,7 @@ const orgEditorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privilege
     edit: true,
 });
 const orgCuratorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
+    attach: false,
     changeStatus: false,
     comment: true,
     commentManage: true,
@@ -31,6 +33,7 @@ const orgCuratorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileg
     edit: false,
 });
 const orgAdminDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
+    attach: false,
     changeStatus: false,
     comment: true,
     commentManage: true,
@@ -80,27 +83,22 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
         universalEdit: true,
         universalSearch: true,
     },
-    OrgAuthority: {
+    OrgAuthority: { // token role
         universalAttach: true,
         universalComment: true,
         universalCommentManage: true,
         universalCreate: true,
         universalEdit: true,
         universalSearch: true,
-    }, // token role
+    },
 });
 
-export const canAttach = canEditCuratedItem;
+/**
+ * API Exports
+ */
 
-export function canClassify(user: User | undefined): boolean {
-    if (!user) {
-        return false;
-    }
-    if (isOrgAuthority(user)) {
-        return true;
-    }
-    return concat(user.orgAdmin, user.orgCurator, user.orgEditor).some(org => hasPrivilegeForOrg(user, 'edit', org));
-}
+export const canAttach = canPrivilegeForUser('attach');
+export const canClassify = canPrivilegeForUser('edit');
 
 export function canClassifyOrg(user: User | undefined, org: string | undefined): boolean {
     if (!user) {
@@ -150,6 +148,48 @@ export function canEditCuratedItem(user: User | undefined, item: Item | undefine
     return hasPrivilegeForOrg(user, 'edit', item.stewardOrg.name);
 }
 
+export function isOrg(user: User | undefined): boolean {
+    if (!user) {
+        return false;
+    }
+    return user.orgAdmin && !!user.orgAdmin.length
+        || user.orgCurator && !!user.orgCurator.length
+        || user.orgEditor && !!user.orgEditor.length;
+}
+
+export function isOrgAdmin(user: User | undefined, org?: string): boolean {
+    if (!user) {
+        return false;
+    }
+    if (isOrgAuthority(user)) {
+        return true;
+    }
+    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0) || false;
+}
+
+export function isOrgAuthority(user: User | undefined): boolean {
+    return hasRole(user, 'OrgAuthority');
+}
+
+export function isOrgCurator(user: User | undefined, org?: string): boolean {
+    if (!user) {
+        return false;
+    }
+    if (isOrgAdmin(user, org) || hasRolePrivilege(user, 'universalEdit')) {
+        return true;
+    }
+    const arr = (user.orgCurator || []).concat(user.orgAdmin || []);
+    return arr && (org ? arr.indexOf(org) > -1 : arr.length > 0);
+}
+
+export function isSiteAdmin(user: User | undefined): boolean {
+    return !!user && !!user.siteAdmin;
+}
+
+/**
+ * Low-level exports for specific permission sources
+ */
+
 export function hasPrivilege(user: User | undefined, privilege: Privilege | undefined): boolean {
     if (!user || !privilege) {
         return false;
@@ -193,6 +233,8 @@ export function hasPrivilegeForOrg(user: User | undefined, privilege: Privilege 
 
 export function hasPrivilegeInRoles(user: User, privilege: Privilege): boolean {
     switch (privilege) {
+        case 'attach':
+            return hasRolePrivilege(user, 'universalAttach');
         case 'changeStatus':
             return false;
         case 'comment':
@@ -216,44 +258,6 @@ export function hasRolePrivilege(user: User | undefined, privilege: RolePrivileg
         return true;
     }
     return user.roles ? user.roles.some(role => rolePrivileges[role][privilege]) : false;
-}
-
-export function isOrg(user: User | undefined): boolean {
-    if (!user) {
-        return false;
-    }
-    return user.orgAdmin && !!user.orgAdmin.length
-        || user.orgCurator && !!user.orgCurator.length
-        || user.orgEditor && !!user.orgEditor.length;
-}
-
-export function isOrgAdmin(user: User | undefined, org?: string): boolean {
-    if (!user) {
-        return false;
-    }
-    if (isOrgAuthority(user)) {
-        return true;
-    }
-    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0) || false;
-}
-
-export function isOrgAuthority(user: User | undefined): boolean {
-    return hasRole(user, 'OrgAuthority');
-}
-
-export function isOrgCurator(user: User | undefined, org?: string): boolean {
-    if (!user) {
-        return false;
-    }
-    if (isOrgAdmin(user, org) || hasRolePrivilege(user, 'universalEdit')) {
-        return true;
-    }
-    const arr = (user.orgCurator || []).concat(user.orgAdmin || []);
-    return arr && (org ? arr.indexOf(org) > -1 : arr.length > 0);
-}
-
-export function isSiteAdmin(user: User | undefined): boolean {
-    return !!user && !!user.siteAdmin;
 }
 
 /**
@@ -286,6 +290,22 @@ export function hasRole(user: User | undefined, role: UserRoles | undefined): bo
         return isOrgCurator(user); // was "return user.orgCurator && user.orgCurator.length > 0;"
     }
     return false;
+}
+
+/**
+ * API helpers
+ */
+
+function canPrivilegeForUser(privilege: Privilege) {
+    return (user: User | undefined): boolean => {
+        if (!user) {
+            return false;
+        }
+        if (isSiteAdmin(user)) {
+            return true;
+        }
+        return hasPrivilege(user, privilege);
+    };
 }
 
 /**

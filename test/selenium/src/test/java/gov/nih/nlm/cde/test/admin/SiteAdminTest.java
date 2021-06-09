@@ -9,7 +9,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void addOrg() {
-        mustBeLoggedInAs("theOrgAuth", password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         String testOrg = "New Test Org";
         addOrg(testOrg, null, null);
 
@@ -20,7 +20,7 @@ public class SiteAdminTest extends NlmCdeBaseTest {
 
     @Test
     public void promoteOrgAdmin() {
-        mustBeLoggedInAs("theOrgAuth", password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         String testOrg = "Promote Org Test";
 
         addOrg(testOrg, null, null);

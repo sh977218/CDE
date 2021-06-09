@@ -10,10 +10,10 @@ public class CopyFormButton extends NlmCdeBaseTest {
     @Test
     public void curatorCanCopy() {
         mustBeLoggedInAs(ninds_username, password);
-        goToCdeByName("Ethnic Group Category Text");
+        goToCdeByName("Brief Pain Inventory (BPI) - pain general activity interference scale");
         findElement(By.id("copyCdeBtn"));
 
-        goToFormByName("Patient Health Questionnaire-2 (PHQ-2) More Questions");
+        goToFormByName("Frontal Systems Behavioral Scale (FrSBe)");
         findElement(By.id("copyFormBtn"));
     }
 

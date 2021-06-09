@@ -18,9 +18,9 @@ export function typeToCriteria(type: NotificationType,
 }
 
 export function typeToNotificationSetting(type: NotificationType): string {
-    return ({
+    return (<Record<NotificationType, string>>{
         comment: 'comment'
-    } as Dictionary<string>)[type] || 'noMatch';
+    })[type] || 'noMatch';
 }
 
 export function criteriaSet(criteria: any, set: string) {

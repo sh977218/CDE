@@ -1,7 +1,8 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import {
-    canEditCuratedItem,
+    canAttach,
+    canEditCuratedItem, hasPrivilege,
     hasPrivilegeForOrg,
     hasPrivilegeInRoles,
     hasRole,
@@ -27,6 +28,17 @@ export function nocacheMiddleware(req: Request, res: Response, next: NextFunctio
     }
     next();
 }
+
+export const canAttachMiddleware: RequestHandler = (req, res, next) => {
+    loggedInMiddleware(req, res, () => {
+        if (!canAttach(req.user)) {
+            // TODO: consider ban
+            res.status(403).send();
+            return;
+        }
+        next();
+    });
+};
 
 export const canCreateMiddleware: RequestHandler = (req, res, next) => {
     loggedInMiddleware(req, res, () => {

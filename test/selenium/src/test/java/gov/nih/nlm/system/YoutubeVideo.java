@@ -9,7 +9,7 @@ public class YoutubeVideo extends NlmCdeBaseTest {
     public void youtubeVideo() {
         driver.get(baseUrl + "/videos");
         textNotPresent("404");
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         goToArticles();
         nonNativeSelect("", "Article Key", "videos");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));

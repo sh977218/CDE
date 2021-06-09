@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
 
 @Component({
-    selector: 'cde-resources-admin',
     templateUrl: './resourcesAdmin.component.html'
 })
 export class ResourcesAdminComponent {

@@ -21,12 +21,7 @@ import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
-import {
-    canEditCuratedItem,
-    isOrgCurator,
-    isOrgAuthority,
-    hasPrivilegeForOrg
-} from 'shared/system/authorizationShared';
+import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/system/authorizationShared';
 import { WINDOW } from 'window.service';
 
 const TAB_COMMENT_MAP: any = {
@@ -61,9 +56,9 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     eltCopy?: DataElement;
     exportToTab: boolean = false;
     hasDrafts = false;
+    hasPrivilegeForOrg = hasPrivilegeForOrg;
     highlightedTabs: string[] = [];
     isMobile = false;
-    isOrgCurator = isOrgCurator;
     modalRef?: MatDialogRef<TemplateRef<any>>;
     comments: Comment[] = [];
     savingText = '';

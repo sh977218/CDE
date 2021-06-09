@@ -4,6 +4,8 @@ public interface USERNAME {
     String nlm_username = "nlm";
     String nlm_password = "nlm";
 
+    String theOrgAuth_username = "theOrgAuth";
+
     String bad_username = "bad-username";
     String bad_password = "bad-username";
 

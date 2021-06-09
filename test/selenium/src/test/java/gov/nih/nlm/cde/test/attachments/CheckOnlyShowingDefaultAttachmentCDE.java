@@ -13,13 +13,13 @@ public class CheckOnlyShowingDefaultAttachmentCDE extends BaseAttachmentTest {
     @Test
     public void checkOnlyShowingDefaultAttachmentCDE() {
         String cdeName = "Geriatric Depression Scale (GDS) - life satisfaction indicator";
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
         addAttachment("default.jpg");
 
         logout();
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
         setAttachmentDefault();
         goToCdeByName(cdeName);

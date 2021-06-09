@@ -8,7 +8,7 @@ public class RenameOrgTest extends NlmCdeBaseTest {
 
     @Test
     public void renameOrg() {
-        mustBeLoggedInAs("theOrgAuth", password);
+        mustBeLoggedInAs(theOrgAuth_username, password);
         String testOrg = "New Test Org 3";
         String testOrgRenamed = "New Test Org 3 Renamed";
         String testOrgNotRenamed = "New Test Org 3 Not Renamed";

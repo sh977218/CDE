@@ -26,7 +26,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         textNotPresent("Upload more files");
         logout();
 
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
         addAttachment("glass.jpg");
@@ -36,7 +36,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
         goToCdeByName(cdeName);
 
-        mustBeLoggedInAs(ninds_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
 
         removeAttachment("glass.jpg");
@@ -45,7 +45,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
 
     @Test
     public void attachmentErrors() throws IOException {
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         Cookie myCookie = getCurrentCookie();
         given().cookie(myCookie).body("").post(baseUrl + "/server/attachment/cde/add").then().statusCode(400);
 

@@ -14,7 +14,7 @@ public class InlineEditTest extends BaseAttachmentTest {
         String cdeName = "ImgTagTest";
         String attachmentName = "nih-logo-color.png";
 
-        mustBeLoggedInAs(testEditor_username, password);
+        mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
         addAttachment(attachmentName);
