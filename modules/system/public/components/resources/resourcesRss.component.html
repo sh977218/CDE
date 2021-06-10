@@ -2,7 +2,7 @@ RSS Feeds Result:
 <div class="border">
     <div class="rssHeader border-top border-bottom p-1">
         <div style="overflow:hidden">
-            <img class="float-left" [title]="rssFeed.image.title" [src]="rssFeed.image.url">
+            <img *ngIf="rssFeed.image" class="float-left" [title]="rssFeed.image.title" [src]="rssFeed.image.url">
             <div class="float-left text-center" style="width:90%; max-width: 95%;">
                 <a [href]="rssFeed.link">{{rssFeed.title}}</a>
                 <br>
