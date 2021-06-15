@@ -29,7 +29,7 @@ export function module() {
     router.get('/fhir/form/:param', (req, res) => res.send(isModernBrowser(req) ? fhirHtml : fhirLegacyHtml));
 
     router.get('/server/fhir/fhirObservationInfo', (req, res) => {
-        fhirObservationInfo.get(res, req.query.id, info => res.send(info));
+        fhirObservationInfo.get(res, req.query.id as string, info => res.send(info));
     });
 
     router.put('/server/fhir/fhirObservationInfo', loggedInMiddleware, (req, res) => {

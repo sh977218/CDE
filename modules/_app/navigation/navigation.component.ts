@@ -41,7 +41,6 @@ enum SECTIONS {
     form,
     create,
     board,
-    api,
     about,
     help,
     searchSettings,
@@ -71,9 +70,6 @@ const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
         '/boardList',
         '/myBoards',
     ],
-    api: [
-        '/api',
-    ],
     about: [
         '/about',
     ],
@@ -82,6 +78,7 @@ const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
         '/guides',
         '/whatsNew',
         '/resources',
+        '/api',
         '/contactUs',
     ],
     searchSettings: [

@@ -119,8 +119,8 @@ export function byId(req: Request, res: Response) {
                 } else if (req.query.subtype === 'sdc') {
                     formToSDC({
                         form: wholeForm,
-                        renderer: req.query.renderer,
-                        validate: req.query.validate
+                        renderer: req.query.renderer as 'defaultHtml' | undefined,
+                        validate: req.query.validate as string
                     }, handleError({req, res}, sdcForm => res.send(sdcForm)));
                 } else {
                     getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
@@ -176,8 +176,8 @@ export function byTinyId(req: Request, res: Response) {
                     case 'sdc':
                         formToSDC({
                             form: wholeForm,
-                            renderer: req.query.renderer,
-                            validate: req.query.validate
+                            renderer: req.query.renderer as 'defaultHtml' | undefined,
+                            validate: req.query.validate as string,
                         }, handleError({req, res}, sdcForm => {
                             res.send(sdcForm);
                         }));

@@ -1,8 +1,6 @@
 import * as Ajv from 'ajv';
-import { Dictionary } from 'async';
-import { NextFunction } from 'express';
 import { isEmpty } from 'lodash';
-import { Document, Model, QueryCursor } from 'mongoose';
+import { Document, HookNextFunction, Model, QueryCursor } from 'mongoose';
 import * as elasticCde from 'server/cde/elastic';
 import { updateOrInsert } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
@@ -40,7 +38,7 @@ try {
     process.exit(1);
 }
 
-function preSaveUseThisForSomeReason(this: DataElementDocument, next: NextFunction) {
+function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFunction) {
     const elt = this;
 
     if (elt.archived) {
@@ -154,7 +152,7 @@ export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElement
     updateUser(elt, user);
     dataElementDraftModel.findById(elt._id, splitError(cb, doc => {
         if (!doc) {
-            new dataElementDraftModel(elt).save(cb as (err?: Error, a?: DataElementDocument) => void);
+            new dataElementDraftModel(elt).save(cb);
             return;
         }
         /* istanbul ignore if */
@@ -222,7 +220,7 @@ export function eltByTinyId(tinyId: string, callback: CbError1<DataElementDocume
     }, callback);
 }
 
-const viewedCdes: Dictionary<number> = {};
+const viewedCdes: Record<string, number> = {};
 const threshold = config.viewsIncrementThreshold;
 
 export function inCdeView(cde: DataElement) {
@@ -260,7 +258,7 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
             return callback(new Error('Document Not Found'));
         }
         if (dataElement.archived) {
-            return callback(new Error('You are trying to edit an archived elements'));
+            return callback(new Error('You are trying to edit an archived element'));
         }
         delete elt._id;
         if (!elt.history) {

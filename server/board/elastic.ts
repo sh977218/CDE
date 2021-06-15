@@ -2,8 +2,8 @@ import { config } from 'server/system/parseConfig';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { shortHash } from 'server/system/elasticSearchInit';
 import { esClient } from 'server/system/elastic';
+import { BoardFilter } from 'shared/board/board.model';
 import { Board, CbError, User } from 'shared/models.model';
-import { BoardFilter } from 'board/public/myBoards.service';
 
 if (config.elastic.boardIndex.name === 'auto') {
     config.elastic.boardIndex.name = 'board_' + shortHash(boardCreateIndexJson);

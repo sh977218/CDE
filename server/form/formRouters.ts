@@ -253,8 +253,8 @@ export function module() {
     });
 
     router.get('/formView', (req, res) => {
-        const tinyId = req.query.tinyId;
-        const version = req.query.version;
+        const tinyId = req.query.tinyId as string;
+        const version = req.query.version as string;
         if (isSearchEngine(req)) {
             formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
                     res.render('bot/formView', 'system' as any, {elt: cde} as any);
@@ -265,7 +265,7 @@ export function module() {
     });
 
     router.get('/server/ucumConvert', (req, res) => {
-        const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value); // 0 workaround
+        const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value as string); // 0 workaround
         const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
             const ret = Math.abs(result.toVal) < 1 ? round(result.toVal, 10) : result.toVal; // 0 workaround
