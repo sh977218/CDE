@@ -1702,8 +1702,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
 
     protected void swaggerApi(String api, String text, String tinyId, String version) {
-        goHome();
-        clickElement(By.id("apiLink"));
+        driver.get(baseUrl + "/api");
         hangon(1);
         driver.switchTo().frame(findElement(By.cssSelector("iframe")));
         textPresent("CDE API");
