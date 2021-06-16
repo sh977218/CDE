@@ -890,7 +890,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    selectElement(e: string) {
+    selectElement(e: string, element: 'parent' | 'child', index: number) {
         let classifToSelect = this.getCurrentSelectedClassification();
         if (!classifToSelect) {
             classifToSelect = [];
@@ -899,9 +899,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             classifToSelect.length = 0;
             classifToSelect.push(e);
         } else {
-            const i = classifToSelect.indexOf(e);
-            if (i > -1) {
-                classifToSelect.length = i + 1;
+            if (element === 'parent') {
+                classifToSelect.length = index + 1;
             } else {
                 classifToSelect.push(e);
             }
