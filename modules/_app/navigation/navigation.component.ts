@@ -206,12 +206,6 @@ export class NavigationComponent {
             ]
         },
         {
-            label: 'API',
-            id: 'apiLink',
-            section: SECTIONS.api,
-            link: '/api',
-        },
-        {
             label: 'About',
             id: 'aboutLink',
             section: SECTIONS.about,
