@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import * as _cloneDeep from 'lodash/cloneDeep';
@@ -87,8 +86,7 @@ export class CompareSideBySideComponent {
     constructor(private alert: AlertService,
                 private http: HttpClient,
                 public isAllowedModel: IsAllowedService,
-                public dialog: MatDialog,
-                public quickBoardService: QuickBoardListService) {
+                public dialog: MatDialog) {
     }
 
     doneMerge(event: { left: any, right: any }) {

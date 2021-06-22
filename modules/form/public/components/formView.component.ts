@@ -4,7 +4,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { Dictionary } from 'async';
@@ -91,7 +90,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
                 private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
                 private ref: ChangeDetectorRef,
                 private route: ActivatedRoute,
                 private router: Router,

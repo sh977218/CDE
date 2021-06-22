@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, TemplateRef, } from '@angular/core';
 
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { DerivationRule } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -28,7 +27,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     constructor(
         private http: HttpClient,
         public dialog: MatDialog,
-        public quickBoardService: QuickBoardListService,
     ) {
     }
 
@@ -44,21 +42,6 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
-        this.someCdesInvalid();
-    }
-
-    addNewScore() {
-        if (!this.elt.derivationRules) {
-            this.elt.derivationRules = [];
-        }
-        this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            this.newDerivationRule.inputs.push(qbElt.tinyId);
-        });
-        this.elt.derivationRules.push(this.newDerivationRule);
-        this.updateRules();
-        this.someCdesInvalid();
-        this.modalRef.close();
-        this.eltChange.emit();
     }
 
     canAddScore() {
@@ -94,59 +77,10 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
-    openNewScoreModal() {
-        this.newDerivationRule = {
-            name: '',
-            ruleType: 'score',
-            formula: 'sumAll',
-            inputs: this.quickBoardService.dataElements.map((qbElt: any) => qbElt.tinyId)
-        };
-        this.someCdesInvalid();
-        this.modalRef = this.dialog.open(this.newScoreContent, {width: '800px'});
-        this.modalRef.afterClosed().subscribe(() => {
-            this.newDerivationRule = {
-                name: '',
-                ruleType: 'score',
-                formula: 'sumAll',
-                inputs: []
-            };
-        }, () => {
-        });
-    }
-
 
     removeDerivationRule(index: number) {
         this.elt.derivationRules.splice(index, 1);
         this.eltChange.emit();
-    }
-
-    someCdesInvalid() {
-        this.invalidCdeMessage = '';
-        if (this.quickBoardService.dataElements.length === 0) {
-            this.invalidCdeMessage = 'There are no CDEs in your Quick Board. Add some before you can create a rule.';
-        }
-        this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            if (qbElt.tinyId === this.elt.tinyId) {
-                this.invalidCdeMessage = 'You are trying to add a CDE to itself. Please edit your Quick Board.';
-            }
-        });
-        this.quickBoardService.dataElements.forEach((qbElt: any) => {
-            if (qbElt.valueDomain.datatype === 'Number') {
-                return;
-            }
-            if (qbElt.valueDomain.datatype === 'Value List') {
-                qbElt.valueDomain.permissibleValues.forEach((pv: any) => {
-                    if (isNaN(pv.permissibleValue)) {
-                        this.invalidCdeMessage = 'CDE ' + qbElt.designations[0].designation +
-                            ' contains a Permissible Value that is not a number. It may not be added to a score.';
-                    }
-                });
-            } else {
-                this.invalidCdeMessage = 'CDE ' + qbElt.designations[0].designation +
-                    " has a datatype other than 'Number' and may not be added to a score";
-            }
-        });
-        return !!this.invalidCdeMessage.length;
     }
 
     updateRules() {

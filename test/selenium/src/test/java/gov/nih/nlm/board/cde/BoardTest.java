@@ -7,24 +7,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 public class BoardTest extends NlmCdeBaseTest {
-    protected void makePrivate(String boardName) {
-        gotoMyBoards();
-        editBoardByName(boardName, null, null, false, null, "Saved");
-    }
-
-    protected void makePublic(String boardName) {
-        makePublic(boardName, "Saved");
-    }
-
-    protected void makePublic(String boardName, String response) {
-        gotoMyBoards();
-        editBoardByName(boardName, null, null, true, null, response);
-    }
-
-    protected void gotoPublicBoards() {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        clickElement(By.id("publicBoardsLink"));
-    }
 
     public void createBoard(String name, String description, String type) {
         createBoard(name, description, type, "Board created.");

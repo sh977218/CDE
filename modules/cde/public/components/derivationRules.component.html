@@ -32,10 +32,6 @@
         <hr>
     </ng-container>
 
-    <button *ngIf="canAddScore()" mat-raised-button color="primary" (click)="openNewScoreModal()">
-        <mat-icon>add</mat-icon>
-        Add Score
-    </button>
     <div *ngIf="elt.derivationOutputs?.length > 0" class="my-3">
         This Data Element is used to derive to the following Data Elements:
         <table class="table table-striped">
@@ -57,46 +53,4 @@
             </tbody>
         </table>
     </div>
-    <ng-template #newScoreContent>
-        <h4 mat-dialog-title>Add Score</h4>
-        <form #newScoreForm="ngForm" (ngSubmit)="addNewScore()">
-            <div mat-dialog-content>
-                <div class="form-group">All Data Elements in your quickboard will be added to the score.</div>
-                <label class="form-group d-block">
-                    <strong>Name:</strong>
-                    <input class="form-control" name="scoreName"
-                           [(ngModel)]="newDerivationRule.name" Placeholder="Score Name" required/>
-                </label>
-                <label class="form-group d-block">
-                    <strong>Inputs:</strong>
-                    <span *ngIf="!invalidCdeMessage.length; else invalidInputs" class="d-block">
-                        All {{quickBoardService.numberDataElements}} CDEs in your quickboard.
-                    </span>
-                    <ng-template #invalidInputs>
-                        <span class="d-block text-danger">{{invalidCdeMessage}}</span>
-                    </ng-template>
-                </label>
-                <label class="form-group d-block">
-                    <strong>Rule Type:</strong>
-                    <span class="d-block">Score</span>
-                </label>
-                <label class="form-group d-block">
-                    <strong>Formula:</strong>
-                    <select class="form-control" name="formula" [(ngModel)]="newDerivationRule.formula">
-                        <option value="sumAll">Sum of All</option>
-                        <option value="mean">Mean (Average)</option>
-                        <option value="bmi">Body Mass Index in KG/M^2</option>
-                    </select>
-                </label>
-            </div>
-            <div mat-dialog-actions>
-                <button mat-raised-button color="warn" [mat-dialog-close] type="button">
-                    Cancel
-                </button>
-                <button type="submit" mat-raised-button color="primary" [disabled]="!!invalidCdeMessage.length || !newScoreForm.form.valid">
-                    Save
-                </button>
-            </div>
-        </form>
-    </ng-template>
 </div>

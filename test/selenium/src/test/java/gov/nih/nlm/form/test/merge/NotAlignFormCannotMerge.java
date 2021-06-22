@@ -1,19 +1,32 @@
 package gov.nih.nlm.form.test.merge;
 
+import gov.nih.nlm.board.cde.BoardTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class NotAlignFormCannotMerge extends NlmCdeBaseTest {
+public class NotAlignFormCannotMerge extends BoardTest {
 
     @Test
     public void notAlignFormCannotMerge() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         String form1 = "PROMIS SF v1.0-Sleep Disturbance 4a";
         String form2 = "PROMIS SF v1.0-Sleep Disturbance 6a";
-        addFormToQuickBoardByTinyId(form1);
-        addFormToQuickBoardByTinyId(form2);
-        goToQuickBoardByModule("form");
+
+        String boardName = "NotAlignForm";
+
+        goToFormByName(form1);
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        checkAlert("Added to Board");
+
+        goToFormByName(form2);
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        checkAlert("Added to Board");
+
+        goToBoard(boardName);
+
         clickElement(By.id("qb_compare"));
         clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
 

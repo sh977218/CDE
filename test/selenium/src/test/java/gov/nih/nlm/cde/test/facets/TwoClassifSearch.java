@@ -31,7 +31,7 @@ public class TwoClassifSearch extends BoardTest {
         textPresent(numbOfImages + " data element results for");
         hangon(1);
 
-        gotoPublicBoards();
+        goHome();
         hangon(1);
         driver.navigate().back();
         textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));

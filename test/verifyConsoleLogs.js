@@ -11,6 +11,10 @@ let expectedContent = {
         'You don\'t have permission to make boards public!'
     ],
     cantEditInCompare: '/server/uts/vsacBridge/invalidId - Failed to load resource: the server responded with a status of 404 (Not Found)',
+    cantViewOthersBoards: [
+        'Board Not Found',
+        'Failed to load resource: the server responded with a status of 404 (Not Found)'
+    ],
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeChangeDefinitionFormat: '*', // ckeditor
     cdeLiveCommentTest: '*',

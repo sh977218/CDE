@@ -10,8 +10,6 @@ import { Elt, Item, ListTypes } from 'shared/models.model';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
-import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
-import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 
@@ -56,9 +54,6 @@ export class ListViewComponent implements OnChanges, OnInit {
                 this.viewsMap.set('accordion', CdeAccordionListComponent);
                 if (this.location === 'board') {
                     this.viewsMap.set('summary', BoardCdeSummaryListComponent);
-                } else if (this.location === 'quickBoard') {
-                    this.viewsMap.set('summary', SummaryListComponent);
-                    this.viewsMap.set('summaryContent', QuickBoardCdeSummaryListContentComponent);
                 } else {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', CdeSummaryListContentComponent);
@@ -68,9 +63,6 @@ export class ListViewComponent implements OnChanges, OnInit {
                 this.viewsMap.set('accordion', FormAccordionListComponent);
                 if (this.location === 'board') {
                     this.viewsMap.set('summary', BoardFormSummaryListComponent);
-                } else if (this.location === 'quickBoard') {
-                    this.viewsMap.set('summary', SummaryListComponent);
-                    this.viewsMap.set('summaryContent', QuickBoardFormSummaryListContentComponent);
                 } else {
                     this.viewsMap.set('summary', SummaryListComponent);
                     this.viewsMap.set('summaryContent', FormSummaryListContentComponent);
