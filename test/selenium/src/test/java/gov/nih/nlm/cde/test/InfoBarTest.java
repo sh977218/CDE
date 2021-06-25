@@ -27,7 +27,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent("Standard, Candidate", By.id("status_crumb"));
         scrollToTop();
         clickElement(By.id("menu_cdes_link"));
-        textPresent("Browse by Classification");
+        isSearchWelcome();
     }
 
 }

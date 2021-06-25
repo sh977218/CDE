@@ -16,7 +16,7 @@ public class FindRetired extends NlmCdeBaseTest {
         includeRetiredSetting();
         textPresent("Retired (");
         clickElement(By.id("regstatus-Retired"));
-        checkSearchResultInfo(null, null, null, null, "Retired", null);
+        checkSearchResultInfo(null, null, null, "Retired", null);
         findElement(By.id("ftsearch-input")).sendKeys("Height");
         clickElement(By.id("search.submit"));
         textPresent("Height or length alternative measurement");

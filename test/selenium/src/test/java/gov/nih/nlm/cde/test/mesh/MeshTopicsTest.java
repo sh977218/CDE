@@ -48,34 +48,5 @@ public class MeshTopicsTest extends NlmCdeBaseTest {
             }
         }
         closeAlert();
-
-        clickElement(By.id("menu_cdes_link"));
-        clickElement(By.xpath("//div[. = 'Browse by Topic']"));
-        hangon(1);
-        scrollToView(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
-        textPresent("Health Care Economics and Organizations (11");
-        clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
-        clickElement(By.id("topic-Organizations"));
-        clickElement(By.id("topic-Government"));
-        clickElement(By.id("topic-Federal Government"));
-        clickElement(By.id("topic-United States Government Agencies"));
-        clickElement(By.id("topic-United States Dept. of Health and Human Services"));
-        clickElement(By.id("topic-United States Public Health Service"));
-        hangon(1);
-        clickElement(By.id("topic-National Institutes of Health (U.S.)"));
-        textPresent("National Institute of Neurological Disorders and Stroke");
-        checkSearchResultInfo(null, null, null, "Health Care > Health Care Economics and Organizat...", null, null);
-        clickElement(By.id("menu_forms_link"));
-        clickElement(By.xpath("//div[. = 'Browse by Topic']"));
-        clickElement(By.xpath("//span[contains(normalize-space(text()),'Health Care Economics and Organizations')]"));
-        clickElement(By.id("topic-Organizations"));
-        clickElement(By.id("topic-Government"));
-        clickElement(By.id("topic-Federal Government"));
-        clickElement(By.id("topic-United States Government Agencies"));
-        clickElement(By.id("topic-United States Dept. of Health and Human Services"));
-        clickElement(By.id("topic-United States Public Health Service"));
-        clickElement(By.id("topic-National Institutes of Health (U.S.)"));
-        textPresent("National Institute of Neurological Disorders and Stroke");
-        scrollToViewById("registrationStatusListHolder");
     }
 }

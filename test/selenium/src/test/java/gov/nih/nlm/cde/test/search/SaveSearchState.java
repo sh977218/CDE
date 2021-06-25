@@ -20,18 +20,18 @@ public class SaveSearchState extends NlmCdeBaseTest {
         textNotPresent(numRes + " data element results for");
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
-        checkSearchResultInfo(null, "CTEP > CATEGORY", null, null, "Standard, Qualified", null);
+        checkSearchResultInfo(null, "CTEP > CATEGORY", null, "Standard, Qualified", null);
         assertSearchFilterSelected("regstatus-Qualified", true);
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
-        checkSearchResultInfo(null, "CTEP > CATEGORY", null, null, "Standard", null);
+        checkSearchResultInfo(null, "CTEP > CATEGORY", null, "Standard", null);
         findElement(By.name("q")).sendKeys("name");
         clickElement(By.id("search.submit"));
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, null, "Standard", null);
+        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "Standard", null);
         clickElement(By.id("menu_forms_link"));
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, null, "Standard", null);
+        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "Standard", null);
     }
 }

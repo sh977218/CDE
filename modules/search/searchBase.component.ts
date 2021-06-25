@@ -1023,11 +1023,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     static focusClassification() {
-        (document as any).getElementById('classificationListHolder').focus();
+        document.getElementById('classificationListHolder')?.focus();
     }
 
     static focusTopic() {
-        (document as any).getElementById('meshTreesListHolder').focus();
+        document.getElementById('meshTreesListHolder')?.focus();
     }
 
     static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {

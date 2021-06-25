@@ -16,7 +16,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-All Candidates"));
 
         textPresent(numOfElts, By.id("searchResultNum"));
-        checkSearchResultInfo(null, "caBIG > All Candidates", null, null, null, null);
+        checkSearchResultInfo(null, "caBIG > All Candidates", null, null, null);
     }
 
     @Test

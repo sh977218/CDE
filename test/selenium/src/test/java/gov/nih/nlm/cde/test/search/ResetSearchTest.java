@@ -21,7 +21,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
         clickElement(By.id("menu_cdes_link"));
-        textPresent("Browse by Classification");
+        isSearchWelcome();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("Population (");
         linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
@@ -37,10 +37,10 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         textPresent("results for some search");
         clickElement(By.id("menu_cdes_link"));
-        textPresent("Browse by Classification");
+        isSearchWelcome();
         String actual = findElement(By.id("ftsearch-input")).getAttribute("value");
         Assert.assertNotEquals(actual, searchTerm, "Actual searchTerm: " + actual + " Previous searchTerm: " + searchTerm);
-        textPresent("Browse by Classification");
+        isSearchWelcome();
     }
 
 }

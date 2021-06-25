@@ -13,7 +13,7 @@ public class CancelCreate extends NlmCdeBaseTest {
         hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createFormLink"));
         clickElement(By.cssSelector("button[color='warn']"));
-        textPresent("Browse by Classification");
+        isSearchWelcome();
     }
 
 }

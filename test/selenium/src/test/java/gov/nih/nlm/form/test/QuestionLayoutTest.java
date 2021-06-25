@@ -18,7 +18,7 @@ public class QuestionLayoutTest extends QuestionTest {
         addSectionBottom(sec2, null);
 
         addQuestionDialog(0);
-        textPresent("Browse by Classification");
+        isSearchWelcome();
         scrollToViewById("browseOrg-caCORE");
         clickElement(By.id("browseOrg-caCORE"));
         textPresent("9 data element results for");
