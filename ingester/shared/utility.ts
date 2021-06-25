@@ -2,8 +2,10 @@ import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import {
-    find, findIndex, includes, isEmpty, isEqual, lastIndexOf, lowerCase, noop, sortBy, trim, uniq, uniqBy, uniqWith
+    find, findIndex, includes, isEmpty, isEqual, lastIndexOf, lowerCase, noop, sortBy, trim, uniq, uniqBy, uniqWith,
+    words
 } from 'lodash';
+import { words as wordCapitalize } from 'capitalize';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
@@ -30,7 +32,7 @@ export const sourceMap: any = {
     NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load LOINC on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NICHD on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {
@@ -46,6 +48,12 @@ export const NINR_SOCIAL_DETERMINANTS_OF_HEALTH = 'NINR Social Determinants of H
 
 export function sanitizeText(s: string) {
     return s.replace(/:/g, '').replace(/\./g, '').trim();
+}
+
+export function replaceDashAndCapitalize(s: string) {
+    const sArray = words(s.replace(/_/g, ' ')).join(' ');
+    const formattedS = wordCapitalize(sArray);
+    return formattedS
 }
 
 export function wipeBeforeCompare(obj: any) {
@@ -492,19 +500,6 @@ export function mergeIds(existingObj: CdeForm, newObj: CdeForm, source: string) 
         }
     });
     sortIds(existingObj.ids, source);
-}
-
-export function mergeClassification(existingElt: any, newObj: any, classificationOrgName: string) {
-    if (newObj.toObject) {
-        newObj = newObj.toObject();
-    }
-    if (existingElt.lastMigrationScript === lastMigrationScript) {
-        mergeClassificationByOrg(existingElt, newObj, classificationOrgName);
-        existingElt.classification = existingElt.classification;
-    } else {
-        const resultClassification = replaceClassificationByOrg(existingElt, newObj, classificationOrgName);
-        existingElt.classification = resultClassification;
-    }
 }
 
 export function mergeSources(existingObj: CdeForm, newObj: CdeForm, source: string) {

@@ -1,0 +1,17 @@
+const DEFAULT_NICHD_REGISTRATION_STATUS = 'Qualified';
+const DEFAULT_NICHD_CLASSIFICATION_ORG_NAME = 'NICHD';
+const DEFAULT_NICHD_CLASSIFICATION_ARRAY: string[] = [];
+const DEFAULT_NICHD_STEWARD_ORG_NAME = 'NICHD';
+const DEFAULT_NICHD_SOURCE = 'NICHD';
+const DEFAULT_NICHD_ID_SOURCE = 'NICHD Variable Name';
+
+export class NichdConfig {
+    registrationStatus = DEFAULT_NICHD_REGISTRATION_STATUS;
+    classificationOrgName = DEFAULT_NICHD_CLASSIFICATION_ORG_NAME;
+    classificationArray: string[] = DEFAULT_NICHD_CLASSIFICATION_ARRAY;
+    source = DEFAULT_NICHD_SOURCE;
+    stewardOrg = DEFAULT_NICHD_STEWARD_ORG_NAME;
+    idSource = DEFAULT_NICHD_ID_SOURCE;
+}
+
+export const DEFAULT_NICHD_CONFIG = new NichdConfig();

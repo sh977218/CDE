@@ -1,4 +1,4 @@
-export const map = {
+export const map: any = {
     radio: false,
     checkbox: true,
     '': false
