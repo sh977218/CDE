@@ -82,10 +82,6 @@ export function count(condition: any, callback: CbError1<number>): void {
     pinningBoardModel.countDocuments(condition, callback);
 }
 
-export function publicBoardsByPinTinyId(tinyId: string) {
-    return pinningBoardModel.find({'pins.tinyId': tinyId, shareStatus: 'Public'});
-}
-
 export function nbBoardsByUserId(userId: string) {
     return pinningBoardModel.countDocuments({'owner.userId': userId});
 }
