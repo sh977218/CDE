@@ -1,7 +1,6 @@
-import { words } from 'capitalize';
 import { convertSkipLogic } from './BranchLogic';
 import { map as REDCAP_MULTISELECT_MAP } from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
-import { BATCHLOADER } from 'ingester/shared/utility';
+import { BATCHLOADER, replaceDashAndCapitalize } from 'ingester/shared/utility';
 
 export async function convert(redCapCde, redCapCdes, cde, newForm) {
     if (cde.toObject) {
@@ -64,7 +63,7 @@ export async function convert(redCapCde, redCapCdes, cde, newForm) {
             cde: {
                 tinyId: cde.tinyId,
                 derivationRules: cde.derivationRules,
-                name: fieldLabel.length === 0 ? words(variableName.replace(/_/g, ' ')) : fieldLabel,
+                name: fieldLabel.length === 0 ? replaceDashAndCapitalize(variableName) : fieldLabel,
                 ids: cde.ids ? cde.ids : [],
                 permissibleValues: cde.valueDomain.permissibleValues
             },

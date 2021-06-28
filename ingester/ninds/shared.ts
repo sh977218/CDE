@@ -58,7 +58,6 @@ export async function loadNindsCde(nindsCde: any, cond: any, source: string) {
         }
     }
     await updateRawArtifact(existingCde, newCdeObj, source, 'NINDS');
-
     const savedCde: any = await dataElementModel.findOne(cond);
     return savedCde;
 }

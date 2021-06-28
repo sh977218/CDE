@@ -1,17 +1,18 @@
 import { imported } from 'ingester/shared/utility';
+import { NichdConfig } from 'ingester/nichd/shared/utility';
 
-export function parseNichdSources(source) {
-    return [{sourceName: source, imported}];
+export function parseSources(config: NichdConfig) {
+    return [{sourceName: config.source, imported}];
 }
 
-export function addNichdSource(cde, source) {
+export function addNichdSource(cde: any, config: NichdConfig) {
     let found = false;
-    cde.sources.forEach(d => {
-        if (d.sourceName === source) {
+    cde.sources.forEach((d: any) => {
+        if (d.sourceName === config.source) {
             found = true;
         }
     });
     if (!found) {
-        cde.sources.push({sourceName: source, imported});
+        cde.sources.push({sourceName: config.source, imported});
     }
 }
