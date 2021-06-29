@@ -18,13 +18,12 @@ import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import {
-    buildElasticSearchQuery, completionSuggest, elasticSearchExport, removeElasticFields
-} from 'server/system/elastic';
+import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
 import { config } from 'server/system/parseConfig';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 const canEditMiddlewareDe = canEditMiddleware(mongoCde);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(mongoCde);
@@ -150,7 +149,7 @@ export function module() {
     router.post('/server/de/search', (req, res) => {
         elasticsearch(req.user, req.body, (err, result) => {
             if (err || !result) {
-                return res.status(400).send('invalid query');
+                return res.status(400).send(`invalid query`);
             }
             hideProprietaryCodes(result.cdes, req.user);
             res.send(result);

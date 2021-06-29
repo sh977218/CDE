@@ -7,13 +7,14 @@ import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
-import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
+import { elasticsearch } from 'server/system/elastic';
 import { getDao, registerDao } from 'server/system/moduleDaoManager';
 import { ItemDocument } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { Board, BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { stripBsonIds } from 'shared/system/exportShared';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 const js2xml = require('js2xmlparser');
 const {check} = require('express-validator');
