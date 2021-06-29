@@ -19,7 +19,7 @@ import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { orgByName } from 'server/orgManagement/orgDb';
-import { moreLike } from 'server/cde/elastic';
+import { moreLike } from 'server/cde/elastic.moreLike';
 
 const js2xml = require('js2xmlparser');
 

@@ -76,6 +76,7 @@
     "hosts": [
       "http://localhost:9200"
     ],
+    "esIndexVersion": "v8",
     "index": {
       "name": "auto"
     },

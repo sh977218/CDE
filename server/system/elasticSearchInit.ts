@@ -369,22 +369,22 @@ export const shortHash = (content: any) => {
         .substr(0, 5).toLowerCase();
 };
 
-const esIndexVersion = 'v6';
+const esVersion = config.elastic.esIndexVersion;
 
 if (config.elastic.index.name === 'auto') {
-    config.elastic.index.name = 'cde_' + esIndexVersion + '_' + shortHash(createIndexJson);
+    config.elastic.index.name = 'cde_' + esVersion + '_' + shortHash(createIndexJson.mappings);
 }
 if (config.elastic.formIndex.name === 'auto') {
-    config.elastic.formIndex.name = 'form_' + esIndexVersion + '_' + shortHash(createFormIndexJson);
+    config.elastic.formIndex.name = 'form_' + esVersion + '_' + shortHash(createFormIndexJson.mappings);
 }
 if (config.elastic.boardIndex.name === 'auto') {
-    config.elastic.boardIndex.name = 'board_' + esIndexVersion + '_' + shortHash(boardCreateIndexJson);
+    config.elastic.boardIndex.name = 'board_' + esVersion + '_' + shortHash(boardCreateIndexJson.mappings);
 }
 if (config.elastic.cdeSuggestIndex.name === 'auto') {
-    config.elastic.cdeSuggestIndex.name = 'cdesuggest_' + esIndexVersion + '_' + shortHash(createSuggestIndexJson);
+    config.elastic.cdeSuggestIndex.name = 'cdesuggest_' + esVersion + '_' + shortHash(createSuggestIndexJson.mappings);
 }
 if (config.elastic.formSuggestIndex.name === 'auto') {
-    config.elastic.formSuggestIndex.name = 'formsuggest_' + esIndexVersion + '_' + shortHash(createSuggestIndexJson);
+    config.elastic.formSuggestIndex.name = 'formsuggest_' + esVersion + '_' + shortHash(createSuggestIndexJson.mappings);
 }
 
 export interface ElasticIndex {

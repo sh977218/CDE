@@ -2,12 +2,13 @@ import { DataElementDocument } from 'server/cde/mongo-cde';
 import { handleNotFound } from 'server/errorHandler/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import { storeQuery } from 'server/log/storedQueryDb';
-import { buildElasticSearchQuery, elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
+import { elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
 import { DataElementElastic } from 'shared/de/dataElement.model';
-import { Cb1, CbError1, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { CbError1, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 export function updateOrInsert(elt: DataElementDocument) {
     riverFunction(elt.toObject(), doc => {
@@ -48,6 +49,25 @@ export function updateOrInsert(elt: DataElementDocument) {
     });
 }
 
+export function byTinyIdList(idList: string[], size: number, cb: CbError1<DataElementElastic[]>) {
+    idList = idList.filter(id => !!id);
+    esClient.search({
+        index: config.elastic.index.name,
+        body: {
+            query: {
+                ids: {
+                    values: idList
+                }
+            },
+            size,
+        }
+    }, handleNotFound<{body: ElasticQueryResponse<DataElementElastic>}>({}, response => {
+        // @TODO possible to move this sort to elastic search?
+        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
+        cb(null, response.body.hits.hits.map(h => h._source));
+    }));
+}
+
 export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<SearchResponseAggregationDe | void>) {
     const query = buildElasticSearchQuery(user, settings);
     if ((query.from + query.size) > 10000) {
@@ -80,106 +100,4 @@ export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: C
         }
         cb(err, result);
     });
-}
-
-const mltConf = {
-    mlt_fields: [
-        'designations.designation',
-        'definitions.definition',
-        'valueDomain.permissibleValues.permissibleValue',
-        'valueDomain.permissibleValues.valueMeaningName',
-        'valueDomain.permissibleValues.valueMeaningCode',
-        'property.concepts.name'
-    ]
-};
-
-interface MoreLike {
-    cdes: DataElementElastic[];
-    page: number;
-    pages: number;
-    totalNumber: number;
-}
-
-export function moreLike(id: string, callback: Cb1<MoreLike>) {
-    const from = 0;
-    const limit = 20;
-    esClient.search({
-            index: config.elastic.index.name,
-            body: {
-                query: {
-                    bool: {
-                        must: {
-                            more_like_this: {
-                                fields: mltConf.mlt_fields,
-                                like: [
-                                    {
-                                        _id: id
-                                    }
-                                ],
-                                min_term_freq: 1,
-                                min_doc_freq: 1,
-                                min_word_length: 2
-                            }
-                        },
-                        filter: {
-                            bool: {
-                                must_not: [
-                                    {
-                                        term: {
-                                            'registrationState.registrationStatus': 'Retired'
-                                        }
-                                    },
-                                    {
-                                        term: {
-                                            isFork: 'true'
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
-        }, handleNotFound<{body: ElasticQueryResponse<DataElementElastic>}>({}, response => {
-            const body = response.body;
-            const result: MoreLike = {
-                cdes: [],
-                pages: Math.ceil(body.hits.total / limit),
-                page: Math.ceil(from / limit),
-                totalNumber: body.hits.total,
-            };
-            // @TODO remove after full migration to ES7
-            if ((result.totalNumber as any).value) {
-                result.totalNumber = (result.totalNumber as any).value;
-            }
-            body.hits.hits.forEach(hit => {
-                const thisCde = hit._source;
-                if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
-                    && thisCde.valueDomain.permissibleValues.length > 10) {
-                    thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
-                }
-                result.cdes.push(thisCde);
-            });
-            callback(result);
-        })
-    );
-}
-
-export function byTinyIdList(idList: string[], size: number, cb: CbError1<DataElementElastic[]>) {
-    idList = idList.filter(id => !!id);
-    esClient.search({
-        index: config.elastic.index.name,
-        body: {
-            query: {
-                ids: {
-                    values: idList
-                }
-            },
-            size,
-        }
-    }, handleNotFound<{body: ElasticQueryResponse<DataElementElastic>}>({}, response => {
-        // @TODO possible to move this sort to elastic search?
-        response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-        cb(null, response.body.hits.hits.map(h => h._source));
-    }));
 }

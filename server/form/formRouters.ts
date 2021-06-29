@@ -11,7 +11,6 @@ import * as mongoForm from 'server/form/mongo-form';
 import { byTinyIdVersion as formByTinyIdVersion, formModel, getAuditLog } from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
 import {
-    buildElasticSearchQuery,
     completionSuggest, elasticsearch, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
@@ -26,6 +25,7 @@ import { getEnvironmentHost } from 'shared/env';
 import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
 import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 const {checkSchema, check} = require('express-validator');
 

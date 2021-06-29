@@ -5,7 +5,7 @@ import { handleError, handleErrorVoid, respondError } from 'server/errorHandler/
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-import { buildElasticSearchQuery, elasticsearch } from 'server/system/elastic';
+import { elasticsearch } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
@@ -13,6 +13,7 @@ import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
     OrgClassification, renameCategory,
 } from 'shared/system/classificationShared';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
     item.classification = defaultArray(item.classification);
