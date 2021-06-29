@@ -64,6 +64,7 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
 
     function scrollThrough(scrollId: string, s: IndexType, cb: CbError) {
         esClient.scroll({scrollId, scroll: '1m'} as any, (err: Error | null, response: {body: ElasticQueryResponse<ItemElastic>}) => {
+            /* istanbul ignore if */
             if (err) {
                 lock = false;
                 errorLogger.error('Error: Elastic Search Scroll Access Error',

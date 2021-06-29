@@ -50,7 +50,7 @@ export function writableCollection<T extends {_id: string, __v: number}>(
     function put(res: Response, data: T, cb: Cb1<Document & T>) {
         const handlerOptions = {res};
         if (typeof data[versionKey] !== 'number') {
-            model.findOne({_id: data._id} as any, handleError(handlerOptions, exists => {
+            model.findOne({_id: data._id} as any, handleError<Document & T | null>(handlerOptions, exists => {
                 if (exists && typeof exists[versionKey] === 'undefined') { // WORKAROUND until data updated to mongo 4 __v
                     exists = null;
                 }
@@ -63,7 +63,7 @@ export function writableCollection<T extends {_id: string, __v: number}>(
             return;
         }
         const query: any = {_id: data._id, [versionKey]: data[versionKey]};
-        model.findOne(query, handleError(handlerOptions, async oldInfo => {
+        model.findOne(query, handleError<Document & T | null>(handlerOptions, async oldInfo => {
             if (!oldInfo) {
                 res.status(409).send('Edited by someone else. Please refresh and redo.');
                 return;

@@ -238,7 +238,7 @@ export function module() {
                         return res.status(403).send();
                     }
                     if (req.session) {
-                        req.session.passport = {user: req.user._id};
+                        (req.session as any).passport = {user: req.user._id};
                     }
                     return res.send('OK');
                 });

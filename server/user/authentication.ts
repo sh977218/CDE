@@ -154,11 +154,12 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocum
 }
 
 export const ticketAuth: RequestHandler = (req, res, next) => {
-    if (!req.query.ticket || req.query.ticket.length <= 0 || req.url.startsWith('/loginFederated?ticket=')) {
+    const ticket = req.query.ticket as string;
+    if (!ticket || ticket.length <= 0 || req.url.startsWith('/loginFederated?ticket=')) {
         next();
         return;
     }
-    ticketValidate(req.query.ticket, (err, username) => {
+    ticketValidate(ticket, (err, username) => {
         if (err || !username) {
             next(); // drop error
             return;

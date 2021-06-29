@@ -267,7 +267,7 @@ export function moreLikeThis(req: Request, res: Response) {
 }
 
 export function modifiedElements(req: Request, res: Response) {
-    const dString: string = req.query.from;
+    const dString = req.query.from as string;
     const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
 
     function badDate() {

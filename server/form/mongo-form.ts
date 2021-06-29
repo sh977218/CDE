@@ -1,7 +1,6 @@
 import * as Ajv from 'ajv';
-import { NextFunction } from 'express';
 import { readdirSync, readFileSync } from 'fs';
-import { Document, Model } from 'mongoose';
+import { Document, HookNextFunction, Model } from 'mongoose';
 import { resolve } from 'path';
 import { EltLogDocument } from 'server/cde/mongo-cde';
 import { splitError } from 'server/errorHandler/errorHandler';
@@ -43,7 +42,7 @@ try {
     process.exit(1);
 }
 
-function preSaveUsesThisForSomeReason(this: CdeFormDocument, next: NextFunction) {
+function preSaveUsesThisForSomeReason(this: CdeFormDocument, next: HookNextFunction) {
     const elt = this;
 
     if (elt.archived) {
@@ -211,7 +210,7 @@ export function update(elt: CdeForm, user: User, options: any = {}, callback: Cb
             return callback(err || new Error('Document does not exist.'));
         }
         if (form.archived) {
-            return callback(new Error('You are trying to edit an archived elements'));
+            return callback(new Error('You are trying to edit an archived element'));
         }
         delete elt._id;
         if (!elt.history) {

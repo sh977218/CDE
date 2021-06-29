@@ -57,11 +57,11 @@ gulp.task('npm', function npm() {
     return run('npm i', runInAppOptions);
 });
 
-gulp.task('npmRebuildNodeSass', ['npm'], function npmRebuildNodeSass() {
+gulp.task('npmRebuild', ['npm'], function npmRebuild() {
     return run('npm rebuild node-sass', runInAppOptions);
 });
 
-gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
+gulp.task('copyThirdParty', ['npmRebuild'], function copyThirdParty() {
     const streamArr: NodeJS.ReadWriteStream[] = [];
 
     streamArr.push(gulp.src(appDir('./node_modules/core-js/client/core.min.js'))
@@ -84,14 +84,14 @@ gulp.task('copyThirdParty', ['npmRebuildNodeSass'], function copyThirdParty() {
 
 gulp.task('createDist', ['copyThirdParty'], function createDist() {
     // const sass = require('gulp-sass');
-    // sass.compiler = require('node-sass'); // delay using node-sass until npmRebuildNodeSass is done
+    // sass.compiler = require('node-sass'); // delay using node-sass until npmRebuild NodeSass is done
     // return gulp.src(appDir('./modules/common.scss'))
     //     .pipe(sass().on('error', sass.logError))
     //     .pipe(gulp.dest(appDir('./dist/common')));
 });
 
 
-gulp.task('buildNode', function buildNode() {
+gulp.task('buildNode', ['npmRebuild'], function buildNode() {
     return run('npm run buildNode');
 });
 
@@ -136,7 +136,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
 
     streamArray.push(gulp.src(appDir('./package.json'))
         .pipe(replace('"startJs": "node ./buildNode/app.js",', '"startJs": "node app.js",'))
-        .pipe(replace(' && npx ngcc', ''))
+        .pipe(replace('"postinstall": "npm run moveCssAngularTree && npx ngcc"', '"postinstall": ""'))
         .pipe(replace('"testServer": "node ./test/testLoginServer.js",', ''))
         .pipe(gulp.dest(BUILD_DIR + '/')));
 
@@ -166,7 +166,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
     return merge(streamArray);
 });
 
-gulp.task('copyNpmDeps', ['copyCode', 'npmRebuildNodeSass'], function copyNpmDeps(cb) {
+gulp.task('copyNpmDeps', ['copyCode', 'npmRebuild'], function copyNpmDeps(cb) {
     gulp.src(buildDir('./package.json'))
         .pipe(gulp.dest(BUILD_DIR))
         .on('error', cb)
@@ -364,7 +364,7 @@ gulp.task('mongorestoretest', function mongorestore() {
     return run('mongorestore ' + args.join(' '), runInAppOptions);
 });
 
-gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
+gulp.task('injectElastic', ['es', 'mongorestoretest', 'npmRebuild'], function injectElastic() {
     return node('scripts/indexDb');
 });
 

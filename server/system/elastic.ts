@@ -306,7 +306,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
         if (error) {
             cb(error);
         } else {
-            cb(null, response.body);
+            cb(null, response.body as ElasticQueryResponse<ItemElastic>);
         }
     });
 }
