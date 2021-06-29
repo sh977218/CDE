@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
-import { BoardFilter } from 'board/public/myBoards.service';
+import { BoardFilter } from 'shared/board/board.model';
 import { Board, ElasticQueryResponseAggregations } from 'shared/models.model';
 
 @Component({

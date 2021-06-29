@@ -22,7 +22,6 @@ import { userModel } from 'server/user/userDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { Cb1, CbError, CbError1, CbError2, EltLog, Item, ItemElastic, ModuleAll, User } from 'shared/models.model';
-import { hasRole } from 'shared/system/authorizationShared';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
 
@@ -339,10 +338,6 @@ export function fetchItem<T extends Document>(module: ModuleAll, tinyId: string,
     }
     (db.byTinyId || db.byId)(tinyId, cb);
 }
-
-// export function getAllRules(cb: CbError<StatusValidationRules>) {
-//     validationRuleModel.find().exec(cb);
-// }
 
 export function sortArrayByArray(unSortArray: Item[], targetArray: ObjectId[]) {
     unSortArray.sort((a, b) => findIndex(targetArray, a._id) - findIndex(targetArray, b._id));

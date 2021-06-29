@@ -12,7 +12,7 @@ export function module() {
 
     router.get('/searchValueSet/:vsacId', nocacheMiddleware, async (req, res) => {
         const vsacId = req.params.vsacId;
-        const {term, page} = req.query;
+        const {term, page} = req.query as {term: string, page: string};
         res.send(await searchValueSet(vsacId, term, page));
     });
 
@@ -33,7 +33,7 @@ export function module() {
     });
 
     router.get('/searchUmls', loggedInMiddleware, async (req, res) => {
-        res.send(await searchUmls(req.query.searchTerm));
+        res.send(await searchUmls(req.query.searchTerm as string));
     });
 
     router.get('/umlsPtSource/:cui/:src', async (req, res) => {

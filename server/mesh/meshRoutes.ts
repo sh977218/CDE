@@ -62,7 +62,7 @@ export function module(roleConfig: {allowSyncMesh: RequestHandler}) {
         if (!req.query.classification) {
             return res.status(400).send('Missing Classification Parameter');
         }
-        byFlatClassification(req.query.classification, handleNotFound({req, res}, mm => res.send(mm[0])));
+        byFlatClassification(req.query.classification as string, handleNotFound({req, res}, mm => res.send(mm[0])));
     });
 
 

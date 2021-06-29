@@ -1,20 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as _noop from 'lodash/noop';
-import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
-import { Dictionary } from 'async';
 import { UserService } from '_app/user.service';
-
-export interface BoardFilter {
-    search?: string;
-    sortDirection?: string;
-    selectedTags: string[];
-    selectedTypes: string[];
-    selectedShareStatus: string[];
-    sortBy: string;
-    tags: ElasticQueryResponseAggregationBucket[];
-    types: ElasticQueryResponseAggregationBucket[];
-}
+import { Dictionary } from 'async';
+import * as _noop from 'lodash/noop';
+import { BoardFilter } from 'shared/board/board.model';
+import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
 
 @Injectable()
 export class MyBoardsService {

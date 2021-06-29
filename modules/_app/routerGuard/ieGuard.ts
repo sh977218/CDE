@@ -28,8 +28,10 @@ export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkIE() {
-        return !!(document as any).documentMode
+        return isIE
             ? this.router.createUrlTree(['/ieDiscontinued'])
             : true;
     }
 }
+
+const isIE = /MSIE|Trident/.test(window.navigator.userAgent); // core-js polyfills IE documentMode
