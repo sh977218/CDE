@@ -13,9 +13,18 @@
                         <input matInput name="q" id="ftsearch-input" [placeholder]="'Search ' + (module === 'cde' ? 'Data Elements' : 'Forms')"
                                maxlength="500" [matAutocomplete]="auto"
                                [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
-                        <mat-icon matSuffix (click)="termSearch(true)" id="search.submit">search</mat-icon>
+                        <div matSuffix style="line-height: 1">
+                            <button type="submit" style="display: none" (click)="termSearch(true)"></button>
+                            <mat-icon id="search.submit" style="line-height: .2"
+                                      (click)="termSearch(true)">search</mat-icon>
+                            <cde-search-export-button *ngIf="!embedded"
+                                                      id="exportEverything"
+                                                      style="vertical-align: text-bottom"
+                                                      [module]="module"
+                                                      (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
+                            </cde-search-export-button>
+                        </div>
                     </mat-form-field>
-                    <button style="display: none" type="submit" (click)="termSearch(true)"></button>
 
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
                         <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
@@ -32,60 +41,34 @@
             </div>
         </div>
         <div class="mt-3" id="tabs">
-            <mat-tab-group>
-                <mat-tab label="Browse by Classification" style="overflow: hidden">
-                    <div *ngIf="orgs?.length === 0">
-                        <h1 class="pl130">
-                            <mat-icon class="spin">auto_renew</mat-icon>
-                            Searching...
-                        </h1>
-                    </div>
-                    <div class="row">
-                        <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
-                             id="search_by_classification_{{org.name}}">
-                            <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
-                                      (click)="browseOrg(org.name)">
-                                <legend>
-                                    <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
-                                </legend>
-                                <div *ngIf="org.longName">{{org.longName}}</div>
-                                <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
-                                    elements
-                                </div>
-                                <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
-                                <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener noreferrer">Source</a>
-                                </div>
-                            </fieldset>
-                            <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
-                                      id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">
-                                help_outline
-                            </mat-icon>
+            <div *ngIf="orgs?.length === 0">
+                <h1 class="pl130">
+                    <mat-icon class="spin">auto_renew</mat-icon>
+                    Searching...
+                </h1>
+            </div>
+            <div class="row">
+                <div class="col-xl-3 col-lg-4 col-sm-6 col-12" *ngFor="let org of orgs"
+                     id="search_by_classification_{{org.name}}">
+                    <fieldset class="cdeFieldset welcomeSearchFieldset hand-cursor"
+                              (click)="browseOrg(org.name)">
+                        <legend>
+                            <span id="browseOrg-{{org.name}}" class="browseLink">{{org.name}}</span>
+                        </legend>
+                        <div *ngIf="org.longName">{{org.longName}}</div>
+                        <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
+                            elements
                         </div>
-                    </div>
-                </mat-tab>
-                <mat-tab *ngIf="topics?.Diseases" label="Browse by Topic" id="browseByTopic">
-                    <div class="row">
-                        <div class="col-4" *ngFor="let key of topicsKeys; let i = index;">
-                            <hr *ngIf="i > 2">
-                            <h4>{{key}}</h4>
-                            <ul style="list-style-type: none">
-                                <li *ngFor="let t of topics[key]">
-                                    <span class="fake-link" (click)="browseTopic(key + ';' + t.name)">
-                                        {{t.name}} ({{t.count}})</span>
-                                </li>
-                            </ul>
+                        <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
+                        <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener noreferrer">Source</a>
                         </div>
-                    </div>
-                </mat-tab>
-                <mat-tab disabled>
-                    <ng-template mat-tab-label>
-                        <cde-search-export-button id="exportEverything" *ngIf="!embedded"
-                                                  (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})"
-                                                  [module]="module">
-                        </cde-search-export-button>
-                    </ng-template>
-                </mat-tab>
-            </mat-tab-group>
+                    </fieldset>
+                    <mat-icon class="welcomeDetailIcon hand-cursor" *ngIf="org.htmlOverview"
+                              id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">
+                        help_outline
+                    </mat-icon>
+                </div>
+            </div>
         </div>
         <div class="mt-3">
             <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>
@@ -237,7 +220,7 @@
                     </div>
                 </div>
                 <!-- TOPIC AGGREGATIONS -->
-                <div *ngIf="searchSettings.meshTree || aggregationsTopics.length" id="meshTreesListHolder"
+                <div *ngIf="false" id="meshTreesListHolder"
                      class="my-3">
                     <span class="treeTitle">Topics</span>
                     <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"

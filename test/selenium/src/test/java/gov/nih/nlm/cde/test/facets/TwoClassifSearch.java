@@ -43,7 +43,7 @@ public class TwoClassifSearch extends BoardTest {
         clickElement(By.id("menu_cdes_link"));
         findElement(By.id("browseOrg-caCORE"));
         clickElement(By.id("browseOrg-NINDS"));
-        checkSearchResultInfo(null, "NINDS", null, null, null, null);
+        checkSearchResultInfo(null, "NINDS", null, null, null);
     }
 
 }
