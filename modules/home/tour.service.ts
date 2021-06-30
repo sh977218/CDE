@@ -123,12 +123,6 @@ const cdeSteps: Array<any> = [
     },
 
     {
-        title: 'Linked Boards',
-        element: '#openLinkedBoardsModalBtn',
-        content: 'If a CDE is used in public boards, the boards will be shown in this section.',
-        placement: 'top'
-    },
-    {
         title: 'More Like This',
         element: '#mltButton',
         content: 'This section lists CDEs that are most similar to the CDE currently viewed.',

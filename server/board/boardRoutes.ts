@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { intersection, isEmpty, uniqBy } from 'lodash';
 import * as boardDb from 'server/board/boardDb';
-import { byId, byIdAndOwner, nbBoardsByUserId, newBoard, publicBoardsByPinTinyId } from 'server/board/boardDb';
+import { byId, byIdAndOwner, nbBoardsByUserId, newBoard } from 'server/board/boardDb';
 import { boardRefresh, boardSearch, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
@@ -23,11 +23,6 @@ require('express-async-errors');
 export function module() {
     const router = Router();
     registerDao(boardDb);
-
-    router.get('/byPinTinyId/:tinyId', nocacheMiddleware, async (req, res) => {
-        const boards = await publicBoardsByPinTinyId(req.params.tinyId);
-        res.send(boards);
-    });
 
     router.post('/deletePin/', loggedInMiddleware, async (req, res) => {
         const {boardId, tinyId} = req.body;
