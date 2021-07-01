@@ -1,5 +1,5 @@
 <button mat-raised-button [matMenuTriggerFor]="exportMenu" id="export" color="primary">
-    <mat-icon>play_for_work</mat-icon> Export Search <mat-icon>arrow_drop_down</mat-icon>
+    <mat-icon>play_for_work</mat-icon> Export All {{module === 'cde' ? 'CDEs' : 'Forms'}} <mat-icon>arrow_drop_down</mat-icon>
 </button>
 
 <mat-menu #exportMenu>

@@ -17,12 +17,6 @@
                             <button type="submit" style="display: none" (click)="termSearch(true)"></button>
                             <mat-icon id="search.submit" style="line-height: .2"
                                       (click)="termSearch(true)">search</mat-icon>
-                            <cde-search-export-button *ngIf="!embedded"
-                                                      id="exportEverything"
-                                                      style="vertical-align: text-bottom"
-                                                      [module]="module"
-                                                      (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
-                            </cde-search-export-button>
                         </div>
                     </mat-form-field>
 
@@ -70,8 +64,14 @@
                 </div>
             </div>
         </div>
-        <div class="mt-3">
+        <div class="my-3">
             <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>
+            <cde-search-export-button *ngIf="!embedded"
+                                      id="exportEverything"
+                                      style="margin-left: 1em; vertical-align: middle"
+                                      [module]="module"
+                                      (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
+            </cde-search-export-button>
         </div>
     </div>
 </ng-template>
