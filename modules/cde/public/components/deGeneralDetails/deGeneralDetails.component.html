@@ -48,7 +48,7 @@
         <dt>Created:</dt>
         <dd>{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
     </ng-container>
-    <ng-container *ngIf="elt.createdBy">
+    <ng-container *ngIf="elt.createdBy && userService.isOrgAuthority()">
         <dt>Created By:</dt>
         <dd>{{elt.createdBy.username}}</dd>
     </ng-container>
@@ -56,7 +56,7 @@
         <dt>Updated:</dt>
         <dd>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
     </ng-container>
-    <ng-container *ngIf="elt.updatedBy">
+    <ng-container *ngIf="elt.updatedBy && userService.isOrgAuthority()">
         <dt>Updated By:</dt>
         <dd>{{elt.updatedBy.username}}</dd>
     </ng-container>

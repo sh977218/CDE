@@ -14,7 +14,9 @@
         <tr>
             <th width="30px"></th>
             <th>Updated</th>
-            <th>Updated by</th>
+            <ng-container *ngIf="userService.isOrgAuthority()">
+                <th>Updated by</th>
+            </ng-container>
             <th>Change Note</th>
             <th>Version</th>
             <th>View</th>
@@ -29,7 +31,9 @@
                 <td>
                     {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
                 </td>
-                <td>{{priorElement.updatedBy?.username}}</td>
+                <ng-container *ngIf="userService.isOrgAuthority()">
+                    <td>{{priorElement.updatedBy?.username}}</td>
+                </ng-container>
                 <td>{{priorElement.changeNote}}</td>
                 <td>
                     <ng-container *ngIf="priorElement.isDraft; else version">DRAFT</ng-container>

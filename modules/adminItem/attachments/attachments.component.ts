@@ -14,7 +14,7 @@ export class AttachmentsComponent {
     @Output() setDefault = new EventEmitter<number>();
     @Output() upload = new EventEmitter<Event>();
 
-    constructor(private userService: UserService) {
+    constructor(public userService: UserService) {
     }
 
     copyUrl(attachment: Attachment) {
