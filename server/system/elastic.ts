@@ -392,16 +392,27 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
             }
 
-            const result: any = {
-                totalNumber: response.hits.total
-                , maxScore: response.hits.max_score
-                , took: response.took
-            };
+            const items: ItemElastic[] = [];
+            type t = typeof type;
+            const result = {
+                _shards: {
+                    failed: 0,
+                    successful: 0,
+                    total: 0,
+                },
+                aggregations: response.aggregations,
+                hits: {hits: [], max_score: 0, total: 0},
+                timed_out: false,
+                totalNumber: response.hits.total,
+                maxScore: response.hits.max_score,
+                took: response.took,
+                cdes: type === 'cde' ? items as DataElementElastic[] : undefined,
+                forms: type === 'form' ? items as CdeFormElastic[] : undefined,
+            } as SearchResponseAggregationItem;
             // @TODO remove after full migration to ES7
-            if (result.totalNumber.value > -1) {
-                result.totalNumber = result.totalNumber.value;
+            if ((result.totalNumber as any).value > -1) {
+                result.totalNumber = (result.totalNumber as any).value;
             }
-            result[type + 's'] = [];
             for (const hit of response.hits.hits) {
                 const thisCde = hit._source as DataElementElastic;
                 thisCde.score = hit._score;
@@ -412,9 +423,8 @@ export function elasticsearch(type: ModuleItem, query: any, settings: any,
                 thisCde.properties = [];
                 thisCde.flatProperties = [];
                 thisCde.highlight = hit.highlight;
-                result[type + 's'].push(thisCde);
+                items.push(thisCde);
             }
-            result.aggregations = response.aggregations;
             cb(null, result);
         }
     });

@@ -7,8 +7,14 @@ import {
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
     forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
 } from 'server/form/formsvc';
-import * as mongoForm from 'server/form/mongo-form';
-import { byTinyIdVersion as formByTinyIdVersion, formModel, getAuditLog } from 'server/form/mongo-form';
+import {
+    byTinyIdVersion as formByTinyIdVersion,
+    daoItem,
+    daoModule,
+    formModel,
+    getAuditLog
+} from 'server/form/mongo-form';
+import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 import { validateBody } from 'server/system/bodyValidator';
 import {
     completionSuggest, elasticsearch, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
@@ -18,19 +24,19 @@ import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
     isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
+import { registerItemDao } from 'server/system/itemDaoManager';
 import { registerDao } from 'server/system/moduleDaoManager';
 import { config } from 'server/system/parseConfig';
 import { getEnvironmentHost } from 'shared/env';
 import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
-import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 const {checkSchema, check} = require('express-validator');
 
-const canEditMiddlewareForm = canEditMiddleware(mongoForm);
-const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(mongoForm);
+const canEditMiddlewareForm = canEditMiddleware(daoItem);
+const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(daoItem);
 const canViewDraftMiddlewareForm = canEditByTinyIdMiddlewareForm;
 
 // ucum from lhc uses IndexDB
@@ -59,7 +65,9 @@ require('express-async-errors');
 
 export function module() {
     const router = Router();
-    registerDao(mongoForm);
+    registerDao(daoModule);
+    registerItemDao(daoItem);
+
     // Those end points need to be defined before '/form/:tinyId'
     router.get('/form/search', (req, res) => {
         const selectedOrg = req.query.selectedOrg;

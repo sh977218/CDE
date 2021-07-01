@@ -1,18 +1,18 @@
 import { Dictionary, forEachSeries } from 'async';
 import { RequestHandler, Router } from 'express';
-import { handleErr, handleError, handleErrorVoid, handleErrVoid } from 'server/errorHandler/errorHandler';
-import * as mongoCde from 'server/cde/mongo-cde';
+import { handleError, handleErrorVoid, handleErrVoid } from 'server/errorHandler/errorHandler';
+import { daoItem as cdeDAO } from 'server/cde/mongo-cde';
 import {
     addOrgClassification,
     deleteOrgClassification, reclassifyOrgClassification, renameOrgClassification, updateOrgClassification
 } from 'server/classification/orgClassificationSvc';
 import { addClassification, classifyEltsInBoard, eltClassification, removeClassification } from 'server/classification/classificationNode';
-import * as mongoForm from 'server/form/mongo-form';
+import { daoItem as formDAO } from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { jobStatus } from 'server/system/mongo-data';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-import { Cb, Cb1, ClassificationClassifier, User } from 'shared/models.model';
+import { Cb1, ClassificationClassifier, User } from 'shared/models.model';
 
 const { check } = require('express-validator');
 require('express-async-errors');
@@ -28,7 +28,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     const router = Router();
 
     router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        addClassification(req.body, mongoCde, handleError({req, res}, result => {
+        addClassification(req.body, cdeDAO, handleError({req, res}, result => {
             if (result === 'Classification Already Exists') { return res.status(409).send(result); }
             res.send(result);
             addToClassifAudit({
@@ -47,7 +47,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     });
 
     router.post('/removeCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        removeClassification(req.body, mongoCde, handleError({req, res}, elt => {
+        removeClassification(req.body, cdeDAO, handleError({req, res}, elt => {
             res.send(elt);
             addToClassifAudit({
                 date: new Date(),
@@ -64,7 +64,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     });
 
     router.post('/addFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        addClassification(req.body, mongoForm, handleError({req, res}, result => {
+        addClassification(req.body, formDAO, handleError({req, res}, result => {
             /* istanbul ignore if */
             if (result === 'Classification Already Exists') {
                 return res.status(409).send(result); } else { res.send(result);
@@ -80,7 +80,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     });
 
     router.post('/removeFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        removeClassification(req.body, mongoForm, handleError({req, res}, elt => {
+        removeClassification(req.body, formDAO, handleError({req, res}, elt => {
             res.send(elt);
             addToClassifAudit({
                 date: new Date(), user: {
@@ -93,11 +93,11 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
     });
 
     router.post('/classifyCdeBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, mongoCde, handleErrVoid({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, cdeDAO, handleErrVoid({req, res}, () => res.send('')));
     });
 
     router.post('/classifyFormBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, mongoForm, handleErrVoid({req, res}, () => res.send('')));
+        classifyEltsInBoard(req, formDAO, handleErrVoid({req, res}, () => res.send('')));
     });
 
     // @TODO: classification to own file
@@ -195,7 +195,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
 
     const bulkClassifyCdesStatus: Dictionary<{numberProcessed: number, numberTotal: number}> = {};
 
-    function bulkClassifyCdes(user: User, eltId: string, elements: {id: string, version: number}[],
+    function bulkClassifyCdes(user: User, eltId: string, elements: {id: string, version: string}[],
                               body: ClassificationClassifier, cb?: Cb1<Error | null>) {
         if (!bulkClassifyCdesStatus[user.username + eltId]) {
             bulkClassifyCdesStatus[user.username + eltId] = {
@@ -210,7 +210,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 tinyId: element.id,
                 version: element.version
             };
-            eltClassification(classifReq, mongoCde, () => {
+            eltClassification(classifReq, cdeDAO, () => {
                 bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
                 doneOneElement();
             });

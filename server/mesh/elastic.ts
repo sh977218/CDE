@@ -90,6 +90,7 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
                 const thisElt = hit._source;
                 const trees: Set<string> = new Set();
                 const simpleTrees: Set<string> = new Set();
+                /* istanbul ignore if */
                 if (!thisElt.flatClassifications) {
                     thisElt.flatClassifications = [];
                 }
@@ -120,6 +121,7 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
             });
             if (request.body.length > 0) {
                 esClient.bulk(request, (err: Error | null) => {
+                    /* istanbul ignore if */
                     if (err) {
                         consoleLog('ERR: ' + err, 'error');
                     }

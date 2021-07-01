@@ -4,6 +4,7 @@ import { searchBySystemAndCode, CDE_SYSTEM_TO_UMLS_SYSTEM_MAP } from 'server/uts
 import { umlsPvFilter } from 'shared/de/umls';
 
 export function validatePvs(permissibleValues: PermissibleValue[]): Promise<void> {
+    /* istanbul ignore if */
     if (!Array.isArray(permissibleValues)) {
         return Promise.resolve();
     }
@@ -12,10 +13,12 @@ export function validatePvs(permissibleValues: PermissibleValue[]): Promise<void
 }
 
 export function validatePv(pv: PermissibleValue): Promise<void> {
+    /* istanbul ignore if */
     if (!umlsPvFilter(pv)) {
         return Promise.resolve();
     }
     const system = pv.codeSystemName && CDE_SYSTEM_TO_UMLS_SYSTEM_MAP[pv.codeSystemName];
+    /* istanbul ignore if */
     if (!system) {
         return Promise.resolve();
     }
@@ -23,13 +26,16 @@ export function validatePv(pv: PermissibleValue): Promise<void> {
         pv.valueMeaningCode ? pv.valueMeaningCode.split(/[,:]/) : [],
         code => searchBySystemAndCode(system, code).then(
             dataRes => {
+                /* istanbul ignore if */
                 if (!dataRes) {
                     return Promise.reject('connection error');
                 }
+                /* istanbul ignore if */
                 if (dataRes.startsWith('<html')) {
                     return Promise.reject('does not exist: error page');
                 }
                 const response = JSON.parse(dataRes);
+                /* istanbul ignore if */
                 if (!Array.isArray(response.result)) {
                     return Promise.reject('does not exist: ' + response.error);
                 }

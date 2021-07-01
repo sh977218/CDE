@@ -1,20 +1,19 @@
 import { Request, Response, Router } from 'express';
 import { intersection, isEmpty, uniqBy } from 'lodash';
-import * as boardDb from 'server/board/boardDb';
-import { byId, byIdAndOwner, nbBoardsByUserId, newBoard } from 'server/board/boardDb';
+import { byId, byIdAndOwner, daoModule, nbBoardsByUserId, newBoard } from 'server/board/boardDb';
 import { boardRefresh, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { elasticsearch } from 'server/system/elastic';
-import { getDao, registerDao } from 'server/system/moduleDaoManager';
-import { ItemDocument } from 'server/system/mongo-data';
+import { getItemDao } from 'server/system/itemDaoManager';
+import { registerDao } from 'server/system/moduleDaoManager';
 import { config } from 'server/system/parseConfig';
-import { Board, BoardPin, ItemElastic, ModuleAll } from 'shared/models.model';
+import { Board, BoardPin, ItemElastic, ModuleItem } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { stripBsonIds } from 'shared/system/exportShared';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 const js2xml = require('js2xmlparser');
 const {check} = require('express-validator');
@@ -22,7 +21,7 @@ require('express-async-errors');
 
 export function module() {
     const router = Router();
-    registerDao(boardDb);
+    registerDao(daoModule);
 
     router.post('/deletePin/', loggedInMiddleware, async (req, res) => {
         const {boardId, tinyId} = req.body;
@@ -41,7 +40,7 @@ export function module() {
     });
 
     router.put('/pinToBoard/', loggedInMiddleware, async (req, res) => {
-        const {boardId, tinyIdList, type}: { boardId: string, tinyIdList: string[], type: ModuleAll } = req.body;
+        const {boardId, tinyIdList, type}: { boardId: string, tinyIdList: string[], type: ModuleItem } = req.body;
         const board = await byIdAndOwner(boardId, req.user._id);
         if (!board) {
             return res.status(404).send();
@@ -51,7 +50,7 @@ export function module() {
         if (!isEmpty(intersectionCdes)) {
             return res.status(409).send('Already added');
         }
-        getDao(type).byTinyIdListElastic(tinyIdList, handleNotFound<ItemDocument[]>({req, res}, elts => {
+        getItemDao(type).byTinyIdListElastic(tinyIdList, handleNotFound({req, res}, elts => {
             const newPins: any[] = elts.map(e => ({
                 pinnedDate: new Date(),
                 type,
@@ -135,7 +134,7 @@ export function module() {
         const totalItems = boardObj.pins.length;
         const tinyIdList = boardObj.pins.splice(start, size).map(p => p.tinyId);
         boardObj.pins = [];
-        getDao(boardObj.type).elastic.byTinyIdList(tinyIdList, size, handleNotFound({
+        getItemDao(boardObj.type).elastic.byTinyIdList(tinyIdList, size, handleNotFound({
             req,
             res
         }, (elts: ItemElastic[]) => {

@@ -54,9 +54,9 @@ export function module(roleConfig: {allowSyncMesh: RequestHandler}) {
         }
     });
 
-    router.get('/meshClassifications', (req, res) => {
-        findAll(handleError({req, res}, mm => res.send(mm)));
-    });
+    // router.get('/meshClassifications', (req, res) => {
+    //     findAll(handleError({req, res}, mm => res.send(mm)));
+    // });
 
     router.get('/meshClassification', (req, res) => {
         if (!req.query.classification) {

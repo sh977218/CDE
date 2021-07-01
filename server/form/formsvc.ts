@@ -20,7 +20,7 @@ import { formToSDC } from 'server/form/sdcForm';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
-import { addFormToViewHistory, formatElt, sortArrayByArray } from 'server/system/mongo-data';
+import { addFormToViewHistory, eltAsElastic, sortArrayByArray } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
@@ -296,7 +296,7 @@ export function byTinyIdList(req: Request, res: Response) {
     }
     const tinyIdList = req.params.tinyIdList.split(',');
     formByTinyIdListElastic(tinyIdList, handleNotFound({req, res}, forms => {
-        res.send(forms.map(formatElt));
+        res.send(forms.map(eltAsElastic));
     }));
 }
 

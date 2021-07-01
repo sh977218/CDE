@@ -534,7 +534,7 @@ export interface ItemClassification {
     eltId?: string;
     cdeId?: string;
     tinyId?: string;
-    version?: number;
+    version?: string;
 }
 
 export interface ItemClassificationNew {
@@ -584,7 +584,7 @@ export class PermissibleValue {
 
 export class Property {
     _id?: ObjectId;
-    key?: string;
+    key: string = '';
     source?: string;
     value?: string;
     valueFormat?: string;

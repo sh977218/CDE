@@ -49,7 +49,7 @@ export function updateOrInsert(elt: DataElementDocument) {
     });
 }
 
-export function byTinyIdList(idList: string[], size: number, cb: CbError1<DataElementElastic[]>) {
+export function byTinyIdList(idList: string[], size: number, cb: CbError1<DataElementElastic[] | void>) {
     idList = idList.filter(id => !!id);
     esClient.search({
         index: config.elastic.index.name,

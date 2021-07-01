@@ -1,5 +1,5 @@
 import { classificationAuditPagination, saveClassificationAudit } from 'server/system/classificationAuditDb';
-import { getDaoList } from 'server/system/moduleDaoManager';
+import { getItemDaoList } from 'server/system/itemDaoManager';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
 import { getModule, getName } from 'shared/elt';
 import { Item } from 'shared/models.model';
@@ -11,7 +11,7 @@ export async function getClassificationAuditLog(params: {limit: number, skip: nu
     return await classificationAuditPagination({sort, skip, limit});
 }
 export function addToClassifAudit(msg: ClassificationAudit) {
-    const persistClassifRecord = (err: Error | null, elt: Item) => {
+    const persistClassifRecord = (err: Error | null, elt: Item | null) => {
         if (!elt) {
             return;
         }
@@ -20,13 +20,13 @@ export function addToClassifAudit(msg: ClassificationAudit) {
         msg.elements[0].status = elt.registrationState.registrationStatus;
         saveClassificationAudit(msg);
     };
-    getDaoList().forEach((dao) => {
+    getItemDaoList().forEach((dao) => {
         if (msg.elements[0]) {
             if (msg.elements[0]._id && dao.byId) {
                 dao.byId(msg.elements[0]._id, persistClassifRecord);
             }
-            if (msg.elements[0].tinyId && dao.eltByTinyId) {
-                dao.eltByTinyId(msg.elements[0].tinyId, persistClassifRecord);
+            if (msg.elements[0].tinyId && dao.byTinyId) {
+                dao.byTinyId(msg.elements[0].tinyId, persistClassifRecord);
             }
         }
     });
