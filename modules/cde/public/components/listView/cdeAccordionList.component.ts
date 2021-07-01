@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import * as _noop from 'lodash/noop';
@@ -22,8 +21,7 @@ export class CdeAccordionListComponent {
     user!: User;
     Elt = Elt;
 
-    constructor(private userService: UserService,
-                public quickBoard: QuickBoardListService) {
+    constructor(private userService: UserService) {
 
         this.userService.then(user => {
             this.user = user;

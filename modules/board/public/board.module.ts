@@ -12,7 +12,6 @@ import { ListSortComponent } from './components/listView/listSort.component';
 import { MyBoardsService } from './myBoards.service';
 import { PinBoardComponent } from './components/pins/pinBoard.component';
 import { PinBoardModalComponent } from './components/pins/pinBoardModal.component';
-import { PinQuickboardComponent } from './components/pins/pinQuickboard.component';
 import { UnpinBoardComponent } from './components/listView/unpinBoard.component';
 
 import { NonCoreModule } from 'non-core/noncore.module';
@@ -50,7 +49,6 @@ import { MatInputModule } from '@angular/material/input';
         ListSortComponent,
         PinBoardComponent,
         PinBoardModalComponent,
-        PinQuickboardComponent,
         UnpinBoardComponent,
     ],
     providers: [
@@ -63,7 +61,6 @@ import { MatInputModule } from '@angular/material/input';
         ListSortComponent,
         PinBoardComponent,
         PinBoardModalComponent,
-        PinQuickboardComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [

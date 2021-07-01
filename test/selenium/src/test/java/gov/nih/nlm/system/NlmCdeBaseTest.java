@@ -310,10 +310,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             clickElement(By.id("helpLink"));
         }
         textNotPresent("Guides");
-        if (driver.findElements(By.xpath("//button[normalize-space()='My Boards']")).size() > 0) {
-            clickElement(By.id("boardsMenu"));
-        }
-        textNotPresent("My Boards");
     }
 
     protected void goToAudit() {
@@ -927,94 +923,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return OS.contains("win");
     }
 
-    protected void addCdeToQuickBoard(String cdeName) {
-        goToCdeByName(cdeName);
-        clickElement(By.id("addToQuickBoard"));
-        checkAlert("Added to QuickBoard!");
-    }
-
-    protected void addFormToQuickBoard(String formName) {
-        searchForm(formName);
-        clickElement(By.id("addToCompare_0"));
-        checkAlert("Added to QuickBoard!");
-        findElement(By.name("q")).clear();
-    }
-
-    protected void addFormToQuickBoardByTinyId(String formName) {
-        goToSearch("form");
-        String tinyId = EltIdMaps.eltMap.get(formName);
-        if (tinyId.length() == 0) {
-            System.out.println("form " + formName + " is not present in the eltMap.");
-        }
-        findElement(By.id("ftsearch-input")).sendKeys(tinyId);
-        hangon(0.5);
-        clickElement(By.id("search.submit"));
-        clickElement(By.id("addToCompare_0"));
-        checkAlert("Added to QuickBoard!");
-    }
-
-    public void goToQuickBoard() {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        clickElement(By.id("menu_qb_link"));
-    }
-
-    public void goToQuickBoardByModule(String module) {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        clickElement(By.id("menu_qb_link"));
-        if (module.equals("cde")) {
-            clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
-            textPresent("CDE QuickBoard (");
-        }
-        if (module.equals("form")) {
-            clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
-            textPresent("Form QuickBoard (");
-        }
-    }
-
-    protected void emptyQuickBoardByModule(String module) {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        if (findElement(By.id("menu_qb_link")).getText().contains("(0)")) return;
-        goToQuickBoardByModule(module);
-        clickElement(By.id("qb_" + module + "_empty"));
-        textPresent(("cde".equals(module) ? "CDE" : "Form") + " QuickBoard (0)");
-        goToQuickBoard();
-        hangon(1);
-    }
-
-    protected void addCdeToCompare(String cdeName1, String cdeName2) {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        textPresent("Quick Board (0)");
-        addCdeToQuickBoard(cdeName1);
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        textPresent("Quick Board (1)");
-        addCdeToQuickBoard(cdeName2);
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        clickElement(By.id("menu_qb_link"));
-        clickElement(By.xpath("//div[contains(., 'CDE QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
-        textPresent(cdeName1);
-        textPresent(cdeName2);
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_compare"));
-    }
-
-    protected void addFormToCompare(String formName1, String formName2) {
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        textPresent("Quick Board (0)");
-        addFormToQuickBoard(formName1);
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        textPresent("Quick Board (1)");
-        addFormToQuickBoard(formName2);
-        hoverOverElement(findElement(By.id("boardsMenu")));
-        clickElement(By.id("menu_qb_link"));
-        clickElement(By.xpath("//div[contains(., 'Form QuickBoard') and contains(@class, 'mat-tab-label-content')]"));
-        textPresent(formName1);
-        textPresent(formName2);
-        clickElement(By.id("qb_elt_compare_0"));
-        clickElement(By.id("qb_elt_compare_1"));
-        clickElement(By.id("qb_compare"));
-    }
-
     protected void mergeCdeBySide(String side) {
         if (side.equalsIgnoreCase("left")) {
             clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeDataElementModalBtn']"));
@@ -1410,7 +1318,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void gotoMyBoards() {
-        hoverOverElement(findElement(By.id("boardsMenu")));
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
@@ -2005,18 +1912,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected String xpathRegistrationStatusEditable() {
         return "//legend[contains(text(),'Registration State:')][button]";
-    }
-
-    protected void createBoardFromQuickBoard(String boardName, String boardDescription) {
-        clickElement(By.id("addBoard"));
-        if (boardName != null) {
-            findElement(By.id("new-board-name")).sendKeys(boardName);
-        }
-        if (boardDescription != null) {
-            findElement(By.id("new-board-description")).sendKeys(boardDescription);
-        }
-        clickElement(By.id("createBoard"));
-        checkAlert("Board created");
     }
 
     protected Cookie getCurrentCookie() {

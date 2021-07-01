@@ -4,7 +4,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
@@ -89,7 +88,6 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 private localStorageService: LocalStorageService,
                 private dialog: MatDialog,
                 private orgHelperService: OrgHelperService,
-                public quickBoardService: QuickBoardListService,
                 private router: Router,
                 private scrollService: ScrollService,
                 private title: Title,

@@ -23,11 +23,6 @@ const appRoutes: Routes = [
         data: {title: 'About', preload: false}
     },
     {
-        path: 'boardList',
-        loadChildren: () => import('board/public/boardList.module').then(m => m.BoardListModule),
-        data: {title: 'Public Boards', preload: false}
-    },
-    {
         path: 'board/:boardId',
         loadChildren: () => import('board/public/boardView.module').then(m => m.BoardViewModule),
         data: {title: 'Board View', preload: false}
@@ -101,11 +96,6 @@ const appRoutes: Routes = [
         data: {title: 'My Boards', preload: false},
     },
     {path: 'offline', component: OfflineComponent, data: {title: 'Offline', preload: false}},
-    {
-        path: 'quickBoard',
-        loadChildren: () => import('quickBoard/quickBoard.module').then(m => m.QuickBoardModule),
-        data: {title: 'Quick Board', preload: false}
-    },
     {
         path: 'resources',
         loadChildren: () => import('system/public/resources.module').then(m => m.ResourcesModule),

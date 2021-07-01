@@ -31,35 +31,6 @@ export function deleteBoardById(id: string, callback: CbError) {
     }, callback);
 }
 
-export function boardSearch(filter: BoardFilter) {
-    const query: any = {
-        size: 100,
-        query: {bool: {must: [{match: {shareStatus: 'Public'}}]}},
-        aggs: {
-            tagAgg: {terms: {field: 'tags', size: 50}},
-            typeAgg: {terms: {field: 'type'}}
-        }
-    };
-
-    if (filter.search && filter.search.length > 0) {
-        query.query.bool.must.push({query_string: {query: filter.search}});
-    }
-    filter.selectedTypes.forEach(t => {
-        if (t !== 'All') {
-            query.query.bool.must.push({term: {type: {value: t}}});
-        }
-    });
-    filter.selectedTags.forEach(t => {
-        if (t !== 'All') {
-            query.query.bool.must.push({term: {tags: {value: t}}});
-        }
-    });
-    return esClient.search({
-        index: boardIndexName,
-        body: query
-    });
-}
-
 export function myBoards(user: User, filter: BoardFilter) {
     const query: any = {
         size: 100,

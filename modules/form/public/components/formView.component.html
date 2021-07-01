@@ -214,12 +214,6 @@
                                 Please login to export forms.
                             </a>
                         </mat-menu>
-                        <button *ngIf="quickBoardService.canAddElement(elt)" id="addToQuickBoard"
-                                color="primary"
-                                mat-raised-button (click)="quickBoardService.addToQuickBoard(elt)">
-                            <mat-icon>add</mat-icon>
-                            <span class="d-none d-md-inline ml-1">Add to Quick Board</span>
-                        </button>
                         <button id="addToBoard" mat-raised-button color="primary"
                                 (click)="mltPinModal.pinMultiple([elt])">
                             <mat-icon svgIcon="thumb_tack"></mat-icon>

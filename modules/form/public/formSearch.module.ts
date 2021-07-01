@@ -7,7 +7,6 @@ import { BoardFormSummaryListComponent } from 'form/public/components/listView/b
 import { BoardFormSummaryListContentComponent } from 'form/public/components/listView/boardFormSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
-import { QuickBoardFormSummaryListContentComponent } from 'form/public/components/listView/quickBoardFormSummaryListContent.component';
 import { FormSearchComponent } from 'form/public/components/search/formSearch.component';
 import { SearchModule } from 'search/search.module';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
@@ -58,7 +57,6 @@ import { MatButtonModule } from '@angular/material/button';
         FormSearchComponent,
         FormSummaryListContentComponent,
         FormTableViewPreferencesComponent,
-        QuickBoardFormSummaryListContentComponent,
     ],
     exports: [
         FormSearchComponent,

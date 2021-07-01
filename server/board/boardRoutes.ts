@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { intersection, isEmpty, uniqBy } from 'lodash';
 import * as boardDb from 'server/board/boardDb';
 import { byId, byIdAndOwner, nbBoardsByUserId, newBoard } from 'server/board/boardDb';
-import { boardRefresh, boardSearch, myBoards } from 'server/board/elastic';
+import { boardRefresh, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
@@ -112,16 +112,6 @@ export function module() {
         await boardRefresh();
         res.send('Board Removed.');
     });
-
-    router.post('/boardSearch', nocacheMiddleware,
-        check('selectedTypes').isArray(),
-        check('selectedTags').isArray(),
-        validateBody,
-        async (req, res) => {
-            const result = await boardSearch(req.body);
-            res.send(result.body);
-        }
-    );
 
     router.get('/:boardId/:start/:size?/', nocacheMiddleware, async (req, res) => {
         let size = 20;

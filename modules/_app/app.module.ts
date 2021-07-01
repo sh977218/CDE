@@ -21,7 +21,6 @@ import { NavigationComponent } from '_app/navigation/navigation.component';
 import { ApprovalService } from '_app/notifications/approval.service';
 import { CommentAuthorizeUserComponent, NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
@@ -73,7 +72,6 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
         ElasticService,
         LoginService,
         NotificationService,
-        QuickBoardListService,
         UserService,
         OrgHelperService
     ],

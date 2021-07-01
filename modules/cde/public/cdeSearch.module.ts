@@ -8,7 +8,6 @@ import { CdeModule } from 'cde/public/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
 import { BoardCdeSummaryListContentComponent } from 'cde/public/components/listView/boardCdeSummaryListContent.component';
 import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
-import { QuickBoardCdeSummaryListContentComponent } from 'cde/public/components/listView/quickBoardCdeSummaryListContent.component';
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { SearchModule } from 'search/search.module';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
@@ -62,7 +61,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         CdeSearchComponent,
         CdeSummaryListContentComponent,
         CdeTableViewPreferencesComponent,
-        QuickBoardCdeSummaryListContentComponent,
     ],
     exports: [
         CdeSearchComponent,

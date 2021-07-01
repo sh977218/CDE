@@ -20,7 +20,6 @@ import { LoginService } from '_app/login.service';
 import '_app/navigation/navigation.global.scss';
 import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
-import { QuickBoardListService } from '_app/quickBoardList.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
@@ -180,27 +179,11 @@ export class NavigationComponent {
             ],
         },
         {
-            label: 'Boards',
-            id: 'boardsMenu',
+            label: 'My Boards',
+            id: 'myBoardsLink',
             section: SECTIONS.board,
-            children: [
-                {
-                    labelFn: () => `Quick Board (${this.quickBoardService.numberDataElements + this.quickBoardService.numberForms})`,
-                    id: 'menu_qb_link',
-                    link: '/quickBoard',
-                },
-                {
-                    label: 'Public Boards',
-                    id: 'publicBoardsLink',
-                    link: '/boardList',
-                },
-                {
-                    label: 'My Boards',
-                    id: 'myBoardsLink',
-                    condition: () => !!this.userService.user,
-                    link: '/myBoards',
-                }
-            ]
+            // condition: () => !!this.userService.user,
+            link: '/myBoards',
         },
         {
             label: 'About',
@@ -253,7 +236,6 @@ export class NavigationComponent {
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
         @Inject(forwardRef(() => LoginService)) public loginSvc: LoginService,
         @Inject(forwardRef(() => NotificationService)) public notificationService: NotificationService,
-        @Inject(forwardRef(() => QuickBoardListService)) public quickBoardService: QuickBoardListService,
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => UserService)) public userService: UserService,
         @Inject(forwardRef(() => Renderer2)) private ren: Renderer2,

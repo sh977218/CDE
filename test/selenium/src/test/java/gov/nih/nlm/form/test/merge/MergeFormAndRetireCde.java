@@ -1,17 +1,33 @@
 package gov.nih.nlm.form.test.merge;
 
+import gov.nih.nlm.board.cde.BoardTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class MergeFormAndRetireCde extends NlmCdeBaseTest {
+public class MergeFormAndRetireCde extends BoardTest {
 
     @Test
     public void mergeFormAndRetireCde() {
         String formName1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String formName2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        addFormToCompare(formName1, formName2);
+
+        String boardName = "MergeFormRetire";
+
+        goToFormByName(formName1);
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        checkAlert("Added to Board");
+
+        goToFormByName(formName2);
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        checkAlert("Added to Board");
+
+        goToBoard(boardName);
+        clickElement(By.id("qb_compare"));
+
         mergeFormBySide("left");
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");

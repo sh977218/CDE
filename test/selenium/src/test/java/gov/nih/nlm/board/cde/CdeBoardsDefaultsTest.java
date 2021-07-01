@@ -45,6 +45,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         String cdeName3 = "Specimen Inflammation Change Type";
 
         pinCdeToBoard(cdeName1,boardName1);
+        hangon(1);
 
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
@@ -56,6 +57,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         );
 
         clickBoardHeaderByName(boardName2);
+        hangon(1);
 
         goToCdeByName(cdeName3);
         clickElement(By.id("addToBoard"));
@@ -67,6 +69,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         );
 
         clickBoardHeaderByName(boardName1);
+        hangon(1);
 
         goToCdeByName(cdeName1);
         clickElement(By.id("addToBoard"));
