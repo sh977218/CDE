@@ -52,8 +52,10 @@
             <dt>Uploaded date:</dt>
             <dd>{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}</dd>
 
-            <dt>Uploaded by:</dt>
-            <dd>{{attachment.uploadedBy?.username}}</dd>
+            <ng-container *ngIf="userService.isOrgAuthority()">
+                <dt>Uploaded by:</dt>
+                <dd>{{attachment.uploadedBy?.username}}</dd>
+            </ng-container>
         </dl>
         <hr>
     </ng-container>

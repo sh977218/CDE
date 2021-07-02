@@ -7,6 +7,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ITEM_MAP } from 'shared/item';
 import { Item } from 'shared/models.model';
+import { UserService } from '_app/user.service';
 
 class HistoryDe extends DataElement {
     promise?: Promise<History>;
@@ -64,7 +65,8 @@ export class HistoryComponent {
 
     constructor(private dialog: MatDialog,
                 private alert: AlertService,
-                private http: HttpClient) {
+                private http: HttpClient,
+                public userService: UserService) {
     }
 
     selectRow(index: number) {
