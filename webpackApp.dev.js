@@ -31,7 +31,7 @@ module.exports = merge(baseConfig, appConfig, {
         ]
     },
     plugins: [
-        new ForkTsCheckerWebpackPlugin({tsconfig: 'tsconfigApp.json'})
+        new ForkTsCheckerWebpackPlugin({typescript: {configFile: 'tsconfigApp.json'}})
     ],
     stats: {
         warningsFilter: /export .* was not found in/
