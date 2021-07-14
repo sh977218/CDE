@@ -23,14 +23,20 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("C0086287", By.id("pvMeaningCode_5"));
 
         clickElement(By.id("displayNCICodes"));
+        textPresent("Retrieving...");
+        textNotPresent("Retrieving...");
         textPresent("Female", By.id("nameAsNCI_5"));
         textPresent("A7570536", By.id("codeAsNCI_5"));
 
         clickElement(By.id("displayLNCCodes"));
+        textPresent("Retrieving...");
+        textNotPresent("Retrieving...");
         textPresent("Female", By.id("nameAsLNC_5"));
         textPresent("A24095561", By.id("codeAsLNC_5"));
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));
+        textPresent("Retrieving...");
+        textNotPresent("Retrieving...");
         textPresent("Female", By.id("nameAsSCT_5"));
         textPresent("A2881557", By.id("codeAsSCT_5"));
 
@@ -41,6 +47,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         textPresent("A24095561", By.id("codeAsLNC_5"));
         textPresent("Female", By.id("nameAsSCT_5"));
         textPresent("A2881557", By.id("codeAsSCT_5"));
+        textNotPresent("Retrieving...");
 
         logout();
         goToCdeByName(cdeName);
@@ -52,6 +59,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         clickElement(By.id("displayNCICodes"));
         textPresent("Female", By.id("nameAsNCI_5"));
         textPresent("A7570536", By.id("codeAsNCI_5"));
+        textNotPresent("Retrieving...");
     }
 
 }

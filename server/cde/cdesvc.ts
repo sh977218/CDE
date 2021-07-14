@@ -235,7 +235,7 @@ function censorPv(pvSet: PermissibleValue) {
     if (toBeCensored) {
         pvSet.valueMeaningName = hiddenFieldMessage;
         pvSet.valueMeaningCode = hiddenFieldMessage;
-        pvSet.codeSystemName = hiddenFieldMessage;
+        (pvSet.codeSystemName as any) = hiddenFieldMessage;
         pvSet.codeSystemVersion = hiddenFieldMessage;
     }
 }

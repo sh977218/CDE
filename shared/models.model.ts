@@ -569,10 +569,12 @@ export type NotificationSettings = {
     [key in NotificationSettingsType]?: NotificationSettingsMedia;
 };
 
+export const PermissibleValueCodeSystems = ['LOINC', 'NCI Thesaurus', 'SNOMEDCT US', 'UMLS'] as const;
+export type PermissibleValueCodeSystem = ArrayToType<typeof PermissibleValueCodeSystems>;
 export class PermissibleValue {
     [key: string]: any;
 
-    codeSystemName?: string;
+    codeSystemName?: PermissibleValueCodeSystem;
     codeSystemVersion?: string;
     permissibleValue!: string;
     valueMeaningCode?: string;

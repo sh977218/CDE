@@ -53,7 +53,7 @@ export function module() {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                mongoCde.count(cond, handleNotFound<number>({req, res}, totalCount => {
+                mongoCde.count(cond, handleNotFound({req, res}, totalCount => {
                     mongoCde.dataElementModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
