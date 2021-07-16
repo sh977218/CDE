@@ -32,11 +32,9 @@ export class BoardViewComponent implements OnInit {
     }];
     board!: Board;
     boardId!: string;
-    commentMode: boolean = false;
     currentPage: number = 0;
     elts: any[] = [];
     feedbackClass: string[] = [''];
-    hasComments: boolean = false;
     listViews?: ListTypes;
     modalTitle!: string;
     newUser: BoardUser = {username: '', role: 'viewer'};
@@ -135,21 +133,6 @@ export class BoardViewComponent implements OnInit {
                 this.totalItems = response.totalItems;
                 this.title.setTitle('Board: ' + this.board.name);
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-                // this.userService.then(user => {
-                //     this.board.users.forEach(u => {
-                //         if (u.lastViewed) u.lastViewedLocal = new Date(u.lastViewed).toLocaleDateString();
-                //     });
-                //      this.orgHelperService.then(() => {
-                //         this.elts.forEach(elt => {
-                //             elt.usedBy = this.orgHelperService.getUsedBy(elt);
-                //         });
-                //     }, _noop);
-                // }, _noop);
-
-                this.http.get<Comment[]>('/server/discuss/comments/eltId/' + this.boardId).subscribe(
-                    res => this.hasComments = res && (res.length > 0),
-                    () => this.alert.addAlert('danger', 'Error on loading comments. ')
-                );
             }
         }, err => this.alert.httpErrorMessageAlert(err, 'Board'));
     }
