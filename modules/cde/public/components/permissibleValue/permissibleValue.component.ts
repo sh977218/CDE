@@ -8,7 +8,8 @@ import { empty, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
-import { PermissibleValue } from 'shared/models.model';
+import { PermissibleValue, PermissibleValueCodeSystem, PermissibleValueCodeSystems } from 'shared/models.model';
+import { mapSeries, withRetry } from 'shared/promise';
 import { SearchSettings } from 'shared/search/search.model';
 
 interface Source {
@@ -26,11 +27,18 @@ interface UmlsTerm {
 
 interface VsacValue {
     code: string;
-    codeSystemName: string;
+    codeSystemName: PermissibleValueCodeSystem;
     codeSystemVersion: string;
     displayName: string;
     isValid: boolean;
 }
+
+const SOURCES: Record<PermissibleValueCodeSystem, Source> = {
+    'NCI Thesaurus': {source: 'NCI', termType: 'PT', codes: {}, selected: false, disabled: false},
+    UMLS: {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
+    LOINC: {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
+    'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
+};
 
 @Component({
     selector: 'cde-permissible-value',
@@ -91,9 +99,9 @@ export class PermissibleValueComponent {
     editMode = false;
     umlsValidationResults: any;
     umlsValidationLoading: boolean = false;
-    keys = Object.keys;
     newPermissibleValue: any = {};
     modalRef!: MatDialogRef<TemplateRef<any>>;
+    oid$: Subject<string> = new Subject<string>();
     searchSettings: SearchSettings = {
         classification: [],
         classificationAlt: [],
@@ -105,16 +113,10 @@ export class PermissibleValueComponent {
         resultPerPage: 20
     };
     private searchTerms = new Subject<string>();
+    readonly SOURCES: Record<PermissibleValueCodeSystem, Source> = SOURCES;
+    readonly SOURCES_KEYS = PermissibleValueCodeSystems;
     vsacValueSet: VsacValue[] = [];
     umlsTerms: UmlsTerm[] = [];
-    readonly SOURCES: Dictionary<Source> = {
-        'NCI Thesaurus': {source: 'NCI', termType: 'PT', codes: {}, selected: false, disabled: false},
-        UMLS: {source: 'UMLS', termType: 'PT', codes: {}, selected: false, disabled: false},
-        LOINC: {source: 'LNC', termType: 'LA', codes: {}, selected: false, disabled: true},
-        'SNOMEDCT US': {source: 'SNOMEDCT_US', termType: 'PT', codes: {}, selected: false, disabled: true}
-    };
-
-    oid$: Subject<string> = new Subject<string>();
 
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
@@ -176,7 +178,7 @@ export class PermissibleValueComponent {
         this.editMode = false;
     }
 
-    dupCodesForSameSrc(src: string) {
+    dupCodesForSameSrc(src: PermissibleValueCodeSystem) {
         const matchedPvs = (this.elt.valueDomain as ValueDomainValueList).permissibleValues.filter(pv => pv.codeSystemName === src);
         const source = this.SOURCES[src];
         if (src && source) {
@@ -288,14 +290,14 @@ export class PermissibleValueComponent {
         }
     }
 
-    lookupAsSource(src: string) {
+    lookupAsSource(src: PermissibleValueCodeSystem) {
         if (!this.SOURCES[src].selected) {
             this.SOURCES[src].codes = {};
         } else {
             this.dupCodesForSameSrc(src);
         }
         const targetSource = this.SOURCES[src].source;
-        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.forEach(async pv => {
+        mapSeries((this.elt.valueDomain as ValueDomainValueList).permissibleValues, async (pv, i, pvs) => {
             const code: string = pv.valueMeaningCode || '';
             let source: string = '';
             this.SOURCES[src].codes[code] = {code: '', meaning: 'Retrieving...'};
@@ -309,8 +311,8 @@ export class PermissibleValueComponent {
                         meaning: pv.valueMeaningName || ''
                     };
                 } else if (src === 'UMLS') {
-                    this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
-                        .subscribe(res => {
+                    await withRetry(() => this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise()).then(
+                        res => {
                             if (res?.result?.results?.length > 0) {
                                 res.result.results.forEach((r: any) => {
                                     this.SOURCES[src].codes[code] = {code: r.ui, meaning: r.name};
@@ -318,31 +320,33 @@ export class PermissibleValueComponent {
                             } else {
                                 this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
                             }
-                        }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
-
+                        },
+                        () => this.alert.addAlert('danger', 'Error query UMLS.')
+                    );
                 } else if (source === 'UMLS') {
-                    this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
-                        .subscribe(
-                            res => {
-                                let l = [];
-                                if (res && res.result) {
-                                    l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType);
-                                }
-                                if (l[0]) {
-                                    this.SOURCES[src].codes[code] = {
-                                        code: l[0].ui,
-                                        meaning: l[0].name
-                                    };
-                                } else {
-                                    this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
-                                }
-                            }, () => this.alert.addAlert('danger', 'Error query UMLS.'));
+                    await withRetry(() => this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`).toPromise()).then(
+                        res => {
+                            let l = [];
+                            if (res && res.result) {
+                                l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType);
+                            }
+                            if (l[0]) {
+                                this.SOURCES[src].codes[code] = {
+                                    code: l[0].ui,
+                                    meaning: l[0].name
+                                };
+                            } else {
+                                this.SOURCES[src].codes[code] = {code: 'N/A', meaning: 'N/A'};
+                            }
+                        },
+                        () => this.alert.addAlert('danger', 'Error query UMLS.')
+                    );
                 } else {
-                    const umlsResult = await this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise();
+                    const umlsResult = await withRetry(() => this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise());
                     if (umlsResult?.result?.results?.length > 0) {
                         const umlsCui = umlsResult.result.results[0].ui;
                         try {
-                            const srcResult = await this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise();
+                            const srcResult = await withRetry(() => this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise());
                             if (srcResult.result.length > 0) {
                                 this.SOURCES[src].codes[code] = {
                                     code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf('/') + 1),
@@ -390,7 +394,7 @@ export class PermissibleValueComponent {
     }
 
     removeSourceSelection() {
-        Object.keys(this.SOURCES).forEach(sourceKey => this.SOURCES[sourceKey].selected = false);
+        this.SOURCES_KEYS.forEach(sourceKey => this.SOURCES[sourceKey].selected = false);
     }
 
     removeVSMapping() {
