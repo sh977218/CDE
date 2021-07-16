@@ -1,6 +1,4 @@
-import { map } from 'async';
 import { Request, RequestHandler, Response, Router } from 'express';
-import { ObjectId } from 'server';
 import { BoardDocument } from 'server/board/boardDb';
 import {
     byEltId, byId, byReplyId, CommentDocument, CommentReply, numberUnapprovedMessageByUsername, orgCommentsByCriteria, save
@@ -12,32 +10,10 @@ import { loggedInMiddleware } from 'server/system/authorization';
 import { ioServer } from 'server/system/ioServer';
 import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
-import { byUsername } from 'server/user/userDb';
-import { Board, BoardUser, Cb, Cb1, User } from 'shared/models.model';
+import { Cb1 } from 'shared/models.model';
 import { canComment, canCommentManage } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
-
-function getEltUsers(board: Board, cb: Cb1<ObjectId[] | void>) {
-    const userIds: ObjectId[] = [];
-    if (board.owner && board.owner.userId) {
-        userIds.push(board.owner.userId);
-    }
-    if (Array.isArray(board.users)) {
-        map<BoardUser, User>(
-            board.users.filter(u => !!u.username),
-            (u, doneOne) => byUsername(u.username, doneOne),
-            (err, users) => {
-                if (users) {
-                    users.forEach(user => user && user._id && userIds.push(user._id));
-                }
-                cb(userIds);
-            }
-        );
-    } else {
-        cb();
-    }
-}
 
 export function module(roleConfig: {allComments: RequestHandler, manageComment: RequestHandler}) {
     const router = Router();
@@ -79,10 +55,8 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                     createTask(req.user, 'CommentReviewer', 'approval', eltModule,
                         eltTinyId, 'comment');
                 } else {
-                    getEltUsers(elt as any, userIds => {
-                        notifyForComment({}, savedComment, eltModule, eltTinyId,
-                            elt.stewardOrg && elt.stewardOrg.name, userIds as any);
-                    });
+                    notifyForComment({}, savedComment, eltModule, eltTinyId,
+                        elt.stewardOrg && elt.stewardOrg.name, [] as any);
                 }
                 res.send({});
             }));
@@ -118,12 +92,10 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                         createTask(req.user, 'CommentReviewer', 'approval', eltModule,
                             eltTinyId, 'comment');
                     } else {
-                        getEltUsers(elt as BoardDocument, userIds => {
-                            notifyForComment({},
-                                savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
-                                eltModule, eltTinyId,
-                                (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, userIds as any[]);
-                        });
+                        notifyForComment({},
+                            savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
+                            eltModule, eltTinyId,
+                            (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, [] as any[]);
                     }
                     if (req.user.username !== savedComment.user.username) {
                         const message: Omit<Message, '_id'> = {

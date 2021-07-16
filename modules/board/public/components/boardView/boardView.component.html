@@ -1,5 +1,4 @@
 <div class="container-fluid">
-
     <div *ngIf="board" class="row overflowHidden">
         <div class="col-lg-12 mt-4 mb-2">
             <h3 class="ib pull-left" id="board_name_{{board.name}}">
@@ -11,12 +10,6 @@
                     <mat-icon>share</mat-icon>
                     Share
                 </button>
-                <button id="discussBtn" role="button" title="Discuss Board" mat-raised-button
-                        type="button" (click)="commentMode = !commentMode;">
-                    <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment
-                    </mat-icon>
-                    <span class="d-none d-sm-inline-block ml-1"> Discuss</span>
-                </button>
             </div>
         </div>
         <div class="col-lg-12">
@@ -24,9 +17,8 @@
                 <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
                 <cde-compare-side-by-side [(elements)]="elts"></cde-compare-side-by-side>
                 <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown mr-1 pull-left">
-                    <button mat-raised-button type="button" id="export"
-                            data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
+                    <button mat-raised-button type="button" id="export" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false">
                         <mat-icon>play_for_work</mat-icon>
                         Export Board
                     </button>
@@ -41,12 +33,11 @@
                             XML File, NIH/CDE Schema</a>
                     </div>
                 </div>
-
                 <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
                         id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
                         mat-raised-button (click)="classifyEltBoard()">
                     <mat-icon>folder_open</mat-icon>
-                    Classify All {{board.type==='form'?'Form':'CDE'}}s
+                    Classify All {{board.type === 'form' ? 'Form' : 'CDE'}}s
                 </button>
                 <cde-create-form-from-board
                         *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
@@ -54,7 +45,7 @@
             </div>
         </div>
 
-        <div [ngClass]="{'col-sm-9 eltCommentView':commentMode,'col-sm-12':!commentMode}" id="border-cdes-div">
+        <div id="border-cdes-div">
             <div *ngIf="elts.length === 0">The board is empty.</div>
             <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                            [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
@@ -65,10 +56,6 @@
                            [pageSize]="20" [hidePageSize]="true" style="font-size: 1.4em">
             </mat-paginator>
 
-        </div>
-        <div *ngIf="commentMode" class="pl-10" [ngClass]="{'col-sm-3':commentMode,'':!commentMode}"
-             style="box-shadow: inset 10px 0 5px -2px #888;background-color: #f5f5f5;">
-            <cde-discuss-area [elt]="board" [eltName]="board.name"></cde-discuss-area>
         </div>
     </div>
 </div>
@@ -88,7 +75,7 @@
                         <mat-icon>person</mat-icon>
                     </td>
                     <td>
-                        {{user.username}} {{board.owner.username === user.username?'(you)':''}}
+                        {{user.username}} {{board.owner.username === user.username ? '(you)' : ''}}
                     </td>
                     <td>
                         <select [(ngModel)]="user.role">
@@ -102,7 +89,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="centerText bg-color-grey"><mat-icon>person</mat-icon></td>
+                    <td class="centerText bg-color-grey">
+                        <mat-icon>person</mat-icon>
+                    </td>
                     <td>
                         <input placeholder="Enter username..." style="width:100%" id="newUser_username"
                                [(ngModel)]="newUser.username" required/>
@@ -129,4 +118,4 @@
 </ng-template>
 
 <cde-classify-item #classifyCdesModal [modalTitle]="modalTitle"
-                         (classified)="addClassification($event)"></cde-classify-item>
+                   (classified)="addClassification($event)"></cde-classify-item>
