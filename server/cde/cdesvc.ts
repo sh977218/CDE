@@ -13,7 +13,7 @@ import {
 } from 'server/cde/mongo-cde';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
-import { addCdeToViewHistory, formatElt, sortArrayByArray } from 'server/system/mongo-data';
+import { addCdeToViewHistory, eltAsElastic, sortArrayByArray } from 'server/system/mongo-data';
 import { PermissibleValue, User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/system/authorizationShared';
 import { stripBsonIdsElt } from 'shared/system/exportShared';
@@ -126,7 +126,7 @@ export function byTinyIdList(req: Request, res: Response) {
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {
             const cdes = (dataElements || []).map(elt => {
-                const r = formatElt(elt);
+                const r = eltAsElastic(elt);
                 if (!req.user) {
                     hideProprietaryCodes(r);
                 }

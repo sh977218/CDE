@@ -10,7 +10,7 @@ import { loggedInMiddleware } from 'server/system/authorization';
 import { ioServer } from 'server/system/ioServer';
 import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
-import { Cb1 } from 'shared/models.model';
+import { Cb1, Item, ModuleAll } from 'shared/models.model';
 import { canComment, canCommentManage } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
@@ -37,13 +37,13 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
     router.post('/postComment', loggedInMiddleware, async (req, res) => {
         const handlerOptions = {req, res};
         const comment = req.body;
-        const eltModule = comment.element && comment.element.eltType;
-        const eltTinyId = comment.element && comment.element.eltId;
+        const eltModule: ModuleAll = comment.element && comment.element.eltType;
+        const eltTinyId: string = comment.element && comment.element.eltId;
         const numberUnapprovedMessages = await numberUnapprovedMessageByUsername(req.user.username);
         if (numberUnapprovedMessages >= 5) {
             return res.status(403).send('You have too many unapproved messages.');
         }
-        fetchItem<ItemDocument>(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
+        fetchItem(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
             comment.user = req.user;
             comment.created = new Date().toJSON();
             if (!canComment(req.user, elt)) {
@@ -56,7 +56,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                         eltTinyId, 'comment');
                 } else {
                     notifyForComment({}, savedComment, eltModule, eltTinyId,
-                        elt.stewardOrg && elt.stewardOrg.name, [] as any);
+                        (elt as Item).stewardOrg && (elt as Item).stewardOrg.name, [] as any);
                 }
                 res.send({});
             }));
@@ -81,7 +81,7 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
-            fetchItem<ItemDocument | BoardDocument>(eltModule, eltTinyId, handleNotFound({}, elt => {
+            fetchItem(eltModule, eltTinyId, handleNotFound({}, elt => {
                 if (!canComment(req.user, elt)) {
                     reply.pendingApproval = true;
                 }
@@ -267,11 +267,10 @@ export function module(roleConfig: {allComments: RequestHandler, manageComment: 
 const ioServerCommentUpdated = (username: string, roomId: string) =>
     ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
 
-function getCommentItem(handlerOptions: {req: Request, res: Response}, comment: CommentDocument, cb: Cb1<ItemDocument>): void {
-    const dao = getDao(comment.element.eltType);
-    const idRetrievalFunc = dao.byTinyId ? dao.byTinyId : dao.byId;
+function getCommentItem(handlerOptions: {req: Request, res: Response}, comment: CommentDocument, cb: Cb1<ItemDocument | BoardDocument>): void {
+    const idRetrievalFunc = getDao(comment.element.eltType).byKey;
     const eltId = comment.element.eltId;
-    idRetrievalFunc(eltId, handleNotFound<ItemDocument>(handlerOptions, cb));
+    idRetrievalFunc(eltId, handleNotFound(handlerOptions, cb));
 }
 
 function replyTo(req: Request, res: Response, comment: CommentDocument, status?: string, repliesStatus?: string, send = {}) {

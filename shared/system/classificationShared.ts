@@ -122,13 +122,13 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
     return tempTree;
 }
 
-export function findSteward(de: Item, orgName: string): { index: number, object: Classification } | undefined {
-    if (!de || !de.classification) {
+export function findSteward(item: Item, orgName: string): { index: number, object: Classification } | undefined {
+    if (!item || !item.classification) {
         return;
     }
-    for (let i = 0; i < de.classification.length; i++) {
-        if (de.classification[i].stewardOrg.name === orgName) {
-            return {index: i, object: de.classification[i]};
+    for (let i = 0; i < item.classification.length; i++) {
+        if (item.classification[i].stewardOrg.name === orgName) {
+            return {index: i, object: item.classification[i]};
         }
     }
 }

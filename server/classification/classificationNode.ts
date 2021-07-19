@@ -1,11 +1,21 @@
 import { each } from 'async';
 import { Request } from 'express';
 import { byId } from 'server/board/boardDb';
+import { DataElementDocument } from 'server/cde/mongo-cde';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
+import { DAO } from 'server/system/itemDaoManager';
 import { ItemDocument } from 'server/system/mongo-data';
-import { CbErr, CbErr1, CbError, CbError1, Classification, Item, ItemClassification, ItemClassificationElt } from 'shared/models.model';
-import { actions, addCategory, findSteward, removeCategory } from 'shared/system/classificationShared';
+import {
+    CbErr,
+    CbErr1,
+    CbError1,
+    Classification,
+    Item,
+    ItemClassification,
+    ItemClassificationElt
+} from 'shared/models.model';
+import { addCategory, findSteward, removeCategory } from 'shared/system/classificationShared';
 
 const saveEltClassif = (err: string | undefined, elt: ItemDocument, cb: CbErr1<ItemDocument | void>) => {
     if (err) {
@@ -26,15 +36,15 @@ const trimClassif = (elt: Item) => {
     });
 };
 
-export async function eltClassification(body: ItemClassification, dao: any, cb: CbErr1<ItemDocument | void>) {
-    const elt: ItemDocument = await (
+export async function eltClassification(body: ItemClassification, dao: DAO, cb: CbErr1<ItemDocument | void>) {
+    const elt = await (
         body.cdeId && dao.byId
             ? dao.byId(body.cdeId)
             : body.tinyId
-            ? body.version
-                ? dao.byTinyIdAndVersion(body.tinyId, body.version)
-                : dao.eltByTinyId(body.tinyId)
-            : undefined
+                ? body.version
+                    ? dao.byTinyIdAndVersion(body.tinyId, body.version)
+                    : dao.byTinyId(body.tinyId)
+                : undefined
     );
 
     if (!elt) {
@@ -64,8 +74,11 @@ export async function eltClassification(body: ItemClassification, dao: any, cb: 
     saveEltClassif(err, elt, cb);
 }
 
-export async function addClassification(body: ItemClassificationElt, dao: any, cb: CbError1<string>) {
+export async function addClassification(body: ItemClassificationElt, dao: DAO, cb: CbError1<ItemDocument | string>) {
     const elt = await dao.byId(body.eltId);
+    if (!elt) {
+        return;
+    }
     let steward = findSteward(elt, body.orgName);
     if (!steward) {
         elt.classification.push({
@@ -79,19 +92,22 @@ export async function addClassification(body: ItemClassificationElt, dao: any, c
         return cb(null, addCatRes);
     }
     elt.markModified('classification');
-    elt.save(cb);
+    (elt as DataElementDocument).save(cb);
 }
 
-export async function removeClassification(body: ItemClassificationElt, dao: any, cb: CbError1<ItemClassificationElt>) {
+export async function removeClassification(body: ItemClassificationElt, dao: DAO, cb: CbError1<ItemDocument>) {
     const elt = await dao.byId(body.eltId);
+    if (!elt) {
+        return;
+    }
     const steward = findSteward(elt, body.orgName);
     const err = steward ? removeCategory(steward.object, body.categories) : undefined;
     trimClassif(elt);
     elt.markModified('classification');
-    elt.save(cb);
+    (elt as DataElementDocument).save(cb);
 }
 
-export async function classifyEltsInBoard(req: Request, dao: any, cb: CbErr) {
+export async function classifyEltsInBoard(req: Request, dao: DAO, cb: CbErr) {
     const boardId = req.body.boardId;
     const newClassification = req.body;
     const board = await byId(boardId);
@@ -100,7 +116,7 @@ export async function classifyEltsInBoard(req: Request, dao: any, cb: CbErr) {
         return;
     }
     const tinyIds = board.pins.map(p => p.tinyId);
-    dao.byTinyIdListElastic(tinyIds, (err?: Error, elts?: Item[]) => {
+    dao.byTinyIdListElastic(tinyIds, (err: Error | null, elts: Item[] | void) => {
         if (err || !elts) {
             cb('elts not retrieved');
             return;

@@ -67,8 +67,8 @@ export function handleErrorVoid(options?: HandlerOptions, cb: Cb = noop): CbErro
 }
 
 export function handleNotFound<T>(options?: HandlerOptions,
-                                  cb: Cb1<NonNullable<Exclude<T, void>>> = noop): CbErrorObj1<HandledError | null, T> {
-    return function errorHandler(err: HandledError | null, arg1: T) {
+                                  cb: Cb1<NonNullable<Exclude<T, void>>> = noop): CbErrorObj1<HandledError | null, T | null | void> {
+    return function errorHandler(err: HandledError | null, arg1: T | null | void) {
         if (err) {
             respondError(err, options);
             return;

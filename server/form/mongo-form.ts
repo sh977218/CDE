@@ -4,19 +4,17 @@ import { Document, HookNextFunction, Model } from 'mongoose';
 import { resolve } from 'path';
 import { EltLogDocument } from 'server/cde/mongo-cde';
 import { splitError } from 'server/errorHandler/errorHandler';
-import * as elasticForm from 'server/form/elastic';
+import { byTinyIdList as elasticByTinyIdList } from 'server/form/elastic';
 import { updateOrInsert } from 'server/form/elastic';
 import { auditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId } from 'server/system/mongo-data';
+import { ItemDao } from 'server/system/itemDao';
+import { DaoModule } from 'server/system/moduleDao';
+import { attachables, auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { CbError, CbError1, User } from 'shared/models.model';
-
-export const type = 'form';
-export const name = 'forms';
-export const elastic = elasticForm;
 
 export type CdeFormDocument = Document & CdeForm;
 export type CdeFormDraft = CdeForm;
@@ -31,7 +29,6 @@ readdirSync(resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
     }
 });
 export let validateSchema: any;
-
 const file = readFileSync(resolve(__dirname, '../../shared/form/assets/form.schema.json'));
 try {
     const schema = JSON.parse(file.toString());
@@ -65,7 +62,6 @@ function preSaveUsesThisForSomeReason(this: CdeFormDocument, next: HookNextFunct
         next(err);
     });
 }
-
 formSchema.pre('save', preSaveUsesThisForSomeReason);
 formSourceSchema.pre('save', preSaveUsesThisForSomeReason);
 
@@ -77,47 +73,36 @@ export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsou
 
 const auditModificationsForm = auditModifications(formAuditModel);
 export const getAuditLog = auditGetLog(formAuditModel);
-export const dao = formModel;
-export const daoDraft = formDraftModel;
-
 attachables.push(formModel);
 
-
-function updateUser(elt: CdeForm, user: User) {
-    elt.updated = new Date();
-    elt.updatedBy = {
-        userId: user._id,
-        username: user.username
-    };
-}
-
-export function byExisting(elt: CdeForm, cb: CbError1<CdeFormDocument>) {
+export function byExisting(elt: CdeForm): Promise<CdeFormDocument | null>;
+export function byExisting(elt: CdeForm, cb: CbError1<CdeFormDocument | null>): void;
+export function byExisting(elt: CdeForm, cb?: CbError1<CdeFormDocument | null>): Promise<CdeFormDocument | null> | void {
     formModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
 }
 
-export const byId = (id: string, cb: CbError1<CdeFormDocument>) => formModel.findById(id).exec(cb);
-
-export const byTinyId = (tinyId: string, cb?: CbError1<CdeFormDocument | null>) => formModel.findOne({
-    tinyId,
-    archived: false
-}).exec(cb);
-
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<CdeFormDocument | null>) {
-    if (version) {
-        byTinyIdAndVersion(tinyId, version, cb);
-    } else {
-        byTinyId(tinyId, cb);
-    }
+export function byId(id: string): Promise<CdeFormDocument | null>;
+export function byId(id: string, cb: CbError1<CdeFormDocument | null>): void;
+export function byId(id: string, cb?: CbError1<CdeFormDocument | null>): Promise<CdeFormDocument | null> | void {
+    return formModel.findById(id).exec(cb);
 }
 
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError1<CdeFormDocument>) {
+export function byTinyId(tinyId: string): Promise<CdeFormDocument | null>;
+export function byTinyId(tinyId: string, cb: CbError1<CdeFormDocument | null>): void;
+export function byTinyId(tinyId: string, cb?: CbError1<CdeFormDocument | null>): Promise<CdeFormDocument | null> | void {
+    return formModel.findOne({archived: false, tinyId}).exec(cb);
+}
+
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined): Promise<CdeFormDocument | null>;
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb: CbError1<CdeFormDocument | null>): void;
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb?: CbError1<CdeFormDocument | null>): Promise<CdeFormDocument | null> | void {
     const query: any = {tinyId};
     if (version) {
         query.version = version;
     } else {
         query.$or = [{version: null}, {version: ''}];
     }
-    return formModel.findOne(query).sort({updated: -1}).limit(1).exec(callback);
+    return formModel.findOne(query).sort({updated: -1}).limit(1).exec(cb);
 }
 
 export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<CdeFormElastic[] | void>): void {
@@ -128,18 +113,17 @@ export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<CdeFormEl
             if (err) {
                 return cb(err);
             }
-            const cdes = docs.map(formatElt);
+            const cdes = docs.map(eltAsElastic);
             cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
         });
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>) {
-    const cond: Partial<CdeForm> = {
-        tinyId,
-        archived: false,
-        elementType: 'form'
-    };
-    formDraftModel.findOne(cond, cb);
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<CdeFormDocument | null>) {
+    if (version) {
+        byTinyIdAndVersion(tinyId, version, cb);
+    } else {
+        byTinyId(tinyId, cb);
+    }
 }
 
 export function draftById(id: string, cb: CbError1<CdeFormDocument>) {
@@ -150,22 +134,13 @@ export function draftById(id: string, cb: CbError1<CdeFormDocument>) {
     formDraftModel.findOne(cond, cb);
 }
 
-export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument | void>) {
-    updateUser(elt, user);
-    formDraftModel.findById(elt._id, splitError(cb, doc => {
-        if (!doc) {
-            new formDraftModel(elt).save(cb);
-            return;
-        }
-        if (doc.__v !== elt.__v) {
-            cb(null);
-            return;
-        }
-        const version = elt.__v;
-        elt.__v++;
-        formDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
-            (err, doc) => cb(err, doc === null ? undefined : doc));
-    }));
+export function draftByTinyId(tinyId: string, cb: CbError1<CdeFormDraftDocument>) {
+    const cond: Partial<CdeForm> = {
+        tinyId,
+        archived: false,
+        elementType: 'form'
+    };
+    formDraftModel.findOne(cond, cb);
 }
 
 export function draftDelete(tinyId: string, cb: CbError) {
@@ -185,6 +160,24 @@ export function draftsList(criteria: any, cb?: CbError1<CdeFormDraftDocument[]>)
         })
         .sort({updated: -1})
         .exec(cb);
+}
+
+export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument | void>) {
+    updateUser(elt, user);
+    formDraftModel.findById(elt._id, splitError(cb, doc => {
+        if (!doc) {
+            new formDraftModel(elt).save(cb);
+            return;
+        }
+        if (doc.__v !== elt.__v) {
+            cb(null);
+            return;
+        }
+        const version = elt.__v;
+        elt.__v++;
+        formDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
+            (err, doc) => cb(err, doc === null ? undefined : doc));
+    }));
 }
 
 export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
@@ -292,4 +285,31 @@ export function byTinyIdListInOrder(idList: string[], callback: CbError1<(CdeFor
 
 export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<CdeFormDocument>) {
     formSourceModel.findOne({tinyId, source: sourceName}, cb);
+}
+
+export const daoItem: ItemDao<CdeForm, CdeFormElastic> = {
+    type: 'form',
+    _model: formModel,
+    byExisting,
+    byId,
+    byTinyId,
+    byTinyIdAndVersion,
+    byTinyIdListElastic,
+    elastic: {
+        byTinyIdList: elasticByTinyIdList,
+    },
+};
+
+export const daoModule: DaoModule<CdeFormDocument> = {
+    type: 'form',
+    _model: formModel,
+    byKey: byTinyId,
+};
+
+function updateUser(elt: CdeForm, user: User) {
+    elt.updated = new Date();
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username
+    };
 }

@@ -7,8 +7,9 @@ import { escape, findIndex } from 'lodash';
 import * as mongo from 'mongodb2'; // Mongo 2 used by gridfs
 import { connect, MongoClientOptions } from 'mongodb2';
 import { Document, Model, Types } from 'mongoose';
-import { diff } from 'server/cde/cdediff';
 import { ObjectId } from 'server';
+import { BoardDocument } from 'server/board/boardDb';
+import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
@@ -17,7 +18,7 @@ import { errorLogger } from 'server/system/logging';
 import { getDao } from 'server/system/moduleDaoManager';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { jobQueue, message, statusValidationRuleSchema } from 'server/system/schemas';
+import { jobQueue, message } from 'server/system/schemas';
 import { userModel } from 'server/user/userDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
@@ -107,7 +108,6 @@ const conn = establishConnection(config.database.appData);
 
 export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue);
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
-const validationRuleModel = conn.model('ValidationRule', statusValidationRuleSchema);
 
 export let gfs: Grid.Grid;
 connect(config.database.appData.uri, (err?: Error, client?: MongoClientOptions) => {
@@ -226,9 +226,9 @@ function isDocument<T>(data: T | T & Document): data is T & Document {
     return !!(data as T & Document).toObject;
 }
 
-export function formatElt(doc: DataElement | DataElementDocument): DataElementElastic;
-export function formatElt(doc: CdeForm | CdeFormDocument): CdeFormElastic;
-export function formatElt(doc: Item | ItemDocument): ItemElastic {
+export function eltAsElastic(doc: DataElement | DataElementDocument): DataElementElastic;
+export function eltAsElastic(doc: CdeForm | CdeFormDocument): CdeFormElastic;
+export function eltAsElastic(doc: Item | ItemDocument): ItemElastic {
     const elt: ItemElastic = isDocument(doc) ? (doc as ItemDocument).toObject() : doc;
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = escape(elt.designations[0].designation);
@@ -330,13 +330,16 @@ export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError1<MessageDo
     new messageModel(msg).save(cb);
 }
 
-export function fetchItem<T extends Document>(module: ModuleAll, tinyId: string, cb: CbError1<T | void>) {
+export function fetchItem(module: 'board', tinyId: string, cb: CbError1<BoardDocument | null | void>): void;
+export function fetchItem(module: 'cde' | 'form', tinyId: string, cb: CbError1<ItemDocument | null | void>): void;
+export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError1<BoardDocument | ItemDocument | null | void>): void;
+export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError1<BoardDocument | ItemDocument | null | void> | CbError1<BoardDocument | null | void> | CbError1<ItemDocument | null | void>): void {
     const db = getDao(module);
     if (!db) {
         cb(new Error('Module has no database.'));
         return;
     }
-    (db.byTinyId || db.byId)(tinyId, cb);
+    db.byKey(tinyId, cb as any);
 }
 
 export function sortArrayByArray(unSortArray: Item[], targetArray: ObjectId[]) {

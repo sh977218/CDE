@@ -1,22 +1,20 @@
 import * as Ajv from 'ajv';
 import { isEmpty } from 'lodash';
 import { Document, HookNextFunction, Model, QueryCursor } from 'mongoose';
-import * as elasticCde from 'server/cde/elastic';
+import { byTinyIdList as elasticByTinyIdList } from 'server/cde/elastic';
 import { updateOrInsert } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { attachables, auditGetLog, auditModifications, formatElt, generateTinyId } from 'server/system/mongo-data';
+import { ItemDao } from 'server/system/itemDao';
+import { DaoModule } from 'server/system/moduleDao';
+import { attachables, auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import * as dataElementSchemaJson from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { CbError, CbError1, EltLog, User } from 'shared/models.model';
-
-export const type = 'cde';
-export const name = 'CDEs';
-export const elastic = elasticCde;
 
 export type DataElement = DataElementClient;
 export type DataElementDocument = Document & DataElement;
@@ -66,7 +64,6 @@ function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFu
         next(err);
     });
 }
-
 dataElementSchema.pre('save', preSaveUseThisForSomeReason);
 dataElementSourceSchema.pre('save', preSaveUseThisForSomeReason);
 
@@ -78,33 +75,36 @@ export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.mod
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
 export const getAuditLog = auditGetLog(cdeAuditModel);
-export const dao = dataElementModel;
-export const daoDraft = dataElementDraftModel;
-
 attachables.push(dataElementModel);
 
-function updateUser(elt: DataElement, user: User) {
-    wipeDatatype(elt);
-    elt.updated = new Date();
-    elt.updatedBy = {
-        userId: user._id,
-        username: user.username,
-    };
+export function byExisting(elt: DataElement): Promise<DataElementDocument | null>;
+export function byExisting(elt: DataElement, cb: CbError1<DataElementDocument | null>): void;
+export function byExisting(elt: DataElement, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
+    return dataElementModel.findOne({_id: elt._id, tinyId: elt.tinyId}).exec(cb);
 }
 
-export function byExisting(elt: DataElement, cb: CbError1<DataElementDocument>) {
-    dataElementModel.findOne({_id: elt._id, tinyId: elt.tinyId}, cb);
+export function byId(id: string): Promise<DataElementDocument | null>;
+export function byId(id: string, cb: CbError1<DataElementDocument | null>): void;
+export function byId(id: string, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
+    return dataElementModel.findOne({_id: id}).exec(cb);
 }
 
-export const byId = (id: string, cb: CbError1<DataElementDocument | null>) => dataElementModel.findOne({_id: id}).exec(cb);
+export function byTinyId(tinyId: string): Promise<DataElementDocument | null>;
+export function byTinyId(tinyId: string, cb: CbError1<DataElementDocument | null>): void;
+export function byTinyId(tinyId: string, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
+    return dataElementModel.findOne({tinyId, archived: false}).exec(cb);
+}
 
-export const byTinyId = (tinyId: string, cb?: CbError1<DataElementDocument | null>) =>
-    dataElementModel.findOne({tinyId, archived: false}, cb);
-
-export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
-    dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
-        cb(err, dataElement ? dataElement.version : undefined);
-    });
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined): Promise<DataElementDocument | null>;
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>): void;
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
+    const _query: any = {tinyId};
+    if (version) {
+        _query.version = version;
+    } else {
+        _query.$or = [{version: null}, {version: ''}];
+    }
+    return dataElementModel.findOne(_query).sort({updated: -1}).limit(1).exec(cb);
 }
 
 export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElement[] | void>): void {
@@ -128,17 +128,17 @@ export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<DataEleme
             if (err) {
                 return cb(err);
             }
-            const cdes = docs.map<DataElementElastic>(formatElt);
+            const cdes = docs.map<DataElementElastic>(eltAsElastic);
             cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
         });
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
-    const cond = {
-        archived: false,
-        tinyId,
-    };
-    dataElementDraftModel.findOne(cond, cb);
+export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>) {
+    if (version) {
+        byTinyIdAndVersion(tinyId, version, cb);
+    } else {
+        byTinyId(tinyId, cb);
+    }
 }
 
 export function draftById(id: string, cb: CbError1<DataElementDraftDocument>) {
@@ -148,22 +148,12 @@ export function draftById(id: string, cb: CbError1<DataElementDraftDocument>) {
     dataElementDraftModel.findOne(cond, cb);
 }
 
-export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElementDocument | void>): void {
-    updateUser(elt, user);
-    dataElementDraftModel.findById(elt._id, splitError(cb, doc => {
-        if (!doc) {
-            new dataElementDraftModel(elt).save(cb);
-            return;
-        }
-        /* istanbul ignore if */
-        if (doc.__v !== elt.__v) {
-            return cb(null);
-        }
-        const version = elt.__v;
-        elt.__v++;
-        dataElementDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
-            (err, doc) => cb(err, doc === null ? undefined : doc));
-    }));
+export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
+    const cond = {
+        archived: false,
+        tinyId,
+    };
+    dataElementDraftModel.findOne(cond, cb);
 }
 
 export function draftDelete(tinyId: string, cb: CbError) {
@@ -185,6 +175,30 @@ export function draftsList(criteria: any, cb?: CbError1<DataElementDraftDocument
         .exec(cb as any);
 }
 
+export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElementDocument | void>): void {
+    updateUser(elt, user);
+    dataElementDraftModel.findById(elt._id, splitError(cb, doc => {
+        if (!doc) {
+            new dataElementDraftModel(elt).save(cb);
+            return;
+        }
+        /* istanbul ignore if */
+        if (doc.__v !== elt.__v) {
+            return cb(null);
+        }
+        const version = elt.__v;
+        elt.__v++;
+        dataElementDraftModel.findOneAndUpdate({_id: elt._id, __v: version}, elt, {new: true},
+            (err, doc) => cb(err, doc === null ? undefined : doc));
+    }));
+}
+
+export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
+    dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
+        cb(err, dataElement ? dataElement.version : undefined);
+    });
+}
+
 /* ---------- PUT NEW REST API Implementation above  ---------- */
 
 export function getStream(condition: any): QueryCursor<DataElementDocument> {
@@ -193,31 +207,6 @@ export function getStream(condition: any): QueryCursor<DataElementDocument> {
 
 export function count(condition: any, callback?: CbError1<number>) {
     return dataElementModel.countDocuments(condition, callback as (err?: Error, a?: number) => void);
-}
-
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>) {
-    if (version) {
-        byTinyIdAndVersion(tinyId, version, cb);
-    } else {
-        byTinyId(tinyId, cb);
-    }
-}
-
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, callback: CbError1<DataElementDocument>) {
-    const _query: any = {tinyId};
-    if (version) {
-        _query.version = version;
-    } else {
-        _query.$or = [{version: null}, {version: ''}];
-    }
-    return dataElementModel.findOne(_query).sort({updated: -1}).limit(1).exec(callback);
-}
-
-export function eltByTinyId(tinyId: string, callback: CbError1<DataElementDocument>) {
-    dataElementModel.findOne({
-        archived: false,
-        tinyId,
-    }, callback);
 }
 
 const viewedCdes: Record<string, number> = {};
@@ -325,4 +314,32 @@ export function findModifiedElementsSince(date: Date | string | number, cb: CbEr
 
 export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<DataElementDocument>) {
     dataElementSourceModel.findOne({tinyId, source: sourceName}, cb);
+}
+
+export const daoItem: ItemDao<DataElement, DataElementElastic> = {
+    type: 'cde',
+    _model: dataElementModel,
+    byExisting,
+    byId,
+    byTinyId,
+    byTinyIdAndVersion,
+    byTinyIdListElastic,
+    elastic: {
+        byTinyIdList: elasticByTinyIdList,
+    },
+};
+
+export const daoModule: DaoModule<DataElementDocument> = {
+    type: 'cde',
+    _model: dataElementModel,
+    byKey: byTinyId,
+};
+
+function updateUser(elt: DataElement, user: User) {
+    wipeDatatype(elt);
+    elt.updated = new Date();
+    elt.updatedBy = {
+        userId: user._id,
+        username: user.username,
+    };
 }

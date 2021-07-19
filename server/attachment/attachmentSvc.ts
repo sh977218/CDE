@@ -5,7 +5,7 @@ import { createWriteStream } from 'fs';
 import * as md5 from 'md5-file';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { fileUsed } from 'server/system/adminItemSvc';
-import { getDaoList } from 'server/system/moduleDaoManager';
+import { getItemDaoList } from 'server/system/itemDaoManager';
 import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
 import { Attachment, Cb1, Cb3, CbError1, Item, User } from 'shared/models.model';
 
@@ -115,8 +115,8 @@ export function remove(req: Request, res: Response, db: any, crudPermission: (it
 
 export function removeUnusedAttachment(id: string, cb: Cb1<Error | null>) {
     map(
-        getDaoList(),
-        (dao: any, done) => fileUsed(dao.dao, id, done),
+        getItemDaoList(),
+        (dao, done) => fileUsed(dao._model, id, done),
         (err, results) => results && results.indexOf(true) === -1 ? deleteFileById(id, cb) : cb(null)
     );
 }
@@ -150,9 +150,9 @@ export function setDefault(req: Request, res: Response, db: any, crudPermission:
 
 export function unapproved(cb: CbError1<ItemDocument[]>) {
     map<any, ItemDocument[]>(
-        getDaoList(),
-        (dao: any, done: CbError1<ItemDocument[]>) => dao.type !== 'board'
-            ? dao.dao.find({'attachments.pendingApproval': true}, done)
+        getItemDaoList(),
+        (dao, done) => dao.type !== 'board'
+            ? dao._model.find({'attachments.pendingApproval': true}, done)
             : done(null, []),
         (err, results) => cb(
             err === undefined ? null : err,

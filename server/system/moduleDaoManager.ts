@@ -1,21 +1,24 @@
 import { Dictionary } from 'async';
+import { Document } from 'mongoose';
+import { BoardDocument } from 'server/board/boardDb';
+import { DaoModule } from 'server/system/moduleDao';
+import { ItemDocument } from 'server/system/mongo-data';
 import { ModuleAll } from 'shared/models.model';
 
-// export type DAOs = mongoDe | mongoForm | boardDb; TODO: export DAOs as objects instead of relying on the CommonJS exports object
-export type DAOs = any;
+type DAO = DaoModule<ItemDocument | BoardDocument>;
 
-const daoList: DAOs[] = [];
-const allDaos: Dictionary<DAOs> = {};
+const daoList: DAO[] = [];
+const allDaos: Dictionary<DAO> = {};
 
-export function registerDao(dao: DAOs) {
+export function registerDao<T extends ItemDocument | BoardDocument>(dao: DaoModule<T>): void {
     daoList.push(dao);
     allDaos[dao.type] = dao;
 }
 
-export function getDaoList() {
+export function getDaoList(): DAO[] {
     return daoList;
 }
 
-export function getDao(type: ModuleAll): DAOs {
+export function getDao(type: ModuleAll): DAO {
     return allDaos[type];
 }
