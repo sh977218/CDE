@@ -1,15 +1,10 @@
-import { unapproved as attachmentUnapproved } from 'server/attachment/attachmentSvc';
-import { unapproved as discussUnapproved } from 'server/discuss/discussDb';
 import { getClientErrorsNumber, getServerErrorsNumber } from 'server/log/dbLogger';
-import { ItemDocument } from 'server/system/mongo-data';
 import { CommentNotification, UserDocument } from 'server/user/userDb';
 import { version } from 'server/version';
-import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
-import { getModule } from 'shared/elt';
+import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { uriView } from 'shared/item';
-import { Comment, CommentReply, ModuleAll, Task } from 'shared/models.model';
+import { Task } from 'shared/models.model';
 import { capString } from 'shared/system/util';
-import { promisify } from 'util';
 
 function createTaskFromCommentNotification(c: CommentNotification): Task {
     return {
@@ -29,24 +24,12 @@ function createTaskFromCommentNotification(c: CommentNotification): Task {
     };
 }
 
-function pending(comment: Comment) {
-    let pending: CommentReply[] = [];
-    if (comment.pendingApproval) {
-        pending.push(comment);
-    }
-    if (Array.isArray(comment.replies)) {
-        pending = pending.concat(comment.replies.filter(r => r.pendingApproval));
-    }
-    return pending;
-}
-
 export async function taskAggregator(user: UserDocument, clientVersion: string): Promise<Task[]> {
     const tasks: Task[] = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
 
     let clientErrorPromise;
     let serverErrorPromise;
     let unapprovedAttachmentsPromise;
-    let unapprovedCommentsPromise;
 
     if (isSiteAdmin(user)) {
         clientErrorPromise = getClientErrorsNumber(user).then(clientErrorCount => {
@@ -92,46 +75,8 @@ export async function taskAggregator(user: UserDocument, clientVersion: string):
         });
     }
 
-    if (hasRole(user, 'CommentReviewer')) { // required, req.user.notificationSettings.approvalComment.drawer not used
-        unapprovedCommentsPromise = discussUnapproved().then(comments => {
-            if (Array.isArray(comments)) {
-                comments.forEach(c => {
-                    const eltModule: ModuleAll = c.element.eltType;
-                    const eltTinyId: string = c.element.eltId;
-                    pending(c).forEach(p => {
-                        const task: Task = {
-                            date: new Date(),
-                            id: p._id,
-                            idType: p === c ? 'comment' : 'commentReply',
-                            name: '',
-                            properties: [
-                                {
-                                    key: capString(eltModule),
-                                    value: eltTinyId,
-                                }
-                            ],
-                            source: 'calculated',
-                            text: p.text,
-                            type: 'approve',
-                            url: uriView(eltModule, eltTinyId),
-                        };
-                        const username = p.user && p.user.username || c.user && c.user.username;
-                        if (username) {
-                            task.properties.unshift({
-                                key: 'User',
-                                value: username
-                            });
-                        }
-                        tasks.push(task);
-                    });
-                });
-            }
-        });
-    }
-
     await clientErrorPromise;
     await serverErrorPromise;
     await unapprovedAttachmentsPromise;
-    await unapprovedCommentsPromise;
     return tasks;
 }

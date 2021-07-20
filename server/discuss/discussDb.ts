@@ -140,14 +140,3 @@ export function orgCommentsByCriteria(criteria: any, myOrgs: string[] | undefine
     }
     commentModel.aggregate(aggs, cb);
 }
-
-export function unapproved() {
-    return commentModel.find({$or: [{pendingApproval: true}, {'replies.pendingApproval': true}]});
-}
-
-export function numberUnapprovedMessageByUsername(username: string) {
-    return commentModel.countDocuments({
-        $or: [{'user.username': username, pendingApproval: true},
-            {'replies.user.username': username, 'replies.pendingApproval': true}]
-    });
-}

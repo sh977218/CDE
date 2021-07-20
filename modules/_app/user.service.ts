@@ -7,7 +7,7 @@ import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
-import { hasRole, isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege } from 'shared/system/authorizationShared';
+import { isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege } from 'shared/system/authorizationShared';
 import { Organization } from 'shared/system/organization';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
@@ -151,9 +151,6 @@ export class UserService {
         }
         if (!user.notificationSettings) {
             user.notificationSettings = newNotificationSettings();
-        }
-        if (!user.notificationSettings.approvalComment && hasRole(user, 'CommentReviewer')) {
-            user.notificationSettings.approvalComment = newNotificationSettingsMediaDrawer();
         }
         if (!user.notificationSettings.comment) {
             user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
