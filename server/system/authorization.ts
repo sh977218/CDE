@@ -99,14 +99,6 @@ export const canEditByTinyIdMiddleware = <T extends Item, U extends Item>(db: It
         });
     };
 
-export const canApproveCommentMiddleware: RequestHandler = (req, res, next) => {
-    if (!hasRole(req.user, 'CommentReviewer')) {
-        res.send(403).send();
-        return;
-    }
-    next();
-};
-
 export const isOrgAdminMiddleware: RequestHandler = (req, res, next) => {
     if (!isOrgAdmin(req.user, req.body.org)) {
         res.status(403).send();

@@ -63,12 +63,6 @@ export class NotificationService {
         this.userService.subscribe(this.funcReload);
     }
 
-    authorizeToComment(username: string) {
-        this.http.post('/server/user/addCommentAuthor', {username}).subscribe(() => {
-            this.alert.addAlert('success', 'Role added.');
-        }, err => this.alert.httpErrorMessageAlert(err));
-    }
-
     clear() {
         this.tasks.length = 0;
     }
@@ -85,48 +79,6 @@ export class NotificationService {
         const unread = !!(t0.state === undefined || TASK_STATE_UNREAD & t0.state);
         const url = t0.url;
         switch (t0.type) {
-            case 'approve': // idType: comment, commentReply
-                task = {
-                    actions: [],
-                    background: '#d4edda',
-                    icon: 'supervisor_account',
-                    name: 'Approve',
-                    properties,
-                    tasks,
-                    text,
-                    unread,
-                    url,
-                };
-                switch (t0.idType) {
-                    case 'attachment':
-                        task.properties.unshift({key: 'Attachment', icon: 'attach_file'});
-                        approve = () => this.approvalService.funcAttachmentApprove(task, this.funcReload);
-                        reject = () => this.approvalService.funcAttachmentDecline(task, this.funcReload);
-                        break;
-                    case 'comment':
-                    case 'commentReply':
-                        task.properties.unshift({key: 'Comment', icon: 'comment'});
-                        approve = () => this.approvalService.funcCommentApprove(task, this.funcReload);
-                        reject = () => this.approvalService.funcCommentDecline(task, this.funcReload);
-                        const userProp = task.tasks[0].properties.filter(p => p.key === 'User')[0];
-                        if (userProp && userProp.value) {
-                            const username = userProp.value;
-                            task.actions.push({
-                                color: 'accent', icon: 'person_add', text: 'Authorize', click: () => {
-                                    this.dialog.open(CommentAuthorizeUserComponent).afterClosed().subscribe(result => {
-                                        if (result === 'Authorize') {
-                                            this.authorizeToComment(username);
-                                            this.approvalService.commentApprove(task, this.funcReload, true);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        break;
-                }
-                task.actions.push({color: 'primary', icon: 'done', text: 'Approve', click: approve});
-                task.actions.push({color: 'warn', icon: 'clear', text: 'Reject', click: reject});
-                break;
             case 'error': // idType: version
                 task = {
                     actions: [],

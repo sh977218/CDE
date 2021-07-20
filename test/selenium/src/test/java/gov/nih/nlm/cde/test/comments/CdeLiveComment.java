@@ -46,11 +46,5 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         textPresent(replyToReply);
         logout();
 
-        mustBeLoggedInAs(nindsCurator_username, password);
-        clickElement(By.id("notificationLink"));
-        textPresent("3 comments",
-                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7_ZF')]]"));
-        textPresent(reply,
-                By.xpath("//div[contains(@class, 'taskItem')][*//mat-chip[contains(text(), 'gPY57SQ7_ZF')]]"));
     }
 }

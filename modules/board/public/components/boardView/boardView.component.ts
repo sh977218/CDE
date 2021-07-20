@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
@@ -8,9 +8,9 @@ import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.com
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { saveAs } from 'file-saver';
-import { Board, BoardUser, ClassificationClassified, Comment, ItemElastic, ListTypes, User } from 'shared/models.model';
+import { Board, ClassificationClassified, ItemElastic, ListTypes } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 
 export interface BoardQuery {
@@ -24,12 +24,6 @@ export interface BoardQuery {
 })
 export class BoardViewComponent implements OnInit {
     @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemComponent;
-    @ViewChild('shareBoardModal', {static: true}) shareBoardModal!: TemplateRef<any>;
-    allRoles = [{
-        label: 'can view',
-        name: 'viewer',
-        icon: 'fa fa-eye'
-    }];
     board!: Board;
     boardId!: string;
     currentPage: number = 0;
@@ -37,19 +31,16 @@ export class BoardViewComponent implements OnInit {
     feedbackClass: string[] = [''];
     listViews?: ListTypes;
     modalTitle!: string;
-    newUser: BoardUser = {username: '', role: 'viewer'};
-    shareDialogRef!: MatDialogRef<TemplateRef<any>>;
     totalItems!: number;
     url!: string;
-    users: BoardUser[] = [];
 
-    constructor(private alert: AlertService,
-                private dialog: MatDialog,
-                public esService: ElasticService,
-                private http: HttpClient,
-                private orgHelperService: OrgHelperService,
+    constructor(private http: HttpClient,
                 private route: ActivatedRoute,
                 private title: Title,
+                private alert: AlertService,
+                private dialog: MatDialog,
+                public esService: ElasticService,
+                private orgHelperService: OrgHelperService,
                 protected userService: UserService) {
     }
 
@@ -77,21 +68,8 @@ export class BoardViewComponent implements OnInit {
         });
     }
 
-    addUser(newUser: User) {
-        if (this.users.filter(o => o.username.toLowerCase() === newUser.username.toLowerCase())[0]) {
-            this.alert.addAlert('danger', 'username exists');
-        } else {
-            this.users.push(newUser);
-            this.newUser = {username: '', role: 'viewer'};
-        }
-    }
-
     classifyEltBoard() {
         this.classifyCdesModal.openModal();
-    }
-
-    deleteUser(index: number) {
-        this.users.splice(index, 1);
     }
 
     exportBoard() {
@@ -114,17 +92,6 @@ export class BoardViewComponent implements OnInit {
         });
     }
 
-    okShare() {
-        this.http.post('/server/board/users', {
-            boardId: this.boardId,
-            users: this.users
-        }, {responseType: 'text'}).subscribe(() => {
-            this.shareDialogRef.close();
-            this.board.users = this.users;
-            this.reload();
-        });
-    }
-
     reload() {
         this.http.get<BoardQuery>('/server/board/' + this.boardId + '/' + (this.currentPage) * 20).subscribe(response => {
             if (response.board) {
@@ -143,12 +110,6 @@ export class BoardViewComponent implements OnInit {
             this.currentPage = goToPage;
             this.reload();
         }
-    }
-
-    shareBoard() {
-        this.users = [];
-        this.board.users.forEach(u => this.users.push(u));
-        this.shareDialogRef = this.dialog.open(this.shareBoardModal, {width: '800px'});
     }
 
 }

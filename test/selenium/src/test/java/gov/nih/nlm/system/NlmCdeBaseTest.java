@@ -1742,31 +1742,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         isCommentOrReplyExists(message, true);
     }
 
-    protected void addCommentNeedApproval(String message) {
-        findElement(By.name("newCommentTextArea")).sendKeys(message);
-        hangon(2);
-        clickElement(By.id("commentBtn"));
-        textNotPresent(message);
-        textPresent("This comment is pending approval");
-    }
-
-    protected void replyCommentNeedApproval(int index, String message) {
-        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
-        clickElement(By.id("replyBtn_" + index));
-        textNotPresent(message);
-        textPresent("This reply is pending approval");
-    }
-
-    protected void approveComment(String adminUsername, String adminPassword, String username, String message) {
-        mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("#notificationLink .mat-badge-content"));
-        clickElement(By.id("notificationLink"));
-        if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
-                + "')]//button[contains(@class,'mat-primary')]"));
-        textPresent("Approved");
-    }
-
     protected void authorizeComment(String adminUsername, String adminPassword, String username, String message) {
         mustBeLoggedInAs(adminUsername, adminPassword);
         findElement(By.cssSelector("#notificationLink .mat-badge-content"));
@@ -1775,15 +1750,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message + "')]//button[contains(.,'Authorize')]"));
         clickElement(By.xpath("//button[contains(.,'Yes')]"));
         textPresent("Role added");
-    }
-
-    protected void declineComment(String adminUsername, String adminPassword, String username, String message) {
-        mustBeLoggedInAs(adminUsername, adminPassword);
-        clickElement(By.id("notificationLink"));
-        if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message
-                + "')]//button[contains(@class,'mat-warn')]"));
-        textPresent("Declined");
     }
 
     protected void removeComment(String message) {

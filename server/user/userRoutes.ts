@@ -53,26 +53,6 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
         res.send(tasks);
     });
 
-    router.post('/tasks/:clientVersion/read', loggedInMiddleware, async (req, res) => {
-        // assume all comments for an elt have been read
-        let updated = false;
-        (req.user as UserFull).commentNotifications
-            .filter(t => t.eltTinyId === req.body.id && t.eltModule === req.body.idType)
-            .forEach(t => updated = t.read = true);
-        if (!updated) {
-            res.send(await taskAggregator(req.user, req.params.clientVersion));
-        } else {
-            await updateUser(req.user, {commentNotifications: req.user.commentNotifications});
-            const user = await userById(req.user._id);
-            /* istanbul ignore if */
-            if (!user) {
-                res.status(500).send();
-                return;
-            }
-            res.send(await taskAggregator(user, req.params.clientVersion));
-        }
-    });
-
     router.post('/addUser', roleConfig.manage, async (req, res) => {
         const username = req.body.username;
         const foundUser = await byUsername(username);
@@ -109,23 +89,6 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
             return;
         }
         foundUser.avatarUrl = req.body.avatarUrl;
-        await foundUser.save();
-        res.send();
-    });
-
-    router.post('/addCommentAuthor', canApproveCommentMiddleware, async (req, res) => {
-        const foundUser = await userByName(req.body.username);
-        /* istanbul ignore if */
-        if (!foundUser) {
-            res.status(400).send();
-            return;
-        }
-        /* istanbul ignore if */
-        if (!foundUser.roles) {
-            foundUser.roles = [];
-        }
-        foundUser.roles.push('CommentAuthor');
-        uniq(foundUser.roles);
         await foundUser.save();
         res.send();
     });
