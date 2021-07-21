@@ -19,7 +19,7 @@ public class CantViewOthersBoardsTest extends BoardTest{
         driver.get(url);
         checkAlert("Board Not Found");
 
-        mustBeLoggedInAs(nlm_username, nlm_password);
+        mustBeLoggedInAs(orgAdminUser_username, password);
         driver.get(url);
         checkAlert("Board Not Found");
 

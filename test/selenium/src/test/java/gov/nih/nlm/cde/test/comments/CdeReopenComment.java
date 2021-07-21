@@ -8,7 +8,7 @@ public class CdeReopenComment extends NlmCdeBaseTest {
     @Test
     public void cdeReopenCommentTest() {
         String cdeName = "Ethnic Group Category Text";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         reopenComment("This comment needs to reopen");
     }

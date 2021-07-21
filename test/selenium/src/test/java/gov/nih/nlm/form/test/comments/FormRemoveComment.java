@@ -8,7 +8,7 @@ public class FormRemoveComment extends NlmCdeBaseTest {
     @Test
     public void formRemoveCommentTest() {
         String formName = "Bowel Control Scale (BWCS)";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         removeComment("This comment needs to be removed.");
     }

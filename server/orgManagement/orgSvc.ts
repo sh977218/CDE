@@ -86,7 +86,6 @@ export function addOrgAdmin(req: Request, res: Response) {
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
             user.orgAdmin.push(req.body.org);
         }
-        addRole(user, 'CommentReviewer');
         user.save(handleError({req, res}, () => {
             res.send();
         }));
@@ -107,7 +106,6 @@ export function addOrgCurator(req: Request, res: Response) {
         if (user.orgCurator.indexOf(req.body.org) === -1) {
             user.orgCurator.push(req.body.org);
         }
-        addRole(user, 'CommentReviewer');
         user.save(handleError({req, res}, () => {
             res.send();
         }));

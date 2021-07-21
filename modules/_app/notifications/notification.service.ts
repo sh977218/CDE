@@ -294,18 +294,3 @@ export class NotificationService {
         });
     }
 }
-
-@Component({
-    template: `
-        <h3 mat-dialog-title>Please confirm</h3>
-        <div mat-dialog-content>
-            The user will be able to post comments without an approval.<br>
-            Do you want to proceed?
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button mat-dialog-close>No</button>
-            <button mat-raised-button color="accent" mat-dialog-close="Authorize">Yes</button>
-        </div>
-    `,
-})
-export class CommentAuthorizeUserComponent {}

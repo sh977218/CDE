@@ -10,20 +10,19 @@ import { ioServer } from 'server/system/ioServer';
 import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
 import { Cb1, ModuleAll } from 'shared/models.model';
-import { canCommentManage } from 'shared/system/authorizationShared';
 
 require('express-async-errors');
 
-export function module(roleConfig: { allComments: RequestHandler, manageComment: RequestHandler }) {
+export function module(roleConfig: { allComments: RequestHandler, canSeeComment: RequestHandler, }) {
     const router = Router();
 
-    router.get('/comments/eltId/:eltId', (req, res) => {
+    router.get('/comments/eltId/:eltId', roleConfig.canSeeComment, (req, res) => {
         byEltId(req.params.eltId, handleNotFound({req, res}, comments => {
             res.send(comments);
         }));
     });
 
-    router.post('/postComment', loggedInMiddleware, async (req, res) => {
+    router.post('/postComment', roleConfig.canSeeComment, async (req, res) => {
         const handlerOptions = {req, res};
         const comment = req.body;
         const eltModule: ModuleAll = comment.element && comment.element.eltType;
@@ -38,7 +37,7 @@ export function module(roleConfig: { allComments: RequestHandler, manageComment:
         }));
     });
 
-    router.post('/replyComment', loggedInMiddleware, async (req, res) => {
+    router.post('/replyComment', roleConfig.canSeeComment, async (req, res) => {
         const handlerOptions = {req, res};
         byId(req.body.commentId, handleNotFound(handlerOptions, comment => {
             const eltModule = comment.element.eltType;
@@ -58,13 +57,10 @@ export function module(roleConfig: { allComments: RequestHandler, manageComment:
         }));
     });
 
-    router.post('/deleteComment', loggedInMiddleware, (req, res) => {
+    router.post('/deleteComment', roleConfig.canSeeComment, (req, res) => {
         const commentId = req.body.commentId;
         byId(commentId, handleNotFound({req, res}, comment => {
             getCommentItem({req, res}, comment, element => {
-                if (!canCommentManage(req.user, element, comment)) {
-                    return res.status(403).send('You can only remove ' + element.elementType + 's you own.');
-                }
                 comment.remove(handleError({req, res}, () => {
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
                     res.send({});
@@ -73,13 +69,10 @@ export function module(roleConfig: { allComments: RequestHandler, manageComment:
         }));
     });
 
-    router.post('/deleteReply', loggedInMiddleware, (req, res) => {
+    router.post('/deleteReply', roleConfig.canSeeComment, (req, res) => {
         const replyId = req.body.replyId;
         byReplyId(replyId, handleNotFound({req, res}, comment => {
             getCommentItem({req, res}, comment, element => {
-                if (!canCommentManage(req.user, element, comment)) {
-                    return res.status(403).send('You can only remove ' + element.elementType + 's you own.');
-                }
                 comment.replies = comment.replies.filter(r => r._id.toString() !== replyId) as CommentReply[];
                 comment.save(handleError<CommentDocument>({req, res}, () => {
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
@@ -107,60 +100,44 @@ export function module(roleConfig: { allComments: RequestHandler, manageComment:
         respondCommentOrgsByCriteria(req, res, {});
     });
 
-    router.get('/myComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
+    router.get('/myComments/:from/:size/:orgName?', roleConfig.canSeeComment, (req: Request, res: Response) => {
         respondCommentOrgsByCriteria(req, res, {'user.username': req.user.username});
     });
 
-    router.get('/orgComments/:from/:size/:orgName?', loggedInMiddleware, (req: Request, res: Response) => {
+    router.get('/orgComments/:from/:size/:orgName?', roleConfig.canSeeComment, (req: Request, res: Response) => {
         if (!req.params.orgName) {
             req.params.orgName = myOrgs(req.user)[0];
         }
         respondCommentOrgsByCriteria(req, res, {});
     });
 
-    router.post('/resolveComment', loggedInMiddleware, (req, res) => {
+    router.post('/resolveComment', roleConfig.canSeeComment, (req, res) => {
         byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
             getCommentItem({req, res}, comment, item => {
-                if (!canCommentManage(req.user, item, comment)) {
-                    res.status(403).send();
-                    return;
-                }
                 replyTo(req, res, comment, 'resolved');
             });
         }));
     });
 
-    router.post('/reopenComment', loggedInMiddleware, (req, res) => {
+    router.post('/reopenComment', roleConfig.canSeeComment, (req, res) => {
         byId(req.body.commentId, handleNotFound<CommentDocument>({req, res}, comment => {
             getCommentItem({req, res}, comment, item => {
-                if (!canCommentManage(req.user, item, comment)) {
-                    res.status(403).send();
-                    return;
-                }
                 replyTo(req, res, comment, 'active');
             });
         }));
     });
 
-    router.post('/resolveReply', loggedInMiddleware, (req, res) => {
+    router.post('/resolveReply', roleConfig.canSeeComment, (req, res) => {
         byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
             getCommentItem({req, res}, comment, item => {
-                if (!canCommentManage(req.user, item, comment)) {
-                    res.status(403).send();
-                    return;
-                }
                 replyTo(req, res, comment, undefined, 'resolved');
             });
         }));
     });
 
-    router.post('/reopenReply', loggedInMiddleware, (req, res) => {
+    router.post('/reopenReply', roleConfig.canSeeComment, (req, res) => {
         byReplyId(req.body.replyId, handleNotFound<CommentDocument>({req, res}, comment => {
             getCommentItem({req, res}, comment, item => {
-                if (!canCommentManage(req.user, item, comment)) {
-                    res.status(403).send();
-                    return;
-                }
                 replyTo(req, res, comment, undefined, 'active');
             });
         }));
@@ -172,8 +149,7 @@ export function module(roleConfig: { allComments: RequestHandler, manageComment:
 const ioServerCommentUpdated = (username: string, roomId: string) =>
     ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
 
-function getCommentItem(handlerOptions: { req: Request, res: Response },
-                        comment: CommentDocument, cb: Cb1<ItemDocument | BoardDocument>): void {
+function getCommentItem(handlerOptions: { req: Request, res: Response }, comment: CommentDocument, cb: Cb1<ItemDocument>): void {
     const idRetrievalFunc = getDao(comment.element.eltType).byKey;
     const eltId = comment.element.eltId;
     idRetrievalFunc(eltId, handleNotFound(handlerOptions, cb));

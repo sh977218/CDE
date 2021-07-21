@@ -8,7 +8,7 @@ public class CdeRemoveComment extends NlmCdeBaseTest {
     @Test
     public void cdeRemoveCommentTest() {
         String cdeName = "Aborted procedures number";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         removeComment("This comment needs to be removed.");
     }

@@ -222,11 +222,15 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     loadComments(form: CdeForm, cb = _noop) {
-        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
-            this.hasComments = res && (res.length > 0);
-            this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+        if (this.userService.canSeeComment()) {
+            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
+                this.hasComments = res && (res.length > 0);
+                this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+                cb();
+            }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+        } else {
             cb();
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+        }
     }
 
     loadElt(cb = _noop) {

@@ -7,7 +7,9 @@ import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
-import { isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege } from 'shared/system/authorizationShared';
+import {
+    isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege, isSiteAdmin, canViewComment
+} from 'shared/system/authorizationShared';
 import { Organization } from 'shared/system/organization';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
@@ -18,6 +20,7 @@ export class UserService {
     private mailSubscription?: Subscription;
     private promise!: Promise<User>;
     userOrgs: string[] = [];
+    canViewComment: boolean = false;
     logoutTimeout?: number;
 
     constructor(
@@ -51,9 +54,12 @@ export class UserService {
         return this.user;
     }
 
+    canSeeComment = () => canViewComment(this.user);
+
     isOrgCurator = () => isOrgCurator(this.user);
     isOrgAdmin = () => isOrgAdmin(this.user);
     isOrgAuthority = () => isOrgAuthority(this.user);
+    isSiteAdmin = () => isSiteAdmin(this.user);
 
     reload(cb = _noop) {
         this.clear();
@@ -68,6 +74,7 @@ export class UserService {
                 if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
                     this._user.searchSettings.defaultSearchView = 'summary';
                 }
+                this.canViewComment = canViewComment(this.user);
                 resolve(this._user);
             }, reject);
         });

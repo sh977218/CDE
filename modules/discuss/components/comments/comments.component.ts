@@ -10,7 +10,7 @@ import { Comment, CommentReply } from 'shared/models.model';
 import * as io from 'socket.io-client';
 
 interface ReplyDraft {
-     text?: string;
+    text?: string;
 }
 
 type CommentWithReplyDraft = Comment & {
@@ -71,12 +71,14 @@ export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltId!: string;
     @Input() eltName!: string;
     @Input() canManageComment!: (comment: Comment) => boolean;
+
     @Input() set currentTab(t: string) {
         this._currentTab = t;
         this.comments.forEach(c => {
             c.currentComment = c.linkedTab === t;
         });
     }
+
     private _currentTab!: string;
 
     comments: Array<any> = [];
@@ -96,10 +98,12 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.loadComments();
         this.socket.emit('room', this.eltId);
         this.socket.on('commentUpdated', () => this.loadComments());
-        this.socket.on('userTyping', (data: {commentId: string, username: string}) => {
+        this.socket.on('userTyping', (data: { commentId: string, username: string }) => {
             this.comments.forEach(c => {
                 if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
-                    if (this.subscriptions[c._id]) { this.subscriptions[c._id].unsubscribe(); }
+                    if (this.subscriptions[c._id]) {
+                        this.subscriptions[c._id].unsubscribe();
+                    }
                     c.currentlyReplying = true;
                     this.subscriptions[c._id] = timer(10000)
                         .pipe(take(1)).subscribe(() => c.currentlyReplying = false);
@@ -123,14 +127,16 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     loadComments() {
-        this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
-            .subscribe(res => {
-                res.forEach(c => {
-                    c.currentComment = c.linkedTab === this._currentTab;
-                    c.newReply = {};
+        if (this.userService.canSeeComment()) {
+            this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
+                .subscribe(res => {
+                    res.forEach(c => {
+                        c.currentComment = c.linkedTab === this._currentTab;
+                        c.newReply = {};
+                    });
+                    this.comments = res;
                 });
-                this.comments = res;
-            });
+        }
     }
 
     canReopenComment(comment: Comment) {

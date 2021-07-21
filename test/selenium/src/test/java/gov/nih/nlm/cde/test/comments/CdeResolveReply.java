@@ -9,7 +9,7 @@ public class CdeResolveReply extends NlmCdeBaseTest {
     public void cdeResolveReplyTest() {
         String cdeName = "In the past 7 days, when I was in pain I protected the part of my body that hurt";
         String reply = "This reply will be resolved";
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         goToDiscussArea();
         isReplyStrike(reply, false);

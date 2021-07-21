@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+    ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -162,11 +164,15 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     loadComments(de: DataElement, cb = _noop) {
-        this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
-            .subscribe(res => {
-                this.comments = res;
-                cb();
-            }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+        if (this.userService.canSeeComment()) {
+            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
+                .subscribe(res => {
+                    this.comments = res;
+                    cb();
+                }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+        } else {
+            cb();
+        }
     }
 
     loadElt(cb = _noop) {
