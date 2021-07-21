@@ -10,7 +10,7 @@ public class FormLongComment extends NlmCdeBaseTest {
     @Test
     public void formLongCommentTest() {
         String formName = "PROMIS Bank v1.2 - Physical Function";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         clickElement(By.id("discussBtn"));
         clickElement(By.id("showAllRepliesButton_0"));

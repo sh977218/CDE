@@ -4,6 +4,7 @@ import { ItemDao } from 'server/system/itemDao';
 import {
     canAttach,
     canEditCuratedItem,
+    canViewComment,
     hasPrivilegeForOrg,
     hasPrivilegeInRoles,
     hasRole,
@@ -145,10 +146,21 @@ export const loggedInMiddleware: RequestHandler = (req, res, next) => {
     }
     next();
 };
+export const canSeeCommentMiddleware: RequestHandler = (req, res, next) => {
+    if (req.isAuthenticated() && canViewComment(req.user)) {
+        next();
+    } else {
+        return res.status(401).send();
+    }
+};
 
 // --------------------------------------------------
 // Permission Helpers with Request/Response
 // --------------------------------------------------
+
+export function canSeeComment(user: User) {
+    return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user)
+}
 
 export function isDocumentationEditor(elt: Item, user?: User) {
     return hasRole(user, 'DocumentationEditor');
@@ -168,6 +180,9 @@ export function checkBoardOwnerShip(board?: Board, user?: User) {
 export function checkBoardViewerShip(board?: Board, user?: User) {
     if (!user || !board) {
         return false;
+    }
+    if (isSiteAdmin(user)) {
+        return true;
     }
     const viewers = board.users.filter(u => u.role === 'viewer').map(u => u.username.toLowerCase());
     return viewers.indexOf(user.username.toLowerCase()) > -1 || checkBoardOwnerShip(board, user);

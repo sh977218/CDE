@@ -8,7 +8,7 @@ public class CdeResolveComment extends NlmCdeBaseTest {
     @Test
     public void cdeResolveCommentTest() {
         String cdeName = "Participant Identifier Source";
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
         resolveComment("another comment about Naming");
     }

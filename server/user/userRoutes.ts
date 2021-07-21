@@ -1,13 +1,10 @@
 import * as Config from 'config';
 import { RequestHandler, Router } from 'express';
+import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    canApproveCommentMiddleware, isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
-} from 'server/system/authorization';
-import {
-    byId as userById, byUsername, save as userSave, updateUser, userByName, UserDocument, UserFull, usersByUsername
+    byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
 import { version } from 'server/version';
-import { uniq } from 'lodash';
 import { taskAggregator } from 'server/user/taskAggregatorSvc';
 
 const config = Config as any;

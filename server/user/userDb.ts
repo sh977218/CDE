@@ -157,9 +157,6 @@ export async function updateUser(user: User, fields: Partial<UserFull>, callback
         update.email = fields.email;
     }
     if (fields.notificationSettings) {
-        if (fields.notificationSettings.approvalComment && !hasRole(user, 'CommentReviewer')) {
-            delete fields.notificationSettings.approvalComment;
-        }
         if (fields.notificationSettings.approvalAttachment
             || fields.notificationSettings.approvalComment
             || fields.notificationSettings.comment) {

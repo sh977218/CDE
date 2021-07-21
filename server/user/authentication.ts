@@ -5,7 +5,7 @@ import {
 } from 'passport';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
-import { Cb1, CbErr1, CbError2, CbNode, User } from 'shared/models.model';
+import { CbErr1, CbError2, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { isStatus, json, text } from 'shared/fetch';
 import { Parser } from 'xml2js';

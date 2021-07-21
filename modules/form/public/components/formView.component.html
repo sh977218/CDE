@@ -234,7 +234,7 @@
                             <mat-icon>list</mat-icon>
                             <span class="d-none d-md-inline ml-1">CDEs</span>
                         </button>
-                        <button id="discussBtn" mat-raised-button color="primary"
+                        <button *ngIf="userService.canViewComment" id="discussBtn" mat-raised-button color="primary"
                                 (click)="commentDrawer.toggle();">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
                                 comment

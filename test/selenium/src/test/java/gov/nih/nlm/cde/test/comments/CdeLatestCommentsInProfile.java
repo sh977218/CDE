@@ -8,12 +8,10 @@ public class CdeLatestCommentsInProfile extends NlmCdeBaseTest {
 
     @Test
     public void cdeLatestCommentsInProfileTest() {
-        String nindsComment = "comment to FAD score";
-        String caBIGComment = "comment to Sarcoman";
-        mustBeLoggedInAs(commentEditor_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToMyComments();
-        textPresent(nindsComment);
-        textPresent(caBIGComment);
+        textPresent("This is a comment.");
+        textPresent("This comment is to test current comment css.");
     }
 
 }

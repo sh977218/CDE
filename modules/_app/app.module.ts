@@ -19,7 +19,7 @@ import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { ApprovalService } from '_app/notifications/approval.service';
-import { CommentAuthorizeUserComponent, NotificationService } from '_app/notifications/notification.service';
+import { NotificationService } from '_app/notifications/notification.service';
 import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
@@ -56,7 +56,6 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
     ],
     declarations: [
         CdeAppComponent,
-        CommentAuthorizeUserComponent,
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,

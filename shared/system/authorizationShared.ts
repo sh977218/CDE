@@ -110,6 +110,10 @@ export function canClassifyOrg(user: User | undefined, org: string | undefined):
     return hasPrivilegeForOrg(user, 'edit', org);
 }
 
+export function canViewComment(user: User | undefined): boolean {
+    return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user);
+}
+
 export function canComment(user: User, item: Item | Board): boolean {
     if (!user || !item) {
         return false;
@@ -203,10 +207,13 @@ export function hasPrivilege(user: User | undefined, privilege: Privilege | unde
 }
 
 export function hasPrivilegeForOrg(user: User | undefined, privilege: Privilege | undefined, org: string | undefined): boolean {
+    if (isSiteAdmin(user)) {
+        return true;
+    }
     if (!user || !privilege || !org) {
         return false;
     }
-    if (isSiteAdmin(user) || hasPrivilegeInRoles(user, privilege)) {
+    if (hasPrivilegeInRoles(user, privilege)) {
         return true;
     }
     let permitted = false;

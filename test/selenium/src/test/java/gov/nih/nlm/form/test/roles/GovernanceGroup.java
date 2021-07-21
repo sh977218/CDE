@@ -18,9 +18,6 @@ public class GovernanceGroup extends NlmCdeBaseTest {
         assertNoElt(By.xpath("//cde-registration//button[contains(.,'Edit')]"));
         assertNoElt(By.xpath("//button[contains(.,'Add Name')]"));
         assertNoElt(By.xpath("//button[contains(.,'Upload more files')]"));
-        goToDiscussArea();
-        findElement(By.xpath("//cde-discuss-area//textarea"));
-        findElement(By.xpath("//cde-discuss-area//button[contains(.,'Comment')]"));
 
         goToFormSearch();
         clickElement(By.id("browseOrg-TEST"));
@@ -30,8 +27,5 @@ public class GovernanceGroup extends NlmCdeBaseTest {
         assertNoElt(By.xpath("//cde-registration//button[contains(.,'Edit')]"));
         assertNoElt(By.xpath("//button[contains(.,'Add Name')]"));
         assertNoElt(By.xpath("//button[contains(.,'Upload more files')]"));
-        goToDiscussArea();
-        findElement(By.xpath("//cde-discuss-area//textarea"));
-        findElement(By.xpath("//cde-discuss-area//button[contains(.,'Comment')]"));
     }
 }
