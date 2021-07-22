@@ -206,3 +206,9 @@ If your IDE encounter errors like
  operable program or batch file.
  `
 Run ```npm config set script-shell "/c//tools//git//bin//bash.exe"```
+
+# CDE Ingesters
+
+For bulk loading new CDEs/Forms into the system a custom program called a loader must be written. To 
+write and test a loader a connection to the QA environment from the local machine needs to be made.
+This process requires multiple steps. More information can be found here: [Ingester README](ingester/README.md)

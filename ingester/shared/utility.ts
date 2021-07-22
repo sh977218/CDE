@@ -32,7 +32,7 @@ export const sourceMap: any = {
     NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
 };
 export const TODAY = new Date().toJSON();
-export const lastMigrationScript = `load NICHD on ${moment().format('DD MMMM YYYY')}`;
+export const lastMigrationScript = `load NHLBI on ${moment().format('DD MMMM YYYY')}`;
 
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {

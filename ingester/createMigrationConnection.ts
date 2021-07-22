@@ -41,6 +41,7 @@ let redCapZipFolder = 'S:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/red
 
 let sickleCellDataElementsXlsx = 'S:/MLB/CDE/NHLBI/DataElements.xlsx';
 let sickleCellFormMappingXlsx = 'S:/MLB/CDE/NHLBI/SickleCell_NLM_FormMapping.xlsx';
+let vteDataElementsMappingCsv = 'S:/MLB/CDE/NHLBI/VTEdataelements_2021-07-09.csv';
 
 let DMDXlsx = 'S:/MLB/CDE/NICHD/DMD Data Dictionary - NLM 2021-06.xlsx';
 let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
@@ -64,5 +65,6 @@ export {
     SocialDeterminantsOfHealthCsv,
     SocialDeterminantsOfHealthXlsx,
     RED_CAP_CSV,
-    DMDXlsx
+    DMDXlsx,
+    vteDataElementsMappingCsv
 };

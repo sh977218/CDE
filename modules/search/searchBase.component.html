@@ -200,7 +200,7 @@
                     </ng-container>
                     <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
                         <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent hand-cursor"
-                             (click)="selectElement(e)" role="link">
+                             (click)="selectElement(e, 'parent', i)" role="link">
                             <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                             <a class="treeItemText"> {{e}}</a>
                         </div>
@@ -210,10 +210,10 @@
                             </div>
                         </ng-template>
                     </ng-container>
-                    <div *ngFor="let b of getClassificationSelectedOrg(); trackBy: trackByName"
+                    <div *ngFor="let b of getClassificationSelectedOrg(); index as i; trackBy: trackByName"
                          id="classif-{{b.name}}" class="treeChild hand-cursor"
                          [class.treeItem]="getCurrentSelectedClassification().length"
-                         (click)="selectElement(b.name)" role="link">
+                         (click)="selectElement(b.name, 'child', i)" role="link">
                         <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
                         <a class="treeItemText">{{b.name}} (<span
                                 id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
