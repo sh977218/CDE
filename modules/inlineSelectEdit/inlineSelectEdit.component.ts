@@ -35,6 +35,9 @@ export class InlineSelectEditComponent {
     @Input() selectOptions = [];
     @Input() isAllowed = false;
     @Output() save = new EventEmitter<string>();
+    @Input() cdeTooltip = '';
+    @Input() cdeTooltipClass =  'cdeTooltipMultiline';
+    @Input() cdeTooltipPosition = 'below'
     _value!: string;
     editMode = false;
 

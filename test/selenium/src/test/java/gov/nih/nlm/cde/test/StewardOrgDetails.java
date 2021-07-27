@@ -10,7 +10,7 @@ public class StewardOrgDetails extends NlmCdeBaseTest {
     public void checkStewardOrgDetails() {
         String cdeName1 = "Feature Modified By java.lang.String";
         goToCdeByName(cdeName1);
-        By by = By.cssSelector("[itemprop='steward']");
+        By by = By.xpath("//*[@id='stewardOrg']//span");
         checkTooltipText(by, "Organization Details");
         checkTooltipText(by, "Cancer Biomedical Informatics Grid");
         checkTooltipText(by, "123 Somewhere On Earth, Abc, Def, 20001");

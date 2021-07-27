@@ -4,13 +4,13 @@
     <dd itemprop="name">{{elt.designations[0].designation}}</dd>
 
     <dt>Steward:</dt>
-    <dd itemprop="steward">
+    <dd id="stewardOrg" itemprop="steward">
         <cde-inline-select-edit
                 [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                 [isAllowed]="canEdit"
                 [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                matTooltipClass="cdeTooltipMultiline" matTooltipPosition="below">
+                [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                cdeTooltipClass="cdeTooltipMultiline" cdeTooltipPosition="below">
         </cde-inline-select-edit>
     </dd>
 

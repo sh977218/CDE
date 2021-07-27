@@ -10,13 +10,15 @@
             <div class="col-12 col-md-10 mx-auto">
                 <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
                     <mat-form-field style="width: 100%; font-size: 25px">
-                        <input matInput name="q" id="ftsearch-input" [placeholder]="'Search ' + (module === 'cde' ? 'Data Elements' : 'Forms')"
+                        <input matInput name="q" id="ftsearch-input"
+                               [placeholder]="'Search ' + (module === 'cde' ? 'Data Elements' : 'Forms')"
                                maxlength="500" [matAutocomplete]="auto"
                                [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
                         <div matSuffix style="line-height: 1">
                             <button type="submit" style="display: none" (click)="termSearch(true)"></button>
                             <mat-icon id="search.submit" style="line-height: .2"
-                                      (click)="termSearch(true)">search</mat-icon>
+                                      (click)="termSearch(true)">search
+                            </mat-icon>
                         </div>
                     </mat-form-field>
 
@@ -104,7 +106,8 @@
             </mat-autocomplete>
         </form>
         <div id="searchBarContent" class="ml-auto collapse navbar-collapse" role="group" aria-label="Basic example">
-            <button mat-raised-button id="showHideFilters" class="ml-0 ml-lg-1 mt-1 mt-lg-0" color="primary" (click)="hideShowFilter()">
+            <button mat-raised-button id="showHideFilters" class="ml-0 ml-lg-1 mt-1 mt-lg-0" color="primary"
+                    (click)="hideShowFilter()">
                 <mat-icon>filter_list</mat-icon>
                 <ng-container *ngIf="!filterMode"> Show Filters</ng-container>
                 <ng-container *ngIf="filterMode"> Hide Filters</ng-container>
@@ -117,7 +120,7 @@
             </button>
             <ng-template #notEmbedButtons>
                 <button mat-raised-button id="pinAll" class="mt-1 mt-lg-0" color="primary"
-                        [hidden]="totalItems <= 0 || module === 'form'"  (click)="openPinModal()">
+                        [hidden]="totalItems <= 0 || module === 'form'" (click)="openPinModal()">
                     <mat-icon svgIcon="thumb_tack"></mat-icon>
                     Pin All
                 </button>
@@ -250,8 +253,7 @@
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
                         <div *ngIf="t.doc_count > 0" id="regstatus-{{t.key}}" class="treeItem hand-cursor"
                              (click)="addStatusFilter(t.key)" role="link"
-                             [attr.aria-label]="getRegStatusHelp(t.key)" [matTooltip]="getRegStatusHelp(t.key)"
-                             matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                             [attr.aria-label]="getRegStatusHelp(t.key)">
                             <ng-container
                                     *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
                                 <mat-icon class="filter-cb">check_box</mat-icon>
@@ -259,7 +261,8 @@
                             <ng-template #else06>
                                 <mat-icon class="filter-cb">check_box_outline_blank</mat-icon>
                             </ng-template>
-                            <a class="treeItemText">{{t.key}} ({{t.doc_count}})</a>
+                            <a class="treeItemText" [matTooltip]="getRegStatusHelp(t.key)"
+                               matTooltipClass="cdeTooltip" matTooltipPosition="right">{{t.key}} ({{t.doc_count}})</a>
                         </div>
                     </ng-container>
                 </div>
@@ -282,12 +285,14 @@
                     </ng-container>
                 </div>
             </div>
-            <div class="px-1" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'" [style.display]="searching ? 'none' : 'block'">
+            <div class="px-1" [ngClass]="filterMode?'col-12 col-sm-10':'col-12'"
+                 [style.display]="searching ? 'none' : 'block'">
                 <!-- BREADCRUMBS -->
                 <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
                     <strong id="searchResultNum">{{totalItems}}</strong>
                     <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results for</ng-container>
-                    <span *ngIf="searchedTerm" id="term_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                    <span *ngIf="searchedTerm" id="term_crumb"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right"
                           (click)="searchSettings.q = ''; doSearch()">
@@ -303,7 +308,8 @@
                     <ng-container *ngIf="altClassificationFilterMode">
                         and
                         <span id="classifAlt_filter" class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
-                              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                              aria-label="Remove this classification filter"
+                              matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="right"
                               (click)="clearSelectedClassificationsAlt()">
                             {{getSelectedClassificationsAlt()}}
@@ -312,19 +318,22 @@
                     <ng-container *ngIf="excludeOrgFilterMode">
                         not
                         <span class="badge badge-light remove-filter hand-cursor dark-icon pl-1"
-                              aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
+                              aria-label="Remove this classification filter"
+                              matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="right"
                               (click)="clearExcludeOrgs()">
                             {{getExcludedOrgs()}}
                         </span>
                     </ng-container>
-                    <span *ngIf="hasSelectedTopics()" id="topic_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                    <span *ngIf="hasSelectedTopics()" id="topic_crumb"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right"
                           (click)="clearSelectedTopics()">
                         {{getSelectedTopics()}}
                     </span>
-                    <span *ngIf="hasSelectedStatuses()" id="status_crumb" class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
+                    <span *ngIf="hasSelectedStatuses()" id="status_crumb"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this registration statuses filter"
                           matTooltip="Remove this registration statuses filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right"
