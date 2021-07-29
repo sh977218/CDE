@@ -1,7 +1,8 @@
 <div>
     <div *ngIf="!editMode">
         <mat-icon *ngIf="isAllowed" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
-        <span>{{value}}</span>
+        <span [matTooltip]="cdeTooltip" [matTooltipClass]="cdeTooltipClass"
+              [matTooltipPosition]="cdeTooltipPosition">{{value}}</span>
     </div>
     <div *ngIf="editMode">
         <select class="form-control" [(ngModel)]="_value" name="inlineSelect">
@@ -9,7 +10,13 @@
                 {{selectOption}}
             </option>
         </select>
-        <button (click)="confirmSave()" type="button"><mat-icon>check</mat-icon>Confirm</button>
-        <button (click)="discard()" type="button"><mat-icon>cancel</mat-icon>Discard</button>
+        <button (click)="confirmSave()" type="button">
+            <mat-icon>check</mat-icon>
+            Confirm
+        </button>
+        <button (click)="discard()" type="button">
+            <mat-icon>cancel</mat-icon>
+            Discard
+        </button>
     </div>
 </div>

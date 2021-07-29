@@ -54,8 +54,8 @@
         <cde-inline-select-edit [value]="elt.stewardOrg.name" [selectOptions]="userOrgs"
                                 (save)="changeStewardOrg($event);" [isAllowed]="canEdit && !elt.isDraft"
                                 [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                                [matTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                                matTooltipClass="cdeTooltipMultiline">
+                                [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                                cdeTooltipClass="cdeTooltipMultiline">
         </cde-inline-select-edit>
     </dd>
     <ng-container *ngIf="elt.imported">

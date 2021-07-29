@@ -19,7 +19,7 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         textPresent("Value List (3)");
         textPresent("Number (1)");
 
-        clickElement(By.xpath("//*[@id='regstatus-Candidate']/*[@class='treeItemText']"));
+        clickElement(By.xpath("//*[@id='regstatus-Candidate']//a"));
         textPresent("3 data element results for");
         textPresent("Under Review (1)");
         textPresent("Candidate (3)");
