@@ -177,16 +177,17 @@
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
                                      id="classif-{{t.key}}" class="treeParent hand-cursor"
-                                     [attr.aria-label]="t.longName" [matTooltip]="t.longName"
-                                     matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                                     (click)="alterOrgFilter(t.key)" role="link">
+                                     [attr.aria-label]="t.longName" (click)="alterOrgFilter(t.key)" role="link">
                                     <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
-                                    <a class="treeItemText"> {{t.key}}</a>
+                                    <a class="treeItemText" [matTooltip]="t.longName"
+                                       matTooltipClass="cdeTooltip" matTooltipPosition="right"> {{t.key}}</a>
                                 </div>
                                 <ng-template #classifSelf>
                                     <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
-                                         [attr.aria-label]="t.longName" [matTooltip]="t.longName"
-                                         matTooltipClass="cdeTooltip" matTooltipPosition="right">{{t.key}}
+                                         [attr.aria-label]="t.longName">
+                                        <span [matTooltip]="t.longName" matTooltipClass="cdeTooltip"
+                                              matTooltipPosition="right">{{t.key}}
+                                        </span>
                                     </div>
                                 </ng-template>
                             </ng-container>

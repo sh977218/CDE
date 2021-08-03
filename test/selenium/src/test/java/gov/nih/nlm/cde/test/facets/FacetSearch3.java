@@ -28,13 +28,13 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-AECC"));
         hoverOverElement(findElement(By.id("menu_cdes_link")));
         textNotPresent("Albert Einstein Cancer Center");
-        hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]")));
+        hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]//span")));
         try {
             textPresent("Albert Einstein Cancer Center");
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("menu_cdes_link")));
             hangon(1);
-            hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]")));
+            hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]//span")));
             textPresent("Albert Einstein Cancer Center");
         }
         hoverOverElement(findElement(By.id("menu_cdes_link")));
