@@ -75,17 +75,6 @@ export class LoginService {
         });
     }
 
-    logout() {
-        const refreshAndLogin = () => {
-            this.userService.reload();
-            this.router.navigate(['/login']);
-        };
-        this.http.post('/server/system/logout', {}, {responseType: 'text'}).subscribe(
-            refreshAndLogin,
-            refreshAndLogin // ignore error in favor of already being logged out
-        );
-    }
-
     openLogin() {
         this.federatedUrl = `${window.federatedLogin}?service=${window.location.origin}/loginFederated`;
         this.loginWindow = window.open(this.federatedUrl, '_blank');

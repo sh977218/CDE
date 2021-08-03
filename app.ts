@@ -73,6 +73,7 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
+        frameSrc: ["'self'", config.uts.ssoServerOrigin],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
             'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
         styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',

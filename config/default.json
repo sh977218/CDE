@@ -64,7 +64,10 @@
     "service": "http://umlsks.nlm.nih.gov",
     "tgtUrl": "https://utslogin.nlm.nih.gov/cas/v1/api-key",
     "federatedLogin": "https://uts.nlm.nih.gov/uts/login",
+    "federatedService": "https://uts-ws.nlm.nih.gov",
     "federatedServiceValidate": "https://uts-ws.nlm.nih.gov/rest/serviceValidate",
+    "ssoServerOrigin": "https://uts.nlm.nih.gov",
+    "ssoServerReceiver": "https://uts.nlm.nih.gov/uts/messenger",
     "ticketValidation": "https://utslogin.nlm.nih.gov:443/cas/serviceValidate"
   },
   "logdir": "",

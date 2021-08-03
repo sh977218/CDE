@@ -125,6 +125,7 @@
     "nyc": "^14.1.1",
     "passport": "0.4.0",
     "passport-local": "1.0.0",
+    "passport-custom": "^1.1.1",
     "passport.socketio": "3.7.0",
     "rss-parser": "^3.5.3",
     "serve-favicon": "^2.5.0",

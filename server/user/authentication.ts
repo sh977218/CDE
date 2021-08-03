@@ -1,8 +1,9 @@
-import { Express, Request, RequestHandler } from 'express'
+import { Express, Request, RequestHandler, Response } from 'express'
 import fetch from 'node-fetch';
 import {
     deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
 } from 'passport';
+import { Strategy as CustomStrategy } from 'passport-custom';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server/system/parseConfig';
 import { CbErr1, CbError2, CbNode, User } from 'shared/models.model';
@@ -106,6 +107,40 @@ export function authBeforeVsac(req: Request, username: string, password: string,
 }
 
 passportUse(new localStrategy({passReqToCallback: true}, authBeforeVsac));
+/* istanbul ignore next */
+passportUse('utsJwt', new CustomStrategy((req, cb) => {
+    const utsUsersServer = config.uts.federatedService;
+    /* istanbul ignore if */
+    if (!utsUsersServer) {
+        cb('error: no uts server configured');
+        return;
+    }
+    const jwtString = Buffer.from(req.body.jwtToken, 'base64').toString();
+    const match = /"iss":"(\w+)"/.exec(jwtString);
+    const username = match && match[1];
+    if (!username) {
+        cb('no user');
+        return;
+    }
+    const jwtValidationUrl = utsUsersServer + '/rest/content/angular/profile/getprofile?username=' + username + '&app=angular';
+    fetch(jwtValidationUrl, {
+        headers: {
+            Authorization: 'Bearer ' + req.body.jwtToken
+        }
+    })
+        .then(isStatus([200]))
+        .then(json)
+        .then((profile) => {
+            if (username !== profile.user.username) {
+                cb('usernames did not match');
+                return;
+            }
+            findAddUserLocally({username, ip: req.ip}, (err, userDoc) => {
+                cb(err, userDoc);
+            });
+        })
+        .catch(() => cb('api error'));
+}));
 
 export interface UserAddProfile {
     domain?: string

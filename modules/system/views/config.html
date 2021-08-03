@@ -1,13 +1,14 @@
 <script type="text/javascript">
-	(function () {
-		window.maxPin = <%= config.maxPin %>;
-		window.userAlertTime = <%= config.userAlertTime || 5000 %>;
-		window.federatedLogin = '<%= config.uts.federatedLogin %>';
-		window.publicUrl = '<%= config.publicUrl %>';
+    (function () {
+        window.maxPin = <%= config.maxPin %>;
+        window.userAlertTime = <%= config.userAlertTime || 5000 %>;
+        window.federatedLogin = '<%= config.uts.federatedLogin %>';
+        window.ssoServerOrigin = '<%= config.uts.ssoServerOrigin %>';
+        window.ssoServerReceiver = '<%= config.uts.ssoServerReceiver %>';
+        window.publicUrl = '<%= config.publicUrl %>';
         window.urlProd = '<%= config.urlProd %>';
-		window.siteKey = '<%= config.siteKey  %>';
-		window.version = '<%= version %>';
-		window.showCovidBanner = <%= config.showCovidBanner %>;
-	})();
+        window.siteKey = '<%= config.siteKey %>';
+        window.version = '<%= version %>';
+        window.showCovidBanner = <%= config.showCovidBanner %>;
+    })();
 </script>
-
