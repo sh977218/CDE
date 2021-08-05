@@ -180,7 +180,9 @@
   },
   "pmRunOnStartup": [],
   "multer": {
-    "inMemory": true
+    "limits": {
+      "fileSize": 10485760
+    }
   },
   "captchaCode": "Override actual here.",
   "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",

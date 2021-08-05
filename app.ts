@@ -15,6 +15,7 @@ import * as helmet from 'helmet';
 import * as http from 'http';
 import * as methodOverride from 'method-override';
 import * as morganLogger from 'morgan';
+import { MulterError } from 'multer';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
 import * as winston from 'winston';
@@ -37,6 +38,7 @@ import { module as orgManagementModule } from 'server/orgManagement/orgManagemen
 import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
+import { module as loaderModule } from 'server/loader/loaderRoutes';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import {
     canAttachMiddleware, canSeeCommentMiddleware, checkEditing, isDocumentationEditor,
@@ -322,6 +324,8 @@ try {
         update: [isOrgAuthorityMiddleware],
     }));
 
+    app.use('/server/loader', isOrgAuthorityMiddleware, loaderModule());
+
 } catch (e) {
     console.error(e.stack);
     process.exit();
@@ -359,6 +363,10 @@ app.use(((err, req, res, next) => {
     // to test => restassured with simple post
     if (err.type === 'charset.unsupported') {
         return res.status(400).send('Unsupported charset');
+    }
+
+    if (err instanceof MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).send('File too large');
     }
 
     // Do Log Errors

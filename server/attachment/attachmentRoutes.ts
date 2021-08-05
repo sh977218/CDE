@@ -11,7 +11,7 @@ export function module(modules: {module: ModuleAll | 'article', db: any, crudPer
 
     modules.forEach(m => {
 
-        router.post(`/${m.module}/add`, multer(config.multer).any(), (req, res) => {
+        router.post(`/${m.module}/add`, multer({...config.multer, storage: multer.memoryStorage()}).any(), (req, res) => {
             add(req as any, res, m.db, m.crudPermission);
         });
 
