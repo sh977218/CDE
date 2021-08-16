@@ -79,6 +79,26 @@ export class NotificationService {
         const unread = !!(t0.state === undefined || TASK_STATE_UNREAD & t0.state);
         const url = t0.url;
         switch (t0.type) {
+            case 'approve':
+                task = {
+                    actions: [],
+                    background: '#d4edda',
+                    icon: 'supervisor_account',
+                    name: 'Approve',
+                    properties,
+                    tasks,
+                    text,
+                    unread,
+                    url,
+                };
+                switch (t0.idType) {
+                    default:
+                        approve = () => {};
+                        reject = () => {};
+                }
+                task.actions.push({color: 'primary', icon: 'done', text: 'Approve', click: approve});
+                task.actions.push({color: 'warn', icon: 'clear', text: 'Reject', click: reject});
+                break;
             case 'error': // idType: version
                 task = {
                     actions: [],
@@ -129,7 +149,6 @@ export class NotificationService {
                 };
                 break;
             case 'message':
-            default:
                 task = {
                     actions: [],
                     background: '#d1ecf1',
@@ -148,6 +167,9 @@ export class NotificationService {
                         task.icon = 'warning';
                         break;
                 }
+                break;
+            default:
+                throw assertUnreachable(t0.type);
         }
         if (task.url) {
             const urlTree = this.router.parseUrl(task.url);

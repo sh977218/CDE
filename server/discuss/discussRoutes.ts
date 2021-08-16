@@ -1,15 +1,16 @@
 import { Request, RequestHandler, Response, Router } from 'express';
+import { ObjectId } from 'server';
 import { BoardDocument } from 'server/board/boardDb';
 import {
     byEltId, byId, byReplyId, CommentDocument, CommentReply, orgCommentsByCriteria, save
 } from 'server/discuss/discussDb';
 import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
 import { myOrgs } from 'server/orgManagement/orgSvc';
-import { loggedInMiddleware } from 'server/system/authorization';
+import { notifyForComment } from 'server/system/adminItemSvc';
 import { ioServer } from 'server/system/ioServer';
 import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
-import { Cb1, ModuleAll } from 'shared/models.model';
+import { Cb1, Item, ModuleAll } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -32,6 +33,8 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
             comment.created = new Date().toJSON();
             save(comment, handleNotFound(handlerOptions, savedComment => {
                 ioServerCommentUpdated(req.user.username, eltTinyId);
+                notifyForComment({}, savedComment, eltModule, eltTinyId,
+                    (elt as Item).stewardOrg && (elt as Item).stewardOrg.name, [] as ObjectId[]);
                 res.send({});
             }));
         }));
@@ -51,6 +54,32 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
                 comment.replies.push(reply);
                 save(comment, handleNotFound(handlerOptions, savedComment => {
                     ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                    notifyForComment({},
+                        savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
+                        eltModule, eltTinyId,
+                        (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, [] as ObjectId[]);
+                    if (req.user.username !== savedComment.user.username) {
+                        const message: Omit<Message, '_id'> = {
+                            author: {authorType: 'user', name: req.user.username},
+                            date: new Date(),
+                            recipient: {recipientType: 'user', name: savedComment.user.username},
+                            type: 'CommentReply',
+                            typeCommentReply: {
+                                // TODO change this when you merge board comments
+                                element: {
+                                    eltType: savedComment.element.eltType,
+                                    eltId: savedComment.element.eltId,
+                                    name: req.body.eltName
+                                },
+                                comment: {
+                                    commentId: savedComment._id,
+                                    text: reply.text
+                                }
+                            },
+                            states: []
+                        };
+                        createMessage(message);
+                    }
                     res.send({});
                 }));
             }));
@@ -149,7 +178,10 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
 const ioServerCommentUpdated = (username: string, roomId: string) =>
     ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
 
-function getCommentItem(handlerOptions: { req: Request, res: Response }, comment: CommentDocument, cb: Cb1<ItemDocument>): void {
+function getCommentItem(handlerOptions: { req: Request, res: Response },
+                        comment: CommentDocument,
+                        cb: Cb1<ItemDocument | BoardDocument>
+): void {
     const idRetrievalFunc = getDao(comment.element.eltType).byKey;
     const eltId = comment.element.eltId;
     idRetrievalFunc(eltId, handleNotFound(handlerOptions, cb));

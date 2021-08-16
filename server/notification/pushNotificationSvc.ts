@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { noop, union } from 'lodash';
+import { ObjectId } from 'server';
 import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
 import {
-    pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushCreate, pushDelete, pushEndpointUpdate, pushesByEndpoint,
-    pushRegistrationFindActive
+    pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushDelete, pushEndpointUpdate, pushesByEndpoint,
+    pushFindActive, pushSave
 } from 'server/notification/notificationDb';
 import { objectId, PushRegistrationDocument } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { logError } from 'server/log/dbLogger';
+import { criteriaSet, NotificationType, typeToCriteria, typeToNotificationSetting } from 'server/notification/notificationSvc';
+import { find as userFind } from 'server/user/userDb';
 import { CbError1, User } from 'shared/models.model';
 import { generateVAPIDKeys, sendNotification, setVapidDetails } from 'web-push';
 
@@ -15,7 +18,7 @@ export function checkDatabase(callback = noop) {
     // errorHandler.handleError because of circular dependency.
     pushById('000000000000000000000000', handleError({}, push => {
         function createDbTag() {
-            pushCreate(
+            pushSave(
                 {_id: objectId('000000000000000000000000'), userId: config.publicUrl},
                 handleError({}, callback)
             );
@@ -62,7 +65,7 @@ export function create(req: Request, res: Response) {
                     push.save(handleError<PushRegistrationDocument>({req, res}, noop));
                 }
             });
-            pushCreate({
+            pushSave({
                 features: Array.isArray(req.body.features) ? req.body.features : ['all'],
                 loggedIn: true,
                 subscription: req.body.subscription,
@@ -76,7 +79,7 @@ export function create(req: Request, res: Response) {
 }
 
 export function createUnsubscribed(req: Request, res: Response) {
-    pushCreate({vapidKeys: generateVAPIDKeys()}, handleError({req, res}, push => {
+    pushSave({vapidKeys: generateVAPIDKeys()}, handleError({req, res}, push => {
         res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
     }));
 }
@@ -167,7 +170,24 @@ export function updateStatus(req: Request, res: Response) {
     }
 }
 
+export function pushRegistrationSubscribersByType(type: NotificationType, cb: CbError1<PushRegistrationDocument[] | void>,
+                                                  data?: {org?: string, users: ObjectId[]}) {
+    userFind(
+        criteriaSet(
+            typeToCriteria(type, data),
+            'notificationSettings.' + typeToNotificationSetting(type) + '.push'
+        ),
+        (err, users) => {
+            if (err || !users) {
+                cb(err);
+                return;
+            }
+            pushRegistrationSubscribersByUsers(users, cb);
+        }
+    );
+}
+
 export function pushRegistrationSubscribersByUsers(users: User[], cb: CbError1<PushRegistrationDocument[]>) {
     const userIds = users.map(u => u._id.toString());
-    pushRegistrationFindActive({userId: {$in: userIds}}, cb);
+    pushFindActive({userId: {$in: userIds}}, cb);
 }

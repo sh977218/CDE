@@ -25,10 +25,10 @@ export function module(roleConfig: { notificationDate: RequestHandler }) {
 
 
     checkDatabase();
-    router.post('/', loggedInMiddleware, create);
-    router.delete('/', loggedInMiddleware, remove);
-    router.post('/', loggedInMiddleware, subscribe);
-    router.post('/', updateStatus);
+    router.post('/pushRegistration', loggedInMiddleware, create);
+    router.delete('/pushRegistration', loggedInMiddleware, remove);
+    router.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
+    router.post('/pushRegistrationUpdate', updateStatus);
 
     return router;
 }

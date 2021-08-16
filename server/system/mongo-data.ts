@@ -94,7 +94,7 @@ export interface PushRegistration {
             p256dh: string
         }
     };
-    userId: string;
+    userId: ObjectId;
     vapidKeys: {
         privateKey: string,
         publicKey: string

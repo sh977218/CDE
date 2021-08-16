@@ -45,7 +45,7 @@ export class NotificationComponent {
         );
     }
 
-    checkSubscriptionServerStatusEndpoint(user: User): Promise<void> {
+    private checkSubscriptionServerStatusEndpoint(user: User): Promise<void> {
         if (PushNotificationSubscriptionService.lastEndpoint) {
             return PushNotificationSubscriptionService.subscriptionServerUpdate(user._id)
                 .catch(() => {

@@ -10,7 +10,7 @@ import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
 import { UserFull } from 'server/user/userDb';
-import { Cb, Cb1, CbError, CbError1 } from 'shared/models.model';
+import { Cb, CbError, CbError1 } from 'shared/models.model';
 import { AuditLog, AuditLogResponse, LogMessage } from 'shared/system/audit';
 
 export interface ClientError {
