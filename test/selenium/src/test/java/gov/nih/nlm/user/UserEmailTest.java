@@ -8,10 +8,10 @@ import org.testng.annotations.Test;
 public class UserEmailTest extends NlmCdeBaseTest {
     @Test
     public void userEmail() {
-        mustBeLoggedInAs(test_username, password);
+        mustBeLoggedInAs(nlm_username,nlm_password);
         goToProfile();
-        textPresent("test@example.com");
-        Assert.assertEquals(findElement(By.xpath("//*[@id='emailEdit']/span/span/span")).getText(), "test@example.com");
+        textPresent("admin@email.com");
+        Assert.assertEquals(findElement(By.xpath("//*[@id='emailEdit']/span/span/span")).getText(), "admin@email.com");
         clickElement(By.xpath("//*[@id='emailEdit']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@id='emailEdit']//input")).clear();
         findElement(By.xpath("//*[@id='emailEdit']//input")).sendKeys("me@");

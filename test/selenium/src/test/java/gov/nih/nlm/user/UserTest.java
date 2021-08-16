@@ -13,7 +13,6 @@ public class UserTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(cabigEditor_username, password);
         goToProfile();
         textPresent("cabigEditor", By.id("username"));
-        textPresent("1,024.00", By.id("quota"));
         Assert.assertEquals("", findElement(By.id("curatorFor")).getText());
         textPresent("caBIG", By.id("editorFor"));
     }
