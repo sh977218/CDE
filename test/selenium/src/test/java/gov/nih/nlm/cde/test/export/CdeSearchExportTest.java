@@ -49,9 +49,8 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\"",
                 "1; 0.9; 0.8; 0.7; 0.6; 0.5; 0.4; 0.3; 0.2; 0.1; 0"
         };
-
-        hangon(1);
         String fileLoc = downloadFolder + "/SearchExport.csv";
+        hangon(10);
         try {
             String actual = new String(Files.readAllBytes(Paths.get(fileLoc)));
             for (String s : expected) {

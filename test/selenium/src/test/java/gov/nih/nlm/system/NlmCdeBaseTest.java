@@ -48,7 +48,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     private static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
+    //    protected static String downloadFolder = "\\\\NLMSAMBASERVER\\selenium\\cde\\downloads";
     private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
+    //    private static String chromeDownloadFolder = "\\\\NLMSAMBASERVER\\selenium\\cde\\downloads";
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -90,7 +92,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             chromeOptions.addArguments("disable-shared-workers");
             chromeOptions.addArguments("start-maximized");
             chromeOptions.addArguments("unsafely-treat-insecure-origin-as-secure");
-
             caps = chromeOptions;
         } else if ("ie".equals(b)) {
             caps = new EdgeOptions();
