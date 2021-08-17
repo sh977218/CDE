@@ -27,6 +27,13 @@
             <dt>Registration Status:</dt>
             <dd>{{eltSource.registrationStatus}}</dd>
         </ng-container>
+        <ng-container *ngIf="eltSource.administrativeStatus">
+            <dt>
+                <ng-container *ngIf="eltSource.sourceName==='caDSR'">NCI</ng-container>
+                Administrative Status:
+            </dt>
+            <dd>{{eltSource.administrativeStatus}}</dd>
+        </ng-container>
         <ng-container *ngIf="eltSource.datatype">
             <dt>Datatype:</dt>
             <dd>{{eltSource.datatype}}</dd>

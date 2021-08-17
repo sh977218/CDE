@@ -170,6 +170,7 @@ export class DataSource {
     datatype?: string;
     imported?: Date;
     registrationStatus?: string;
+    administrativeStatus?: string;
     sourceName?: string;
     updated?: Date;
 }

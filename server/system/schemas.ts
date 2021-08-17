@@ -50,6 +50,10 @@ export const sourceSchema = new Schema({
         type: StringType,
         description: "Relative standing of official record status in steward's workflow"
     },
+    administrativeStatus: {
+        type: StringType,
+        description: 'Administration status of the original source'
+    },
     datatype: {type: StringType, description: 'May contain the source datatype'},
     copyright: {
         value: {type: StringType, description: 'Content of a copyright statement or terms of use'},
