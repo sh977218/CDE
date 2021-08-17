@@ -25,11 +25,11 @@ function createTaskFromCommentNotification(c: CommentNotification): Task {
 }
 
 export async function taskAggregator(user: UserDocument, clientVersion: string): Promise<Task[]> {
-    const tasks: Task[] = user ? user.commentNotifications.map(createTaskFromCommentNotification) : [];
+    const tasks: Task[] = (user ? user.commentNotifications.map(createTaskFromCommentNotification) : [])
+        .filter(t => t.type !== 'approve');
 
     let clientErrorPromise;
     let serverErrorPromise;
-    let unapprovedAttachmentsPromise;
 
     if (isSiteAdmin(user)) {
         clientErrorPromise = getClientErrorsNumber(user).then(clientErrorCount => {
@@ -77,6 +77,5 @@ export async function taskAggregator(user: UserDocument, clientVersion: string):
 
     await clientErrorPromise;
     await serverErrorPromise;
-    await unapprovedAttachmentsPromise;
     return tasks;
 }

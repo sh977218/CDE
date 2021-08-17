@@ -16,7 +16,7 @@ export function assertTrue(x: boolean): void {
     }
 }
 
-export function assertUnreachable(x: void): never {
+export function assertUnreachable(x: never): never {
     console.error('Unreachable ' + JSON.stringify(x));
     // handleError(new Error('Unreachable ' + JSON.stringify(x)));
     throw new Error('unreachable');
@@ -139,7 +139,10 @@ export class CommentSingle {
     pendingApproval?: boolean;
     status: string = 'active';
     text?: string;
-    user!: UserRefSecondary;
+    user!: {
+        _id: ObjectId;
+        username: string;
+    };
 }
 
 export class CommentReply extends CommentSingle {}

@@ -28,8 +28,9 @@ export const commentSchema = new Schema(Object.assign({
     replies: [replySchema],
 }, replySchema), {usePushEach: true});
 
-export type CommentReply = CommentReplyClient & {organizationName: string, user: {_id: ObjectId, userId: ObjectId}};
-export type Comment = CommentClient & {organizationName: string, replies: CommentReply[], user: {_id: ObjectId, userId: ObjectId}};
+export type CommentReply = Omit<CommentReplyClient, 'user'> & {organizationName: string, user: {_id: ObjectId, username: string}};
+export type Comment = Omit<CommentClient, 'replies' | 'user'>
+    & {organizationName: string, replies: CommentReply[], user: {_id: ObjectId, username: string}};
 export type CommentDocument = Document & Comment;
 export const commentModel: mongoose.Model<CommentDocument> = conn.model('Comment', commentSchema);
 

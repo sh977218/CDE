@@ -21,6 +21,9 @@ export class PushNotificationSubscriptionService {
     static registrationReject: (reason?: any) => void;
 
     static askNotificationPermission(): Promise<void> {
+        if (!('Notification' in window)) {
+            return Promise.reject(new Error('This browser does not support notifications.'));
+        }
         // handle both old callback and new Promise implementations
         return new Promise<string>((resolve, reject) => {
             const promise = Notification.requestPermission(resolve);
@@ -28,15 +31,10 @@ export class PushNotificationSubscriptionService {
                 promise.then(resolve, reject);
             }
         })
-            .then((permissionResult: string) => {
-                return new Promise<void>((resolve, reject) => {
-                    if (permissionResult === 'granted') {
-                        resolve();
-                    } else {
-                        reject(new Error('Notification permission denied.'));
-                    }
-                });
-            });
+            .then((permissionResult: string) => permissionResult === 'granted'
+                ? Promise.resolve()
+                : Promise.reject(new Error('Notification permission denied.'))
+            );
     }
 
     static async getEndpoint(): Promise<void> {
@@ -93,7 +91,7 @@ export class PushNotificationSubscriptionService {
     static async subscriptionDelete(userId: string): Promise<void> {
         if (userId && this.lastEndpoint && this.lastUser) {
             try {
-                await fetch('/server/notification', {
+                await fetch('/server/notification/pushRegistration', {
                     method: 'delete',
                     headers: {
                         'Content-type': 'application/json'
@@ -120,7 +118,7 @@ export class PushNotificationSubscriptionService {
             await this.askNotificationPermission();
             const registration = await this.registration;
             const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
-            const response: Response = await fetch('/server/notification/', {
+            const response: Response = await fetch('/server/notification/pushRegistration', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json',
@@ -166,7 +164,7 @@ export class PushNotificationSubscriptionService {
             if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
                 return this.fetchError(new Error('Bad syntax.'));
             }
-            await fetch('/server/notification/', {
+            await fetch('/server/notification/pushRegistrationSubscribe', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json',
@@ -192,7 +190,7 @@ export class PushNotificationSubscriptionService {
         }
         let response: Response;
         try {
-            response = await fetch('/server/notification/', {
+            response = await fetch('/server/notification/pushRegistrationUpdate', {
                 method: 'post',
                 headers: {
                     'Content-type': 'application/json'

@@ -1,23 +1,11 @@
 <div class="container-fluid">
     <h1>Notifications</h1>
     <div *ngIf="user">
-        <dl>
-            <dt class="col-sm-3">Server Event Subscription Status:</dt>
-            <dd class="col-sm-9">
-                    <span class="align-middle">
-                        {{subscriptionStatusServer || (subscriptionStatusClient() ? 'Subscribed' : 'Not Subscribed')}}
-                    </span>
-                <button mat-raised-button (click)="checkSubscriptionServerStatus(user)">Check Server
-                    <mat-icon *ngIf="subscriptionStatusServer">check_box</mat-icon>
-                </button>
-                <button *ngIf="subscriptionStatusServer === 'Not Subscribed'"
-                        mat-raised-button (click)="pushSubscribe(user)">Subscribe
-                </button>
-                <button *ngIf="subscriptionStatusServer === 'Subscribed'"
-                        mat-raised-button (click)="pushUnsubscribe(user)">Unsubscribe
-                </button>
-            </dd>
-        </dl>
+        <mat-checkbox class="my-3"
+                      [checked]="clientStatus()"
+                      (change)="clientStatus() ? pushUnsubscribe(user) : pushSubscribe(user)">
+            Subscribe for Push Notifications
+        </mat-checkbox>
         <table class="table">
             <thead>
             <tr>

@@ -21,11 +21,10 @@ import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
     `]
 })
 export class NotificationComponent {
+    clientStatus = PushNotificationSubscriptionService.subscriptionCheckClient;
     hasRole = hasRole;
     isSiteAdmin = isSiteAdmin;
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
-    subscriptionStatusClient = PushNotificationSubscriptionService.subscriptionCheckClient;
-    subscriptionStatusServer?: string;
 
     constructor(
         public userService: UserService
@@ -33,46 +32,12 @@ export class NotificationComponent {
         this.userService.reload();
     }
 
-    checkSubscriptionServerStatus(user: User) {
-        this.checkSubscriptionServerStatusEndpoint(user).then(
-            () => {
-                PushNotificationSubscriptionService.lastUser = user._id;
-                this.subscriptionStatusServer = 'Subscribed';
-            },
-            err => {
-                this.subscriptionStatusServer = (err !== 'Network Error' ? 'Not Subscribed' : 'Network Error');
-            }
-        );
-    }
-
-    checkSubscriptionServerStatusEndpoint(user: User): Promise<void> {
-        if (PushNotificationSubscriptionService.lastEndpoint) {
-            return PushNotificationSubscriptionService.subscriptionServerUpdate(user._id)
-                .catch(() => {
-                    PushNotificationSubscriptionService.lastEndpoint = '';
-                    return this.checkSubscriptionServerStatusNoEndpoint(user);
-                });
-        } else {
-            return this.checkSubscriptionServerStatusNoEndpoint(user);
-        }
-    }
-
-    checkSubscriptionServerStatusNoEndpoint(user: User): Promise<void> {
-        return PushNotificationSubscriptionService.getEndpoint().then(() => {
-            return PushNotificationSubscriptionService.subscriptionServerUpdate(user._id);
-        });
-    }
-
     pushSubscribe(user: User) {
-        PushNotificationSubscriptionService.subscriptionNew(user._id).then(() => {
-            this.subscriptionStatusServer = 'Subscribed';
-        }, _noop);
+        PushNotificationSubscriptionService.subscriptionNew(user._id).catch(_noop);
     }
 
     pushUnsubscribe(user: User) {
-        PushNotificationSubscriptionService.subscriptionDelete(user._id).then(() => {
-            this.subscriptionStatusServer = 'Not Subscribed';
-        });
+        PushNotificationSubscriptionService.subscriptionDelete(user._id).catch(_noop);
     }
 
     get user(): User | undefined {
