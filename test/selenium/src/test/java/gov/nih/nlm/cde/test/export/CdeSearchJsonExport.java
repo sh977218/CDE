@@ -23,7 +23,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("jsonExport"));
         textPresent("Export downloaded.");
-
+        hangon(10);
         String[] expected = {
                 "\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
                 "\"referenceDocuments\":[],\"attachments\":[]",

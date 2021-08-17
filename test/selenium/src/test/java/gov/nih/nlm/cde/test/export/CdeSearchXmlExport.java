@@ -21,7 +21,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("xmlExport"));
         textPresent("Export downloaded.");
-
+        hangon(10);
         String[] expected = {
                 "<definitions><tags>Health",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",

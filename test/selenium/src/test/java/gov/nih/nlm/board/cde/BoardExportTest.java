@@ -23,6 +23,7 @@ public class BoardExportTest extends BoardTest {
         clickElement(By.id(("export")));
         clickElement(By.id(("csvExport")));
         checkAlert("Export downloaded.");
+        hangon(10);
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",

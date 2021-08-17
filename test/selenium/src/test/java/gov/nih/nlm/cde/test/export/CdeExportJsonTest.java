@@ -20,6 +20,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
         checkAlert("Export downloaded.");
+        hangon(10);
         try {
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/7cDvUXR6SQe.json")));
             Assert.assertTrue(actual.contains("\"designations\":[{\"tags\":[\"Health\"],\"designation\":\"Spinal column injury number\""));

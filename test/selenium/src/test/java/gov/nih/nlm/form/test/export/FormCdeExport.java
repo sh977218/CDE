@@ -21,6 +21,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
         checkAlert("Export downloaded");
+        hangon(10);
 
         String[] expected = {
                 "\"Traumatic brain injury symptom other text\",\"Other, Specify:\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18400 v3; NINDS Variable Name: TBISympOthrTxt\",",
