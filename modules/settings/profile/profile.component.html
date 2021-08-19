@@ -4,17 +4,21 @@
         <dl class="row">
             <dt class="col-sm-3">Username:</dt>
             <dd id="username" class="col-sm-9">{{user.username}}</dd>
-            <dt class="col-sm-3">Quota:</dt>
-            <dd id="quota" class="col-sm-9">
-                {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="user.quota"> MB</span>
-            </dd>
-            <dt class="col-sm-3">E-mail:</dt>
-            <dd id="user_email" class="col-sm-9">
-                <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
-                                 (modelChange)="userService.save()"></cde-inline-edit>
-            </dd>
-            <dt class="col-sm-3">Editor for:</dt>
-            <dd id="editorFor" class="col-sm-9">{{user.orgEditor.join(', ')}}</dd>
+            <ng-container *ngIf="isSiteAdmin(user)">
+                <dt class="col-sm-3">Quota:</dt>
+                <dd id="quota" class="col-sm-9">
+                    {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="user.quota"> MB</span>
+                </dd>
+                <dt class="col-sm-3">E-mail:</dt>
+                <dd id="user_email" class="col-sm-9">
+                    <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
+                                     (modelChange)="userService.save()"></cde-inline-edit>
+                </dd>
+            </ng-container>
+            <ng-container *ngIf="user.orgEditor.length">
+                <dt class="col-sm-3">Editor for:</dt>
+                <dd id="editorFor" class="col-sm-9">{{user.orgEditor.join(', ')}}</dd>
+            </ng-container>
             <dt class="col-sm-3">Curator for:</dt>
             <dd id="curatorFor" class="col-sm-9">{{user.orgCurator.join(', ')}}</dd>
             <dt class="col-sm-3">Admin for:</dt>
