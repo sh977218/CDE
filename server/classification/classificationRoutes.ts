@@ -6,7 +6,9 @@ import {
     addOrgClassification,
     deleteOrgClassification, reclassifyOrgClassification, renameOrgClassification, updateOrgClassification
 } from 'server/classification/orgClassificationSvc';
-import { addClassification, classifyEltsInBoard, eltClassification, removeClassification } from 'server/classification/classificationNode';
+import {
+    addClassification, classifyEltsInBoard, eltClassification, removeClassification
+} from 'server/classification/classificationNode';
 import { daoItem as formDAO } from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
@@ -14,7 +16,7 @@ import { jobStatus } from 'server/system/mongo-data';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { Cb1, ClassificationClassifier, User } from 'shared/models.model';
 
-const { check } = require('express-validator');
+const {check} = require('express-validator');
 require('express-async-errors');
 
 const isValidBody = [
@@ -24,12 +26,14 @@ const isValidBody = [
     validateBody
 ];
 
-export function module(roleConfig: {allowClassify: RequestHandler}) {
+export function module(roleConfig: { allowClassify: RequestHandler }) {
     const router = Router();
 
     router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
         addClassification(req.body, cdeDAO, handleError({req, res}, result => {
-            if (result === 'Classification Already Exists') { return res.status(409).send(result); }
+            if (result === 'Classification Already Exists') {
+                return res.status(409).send(result);
+            }
             res.send(result);
             addToClassifAudit({
                 date: new Date(),
@@ -67,7 +71,9 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
         addClassification(req.body, formDAO, handleError({req, res}, result => {
             /* istanbul ignore if */
             if (result === 'Classification Already Exists') {
-                return res.status(409).send(result); } else { res.send(result);
+                return res.status(409).send(result);
+            } else {
+                res.send(result);
             }
             addToClassifAudit({
                 date: new Date(), user: {
@@ -115,7 +121,8 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 return res.status(409).send('Error - delete classification is in processing, try again later.');
             }
             deleteOrgClassification(req.user, deleteClassification, settings,
-                handleErrorVoid({req, res}, () => {}));
+                handleErrorVoid({req, res}, () => {
+                }));
             res.status(202).send('Deleting in progress.');
         }));
     });
@@ -135,10 +142,11 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 if (j) {
                     return res.status(409).send('Error - rename classification is in processing, try again later.');
                 }
-                renameOrgClassification(req.user, newClassification, settings, handleErrorVoid({req, res}, () => {}));
+                renameOrgClassification(req.user, newClassification, settings, handleErrorVoid({req, res}, () => {
+                }));
                 res.status(202).send('Renaming in progress.');
             }));
-    });
+        });
 
     // add org classification
     router.put('/addOrgClassification/', roleConfig.allowClassify,
@@ -154,7 +162,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 addOrgClassification(newClassification, handleError({req, res},
                     () => res.send('Classification added.')));
             }));
-    });
+        });
 
     // reclassify org classification
     router.post('/reclassifyOrgClassification', roleConfig.allowClassify,
@@ -176,7 +184,7 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                     }));
                 res.status(202).send('Reclassifying in progress.');
             }));
-    });
+        });
 
     // update org classification
     router.post('/updateOrgClassification', roleConfig.allowClassify, async (req, res) => {
@@ -187,15 +195,17 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
             res.status(404).send();
             return;
         }
-        organization.classifications = await updateOrgClassification(orgName);
-        await organization.save();
-        res.send(organization);
+        const updatedClassifications = await updateOrgClassification(orgName);
+        organization.classifications = updatedClassifications;
+        const savedOrg = await organization.save();
+        const savedOrgObj = savedOrg.toObject();
+        res.send(savedOrgObj);
     });
 
 
-    const bulkClassifyCdesStatus: Dictionary<{numberProcessed: number, numberTotal: number}> = {};
+    const bulkClassifyCdesStatus: Dictionary<{ numberProcessed: number, numberTotal: number }> = {};
 
-    function bulkClassifyCdes(user: User, eltId: string, elements: {id: string, version: string}[],
+    function bulkClassifyCdes(user: User, eltId: string, elements: { id: string, version: string }[],
                               body: ClassificationClassifier, cb?: Cb1<Error | null>) {
         if (!bulkClassifyCdesStatus[user.username + eltId]) {
             bulkClassifyCdesStatus[user.username + eltId] = {
@@ -215,7 +225,9 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
                 doneOneElement();
             });
         }, (errs) => {
-            if (cb) { cb(errs === undefined ? null : errs); }
+            if (cb) {
+                cb(errs === undefined ? null : errs);
+            }
         });
     }
 
@@ -229,25 +241,25 @@ export function module(roleConfig: {allowClassify: RequestHandler}) {
         check('categories').isArray(),
         validateBody,
         (req, res) => {
-        const elements = req.body.elements;
-        if (elements.length <= 50) {
-            bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleErrorVoid({req, res}, () =>
-                res.send('Done')
-            ));
-        } else {
-            res.status(202).send('Processing');
-            bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
-        }
-        addToClassifAudit({
-            date: new Date(),
-            user: {
-                username: req.user.username
-            },
-            elements,
-            action: 'add',
-            path: [req.body.orgName].concat(req.body.categories)
+            const elements = req.body.elements;
+            if (elements.length <= 50) {
+                bulkClassifyCdes(req.user, req.body.eltId, elements, req.body, handleErrorVoid({req, res}, () =>
+                    res.send('Done')
+                ));
+            } else {
+                res.status(202).send('Processing');
+                bulkClassifyCdes(req.user, req.body.eltId, elements, req.body);
+            }
+            addToClassifAudit({
+                date: new Date(),
+                user: {
+                    username: req.user.username
+                },
+                elements,
+                action: 'add',
+                path: [req.body.orgName].concat(req.body.categories)
+            });
         });
-    });
 
     router.get('/bulkClassifyCdeStatus/:eltId', (req, res) => {
         const result = bulkClassifyCdesStatus[req.user.username + req.params.eltId];

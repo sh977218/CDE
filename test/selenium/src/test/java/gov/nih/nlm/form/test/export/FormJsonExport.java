@@ -34,13 +34,15 @@ public class FormJsonExport extends NlmCdeBaseTest {
         hangon(1);
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
         checkAlert("Export downloaded.");
-        hangon(10);
+        String fileName = downloadFolder + "/m1_5_1HBYl.json";
+        waitForDownload(fileName);
+
         try {
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/m1_5_1HBYl.json")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s1 : expected) {
                 if (!actual.contains(s1)) {
                     Files.copy(
-                            Paths.get(downloadFolder + "/m1_5_1HBYl.json"),
+                            Paths.get(fileName),
                             Paths.get(tempFolder + "/FormJsonExport-m1_5_1HBYl.json"),
                             REPLACE_EXISTING
                     );

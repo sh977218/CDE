@@ -10,7 +10,7 @@ public class ReclassifyForm extends NlmCdeBaseTest {
     @Test
     public void reclassifyForm() {
         String oldClassification = "OldFormClassification";
-        String newClassification = "NewFormClassification";
+        String newClassification = "OldClassification";
         String formName = "Frontal Systems Behavioral Scale (FrSBe)";
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();

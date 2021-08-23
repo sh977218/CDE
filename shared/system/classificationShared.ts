@@ -222,30 +222,49 @@ interface Element {
 }
 
 export interface OrgClassification {
-    _id: ObjectId;
+    stewardOrg: {
+        name: string;
+    }
     elements: Element [];
 }
 
+export interface OrgClassificationAggregate {
+    _id: {
+        name: ObjectId;
+        elements: Element [];
+    }
+}
+
 function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
-    return _sortBy(_uniqWith(e1.concat(e2), (arrVal: Element, othVal: Element) => {
+    const duplicatedElements: Element[] = e1.concat(e2);
+    const uniqElements = _uniqWith(duplicatedElements, (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
         } else {
             return false;
         }
-    }), 'name');
+    });
+    const sortElements = _sortBy(uniqElements, 'name');
+    return sortElements;
 }
 
-export function mergeOrgClassifications(c1: OrgClassification[], c2: OrgClassification[]): Element[] {
-    return _sortBy(_uniqWith(c1.concat(c2), (arrVal: OrgClassification, othVal: OrgClassification) => {
-        if (arrVal._id === othVal._id) {
-            othVal.elements = mergeElements(arrVal.elements, othVal.elements);
-            return true;
-        } else {
-            return false;
-        }
-    }), '_id')[0].elements[0].elements;
+export function mergeOrgClassificationAggregate(c1: OrgClassificationAggregate[] = [], c2: OrgClassificationAggregate[] = []) {
+    const e1: Element[] = [];
+    const e2: Element[] = [];
+    c1.forEach(c => {
+        c._id.elements.forEach(e => e1.push({
+            name: e.name,
+            elements: e.elements
+        }));
+    })
+    c2.forEach(c => {
+        c._id.elements.forEach(e => e2.push({
+            name: e.name,
+            elements: e.elements
+        }));
+    })
+    return mergeElements(e1, e2);
 }
 
 function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {

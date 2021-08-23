@@ -48,21 +48,22 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
                 "\"Movement Disorder Society - Unified Parkinson's Disease Rating Scale (MDS UPDRS) - light headedness on stand score\",\"LIGHT HEADEDNESS ON STANDING\",\"Value List\",\"0; 1; 2; 3; 4\",\"5\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09971 v3; NINDS Variable Name: MDSUPDRSLiteHeadStndngScore\"",
                 "\"Unified Parkinson's Disease Rating Scale (UPDRS) - symptomatic orthostasis indicator\",\"Does the patient have symptomatic orthostasis?\",\"Value List\",\"0; 1\",\"2\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C09927 v3; NINDS Variable Name: UPDRSSymOrtInd\"",
                 "1; 0.9; 0.8; 0.7; 0.6; 0.5; 0.4; 0.3; 0.2; 0.1; 0"
-        };
-        String fileLoc = downloadFolder + "/SearchExport.csv";
-        hangon(10);
+        };         
+        String fileName = downloadFolder + "/SearchExport.csv";
+        waitForDownload(fileName);
+;
         try {
-            String actual = new String(Files.readAllBytes(Paths.get(fileLoc)));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(
-                            Paths.get(fileLoc),
+                            Paths.get(fileName),
                             Paths.get(tempFolder + "/ExportTest-searchExport.csv"), REPLACE_EXISTING);
                     Assert.fail("missing line in export : " + s);
                 }
             }
         } catch (IOException e) {
-            Assert.fail("Exception reading " + fileLoc + " --- " + e);
+            Assert.fail("Exception reading " + fileName + " --- " + e);
         }
         clickElement(By.id("tableViewSettings"));
         clickElement(By.id("uom"));
