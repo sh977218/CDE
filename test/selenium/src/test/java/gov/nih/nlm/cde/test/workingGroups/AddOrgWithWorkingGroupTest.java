@@ -11,8 +11,8 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         String orgWG = "Test Working Group 2";
 
         // Create some classifications for working group
-        String classification = "DISEASE";
-        String subClassification = "Phase II Lung Cancer";
+        String classification = "ABTC";
+        String subClassification = "ABTC 0904";
         mustBeLoggedInAs(ctepEditor_username, password);
         gotoClassificationMgt();
         nonNativeSelect("", "Start by choosing your Organization", orgWG);

@@ -8,12 +8,11 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
     @Test
     public void cdeAddClassification() {
         String cdeName = "Surgical Procedure Other Anatomic Site Performed Indicator";
-        String[] classificationArray1 = new String[]{"Disease", "Myasthenia Gravis", "Classification", "Supplemental"};
-        String[] classificationArray2 = new String[]{"Domain", "Treatment/Intervention Data", "Therapies"};
-
-        String[] classificationArray3 = new String[]{"Disease"};
-        String[] classificationArray4 = new String[]{"Disease", "Myasthenia Gravis"};
-        String[] classificationArray5 = new String[]{"Disease", "Myasthenia Gravis", "Classification"};
+        String[] classificationArray1 = new String[]{"Disease", "Amyotrophic Lateral Sclerosis", "Classification", "Core"};
+        String[] classificationArray2 = new String[]{"Domain", "Additional Instruments", "Additional Instruments"};
+        String[] classificationArray3 = new String[]{"Domain"};
+        String[] classificationArray4 = new String[]{"Domain", "Assessments and Examinations"};
+        String[] classificationArray5 = new String[]{"Domain", "Assessments and Examinations", "Hospital/Care Management"};
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
@@ -23,15 +22,14 @@ public class AddDeleteOrgClassificationTest extends NlmCdeBaseTest {
 
         addClassificationByTree("NINDS", classificationArray2);
 
-
         addExistingClassification("NINDS", classificationArray3);
-        addExistingClassification("NINDS", classificationArray4);
-        addExistingClassification("NINDS", classificationArray5);
+        addClassificationByTree("NINDS", classificationArray4);
+        addClassificationByTree("NINDS", classificationArray5);
         addExistingClassification("NINDS", classificationArray1);
 
-        openAuditClassification("NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+        openAuditClassification("NINDS > Disease > Amyotrophic Lateral Sclerosis > Classification > Core");
         textPresent(nlm_username);
         textPresent("Surgical Procedure Other Anatomic Site Performed Indicator");
-        textPresent("add NINDS > Disease > Myasthenia Gravis > Classification > Supplemental");
+        textPresent("add NINDS > Disease > Amyotrophic Lateral Sclerosis > Classification > Core");
     }
 }

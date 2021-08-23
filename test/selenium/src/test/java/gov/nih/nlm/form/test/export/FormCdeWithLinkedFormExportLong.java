@@ -20,6 +20,8 @@ public class FormCdeWithLinkedFormExportLong extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
         checkAlert("Export downloaded.");
+        String fileName = downloadFolder + "/FormCdes-QkX81HrFx.csv";
+        waitForDownload(fileName);
 
         String[] expected = {
             "\"Baltimore-Washington Cooperative Young Stroke Study (BWCYSS) - standard sub type\",\"\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C14228 v3; NINDS Variable Name: BWCYSSStandardSubTyp\",\"QkX81HrFx\","
@@ -27,7 +29,7 @@ public class FormCdeWithLinkedFormExportLong extends NlmCdeBaseTest {
 
         try {
             hangon(2);
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-QkX81HrFx.csv")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(

@@ -1419,21 +1419,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void _addClassificationByTree(String org, String[] classificationArray) {
         _addClassificationByTree(org, classificationArray, "All CDEs Classified.");
-
     }
 
-    protected void classifyToggle(String[] names) {
-        String xmlStr = "";
-        for (int i = 0; i < names.length; i++)
-            xmlStr += "//tree-node[contains(.,'" + names[i] + "')]";
-        clickElement(By.xpath(xmlStr + "//*[contains(@class,'toggle-children-wrapper')]"));
+    protected void classifyToggle(String[] classificationArray) {
+        String id = String.join(",", classificationArray);
+        clickElement(By.xpath("//*[@id='" + id + "']/../../preceding-sibling::tree-node-expander//span"));
     }
 
     protected void classifySubmit(String[] classificationArray, String alertText) {
-        String xmlStr = "";
-        for (int i = 0; i < classificationArray.length; i++)
-            xmlStr += "//tree-node[contains(.,'" + classificationArray[i] + "')]";
-        clickElement(By.xpath(xmlStr + "//button[contains(.,'Classify')]"));
+        String id = String.join(",", classificationArray);
+        clickElement(By.xpath("//*[@id='" + id + "']/../button[contains(.,'Classify')]"));
         if (alertText != null) {
             checkAlert(alertText);
         }
@@ -1448,8 +1443,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
         }
         classifySubmit(classificationArray, alertText);
-        for (int i = 1; i < classificationArray.length; i++)
-            textPresent(classificationArray[i], By.xpath("//*[@id='classificationOrg-" + org + "']"));
     }
 
     protected void _addClassificationByTree(String org, String[] classificationArray, String alertText) {

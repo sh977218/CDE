@@ -21,7 +21,8 @@ public class FormCdeExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
         checkAlert("Export downloaded");
-        hangon(10);
+        String fileName = downloadFolder + "/FormCdes-Xy910Dz6f.csv";
+        waitForDownload(fileName);
 
         String[] expected = {
                 "\"Traumatic brain injury symptom other text\",\"Other, Specify:\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18400 v3; NINDS Variable Name: TBISympOthrTxt\",",
@@ -30,7 +31,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
         };
         try {
             hangon(2);
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-Xy910Dz6f.csv")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(

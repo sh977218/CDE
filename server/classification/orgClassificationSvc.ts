@@ -7,11 +7,13 @@ import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { elasticsearch } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
-import { CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
+import {
+    CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User
+} from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import {
-    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf, mergeOrgClassifications,
-    OrgClassification, renameCategory,
+    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf,
+    mergeOrgClassificationAggregate, OrgClassificationAggregate, renameCategory,
 } from 'shared/system/classificationShared';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
@@ -320,12 +322,13 @@ export async function updateOrgClassification(orgName: string): Promise<any[]> {
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
         {$unwind: '$classification'},
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
-        {$group: {_id: '$classification.stewardOrg.name', elements: {$addToSet: '$classification'}}}
+        {$group: {_id: {name: '$classification.stewardOrg.name', elements: '$classification.elements'}}}
     ];
-    const cdeClassifications: OrgClassification[] = await dataElementModel.aggregate(aggregate);
-    const formClassifications: OrgClassification[] = await formModel.aggregate(aggregate);
-    return mergeOrgClassifications(cdeClassifications, formClassifications);
+    const cdeClassificationsAggregate: OrgClassificationAggregate[] = await dataElementModel.aggregate(aggregate);
+    const formClassificationsAggregate: OrgClassificationAggregate[] = await formModel.aggregate(aggregate);
+    return mergeOrgClassificationAggregate(cdeClassificationsAggregate, formClassificationsAggregate);
 }
+
 
 function defaultArray<T>(arr?: T[]): T[] {
     return arr || [];

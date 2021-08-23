@@ -1,6 +1,7 @@
 package gov.nih.nlm.cde.test.classification;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class DeleteOrgClassificationTest extends NlmCdeBaseTest {
@@ -10,8 +11,9 @@ public class DeleteOrgClassificationTest extends NlmCdeBaseTest {
         String org = "NINDS";
         mustBeLoggedInAs(ninds_username, password);
         gotoClassificationMgt();
-        deleteOrgClassification(org, new String[]{"_a", "_a_a"});
-        textNotPresent("_a_a_a");
+        textPresent("Therapies", By.xpath("//*[@id='Domain,Treatment/Intervention Data']/../../.."));
+        deleteOrgClassification(org, new String[]{"Domain", "Treatment/Intervention Data","Therapies"});
+        textNotPresent("Therapies", By.xpath("//*[@id='Domain,Treatment/Intervention Data']/../../.."));
     }
 
 }

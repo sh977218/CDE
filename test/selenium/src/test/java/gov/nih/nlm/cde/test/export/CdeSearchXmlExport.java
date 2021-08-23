@@ -21,7 +21,9 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("xmlExport"));
         textPresent("Export downloaded.");
-        hangon(10);
+        String fileName = downloadFolder + "/SearchExport_XML.zip";
+        waitForDownload(fileName);
+;
         String[] expected = {
                 "<definitions><tags>Health",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",
@@ -31,7 +33,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
 
         try {
             hangon(2);
-            ZipFile zipFile = new ZipFile(downloadFolder + "/SearchExport_XML.zip");
+            ZipFile zipFile = new ZipFile(fileName);
             zipFile.extractFile("1dVwh5_NWd9.xml", downloadFolder + "/1dVwh5_NWd9.xml");
             String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/1dVwh5_NWd9.xml/1dVwh5_NWd9.xml")));
             for (String s : expected) {

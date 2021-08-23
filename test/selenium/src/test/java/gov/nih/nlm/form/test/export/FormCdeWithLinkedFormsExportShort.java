@@ -21,7 +21,9 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
         checkAlert("Export downloaded.");
-        hangon(10);
+        String fileName = downloadFolder + "/FormCdes-myoQ8JBHFe.csv";
+        waitForDownload(fileName);
+
         String[] expected = {
                 "\"Surgical or therapeutic procedure other text\",\"Other, specify\",\"Text\",\"\",\"NINDS\",\"NINDS\",\"Qualified\",\"NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH\"",
                 "myoQ8JBHFe", "XkYXUyHStg", "my57Uyrrtg", "7ymaXyrHYl", "7k0Q1rHYe", "mkDmUyBBFe"
@@ -29,7 +31,7 @@ public class FormCdeWithLinkedFormsExportShort extends NlmCdeBaseTest {
 
         try {
             hangon(2);
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/FormCdes-myoQ8JBHFe.csv")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(

@@ -23,7 +23,9 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         clickElement(By.id("export"));
         clickElement(By.id("jsonExport"));
         textPresent("Export downloaded.");
-        hangon(10);
+        String fileName = downloadFolder + "/SearchExport.json";
+        waitForDownload(fileName);
+
         String[] expected = {
                 "\"tinyId\":\"03UmDCNQ4x7\",\"imported\":\"2015-09-21T18:20:26.298Z\",\"source\":\"NINDS\",\"version\":\"3\"",
                 "\"referenceDocuments\":[],\"attachments\":[]",
@@ -31,7 +33,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         };
 
         try {
-            String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/SearchExport.json")));
+            String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             for (String s : expected) {
                 if (!actual.contains(s)) {
                     Files.copy(
