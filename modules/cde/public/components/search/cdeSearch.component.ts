@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
@@ -18,8 +18,6 @@ import { DataElement } from 'shared/de/dataElement.model';
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class CdeSearchComponent extends SearchBaseComponent {
-    @Input() addMode?: string;
-    @Input() embedded = false;
     @Output() add = new EventEmitter<DataElement>();
     module: 'cde'|'form' = 'cde';
     pinComponent = PinBoardModalComponent;

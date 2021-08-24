@@ -11,9 +11,9 @@ import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
+import { findSteward, removeCategory } from 'shared/classification/classificationShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
-import { findSteward, removeCategory } from 'shared/system/classificationShared';
 
 @Component({
     selector: 'cde-create-data-element',

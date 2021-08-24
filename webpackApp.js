@@ -1,4 +1,4 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const {createHash} = require('crypto');
 const FileListPlugin = require('file-list-plugin');
@@ -6,7 +6,7 @@ const {readFileSync} = require('fs');
 const {keys} = require('lodash');
 const {resolve} = require('path');
 const {DefinePlugin} = require('webpack');
-const {htmlServedUri} = require('./shared/serverConstants');
+const {htmlServedUri} = require('shared/node/serverConstants');
 
 const APP_DIR = __dirname;
 
@@ -29,12 +29,15 @@ module.exports = {
         chunkFilename: 'cde-[chunkhash].js',
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/app'], {root: process.cwd()}),
+        new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
             patterns: [
                 {from: 'modules/_app/assets/'},
-                {from: 'node_modules/material-design-lite/material.min.js', transform: (content/*Buffer*/) => content.toString()
-                        .replace('//# sourceMappingURL=material.min.js.map', '')},
+                {
+                    from: 'node_modules/material-design-lite/material.min.js',
+                    transform: (content/*Buffer*/) => content.toString()
+                        .replace('//# sourceMappingURL=material.min.js.map', '')
+                },
                 {from: 'node_modules/material-design-lite/material.min.css'}
             ]
         }),

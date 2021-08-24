@@ -15,7 +15,7 @@ import { CdeId, Classification, Definition, Designation, Item, Property, Referen
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { addFile, FileCreateInfo } from 'server/system/mongo-data';
 import { Readable } from 'stream';
-import { idComparator, referenceDocumentComparator } from 'shared/system/util';
+import { idComparator, referenceDocumentComparator } from 'shared/util';
 
 require('chromedriver');
 

@@ -8,13 +8,13 @@ import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { elasticsearch } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import {
+    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf,
+    mergeOrgClassificationAggregate, OrgClassificationAggregate, renameCategory,
+} from 'shared/classification/classificationShared';
+import {
     CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import {
-    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf,
-    mergeOrgClassificationAggregate, OrgClassificationAggregate, renameCategory,
-} from 'shared/system/classificationShared';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {

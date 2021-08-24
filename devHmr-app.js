@@ -16,7 +16,7 @@ switch (process.argv[2]) {
 
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
-import { htmlServedUri } from './shared/serverConstants';
+import { htmlServedUri } from 'shared/node/serverConstants';
 
 const cfg = require('./modules/_app/webpackApp.dev.hmr');
 const options = {

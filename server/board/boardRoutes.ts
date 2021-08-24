@@ -13,7 +13,7 @@ import { registerDao } from 'server/system/moduleDaoManager';
 import { config } from 'server/system/parseConfig';
 import { Board, BoardPin, ItemElastic, ModuleItem } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { stripBsonIds } from 'shared/system/exportShared';
+import { stripBsonIds } from 'shared/exportShared';
 
 const js2xml = require('js2xmlparser');
 const {check} = require('express-validator');

@@ -4,7 +4,7 @@ import { Params } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { CdeForm } from 'shared/form/form.model';
 import { ITEM_MAP } from 'shared/item';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class FormViewService {

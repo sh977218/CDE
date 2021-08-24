@@ -15,8 +15,8 @@ import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminIt
 import { RequestWithItem } from 'server/system/authorization';
 import { addCdeToViewHistory, eltAsElastic, sortArrayByArray } from 'server/system/mongo-data';
 import { PermissibleValue, User } from 'shared/models.model';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
-import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { canEditCuratedItem } from 'shared/security/authorizationShared';
+import { stripBsonIdsElt } from 'shared/exportShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { moreLike } from 'server/cde/elastic.moreLike';

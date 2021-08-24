@@ -35,7 +35,7 @@ export class DataElement extends Elt {
     }[] = [];
     objectClass: Concepts = new Concepts(); // mutable
     property: Concepts = new Concepts(); // mutable
-    valueDomain: ValueDomain = valueDomain() as ValueDomain; // mutable
+    valueDomain: ValueDomain = valueDomain(); // mutable
     views?: number;
 
     static getEltUrl(elt: Elt) {
@@ -47,9 +47,6 @@ export class DataElement extends Elt {
 
         if (!Array.isArray(de.derivationRules)) {
             de.derivationRules = [];
-        }
-        if (!de.valueDomain) {
-            de.valueDomain = valueDomain() as ValueDomain;
         }
         fixDataElement(de);
         if (de.valueDomain.datatype === 'Date') {
@@ -64,25 +61,29 @@ export class DataElement extends Elt {
     }
 }
 
-export class DataElementElastic extends DataElement { // all volatile
+export interface DataElementElastic extends DataElement { // all volatile
     [key: string]: any; // used for highlighting
     flatClassifications?: string[];
     highlight?: any;
     linkedForms?: string;
     primaryDefinitionCopy?: string;
-    primaryNameCopy!: string;
+    primaryNameCopy: string;
     primaryNameSuggest?: string;
-    score!: number;
-    valueDomain!: ValueDomain & {nbOfPVs: number};
+    score: number;
+    valueDomain: ValueDomain & {nbOfPVs: number};
 }
 
 type Precision = 'Year' | 'Month' | 'Day' | 'Hour' | 'Minute' | 'Second';
 export class QuestionTypeDate {
-    precision?: Precision = QuestionTypeDate.PRECISION_DEFAULT;
+    precision?: Precision;
     format?: string;
 
     static PRECISION_ENUM = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second'];
     static PRECISION_DEFAULT: Precision = 'Day';
+
+    constructor() {
+        this.precision = QuestionTypeDate.PRECISION_DEFAULT;
+    }
 }
 
 export class QuestionTypeDynamicCodeList {
@@ -231,11 +232,12 @@ export type ValueDomainValueList = DatatypeContainerValueList & ValueDomainPart 
     permissibleValues: PermissibleValue[];
 };
 
-export function valueDomain(): Partial<ValueDomain> {
+export function valueDomain(): ValueDomain {
     return {
         datatype: 'Text',
-        identifiers: [],
-        ids: [],
+        identifiers: [] as CdeId[],
+        ids: [] as CdeId[],
+        datatypeText: {},
     };
 }
 

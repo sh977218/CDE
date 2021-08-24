@@ -8,7 +8,7 @@ import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Cb, ClassificationClassified } from 'shared/models.model';
-import { canClassify } from 'shared/system/authorizationShared';
+import { canClassify } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-cde-classification',

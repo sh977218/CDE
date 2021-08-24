@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
-import { orderedList } from 'shared/system/regStatusShared';
+import { orderedList } from 'shared/regStatusShared';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;

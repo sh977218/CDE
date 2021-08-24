@@ -6,7 +6,7 @@ import { Dictionary } from 'async';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { curry } from 'shared/composition';
 import { Board, Comment, Item } from 'shared/models.model';
-import { canCommentManage } from 'shared/system/authorizationShared';
+import { canCommentManage } from 'shared/security/authorizationShared';
 
 const tabMap: Dictionary<string> = {
     preview_tab: 'preview',

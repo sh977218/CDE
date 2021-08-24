@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 @Component({
     templateUrl: './propertiesManagement.component.html'

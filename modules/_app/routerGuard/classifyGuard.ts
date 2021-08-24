@@ -9,7 +9,7 @@ import {
     RouterStateSnapshot,
 } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { canClassify, isOrgCurator } from 'shared/system/authorizationShared';
+import { canClassify, isOrgCurator } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class ClassifyGuard implements CanActivate, CanActivateChild, CanLoad {

@@ -9,7 +9,7 @@ import {
     RouterStateSnapshot,
 } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { isOrgCurator } from 'shared/system/authorizationShared';
+import { isOrgCurator } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class OrgCuratorGuard implements CanActivate, CanActivateChild, CanLoad {

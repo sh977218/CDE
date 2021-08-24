@@ -3,7 +3,7 @@ import { BATCHLOADER } from 'ingester/shared/utility';
 var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdeDiff = require('../../server/cde/cdediff');
-import { sortClassification } from 'shared/system/classificationShared';
+import { sortClassification } from 'shared/classification/classificationShared';
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.dataElementModel;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;

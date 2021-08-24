@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
 import { empty, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 @Injectable()
 export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {

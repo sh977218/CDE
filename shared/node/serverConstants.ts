@@ -1,4 +1,4 @@
-import { capString } from 'shared/system/util';
+import { capString } from 'shared/util';
 
 export const htmlServedUri: string[] = [
     '/',

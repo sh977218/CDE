@@ -5,7 +5,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import * as _noop from 'lodash/noop';
 import { Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
-import { statusList } from 'shared/system/regStatusShared';
+import { statusList } from 'shared/regStatusShared';
 
 @Component({
     selector: 'cde-registration',

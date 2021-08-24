@@ -5,7 +5,7 @@ import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
 import { Cb } from 'shared/models.model';
-import { orderedList } from 'shared/system/regStatusShared';
+import { orderedList } from 'shared/regStatusShared';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;

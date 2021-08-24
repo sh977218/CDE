@@ -7,10 +7,10 @@ import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
+import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege, isSiteAdmin, canViewComment
-} from 'shared/system/authorizationShared';
-import { Organization } from 'shared/system/organization';
+} from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 
 @Injectable()

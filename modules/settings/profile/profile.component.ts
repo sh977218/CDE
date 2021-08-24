@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { User } from 'shared/models.model';
-import { isSiteAdmin } from 'shared/system/authorizationShared';
+import { isSiteAdmin } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-profile',

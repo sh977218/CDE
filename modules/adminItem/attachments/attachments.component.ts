@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Attachment, Item } from 'shared/models.model';
-import { hasRole } from 'shared/system/authorizationShared';
 
 @Component({
     selector: 'cde-attachments[elt]',

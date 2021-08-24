@@ -12,16 +12,20 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: [/node_modules/, /\.module\.ngfactory\.js$/],
-                loader: 'babel-loader',
-                query: {
-                    presets: ['@babel/preset-env']
-                }
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    },
+                },
             },
             {
                 test: require.resolve('jquery'),
                 use: [{
                     loader: 'expose-loader',
-                    options: '$'
+                    options: {
+                        exposes: ['$'],
+                    }
                 }]
             },
             {
@@ -47,7 +51,7 @@ module.exports = {
                 use: ['to-string-loader', 'css-loader', 'sass-loader']
             },
             {test: /\.html$/, use: [{loader: 'html-loader', options: {attrs: ['img:src', 'source:srcset'], minimize: false}}]},
-            {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: '8192'}}]},
+            {test: /\.(eot|png|svg|ttf|webp|woff|woff2)$/, use: [{loader: 'url-loader', options: {limit: 8192, esModule: false}}]},
             {test: /[\/\\]@angular[\/\\].+\.js$/, parser: {system: true}}
         ]
     },

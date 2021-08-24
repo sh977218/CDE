@@ -5,7 +5,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { UserSearchSettings } from 'shared/models.model';
-import { isOrgAuthority } from 'shared/system/authorizationShared';
+import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-search-preferences',

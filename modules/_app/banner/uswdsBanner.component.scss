@@ -225,6 +225,14 @@ button:not([disabled]):focus, input:not([disabled]):focus, select:not([disabled]
   width: 2.5rem;
 }
 
+.icon-dot-gov {
+  content: url(../../../node_modules/uswds/src/img/icon-dot-gov.svg);
+}
+
+.icon-https {
+  content: url(../../../node_modules/uswds/src/img/icon-https.svg);
+}
+
 .usa-media-block__body {
   flex: 1 1 0;
 }
@@ -433,6 +441,7 @@ img {
   }
 
   .usa-banner__header-flag {
+    content: url(../../../node_modules/uswds/src/img/us_flag_small.png);
     margin-right: .5rem;
     padding-top: 0;
   }

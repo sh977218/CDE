@@ -49,8 +49,7 @@ import {
 } from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
 import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
-import { deepCopy } from 'shared/system/util';
-import { isArray } from 'util';
+import { deepCopy } from 'shared/util';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
     return resource.resourceType === 'Observation';
@@ -386,10 +385,10 @@ export class CdeFhirService {
         return self;
     }
 
-    readResourceByCode(self: ResourceTreeResource): Promise<ResourceTree|undefined> {
+    readResourceByCode(self: ResourceTreeResource): Promise<ResourceTree|void> {
         switch (self.resourceType) {
             case 'Observation':
-                return new Promise<ResourceTree|undefined>((resolve, reject) => {
+                return new Promise<ResourceTree|void>((resolve, reject) => {
                     let resource: FhirObservation|FhirQuestionnaireResponse;
                     let codes = getIds(self.crossReference).filter(id => id.source === 'LOINC');
                     if (codes.length === 0) {
@@ -548,7 +547,7 @@ export class CdeFhirService {
                 let categories: string[] = [];
                 async_forEach(codes, (code: string, doneOne: Cb) => {
                     this.getObservationCategory('LOINC', code, cats => {
-                        if (isArray(cats)) {
+                        if (Array.isArray(cats)) {
                             categories = categories.concat(cats);
                         }
                         doneOne();

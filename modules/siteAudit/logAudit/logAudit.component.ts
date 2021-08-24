@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Subscription } from 'rxjs';
-import { AuditLog, AuditLogResponse } from 'shared/system/audit';
+import { AuditLog, AuditLogResponse } from 'shared/log/audit';
 
 @Component({
     selector: 'cde-log-audit',

@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { isOrgAuthority } from 'shared/system/authorizationShared';
+import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class OrgAuthorityGuard implements CanActivate, CanActivateChild, CanLoad {

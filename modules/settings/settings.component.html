@@ -1,7 +1,6 @@
 <div class="container-fluid">
-    <mat-sidenav-container class="settingsContainer">
-        <mat-sidenav [opened]="!isMobile" #drawer class="example-sidenav" mode="side"
-                     [fixedInViewport]="false">
+    <mat-sidenav-container autosize class="settingsContainer">
+        <mat-sidenav [opened]="!isMobile" #drawer mode="side" [fixedInViewport]="false">
             <mat-list (click)="scrollTop()">
                 <mat-list-item id="profile" [routerLinkActive]="['isActive']" routerLink="profile">
                     Profile

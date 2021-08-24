@@ -27,6 +27,12 @@
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true
   },
+  "include": [
+    "cde.d.ts",
+    "modules/_app/main.ts",
+    "modules/index.d.ts",
+    "shared"
+  ],
   "exclude": [
     "app.ts",
     "build",
@@ -44,6 +50,7 @@
     "protractor",
     "scripts",
     "server",
+    "shared/node",
     "test",
     "webpack*"
   ]

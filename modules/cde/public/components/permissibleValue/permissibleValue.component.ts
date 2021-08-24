@@ -342,11 +342,13 @@ export class PermissibleValueComponent {
                         () => this.alert.addAlert('danger', 'Error query UMLS.')
                     );
                 } else {
-                    const umlsResult = await withRetry(() => this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise());
+                    const umlsResult = await withRetry(() => this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
+                        .toPromise());
                     if (umlsResult?.result?.results?.length > 0) {
                         const umlsCui = umlsResult.result.results[0].ui;
                         try {
-                            const srcResult = await withRetry(() => this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise());
+                            const srcResult = await withRetry(() => this.http
+                                .get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise());
                             if (srcResult.result.length > 0) {
                                 this.SOURCES[src].codes[code] = {
                                     code: srcResult.result[0].code.substr(srcResult.result[0].code.lastIndexOf('/') + 1),

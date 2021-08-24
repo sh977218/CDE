@@ -1,4 +1,4 @@
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 export function validateOrganization(o: Organization) {
     if (!o.cdeStatusValidationRules) {

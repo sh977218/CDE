@@ -1,7 +1,7 @@
+import { ElasticCondition, getAllowedStatuses, regStatusFilter, termRegStatus } from 'server/system/elastic';
 import { User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { isOrgAuthority } from 'shared/system/authorizationShared';
-import { ElasticCondition, getAllowedStatuses, regStatusFilter, termRegStatus } from 'server/system/elastic';
+import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 export function buildElasticSearchQuery(user: User, settings: SearchSettingsElastic) {
     function escapeRegExp(str: string) {

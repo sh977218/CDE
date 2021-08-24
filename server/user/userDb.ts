@@ -3,7 +3,6 @@ import { Document, Model, Query } from 'mongoose';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server/system/parseConfig';
-import { hasRole } from 'shared/system/authorizationShared';
 import { CbError, CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
 
 addStringtype(mongoose);

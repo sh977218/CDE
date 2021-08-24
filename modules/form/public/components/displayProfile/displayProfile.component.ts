@@ -7,7 +7,7 @@ import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirP
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem, DateType } from 'shared/models.model';
-import { deepCopy } from 'shared/system/util';
+import { deepCopy } from 'shared/util';
 import { interruptEvent } from 'non-core/browser';
 
 interface DisplayProfileVM {

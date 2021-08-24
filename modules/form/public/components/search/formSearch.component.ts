@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ComponentFactoryResolver, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AlertService } from 'alert/alert.service';
@@ -19,8 +19,6 @@ import { MatDialog } from '@angular/material/dialog';
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class FormSearchComponent extends SearchBaseComponent {
-    @Input() addMode = '';
-    @Input() embedded = false;
     @Output() add = new EventEmitter<CdeForm>();
 
     constructor(

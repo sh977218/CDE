@@ -34,7 +34,7 @@ import { registerItemDao } from 'server/system/itemDaoManager';
 import { registerDao } from 'server/system/moduleDaoManager';
 import { config } from 'server/system/parseConfig';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { stripBsonIdsElt } from 'shared/exportShared';
 
 const canEditMiddlewareDe = canEditMiddleware(daoItem);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(daoItem);

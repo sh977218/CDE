@@ -6,7 +6,7 @@
 //   <td class="previousValue">{{d.previousValue}}</td>
 // </tr>
 import * as _isEmpty from 'lodash/isEmpty';
-import { capCase, decamelize } from 'shared/system/util';
+import { capCase, decamelize } from 'shared/util';
 import { EltLogDiff, EltLogDiffAmend } from 'shared/models.model';
 
 export function ignoredDiff(d: EltLogDiff): boolean {

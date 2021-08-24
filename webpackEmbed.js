@@ -1,4 +1,4 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {resolve} = require('path');
 const {DefinePlugin} = require('webpack');
 
@@ -14,7 +14,7 @@ module.exports = {
         filename: '[name].js'
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/embed'], {root: process.cwd()}),
+        new CleanWebpackPlugin(),
         new DefinePlugin({
             APPLICATION_NAME: '"CDE Search Embed"',
         }),

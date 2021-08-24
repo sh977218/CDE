@@ -10,8 +10,8 @@ import { ClassificationService } from 'non-core/classification.service';
 import { empty, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Cb, ClassificationClassified, ElasticQueryResponse, ItemClassificationNew } from 'shared/models.model';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
+import { isOrgAdmin } from 'shared/security/authorizationShared';
 
 const actionMapping: IActionMapping = {
     mouse: {

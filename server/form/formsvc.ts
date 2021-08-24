@@ -26,7 +26,7 @@ import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { CbError1, User } from 'shared/models.model';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));

@@ -13,7 +13,7 @@ import {
     isOrgAuthority,
     isOrgCurator,
     isSiteAdmin
-} from 'shared/system/authorizationShared';
+} from 'shared/security/authorizationShared';
 import { Board, Elt, Item, User } from 'shared/models.model';
 
 // --------------------------------------------------

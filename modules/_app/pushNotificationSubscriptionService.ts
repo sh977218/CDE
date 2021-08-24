@@ -17,7 +17,7 @@ export class PushNotificationSubscriptionService {
         PushNotificationSubscriptionService.registrationResolve = resolve;
         PushNotificationSubscriptionService.registrationReject = reject;
     });
-    static registrationResolve: (value?: ServiceWorkerRegistration | PromiseLike<ServiceWorkerRegistration>) => void;
+    static registrationResolve: (value: ServiceWorkerRegistration | PromiseLike<ServiceWorkerRegistration>) => void;
     static registrationReject: (reason?: any) => void;
 
     static askNotificationPermission(): Promise<void> {
