@@ -55,8 +55,10 @@
                 </label>
                 <label class="form-group d-block">
                     Administrative Status
-                    <input type="text" class="form-control" name="newAdministrativeStatus" placeholder="Optional Administrative Status"
-                           [(ngModel)]="newState.administrativeStatus"/>
+                    <select class="form-control" name="newAdministrativeStatus"
+                            [(ngModel)]="newState.administrativeStatus">
+                        <option *ngFor="let adminStatus of validAdminStatus" value="{{adminStatus}}">{{adminStatus}}</option>
+                    </select>
                 </label>
                 <label class="form-group d-block">
                     Administrative Note
