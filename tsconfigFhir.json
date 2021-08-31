@@ -63,6 +63,7 @@
     "protractor",
     "scripts",
     "server",
+    "shared/node",
     "test",
     "webpack*"
   ]

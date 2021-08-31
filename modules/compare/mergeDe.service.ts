@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DataElement } from 'shared/de/dataElement.model';
+import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
 import {
     mergeArrayByAttachments, mergeArrayByDataSets, mergeArrayByDefinitions, mergeArrayByDerivationRules, mergeArrayByDesignations,
     mergeArrayByIds, mergeArrayByProperties, mergeArrayByReferenceDocuments, mergeArrayBySources
 } from 'core/adminItem/classification';
-import { transferClassifications } from 'shared/system/classificationShared';
-import { DeMergeFields } from './mergeDataElement/deMergeFields.model';
+import { transferClassifications } from 'shared/classification/classificationShared';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Injectable()
 export class MergeDeService {

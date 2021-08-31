@@ -14,8 +14,6 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/angular-tree-component.css';
 import '../common.scss'; // last, must be after bootstrap to overload
 
-require('expose-loader?bootstrap!bootstrap'); // add to "window"
-
 if (PRODUCTION) {
     enableProdMode();
 }

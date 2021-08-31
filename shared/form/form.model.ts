@@ -152,15 +152,15 @@ export type CdeFormInputArray = CdeForm & {
     formInput: {[key: string]: QuestionValue}; // volatile, nativeRender and export
 };
 
-export class CdeFormElastic extends CdeForm { // all volatile
+export interface CdeFormElastic extends CdeForm { // all volatile
     [key: string]: any; // used for highlighting
     flatClassifications?: string[];
     highlight?: any;
     numQuestions?: number;
     primaryDefinitionCopy?: string;
-    primaryNameCopy!: string;
+    primaryNameCopy: string;
     primaryNameSuggest?: string;
-    score!: number;
+    score: number;
 }
 
 export class FhirProcedureMapping {

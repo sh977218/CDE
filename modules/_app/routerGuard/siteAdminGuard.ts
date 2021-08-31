@@ -8,9 +8,8 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
-
 import { UserService } from '_app/user.service';
-import { isSiteAdmin } from 'shared/system/authorizationShared';
+import { isSiteAdmin } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class SiteAdminGuard implements CanActivate, CanActivateChild, CanLoad {

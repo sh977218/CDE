@@ -25,7 +25,7 @@ import {
     SearchResponseAggregationForm, SearchResponseAggregationItem, User
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { hasRolePrivilege } from 'shared/system/authorizationShared';
+import { hasRolePrivilege } from 'shared/security/authorizationShared';
 
 export type ElasticCondition = any;
 export type MongoCondition = any;

@@ -1,5 +1,5 @@
 var mongo_cde = require('../../server/cde/mongo-cde');
-import { findSteward } from 'shared/system/classificationShared';
+import { findSteward } from 'shared/classification/classificationShared';
 
 setTimeout(function() {
     mongo_cde.query({"classification.stewardOrg.name":"NIDA"}, function(err, result) {

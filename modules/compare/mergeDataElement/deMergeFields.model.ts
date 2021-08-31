@@ -1,4 +1,4 @@
-export class DeMergeFields {
+export interface DeMergeFields {
     attachments: boolean;
     classifications: boolean;
     dataSets: boolean;

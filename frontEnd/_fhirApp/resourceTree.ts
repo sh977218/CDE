@@ -4,7 +4,7 @@ import { assertUnreachable } from 'shared/models.model';
 import { FormOrElement } from 'shared/form/form.model';
 import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { FhirDomainResource, supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
-import { deepCopy } from 'shared/system/util';
+import { deepCopy } from 'shared/util';
 
 export type contextTypes = 'Encounter'|'EpisodeOfCare';
 export const contextTypesArray = ['Encounter', 'EpisodeOfCare'];

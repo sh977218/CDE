@@ -11,7 +11,7 @@ import {
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { regStatusToPublicationStatus } from 'shared/mapping/fhir/to/enumToValueSet';
 import { newIdentifier } from 'shared/mapping/fhir/to/toFhir';
-import { capString } from 'shared/system/util';
+import { capString } from 'shared/util';
 
 /*
  * Call as formToQuestionnaire(form, options, window)

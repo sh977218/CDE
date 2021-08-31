@@ -6,6 +6,7 @@ import { orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { DAO } from 'server/system/itemDaoManager';
 import { ItemDocument } from 'server/system/mongo-data';
+import { addCategory, findSteward, removeCategory } from 'shared/classification/classificationShared';
 import {
     CbErr,
     CbErr1,
@@ -15,7 +16,6 @@ import {
     ItemClassification,
     ItemClassificationElt
 } from 'shared/models.model';
-import { addCategory, findSteward, removeCategory } from 'shared/system/classificationShared';
 
 const saveEltClassif = (err: string | undefined, elt: ItemDocument, cb: CbErr1<ItemDocument | void>) => {
     if (err) {

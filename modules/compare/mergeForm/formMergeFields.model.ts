@@ -1,4 +1,4 @@
-import { DeMergeFields } from '../mergeDataElement/deMergeFields.model';
+import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
 
 export interface FormMergeFields {
     designations: boolean;

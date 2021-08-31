@@ -4,7 +4,7 @@ import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _forEach from 'lodash/forEach';
 import * as _get from 'lodash/get';
 import * as _isEqual from 'lodash/isEqual';
-import { sortClassification } from 'shared/system/classificationShared';
+import { sortClassification } from 'shared/classification/classificationShared';
 import { Item } from 'shared/models.model';
 
 @Component({

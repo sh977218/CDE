@@ -51,7 +51,7 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { ModuleAll } from 'shared/models.model';
-import { canClassifyOrg, isOrgAuthority } from 'shared/system/authorizationShared';
+import { canClassifyOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 
 const flash = require('connect-flash');
 const hsts = require('hsts');

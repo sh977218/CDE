@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import '../../node_modules/bootstrap-tour/build/css/bootstrap-tour.css';
 import * as Tour from 'bootstrap-tour/build/js/bootstrap-tour-standalone.min.js';
-import { Cb } from 'shared/models.model';
 
+type TourCb = (value: unknown) => void;
 type TourStep = any;
 
 const navigationSteps: Array<any> = [
@@ -34,7 +34,9 @@ const navigationSteps: Array<any> = [
         element: '#helpLink',
         content: 'You can find more help about the site here, or information on our APIs. The tour will now take you to the CDE search' +
             ' page.',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#menu_cdes_link', 'totalItems', resolve))
+        onNext: (tour: TourStep) => new Promise(
+            (resolve: TourCb) => TourService.clickAndGoNext(tour, '#menu_cdes_link', 'totalItems', resolve)
+        ),
     }
 ];
 
@@ -54,7 +56,9 @@ const searchResultSteps: Array<any> = [
         element: '#search_by_classification_NLM',
         content: 'These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.',
         placement: 'left',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#browseOrg-NLM', 'resultList', resolve))
+        onNext: (tour: TourStep) => new Promise(
+            (resolve: TourCb) => TourService.clickAndGoNext(tour, '#browseOrg-NLM', 'resultList', resolve)
+        ),
     },
     {
         title: 'Search Result',
@@ -94,7 +98,7 @@ const searchResultSteps: Array<any> = [
         title: 'Search Result',
         element: '#linkToElt_0',
         content: 'The tour will now take us to an individual record by clicking its name.',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#linkToElt_0',
+        onNext: (tour: TourStep) => new Promise((resolve: TourCb) => TourService.clickAndGoNext(tour, '#linkToElt_0',
             'addToQuickBoard', resolve))
     }
 ];
@@ -236,7 +240,7 @@ const cdeSteps: Array<any> = [
         title: 'Forms',
         orphan: true,
         content: 'We will now continue the tour and show Form features.',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#menu_forms_link',
+        onNext: (tour: TourStep) => new Promise((resolve: TourCb) => TourService.clickAndGoNext(tour, '#menu_forms_link',
             'totalItems', resolve))
     }
 ];
@@ -246,14 +250,16 @@ const formSteps = [
         title: 'Browse by Classification',
         element: '.mat-tab-label:first-child',
         content: 'Forms are also browsed by Classification',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#browseOrg-NLM', 'resultList', resolve))
+        onNext: (tour: TourStep) => new Promise(
+            (resolve: TourCb) => TourService.clickAndGoNext(tour, '#browseOrg-NLM', 'resultList', resolve)
+        ),
     },
     {
         title: 'Search Result',
         element: '#resultListTour',
         content: 'We will now go into a form.',
         placement: 'top',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#linkToElt_0',
+        onNext: (tour: TourStep) => new Promise((resolve: TourCb) => TourService.clickAndGoNext(tour, '#linkToElt_0',
             'addToQuickBoard', resolve))
     },
     {
@@ -263,7 +269,7 @@ const formSteps = [
             ' tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More' +
             ' detail about these features can be found on the Display Profiles tab.',
         placement: 'bottom',
-        onNext: (tour: TourStep) => new Promise((resolve: Cb) => TourService.clickAndGoNext(tour, '#description_tab',
+        onNext: (tour: TourStep) => new Promise((resolve: TourCb) => TourService.clickAndGoNext(tour, '#description_tab',
             'addToQuickBoard', resolve))
     },
     {
@@ -293,15 +299,15 @@ const formSteps = [
 export class TourService {
     static steps = navigationSteps.concat(searchResultSteps).concat(cdeSteps).concat(formSteps);
 
-    static clickAndGoNext(tour: TourStep, clickWhat: string, waitForWhat: string, cb: Cb) {
+    static clickAndGoNext(tour: TourStep, clickWhat: string, waitForWhat: string, cb: TourCb) {
         (document.querySelector(clickWhat) as any).click();
         TourService.waitForEltId(waitForWhat, cb);
     }
 
-    static waitForEltId(eltId: string, cb: Cb) {
+    static waitForEltId(eltId: string, cb: TourCb) {
         const checkExist = setInterval(() => {
             if (document.getElementById(eltId)) {
-                cb();
+                cb(void 0);
                 clearInterval(checkExist);
             }
         }, 500);

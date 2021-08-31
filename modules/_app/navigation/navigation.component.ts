@@ -30,7 +30,7 @@ import {
     hasPrivilege,
     isOrgAuthority,
     isSiteAdmin
-} from 'shared/system/authorizationShared';
+} from 'shared/security/authorizationShared';
 
 const NAV_Z_INDEX_STANDARD = '1000';
 const NAV_Z_INDEX_ACTIVE = '1050';

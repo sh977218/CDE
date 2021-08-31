@@ -24,7 +24,7 @@
 
 import fetch from 'node-fetch';
 import { BATCHLOADER } from 'ingester/shared/utility';
-import { addCategory } from 'shared/system/classificationShared';
+import { addCategory } from 'shared/classification/classificationShared';
 
 var formIncrement = 100;
 var startPage = process.argv[2];

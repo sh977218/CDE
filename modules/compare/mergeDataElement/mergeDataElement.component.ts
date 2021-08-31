@@ -16,7 +16,7 @@ export class MergeDataElementComponent {
     @Output() doneMerge = new EventEmitter<{ left: DataElement, right: DataElement }>();
     @ViewChild('mergeDataElementContent', {static: true}) mergeDataElementContent!: TemplateRef<any>;
     allow = true;
-    dialogRef: MatDialogRef<TemplateRef<any>>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     mergeFields: DeMergeFields = {
         attachments: false,
         classifications: true,
@@ -89,7 +89,7 @@ export class MergeDataElementComponent {
         this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields).then(res => {
             this.alert.addAlert('success', 'Finished merging');
             this.doneMerge.emit(res);
-            this.dialogRef.close();
+            this.dialogRef?.close();
         }, err => this.alert.addAlert('danger', 'Unexpected error merging CDEs: ' + err));
     }
 

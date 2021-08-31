@@ -35,10 +35,10 @@ import {
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
     SearchResponseAggregationDe, SearchResponseAggregationForm, SearchResponseAggregationItem,
 } from 'shared/models.model';
+import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
-import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
-import { Organization } from 'shared/system/organization';
-import { orderedList, statusList } from 'shared/system/regStatusShared';
+import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
+import { orderedList, statusList } from 'shared/regStatusShared';
 import { ownKeys } from 'shared/user';
 
 type NamedCounts = { name: string, count: number }[];
@@ -159,6 +159,8 @@ export const searchStyles = `
     template: ''
 })
 export abstract class SearchBaseComponent implements OnDestroy, OnInit {
+    @Input() addMode?: string;
+    @Input() embedded: boolean = false;
     @Input() searchSettingsInput?: SearchSettings;
     @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
     @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
@@ -168,7 +170,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }) autoCompleteInput!: MatAutocompleteTrigger;
     @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
     add!: EventEmitter<any>;
-    addMode?: string;
     aggregations?: ElasticQueryResponseAggregation;
     aggregationsFlatClassifications?: NamedCounts;
     aggregationsFlatClassificationsAlt?: NamedCounts;
@@ -179,7 +180,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     autocompleteSuggestions?: string[];
     cutoffIndex?: number;
     elts?: ItemElastic[];
-    embedded = false; // is in another page, for example form description
     exporters: { [format in 'csv'|'json'|'odm'|'validationRules'|'xml']?: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
         xml: {id: 'xmlExport', display: 'XML Export'}
@@ -793,7 +793,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
 
                 const aggregations = this.aggregations;
-                const orgsCreatedPromise = new Promise(resolve => {
+                const orgsCreatedPromise = new Promise<void>(resolve => {
                     this.filterOutWorkingGroups(() => {
                         this.orgHelperService.then(() => {
                             this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);

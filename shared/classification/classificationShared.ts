@@ -3,7 +3,7 @@ import * as _slice from 'lodash/slice';
 import * as _sortBy from 'lodash/sortBy';
 import * as _uniqWith from 'lodash/uniqWith';
 import { Cb1, Classification, ClassificationElement, Item, ObjectId } from 'shared/models.model';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 export const actions: {
     create: string,

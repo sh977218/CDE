@@ -32,7 +32,7 @@ import {
     QuestionCdeValueList
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
-import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/system/authorizationShared';
+import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';

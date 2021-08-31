@@ -1,15 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MergeDeService } from 'compare/mergeDe.service';
+import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 import {
     mergeArrayByDefinitions, mergeArrayByDesignations, mergeArrayByIds, mergeArrayByProperties, mergeArrayByReferenceDocuments
 } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { MergeDeService } from 'compare/mergeDe.service';
+import { transferClassifications } from 'shared/classification/classificationShared';
 import { CdeForm } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
-import { transferClassifications } from 'shared/system/classificationShared';
-import { FormMergeFields } from './mergeForm/formMergeFields.model';
-
 
 @Injectable()
 export class MergeFormService {

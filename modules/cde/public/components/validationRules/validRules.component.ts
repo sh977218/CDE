@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Dictionary } from 'async';
 import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'non-core/registrationValidator.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg } from 'shared/system/organization';
+import { StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg } from 'shared/organization/organization';
 
 interface RuleResult {
     name: string;

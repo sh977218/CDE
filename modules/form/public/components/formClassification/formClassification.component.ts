@@ -8,7 +8,7 @@ import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
-import { canClassify } from 'shared/system/authorizationShared';
+import { canClassify } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-form-classification',

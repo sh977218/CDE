@@ -16,7 +16,14 @@ import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { Cb1, CurationStatus, ElasticQueryResponse, ElasticQueryResponseForm, Item, ItemElastic } from 'shared/models.model';
+import {
+    Cb1,
+    CurationStatus,
+    ElasticQueryResponse,
+    ElasticQueryResponseForm,
+    Item,
+    ItemElastic
+} from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 
 export interface ExportRecord {
@@ -36,7 +43,8 @@ export class ExportService {
                 private registrationValidatorService: RegistrationValidatorService,
                 private elasticService: ElasticService,
                 protected userService: UserService,
-                protected http: HttpClient) {}
+                protected http: HttpClient) {
+    }
 
     async resultToCsv(result: ItemElastic[]) {
         const settings = this.elasticService.searchSettings;
@@ -44,12 +52,14 @@ export class ExportService {
             if (result.length < 50) {
                 for (const r of result) {
                     if (r !== undefined) {
-                        const forms = await new Promise<Array<CdeForm>>(resolve => {
+                        const forms = await new Promise<CdeForm[] | undefined>(resolve => {
                             const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings(r.tinyId));
                             this.elasticService.generalSearchQuery(lfSettings, 'form',
                                 (err?: string, esRes?: ElasticQueryResponseForm) => resolve(esRes && esRes.forms));
                         });
-                        if (forms.length) { r.linkedForms = forms.map(f => f.tinyId).join(', '); }
+                        if (forms && forms.length) {
+                            r.linkedForms = forms.map(f => f.tinyId).join(', ');
+                        }
                     }
                 }
             } else {
@@ -83,7 +93,9 @@ export class ExportService {
                                 + Math.trunc(100 * formCounter / totalNbOfForms) + '%');
                         }
                         return true;
-                    } else { return false; }
+                    } else {
+                        return false;
+                    }
                 };
                 let keepScrolling = true;
                 while (keepScrolling) {
@@ -124,8 +136,11 @@ export class ExportService {
             });
     };
 
-    exportSearchResults(type: 'csv'|'json'|'odm'|'validationRules'|'xml', module: 'cde'|'form', exportSettings: ExportRecordSettings,
-                        cb?: Cb1<ExportRecord[] | undefined>) {
+    exportSearchResults(type: 'csv' | 'json' | 'odm' | 'validationRules' | 'xml',
+                        module: 'cde' | 'form',
+                        exportSettings: ExportRecordSettings,
+                        cb?: Cb1<ExportRecord[] | undefined>
+    ) {
         if (!this.userService.loggedIn() && (module === 'form' || module === 'cde' && type === 'validationRules')) {
             return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
@@ -179,7 +194,9 @@ export class ExportService {
                         const zip = new JSZip();
                         elts.forEach(elt => {
                             getFormOdm(elt, (err, odmElt) => {
-                                if (!err) { zip.file(elt.tinyId + '.xml', JXON.jsToString({ODM: odmElt})); }
+                                if (!err) {
+                                    zip.file(elt.tinyId + '.xml', JXON.jsToString({ODM: odmElt}));
+                                }
                             });
                         });
                         zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, 'SearchExport_ODM.zip'));

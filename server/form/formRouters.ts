@@ -29,9 +29,9 @@ import { isSearchEngine } from 'server/system/helper';
 import { registerItemDao } from 'server/system/itemDaoManager';
 import { registerDao } from 'server/system/moduleDaoManager';
 import { config } from 'server/system/parseConfig';
-import { getEnvironmentHost } from 'shared/env';
+import { getEnvironmentHost } from 'shared/node/env';
 import { CbErr1 } from 'shared/models.model';
-import { stripBsonIdsElt } from 'shared/system/exportShared';
+import { stripBsonIdsElt } from 'shared/exportShared';
 
 const {checkSchema, check} = require('express-validator');
 

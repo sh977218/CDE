@@ -22,7 +22,7 @@ import { Observable } from 'rxjs';
 import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
-import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/system/authorizationShared';
+import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { WINDOW } from 'window.service';
 
 const TAB_COMMENT_MAP: any = {

@@ -17,12 +17,10 @@ export class Token {
     templateUrl: './skipLogicAutocomplete.component.html'
 })
 export class SkipLogicAutocompleteComponent {
-    logicOptions = ['AND', 'OR'];
-    labelOptions: string[] = [];
+    readonly logicOptions = ['AND', 'OR'];
+    labelOptions: string[];
     operatorOptions = ['=', '>', '<', '>=', '<='];
-    skipLogicForm: FormGroup = this.formBuilder.group({
-        items: this.formBuilder.array([])
-    });
+    skipLogicForm: FormGroup;
 
     constructor(private cdr: ChangeDetectorRef,
                 private formBuilder: FormBuilder,
@@ -30,6 +28,9 @@ export class SkipLogicAutocompleteComponent {
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: {formElement: FormElement, priorQuestions: FormQuestion[]}) {
         this.labelOptions = data.priorQuestions.map(q => q.label || q.question.cde.name || '');
+        this.skipLogicForm = this.formBuilder.group({
+            items: this.formBuilder.array([])
+        });
 
         const tokens = this.getTokens(data.formElement.skipLogic && data.formElement.skipLogic.condition);
         tokens.forEach(token => {

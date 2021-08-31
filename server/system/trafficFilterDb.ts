@@ -3,7 +3,7 @@ import { Document, Model, Schema } from 'mongoose';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { establishConnection } from 'server/system/connections';
-import { TrafficFilter } from 'shared/system/trafficFilter';
+import { TrafficFilter } from 'shared/security/trafficFilter';
 
 addStringtype(mongoose);
 

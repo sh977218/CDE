@@ -10,13 +10,12 @@ import { assertThrow, assertUnreachable, CbErr1, CdeId } from 'shared/models.mod
 import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCoding } from 'shared/mapping/fhir/fhir.model';
 import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
-import { isArray, isUndefined } from 'util';
 
 export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr1<ResourceTreeRoot|ResourceTree|undefined>,
                              parent: ResourceTreeRoot|ResourceTreeResource|ResourceTreeIntermediate
 ): ResourceTreeRoot | ResourceTree | undefined {
     let self: ResourceTreeRoot | ResourceTree | undefined;
-    if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
+    if (parent === undefined || ResourceTreeUtil.isRoot(parent)) {
         self = addRootNode(fe, parent, undefined,
             parent && ResourceTreeUtil.isNotRoot(parent) && ResourceTreeUtil.isResource(parent) ? parent.childResourceType : undefined);
     } else {
@@ -28,7 +27,7 @@ export function addEmptyNode(fe: FormElement | CdeForm, cb: CbErr1<ResourceTreeR
 
 export function addRootNode(fe: FormElement|CdeForm, parent?: ResourceTreeRoot|ResourceTreeResource, resource?: any,
                             resourceType?: supportedFhirResources): ResourceTreeRoot|ResourceTreeResource {
-    if (isUndefined(parent) || ResourceTreeUtil.isRoot(parent)) {
+    if (parent === undefined || ResourceTreeUtil.isRoot(parent)) {
         let node: ResourceTreeRoot|ResourceTree;
         if (resource) {
             node = ResourceTreeUtil.createResource(resource.resourceType, fe, resource);
@@ -88,7 +87,7 @@ function addNode(fe: FormElement|CdeForm, parent: ResourceTreeResource|ResourceT
 export function setResourceAndUpdateParentResource(self: ResourceTreeIntermediate|ResourceTreeAttribute,
                                                    attribute: string, resource: any): any {
     ResourceTreeUtil.setResource(self, resource);
-    if (!isArray(self.parent.resource[attribute])) {
+    if (!Array.isArray(self.parent.resource[attribute])) {
         self.parent.resource[attribute] = [];
     }
     self.parent.resource[attribute].push(resource);

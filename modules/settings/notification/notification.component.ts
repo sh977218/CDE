@@ -3,7 +3,7 @@ import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscr
 import { UserService } from '_app/user.service';
 import * as _noop from 'lodash/noop';
 import { User } from 'shared/models.model';
-import { hasRole, isSiteAdmin } from 'shared/system/authorizationShared';
+import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-notification',

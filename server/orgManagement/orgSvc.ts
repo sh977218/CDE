@@ -6,9 +6,8 @@ import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,  orgEditors as userOrgEditors, userById, userByName } from 'server/user/userDb';
 import { concat } from 'shared/array';
 import { User } from 'shared/models.model';
-import { addRole, isOrgAdmin } from 'shared/system/authorizationShared';
-import { Organization } from 'shared/system/organization';
-
+import { Organization } from 'shared/organization/organization';
+import { isOrgAdmin } from 'shared/security/authorizationShared';
 
 export function myOrgs(user: User): string[] {
     if (!user) {

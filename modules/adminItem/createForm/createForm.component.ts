@@ -10,10 +10,10 @@ import { AlertService } from 'alert/alert.service';
 import { classifyItem } from 'core/adminItem/classification';
 import * as _isEqual from 'lodash/isEqual';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
-import { CdeForm } from 'shared/form/form.model';
-import { findSteward, removeCategory } from 'shared/system/classificationShared';
 import { LocalStorageService } from 'non-core/localStorage.service';
+import { findSteward, removeCategory } from 'shared/classification/classificationShared';
+import { CdeForm } from 'shared/form/form.model';
+import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 
 @Component({
     selector: 'cde-create-form',

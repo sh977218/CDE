@@ -8,7 +8,7 @@ import * as _noop from 'lodash/noop';
 import { ClassificationService } from 'non-core/classification.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 const actionMapping: IActionMapping = {
     mouse: {

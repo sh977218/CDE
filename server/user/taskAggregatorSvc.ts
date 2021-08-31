@@ -1,10 +1,10 @@
 import { getClientErrorsNumber, getServerErrorsNumber } from 'server/log/dbLogger';
 import { CommentNotification, UserDocument } from 'server/user/userDb';
 import { version } from 'server/version';
-import { isSiteAdmin } from 'shared/system/authorizationShared';
 import { uriView } from 'shared/item';
 import { Task } from 'shared/models.model';
-import { capString } from 'shared/system/util';
+import { isSiteAdmin } from 'shared/security/authorizationShared';
+import { capString } from 'shared/util';
 
 function createTaskFromCommentNotification(c: CommentNotification): Task {
     return {

@@ -5,7 +5,7 @@ import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
 import { CbError, CbError1 } from 'shared/models.model';
-import { Organization } from 'shared/system/organization';
+import { Organization } from 'shared/organization/organization';
 
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;

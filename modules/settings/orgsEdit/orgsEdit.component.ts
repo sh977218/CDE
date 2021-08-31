@@ -4,8 +4,8 @@ import { AlertService } from 'alert/alert.service';
 import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb } from 'shared/models.model';
-import { Organization } from 'shared/system/organization';
-import { stringCompare } from 'shared/system/util';
+import { Organization } from 'shared/organization/organization';
+import { stringCompare } from 'shared/util';
 
 @Component({
     selector: 'cde-orgs-edit',

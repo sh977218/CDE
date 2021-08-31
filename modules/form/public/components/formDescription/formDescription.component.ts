@@ -21,7 +21,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { Cb1 } from 'shared/models.model';
-import { canEditCuratedItem } from 'shared/system/authorizationShared';
+import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-form-description',

@@ -1,6 +1,5 @@
 import * as _intersection from 'lodash/intersection';
 import * as _union from 'lodash/union';
-import { concat } from 'shared/array';
 import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRoles } from 'shared/models.model';
 
 export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';

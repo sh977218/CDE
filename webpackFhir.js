@@ -1,4 +1,4 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const {resolve} = require('path');
 const {DefinePlugin} = require('webpack');
@@ -15,7 +15,7 @@ module.exports = {
         filename: '[name].js'
     },
     plugins: [
-        new CleanWebpackPlugin(['dist/fhir'], {root: process.cwd()}),
+        new CleanWebpackPlugin(),
         new DefinePlugin({
             APPLICATION_NAME: '"CDE FHIR Embed"',
         }),

@@ -118,11 +118,13 @@ export class ScrollSpyService {
     private spiedElementGroups: ScrollSpiedElementGroup[] = [];
     private onStopListening = new Subject();
     private resizeEvents = fromEvent(window, 'resize').pipe(auditTime(300), takeUntil(this.onStopListening));
-    private scrollEvents = fromEvent(this.scrollService.scrollElement, 'scroll').pipe(auditTime(10), takeUntil(this.onStopListening));
+    private scrollEvents: Observable<Event>;
     private lastContentHeight!: number;
     private lastMaxScrollTop!: number;
 
-    constructor(@Inject(DOCUMENT) private doc: Document, private scrollService: ScrollService) {}
+    constructor(@Inject(DOCUMENT) private doc: Document, private scrollService: ScrollService) {
+        this.scrollEvents = fromEvent(this.scrollService.scrollElement, 'scroll').pipe(auditTime(10), takeUntil(this.onStopListening));
+    }
 
     /*
      * @method

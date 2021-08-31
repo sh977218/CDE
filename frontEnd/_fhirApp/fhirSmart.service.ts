@@ -5,7 +5,7 @@ import { asRefString } from 'shared/mapping/fhir/datatype/fhirReference';
 import {
     FhirDomainResource, FhirEncounter, FhirEpisodeOfCare, FhirPatient
 } from 'shared/mapping/fhir/fhirResource.model';
-import { deepCopy } from 'shared/system/util';
+import { deepCopy } from 'shared/util';
 
 const SCOPE = 'patient/*.*';
 

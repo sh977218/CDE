@@ -4,7 +4,7 @@ import {
     containerToItemType, itemTypeToItemDatatype, valueToTypedValue
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { FhirValue } from 'shared/mapping/fhir/fhir.model';
-import { capString } from 'shared/system/util';
+import { capString } from 'shared/util';
 
 export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMulti: boolean = false, prefix?: string,
                                     hasCodeableConcept: boolean = false): void {

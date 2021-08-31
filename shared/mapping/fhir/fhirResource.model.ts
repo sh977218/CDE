@@ -108,7 +108,7 @@ export class FhirDevice extends FhirDomainResource {
     note?: FhirAnnotation[];
     owner?: FhirReference<FhirOrganization>;
     patient?: FhirReference<FhirPatient>;
-    resourceType!: 'Device';
+    resourceType: 'Device' = 'Device';
     safety?: FhirCodeableConcept[];
     status?: FhirCode;
     type?: FhirCodeableConcept;
@@ -128,7 +128,7 @@ export class FhirDevice extends FhirDomainResource {
 export type FhirDeviceMetric = any;
 
 export class FhirEncounter extends FhirDomainResource {
-    resourceType!: 'Encounter';
+    resourceType: 'Encounter' = 'Encounter';
     account?: FhirReference<FhirAccount>[];
     appointment?: FhirReference<FhirAppointment>;
     class?: FhirCoding;
@@ -280,7 +280,7 @@ export class FhirProcedure extends FhirDomainResource implements FhirIdentifiabl
     reasonCode?: FhirCodeableConcept[];
     reasonReference?: FhirReference<FhirCondition|FhirObservation>[];
     report?: FhirReference<any>;
-    resourceType!: 'Procedure';
+    resourceType: 'Procedure' = 'Procedure';
     status!: FhirCode<'preparation'|'in-progress'|'suspended'|'aborted'|'completed'|'entered-in-error'|'unknown'>;
     subject!: FhirReference<FhirPatient|FhirGroup>;
     usedCode?: FhirCodeableConcept[];
@@ -306,7 +306,7 @@ export class FhirQuestionnaire extends FhirDomainResource {
     name?: string;
     publisher?: string;
     purpose?: FhirMarkdown;
-    resourceType!: 'Questionnaire';
+    resourceType: 'Questionnaire' = 'Questionnaire';
     status!: FhirCode<'draft'|'active'|'retired'|'unknown'>;
     subjectType?: FhirCode[];
     title?: string;
@@ -382,7 +382,7 @@ export class FhirQuestionnaireResponse extends FhirDomainResource {
     item?: FhirQuestionnaireResponseItem[];
     parent?: FhirReference<FhirObservation|FhirProcedure>[];
     questionnaire?: FhirReference<FhirQuestionnaire>;
-    resourceType!: 'QuestionnaireResponse';
+    resourceType: 'QuestionnaireResponse' = 'QuestionnaireResponse';
     source?: FhirReference<FhirPatient|FhirPractitioner|FhirRelatedPerson>;
     status!: FhirCode<'in-progress'|'completed'|'amended'|'entered-in-error'|'stopped'>;
     subject?: FhirReference<any>;

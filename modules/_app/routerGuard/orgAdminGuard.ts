@@ -11,7 +11,7 @@ import {
 } from '@angular/router';
 
 import { UserService } from '_app/user.service';
-import { isOrgAdmin } from 'shared/system/authorizationShared';
+import { isOrgAdmin } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class OrgAdminGuard implements CanActivate, CanActivateChild, CanLoad {

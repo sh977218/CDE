@@ -4,7 +4,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { ObjectId } from 'shared/models.model';
-import { stringCompare } from 'shared/system/util';
+import { stringCompare } from 'shared/util';
 
 interface OrgUsers {
     org: string;

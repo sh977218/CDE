@@ -2,7 +2,7 @@
 // node ingester/promis/loadPromis.js ../promis 2014-01
 
 import { BATCHLOADER } from 'ingester/shared/utility';
-import { addCategory } from 'shared/system/classificationShared';
+import { addCategory } from 'shared/classification/classificationShared';
 
 var promisDir = process.argv[2];
 
