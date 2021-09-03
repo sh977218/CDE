@@ -55,7 +55,6 @@
       "**/server/discuss/*",
       "**/server/form/*",
       "**/server/log/*",
-      "**/server/mesh/*",
       "**/server/nativeRender/*",
       "**/server/notification/*",
       "**/server/orgManagement/*",
@@ -76,7 +75,7 @@
     "reporter": "html"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^7.6.0",
+    "@elastic/elasticsearch": "7.10.0",
     "ajv": "^6.10.0",
     "archiver": "^3.0.0",
     "async": "^2.6.1",

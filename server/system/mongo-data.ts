@@ -241,30 +241,6 @@ export function eltAsElastic(doc: Item | ItemDocument): ItemElastic {
 
 export const attachables: Model<Document>[] = [];
 
-export function userTotalSpace(name: string, callback: Cb1<number>) {
-    let totalSpace = 0;
-    forEach(attachables, (attachable, doneOne) => {
-        attachable.aggregate(
-            [
-                {$match: {'attachments.uploadedBy.username': name}},
-                {$unwind: '$attachments'},
-                {
-                    $group: {
-                        _id: {uname: '$attachments.uploadedBy.username'},
-                        totalSize: {$sum: '$attachments.filesize'}
-                    }
-                },
-                {$sort: {totalSize: -1}}
-            ],
-            (err?: Error, res?: { _id: { uname: string }, totalSize: number }[]) => {
-                if (res && res.length > 0) {
-                    totalSpace += res[0].totalSize;
-                }
-                doneOne();
-            });
-    }, () => callback(totalSpace));
-}
-
 export interface FileCreateInfo {
     stream: Readable;
     filename?: string;

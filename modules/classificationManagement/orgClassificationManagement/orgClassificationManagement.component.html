@@ -42,11 +42,6 @@
                                 <mat-icon>subdirectory_arrow_left</mat-icon>
                                 Add Child Classification
                             </button>
-                            <button mat-menu-item title="MeSH Mapping"
-                                    (click)="openMapClassificationMeshModal(node);">
-                                <mat-icon>link</mat-icon>
-                                MeSH Mapping
-                            </button>
                         </mat-menu>
                     </ng-container>
                 </ng-template>
@@ -139,41 +134,6 @@
             <button mat-raised-button type="submit" id="confirmAddChildClassificationBtn"
                     [disabled]="!newClassificationName && !addChildClassificationForm.form.valid">OK
             </button>
-        </div>
-    </form>
-</ng-template>
-
-<ng-template #mapClassificationMeshContent>
-    <h4 mat-dialog-title>Mesh Mappings</h4>
-    <form #mapClassificationMeshForm="ngForm" (ngSubmit)="addMeshDescriptor()">
-        <div mat-dialog-content>
-            <div *ngIf="mapping.meshDescriptors.length === 0">
-                No mapping. Add more below.
-            </div>
-
-            <div *ngFor="let desc of mapping.meshDescriptors;let i=index;">
-                <mat-icon (click)="removeDescriptor(i)" class="fake-link" title="remove">delete_outline</mat-icon>
-                {{desc}} -{{descToName[desc]}}
-            </div>
-
-            <mat-form-field>
-                <input matInput [(ngModel)]="meshSearchTerm" name="meshSearchTerm"
-                       id="mapClassificationMeshInput" pattern="^[^;]+$" (change)="searchMesh()"
-                       (ngModelChange)="searchMesh()" required placeholder="MeSH Descriptor">
-            </mat-form-field>
-
-            <span *ngIf="searching">searching...</span>
-
-            <div *ngIf="descriptorID">
-                {{descriptorID}} -- {{descriptorName}}
-                <button *ngIf="descriptorName.length > 0" mat-raised-button id="addMeshDescButton"
-                        type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
-                </button>
-            </div>
-
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button [mat-dialog-close] id="cancelMapClassificationMeshBtn">Close</button>
         </div>
     </form>
 </ng-template>

@@ -11,13 +11,11 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 
 public class CdeApiSearch extends NlmCdeBaseTest {
+    String searchUrl = baseUrl + "/api/de/search";
 
     @Test
-    public void cdeApiSearch() {
-        String searchUrl = baseUrl + "/api/de/search";
-        String resp;
-
-        resp = given().contentType(ContentType.JSON)
+    public void cdeApiSearchTermSearch() {
+        String resp = given().contentType(ContentType.JSON)
                 .body("{\"searchTerm\": \"race\"}")
                 .post(searchUrl).asString();
         Assert.assertTrue(resp.contains("\"resultsTotal\":19,"));
@@ -25,27 +23,38 @@ public class CdeApiSearch extends NlmCdeBaseTest {
         Assert.assertFalse(resp.contains("primaryNameCopy"));
         Assert.assertFalse(resp.contains("flatClassifications"));
 
-        resp = given().contentType(ContentType.JSON)
+
+    }
+
+    @Test
+    public void cdeApiSearchStatus() {
+        String resp = given().contentType(ContentType.JSON)
                 .body("{\"selectedStatuses\": [\"Standard\"], \"searchTerm\": \"race\"}")
                 .post(searchUrl).asString();
         Assert.assertTrue(resp.contains("\"resultsTotal\":1,"));
         Assert.assertTrue(resp.contains("\"registrationStatus\":\"Standard\""));
         Assert.assertTrue(resp.contains("\"datatype\":\"Value List\","));
+    }
 
-        resp = given().contentType(ContentType.JSON)
+    @Test
+    public void cdeApiSearchDatatypes() {
+        String resp = given().contentType(ContentType.JSON)
                 .body("{\"selectedDatatypes\": [\"Number\"], \"searchTerm\": \"race\"}")
                 .post(searchUrl).asString();
         Assert.assertTrue(resp.contains("\"resultsTotal\":2,"));
         Assert.assertTrue(resp.contains("\"datatype\":\"Number\","));
 
+    }
 
+    @Test
+    public void cdeApiSearchSortOrderPagination() {
         /* Sort Order and Pagination */
         Pattern tinyIdPattern = Pattern.compile("\"tinyId\":\"[a-zA-Z0-9_]+\"");
         Matcher m;
         int i;
         String[] expected;
 
-        resp = given().contentType(ContentType.JSON)
+        String resp = given().contentType(ContentType.JSON)
                 .body("{\"searchTerm\": \"date and study en*\", \"resultPerPage\": 4}")
                 .post(searchUrl).asString();
         Assert.assertTrue(resp.contains("\"resultsTotal\":53,\"resultsRetrieved\":4,\"from\":1"), resp.substring(0, 100));
@@ -78,6 +87,19 @@ public class CdeApiSearch extends NlmCdeBaseTest {
             i++;
         }
         Assert.assertEquals(i, 4, "Results per page is not correct");
+    }
+
+    // To cover some code for coverage
+    @Test
+    public void cdeApiSearchForCodeCoverage() {
+        String searchUrl = baseUrl + "/api/de/search";
+        String resp = given().contentType(ContentType.JSON)
+                .body("{\"searchTerm\": \"date and study en*\", \"resultPerPage\": 200}")
+                .post(searchUrl).asString();
+        Assert.assertTrue(resp.contains("\"resultsTotal\":53,\"resultsRetrieved\":53,\"from\":1"), resp.substring(0, 100));
+        Assert.assertFalse(resp.contains("primaryNameCopy"));
+        Assert.assertFalse(resp.contains("flatClassifications"));
+
     }
 
 }

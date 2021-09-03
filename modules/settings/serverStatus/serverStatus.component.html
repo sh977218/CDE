@@ -13,21 +13,11 @@
                     \
                 </mat-progress-bar>
             </div>
-            <button mat-raised-button (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
-            <div *ngFor="let meshSync of meshSyncs">
-                <mat-progress-bar *ngIf="meshSync.total > 0 && meshSync.done > 0"
-                                  [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
-                </mat-progress-bar>
-            </div>
 
             <button mat-raised-button (click)="syncLinkedForms()" id="syncLinkedFormsButton">Sync Linked Forms</button>
             <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
                               [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
             </mat-progress-bar>
-
-<!--
-            <button mat-raised-button (click)="deleteNonUsedIndex();">Delete Non Used index</button>
--->
         </div>
     </div>
 </div>

@@ -15,14 +15,3 @@ export function typeToCriteria(type: NotificationType,
     };
     return result;
 }
-
-export function typeToNotificationSetting(type: NotificationType): string {
-    return ({
-        comment: 'comment'
-    } as Record<NotificationType, string>)[type] || 'noMatch';
-}
-
-export function criteriaSet(criteria: any, set: string) {
-    criteria[set] = true;
-    return criteria;
-}

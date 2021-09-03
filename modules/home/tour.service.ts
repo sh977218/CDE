@@ -47,11 +47,6 @@ const searchResultSteps: Array<any> = [
         content: 'CDEs or Forms can be browsed by Classifications. Classifications are ways for content owners to organize their CDEs.'
     },
     {
-        title: 'Browse by Topic',
-        element: '.mat-tab-label:nth-child(2)',
-        content: 'Or by topic. Topics are MeSH terms.'
-    },
-    {
         title: 'Browse by Organization',
         element: '#search_by_classification_NLM',
         content: 'These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.',

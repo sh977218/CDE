@@ -10,43 +10,31 @@ public class SearchLinkedForms extends NlmCdeBaseTest {
     @Test
     public void searchLinkedForms() {
         goToCdeSearch();
-        clickElement(By.id("browseOrg-PROMIS / Neuro-QOL"));
-
-        int i = 0;
-        while (i > -1) {
-            Assert.assertTrue(i < 10);
-            try {
-                findElement(By.id("ftsearch-input")).clear();
-                findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>0");
-                clickElement(By.id("search.submit"));
-                textPresent("7 data element results for");
-                i = -1;
-            } catch (Exception e) {
-                i++;
-            }
-        }
 
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>1");
-        clickElement(By.id("search.submit"));
-        textPresent("7 data element results for");
-
-        hangon(1);
+        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Retired:>20");
+        hangon(10);
+        Assert.assertEquals(7, findElementsSize(By.xpath("//mat-option")));
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>2");
-        clickElement(By.id("search.submit"));
-        textPresent("0 data element results for");
+        hangon(10);
+        Assert.assertEquals(10, findElementsSize(By.xpath("//mat-option")));
 
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:>0");
-        clickElement(By.id("search.submit"));
-        textPresent("0 data element results for");
+        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Qualified:>68");
+        hangon(10);
+        Assert.assertEquals(2, findElementsSize(By.xpath("//mat-option")));
 
         findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:0");
-        clickElement(By.id("search.submit"));
-        textPresent("7 data element results for");
+        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:>68");
+        hangon(10);
+        Assert.assertEquals(2, findElementsSize(By.xpath("//mat-option")));
+
+        findElement(By.id("ftsearch-input")).clear();
+        findElement(By.id("ftsearch-input")).sendKeys("linkedForms.Standard:60");
+        hangon(10);
+        Assert.assertEquals(7, findElementsSize(By.xpath("//mat-option")));
     }
 
 }

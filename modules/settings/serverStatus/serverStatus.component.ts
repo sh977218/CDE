@@ -17,7 +17,6 @@ export class ServerStatusComponent {
     esIndices: any;
     indexToReindex!: number;
     isDone: boolean = false;
-    meshSyncs: any;
     linkedForms: { total: number, done: number } = {total: 0, done: 0};
     statuses: any[] = [];
 
@@ -64,26 +63,6 @@ export class ServerStatusComponent {
 
         this.indexToReindex = i;
         this.dialog.open(this.confirmReindex);
-    }
-
-    syncMesh() {
-        this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
-        const indexFn = setInterval(() => {
-            this.http.get<any>('/server/mesh/syncWithMesh').subscribe(res => {
-                this.meshSyncs = [];
-                for (const p in res) {
-                    if (res.hasOwnProperty(p)) {
-                        this.meshSyncs.push(res[p]);
-                    }
-                }
-                if (res.dataelement.done === res.dataelement.total
-                    && res.form.done === res.form.total) {
-                    clearInterval(indexFn);
-                    this.alert.addAlert('success', 'Done syncing');
-                    this.meshSyncs = null;
-                }
-            }, () => this.alert.addAlert('danger', 'Unexpected error syncing'));
-        }, 1000);
     }
 
     syncLinkedForms() {
