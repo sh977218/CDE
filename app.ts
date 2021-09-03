@@ -29,7 +29,6 @@ import { module as classificationModule } from 'server/classification/classifica
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as logModule } from 'server/log/logRoutes';
 import * as mongo_form from 'server/form/mongo-form';
-import { module as meshModule } from 'server/mesh/meshRoutes';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as deModule } from 'server/cde/deRouters';
 import { module as formModule } from 'server/form/formRouters';
@@ -302,14 +301,6 @@ try {
             }
             next();
         }
-    }));
-    app.use('/server/mesh', meshModule({
-        allowSyncMesh: ((req, res, next) => {
-            if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
-                return res.status(401).send();
-            }
-            next();
-        }) as RequestHandler
     }));
     app.use('/nativeRender', nativeRenderModule());
     app.use('/', fhirModule());

@@ -6,7 +6,7 @@ import * as md5 from 'md5-file';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import { fileUsed } from 'server/system/adminItemSvc';
 import { getItemDaoList } from 'server/system/itemDaoManager';
-import { addFile, deleteFileById, ItemDocument, userTotalSpace } from 'server/system/mongo-data';
+import { addFile, deleteFileById, ItemDocument } from 'server/system/mongo-data';
 import { Attachment, Cb1, Cb3, CbError1, Item, User } from 'shared/models.model';
 
 const createScanner = require('clamav.js').createScanner;
@@ -31,22 +31,17 @@ export function add(req: Request & { files: any }, res: Response, db: any,
             if (!ownership) {
                 return res.status(401).send('You do not own this element');
             }
-            userTotalSpace(req.user.username, totalSpace => {
-                if (totalSpace > req.user.quota) {
-                    return res.send({message: 'You have exceeded your quota'});
-                }
-                const file = req.files[0];
-                file.stream = streamFS1;
+            const file = req.files[0];
+            file.stream = streamFS1;
 
-                // store it to FS here
-                const writeStream = createWriteStream(file.originalname);
-                streamFS.pipe(writeStream);
-                writeStream.on('finish', () => {
-                    md5(file.originalname, (err, hash) => {
-                        file.md5 = hash;
-                        addToItem(elt, file, req.user, 'some comment', (attachment?: Attachment, requiresApproval?: boolean) => {
-                            res.send(elt);
-                        });
+            // store it to FS here
+            const writeStream = createWriteStream(file.originalname);
+            streamFS.pipe(writeStream);
+            writeStream.on('finish', () => {
+                md5(file.originalname, (err, hash) => {
+                    file.md5 = hash;
+                    addToItem(elt, file, req.user, 'some comment', (attachment?: Attachment, requiresApproval?: boolean) => {
+                        res.send(elt);
                     });
                 });
             });
@@ -146,17 +141,4 @@ export function setDefault(req: Request, res: Response, db: any, crudPermission:
         elt.attachments[req.body.index].isDefault = state;
         (elt.save as any)(handleError({req, res}, newElt => res.send(newElt)));
     }));
-}
-
-export function unapproved(cb: CbError1<ItemDocument[]>) {
-    map<any, ItemDocument[]>(
-        getItemDaoList(),
-        (dao, done) => dao.type !== 'board'
-            ? dao._model.find({'attachments.pendingApproval': true}, done)
-            : done(null, []),
-        (err, results) => cb(
-            err === undefined ? null : err,
-            results ? ([] as (ItemDocument)[]).concat.apply([], results as any) : []
-        )
-    );
 }

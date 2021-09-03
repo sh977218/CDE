@@ -337,7 +337,7 @@ export function regStatusFilter(user: User, settings: SearchSettingsElastic, all
 }
 
 export function isSearch(settings: SearchSettingsElastic) {
-    return settings && (settings.searchTerm || settings.selectedOrg || settings.meshTree);
+    return settings && (settings.searchTerm || settings.selectedOrg);
 }
 
 const searchTemplate: { [key: string]: any } = {

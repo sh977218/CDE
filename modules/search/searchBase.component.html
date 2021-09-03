@@ -223,31 +223,6 @@
                                 id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
                     </div>
                 </div>
-                <!-- TOPIC AGGREGATIONS -->
-                <div *ngIf="false" id="meshTreesListHolder"
-                     class="my-3">
-                    <span class="treeTitle">Topics</span>
-                    <div *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
-                         id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
-                        <div *ngIf="!isLast; else topicSelf" class="treeParent">
-                            <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
-                            <a class="treeItemText">{{e}}</a>
-                        </div>
-                        <ng-template #topicSelf>
-                            <div class="treeCurrent treeItemText"
-                                 [class.treeItem]="getCurrentSelectedTopic().length > 1">{{e}}
-                            </div>
-                        </ng-template>
-                    </div>
-                    <div *ngFor="let b of aggregationsTopics; trackBy: trackByName"
-                         id="topic-{{b.name}}" class="treeChild hand-cursor"
-                         [class.treeItem]="getCurrentSelectedTopic().length > 1"
-                         (click)="selectTopic(b.name)" role="link">
-                        <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
-                        <a class="treeItemText">{{b.name}} (<span
-                                id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
-                    </div>
-                </div>
                 <!-- REGISTRATION STATUS AGGREGATION -->
                 <div *ngIf="aggregations.statuses.statuses.buckets" id="registrationStatusListHolder" class="my-3">
                     <span class="treeTitle">Registration Status</span>
@@ -326,13 +301,6 @@
                             {{getExcludedOrgs()}}
                         </span>
                     </ng-container>
-                    <span *ngIf="hasSelectedTopics()" id="topic_crumb"
-                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
-                          aria-label="Remove this topics filter" matTooltip="Remove this topics filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedTopics()">
-                        {{getSelectedTopics()}}
-                    </span>
                     <span *ngIf="hasSelectedStatuses()" id="status_crumb"
                           class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this registration statuses filter"

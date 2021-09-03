@@ -104,7 +104,8 @@ let ignoreErrors = [
     'Slow network is detected',
     'WebSocket is already in CLOSING or CLOSED state',
     'petstore.swagger.io',
-    "Cannot read property 'nativeElement' of undefined"
+    "Cannot read property 'nativeElement' of undefined",
+    "WebSocket is closed before the connection is established"
 ];
 
 fs.readdir(logFolder, (err, files) => {

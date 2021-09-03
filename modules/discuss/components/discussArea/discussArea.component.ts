@@ -10,7 +10,6 @@ import { canCommentManage } from 'shared/security/authorizationShared';
 
 const tabMap: Dictionary<string> = {
     preview_tab: 'preview',
-    meshTopic_tab: 'meshTopic',
     general_tab: 'general',
     description_tab: 'description',
     pvs_tab: 'pvs',

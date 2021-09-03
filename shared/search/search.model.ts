@@ -7,7 +7,6 @@ export class SearchSettings {
     datatypes: DataType[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
-    meshTree: string = '';
     page?: number = 1;
     q?: string = '';
     regStatuses: CurationStatus[] = [];
@@ -30,7 +29,6 @@ export class SearchSettingsElastic {
     fullRecord?: boolean;
     includeAggregations?: boolean;
     includeRetired?: boolean;
-    meshTree = '';
     page?: number = 1;
     q?: string;
     resultPerPage = 20;

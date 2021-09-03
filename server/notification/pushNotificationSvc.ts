@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { noop, union } from 'lodash';
-import { ObjectId } from 'server';
 import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushDelete, pushEndpointUpdate, pushesByEndpoint,
@@ -9,8 +8,6 @@ import {
 import { objectId, PushRegistrationDocument } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { logError } from 'server/log/dbLogger';
-import { criteriaSet, NotificationType, typeToCriteria, typeToNotificationSetting } from 'server/notification/notificationSvc';
-import { find as userFind } from 'server/user/userDb';
 import { CbError1, User } from 'shared/models.model';
 import { generateVAPIDKeys, sendNotification, setVapidDetails } from 'web-push';
 
@@ -168,23 +165,6 @@ export function updateStatus(req: Request, res: Response) {
             res.send({status: false, exist: true});
         }));
     }
-}
-
-export function pushRegistrationSubscribersByType(type: NotificationType, cb: CbError1<PushRegistrationDocument[] | void>,
-                                                  data?: {org?: string, users: ObjectId[]}) {
-    userFind(
-        criteriaSet(
-            typeToCriteria(type, data),
-            'notificationSettings.' + typeToNotificationSetting(type) + '.push'
-        ),
-        (err, users) => {
-            if (err || !users) {
-                cb(err);
-                return;
-            }
-            pushRegistrationSubscribersByUsers(users, cb);
-        }
-    );
 }
 
 export function pushRegistrationSubscribersByUsers(users: User[], cb: CbError1<PushRegistrationDocument[]>) {

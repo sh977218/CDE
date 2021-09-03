@@ -10,7 +10,6 @@ declare global {
         // frames: Dictionary<Window>; // ts lib.dom definition is wrong
         loggedIn: () => void;
         maxPin: number;
-        meshUrl: string;
         publicUrl: string;
         showCovidBanner: boolean;
         siteKey: string;

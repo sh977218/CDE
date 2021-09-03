@@ -564,13 +564,6 @@ export type ItemClassificationElt = {
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
 
-export interface MeshClassification {
-    flatClassification: string;
-    eltId?: string;
-    meshDescriptors: string[];
-    flatTrees: string[];
-}
-
 export type NotificationSettingsMediaType = 'drawer' | 'push';
 export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]: boolean | undefined;

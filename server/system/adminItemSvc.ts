@@ -4,13 +4,11 @@ import { ObjectId } from 'server';
 import { byEltId as discussByEltId, CommentReply } from 'server/discuss/discussDb';
 import { handleError, handleNotFound, HandlerOptions } from 'server/errorHandler/errorHandler';
 import { typeToCriteria } from 'server/notification/notificationSvc';
-import {
-    pushRegistrationSubscribersByType, pushRegistrationSubscribersByUsers, triggerPushMsg
-} from 'server/notification/pushNotificationSvc';
+import { pushRegistrationSubscribersByUsers, triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { exists } from 'server/system/mongooseHelper';
 import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
-import { Attachment, CbError, CbError1, Elt, Item, ModuleAll, User, UserRoles } from 'shared/models.model';
+import { Attachment, CbError, CbError1, Elt, Item, ModuleAll } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { usersToNotify } from 'shared/user';
 import { capString } from 'shared/util';

@@ -37,7 +37,6 @@ import { DisplayProfileComponent } from 'form/public/components/displayProfile/d
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
 import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
-import { FormTermMappingComponent } from 'form/public/components/formTermMapping/formTermMapping.component';
 import { NativeRenderFullComponent } from 'form/public/components/nativeRenderFull/nativeRenderFull.component';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -116,7 +115,6 @@ const appRoutes: Routes = [
         FormViewComponent,
         FormClassificationComponent,
         FormGeneralDetailsComponent,
-        FormTermMappingComponent,
         FhirProcedureMappingComponent,
         NativeRenderFullComponent,
         QuestionAccordionListComponent,
