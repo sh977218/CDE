@@ -108,7 +108,6 @@ export class PermissibleValueComponent {
         datatypes: ['Value List'],
         excludeOrgs: [],
         excludeAllOrgs: false,
-        meshTree: '',
         regStatuses: [],
         resultPerPage: 20
     };

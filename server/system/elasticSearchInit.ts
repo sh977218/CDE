@@ -77,7 +77,6 @@ export const createIndexJson = {
                 }
             }
             , flatClassifications: {type: 'keyword'}
-            , flatMeshTrees: {type: 'keyword'}
             , classification: {
                 properties: {
                     stewardOrg: {
@@ -186,7 +185,6 @@ export const createFormIndexJson = {
             },
             stewardOrg: {properties: {name: {type: 'keyword'}}}
             , flatClassifications: {type: 'keyword'}
-            , flatMeshTrees: {type: 'keyword'}
             , classification: {
                 properties: {
                     stewardOrg: {

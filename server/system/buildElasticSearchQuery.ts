@@ -144,25 +144,6 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         }
     }
 
-    // filter by topic
-    if (settings.meshTree) {
-        sort = false;
-        // boost for those with fewer mesh trees
-        queryStuff.query.bool.must.push({
-            dis_max: {
-                queries: [{
-                    function_score: {
-                        script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatMeshTrees'].length + 1)"
-                        }
-                    }
-                }]
-            }
-        });
-        queryStuff.query.bool.must.push({term: {flatMeshTrees: settings.meshTree}});
-    }
-
     const flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
     if (settings.selectedOrg && flatSelection !== '') {
         sort = false;
@@ -266,38 +247,6 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         if (settings.selectedOrgAlt) {
             flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
         }
-
-        queryStuff.aggregations.meshTrees = {
-            filter: elasticFilter,
-            aggs: {
-                meshTrees: {
-                    terms: {
-                        size: 50,
-                        field: 'flatMeshTrees',
-                        include: '[^;]+'
-                    }
-                }
-            }
-        };
-
-        if (settings.meshTree && settings.meshTree.length > 0) {
-            queryStuff.aggregations.meshTrees.aggs.meshTrees.terms.include = escapeRegExp(settings.meshTree) + ';[^;]+';
-        }
-
-        queryStuff.aggregations.twoLevelMesh = {
-            filter: elasticFilter,
-            aggs: {
-                twoLevelMesh: {
-                    terms: {
-                        size: 500,
-                        field: 'flatMeshTrees',
-                        // include: '[^;]+'
-                        include: '[^;]+;[^;]+'
-                    }
-                }
-            }
-        };
-
     }
 
     if (queryStuff.query.bool.must.length === 0) {

@@ -283,7 +283,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.datatypes = params.datatypes ? params.datatypes.split(';') as DataType[] : [];
             this.searchSettings.excludeOrgs = params.excludeOrgs ? params.excludeOrgs.split(';') : [];
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
-            this.searchSettings.meshTree = params.topic;
             this.searchSettings.page = parseInt(params.page, 10) || 1;
             this.searchSettings.q = params.q;
             this.searchSettings.regStatuses = params.regStatuses ? params.regStatuses.split(';') as CurationStatus[] : [];
@@ -367,15 +366,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    browseTopic(topic: string) {
-        this.searchSettings.meshTree = topic;
-
-        this.doSearch();
-        if (!this.embedded) {
-            scrollTo('top');
-        }
-    }
-
     clearSelectedClassifications() {
         this.searchSettings.selectedOrg = undefined;
         this.searchSettings.classification.length = 0;
@@ -423,8 +413,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     clearSelectedTopics() {
-        this.searchSettings.meshTree = '';
-
         this.doSearch();
     }
 
@@ -510,9 +498,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else if (this.searchSettings.page && this.searchSettings.page > 1) {
             searchTerms.page = this.searchSettings.page;
         }
-        if (this.searchSettings.meshTree) {
-            searchTerms.topic = this.searchSettings.meshTree;
-        }
         return searchTerms;
     }
 
@@ -530,10 +515,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else {
             return this.searchSettings.selectedOrg;
         }
-    }
-
-    getCurrentSelectedTopic() {
-        return this.searchSettings.meshTree ? this.searchSettings.meshTree.split(';') : [];
     }
 
     getRegStatusHelp(name: string) {
@@ -596,11 +577,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.searchSettings.regStatuses.join(', ');
     }
 
-    getSelectedTopics() {
-        const res = this.searchSettings.meshTree.split(';').join(' > ');
-        return res.length > 50 ? res.substr(0, 49) + '...' : res;
-    }
-
     hasSelectedClassifications() {
         return this.searchSettings.selectedOrg;
     }
@@ -619,16 +595,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             && this.searchSettings.regStatuses.length !== 6;
     }
 
-    hasSelectedTopics() {
-        return this.searchSettings.meshTree && this.searchSettings.meshTree.length > 0;
-    }
-
     hideShowFilter() {
         this.filterMode = !this.filterMode;
     }
 
     isSearched() {
-        return this.searchSettings.q || this.searchSettings.selectedOrg || this.searchSettings.meshTree;
+        return this.searchSettings.q || this.searchSettings.selectedOrg;
     }
 
     openOrgDetails(org: Organization) {
@@ -772,25 +744,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.aggregationsExcludeClassification = [];
                 }
 
-                if (this.aggregations.meshTrees !== undefined) {
-                    if (this.searchSettings.meshTree) {
-                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({
-                                name: c.key.split(';').pop() || '',
-                                count: c.doc_count
-                            })
-                        );
-                    } else {
-                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({
-                                name: c.key.split(';')[0],
-                                count: c.doc_count
-                            })
-                        );
-                    }
-                } else {
-                    this.aggregationsTopics = [];
-                }
+                this.aggregationsTopics = [];
 
                 const aggregations = this.aggregations;
                 const orgsCreatedPromise = new Promise<void>(resolve => {
@@ -849,13 +803,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.topics = {};
                     const topics = this.topics;
                     this.topicsKeys.length = 0;
-                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach((term: ElasticQueryResponseAggregationBucket) => {
-                        const spli: string[] = term.key.split(';');
-                        if (!topics[spli[0]]) {
-                            topics[spli[0]] = [];
-                        }
-                        topics[spli[0]].push({name: spli[1], count: term.doc_count});
-                    });
                     for (const prop in this.topics) {
                         if (this.topics.hasOwnProperty(prop)) {
                             this.topicsKeys.push(prop);
@@ -912,22 +859,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    selectTopic(topic: string) {
-        const toSelect = !this.searchSettings.meshTree ? [] : this.searchSettings.meshTree.split(';');
-        const i = toSelect.indexOf(topic);
-        if (i > -1) {
-            toSelect.length = i + 1;
-        } else {
-            toSelect.push(topic);
-        }
-        this.searchSettings.meshTree = toSelect.join(';');
-
-        this.doSearch();
-        if (!this.embedded) {
-            SearchBaseComponent.focusTopic();
-        }
-    }
-
     setAltClassificationFilterMode() {
         this.altClassificationFilterMode = true;
         this.doSearch();
@@ -976,16 +907,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.altClassificationFilterMode = false;
             this.excludeOrgFilterMode = false;
         }
-        if (this.searchSettings.meshTree) {
-            let index = this.searchSettings.meshTree.indexOf(';');
-            if (index > -1) {
-                index = this.searchSettings.meshTree.indexOf(';', index + 1);
-            }
-            if (index > -1) {
-                this.searchSettings.meshTree = this.searchSettings.meshTree.substr(0, index);
-            }
-        }
-
         this.doSearch();
         setTimeout(() => {
             // search results only?
@@ -1023,10 +944,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     static focusClassification() {
         document.getElementById('classificationListHolder')?.focus();
-    }
-
-    static focusTopic() {
-        document.getElementById('meshTreesListHolder')?.focus();
     }
 
     static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {

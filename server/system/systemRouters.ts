@@ -19,7 +19,6 @@ import {
 } from 'server/system/idSourceSvc';
 import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
-import { syncWithMesh } from 'server/mesh/elastic';
 import { consoleLog } from 'server/log/dbLogger';
 import { addFile, getFile, gfs, ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
@@ -37,8 +36,6 @@ export function module() {
     router.get('/site-version', (req, res) => res.send(version));
 
     router.get('/status/cde', status);
-
-    new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York').start();
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
@@ -180,24 +177,6 @@ export function module() {
         }
         csrf()(req, res, next);
     }
-
-    // const checkLoginReq: RequestHandler = async function checkLoginReq(req, res, next) {
-    //     if (req.body.federated) {
-    //         return next();
-    //     }
-    //     const realIp = getRealIp(req);
-    //     if (Object.keys(req.body).filter(k => validLoginBody.indexOf(k) === -1).length) {
-    //         await banIp(realIp, 'Invalid Login body');
-    //         return res.status(401).send();
-    //     }
-    //     if (Object.keys(req.query).length) {
-    //         await banIp(realIp, 'Passing params to /login');
-    //         return res.status(401).send();
-    //     }
-    //     return next();
-    // }
-
-    const validLoginBody = ['username', 'password', '_csrf', 'recaptcha'];
 
     router.post('/login', /*checkLoginReq,*/ myCsrf, (req, res, next) => {
         const failedIp = findFailedIp(getRealIp(req));

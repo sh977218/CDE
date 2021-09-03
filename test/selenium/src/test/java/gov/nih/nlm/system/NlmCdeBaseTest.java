@@ -682,6 +682,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return driver.findElement(by);
     }
 
+    protected int findElementsSize(By by) {
+        return driver.findElements(by).size();
+    }
+
     protected void waitForDownload(String fileName) {
         for (int i = 0; i < 30; i++) {
             try {
