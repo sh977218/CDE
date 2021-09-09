@@ -8,7 +8,7 @@ import { empty, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
-import { PermissibleValue, PermissibleValueCodeSystem, PermissibleValueCodeSystems } from 'shared/models.model';
+import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
 import { mapSeries, withRetry } from 'shared/promise';
 import { SearchSettings } from 'shared/search/search.model';
 
@@ -113,7 +113,7 @@ export class PermissibleValueComponent {
     };
     private searchTerms = new Subject<string>();
     readonly SOURCES: Record<PermissibleValueCodeSystem, Source> = SOURCES;
-    readonly SOURCES_KEYS = PermissibleValueCodeSystems;
+    readonly SOURCES_KEYS = permissibleValueCodeSystems;
     vsacValueSet: VsacValue[] = [];
     umlsTerms: UmlsTerm[] = [];
 

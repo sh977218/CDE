@@ -32,18 +32,18 @@
                               [matBadgeHidden]="notificationService.getBadge() === '0'"
                               style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
                 </button>
-                <button mat-icon-button [class.active]="sectionActive === SECTIONS.searchSettings"
+                <button mat-icon-button [class.active]="isActiveSearchSettings()"
                         routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
                     <mat-icon>settings</mat-icon>
                 </button>
                 <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
-                        [class.active]="sectionActive === SECTIONS.user"
+                        [class.active]="isActiveUserMenu()"
                         (click)="loginSvc.goToLogin()" routerLink="/login">
                     <span>Login</span>
                 </button>
                 <ng-template #loggedInButton>
                     <button #userButton mat-button  id="username_link"
-                            [class.active]="sectionActive === SECTIONS.user"
+                            [class.active]="isActiveUserMenu()"
                             [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
                             (mouseenter)="menuEnter(majorBar, userMenuTrigger, loginMenu)"
                             (mouseleave)="menuLeave(majorBar, userMenuTrigger, userButton)">

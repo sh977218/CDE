@@ -34,7 +34,7 @@ import {
 
 const NAV_Z_INDEX_STANDARD = '1000';
 const NAV_Z_INDEX_ACTIVE = '1050';
-enum SECTIONS {
+const enum SECTIONS {
     home,
     de,
     form,
@@ -225,7 +225,6 @@ export class NavigationComponent {
             ],
         }
     ];
-    SECTIONS = SECTIONS;
     sectionActive: SECTIONS = SECTIONS.home;
 
     constructor(
@@ -274,6 +273,14 @@ export class NavigationComponent {
             this.barStates.push(barState);
         }
         return barState;
+    }
+
+    isActiveSearchSettings() {
+        return this.sectionActive === SECTIONS.searchSettings;
+    }
+
+    isActiveUserMenu() {
+        return this.sectionActive === SECTIONS.user;
     }
 
     menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {
