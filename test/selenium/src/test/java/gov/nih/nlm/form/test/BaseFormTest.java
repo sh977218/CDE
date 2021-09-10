@@ -106,7 +106,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[text()='Rich Text']"));
         clickElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//button[contains(text(),'Confirm')]"));
         textNotPresent("Confirm");
-        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]//div/span"));
+        textPresent(newSectionInstruction, By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_instruction')]"));
 
         setRepeat(sectionId, newSectionCardinality);
         saveEditSectionById("section_0");

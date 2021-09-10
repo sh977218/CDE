@@ -1,4 +1,7 @@
 <h2>Display Profiles</h2>
+<div *ngIf="dPVMs.length === 0">
+    There are no Display Profiles.
+</div>
 <mat-card *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
     <mat-card-header>
         <mat-card-title>

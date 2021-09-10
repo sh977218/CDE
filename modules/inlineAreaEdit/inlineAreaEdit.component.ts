@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import 'inlineAreaEdit/inlineAreaEdit.global.scss';
 import * as _cloneDeep from 'lodash/cloneDeep';
 
 @Component({
@@ -33,15 +34,14 @@ import * as _cloneDeep from 'lodash/cloneDeep';
 })
 export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     @Input() model!: string;
-    @Input() inputType = 'text';
     @Input() isAllowed = false;
     @Input() enableTextTruncate = true;
     @Output() modelChange = new EventEmitter<string>();
-    @Input() defFormat = '';
+    @Input() defFormat: 'html' | '' = '';
     @Output() defFormatChange = new EventEmitter<string>();
     editMode?: boolean;
     value!: string;
-    localFormat?: string;
+    localFormat: 'html' | '' = '';
 
     constructor(private elementRef: ElementRef) {
     }

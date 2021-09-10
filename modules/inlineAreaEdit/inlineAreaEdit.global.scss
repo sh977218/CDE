@@ -1,0 +1,16 @@
+cde-inline-area-edit cde-text-truncate table {
+  display: block;
+  overflow-x: auto;
+
+  td, th {
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 767px)  {
+  cde-inline-area-edit cde-text-truncate table {
+    td, th {
+      white-space: nowrap;
+    }
+  }
+}

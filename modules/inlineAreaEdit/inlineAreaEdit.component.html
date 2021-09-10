@@ -1,15 +1,14 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
         <mat-icon *ngIf="isAllowed" role="link" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
-        <span *ngIf="localFormat !== 'html'">
+        <cde-text-truncate *ngIf="localFormat === 'html'; else showText"
+                           [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
+                           [textType]="'html'">
+        </cde-text-truncate>
+        <ng-template #showText>
             <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate">
             </cde-text-truncate>
-        </span>
-        <span *ngIf="localFormat === 'html'">
-            <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
-                               [textType]="'html'">
-            </cde-text-truncate>
-        </span>
+        </ng-template>
     </div>
     <div *ngIf="editMode">
         <div class="btn-group">
@@ -17,12 +16,13 @@
             <button mat-raised-button (click)="setHtml(true)" type="button">Rich Text</button>
         </div>
 
-        <textarea *ngIf="localFormat != 'html'" [(ngModel)]="value" class="form-control"></textarea>
-
-
-        <ckeditor *ngIf="localFormat === 'html'" [config]="{extraPlugins: 'divarea'}"
+        <ckeditor *ngIf="localFormat === 'html'; else editText" [config]="{extraPlugins: 'divarea'}"
                   [(ngModel)]="value">
         </ckeditor>
+
+        <ng-template #editText>
+            <textarea [(ngModel)]="value" class="form-control"></textarea>
+        </ng-template>
 
         <button (click)="confirmSave()">
             <mat-icon>check</mat-icon>
