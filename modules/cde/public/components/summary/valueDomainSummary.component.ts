@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 
 export class ValueDomainSummaryComponent {
     @Input() elt: any;
+    @Input() eltIndex!: number;
 }

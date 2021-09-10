@@ -17,11 +17,7 @@
                 <dt class="col-4 text-right">Used By:</dt>
                 <dd class="col-8" id="usedBy_{{eltIndex}}" style="margin-top: 4px">
                     <span *ngIf="!(elt.classification.length > 0)">None</span>
-                    <span *ngIf="elt.classification.length > 0">
-                        <mat-chip-list>
-                            <mat-chip *ngFor="let st of getStewards()" style="height: 18px; margin: 1px">{{st}}</mat-chip>
-                        </mat-chip-list>
-                    </span>
+                    <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
                 </dd>
             </ng-container>
             <ng-container *ngIf="elt.source">
@@ -31,7 +27,7 @@
         </dl>
     </div>
     <div class="col-md-5 col-sm-8 col-xs-12">
-        <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
+        <cde-value-domain-summary [elt]="elt" [eltIndex]="eltIndex"></cde-value-domain-summary>
     </div>
     <div class="col-md-3 col-sm-4 col-xs-12">
         <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"

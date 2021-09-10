@@ -3,14 +3,14 @@
     <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="table cdeTable"
            summary="List of permissible values">
         <tr>
-            <th class="col-5">Value</th>
-            <th class="col-5">Code Name</th>
-            <th class="col-2">Code</th>
+            <th id="value_{{eltIndex}}" class="col-5">Value</th>
+            <th id="codeName_{{eltIndex}}" class="col-5">Code Name</th>
+            <th id="code_{{eltIndex}}" class="col-2">Code</th>
         </tr>
         <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
-            <td headers="value" class="col-5 text-truncate">{{pv.permissibleValue}}</td>
-            <td headers="codeName" class="col-5 text-truncate">{{pv.valueMeaningName}}</td>
-            <td headers="code" class="col-2 text-truncate">{{pv.valueMeaningCode}}</td>
+            <td headers="value_{{eltIndex}}" class="col-5 text-truncate">{{pv.permissibleValue}}</td>
+            <td headers="codeName_{{eltIndex}}" class="col-5 text-truncate">{{pv.valueMeaningName}}</td>
+            <td headers="code_{{eltIndex}}" class="col-2 text-truncate">{{pv.valueMeaningCode}}</td>
         </tr>
         <tr *ngIf="elt.valueDomain.permissibleValues.length > 5">
             <td colspan="3"> ({{elt.valueDomain.nbOfPVs}} total) See full list in Detailed View</td>
