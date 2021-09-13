@@ -48,6 +48,7 @@ let krabbeDataElementsXlsx = 'S:/MLB/CDE/NICHD/KrabbeWWR_CDEs.xlsx';
 let SocialDeterminantsOfHealthCsv = 'S:/MLB/CDE/NINR/SocialDeterminantsOfHealth_06152020.csv';
 let SocialDeterminantsOfHealthXlsx = 'S:/MLB/CDE/NINR/BRICSNINRSocDetHealth_NLM_2020-11-30.xlsx';
 let RED_CAP_CSV = "S:/MLB/CDE/REDCap/RADxUPDev_DataDictionary_2020-12-30.csv";
+let radxExecutiveCommittee = 'S:/MLB/CDE/RADX/RADx_Exec_CDEs_2021-07-29_NLM-QA.csv';
 
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
@@ -66,5 +67,6 @@ export {
     SocialDeterminantsOfHealthXlsx,
     RED_CAP_CSV,
     DMDXlsx,
-    vteDataElementsMappingCsv
+    vteDataElementsMappingCsv,
+    radxExecutiveCommittee
 };

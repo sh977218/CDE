@@ -54,6 +54,7 @@
       "**/server/classification/*",
       "**/server/discuss/*",
       "**/server/form/*",
+      "**/server/loader/*",
       "**/server/log/*",
       "**/server/nativeRender/*",
       "**/server/notification/*",
