@@ -124,6 +124,7 @@
 }
 
 .usa-banner__header-flag {
+  content: url(../../../node_modules/uswds/src/img/us_flag_small.png);
   float: left;
   margin-right: .5rem;
   width: 1rem;
@@ -441,7 +442,6 @@ img {
   }
 
   .usa-banner__header-flag {
-    content: url(../../../node_modules/uswds/src/img/us_flag_small.png);
     margin-right: .5rem;
     padding-top: 0;
   }

@@ -436,18 +436,23 @@ export class NativeRenderService {
                 case 'section':
                     return NativeRenderService.assignValueListRows(fe.formElements);
                 case 'question':
-                    if (fe.question.datatype === 'Value List' && fe.question.answers) {
-                        let index = -1;
-                        (fe.question.answers || []).forEach((pv: PermissibleFormValue, i, a: PermissibleFormValue[]) => {
-                            if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
-                                && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
-                                pv.index = index = -1;
-                            } else {
-                                pv.index = ++index;
+                    if (fe.question.answers) {
+                        if (fe.question.datatype === 'Value List') {
+                            let index = -1;
+                            fe.question.answers.forEach((pv: PermissibleFormValue, i, a: PermissibleFormValue[]) => {
+                                if (NativeRenderService.hasOwnRow(pv) || index === -1 && (i + 1 < a.length
+                                    && NativeRenderService.hasOwnRow(a[i + 1]) || i + 1 === a.length)) {
+                                    pv.index = index = -1;
+                                } else {
+                                    pv.index = ++index;
+                                }
+                            });
+                        }
+                        fe.question.answers.forEach(pv => {
+                            if (pv.formElements) {
+                                NativeRenderService.assignValueListRows(pv.formElements);
                             }
-
-                            if (pv.formElements) { NativeRenderService.assignValueListRows(pv.formElements); }
-                        });
+                        })
                     }
                     break;
                 default:

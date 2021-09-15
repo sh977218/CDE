@@ -38,7 +38,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
                 false
         ));
 
-        List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//*[contains(@class,'form-check-label')]"));
+        List<WebElement> tdsInDisplayProfile = findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'nativeRenderPreview')]//*[contains(@class,'form-check-label')]"));
         checkAnswerValue(tdsInDisplayProfile, true);
 
         goToPreview();
@@ -53,7 +53,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         createDisplayProfile(noAnswerValueDisplayProfile);
 
         // use driver.findElements to check answer value elements are not visible on page.
-        tdsInDisplayProfile = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'displayProfilePreview')]//*[contains(@class,'form-check-label')]/span"));
+        tdsInDisplayProfile = driver.findElements(By.xpath("//*[@id='profile_0']//*[contains(@class,'nativeRenderPreview')]//*[contains(@class,'form-check-label')]/span"));
         checkAnswerValue(tdsInDisplayProfile, false);
 
         goToPreview();

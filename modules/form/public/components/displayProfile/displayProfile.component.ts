@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { getMapToFhirResource } from 'core/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
+import 'form/public/components/displayProfile/displayProfile.global.scss';
 import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
@@ -22,12 +23,6 @@ interface DisplayProfileVM {
 @Component({
     selector: 'cde-display-profile',
     templateUrl: './displayProfile.component.html',
-    styles: [`
-        .example-section {
-            display: flex;
-            flex-direction: column;
-        }
-    `]
 })
 export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {

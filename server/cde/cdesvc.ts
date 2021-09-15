@@ -121,7 +121,7 @@ export function draftDelete(req: Request, res: Response) {
 }
 
 export function byTinyIdList(req: Request, res: Response) {
-    const tinyIdList: string[] = req.params.tinyIdList.split(',');
+    const tinyIdList: string[] = (req.params.tinyIdList || '').split(',');
     dataElementModel.find({archived: false}).where('tinyId')
         .in(tinyIdList)
         .exec(handleError({req, res}, dataElements => {

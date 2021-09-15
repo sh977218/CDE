@@ -19,7 +19,7 @@ public class DisplayProfilesTest extends BaseFormTest {
 
         scrollToViewById("profile_0");
         // 5 columns across with first item hoisted up by skip logic
-        String baseXpath = "//*[@id='profile_0']//*[contains(@class,'displayProfileRenderDiv')]//*[*[normalize-space()='Education level USA type']]//";
+        String baseXpath = "//*[@id='profile_0']//*[contains(@class,'nativeRenderPreview')]//*[*[normalize-space()='Education level USA type']]//";
         int i = 5;
         while (i >= 0) {
             if (i == 0) Assert.fail("Unexpected y value");

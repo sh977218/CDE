@@ -289,7 +289,7 @@ export abstract class Elt {
     NIH_Endorsed: boolean = false;
     attachments: Attachment[] = [];
     changeNote?: string;
-    checked?: boolean; // volatile, used by quickboard
+    checked?: boolean; // volatile, used by board compare side-by-side
     classification: Classification[] = []; // mutable
     comments: Comment[] = []; // mutable
     created?: DateType = new Date();
@@ -573,8 +573,8 @@ export type NotificationSettings = {
     [key in NotificationSettingsType]?: NotificationSettingsMedia;
 };
 
-export const PermissibleValueCodeSystems = ['LOINC', 'NCI Thesaurus', 'SNOMEDCT US', 'UMLS'] as const;
-export type PermissibleValueCodeSystem = ArrayToType<typeof PermissibleValueCodeSystems>;
+export const permissibleValueCodeSystems = ['LOINC', 'NCI Thesaurus', 'SNOMEDCT US', 'UMLS'] as const;
+export type PermissibleValueCodeSystem = ArrayToType<typeof permissibleValueCodeSystems>;
 export class PermissibleValue {
     [key: string]: any;
 

@@ -23,7 +23,7 @@
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                        <section class="example-section">
+                        <section class="d-flex flex-column">
                             <mat-form-field>
                                 <mat-select class="form-control" [disabled]="!canEdit" placeholder="Default View"
                                             [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
@@ -83,32 +83,36 @@
                     </mat-card-actions>
                 </mat-card>
             </div>
-            <div class="col-lg-7 col-sm-12 displayProfilePreview">
-                <mat-card class="displayProfileRenderDiv" style="padding: .1rem 1rem 0 1rem">
+            <div class="col-lg-7 col-sm-12">
+                <mat-card>
                     <mat-card-header>
                         <mat-card-title>
                             Preview
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                        <cde-native-render [elt]="dPVM.sample" [profile]="dPVM.profile"
+                        <cde-native-render class="nativeRenderPreview"
+                                           [elt]="dPVM.sample" [profile]="dPVM.profile"
                                            [nativeRenderType]="dPVM.profile.displayType"></cde-native-render>
                     </mat-card-content>
                 </mat-card>
-                <div>
-                    Unit of Measure Aliases
-                    <button mat-raised-button (click)="uomAliasEdit(dPVM)" *ngIf="canEdit">
-                        <ng-container *ngIf="dPVM.aliases.edit; else uomEdit">
-                            Okay
-                            <mat-icon>done</mat-icon>
-                        </ng-container>
-                        <ng-template #uomEdit>
-                            Edit
-                            <mat-icon>edit</mat-icon>
-                        </ng-template>
-                    </button>
-                </div>
+
                 <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>
+                            Unit of Measure Aliases
+                            <button mat-raised-button (click)="uomAliasEdit(dPVM)" *ngIf="canEdit">
+                                <ng-container *ngIf="dPVM.aliases.edit; else uomEdit">
+                                    Okay
+                                    <mat-icon>done</mat-icon>
+                                </ng-container>
+                                <ng-template #uomEdit>
+                                    Edit
+                                    <mat-icon>edit</mat-icon>
+                                </ng-template>
+                            </button>
+                        </mat-card-title>
+                    </mat-card-header>
                     <mat-card-content>
                         <div class="row">
                             <ng-template #displayAliases>

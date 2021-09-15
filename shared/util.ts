@@ -1,4 +1,5 @@
-import { isEqual, union } from 'lodash';
+import * as _isEqual from 'lodash/isEqual';
+import * as _union from 'lodash/union';
 
 export function capCase(str: string): string {
     return str.split(' ').map(capString).join(' ');
@@ -43,8 +44,8 @@ export function updateTag<T>(array: T[] | undefined, status: boolean, tag: T): T
 }
 
 export function designationComparator(a: any, b: any) {
-    if (isEqual(a.designation, b.designation)) {
-        b.tags = union(a.tags, b.tags);
+    if (_isEqual(a.designation, b.designation)) {
+        b.tags = _union(a.tags, b.tags);
         return true;
     } else {
         return false;
@@ -52,8 +53,8 @@ export function designationComparator(a: any, b: any) {
 }
 
 export function definitionComparator(a: any, b: any) {
-    if (isEqual(a.definition, b.definition)) {
-        b.tags = union(a.tags, b.tags);
+    if (_isEqual(a.definition, b.definition)) {
+        b.tags = _union(a.tags, b.tags);
         return true;
     } else {
         return false;
@@ -61,44 +62,44 @@ export function definitionComparator(a: any, b: any) {
 }
 
 export function referenceDocumentComparator(a: any, b: any) {
-    return isEqual(a.document, b.document)
-        && isEqual(a.title, b.title)
-        && isEqual(a.uri, b.uri)
-        && isEqual(a.providerOrg, b.providerOrg)
-        && isEqual(a.docType, b.docType);
+    return _isEqual(a.document, b.document)
+        && _isEqual(a.title, b.title)
+        && _isEqual(a.uri, b.uri)
+        && _isEqual(a.providerOrg, b.providerOrg)
+        && _isEqual(a.docType, b.docType);
 }
 
 export function propertyComparator(a: any, b: any) {
-    return isEqual(a.key, b.key)
-        && isEqual(a.value, b.value)
-        && isEqual(a.source, b.source);
+    return _isEqual(a.key, b.key)
+        && _isEqual(a.value, b.value)
+        && _isEqual(a.source, b.source);
 }
 
 export function idComparator(a: any, b: any) {
-    return isEqual(a.id, b.id)
-        && isEqual(a.source, b.source);
+    return _isEqual(a.id, b.id)
+        && _isEqual(a.source, b.source);
 }
 
 export function attachmentComparator(a: any, b: any) {
-    return isEqual(a.fileid, b.fileid)
-        && isEqual(a.source, b.source);
+    return _isEqual(a.fileid, b.fileid)
+        && _isEqual(a.source, b.source);
 }
 
 export function dataSetComparator(a: any, b: any) {
-    return isEqual(a.id, b.id)
-        && isEqual(a.notes, b.notes)
-        && isEqual(a.source, b.source)
-        && isEqual(a.studyUri, b.studyUri);
+    return _isEqual(a.id, b.id)
+        && _isEqual(a.notes, b.notes)
+        && _isEqual(a.source, b.source)
+        && _isEqual(a.studyUri, b.studyUri);
 }
 
 export function derivationRuleComparator(a: any, b: any) {
-    return isEqual(a.ruleType, b.ruleType)
-        && isEqual(a.formula, b.formula)
-        && isEqual(a.name, b.name)
-        && isEqual(a.inputs, b.inputs)
-        && isEqual(a.outputs, b.outputs);
+    return _isEqual(a.ruleType, b.ruleType)
+        && _isEqual(a.formula, b.formula)
+        && _isEqual(a.name, b.name)
+        && _isEqual(a.inputs, b.inputs)
+        && _isEqual(a.outputs, b.outputs);
 }
 
 export function sourceComparator(a: any, b: any) {
-    return isEqual(a.sourceName, b.sourceName);
+    return _isEqual(a.sourceName, b.sourceName);
 }
