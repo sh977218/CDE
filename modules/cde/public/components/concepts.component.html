@@ -10,7 +10,7 @@
                 <th>Code Name</th>
                 <th>Code System</th>
                 <th>Code ID</th>
-                <th id="conceptActions" *ngIf="canEdit"></th>
+                <th id="conceptActions_{{config.type}}" *ngIf="canEdit"></th>
             </tr>
             <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                 itemtype="http://schema.org/MedicalCode">
@@ -19,7 +19,7 @@
                 </td>
                 <td itemprop="codeSystem">{{concept.origin}}</td>
                 <td itemprop="codeValue">{{concept.originId}}</td>
-                <td headers="actions" *ngIf="canEdit">
+                <td headers="conceptActions_{{config.type}}" *ngIf="canEdit">
                     <mat-icon id="remove{{config.type}}-{{$index}}"
                               (click)="removeConcept(config.type, $index)" title="Remove">delete_outline
                     </mat-icon>

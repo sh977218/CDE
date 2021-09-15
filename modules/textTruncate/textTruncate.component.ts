@@ -15,6 +15,10 @@ import { Component, Input } from '@angular/core';
             overflow: hidden;
             display: inline-block;
         }
+
+        .btn-link {
+            color: #0071eb;
+        }
     `]
 })
 export class TextTruncateComponent {

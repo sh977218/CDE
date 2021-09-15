@@ -2,7 +2,7 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" (click)="navDrawer.open()"></button>
+<button *ngIf="!navDrawer.opened" aria-label="Nav Drawer Open" class="noPrint slide-pane-button-right" (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
     <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0" [style.right]="isMobile ? 0 : '17px'"
