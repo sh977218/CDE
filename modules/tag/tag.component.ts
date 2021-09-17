@@ -7,7 +7,15 @@ import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operato
 
 @Component({
     selector: 'cde-tag',
-    templateUrl: './tag.component.html'
+    templateUrl: './tag.component.html',
+    styles: [
+        `
+            .mat-chip.mat-standard-chip .mat-chip-remove {
+                color: rgba(0, 0, 0, 0.87);
+                opacity: 0.65;
+            }
+        `
+    ]
 })
 export class TagComponent {
     @Input() tags: string[] = [];

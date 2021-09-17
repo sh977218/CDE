@@ -1,6 +1,6 @@
 <div *ngFor="let classification of elt.classification;let i = index" class="pull-left boxed-div">
     <div *ngIf="showWorkingGroups(classification)" id="classificationOrg-{{classification.stewardOrg.name}}">
-        <h4>{{classification.stewardOrg.name}}</h4>
+        <p style="font-size: 1.5rem; margin-bottom: .5rem; font-weight: 500; line-height:1.2">{{classification.stewardOrg.name}}</p>
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">

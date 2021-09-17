@@ -45,7 +45,7 @@
                             Viewing
                         </ng-container>
                         <ng-template #notViewing>
-                            <a [href]="priorElement.url" target="_blank">
+                            <a [attr.aria-label]="'View prior history ' + i" [href]="priorElement.url" target="_blank">
                                 <mat-icon>visibility</mat-icon>
                             </a>
                         </ng-template>
