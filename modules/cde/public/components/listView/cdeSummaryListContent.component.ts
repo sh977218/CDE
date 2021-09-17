@@ -20,7 +20,7 @@ export class CdeSummaryListContentComponent implements SummaryComponent {
     defaultAttachmentsFilter = isDefault;
     module = 'cde';
 
-    getStewards(): string[] {
-        return  this.elt.classification ? this.elt.classification.map(cl => cl.stewardOrg.name) : [];
+    getStewards(): string {
+        return (this.elt.classification || []).map(cl => cl.stewardOrg.name).join(', ');
     }
 }

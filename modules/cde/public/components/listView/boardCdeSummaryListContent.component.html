@@ -16,7 +16,7 @@
         <cde-cde-general-details [elt]="elt"></cde-cde-general-details>
     </div>
     <div class="col-lg-5 col-sm-8 col-12" >
-        <cde-value-domain-summary [elt]="elt"></cde-value-domain-summary>
+        <cde-value-domain-summary [elt]="elt" [eltIndex]="eltIndex"></cde-value-domain-summary>
     </div>
     <div class="col-lg-3 col-sm-4 col-12">
         <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"
