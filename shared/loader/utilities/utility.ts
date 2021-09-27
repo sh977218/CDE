@@ -2,7 +2,7 @@ import * as _isEmpty from 'lodash/isEmpty';
 import * as _trim from 'lodash/trim';
 import { PermissibleValueCodeSystem } from 'shared/models.model';
 
-const CSV_HEADER_MAP: Record<string, string> = {
+export const CSV_HEADER_MAP: Record<string, string> = {
     'naming.designation': 'CDE Name',
     'naming.definiton': 'CDE Definition',
     source: 'Question Source /Origin/Reference',
@@ -14,6 +14,16 @@ const CSV_HEADER_MAP: Record<string, string> = {
     origin: 'DEC Concept Terminology Source',
     originId: 'Data Element Concept (DEC) Identifier'
 };
+
+export const REQUIRED_FIELDS: string[] = [
+    'naming.designation',
+    'naming.definiton',
+    'datatypeValueList:datatype',
+    'source',
+    'Question Text / Item Text',
+    'origin',
+    'originId'
+];
 
 export function formatRows(csvFileName: string, rows: any[]) {
     const formattedRows: Record<string,string>[] = [];

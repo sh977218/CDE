@@ -54,6 +54,7 @@ import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
 import { CommentsComponent } from 'settings/comments/comments.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
+import { DataValidationComponent } from 'settings/dataValidation/dataValidation.component';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { DraftsService } from 'settings/drafts/drafts.service';
 import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
@@ -248,6 +249,12 @@ const appRoutes: Routes = [
                 canActivate: [SiteAdminGuard],
                 data: {title: 'Id Sources'}
             },
+            {
+                path: 'dataValidation',
+                component: DataValidationComponent,
+                canActivate: [OrgAuthorityGuard],
+                data: {title: 'Data Validation'}
+            },
         ]
     }
 ];
@@ -315,6 +322,7 @@ const appRoutes: Routes = [
         EditSiteAdminsComponent,
         FhirAppsComponent,
         IdSourcesComponent,
+        DataValidationComponent,
         MyPublishedFormsComponent,
         NotificationComponent,
         OneListMgtComponent,
