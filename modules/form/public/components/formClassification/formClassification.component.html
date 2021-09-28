@@ -1,8 +1,10 @@
 <h2 class="section-header"> Classification</h2>
-<h4 *ngIf="elt.isDraft">
-    Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
-</h4>
-<ng-container *ngIf="!elt.isDraft">
+<ng-template #notAvailable>
+    <div style="font-size: 20px; line-height: 1">
+        Classification is not available in Drafts. Click the Draft slider above to view the current Published version.
+    </div>
+</ng-template>
+<ng-container *ngIf="!elt.isDraft; else notAvailable">
     <button *ngIf="canClassify(userService.user)" mat-raised-button id="openClassificationModalBtn"
             (click)="openClassifyItemModal()" color="primary">
         <mat-icon>folder_open</mat-icon> Classify this Form

@@ -1889,6 +1889,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     }
 
+    protected void nativeSelect(By bySelect, String optionText) {
+        new Select(findElement(bySelect)).selectByVisibleText(optionText);
+        textPresent(optionText, bySelect);
+    }
+
     protected void nonNativeSelect(String xpathParent, String selectLabel, String optionText) {
         String xpathSelect = xpathParent + (selectLabel.length() > 0
                 ? "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')]/label[contains(.,'" + selectLabel + "')]]"

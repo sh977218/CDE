@@ -42,7 +42,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         checkAnswerValue(tdsInDisplayProfile, true);
 
         goToPreview();
-        List<WebElement> tdsInPreview = findElements(By.xpath("//label[contains(@class,'form-check-label')]/span"));
+        List<WebElement> tdsInPreview = findElements(By.xpath("//*[@id='preview-div']//label[contains(@class,'form-check-label')]/span"));
         checkAnswerValue(tdsInPreview, true);
         findElement(By.xpath("//li[contains(.,'Not at all')]/span[contains(.,'5')]"));
 
@@ -57,7 +57,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
         checkAnswerValue(tdsInDisplayProfile, false);
 
         goToPreview();
-        tdsInPreview = driver.findElements(By.xpath("//label[contains(@class,'form-check-label')]/span"));
+        tdsInPreview = driver.findElements(By.xpath("//*[@id='preview-div']//label[contains(@class,'form-check-label')]/span"));
         checkAnswerValue(tdsInPreview, false);
     }
 }

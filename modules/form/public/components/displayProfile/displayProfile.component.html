@@ -24,13 +24,14 @@
                     </mat-card-header>
                     <mat-card-content>
                         <section class="d-flex flex-column">
-                            <mat-form-field>
-                                <mat-select class="form-control" [disabled]="!canEdit" placeholder="Default View"
-                                            [(value)]="dPVM.profile.displayType" (valueChange)="setDisplayType(dPVM)">
-                                    <mat-option value="Follow-up">Print (Follow-up style)</mat-option>
-                                    <mat-option value="Dynamic">Digital (Dynamic style)</mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                            <label>
+                                Default Value
+                                <select class="form-control" [disabled]="!canEdit"
+                                        [(ngModel)]="dPVM.profile.displayType" (ngModelChange)="setDisplayType(dPVM)">
+                                    <option value="Follow-up">Print (Follow-up style)</option>
+                                    <option value="Dynamic">Digital (Dynamic style)</option>
+                                </select>
+                            </label>
                             <mat-checkbox id="displayAsMatrix_{{index}}" [disabled]="!canEdit"
                                           [(ngModel)]="dPVM.profile.sectionsAsMatrix"
                                           (change)="eltChange.emit()">Sections as matrices
@@ -55,10 +56,11 @@
                                           [(ngModel)]="dPVM.profile.displayInvisible"
                                           (change)="eltChange.emit()">Display Invisible Questions
                             </mat-checkbox>
-                            <div>
-                                Number of Columns: <span id="nbOfColumnsValue">{{dPVM.profile.numberOfColumns}}</span>
-                            </div>
-                            <mat-slider min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
+                            <label id="nbOfColumnsValue">
+                                Number of Columns: {{dPVM.profile.numberOfColumns}}
+                            </label>
+                            <mat-slider aria-labelledby="nbOfColumnsValue"
+                                        min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
                                         [ngModel]="dPVM.profile.numberOfColumns"
                                         (ngModelChange)="onChange(dPVM.profile,$event)"
                                         [disabled]="!canEdit"></mat-slider>

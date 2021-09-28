@@ -2,7 +2,8 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" (click)="navDrawer.open()"></button>
+<button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" title="Expand Page Navigation"
+        (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
     <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0" [style.right]="isMobile ? 0 : '17px'"
@@ -214,28 +215,29 @@
                                 Please login to export forms.
                             </a>
                         </mat-menu>
-                        <button id="addToBoard" mat-raised-button color="primary"
+                        <button id="addToBoard" mat-raised-button color="primary" title="Add to Board"
                                 (click)="mltPinModal.pinMultiple([elt])">
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="d-none d-md-inline-block">Add to Board</span>
                         </button>
-                        <button *ngIf="userService.loggedIn()" mat-raised-button color="primary"
+                        <button *ngIf="userService.loggedIn()" mat-raised-button color="primary" title="Pin CDEs"
                                 id="pinAllCdes" (click)="pinAllCdesIntoBoard()">
                             <mat-icon>add_shopping_cart</mat-icon>
                             <span class="d-none d-md-inline ml-1">Pin CDEs</span>
                         </button>
-                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)" id="copyFormBtn" mat-raised-button
-                                color="primary"
+                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
+                                id="copyFormBtn" mat-raised-button color="primary" title="Copy Form"
                                 (click)="openCopyElementModal()">
                             <mat-icon>content_copy</mat-icon>
                             <span class="d-none d-md-inline ml-1">Copy</span>
                         </button>
-                        <button id="cdeListBtn" mat-raised-button color="primary" (click)="openFormCdesModal()">
+                        <button id="cdeListBtn" mat-raised-button color="primary" title="List CDEs"
+                                (click)="openFormCdesModal()">
                             <mat-icon>list</mat-icon>
                             <span class="d-none d-md-inline ml-1">CDEs</span>
                         </button>
                         <button *ngIf="userService.canViewComment" id="discussBtn" mat-raised-button color="primary"
-                                (click)="commentDrawer.toggle();">
+                                title="Discuss Form" (click)="commentDrawer.toggle();">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
                                 comment
                             </mat-icon>
@@ -244,12 +246,13 @@
                         <span class="spacer"></span>
                         <ng-container *ngIf="elt.isDraft">
                             {{savingText}}
-                            <button id="deleteDraftBtn" title="Delete Draft" mat-raised-button color="warn"
+                            <button id="deleteDraftBtn" mat-raised-button color="warn" title="Delete Draft"
                                     (click)="deleteModal.openDeleteModal()">
                                 <mat-icon>delete</mat-icon>
                                 <span class="d-none d-sm-inline-block ml-1">Delete Draft</span>
                             </button>
-                            <button id="openSave" mat-raised-button color="primary" (click)="publish()"
+                            <button id="openSave" mat-raised-button color="primary" title="Publish"
+                                    (click)="publish()"
                                     [disabled]="savingText === 'Saving...'">
                                 <mat-icon>publish</mat-icon>
                                 <span class="d-none d-sm-inline-block ml-1">Publish</span>

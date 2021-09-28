@@ -259,11 +259,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
             Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//input")).getAttribute("aria-checked"), "true");
         }
 
-        nonNativeSelect("//*[@id='profile_" + index + "']", "Default View", displayType);
+        nativeSelect(By.xpath("//*[@id='profile_" + index + "']//select"), displayType);
         hangon(1);
 
         clickElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']"));
-        int currentNbOfCols = Integer.valueOf(findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText());
+        int currentNbOfCols = Integer.valueOf(
+            findElement(By.cssSelector("#profile_" + index + " #nbOfColumnsValue")).getText().substring(19)
+        );
         for (int i = 0; i < Math.abs(numberOfColumns - currentNbOfCols); i++) {
             Keys key = (numberOfColumns - currentNbOfCols) > 0 ? Keys.RIGHT : Keys.LEFT;
             findElement(By.cssSelector("#profile_" + index + " mat-slider[max='6']")).sendKeys(key);
