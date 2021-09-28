@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { addStringtype } from '../system/mongoose-stringtype';
 import { orderedList } from 'shared/regStatusShared';
+import { administrativeStatuses } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -117,6 +118,7 @@ export const registrationStateSchema = new Schema({
     unresolvedIssue: StringType,
     administrativeStatus: {
         type: StringType,
+        enum: administrativeStatuses,
         description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'
     },
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},

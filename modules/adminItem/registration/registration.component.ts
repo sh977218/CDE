@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import * as _noop from 'lodash/noop';
-import { Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
+import { AdministrativeStatus, administrativeStatuses, Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/regStatusShared';
 
 @Component({
@@ -19,6 +19,7 @@ export class RegistrationComponent implements OnInit {
     helpMessage?: string;
     newState!: RegistrationState;
     validRegStatuses: string[] = ['Retired', 'Incomplete', 'Candidate'];
+    validAdminStatus: readonly AdministrativeStatus[] = administrativeStatuses;
 
     constructor(
         private alert: AlertService,
@@ -29,7 +30,10 @@ export class RegistrationComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.newState = {registrationStatus: this.elt.registrationState.registrationStatus};
+        this.newState = {
+            registrationStatus: this.elt.registrationState.registrationStatus,
+            administrativeStatus: this.elt.registrationState.administrativeStatus
+        };
     }
 
     openRegStatusUpdate() {

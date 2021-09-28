@@ -614,9 +614,20 @@ export class ReferenceDocument {
     uri?: string;
 }
 
+export type AdministrativeStatus = ArrayToType<typeof administrativeStatuses>;
+export const administrativeStatuses = [
+    'NLM Review',
+    'Org Revise',
+    'Org Approve',
+    'Gov Review',
+    'Published',
+    'Not Endorsed',
+    'Retired'
+] as const;
+
 export class RegistrationState {
     administrativeNote?: string;
-    administrativeStatus?: string;
+    administrativeStatus?: AdministrativeStatus;
     effectiveDate?: Date;
     registrationStatus: CurationStatus = 'Incomplete';
     registrationStatusSortOrder?: number; // volatile, used by elastic
