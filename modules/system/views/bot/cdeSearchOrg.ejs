@@ -18,7 +18,7 @@
         <% } %>
     </ul>
     <nav aria-label="Page navigation example">
-        <ul class="pagination">
+        <ul class="pagination flex-wrap">
             <% for(var i = 1; i <= totalPages; i++) { %>
             <li class="page-item">
                 <a class="page-link" href="/cde/search?selectedOrg=<%= selectedOrg %>&&page=<%= i %>"><%= i %></a>

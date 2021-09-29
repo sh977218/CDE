@@ -12,6 +12,8 @@ sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/serv
 
 cp -R config buildNode
 #sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json
+mkdir -p buildNode/modules/system/views
+cp -R modules/system/views buildNode/modules/system # Server-side rendering templates stored with client code
 cp server/package.json buildNode/server
 cp shared/package.json buildNode/shared
 cp -R shared/de/assets buildNode/shared/de
