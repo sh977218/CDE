@@ -100,6 +100,14 @@
                     <mat-list-item id="resources" [routerLinkActive]="['isActive']" routerLink="resources">
                         Resources
                     </mat-list-item>
+                    <mat-list-item [routerLinkActive]="['isActive']" routerLink="dataValidation">
+                        Data Loading
+                    </mat-list-item>
+                    <mat-list class="ml-4">
+                        <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']" routerLink="dataValidation">
+                            Validation
+                        </mat-list-item>
+                    </mat-list>
                 </ng-container>
 
                 <ng-container *ngIf="userSvc.user?.siteAdmin">

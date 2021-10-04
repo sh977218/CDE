@@ -15,14 +15,7 @@ export function module() {
         }
         const fileBuffer = (req.files as any)[0].buffer;
         const reportOutput = await runValidationOnLoadCSV(fileBuffer);
-        let responseText = '';
-        if (!!reportOutput) {
-            responseText += 'Row numbers are based on CSV file.\n\n';
-            responseText += reportOutput;
-        } else {
-            responseText = 'No issues found';
-        }
-        res.send(responseText);
+        res.send(reportOutput);
     });
 
     return router;

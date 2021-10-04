@@ -1,0 +1,54 @@
+<h1>Data Loading</h1>
+
+<div>
+    <p>Validate a CSV</p>
+    <label for="fileToValidate">
+        <button color="primary" mat-raised-button (click)="openFileDialog('fileToValidate')" [disabled]="fileValidating || fileDownloading">
+            <mat-icon>cloud_upload</mat-icon>
+            Upload CSV file
+        </button>
+    </label>
+    <ng-container *ngIf="fileValidating">
+        <ng-container>
+            <mat-icon style="vertical-align: middle" class="spin">autorenew</mat-icon> Validating...
+        </ng-container>
+    </ng-container>
+    <input id="fileToValidate" style="display: none" type="file" (change)="validateCSV($event)">
+</div>
+
+<div *ngIf="fileErrors.length > 0">
+    <p>The uploaded file had the following issues:</p>
+    <ul>
+        <li *ngFor="let e of fileErrors">
+            {{e}}
+        </li>
+    </ul>
+</div>
+
+<div *ngIf="dataErrors.length > 0">
+    <p>Data validation errors are listed below. Row numbers are based on CSV file</p>
+    <label for="fileToValidate">
+        <button color="primary" mat-raised-button (click)="downloadReport()" [disabled]="fileValidating">
+            <mat-icon>play_for_work</mat-icon>
+            Download Report
+        </button>
+    </label>
+    <table class="table table-bordered table-condensed table-striped table-responsive">
+        <tr>
+            <th>Row</th>
+            <th>CDE Name</th>
+            <th>Issues</th>
+        </tr>
+        <tr *ngFor="let e of dataErrors">
+            <td>{{e.row}}</td>
+            <td>{{e.name}}</td>
+            <td>
+                <ul>
+                    <li *ngFor="let log of e.logs">
+                        {{log}}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
