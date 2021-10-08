@@ -51,3 +51,4 @@ declare module 'lodash/trim';
 declare module 'lodash/union';
 declare module 'lodash/uniq';
 declare module 'lodash/uniqWith';
+declare module 'simple-spellchecker';
