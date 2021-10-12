@@ -7,17 +7,22 @@ export class FrontExceptionHandler implements ErrorHandler {
     lock = false;
     previousException: AngularError;
 
-    constructor(
-    ) {}
+    constructor() {
+    }
 
     handleError(error: AngularError) {
-        if (this.previousException && error.toString() === this.previousException.toString()) { return; }
+        if (this.previousException && error.toString() === this.previousException.toString()) {
+            return;
+        }
         this.previousException = error;
-        console.error(error);
         if (typeof error.message === 'object') {
             try {
                 error.message = JSON.stringify(error.message).substr(0, 500);
-            } catch (e) {}
+            } catch (e) {
+            }
+        }
+        if (error.message.includes('ChunkLoadError')) {
+            return; // do not log as error, unknown source
         }
         try {
             if (!this.lock) {

@@ -1,4 +1,3 @@
-import { forEach } from 'async';
 import * as connectMongo from 'connect-mongo';
 import { Response } from 'express';
 import * as session from 'express-session';
