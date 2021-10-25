@@ -11,7 +11,7 @@ public class DefaultToFormBoard1Test extends BoardTest {
         mustBeLoggedInAs(boarduser2_username, password);
         String formName1 = "ER/Admission Therapeutic Procedures";
         String formName2 = "Parkinson's Disease Quality of Life Scale (PDQUALIF)";
-        String defaultBoardName = "Board 1";
+        String defaultBoardName = "Form Board 1";
         goToFormByName(formName1);
         clickElement(By.id("addToBoard"));
         textPresent("Added to new board: " + defaultBoardName);

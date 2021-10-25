@@ -10,7 +10,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
     public void createDefaultCDEBoard() {
         mustBeLoggedInAs(boarduser2_username, password);
         String cdeName = "Prior BMSCT Administered Indicator";
-        String defaultBoardName = "Board 1";
+        String defaultBoardName = "CDE Board 1";
         goToCdeByName(cdeName);
         clickElement(By.id("addToBoard"));
         textPresent("Added to new board: " + defaultBoardName);
@@ -33,8 +33,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
     @Test(dependsOnMethods={"createDefaultCDEBoard"})
     public void defaultToMostRecentBoard(){
-        String boardName1 = "Board 1";
-        String boardName2 = "Board 2";
+        String boardName1 = "Test Board 1";
+        String boardName2 = "Test Board 2";
         mustBeLoggedInAs(boarduser2_username, password);
         createBoard(boardName1, "Test Order 1", "cde");
         createBoard(boardName2, "Test Order 2", "cde");
@@ -49,6 +49,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
 
+        hangon(2);
+
         Assert.assertEquals(
             driver.findElement(
                     By.cssSelector("cde-board-view-template:nth-of-type(1) > div:nth-child(1)")
@@ -61,6 +63,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         goToCdeByName(cdeName3);
         clickElement(By.id("addToBoard"));
 
+        hangon(2);
+
         Assert.assertEquals(
             driver.findElement(
                     By.cssSelector("cde-board-view-template:nth-of-type(1) > div:nth-child(1)")
@@ -72,6 +76,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         goToCdeByName(cdeName1);
         clickElement(By.id("addToBoard"));
+
+        hangon(2);
 
         Assert.assertEquals(
             driver.findElement(
