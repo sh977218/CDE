@@ -55,6 +55,7 @@ import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.c
 import { CommentsComponent } from 'settings/comments/comments.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { DataValidationComponent } from 'settings/dataValidation/dataValidation.component';
+import { SpellCheckComponent } from 'settings/spellcheck/spellcheck.component';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { DraftsService } from 'settings/drafts/drafts.service';
 import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
@@ -255,6 +256,12 @@ const appRoutes: Routes = [
                 canActivate: [OrgAuthorityGuard],
                 data: {title: 'Data Validation'}
             },
+            {
+                path: 'spellCheck',
+                component: SpellCheckComponent,
+                canActivate: [OrgAuthorityGuard],
+                data: {title: 'Spell Check'}
+            },
         ]
     }
 ];
@@ -323,6 +330,7 @@ const appRoutes: Routes = [
         FhirAppsComponent,
         IdSourcesComponent,
         DataValidationComponent,
+        SpellCheckComponent,
         MyPublishedFormsComponent,
         NotificationComponent,
         OneListMgtComponent,

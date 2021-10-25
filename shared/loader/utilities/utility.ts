@@ -25,6 +25,11 @@ export const REQUIRED_FIELDS: string[] = [
     'originId'
 ];
 
+export const SPELL_CHECK_FIELDS: string[] = [
+    'naming.designation',
+    'naming.definiton'
+];
+
 export function formatRows(csvFileName: string, rows: any[]) {
     const formattedRows: Record<string,string>[] = [];
     rows.forEach((row, i) => {

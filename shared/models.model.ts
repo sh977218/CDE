@@ -747,3 +747,8 @@ export interface UsersOrgQuery {
     name: string;
     users: UserRef[];
 }
+
+export interface ValidationWhitelist {
+    collectionName: string;
+    terms: string[];
+}

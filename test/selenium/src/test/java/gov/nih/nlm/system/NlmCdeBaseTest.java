@@ -478,6 +478,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent("Notification", By.id("settingsContent"));
     }
 
+    protected void goToSpellCheck(){
+        goToSettings();
+        clickElement(By.id("spellCheck"));
+    }
+
     protected int getNumberOfResults() {
         return Integer.parseInt(findElement(By.id("searchResultNum")).getText().trim());
     }

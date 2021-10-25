@@ -1,0 +1,178 @@
+<h1>Data Loading</h1>
+
+<div>
+    <mat-form-field>
+        <mat-select placeholder="Whitelist" [(ngModel)]="selectedWhiteList" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
+            <mat-option *ngFor="let s of currentWhiteLists" [value]="s">{{s.collectionName}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="retrievingWhitelists || updatingWhitelists">
+        <span><mat-icon style="vertical-align: middle" class="spin">autorenew</mat-icon></span>
+    </ng-container>
+    <div class="form-group">
+        <button mat-raised-button (click)="openNewWhitelistModal()" id="openNewWhitelistModalBtn" type="button" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
+            <mat-icon>add</mat-icon>
+            Add a Whitelist
+        </button>
+
+        <button *ngIf="selectedWhiteList" mat-raised-button (click)="openEditWhitelistModal()" id="openEditWhitelistModalBtn" type="button" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
+            <mat-icon>edit</mat-icon>
+            View/Edit Whitelist
+        </button>
+
+        <button *ngIf="selectedWhiteList" mat-raised-button (click)="openDeleteWhitelistModal()" id="openDeleteWhitelistModalBtn" type="button" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
+            <mat-icon>delete</mat-icon>
+            Delete Whitelist
+        </button>
+    </div>
+    <p>Spellcheck a CSV</p>
+    <label for="fileToValidate">
+        <button color="primary" mat-raised-button (click)="openFileDialog('fileToValidate')" [disabled]="checkingFile || !selectedWhiteList">
+            <mat-icon>cloud_upload</mat-icon>
+            Upload CSV file
+        </button>
+    </label>
+    <ng-container *ngIf="checkingFile">
+        <ng-container>
+            <mat-icon style="vertical-align: middle" class="spin">autorenew</mat-icon> Spell checking...
+        </ng-container>
+    </ng-container>
+    <input id="fileToValidate" style="display: none" type="file" (change)="spellcheckCSV($event)">
+</div>
+
+<div *ngIf="fileErrors.length > 0">
+    <p>The uploaded file had the following issues:</p>
+    <ul>
+        <li *ngFor="let e of fileErrors">
+            {{e}}
+        </li>
+    </ul>
+</div>
+
+<div *ngIf="getMisspelledTerms().length > 0">
+    <p>Potential spelling errors are listed below. Row numbers are based on CSV file</p>
+    <table class="table table-bordered table-condensed table-striped table-responsive">
+        <tr>
+            <th>Term</th>
+            <th>CDE</th>
+            <th>Whitelist?</th>
+        </tr>
+        <tr *ngFor="let t of getMisspelledTerms()">
+            <td>{{t}}</td>
+            <td>
+                <ul>
+                    <li *ngFor="let c of spellingErrors[t]">
+                        Row: {{c.row}}, {{c.name}} in {{c.field}}
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <mat-checkbox (change)="addOrRemoveSpellingError($event.checked, t)">
+                </mat-checkbox>
+            </td>
+        </tr>
+    </table>
+    <div *ngIf="selectedErrors.size > 0">
+        <div class="form-group">
+            <button color="primary" mat-raised-button (click)="whiteListSelectedErrors()" [disabled]="updatingWhitelists || !selectedWhiteList">
+                <mat-icon>add</mat-icon>
+                Whitelist Selected Terms
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template #newWhitelistModal>
+    <h4 mat-dialog-title>Add new Whitelist</h4>
+    <form role="form">
+        <div mat-dialog-content>
+            <div class="form-group">
+                <label for="newWhitelistname">Name</label>
+                <input class="form-control" id="newWhitelistname" name="whitelistname" Placeholder="New Whitelist"
+                       [(ngModel)]="newWhiteList" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="newWhitelistterms">Terms</label>
+                <mat-icon style="height: 30px" (click)="openTermHelp()">help_outline</mat-icon>
+                <input class="form-control" id="newWhitelistterms" name="whitelistterms" Placeholder="Terms to whitelist (optional)"
+                       [(ngModel)]="newWhiteListTerms"/>
+            </div>
+        </div>
+        <div class="modal-footer" id="newWhitelistModalFooter">
+            <button mat-raised-button color="warn" [mat-dialog-close] id="cancelNewWhitelistBtn" type="button">
+                Cancel
+            </button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="true" [disabled]="!this.newWhiteList.trim()"
+                    id="createNewWhitelistBtn" type="submit">Save
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #editWhitelistModal>
+    <h4 mat-dialog-title>Edit Whitelist "{{this.selectedWhiteList.collectionName}}"?</h4>
+    <div mat-dialog-content>
+        <p>Current Terms</p>
+        <div *ngFor="let t of this.selectedWhiteList.terms">
+            <div>
+                <mat-icon (click)="removeWhiteListTerm(t)"
+                          id="removeWhiteListTerm-{{t}}">delete_outline
+                </mat-icon>
+                <span>{{t}}</span>
+            </div>
+        </div>
+        <hr>
+        <p>New terms</p>
+        <ul>
+            <li *ngFor="let t of this.whiteListNewTerms">
+                {{t}}
+            </li>
+        </ul>
+        <div>
+            <input #newTerm class="form-control" id="addNewWhitelistTerm" name="whitelistterm" Placeholder="Add New Term"/>
+            <button mat-raised-button (click)="addNewTerm(newTerm.value); newTerm.value = '';" id="addNewWhitelistTermBtn" type="button">
+                <mat-icon>add</mat-icon>
+                Add Term
+            </button>
+        </div>
+    </div>
+    <div class="modal-footer" id="editWhitelistModalFooter">
+        <button mat-raised-button color="warn" [mat-dialog-close] id="cancelEditWhitelistBtn" type="button">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true"
+                [disabled]="!this.selectedWhiteList || (this.whiteListNewTerms.length === 0 && this.whiteListRemoveTerms.length === 0)"
+                id="editWhitelistBtn" type="submit">Save Changes
+        </button>
+    </div>
+</ng-template>
+
+
+<ng-template #deleteWhitelistModal>
+    <h4 mat-dialog-title>Delete Selected Whitelist "{{this.selectedWhiteList.collectionName}}"?</h4>
+    <div mat-dialog-actions>
+        <button mat-raised-button color="primary" [mat-dialog-close] id="cancelDeleteWhitelistBtn" type="button">
+            Cancel
+        </button>
+        <button mat-raised-button color="warn" [mat-dialog-close]="true" [disabled]="!this.selectedWhiteList"
+                id="deleteWhitelistBtn" type="submit">Delete
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #newListHelpModal>
+    <h1 mat-dialog-title>Help</h1>
+    <div mat-dialog-content>
+        <h5>Adding Terms</h5>
+        <p>
+            To add more than one term, separate terms with the "|" character
+        </p>
+        <p>
+            For example:<br>
+            format|like|this
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="true">Close</button>
+    </div>
+</ng-template>
