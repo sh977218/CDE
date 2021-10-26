@@ -1,6 +1,6 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, forwardRef, Inject } from '@angular/core';
-import { DomSanitizer, Title } from '@angular/platform-browser';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, ElementRef, forwardRef, Inject, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -12,19 +12,40 @@ import { MatIconRegistry } from '@angular/material/icon';
     selector: 'nih-cde',
     template: `
         <cde-navigation></cde-navigation>
+        <iframe *ngIf="ssoServerReceiver" #receiver [src]="ssoServerReceiver" (load)="frameReady()"
+                width="0" height="0" style="display: none">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
     `
 })
 export class CdeAppComponent {
+    @ViewChild('receiver') receiver?: ElementRef<HTMLIFrameElement>;
+    iframePromiseResolve: (() => void) | null = null;
+    iframeReady: Promise<void> | null = null;
+    iframeReadyTwice = false;
+    ssoServerReceiver?: SafeResourceUrl;
+
     constructor(
         @Inject(forwardRef(() => ActivatedRoute)) protected route: ActivatedRoute,
         @Inject(forwardRef(() => BackForwardService)) backForwardService: BackForwardService,
-        @Inject(forwardRef(() => DomSanitizer)) sanitizer: DomSanitizer,
+        @Inject(forwardRef(() => DomSanitizer)) private sanitizer: DomSanitizer,
         @Inject(forwardRef(() => MatIconRegistry)) iconReg: MatIconRegistry,
         @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => Title)) private title: Title,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) {
+        this.userService.then(user => {
+        }, () => {
+            const userService = this.userService;
+            window.addEventListener('message', function receiveMessage(message: MessageEvent) {
+                if (message.origin === window.ssoServerOrigin && message.data) {
+                    userService.loginViaJwt(message.data);
+                }
+            });
+            this.utsSendMessage('Messages', () => {
+            });
+        });
         this.userService.subscribe((user) => {
             this.userService.catch((err?: HttpErrorResponse) => {
                 if (err && err.status === 0 && err.statusText === 'Unknown Error') {
@@ -88,5 +109,36 @@ export class CdeAppComponent {
             + `</svg>`
             /* tslint:enable */
         ));
+    }
+
+    frameReady() {
+        if (!this.iframeReadyTwice) {
+            this.iframeReadyTwice = true;
+            return;
+        }
+        if (this.iframePromiseResolve) {
+            this.iframePromiseResolve();
+        }
+    }
+
+    ssoLogout(cb: () => void) {
+        this.utsSendMessage('Logout', () => {});
+        cb();
+    }
+
+    utsSendMessage(message: string, cb: () => void) {
+        if (!this.iframeReady) {
+            this.ssoServerReceiver = this.sanitizer.bypassSecurityTrustResourceUrl(window.ssoServerReceiver);
+            this.iframeReady = new Promise<void>(resolve => {
+                this.iframeReadyTwice = false;
+                this.iframePromiseResolve = resolve;
+            });
+        }
+        this.iframeReady.then(() => {
+            if (this.receiver && this.receiver.nativeElement && this.receiver.nativeElement.contentWindow) {
+                this.receiver.nativeElement.contentWindow.postMessage(message, window.ssoServerOrigin);
+                cb();
+            }
+        });
     }
 }

@@ -307,8 +307,8 @@ export abstract class Elt {
     referenceDocuments: ReferenceDocument[] = []; // mutable
     registrationState: RegistrationState = new RegistrationState();
     stewardOrg: {
-        name?: string,
-    } = {};
+        name: string,
+    } = { name: ''};
     source?: string; // obsolete
     sources: DataSource[] = [];
     tinyId!: string; // server generated

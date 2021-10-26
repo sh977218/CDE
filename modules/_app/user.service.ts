@@ -33,9 +33,7 @@ export class UserService {
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
-    searchUsernames(username: string) {
-        return this.http.get<User[]>('/server/user/usernames/' + username);
-    }
+    canSeeComment = () => canViewComment(this.user);
 
     catch(cb: CbErrorObj<HttpErrorResponse>): Promise<any> {
         return this.promise.catch(cb);
@@ -50,39 +48,58 @@ export class UserService {
         this.mailSubscription = undefined;
     }
 
-    loggedIn(): User | undefined {
-        return this.user;
-    }
-
-    canSeeComment = () => canViewComment(this.user);
-
     isOrgCurator = () => isOrgCurator(this.user);
     isOrgAdmin = () => isOrgAdmin(this.user);
     isOrgAuthority = () => isOrgAuthority(this.user);
     isSiteAdmin = () => isSiteAdmin(this.user);
 
+    loggedIn(): User | undefined {
+        return this.user;
+    }
+
+    loginViaJwt(jwt: string): Promise<User> {
+        return this.http.post<User>('/server/user/jwt', {jwtToken: jwt}).toPromise()
+            .then(user => this.processUser(user));
+    }
+
+    processUser(user: User): Promise<User> {
+        if (!user || !user.username) {
+            this._user = null;
+            return Promise.reject();
+        }
+        this._user = UserService.validate(user);
+        this.setOrganizations();
+        if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
+            this._user.searchSettings.defaultSearchView = 'summary';
+        }
+        this.canViewComment = canViewComment(this.user);
+        return Promise.resolve(user);
+    }
+
     reload(cb = _noop) {
         this.clear();
-        this.promise = new Promise<User>((resolve, reject) => {
-            this.http.get<User>('/server/user/').subscribe(response => {
-                if (!response || !response.username) {
-                    this._user = null;
-                    return reject();
-                }
-                this._user = UserService.validate(response);
-                this.setOrganizations();
-                if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
-                    this._user.searchSettings.defaultSearchView = 'summary';
-                }
-                this.canViewComment = canViewComment(this.user);
-                resolve(this._user);
-            }, reject);
-        });
+        this.promise = this.http.get<User>('/server/user/').toPromise()
+            .then(user => this.processUser(user));
         this.promise.finally(() => {
             this.listeners.forEach(listener => listener(this._user || null));
         });
         this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
         this.promise.then(cb, cb);
+    }
+
+    resetInactivityTimeout() {
+        clearTimeout(this.logoutTimeout);
+        if (this.loggedIn()) {
+            this.logoutTimeout = window.setTimeout(() => {
+                if (this.loggedIn()) {
+                    this.reload(() => {
+                        if (!this.loggedIn()) {
+                            this.dialog.open(InactivityLoggedOutComponent);
+                        }
+                    });
+                }
+            }, INACTIVE_TIMEOUT);
+        }
     }
 
     save() {
@@ -93,6 +110,10 @@ export class UserService {
             },
             (err) => this.alert.httpErrorMessageAlert(err)
         );
+    }
+
+    searchUsernames(username: string) {
+        return this.http.get<User[]>('/server/user/usernames/' + username);
     }
 
     setOrganizations() {
@@ -123,22 +144,7 @@ export class UserService {
         };
     }
 
-    resetInactivityTimeout() {
-        clearTimeout(this.logoutTimeout);
-        if (this.loggedIn()) {
-            this.logoutTimeout = window.setTimeout(() => {
-                if (this.loggedIn()) {
-                    this.reload(() => {
-                        if (!this.loggedIn()) {
-                            this.dialog.open(InactivityLoggedOutComponent);
-                        }
-                    });
-                }
-            }, INACTIVE_TIMEOUT);
-        }
-    }
-
-    then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
+    then<T>(cb: (user: User) => T | Promise<T>, errorCb?: (err?: string) => T): Promise<T> {
         return this.promise.then(cb, errorCb);
     }
 

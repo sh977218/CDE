@@ -16,6 +16,7 @@ import {
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu'
 import { NavigationEnd, Params, Router } from '@angular/router';
+import { CdeAppComponent } from '_app/app.component';
 import { LoginService } from '_app/login.service';
 import '_app/navigation/navigation.global.scss';
 import { NotificationService } from '_app/notifications/notification.service';
@@ -132,8 +133,6 @@ type CdeNavMenu = (CdeNavMenuItem & {
     styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent {
-    @Output() goToLogin: EventEmitter<void> = new EventEmitter<void>();
-    @Output() logout: EventEmitter<void> = new EventEmitter<void>();
     interruptEvent = interruptEvent;
     barStates: {
         bar: HTMLElement,
@@ -230,6 +229,7 @@ export class NavigationComponent {
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => ApplicationRef)) private appRef: ApplicationRef,
+        @Inject(forwardRef(() => CdeAppComponent)) private app: CdeAppComponent,
         @Inject(forwardRef(() => ComponentFactoryResolver)) private componentFactoryResolver: ComponentFactoryResolver,
         @Inject(forwardRef(() => Injector)) private injector: Injector,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -281,6 +281,18 @@ export class NavigationComponent {
 
     isActiveUserMenu() {
         return this.sectionActive === SECTIONS.user;
+    }
+
+    logout() {
+        const refreshAndLogin = () => {
+            this.userService.reload();
+            this.router.navigate(['/login']);
+        };
+        this.app.ssoLogout(() => {});
+        this.http.post('/server/system/logout', {}, {responseType: 'text'}).subscribe(
+            refreshAndLogin,
+            refreshAndLogin // ignore error in favor of already being logged out
+        );
     }
 
     menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {

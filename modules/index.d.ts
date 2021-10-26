@@ -13,6 +13,8 @@ declare global {
         publicUrl: string;
         showCovidBanner: boolean;
         siteKey: string;
+        ssoServerOrigin: string;
+        ssoServerReceiver: string;
         urlProd: string;
         userAlertTime: number;
         version: string;

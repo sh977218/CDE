@@ -55,7 +55,7 @@
                             <button mat-menu-item routerLink="/settings/profile">Settings</button>
                             <button mat-menu-item *ngIf="canClassify(userService.user)" routerLink="/classificationManagement">Classifications</button>
                             <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
-                            <button mat-menu-item (click)="loginSvc.logout()">Log Out</button>
+                            <button mat-menu-item (click)="logout()">Log Out</button>
                         </div>
                     </mat-menu>
                 </ng-template>

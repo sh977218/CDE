@@ -1,11 +1,12 @@
 import * as Config from 'config';
 import { RequestHandler, Router } from 'express';
+import { authenticate } from 'passport';
 import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
+import { taskAggregator } from 'server/user/taskAggregatorSvc';
 import {
     byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
 import { version } from 'server/version';
-import { taskAggregator } from 'server/user/taskAggregatorSvc';
 
 const config = Config as any;
 require('express-async-errors');
@@ -25,6 +26,15 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
     router.post('/', loggedInMiddleware, async (req, res) => {
         await updateUser(req.user, req.body);
         res.send();
+    });
+
+    router.post('/jwt', (req, res, next) => {
+        /* istanbul ignore next */
+        authenticate('utsJwt', function (err, user) {
+            req.logIn(user, function () {
+                res.status(err ? 401 : 200).send(err ? err : user);
+            });
+        })(req, res, next);
     });
 
     router.get('/usernames/:username', async (req, res) => {
