@@ -30,10 +30,11 @@ export class PinBoardModalComponent {
         if (this.userService.user) {
             this.myBoardsSvc.loadMyBoards(this.module, ()=> {
                 if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 0){
+                    const newBoardName = `${this.module === 'cde' ? 'CDE' : 'Form'} Board 1`;
                     const newBoard = {
                         type:this.module,
                         pins:[],
-                        name:'Board 1',
+                        name:newBoardName,
                         description:'',
                         shareStatus:'Private'
                     };
@@ -46,8 +47,8 @@ export class PinBoardModalComponent {
                                 type: this.module
                             }).subscribe(() => {
                                 if (elts.length === 1) {
-                                    this.alert.addAlert('success', 'Added to new board: Board 1');
-                                } else { this.alert.addAlert('success', 'All elements pinned to new board: Board 1'); }
+                                    this.alert.addAlert('success', 'Added to new board: ' + newBoardName);
+                                } else { this.alert.addAlert('success', 'All elements pinned to new board: ' + newBoardName); }
                             }, err => this.alert.httpErrorMessageAlert(err));
                         });
                     }, err => this.alert.httpErrorMessageAlert(err));
