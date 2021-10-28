@@ -35,14 +35,4 @@ public class PinAllLessThan20 extends BoardTest {
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);
     }
 
-    @Test
-    public void unpinPerm() {
-        mustBeLoggedInAs(reguser_username, password);
-        Cookie myCookie = getCurrentCookie();
-        // this board is owned by boardUser
-        given().contentType(ContentType.JSON).cookie(myCookie).body("{\"boardId\": \"575046ad89949d54384ee60a\"}")
-                .post(baseUrl + "/server/board/pinEntireSearchToBoard").then().statusCode(404);
-    }
-
-
 }
