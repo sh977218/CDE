@@ -36,13 +36,4 @@ public class PinCdesIntoBoardTest extends BoardTest {
         textPresent("School special accommodation indicator");
     }
 
-    @Test
-    public void pinNoPerm() {
-        mustBeLoggedInAs(reguser_username, password);
-        Cookie myCookie = getCurrentCookie();
-        // this board is owned by boardUser
-        given().contentType(ContentType.JSON).cookie(myCookie).body("{\"boardId\": \"575046ad89949d54384ee60a\"}")
-                .put(baseUrl + "/server/board/pinToBoard").then().statusCode(404);
-    }
-
 }

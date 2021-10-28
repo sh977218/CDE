@@ -54,15 +54,6 @@ export class CdeAppComponent {
             });
         });
 
-        if (window.ga && window.ga.getAll) {
-            this.router.events.subscribe(event => {
-                if (event instanceof NavigationEnd) {
-                    window.ga.getAll().forEach((tracker: Map<string, any>) =>
-                        window.gtag('config', tracker.get('trackingId'), {page_path: event.urlAfterRedirects})
-                    );
-                }
-            });
-        }
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
                 let r = this.route;

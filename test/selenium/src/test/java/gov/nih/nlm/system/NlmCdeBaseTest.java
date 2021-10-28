@@ -478,7 +478,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent("Notification", By.id("settingsContent"));
     }
 
-    protected void goToSpellCheck(){
+    protected void goToSpellCheck() {
         goToSettings();
         clickElement(By.id("spellCheck"));
     }
@@ -1845,8 +1845,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         String connectSid = "";
         Set<org.openqa.selenium.Cookie> cookies = driver.manage().getCookies();
         for (org.openqa.selenium.Cookie cookie : cookies) {
-            connectSid = cookie.getValue();
-            System.out.println("cookie: " + cookie.toString());
+            String cookieName = cookie.getName();
+            String cookieValue = cookie.getValue();
+            System.out.println("cookieName: " + cookieName);
+            if (cookieName.equals("connect.sid")) {
+                connectSid = cookieValue;
+                System.out.println("connect.sid: " + connectSid.toString());
+            }
         }
         Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
         return myCookie;

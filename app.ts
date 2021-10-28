@@ -74,11 +74,11 @@ app.use(helmet.contentSecurityPolicy({
         defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
         fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
         frameSrc: ["'self'", config.uts.ssoServerOrigin],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net',
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net', 'script.crazyegg.com',
             'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
         styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
             "'unsafe-inline'", '*.nih.gov', 'cdn.ckeditor.com'],
-        imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com'],
+        imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com', 'www.googletagmanager.com'],
         connectSrc: ['*'],
         reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
         workerSrc: ['*']
