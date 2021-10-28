@@ -1,0 +1,17 @@
+<h4 mat-dialog-title> Add Child Classification</h4>
+<div mat-dialog-content>
+    <p>Add a new classification under path:</p>
+    <p><strong>{{fullClassificationArray.join(' > ')}}</strong></p>
+    <mat-form-field appearance="fill">
+        <mat-label>Enter New Classification Name</mat-label>
+        <input matInput placeholder="Enter Some Input" [formControl]="newClassificationName" required
+               pattern="^[^;]+$" id="addChildClassifInput">
+        <mat-error *ngIf="newClassificationName.invalid">{{getErrorMessage()}}</mat-error>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="warn" [mat-dialog-close]>Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="newClassificationName.value" cdkFocusInitial
+            id="confirmAddChildClassificationBtn">Ok
+    </button>
+</div>

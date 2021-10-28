@@ -1,139 +1,100 @@
-<div *ngIf="onInitDone" class="container-fluid" id="classMgt">
+<div class="container-fluid" id="classMgt">
     <h4 class="page-header">Manage Classifications</h4>
-    <mat-form-field style="width: 300px">
-        <mat-select [(ngModel)]="orgToManage" (selectionChange)="onChangeOrg($event)" placeholder="Start by choosing your Organization">
-            <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
+    <mat-form-field class="w-75" appearance="fill">
+        <mat-select [formControl]="selectedOrg" (selectionChange)="orgChanged($event)" id="selectOrgMatSelect"
+                    placeholder="Start by choosing your Organization">
+            <mat-option *ngFor="let o of orgs" [value]="o.name">{{o.name}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-button *ngIf="orgToManage" id="updateOrgBtn" (click)="updateOrganization()">Update</button>
-    <div class="boxed-div overflowHidden" *ngIf="selectedOrg">
-        <h4 id="org-{{selectedOrg.name}}">{{selectedOrg.name}}
-            <a title="Add Child Classification" (click)="openAddChildClassificationModal(null);">
-                <mat-icon *ngIf="isOrgAdmin()" id="addClassification">subdirectory_arrow_left</mat-icon>
-            </a>
-        </h4>
-        <ng-container *ngFor="let selectedOrgIter of [selectedOrg]">
-            <tree-root #treeRoot [nodes]="selectedOrgIter.classifications" [options]="options">
-                <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                    <a [id]="node.path" href="{{searchByClassification(node,selectedOrgIter.name)}}"
-                       target="_blank" rel="noopener noreferrer">{{ node.data.name }}</a>
-                    <ng-container *ngIf="isOrgAdmin()">
-                        <button mat-icon-button [matMenuTriggerFor]="actionMenu" aria-label="actions">
-                            <mat-icon>more_vert</mat-icon>
+    <button mat-raised-button id="updateOrgBtn" (click)="updateOrganization()">Update</button>
+    <div class="boxed-div overflowHidden" *ngIf="selectedOrg.value">
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <!-- This is the tree node template for leaf nodes -->
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                <!-- use a disabled button to provide padding for tree leaf -->
+                <button mat-icon-button disabled></button>
+                <a [id]="getClassificationPath(node).categories.join(',')" [routerLink]="['/cde/search']"
+                   target="_blank" [queryParams]="getSearchParam(node)">{{node.name}}</a>
+                <ng-container *ngIf="isOrgAdmin()">
+                    <button mat-icon-button title="Add Child Classification" [id]="getAddClassificationRootButtonId()"
+                            (click)="openAddChildClassificationModal(node);"
+                            *ngIf="treeControl.getLevel(node) === 0">
+                        <mat-icon>subdirectory_arrow_left</mat-icon>
+                        Add Child Classification
+                    </button>
+                    <button mat-icon-button [matMenuTriggerFor]="actionMenuLeaf" aria-label="actions"
+                            *ngIf="treeControl.getLevel(node) !== 0">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #actionMenuLeaf="matMenu">
+                        <button mat-menu-item title="Add Child Classification"
+                                (click)="openAddChildClassificationModal(node);">
+                            <mat-icon>subdirectory_arrow_left</mat-icon>
+                            Add Child Classification
                         </button>
-                        <mat-menu #actionMenu="matMenu">
-                            <button mat-menu-item title="Edit"
-                                    (click)="openRenameClassificationModal(node);">
-                                <mat-icon>edit</mat-icon>
-                                Edit
-                            </button>
-                            <button mat-menu-item title="Remove"
-                                    (click)="openDeleteClassificationModal(node);">
-                                <mat-icon>delete_outline</mat-icon>
-                                Remove
-                            </button>
-                            <button mat-menu-item title="Reclassify"
-                                    (click)="openReclassificationModal(node);">
-                                <mat-icon>transform</mat-icon>
-                                Reclassify
-                            </button>
-                            <button mat-menu-item title="Add Child Classification"
-                                    (click)="openAddChildClassificationModal(node);">
-                                <mat-icon>subdirectory_arrow_left</mat-icon>
-                                Add Child Classification
-                            </button>
-                        </mat-menu>
-                    </ng-container>
-                </ng-template>
-                <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
-                    <div [class.tree-node-expanded]="true" [ngClass]="{'pull-left boxed-div':node.level===1}">
-                        <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                            <tree-node-content [node]="node" [index]="index" [template]="templates.treeNodeTemplate">
-                            </tree-node-content>
-                        </div>
-                        <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
-                    </div>
-                </ng-template>
-            </tree-root>
-        </ng-container>
+                        <button mat-menu-item title="Remove Classification"
+                                (click)="openDeleteClassificationModal(node);">
+                            <mat-icon>delete_outline</mat-icon>
+                            Remove
+                        </button>
+                        <button mat-menu-item title="Edit Classification"
+                                (click)="openRenameClassificationModal(node);">
+                            <mat-icon>edit</mat-icon>
+                            Edit
+                        </button>
+                        <button mat-menu-item title="Reclassify"
+                                (click)="openReclassificationModal(node);">
+                            <mat-icon>transform</mat-icon>
+                            Reclassify
+                        </button>
+                    </mat-menu>
+                </ng-container>
+            </mat-tree-node>
+            <!-- This is the tree node template for expandable nodes -->
+            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                <button mat-icon-button matTreeNodeToggle
+                        [attr.aria-label]="'Toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <a [id]="getHtmlId(node)" [routerLink]="['/cde/search']" target="_blank"
+                   [queryParams]="getSearchParam(node)">{{node.name}}</a>
+                <ng-container *ngIf="isOrgAdmin()">
+                    <button mat-icon-button title="Add Child Classification"
+                            (click)="openAddChildClassificationModal(node);" [id]="getAddClassificationRootButtonId()"
+                            *ngIf="treeControl.getLevel(node) === 0">
+                        <mat-icon class="mat-icon-rtl-mirror">subdirectory_arrow_left</mat-icon>
+                        Add Child Classification
+                    </button>
+                    <button mat-icon-button [matMenuTriggerFor]="actionMenuNode" aria-label="actions"
+                            *ngIf="treeControl.getLevel(node) !== 0">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #actionMenuNode="matMenu">
+                        <button mat-menu-item title="Add Child Classification"
+                                (click)="openAddChildClassificationModal(node);">
+                            <mat-icon>subdirectory_arrow_left</mat-icon>
+                            Add Child Classification
+                        </button>
+                        <button mat-menu-item title="Remove Classification"
+                                (click)="openDeleteClassificationModal(node);">
+                            <mat-icon>delete_outline</mat-icon>
+                            Remove
+                        </button>
+                        <button mat-menu-item title="Edit Classification"
+                                (click)="openRenameClassificationModal(node);">
+                            <mat-icon>edit</mat-icon>
+                            Edit
+                        </button>
+                        <button mat-menu-item title="Reclassify"
+                                (click)="openReclassificationModal(node);">
+                            <mat-icon>transform</mat-icon>
+                            Reclassify
+                        </button>
+                    </mat-menu>
+                </ng-container>
+            </mat-tree-node>
+        </mat-tree>
     </div>
 </div>
-
-<ng-template #renameClassificationContent>
-    <form #renameClassificationForm="ngForm" (ngSubmit)="renameClassification(renameClassificationNode)">
-        <h4 mat-dialog-title>Rename Classification</h4>
-        <div mat-dialog-content>
-            <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
-                   placeholder="New Classification Name" id="newClassificationName" pattern="^[^;]+$"
-                   #newClassificationInput="ngModel" required>
-            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.required">
-                Name is required
-            </span>
-            <span *ngIf="newClassificationInput.errors && newClassificationInput.errors.pattern">
-                Classification Name cannot contain <strong>;</strong>
-            </span>
-        </div>
-        <div mat-dialog-actions>
-            <button [mat-dialog-close] id="cancelRenameClassificationBtn"
-                    mat-raised-button color="warn" type="button">Cancel
-            </button>
-            <button mat-raised-button color="primary" id="confirmRenameClassificationBtn"
-                    [disabled]="!newClassificationName && !renameClassificationForm.form.valid"
-                    type="submit">OK
-            </button>
-        </div>
-    </form>
-</ng-template>
-
-<ng-template #deleteClassificationContent>
-    <h4 mat-dialog-title>Remove Classification</h4>
-    <div mat-dialog-content>
-        You are about to delete the following classification:
-        <br>
-        <br>
-        <div class="panel panel-default">
-            <div class="panel-body" [innerHTML]="selectedClassificationArray"></div>
-        </div>
-
-        <br/>This will affect multiple CDEs.
-        <br/>Are you sure you want to proceed?
-        <br/>
-        <br/>Please confirm your decision by typing the name of the classification:
-        <input id="removeClassificationUserTyped" [(ngModel)]="userTyped" class="form-control"
-               [placeholder]="selectedClassificationString" title="Please confirm">
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button [mat-dialog-close] id="cancelDeleteClassificationBtn" type="button">Cancel</button>
-        <button mat-raised-button [mat-dialog-close]="true" id="confirmDeleteClassificationBtn"
-                [disabled]="userTyped !== selectedClassificationString" type="submit">OK
-        </button>
-    </div>
-</ng-template>
-
-<cde-classify-item #reclassifyComponent [modalTitle]="selectedClassificationArray"
-                         (classified)="reclassify($event)">
-</cde-classify-item>
-
-<ng-template #addChildClassificationContent>
-    <h4 mat-dialog-title> Add Child Classification</h4>
-    <form #addChildClassificationForm="ngForm" (ngSubmit)="addChildClassification(childClassificationNode);">
-        <div mat-dialog-content>
-            Add a new classification under path:
-            <br>
-            <br>
-            <div class="panel panel-default">
-                <div class="panel-body" [innerHTML]="selectedClassificationArray"></div>
-            </div>
-            <input class="form-control" [(ngModel)]="newClassificationName" name="newClassificationName"
-                   placeholder="New Classification Name" id="addChildClassifInput" pattern="^[^;]+$" required>
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button [mat-dialog-close] id="cancelAddChildClassificationBtn"
-                    name="cancelDeleteClassificationBtn">Cancel
-            </button>
-            <button mat-raised-button type="submit" id="confirmAddChildClassificationBtn"
-                    [disabled]="!newClassificationName && !addChildClassificationForm.form.valid">OK
-            </button>
-        </div>
-    </form>
-</ng-template>

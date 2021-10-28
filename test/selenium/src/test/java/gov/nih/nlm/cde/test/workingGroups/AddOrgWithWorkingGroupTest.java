@@ -11,28 +11,31 @@ public class AddOrgWithWorkingGroupTest extends BaseClassificationTest {
         String orgWG = "Test Working Group 2";
 
         // Create some classifications for working group
-        String classification = "ABTC";
-        String subClassification = "ABTC 0904";
+        String classification1 = "ABTC";
+        String classification2 = "ABTC 0904";
+        String[] categories1 = new String[]{};
+        String[] categories2 = new String[]{"ABTC"};
         mustBeLoggedInAs(ctepEditor_username, password);
         gotoClassificationMgt();
-        nonNativeSelect("", "Start by choosing your Organization", orgWG);
-
-        createOrgClassification(orgWG, new String[]{classification, subClassification});
+        selectOrgClassification(orgWG);
+        addClassificationUnderPath(categories1, classification1);
+        expandOrgClassification(orgWG);
+        addClassificationUnderPath(categories2, classification2);
         modalGone();
 
         // Create CDE owned by newly created working group
         String cdeName = "Test CDE for " + orgWG;
         String cdeDefinition = "Let this test pass please!!!";
-        fillOutBasicCreateFields(cdeName, cdeDefinition, "CTEP", classification, subClassification);
+        fillOutBasicCreateFields(cdeName, cdeDefinition, "CTEP", classification1, classification2);
         modalGone();
-        textPresent(classification);
-        textPresent(subClassification);
+        textPresent(classification1);
+        textPresent(classification2);
         clickElement(By.id("submit"));
         editRegistrationStatus("Qualified", null, null, null, null);
         newCdeVersion();
 
         goToClassification();
-        addClassificationByTree(orgWG, new String[]{classification, subClassification});
+        addClassificationByTree(orgWG, new String[]{classification1, classification2});
         waitForESUpdate();
         // Make sure ctepEditor user can see it
         goToCdeSearch();

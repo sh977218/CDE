@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
     addNewOrg,
     addOrgAdmin,
@@ -13,6 +12,8 @@ import {
     transferSteward
 } from 'server/orgManagement/orgSvc';
 import { listOrgsDetailedInfo, managedOrgs, orgByName, updateOrg } from 'server/orgManagement/orgDb';
+import { hasRolePrivilege } from 'shared/security/authorizationShared';
+import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } from 'server/system/authorization';
 
 export function module() {
     const router = Router();
@@ -22,7 +23,11 @@ export function module() {
     });
 
     router.get('/managedOrgs', async (req, res) => {
-        const orgs = await managedOrgs();
+        const user = req.user;
+        let orgs = await managedOrgs();
+        if (!hasRolePrivilege(user, 'universalCreate')) {
+            orgs = await managedOrgs(user.orgAdmin.concat(user.orgCurator.concat(user.orgEditor)));
+        }
         res.send(orgs);
     });
     router.post('/addOrg', isOrgAuthorityMiddleware, async (req, res) => {

@@ -1,23 +1,27 @@
 package gov.nih.nlm.cde.test.classification;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class RemoveOrgClassificationTest extends NlmCdeBaseTest {
+public class RemoveOrgClassificationTest extends BaseClassificationTest {
 
     @Test
     public void removeOrgClassification() {
+        String org = "NINDS";
         String[] categories = new String[]{"Domain", "Participant/Subject Characteristics"};
+        String classification = "Participant/Subject Characteristics";
         mustBeLoggedInAs(ninds_username, password);
         searchNestedClassifiedCdes();
         textPresent("NINDS (102");
         searchNestedClassifiedForms();
         textPresent("NINDS (34");
         gotoClassificationMgt();
-
-        deleteOrgClassification("NINDS", categories);
+        selectOrgClassification(org);
+        expandOrgClassification(org);
+        deleteClassificationUnderPath(categories, classification);
         searchNestedClassifiedCdes();
         hangon(3);
         textNotPresent("NINDS (102");

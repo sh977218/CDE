@@ -57,8 +57,12 @@ const orgDetailProject = {
     htmlOverview: 1
 };
 
-export async function managedOrgs() {
-    return organizationModel.find({}).sort({name: 1});
+export async function managedOrgs(orgs = []) {
+    if (orgs.length) {
+        return organizationModel.find({name: {$in: orgs}}).sort({name: 1});
+    } else {
+        return organizationModel.find({}).sort({name: 1});
+    }
 }
 
 export async function orgByName(orgName: string, callback?: CbError1<OrganizationDocument | null>) {

@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import {
-    ActivatedRoute,
     ActivatedRouteSnapshot,
     CanActivate,
     CanActivateChild,

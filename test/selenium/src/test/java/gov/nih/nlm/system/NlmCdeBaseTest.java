@@ -687,6 +687,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return driver.findElement(by);
     }
 
+    protected void notFindElement(By by) {
+        List<WebElement> foundElements = driver.findElements(by);
+        if (foundElements.size() != 0) {
+            throw new Error("Elements in " + by.toString() + " has found.");
+        }
+    }
+
     protected int findElementsSize(By by) {
         return driver.findElements(by).size();
     }
@@ -1042,17 +1049,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.id("confirmDeleteClassificationBtn"));
         modalGone();
         closeAlert();
-    }
-
-    protected void deleteOrgClassification(String orgName, String[] categories) {
-        String classification = categories[categories.length - 1];
-        nonNativeSelect("", "Start by choosing your Organization", orgName);
-        clickMoreVertIcon(categories);
-        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'delete_outline']"));
-        findElement(By.id("removeClassificationUserTyped")).sendKeys(classification);
-        clickElement(By.id("confirmDeleteClassificationBtn"));
-        checkAlert("Classification Deleted");
-        Assert.assertEquals(0, driver.findElements(By.xpath("//*[@id='" + String.join(",", categories) + "']")).size());
     }
 
     protected void inlineEdit(String path, String string) {
@@ -1530,33 +1526,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath("//*[@id='" + String.join(",", categories) + "']/following-sibling::button[normalize-space()='more_vert']"));
     }
 
-    protected void createOrgClassification(String org, String[] categories) {
-        nonNativeSelect("", "Start by choosing your Organization", org);
-        // create root classification if it doesn't exist
-        List<WebElement> rootClassifications = driver.findElements(By.xpath("//*[@id='" + categories[0] + "']"));
-        if (rootClassifications.size() == 0) {
-            clickElement(By.id("addClassification"));
-            findElement(By.id("addChildClassifInput")).sendKeys(categories[0]);
-            hangon(2);
-            clickElement(By.id("confirmAddChildClassificationBtn"));
-            checkAlert("Classification added");
-        }
-        for (int i = 1; i < categories.length; i++) {
-            String[] nextCategories = Arrays.copyOfRange(categories, 0, i + 1);
-            String xpath = "//*[@id='" + String.join(",", nextCategories) + "']";
-            List<WebElement> nextCategoryList = driver.findElements(By.xpath(xpath));
-            if (nextCategoryList.size() == 0) {
-                String[] currentCategories = Arrays.copyOfRange(categories, 0, i);
-
-                clickMoreVertIcon(currentCategories);
-                clickElement(By.xpath("//button/mat-icon[normalize-space() = 'subdirectory_arrow_left']"));
-                findElement(By.id("addChildClassifInput")).sendKeys(nextCategories[nextCategories.length - 1]);
-                hangon(2);
-                clickElement(By.id("confirmAddChildClassificationBtn"));
-                checkAlert("Classification added");
-            }
-        }
-    }
 
     protected void editStewardOrgAndCancel(String newStewardOrg) {
         clickElement(By.xpath("//*[@itemprop='steward']//mat-icon"));
@@ -1744,16 +1713,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         isCommentOrReplyExists(message, true);
     }
 
-    protected void authorizeComment(String adminUsername, String adminPassword, String username, String message) {
-        mustBeLoggedInAs(adminUsername, adminPassword);
-        findElement(By.cssSelector("#notificationLink .mat-badge-content"));
-        clickElement(By.id("notificationLink"));
-        if (message.length() >= 60) message = message.substring(0, 59).trim();
-        clickElement(By.xpath("//*[contains(@class,'taskItem') and contains(.,'" + message + "')]//button[contains(.,'Authorize')]"));
-        clickElement(By.xpath("//button[contains(.,'Yes')]"));
-        textPresent("Role added");
-    }
-
     protected void removeComment(String message) {
         goToDiscussArea();
         String xpath = getCommentIconXpath(message, "comment", "remove");
@@ -1926,4 +1885,5 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         String xpath = "//*[@id='" + section + "-div']//*[contains(@class,'move" + capDirection + "-" + index + "')]";
         clickElement(By.xpath(xpath));
     }
+
 }

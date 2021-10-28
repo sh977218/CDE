@@ -1,119 +1,271 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
-import { IActionMapping, TreeComponent, TreeNode } from '@circlon/angular-tree-component';
+import { TreeNode } from '@circlon/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
-import { UserService } from '_app/user.service';
-import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { ClassificationService } from 'non-core/classification.service';
-import { Cb, ClassificationClassified, ItemClassificationNew } from 'shared/models.model';
+import { map } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Cb } from 'shared/models.model';
+import { ClassificationDatabase } from 'classificationManagement/classification-database';
+import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
+import { RemoveClassificationDialogComponent } from 'classificationManagement/remove-classification-dialog/remove-classification-dialog.component';
+import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
+import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
+import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
+import { DialogData } from 'classificationManagement/dialog-data';
+import { FlatClassificationNode } from 'classificationManagement/flat-classification-node';
+import { ClassificationNode } from 'classificationManagement/classification-node';
+import { SearchQueryParameter } from 'classificationManagement/search-query-parameter';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
-
-const actionMapping: IActionMapping = {
-    mouse: {
-        click: () => {
-        },
-        expanderClick: () => {
-        }
-    }
-};
+import { UserService } from '_app/user.service';
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
     styleUrls: ['./orgClassificationManagement.component.scss'],
 })
-export class OrgClassificationManagementComponent implements OnInit {
-    @ViewChild('renameClassificationContent', {static: true}) renameClassificationContent!: TemplateRef<any>;
-    @ViewChild('deleteClassificationContent', {static: true}) deleteClassificationContent!: TemplateRef<any>;
+export class OrgClassificationManagementComponent {
     @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemComponent;
-    @ViewChild('addChildClassificationContent', {static: true}) addChildClassificationContent!: TemplateRef<any>;
-    @ViewChild(TreeComponent) private tree!: TreeComponent;
     childClassificationNode?: TreeNode;
+    descriptorID!: string;
+    descriptorName!: string;
+    descToName: { [descId: string]: string } = {};
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     newClassificationName!: string;
     oldReclassificationArray!: string[];
-    onInitDone = false;
-    options = {
-        idField: 'name',
-        childrenField: 'elements',
-        displayField: 'name',
-        useVirtualScroll: false,
-        isExpandedField: 'elements',
-        actionMapping
-    };
-    orgToManage = '';
     renameClassificationNode?: TreeNode;
     selectedClassificationArray = '';
     selectedClassificationString = '';
-    selectedOrg!: Organization;
     userTyped = '';
+    selectedOrg: FormControl;
+    orgs: Organization[];
+
+    /** Map from flat node to nested node. This helps us finding the nested node to be modified */
+    flatNodeMap = new Map<FlatClassificationNode, ClassificationNode>();
+
+    /** Map from nested node to flattened node. This helps us to keep the same object for selection */
+    nestedNodeMap = new Map<ClassificationNode, FlatClassificationNode>();
+
+    treeControl = new FlatTreeControl<FlatClassificationNode>(node => node.level, node => node.expandable);
+    treeFlattener = new MatTreeFlattener(this.transformer, node => node.level, node => node.expandable, node => node.elements);
+    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(private http: HttpClient,
+                private route: ActivatedRoute,
+                private router: Router,
                 public dialog: MatDialog,
                 private alert: AlertService,
+                private userService: UserService,
                 private classificationSvc: ClassificationService,
-                private userService: UserService) {
-        this.userService.reload(() => {
-            if (this.userService.userOrgs.length > 0) {
-                if (this.userService.userOrgs.length === 1) {
-                    this.orgToManage = this.userService.userOrgs[0];
-                }
-                this.orgChanged(this.orgToManage, () => {
-                    this.onInitDone = true;
-                });
-            } else {
-                this.onInitDone = true;
-            }
+                private _database: ClassificationDatabase) {
+        this.selectedOrg = new FormControl(this.route.snapshot.queryParams.selectedOrg)
+        this.orgs = this.route.snapshot.data.orgs;
+        this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
+            this.isExpandable, this.getChildren);
+        this.treeControl = new FlatTreeControl<FlatClassificationNode>(this.getLevel, this.isExpandable);
+        this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+        _database.dataChange.subscribe(data => {
+            this.dataSource.data = data;
         });
     }
 
-    ngOnInit(): void {
-    }
+    isOrgAdmin = () => isOrgAdmin(this.userService.user);
 
-    addChildClassification(node: TreeNode) {
-        let classificationArray: string[] = [];
-        if (node) {
-            this.selectedClassificationString = node.data.name;
-            classificationArray = [node.data.name];
-            let _treeNode = node;
-            while (_treeNode.parent) {
-                _treeNode = _treeNode.parent;
-                if (!_treeNode.data.virtual) {
-                    classificationArray.unshift(_treeNode.data.name);
-                }
-            }
-            classificationArray.forEach((c, i) => {
-                if (i < classificationArray.length - 1) {
-                    this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-                } else {
-                    this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
-                }
-            });
-        } else {
-            this.selectedClassificationArray = ' <strong> ' + this.selectedOrg.name + ' </strong>';
-        }
-        classificationArray.push(this.newClassificationName);
-        const newClassification = {
-            orgName: this.selectedOrg.name,
-            categories: classificationArray
+    transformer(node: ClassificationNode, level: number) {
+        return {
+            expandable: !!node.elements && node.elements.length > 0,
+            name: node.name,
+            level,
         };
-        this.classificationSvc.addChildClassification(newClassification, (message: string) => {
-            this.orgChanged(this.selectedOrg.name, () => {
-                this.alert.addAlert('success', message);
-                this.dialogRef.close();
+    }
+
+    getLevel = (node: FlatClassificationNode) => node.level;
+
+    isExpandable = (node: FlatClassificationNode) => node.expandable;
+
+    getChildren = (node: ClassificationNode): ClassificationNode[] => node.elements;
+
+    hasChild = (_: number, _nodeData: FlatClassificationNode) => _nodeData.expandable;
+
+    hasNoContent = (_: number, _nodeData: FlatClassificationNode) => _nodeData.name === '';
+
+    getSearchParam(node: FlatClassificationNode): SearchQueryParameter {
+        const path = this.getClassificationPath(node);
+        return {
+            selectedOrg: this.selectedOrg.value,
+            classification: path.categories
+        }
+    }
+
+    getClassificationPath(node: FlatClassificationNode): DialogData {
+        let currentNode: FlatClassificationNode | null = node;
+        const path = [];
+        do {
+            path.unshift(currentNode.name);
+            currentNode = this.getParentNode(currentNode);
+        } while (currentNode);
+        return {
+            orgName: path[0],
+            categories: path.splice(1),
+        };
+    }
+
+    /* Get the parent node of a node */
+    getParentNode(node: FlatClassificationNode): FlatClassificationNode | null {
+        if (!node) {
+            return null;
+        }
+        const currentLevel = this.getLevel(node);
+
+        if (currentLevel < 1) {
+            return null;
+        }
+
+        const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+
+        for (let i = startIndex; i >= 0; i--) {
+            const currentNode = this.treeControl.dataNodes[i];
+
+            if (this.getLevel(currentNode) < currentLevel) {
+                return currentNode;
+            }
+        }
+        return null;
+    }
+
+    updateOrganization() {
+        const postBody = {
+            orgName: this.selectedOrg.value
+        };
+        this.http.post<Organization>('/server/classification/updateOrgClassification', postBody)
+            .pipe(
+                map(org => {
+                    return [{
+                        name: org.name,
+                        elements: org.classifications
+                    }]
+                })
+            )
+            .subscribe(data => {
+                this._database.initialize(data);
+            }, () => this.alert.addAlert('danger', 'There was an issue update this org.'));
+    }
+
+    orgChanged(event: any, cb?: any) {
+        this.http.get<Organization>('/server/orgManagement/org/' + encodeURIComponent(event.value))
+            .pipe(
+                map(org => {
+                    return [{
+                        name: org.name,
+                        elements: org.classifications
+                    }]
+                })
+            )
+            .subscribe(data => {
+                this._database.initialize(data);
+                if (cb) {
+                    cb();
+                }
             });
+    }
+
+    openAddChildClassificationModal(node: FlatClassificationNode) {
+        const data = this.getClassificationPath(node);
+        this.dialog.open(AddChildClassificationDialogComponent, {
+            width: '500px',
+            data
+        }).afterClosed().subscribe(newClassificationName => {
+            if (newClassificationName) {
+                data.categories.push(newClassificationName);
+                const newClassification = {
+                    orgName: data.orgName,
+                    categories: data.categories
+                }
+                this.classificationSvc.addChildClassification(newClassification, message => {
+                    if (message) {
+                        this.orgChanged({value: data.orgName});
+                        this.alert.addAlert('success', message);
+                    }
+                });
+            }
         });
     }
 
-    checkJob(type: string, cb: Cb) {
+    openDeleteClassificationModal(node: FlatClassificationNode) {
+        const data = this.getClassificationPath(node);
+        this.dialog.open(RemoveClassificationDialogComponent, {
+            width: '500px',
+            data
+        }).afterClosed().subscribe(confirm => {
+            if (confirm) {
+                this.classificationSvc.removeOrgClassification(data, message => {
+                    if (message) {
+                        this.alert.addAlert('success', message);
+                        this.checkJob('deleteClassification', data.orgName, () => {
+                            this.alert.addAlert('success', 'Classification Deleted')
+                        });
+                    }
+                });
+            }
+        }, () => {
+        });
+    }
+
+    openRenameClassificationModal(node: FlatClassificationNode) {
+        const data = this.getClassificationPath(node);
+        this.dialog.open(RenameClassificationDialogComponent, {
+            width: '500px',
+            data
+        }).afterClosed().subscribe(newClassificationName => {
+            if (newClassificationName) {
+                const newClassification = {
+                    orgName: data.orgName,
+                    categories: data.categories,
+                    newName: newClassificationName
+                };
+                this.classificationSvc.renameOrgClassification(newClassification, (message: string) => {
+                    if (message) {
+                        this.alert.addAlert('success', message);
+                        this.checkJob('renameClassification', data.orgName, () => {
+                            this.alert.addAlert('success', 'Classification Renamed.');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    openReclassificationModal(node: FlatClassificationNode) {
+        const data = this.getClassificationPath(node);
+        const classificationArray = [data.orgName].concat(data.categories).join(' > ');
+        const title = `Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ${classificationArray} +  </strong> with new classification(s).</p>`;
+        this.dialog.open(ClassifyItemDialogComponent, {
+            width: '500px',
+            data: {title}
+        }).afterClosed().subscribe(result => {
+            const oldClassification = data;
+            const newClassification = {
+                orgName: result.selectedOrg,
+                categories: result.classificationArray
+            };
+            this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (message: string) => {
+                this.alert.addAlert('info', message);
+                this.checkJob('reclassifyClassification', result.selectedOrg, () => this.alert.addAlert('success', 'Classification Reclassified.'));
+            });
+        })
+    }
+
+    checkJob(type: string, orgName: string, cb: Cb) {
         const indexFn = setInterval(() => {
             this.http.get<any>('/server/system/jobStatus/' + type).subscribe(
                 res => {
                     if (res.done === true) {
-                        this.orgChanged(this.selectedOrg.name, () => {
-                            this.tree.treeModel.update();
+                        this.orgChanged({value: orgName}, () => {
                             clearInterval(indexFn);
                             if (cb) {
                                 cb();
@@ -124,159 +276,16 @@ export class OrgClassificationManagementComponent implements OnInit {
         }, 5000);
     }
 
-    isOrgAdmin() {
-        return isOrgAdmin(this.userService.user);
-    }
-
-    orgChanged(value: string, cb?: Cb) {
-        if (value) {
-            this.http.get<Organization>('/server/orgManagement/org/' + encodeURIComponent(value)).subscribe(
-                org => {
-                    if (org) {
-                        this.selectedOrg = org;
-                    }
-                    if (cb) {
-                        cb();
-                    }
-                }, () => {
-                });
+    getHtmlId(node: FlatClassificationNode) {
+        const data = this.getClassificationPath(node);
+        if (data.categories.length) {
+            return data.categories.join(',');
         } else {
-            if (cb) {
-                cb();
-            }
+            return data.orgName;
         }
     }
 
-    onChangeOrg(event: MatSelectChange) {
-        this.orgChanged(event.value, undefined);
-    }
-
-    openAddChildClassificationModal(node?: TreeNode) {
-        this.childClassificationNode = node;
-        this.selectedClassificationArray = '';
-        this.newClassificationName = '';
-        this.dialogRef = this.dialog.open(this.addChildClassificationContent);
-    }
-
-    openDeleteClassificationModal(node: TreeNode) {
-        this.userTyped = '';
-        this.selectedClassificationArray = '';
-        this.selectedClassificationString = node.data.name;
-        const classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) {
-                classificationArray.unshift(_treeNode.data.name);
-            }
-        }
-        classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1) {
-                this.selectedClassificationArray = this.selectedClassificationArray.concat('<span> ' + c + ' </span> ->');
-            } else {
-                this.selectedClassificationArray = this.selectedClassificationArray.concat(' <strong> ' + c + ' </strong>');
-            }
-        });
-        this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
-            if (result) {
-                const deleteClassification = {
-                    orgName: this.selectedOrg.name,
-                    categories: classificationArray
-                };
-                this.classificationSvc.removeOrgClassification(deleteClassification,
-                    (message: string) => this.alert.addAlert('info', message));
-                this.checkJob('deleteClassification', () => this.alert.addAlert('success', 'Classification Deleted'));
-            }
-        }, () => {
-        });
-    }
-
-    openReclassificationModal(node: TreeNode) {
-        this.selectedClassificationArray = '';
-        const classificationArray: string[] = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) {
-                classificationArray.unshift(_treeNode.data.name);
-            }
-        }
-        classificationArray.forEach((c, i) => {
-            if (i < classificationArray.length - 1) {
-                this.selectedClassificationArray = this.selectedClassificationArray.concat(c + ' / ');
-            } else {
-                this.selectedClassificationArray = this.selectedClassificationArray.concat(c);
-            }
-        });
-        this.selectedClassificationArray = 'Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ' +
-            this.selectedClassificationArray + ' </strong> with new classification(s).</p>';
-        this.oldReclassificationArray = classificationArray;
-        this.reclassifyComponent.openModal(this.selectedClassificationArray);
-    }
-
-    openRenameClassificationModal(node: TreeNode) {
-        this.renameClassificationNode = node;
-        this.newClassificationName = node.data.name;
-        this.userTyped = '';
-        this.selectedClassificationArray = '';
-        this.dialogRef = this.dialog.open(this.renameClassificationContent);
-    }
-
-    reclassify(event: ClassificationClassified) {
-        const oldClassification = {
-            orgName: this.selectedOrg.name,
-            categories: this.oldReclassificationArray
-        };
-        const newClassification = {
-            orgName: event.selectedOrg,
-            categories: event.classificationArray
-        };
-        this.classificationSvc.reclassifyOrgClassification(oldClassification, newClassification, (message: string) =>
-            this.alert.addAlert('info', message));
-        this.checkJob('reclassifyClassification', () => this.alert.addAlert('success', 'Classification Reclassified.'));
-    }
-
-    renameClassification(node: TreeNode) {
-        const classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) {
-                classificationArray.unshift(_treeNode.data.name);
-            }
-        }
-        const newClassification: ItemClassificationNew = {
-            orgName: this.selectedOrg.name,
-            categories: classificationArray,
-            newName: this.newClassificationName,
-        };
-        this.classificationSvc.renameOrgClassification(newClassification, (message: string) => this.alert.addAlert('info', message));
-        this.checkJob('renameClassification', () => {
-            this.alert.addAlert('success', 'Classification Renamed.');
-            this.dialogRef.close();
-        });
-    }
-
-    searchByClassification(node: TreeNode, orgName: string) {
-        const classificationArray = [node.data.name];
-        let _treeNode = node;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) {
-                classificationArray.unshift(_treeNode.data.name);
-            }
-        }
-        return '/cde/search?selectedOrg=' + encodeURIComponent(orgName) +
-            '&classification=' + encodeURIComponent(classificationArray.join(';'));
-    }
-
-    updateOrganization() {
-        this.http.post<Organization>('/server/classification/updateOrgClassification', {
-            orgName: this.orgToManage
-        }).subscribe(org => {
-                this.selectedOrg = org;
-                this.alert.addAlert('success', 'Saved');
-            },
-            () => this.alert.addAlert('danger', 'There was an issue update this org.'));
+    getAddClassificationRootButtonId() {
+        return 'addClassificationUnderRoot';
     }
 }

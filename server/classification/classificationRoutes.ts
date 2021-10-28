@@ -144,7 +144,7 @@ export function module(roleConfig: { allowClassify: RequestHandler }) {
                 }
                 renameOrgClassification(req.user, newClassification, settings, handleErrorVoid({req, res}, () => {
                 }));
-                res.status(202).send('Renaming in progress.');
+                res.send('Renaming in progress.');
             }));
         });
 

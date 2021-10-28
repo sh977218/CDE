@@ -1,27 +1,26 @@
 package gov.nih.nlm.cde.test.classification;
 
+import gov.nih.nlm.cde.test.BaseClassificationTest;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.annotations.Test;
 
-public class ReclassifyOrgClassificationTest extends NlmCdeBaseTest {
+public class ReclassifyOrgClassificationTest extends BaseClassificationTest {
 
     @Test
     public void reclassifyOrgClassification() {
+        String org = "org / or Org";
         String oldClassification = "OldClassification";
         String newClassification = "OldFormClassification";
         String cdeName = "Gastrointestinal therapy water flush status";
+        String[] categories1 = new String[]{oldClassification};
+        String[] newCategories = new String[]{newClassification};
         mustBeLoggedInAs(nlm_username, nlm_password);
         gotoClassificationMgt();
-        nonNativeSelect("", "Start by choosing your Organization", "org / or Org");
-
-        String[] categories = new String[]{oldClassification};
-        clickMoreVertIcon(categories);
-        clickElement(By.xpath("//button/mat-icon[normalize-space() = 'transform']"));
-        textPresent("Classify CDEs in Bulk");
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText("org / or Org");
-        classifySubmit(new String[]{newClassification}, "");
+        selectOrgClassification(org);
+        expandOrgClassification(org);
+        reclassifyClassificationUnderPath(org, categories1, oldClassification, newCategories);
 
         goToCdeByName(cdeName);
         goToClassification();

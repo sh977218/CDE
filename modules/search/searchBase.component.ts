@@ -180,7 +180,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     autocompleteSuggestions?: string[];
     cutoffIndex?: number;
     elts?: ItemElastic[];
-    exporters: { [format in 'csv'|'json'|'odm'|'validationRules'|'xml']?: { id: string, display: string } } = {
+    exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
         xml: {id: 'xmlExport', display: 'XML Export'}
     };
@@ -278,7 +278,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params: Params) => {
             this.autocompleteSuggestions = undefined;
-            this.searchSettings.classification = params.classification ? params.classification.split(';') : [];
+            this.searchSettings.classification = params.classification;
+            if (!Array.isArray(params.classification)) {
+                this.searchSettings.classification = params.classification ? params.classification.split(';') : [];
+            }
             this.searchSettings.classificationAlt = params.classificationAlt ? params.classificationAlt.split(';') : [];
             this.searchSettings.datatypes = params.datatypes ? params.datatypes.split(';') as DataType[] : [];
             this.searchSettings.excludeOrgs = params.excludeOrgs ? params.excludeOrgs.split(';') : [];

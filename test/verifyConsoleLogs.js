@@ -50,6 +50,7 @@ let expectedContent = {
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Edited by someone else. Please refresh and redo.'
     ],
+    dynamicCodeListFormTest: 'TypeError: Failed to fetch',
     formDupStewardValidation: [
         "Error publishing Form validation failed",
         "422 (Unprocessable Entity)"
@@ -105,7 +106,8 @@ let ignoreErrors = [
     'WebSocket is already in CLOSING or CLOSED state',
     'petstore.swagger.io',
     "Cannot read property 'nativeElement' of undefined",
-    "WebSocket is closed before the connection is established"
+    "WebSocket is closed before the connection is established",
+    "TypeError: Failed to fetch"
 ];
 
 fs.readdir(logFolder, (err, files) => {

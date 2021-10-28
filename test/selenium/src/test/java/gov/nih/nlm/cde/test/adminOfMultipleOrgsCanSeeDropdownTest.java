@@ -7,10 +7,13 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
 
     @Test
     public void adminOfMultipleOrgsCanSeeDropdown() {
+        String org = "caBIG";
+        String classification = "caNanoLab";
         mustBeLoggedInAs(classificationMgtUser_username, password);
         gotoClassificationMgt();
-        nonNativeSelect("","Start by choosing your Organization", "caBIG");
-        textPresent("caNanoLab");
+        selectOrgClassification(org);
+        expandOrgClassification(org);
+        textPresent(classification);
         clickElement(By.xpath("(//mat-icon[normalize-space() = 'more_vert'])[1]"));
         clickElement(By.xpath("//mat-icon[normalize-space() = 'transform']"));
         clickElement(By.xpath("//button[contains(.,'Close')]"));
