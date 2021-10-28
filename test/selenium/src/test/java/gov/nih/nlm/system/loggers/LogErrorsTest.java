@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 public class LogErrorsTest extends NlmCdeBaseTest {
 
     @Test
-    public void logErrorsTest () {
+    public void logErrorsTest() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
         textPresent("received");
@@ -16,10 +16,14 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         goToUserMenu();
         clickElement(By.id("user_audit"));
 
-        // put tab within display
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-
+        // In a smaller browser screen, mat tab header pagination will not be there
+        try {
+            // try to put tab within display
+            clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+            clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
+        } catch (Exception e) {
+            System.out.println("No `.mat-tab-header-pagination-after` found. Continuing...");
+        }
         clickElement(By.xpath("//div[. = 'Server Errors']"));
 
         textPresent("ReferenceError: trigger is not defined");
