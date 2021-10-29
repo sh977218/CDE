@@ -28,7 +28,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
                 "<definitions><tags>Health",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",
                 "<datatype>Value List</datatype>",
-                "<registrationStatus>Qualified</registrationStatus></registrationState>"
+                "<registrationStatus>Qualified</registrationStatus><administrativeStatus>Published</administrativeStatus></registrationState>"
         };
 
         try {
