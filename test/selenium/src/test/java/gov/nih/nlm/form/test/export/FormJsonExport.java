@@ -19,7 +19,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "{\"title\":\"CRF\",\"uri\":\"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx\"}",
                 "\"permissibleValue\":\"Yes\"",
                 "\"valueMeaningName\":\"Yes\"",
-                "\"registrationState\":{\"registrationStatus\":\"Qualified\"}",
+                "\"registrationState\":{\"registrationStatus\":\"Qualified\",\"administrativeStatus\":\"Published\"}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
                 "\"designations\":[{\"tags\":[],\"designation\":\"Adverse Event Tracking Log\""
         };
@@ -39,14 +39,14 @@ public class FormJsonExport extends NlmCdeBaseTest {
 
         try {
             String actual = new String(Files.readAllBytes(Paths.get(fileName)));
-            for (String s1 : expected) {
-                if (!actual.contains(s1)) {
+            for (String s : expected) {
+                if (!actual.contains(s)) {
                     Files.copy(
                             Paths.get(fileName),
                             Paths.get(tempFolder + "/FormJsonExport-m1_5_1HBYl.json"),
                             REPLACE_EXISTING
                     );
-                    Assert.fail("missing line in export : " + s1 + "\nActual: " + actual);
+                    Assert.fail("missing line in export : " + s + "\nactual: " + actual);
                 }
             }
         } catch (IOException e) {

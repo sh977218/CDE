@@ -37,7 +37,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/FormCdes-Xy910Dz6f.csv"),
                             Paths.get(tempFolder + "/ExportTest-FormCdes-Xy910Dz6f.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s + "\nActual: " + actual);
+                    Assert.fail("missing line in export : " + s + "\nactual: " + actual);
                 }
             }
         } catch (IOException e) {

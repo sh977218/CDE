@@ -41,7 +41,7 @@ public class BoardExportTest extends BoardTest {
                     Files.copy(
                             Paths.get(downloadFolder + "/BoardExport.csv"),
                             Paths.get(tempFolder + "/ExportTest-boardExport.csv"), REPLACE_EXISTING);
-                    Assert.fail("missing line in export : " + s + " --- ACTUAL: " + actual);
+                    Assert.fail("missing line in export : " + s + "\nactual: " + actual);
                 }
             }
         } catch (IOException e) {
