@@ -237,5 +237,6 @@ export function module() {
             validationErrors => res.send(validationErrors)
         );
     });
+
     return router;
 }

@@ -21,8 +21,12 @@ import {
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
-    isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware
+    canCreateMiddleware,
+    canEditByTinyIdMiddleware,
+    canEditMiddleware,
+    isOrgAuthorityMiddleware,
+    loggedInMiddleware,
+    nocacheMiddleware
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
@@ -265,7 +269,7 @@ export function module() {
         const version = req.query.version as string;
         if (isSearchEngine(req)) {
             formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
-                    res.render('bot/formView', 'system' as any, {elt: cde} as any);
+                res.render('bot/formView', 'system' as any, {elt: cde} as any);
             }));
         } else {
             respondHomeFull(req, res);
@@ -328,7 +332,7 @@ export function module() {
             const suggestions: string[] = [];
             const synonyms = ucum.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
-                synonyms.units.forEach((u: {code: string, name: string}) => u.name === uom ? suggestions.push(u.code) : null);
+                synonyms.units.forEach((u: { code: string, name: string }) => u.name === uom ? suggestions.push(u.code) : null);
                 if (suggestions.length) {
                     return cb(undefined, suggestions[0]);
                 }
@@ -372,5 +376,6 @@ export function module() {
     /* tslint:disable */
     new CronJob('00 30 4 * * *', () => syncLinkedForms(), null, true, 'America/New_York').start();
     /* tslint:enable */
+
     return router;
 }

@@ -124,6 +124,7 @@ export const createIndexJson = {
             , created: {type: 'date'}
             , updated: {type: 'date'}
             , imported: {type: 'date'}
+            , nihEndorsed: {type: 'boolean'}
             , updatedBy: {properties: {username: {type: 'text'}}}
             , changeNote: {enabled: false}
             , attachments: {
@@ -221,6 +222,7 @@ export const createFormIndexJson = {
             created: {type: 'date'},
             updated: {type: 'date'},
             imported: {type: 'date'},
+            nihEndorsed: {type: 'boolean'},
             numQuestions: {type: 'integer'},
             cdeTinyIds: {type: 'keyword'}
         }
