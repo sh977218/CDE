@@ -20,7 +20,9 @@ import {
 import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
 import { consoleLog } from 'server/log/dbLogger';
-import { addFile, getFile, gfs, ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import {
+    addFile, getFile, gfs, ItemDocument, jobStatus, removeJobStatus, updateJobStatus
+} from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
@@ -39,8 +41,8 @@ export function module() {
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
-        setTimeout(()=>{
-            try{
+        setTimeout(() => {
+            try {
                 jobStatus('SiteMap', (err, j) => {
                     if (err) {
                         consoleLog(`Error getting SiteMap job status: ${err}`, 'error');
@@ -50,10 +52,9 @@ export function module() {
                         return;
                     }
                     gfs.findOne({filename: '/app/sitemap.txt'}, (err, file) => {
-                        if(!!file && fileCreatedToday(file)){
+                        if (!!file && fileCreatedToday(file)) {
                             return;
-                        }
-                        else{
+                        } else {
                             updateJobStatus('SiteMap', 'Generating');
                             consoleLog('Creating sitemap');
                             const readable = new Readable();
@@ -91,27 +92,29 @@ export function module() {
                                     stream: readable
                                 };
                                 gfs.remove({filename: '/app/sitemap.txt'}, (err) => {
-                                    if(err){
+                                    if (err) {
                                         consoleLog(`Error removing old sitemap file: ${err}`, 'error');
                                         return;
                                     }
-                                    addFile(file,streamDescription, (err,newFile)=>{
+                                    addFile(file, streamDescription, (err, newFile) => {
                                         consoleLog('done with sitemap');
-                                        removeJobStatus('SiteMap', ()=>{});
+                                        removeJobStatus('SiteMap', () => {
+                                        });
                                     });
                                 });
                             });
                         }
                     });
                 });
-            }catch(err){
+            } catch (err) {
                 consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err);
-                removeJobStatus('SiteMap', ()=>{});
+                removeJobStatus('SiteMap', () => {
+                });
             }
         }, process.env.NODE_ENV === 'dev-test' ? 0 : Math.floor(Math.random() * 3600000) + 1);
     }, null, true, 'America/New_York', undefined, true).start();
 
-    function fileCreatedToday(file: any): boolean{
+    function fileCreatedToday(file: any): boolean {
         const today = new Date();
         return (file.uploadDate.getDate() === today.getDate()
             && file.uploadDate.getMonth() === today.getMonth()

@@ -32,9 +32,11 @@
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is archived. You can
-                            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+                            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version
+                                here</a>.
                         </div>
-                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning" role="alert">
+                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
+                             role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is retired.
                             <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
@@ -46,7 +48,8 @@
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is about to be retired.
                             <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
-                               [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible Replacement</a>
+                               [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
+                                Replacement</a>
                         </div>
                         <div *ngIf="displayStatusWarning" class="alert alert-info" role="alert">
                             <mat-icon>warning</mat-icon>
@@ -61,8 +64,13 @@
                         </div>
                     </header>
                     <div class="h1Like">
-                        <cde-draft-slider class="mr-2" [(isDraft)]="elt.isDraft" (isDraftChange)="$event?loadElt():loadPublished()"
+                        <cde-draft-slider class="mr-2" [(isDraft)]="elt.isDraft"
+                                          (isDraftChange)="$event?loadElt():loadPublished()"
                                           [hidden]="!hasDrafts"></cde-draft-slider>
+<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+                        <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="40" width="40"
+                             src="/cde/public/assets/img/Gold Ribbon.png">
+-->
                         <h1 id="top-of-page" class="d-inline">{{elt?.designations[0]?.designation}}</h1>
                     </div>
                     <nav class="noPrint">
@@ -106,7 +114,8 @@
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="d-none d-md-inline-block">Add to Board</span>
                         </button>
-                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)" id="copyCdeBtn" mat-raised-button
+                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
+                                id="copyCdeBtn" mat-raised-button
                                 title="Copy CDE" (click)="openCopyElementModal()" color="primary">
                             <mat-icon>content_copy</mat-icon>
                             <span class="d-none d-md-inline-block"> Copy</span>
@@ -124,7 +133,8 @@
                                 <mat-icon>delete</mat-icon>
                                 <span class="d-none d-md-inline-block"> Delete Draft </span>
                             </button>
-                            <button id="openSave" mat-raised-button color="accent" title="Publish" (click)="publish()" style="margin: 0">
+                            <button id="openSave" mat-raised-button color="accent" title="Publish" (click)="publish()"
+                                    style="margin: 0">
                                 <mat-icon>publish</mat-icon>
                                 <span class="d-none d-md-inline-block"> Publish</span>
                             </button>
@@ -189,11 +199,12 @@
                         </div>
                         <div class="mb-3">
                             <h2>Rules</h2>
-                            <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt" (eltChange)="saveDraftVoid()"></cde-derivation-rules>
-<!--                            <cde-valid-rules *ngIf="isSiteAdmin(userService.user, elt.stewardOrg.name)" [elt]="elt"></cde-valid-rules>-->
+                            <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
+                                                  (eltChange)="saveDraftVoid()"></cde-derivation-rules>
                         </div>
                     </article>
-                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()" (save)="saveDataElement()"></cde-save-modal>
+                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()"
+                                    (save)="saveDataElement()"></cde-save-modal>
                     <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
                 </main>
             </mat-sidenav-content>

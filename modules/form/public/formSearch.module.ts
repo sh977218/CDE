@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     imports: [
@@ -42,6 +43,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
+        MatCardModule,
         NgbModule,
         // non-core
 

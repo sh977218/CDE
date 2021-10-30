@@ -106,6 +106,7 @@ export class PermissibleValueComponent {
         classification: [],
         classificationAlt: [],
         datatypes: ['Value List'],
+        nihEndorsed: false,
         excludeOrgs: [],
         excludeAllOrgs: false,
         regStatuses: [],

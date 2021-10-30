@@ -9,17 +9,18 @@
         <div class="row justify-content-md-center" id="searchDiv">
             <div class="col-12 col-md-10 mx-auto">
                 <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px">
-                    <mat-form-field style="width: 100%; font-size: 25px">
+                    <mat-form-field class="w-100" style="font-size: 25px;">
                         <input matInput name="q" id="ftsearch-input"
                                [placeholder]="'Search ' + (module === 'cde' ? 'Data Elements' : 'Forms')"
                                maxlength="500" [matAutocomplete]="auto"
                                [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
                         <div matSuffix style="line-height: 1">
                             <button type="submit" style="display: none" (click)="termSearch(true)"></button>
-                            <mat-icon id="search.submit" style="line-height: .2"
-                                      (click)="termSearch(true)">search
+                            <mat-icon id="search.submit" style="line-height: .2" (click)="termSearch(true)">
+                                search
                             </mat-icon>
                         </div>
+                        <mat-hint style="font-size: 15px;">Enter keyword, classification, or topic</mat-hint>
                     </mat-form-field>
 
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
@@ -36,6 +37,30 @@
                 </form>
             </div>
         </div>
+<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+        <div class="row justify-content-md-center mt-3">
+            <div class="col-10">
+                <mat-card class="cde-bg-grey">
+                    <mat-card-header>
+                        <div mat-card-avatar class="d-flex align-items-center justify-content-center">
+                            <img aria-label="nihEndorsed" height="40" width="40"
+                                 src="/cde/public/assets/img/Gold Ribbon.png">
+                        </div>
+                        <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
+                        <mat-card-subtitle>
+                            <div class="float-left" style="max-width: 75%"> NIH has endorsed collections of CDEs that
+                                meet <a href="" target="_blank">established criteria</a>.
+                                NIH-Endorsed CDEs are designated with a gold ribbon. <a href="">Learn more...</a>
+                            </div>
+                            <button mat-raised-button color="primary" (click)="addNihEndorsedFilter(true)">
+                                View NIH-Endorsed CDEs
+                            </button>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </div>
+        </div>
+-->
         <div class="mt-3" id="tabs">
             <div *ngIf="orgs?.length === 0">
                 <h1 class="pl130">
@@ -68,9 +93,7 @@
         </div>
         <div class="my-3">
             <span id="totalItems">{{totalItems}}</span><span> elements across all classifications</span>
-            <cde-search-export-button *ngIf="!embedded"
-                                      id="exportEverything"
-                                      style="margin-left: 1em; vertical-align: middle"
+            <cde-search-export-button id="exportEverything" style="margin-left: 1em; vertical-align: middle"
                                       [module]="module"
                                       (exportType)="exportService.exportSearchResults($event, module, {searchSettings: searchSettings})">
             </cde-search-export-button>
@@ -147,6 +170,19 @@
         <div class="row">
             <div *ngIf="filterMode" [ngClass]="filterMode?'col-12 col-sm-2':'col-12'" class="px-1">
                 <!--FILTERS-->
+                <!-- NIH Endorsed AGGREGATIONS -->
+<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+                <div *ngIf="aggregations.orgs.buckets" id="nihEndorsedHolder" class="my-3">
+                    <div class="treeTitle">NIH-Endorsed Collection</div>
+                    <div>
+                        <mat-checkbox class="example-margin" [(ngModel)]="searchSettings.nihEndorsed" color="primary"
+                                      (change)="addNihEndorsedFilter($event.checked)">
+                            NIH-Endorsed
+                        </mat-checkbox>
+                    </div>
+                </div>
+-->
+
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder" class="my-3">
                     <div>
@@ -267,6 +303,8 @@
                 <div *ngIf="elts && aggregations" class="mx-1 my-3" id="searchResultInfoBar">
                     <strong id="searchResultNum">{{totalItems}}</strong>
                     <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results for</ng-container>
+                    <span *ngIf="searchSettings.nihEndorsed"
+                          class="badge badge-light remove-filter hand-cursor dark-icon mx-1"> NIH-Endorsed {{module === 'cde' ? 'CDEs' : 'Forms'}} </span>
                     <span *ngIf="searchedTerm" id="term_crumb"
                           class="badge badge-light remove-filter hand-cursor dark-icon mx-1"
                           aria-label="Remove this search term filter" matTooltip="Remove this search term filter"

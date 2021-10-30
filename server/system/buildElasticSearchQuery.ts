@@ -3,27 +3,35 @@ import { User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 
+const endorsedBoost: string = '1.2';
+
+function escapeRegExp(str: string) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
+}
+
+function hideRetired(settings: SearchSettingsElastic, user: User) {
+    return !settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1 || !isOrgAuthority(user);
+}
+
 export function buildElasticSearchQuery(user: User, settings: SearchSettingsElastic) {
-    function escapeRegExp(str: string) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
-    }
-
-    function hideRetired() {
-        return !settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1 || !isOrgAuthority(user);
-    }
-
     const allowedStatuses = getAllowedStatuses(user, settings);
 
     // Increase ranking score for high registration status
     const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
+    /* DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE. Using the new score formula after UI
+    const script = `
+    if (doc['nihEndorsed'].value == true) { return _score * ${endorsedBoost} } else return _score
+    `
+    */
+
     // Search for the query term given by user
     const hasSearchTerm = !!settings.searchTerm;
-
     // last resort, we sort.
-    let sort = !hasSearchTerm;
 
+    const sort = !hasSearchTerm;
     // (function setFilters() {
+
     const filterRegStatusTerms = regStatusFilter(user, settings, allowedStatuses);
 
     const elasticFilter: ElasticCondition['post_filter'] = {
@@ -41,26 +49,30 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             ]
         }
     };
-
     // Filter by selected Registration Statuses
-    const filterStatus = (settings.selectedStatuses || [])
-        .map(termRegStatus);
+    const filterStatus = (settings.selectedStatuses || []).map(termRegStatus);
     if (filterStatus.length > 0) {
         elasticFilter.bool.filter.push({bool: {should: filterStatus}});
         settings.filterDatatype.bool.filter.push({bool: {should: filterStatus}})
-    }
 
+    }
     // Filter by selected Datatypes
-    const filterDatatypeTerms = (settings.selectedDatatypes || [])
-        .map(datatype => ({term: {'valueDomain.datatype': datatype}}));
+    const filterDatatypeTerms = (settings.selectedDatatypes || []).map(dt => ({term: {'valueDomain.datatype': dt}}));
     if (filterDatatypeTerms.length > 0) {
         elasticFilter.bool.filter.push({bool: {should: filterDatatypeTerms}});
-    }
 
-    if (hideRetired()) {
+    }
+    // Filter by NIH Endorsed
+    /*
+        const filterNihEndorsedTerms = {term: {nihEndorsed: true}}
+        if (settings.nihEndorsed) {
+            elasticFilter.bool.filter.push({bool: {should: filterNihEndorsedTerms}});
+        }
+    */
+
+    if (hideRetired(settings, user)) {
         elasticFilter.bool.filter.push({bool: {must_not: termRegStatus('Retired')}});
     }
-
 
     const queryStuff: ElasticCondition = {
         post_filter: elasticFilter,
@@ -90,7 +102,9 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         },
         size: settings.resultPerPage ? (settings.resultPerPage > 100 ? 100 : settings.resultPerPage) : 20
     };
-
+    if (settings.nihEndorsed) {
+        queryStuff.query.bool.must.push({term: {nihEndorsed: true}});
+    }
     if (hasSearchTerm) {
         queryStuff.query.bool.must[0].dis_max.queries.push({
             function_score: {
@@ -106,7 +120,6 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 script_score: {script}
             }
         });
-
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
         if ((settings.searchTerm || '').indexOf('"') < 0) {
             queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
@@ -125,8 +138,8 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                 }
             });
         }
-    }
 
+    }
     // Filter by selected org
     if (settings.selectedOrg) {
         queryStuff.query.bool.must.push({term: {'classification.stewardOrg.name': settings.selectedOrg}});
@@ -143,48 +156,42 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
             });
         }
     }
-
     const flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
     if (settings.selectedOrg && flatSelection !== '') {
-        sort = false;
-        // boost for those elts classified fewer times
-        queryStuff.query.bool.must.push({
-            dis_max: {
-                queries: [{
-                    function_score: {
-                        script_score: {
-                            script: "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
-                                " (doc['flatClassifications'].length + 1)"
-                        }
-                    }
-                }]
-            }
-        });
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrg + ';' + flatSelection}});
-    }
 
+    }
     const flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
     if (settings.selectedOrgAlt && flatSelectionAlt !== '') {
         queryStuff.query.bool.must.push({term: {flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt}});
-    }
 
+    }
     // show statuses that either you selected, or it's your org and it's not retired.
     const regStatusAggFilter: ElasticCondition = {
         bool: {
-            filter: [
-                {
-                    bool: {
-                        should: regStatusFilter(user, settings, allowedStatuses)
-                    }
+            filter: [{
+                bool: {
+                    should: regStatusFilter(user, settings, allowedStatuses)
                 }
-            ]
+            }]
         }
     };
+    // show NIH Endorsed aggregation
 
-    if (hideRetired()) {
+
+    const nihEndorsedAggFilter: ElasticCondition = {
+        bool: {
+            filter: [{
+                term: {
+                    nihEndorsed: true
+                }
+            }]
+        }
+    };
+    if (hideRetired(settings, user)) {
         regStatusAggFilter.bool.filter.push({bool: {must_not: termRegStatus('Retired')}});
-    }
 
+    }
     if (sort) {
         queryStuff.sort = {
             'registrationState.registrationStatusSortOrder': 'asc',
@@ -193,8 +200,18 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         };
     }
 
+    /* DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE.
+            if (sort) {
+                queryStuff.sort = {
+                    nihEndorsed: 'desc',
+                    'primaryNameCopy.raw': 'asc'
+                };
+            }
+    */
+
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
+
         queryStuff.aggregations = {
             orgs: {
                 filter: elasticFilter,
@@ -219,9 +236,18 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
                         }
                     }
                 }
+            },
+            nihEndorsed: {
+                filter: nihEndorsedAggFilter,
+                aggs: {
+                    nihEndorsed: {
+                        terms: {
+                            field: 'nihEndorsed',
+                        }
+                    }
+                }
             }
         };
-
         const flattenClassificationAggregations = (variableName: string, orgVariableName: string, selectionString: string) => {
             const flatClassifications: ElasticCondition = {
                 terms: {
@@ -246,18 +272,18 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         }
         if (settings.selectedOrgAlt) {
             flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
+
         }
     }
-
     if (queryStuff.query.bool.must.length === 0) {
         delete queryStuff.query.bool.must;
-    }
 
+    }
     queryStuff.from = ((settings.page || 0) - 1) * settings.resultPerPage;
     if (!queryStuff.from || queryStuff.from < 0) {
         queryStuff.from = 0;
-    }
 
+    }
     // highlight search results if part of the following fields.
     queryStuff.highlight = {
         require_field_match: false,

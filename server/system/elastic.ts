@@ -326,11 +326,11 @@ export function getAllowedStatuses(user: User, settings: SearchSettingsElastic):
 export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
     if (hasRolePrivilege(user, 'universalSearch')) {
         return ((settings.includeRetired
-            ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']
-            : ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete']
+                ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']
+                : ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete']
         ) as CurationStatus[]).map(termRegStatus);
     }
-    return concat<{term: any}>(
+    return concat<{ term: any }>(
         allowedStatuses.map(termRegStatus),
         myOrgs(user).map(org => ({term: {'stewardOrg.name': org}}))
     );

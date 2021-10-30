@@ -21,7 +21,7 @@ const conceptSchema = new Schema({
 
 export const deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
-    NIH_Endorsed: {type: Boolean, default: false},
+    nihEndorsed: {type: Boolean, default: false},
     tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     designations: {
         type: [designationSchema],
@@ -151,12 +151,6 @@ dataElementSchema.index({tinyId: 1, archived: 1}, {
     name: 'liveTinyId',
     partialFilterExpression: {archived: false}
 });
-/*
-dataElementSchema.path("valueDomain").validate(v => {
-    if (v.datatype === 'Dynamic Code List') return !!v.datatypeDynamicCodeList;
-    return true;
-}, "Code is required for CodeList Datatype");
-*/
 dataElementSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)
         .some((value, index, array) => array.indexOf(value) !== array.lastIndexOf(value));

@@ -152,7 +152,7 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
 
 export const formJson = {
     elementType: {type: StringType, default: 'form', enum: ['form']},
-    NIH_Endorsed: {type: Boolean, default: false},
+    nihEndorsed: {type: Boolean, default: false},
     tinyId: {type: StringType, index: true, description: 'Internal Form identifier'},
     designations: {
         type: [designationSchema],

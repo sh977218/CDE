@@ -53,6 +53,7 @@ export class ElasticService implements OnDestroy {
             selectedStatuses: queryParams.regStatuses || [],
             selectedDatatypes: queryParams.datatypes || [],
             searchToken: this.searchToken,
+            nihEndorsed: !!queryParams.nihEndorsed,
             fullRecord: undefined,
         };
     }

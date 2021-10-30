@@ -1,6 +1,13 @@
 <table id="gridList" class="gridListView table table-condensed table-striped table-bordered table-responsive">
     <thead>
     <tr>
+<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+        <th>
+            <img aria-label="nihEndorsed" height="40" width="40" src="/cde/public/assets/img/Gold Ribbon.png"
+                 matTooltipClass="cdeTooltip"
+                 matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
+        </th>
+-->
         <th *ngFor="let heading of headings">{{heading}}
             <mat-icon *ngIf="heading === 'Name'" id="tableViewSettings" (click)="openTableViewPreferences()">settings
             </mat-icon>
@@ -12,6 +19,16 @@
         <td *ngFor="let prop of row"
             [class]="prop.css">
             <ng-container [ngSwitch]="prop.css">
+<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+                <ng-container *ngSwitchCase="'nihEndorsed'">
+                    <div matTooltip="NIH has endorsed collections of CDEs that meet <a href=''>established criteria</a>. They are designated with a gold ribbon.">
+                        <img *ngIf="prop.elt.nihEndorsed" aria-label="nihEndorsed" height="40" width="40"
+                             matTooltipClass="cdeTooltip"
+                             matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon."
+                             src="/cde/public/assets/img/Gold Ribbon.png">
+                    </div>
+                </ng-container>
+-->
                 <ng-container *ngSwitchCase="'name'">
                     <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View"
                        [queryParams]="{tinyId: prop.elt.tinyId}">{{prop.elt.designations[0].designation}}</a>

@@ -293,8 +293,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
             this.altClassificationFilterMode = !!params.selectedOrgAlt;
             this.excludeOrgFilterMode = !!params.excludeAllOrgs || !!params.excludeOrgs;
+            this.searchSettings.nihEndorsed = !!params.nihEndorsed;
             this.reload();
         });
+    }
+
+    addNihEndorsedFilter(nihEndorsed: boolean) {
+        this.searchSettings.nihEndorsed = nihEndorsed ? true : false;
+        this.doSearch();
     }
 
     addDatatypeFilter(datatype: DataType) {
@@ -501,6 +507,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else if (this.searchSettings.page && this.searchSettings.page > 1) {
             searchTerms.page = this.searchSettings.page;
         }
+        if (this.searchSettings.nihEndorsed) {
+            searchTerms.nihEndorsed = this.searchSettings.nihEndorsed;
+        }
         return searchTerms;
     }
 
@@ -603,7 +612,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     isSearched() {
-        return this.searchSettings.q || this.searchSettings.selectedOrg;
+        return this.searchSettings.q || this.searchSettings.selectedOrg || this.searchSettings.nihEndorsed;
     }
 
     openOrgDetails(org: Organization) {

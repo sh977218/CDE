@@ -26,6 +26,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     imports: [
@@ -45,6 +46,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
+        MatCardModule,
         NgbModule,
         RouterModule,
         // non-core

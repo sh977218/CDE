@@ -4,17 +4,15 @@ import { ElasticService } from '_app/elastic.service';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
-import { CdeId, Designation, ElasticQueryResponseForm, Item, ItemElastic, ModuleItem, UserSearchSettings } from 'shared/models.model';
+import {
+    CdeId, Designation, ElasticQueryResponseForm, Item, ItemElastic, ModuleItem, UserSearchSettings
+} from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 
-// interface Row {
-//     css: string;
-//     datatype?: DataType;
-//     elt?: ItemElastic;
-//     value?: string;
-//     values?: string[];
-// }
 type Row = {
+    css: 'nihEndorsed';
+    nihEndorsed: boolean
+} | {
     css: 'ids';
     values: CdeId[];
 } | {
@@ -29,7 +27,7 @@ type Row = {
     values: string[];
 } | {
     css: 'linkedForms',
-    values: {tinyId: string, name: string}[]
+    values: { tinyId: string, name: string }[]
 } | {
     css: string,
     value?: string
@@ -44,9 +42,11 @@ export class TableListComponent implements OnInit {
         this._elts = elts;
         this.render();
     }
+
     get elts() {
         return this._elts;
     }
+
     @Input() module!: ModuleItem;
     private _elts!: ItemElastic[];
     headings!: string[];
@@ -74,17 +74,39 @@ export class TableListComponent implements OnInit {
     renderCde() {
         const tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name) { this.headings.push('Name'); }
-        if (tableSetup.questionTexts) { this.headings.push('Question Texts'); }
-        if (tableSetup.naming) { this.headings.push('Other Names'); }
-        if (tableSetup.permissibleValues) { this.headings.push('Permissible Values'); }
-        if (tableSetup.pvCodeNames) { this.headings.push('Code Names'); }
-        if (tableSetup.nbOfPVs) { this.headings.push('Nb of PVs'); }
-        if (tableSetup.uom) { this.headings.push('Unit of Measure'); }
-        if (tableSetup.stewardOrg) { this.headings.push('Steward'); }
-        if (tableSetup.usedBy) { this.headings.push('Used by'); }
-        if (tableSetup.registrationStatus) { this.headings.push('Registration Status'); }
-        if (tableSetup.administrativeStatus) { this.headings.push('Admin Status'); }
+        if (tableSetup.name) {
+            this.headings.push('Name');
+        }
+        if (tableSetup.questionTexts) {
+            this.headings.push('Question Texts');
+        }
+        if (tableSetup.naming) {
+            this.headings.push('Other Names');
+        }
+        if (tableSetup.permissibleValues) {
+            this.headings.push('Permissible Values');
+        }
+        if (tableSetup.pvCodeNames) {
+            this.headings.push('Code Names');
+        }
+        if (tableSetup.nbOfPVs) {
+            this.headings.push('Nb of PVs');
+        }
+        if (tableSetup.uom) {
+            this.headings.push('Unit of Measure');
+        }
+        if (tableSetup.stewardOrg) {
+            this.headings.push('Steward');
+        }
+        if (tableSetup.usedBy) {
+            this.headings.push('Used by');
+        }
+        if (tableSetup.registrationStatus) {
+            this.headings.push('Registration Status');
+        }
+        if (tableSetup.administrativeStatus) {
+            this.headings.push('Admin Status');
+        }
         if (tableSetup.ids) {
             if (Array.isArray(tableSetup.identifiers) && tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => this.headings.push(i));
@@ -92,13 +114,21 @@ export class TableListComponent implements OnInit {
                 this.headings.push('Identifiers');
             }
         }
-        if (tableSetup.source) { this.headings.push('Source'); }
-        if (tableSetup.updated) { this.headings.push('Updated'); }
-        if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
-        if (tableSetup.linkedForms) { this.headings.push('Forms'); }
+        if (tableSetup.source) {
+            this.headings.push('Source');
+        }
+        if (tableSetup.updated) {
+            this.headings.push('Updated');
+        }
+        if (tableSetup.tinyId) {
+            this.headings.push('NLM ID');
+        }
+        if (tableSetup.linkedForms) {
+            this.headings.push('Forms');
+        }
 
         this.rows = (this.elts as DataElementElastic[]).map(e => {
-            const row: Row[] = [];
+            const row: Row[] = [{css: 'nihEndorsed', elt: e}];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
@@ -215,10 +245,12 @@ export class TableListComponent implements OnInit {
             if (tableSetup.linkedForms) {
                 const lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
 
-                const values: {tinyId: string, name: string}[] = [];
+                const values: { tinyId: string, name: string }[] = [];
                 this.esService.generalSearchQuery(lfSettings, 'form', (err?: string, result?: ElasticQueryResponseForm) => {
                     if (result && result.forms) {
-                        if (result.forms.length > 5) { result.forms.length = 5; }
+                        if (result.forms.length > 5) {
+                            result.forms.length = 5;
+                        }
                         result.forms.forEach(crf => values.push({name: crf.primaryNameCopy, tinyId: crf.tinyId}));
                     }
                     row.push({
@@ -234,12 +266,24 @@ export class TableListComponent implements OnInit {
     renderForm() {
         const tableSetup = this.searchSettings.tableViewFields;
         this.headings = [];
-        if (tableSetup.name) { this.headings.push('Name'); }
-        if (tableSetup.naming) { this.headings.push('Other Names'); }
-        if (tableSetup.stewardOrg) { this.headings.push('Steward'); }
-        if (tableSetup.usedBy) { this.headings.push('Used by'); }
-        if (tableSetup.registrationStatus) { this.headings.push('Registration Status'); }
-        if (tableSetup.administrativeStatus) { this.headings.push('Admin Status'); }
+        if (tableSetup.name) {
+            this.headings.push('Name');
+        }
+        if (tableSetup.naming) {
+            this.headings.push('Other Names');
+        }
+        if (tableSetup.stewardOrg) {
+            this.headings.push('Steward');
+        }
+        if (tableSetup.usedBy) {
+            this.headings.push('Used by');
+        }
+        if (tableSetup.registrationStatus) {
+            this.headings.push('Registration Status');
+        }
+        if (tableSetup.administrativeStatus) {
+            this.headings.push('Admin Status');
+        }
         if (tableSetup.ids) {
             if (tableSetup.identifiers && tableSetup.identifiers.length > 0) {
                 tableSetup.identifiers.forEach(i => {
@@ -249,10 +293,18 @@ export class TableListComponent implements OnInit {
                 this.headings.push('Identifiers');
             }
         }
-        if (tableSetup.numQuestions) { this.headings.push('Questions'); }
-        if (tableSetup.source) { this.headings.push('Source'); }
-        if (tableSetup.updated) { this.headings.push('Updated'); }
-        if (tableSetup.tinyId) { this.headings.push('NLM ID'); }
+        if (tableSetup.numQuestions) {
+            this.headings.push('Questions');
+        }
+        if (tableSetup.source) {
+            this.headings.push('Source');
+        }
+        if (tableSetup.updated) {
+            this.headings.push('Updated');
+        }
+        if (tableSetup.tinyId) {
+            this.headings.push('NLM ID');
+        }
 
         this.rows = this.elts.map(e => {
             const row: Row[] = [];
@@ -343,11 +395,12 @@ export class TableListComponent implements OnInit {
 
     openTableViewPreferences() {
         let viewComponent = CdeTableViewPreferencesComponent;
-        if (this.module === 'form') { viewComponent = FormTableViewPreferencesComponent; }
+        if (this.module === 'form') {
+            viewComponent = FormTableViewPreferencesComponent;
+        }
         const dialogRef = this.dialog.open(viewComponent, {
             width: '550px',
-            data: {
-            }
+            data: {}
         });
         dialogRef.componentInstance.changed.subscribe(() => {
             this.render();
@@ -363,22 +416,24 @@ export class TableListComponent implements OnInit {
     static readonly maxLines = 5;
     static readonly lineLength = 62;
 
-    static lineClip(line: string|any): string|any {
+    static lineClip(line: string | any): string | any {
         return line.length > this.lineLength
             ? line.substr(0, this.lineLength - 4) + ' ...'
             : line;
     }
 
     static truncatedList<T, U = string>(list: T[] | undefined, f: (a: T) => U): U[] {
-        if (!Array.isArray(list)) { list = []; }
+        if (!Array.isArray(list)) {
+            list = [];
+        }
         const size = list.length;
         const result: any[] = [];
         for (let i = 0; i < size; i++) {
             const formatted = f(list[i]);
             if (formatted) {
-                result.push(typeof(formatted) === 'string' ? this.lineClip(formatted) : formatted);
+                result.push(typeof (formatted) === 'string' ? this.lineClip(formatted) : formatted);
             }
-            if (typeof(formatted) === 'string' && result.length === this.maxLines && (i + 1) < size) {
+            if (typeof (formatted) === 'string' && result.length === this.maxLines && (i + 1) < size) {
                 result.push('...');
                 i = size;
             }
@@ -388,14 +443,18 @@ export class TableListComponent implements OnInit {
 
     static getQuestionTexts(e: Item): Designation[] {
         return e.designations.filter(n => {
-            if (!n.tags) { n.tags = []; }
+            if (!n.tags) {
+                n.tags = [];
+            }
             return n.tags.filter(t => t.indexOf('Question Text') > -1).length > 0;
         });
     }
 
     static getOtherNames(item: Item): Designation[] {
         return item.designations.filter((n, i) => {
-            if (!n.tags) { n.tags = []; }
+            if (!n.tags) {
+                n.tags = [];
+            }
             return i > 0 && n.tags.filter(t => t.indexOf('Question Text') > -1).length === 0;
         });
     }
