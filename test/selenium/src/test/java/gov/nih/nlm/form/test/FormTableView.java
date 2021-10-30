@@ -44,7 +44,7 @@ public class FormTableView extends BaseFormTest {
         textPresent("Alternate Name for a Table View Form!");
         textNotPresent("TESTOrg");
         textNotPresent("goodForTablesForm");
-        textPresent("To be deleted");
+        textPresent("Published");
         textPresent("testFormIssuingOrg");
     }
 }
