@@ -14,6 +14,7 @@ export class SearchSettings {
     searchTerm?: string;
     selectedOrg?: string = '';
     selectedOrgAlt?: string;
+    nihEndorsed: boolean = false;
 
     constructor(q = '', resultsPerPage = 20) {
         this.q = q;
@@ -40,6 +41,7 @@ export class SearchSettingsElastic {
     selectedOrg?: string;
     selectedOrgAlt?: string;
     selectedStatuses: CurationStatus[] = [];
+    nihEndorsed: boolean = false;
 
     constructor(resultPerPage = 20) {
         this.resultPerPage = resultPerPage;

@@ -1,7 +1,7 @@
 import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { handleError, handleErrorVoid, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';

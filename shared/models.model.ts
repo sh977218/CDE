@@ -286,7 +286,7 @@ export abstract class Elt {
     /* tslint:enable */
     _id!: ObjectId;
     archived: boolean = false;
-    NIH_Endorsed: boolean = false;
+    nihEndorsed: boolean = false;
     attachments: Attachment[] = [];
     changeNote?: string;
     checked?: boolean; // volatile, used by board compare side-by-side
@@ -650,6 +650,7 @@ export class Source {
 }
 
 export interface TableViewFields {
+    nihEndorsed?: boolean;
     administrativeStatus?: boolean;
     customFields?: { key: string, label?: string, style?: string }[];
     ids?: boolean;
