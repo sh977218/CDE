@@ -5,8 +5,8 @@ const FileListPlugin = require('file-list-plugin');
 const {readFileSync} = require('fs');
 const {keys} = require('lodash');
 const {resolve} = require('path');
-const {DefinePlugin} = require('webpack');
 const {htmlServedUri} = require('shared/node/serverConstants');
+const {DefinePlugin} = require('webpack');
 
 const APP_DIR = __dirname;
 

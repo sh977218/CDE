@@ -88,6 +88,7 @@
       "no-empty": false,
       "no-inferrable-types": false,
       "no-input-rename": true,
+      "no-namespace": [true, "allow-declarations"],
       "no-non-null-assertion": true,
       "no-output-on-prefix": true,
       "no-output-rename": true,

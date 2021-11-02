@@ -1,8 +1,8 @@
-import { getIds } from 'core/form/formAndFe';
-import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
-import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
-import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import { FormElement } from 'shared/form/form.model';
+import { getIds } from 'shared/form/formAndFe';
+import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
+import { newCodeableConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
+import { toRef } from 'shared/mapping/fhir/datatype/fhirReference';
 import {
     FhirEncounter, FhirObservation, FhirObservationComponent, FhirPatient
 } from 'shared/mapping/fhir/fhirResource.model';

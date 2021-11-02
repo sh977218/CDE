@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { IdSourceRequest, IdSourceResponse, IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
+import {
+    IdSourcePutResponse,
+    IdSourceRequest,
+    IdSourceResponse,
+    IdSourcesResponse
+} from 'shared/boundaryInterfaces/API/system';
 import { IdSource } from 'shared/models.model';
 
 @Component({
@@ -42,8 +47,8 @@ export class IdSourcesComponent {
     }
 
     update(source: IdSource) {
-        this.http.put<IdSourceResponse>('/server/system/idSource/' + source._id, source as IdSourceRequest)
-            .subscribe(res => source = res,
+        this.http.put<IdSourcePutResponse>('/server/system/idSource/' + source._id, source as IdSourceRequest)
+            .subscribe(res => {},
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }

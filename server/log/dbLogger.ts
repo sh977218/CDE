@@ -122,14 +122,14 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
                 title: 'Server Side Error',
                 options: {
                     body: description,
-                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-server-side',
                     actions: [
                         {
                             action: 'audit-action',
                             title: 'View',
-                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
                         }
                     ]
                 }
@@ -162,14 +162,14 @@ export function logClientError(req: Request, done: Cb) {
                 title: 'Client Side Error',
                 options: {
                     body: (exc.message || '').substr(0, 30),
-                    icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                    badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-client-side',
                     actions: [
                         {
                             action: 'audit-action',
                             title: 'View',
-                            icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                            icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
                         }
                     ]
                 }

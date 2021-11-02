@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
     `);
 });
 
-app.use(favicon(path.resolve(__dirname, '../modules/cde/public/assets/img/favicon.ico')));
+app.use(favicon(path.resolve(__dirname, '../modules/cde/public/assets/img/min/favicon.ico')));
 
 const tokens = {};
 

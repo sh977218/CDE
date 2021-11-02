@@ -1,29 +1,27 @@
-import {
-    deleteIdSourceById, findAllIdSources, findById, IdSource, IdSourceDocument, saveIdSource, updateIdSourceById
-} from 'server/system/idSourceDb';
+import { dbPlugins } from 'server/app';
+import { IdSource } from 'shared/models.model';
 
 export async function getAllIdSources() {
-    return findAllIdSources();
+    return dbPlugins.idSource.findAll();
 }
 
-export async function isSourceById(id: string): Promise<IdSourceDocument | null> {
-    return findById(id);
+export async function isSourceById(id: string): Promise<IdSource | null> {
+    return dbPlugins.idSource.findById(id);
 }
 
-export async function createIdSource(id: string, body: IdSource): Promise<IdSourceDocument> {
-    const idSource = {
+export async function createIdSource(id: string, body: IdSource): Promise<IdSource> {
+    return dbPlugins.idSource.save({
         _id: id,
         linkTemplateDe: body.linkTemplateDe,
         linkTemplateForm: body.linkTemplateForm,
         version: body.version,
-    };
-    return saveIdSource(idSource);
+    });
 }
 
-export async function updateIdSource(sourceId: string, sourceBody: IdSource): Promise<IdSourceDocument> {
-    return updateIdSourceById(sourceId, sourceBody);
+export async function updateIdSource(sourceId: string, sourceBody: IdSource): Promise<void> {
+    return dbPlugins.idSource.updateById(sourceId, sourceBody);
 }
 
 export async function deleteIdSource(sourceId: string) {
-    return deleteIdSourceById(sourceId);
+    return dbPlugins.idSource.deleteById(sourceId);
 }

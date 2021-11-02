@@ -20,24 +20,21 @@ import * as async_series from 'async/series';
 import * as async_some from 'async/some';
 import { questionAnswered, findQuestionByTinyId } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
-import { getIds, getTinyId, getVersion } from 'core/form/formAndFe';
+import { getTinyId, getVersion } from 'core/form/formAndFe';
 import * as diff from 'deep-diff';
 import * as _intersectionWith from 'lodash/intersectionWith';
 import * as _noop from 'lodash/noop';
 import * as _uniq from 'lodash/uniq';
 import { reduce } from 'shared/array';
-import {
-    assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
-    PermissibleValue
-} from 'shared/models.model';
+import { getIds } from 'shared/form/formAndFe';
 import { CdeForm, FhirApp, FormQuestion } from 'shared/form/form.model';
 import { isQuestion, iterateFe, iterateFeSync, questionMulti } from 'shared/form/fe';
-import { codeSystemOut } from 'shared/mapping/fhir';
 import { FhirCodeableConcept, FhirValue } from 'shared/mapping/fhir/fhir.model';
 import {
     FhirDomainResource, FhirEncounter, FhirObservation, FhirObservationComponent, FhirProcedure, FhirQuestionnaire,
     FhirQuestionnaireResponse, FhirQuestionnaireResponseItem, supportedFhirResourcesArray
 } from 'shared/mapping/fhir/fhirResource.model';
+import { codeSystemOut } from 'shared/mapping/fhir';
 import { newCodeableConcept, reduce as reduceConcept } from 'shared/mapping/fhir/datatype/fhirCodeableConcept';
 import { newCoding } from 'shared/mapping/fhir/datatype/fhirCoding';
 import { typedValueToValue, valuedElementToItemType } from 'shared/mapping/fhir/from/datatypeFromItemType';
@@ -49,6 +46,10 @@ import {
 } from 'shared/mapping/fhir/resource/fhirQuestionnaireResponse';
 import { containerToItemType, valueToTypedValue } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
+import {
+    assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
+    PermissibleValue
+} from 'shared/models.model';
 import { deepCopy } from 'shared/util';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {

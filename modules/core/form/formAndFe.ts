@@ -7,22 +7,6 @@ export function getFhirResourceMap(f: FormOrElement): any {
     return isCdeFormNotFe(f) && f.displayProfiles.length ? f.displayProfiles[0].fhirProcedureMapping : undefined;
 }
 
-export function getIds(f: CdeForm): CdeId[];
-export function getIds(f: FormOrElement): CdeId[] | undefined;
-export function getIds(f: FormOrElement): CdeId[] | undefined {
-    if (isCdeFormNotFe(f)) {
-        return f.ids;
-    }
-    switch (f.elementType) {
-        case 'form':
-            return f.inForm.form.ids;
-        case 'section':
-            return undefined;
-        case 'question':
-            return f.question.cde.ids;
-    }
-}
-
 export function getMapToFhirResource(f: FormOrElement): supportedFhirResources | undefined {
     return f && f.mapTo && f.mapTo.fhir ? f.mapTo.fhir.resourceType : undefined;
 }

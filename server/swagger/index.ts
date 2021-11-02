@@ -14,7 +14,7 @@ const options = {
 };
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
-const spec = readFileSync(path.join((global as any).APP_DIR, 'modules/swagger/api/swagger.yaml'), 'utf8');
+const spec = readFileSync(path.join((global as any).APP_DIR, 'server/swagger/api/swagger.yaml'), 'utf8');
 const swaggerDoc = jsyaml.safeLoad(spec);
 swaggerDoc.host = config.publicUrl.substr(config.publicUrl.indexOf('//') + 2);
 swaggerDoc.schemes = [config.publicUrl.substr(0, config.publicUrl.indexOf('://'))];
