@@ -41,7 +41,7 @@ export class ListViewComponent implements OnChanges, OnInit {
         if (changes.elts && this.viewComponentRef && this.viewComponentRef.instance) {
             this.viewComponentRef.instance.elts = this.elts;
         }
-        if (changes.board && this.viewComponentRef && this.viewComponentRef.instance && this.location === 'board') {
+        if (changes.board && this.viewComponentRef?.instance && this.location === 'board') {
             this.viewComponentRef.instance.board = this.board;
             this.viewComponentRef.instance.currentPage = this.currentPage;
             this.viewComponentRef.instance.totalItems = this.totalItems;

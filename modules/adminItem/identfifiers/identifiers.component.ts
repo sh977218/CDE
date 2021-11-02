@@ -2,8 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
+import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { isCdeForm } from 'shared/item';
-import { CdeId, Item, Source } from 'shared/models.model';
+import { CdeId, IdSource, Item } from 'shared/models.model';
 
 @Component({
     selector: 'cde-identifiers',
@@ -28,7 +29,7 @@ export class IdentifiersComponent {
     _elt!: Item;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     idsLinks: string[] = [];
-    idSourcesPromise!: Promise<Source[]>;
+    idSourcesPromise!: Promise<IdSource[]>;
     newIdentifier!: CdeId;
 
     constructor(private alert: AlertService,
@@ -43,7 +44,7 @@ export class IdentifiersComponent {
         this.dialogRef.close();
     }
 
-    addLink(source: Source, id: CdeId) {
+    addLink(source: IdSource, id: CdeId) {
         this.idsLinks.push(IdentifiersComponent.linkWithId(
             source && (isCdeForm(this.elt) ? source.linkTemplateForm : source.linkTemplateDe),
             id
@@ -54,11 +55,11 @@ export class IdentifiersComponent {
         return this.getIdSources().then(sources => sources.filter(source => source._id === id.source)[0]);
     }
 
-    getIdSources(): Promise<Source[]> {
+    getIdSources(): Promise<IdSource[]> {
         if (this.idSourcesPromise) {
             return this.idSourcesPromise;
         } else {
-            return this.idSourcesPromise = this.http.get<Source[]>('/server/system/idSources').toPromise().catch(err => {
+            return this.idSourcesPromise = this.http.get<IdSourcesResponse>('/server/system/idSources').toPromise().catch(err => {
                 this.alert.httpErrorMessageAlert(err);
                 return [];
             });

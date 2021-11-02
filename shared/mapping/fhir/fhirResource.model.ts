@@ -48,7 +48,7 @@ export type FhirAttachement = any;
 export class FhirBundle {
     //// searchset from api
     // this.smart.patient.api.search({type: 'Procedure'}).then(results => {
-    //     if (results && results.data && results.data.entry && results.data.entry.length) {
+    //     if (results?.data?.entry?.length) {
     //         this.patientProcedures = results.data.entry.filter(e => !!e.resource).map(e => e.resource);
     //     }
     // }).catch(function(res){

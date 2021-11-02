@@ -60,7 +60,7 @@ export function propertyToQuestion(q: FormQuestion, parent: ResourceTreeResource
                 default:
                     value = answer;
             }
-            if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+            if (name === 'usedReference' && map?.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 const usedReferencesMaps = map.mapping.usedReferencesMaps;
                 value = value.map((a: string) => {
                     const i = usedReferencesMaps.indexOf(a);
@@ -113,7 +113,7 @@ export function questionToProperty(q: FormQuestion, parent: ResourceTreeResource
             }
             break;
         default:
-            if (name === 'usedReference' && map && map.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
+            if (name === 'usedReference' && map?.mapping && Array.isArray(map.mapping.usedReferencesMaps)) {
                 const usedReferencesMaps = map.mapping.usedReferencesMaps;
                 value = value.map((a: string) => {
                     if (q.question.datatype === 'Value List') {

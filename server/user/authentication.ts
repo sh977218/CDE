@@ -122,8 +122,7 @@ passportUse('utsJwt', new CustomStrategy((req, cb) => {
         cb('no user');
         return;
     }
-    const jwtValidationUrl = utsUsersServer + '/rest/content/angular/profile/getprofile?username=' + username + '&app=angular';
-    fetch(jwtValidationUrl, {
+    fetch(`${utsUsersServer}/rest/content/angular/profile/getprofile?username=${username}&app=angular`, {
         headers: {
             Authorization: 'Bearer ' + req.body.jwtToken
         }
