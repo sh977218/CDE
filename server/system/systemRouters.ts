@@ -1,10 +1,8 @@
 import { CronJob } from 'cron';
-import { Request, RequestHandler, Response } from 'express';
-import { authenticate } from 'passport';
 import * as csrf from 'csurf';
-import { promisify } from 'util';
-import { Router } from 'express';
+import { Request, RequestHandler, Response, Router } from 'express';
 import { QueryCursor } from 'mongoose';
+import { authenticate } from 'passport';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
@@ -27,8 +25,15 @@ import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
+import {
+    IdSourceGetResponse,
+    IdSourceRequest,
+    IdSourceResponse,
+    IdSourcesResponse
+} from 'shared/boundaryInterfaces/API/system';
 import { CbError } from 'shared/models.model';
 import { Readable } from 'stream';
+import { promisify } from 'util';
 
 require('express-async-errors');
 
@@ -295,42 +300,40 @@ export function module() {
             .catch(err => respondError(err, {req, res}));
     }
 
-    // id sources
-    router.get('/idSources', async (req, res) => {
-        const sources = await getAllIdSources();
-        res.send(sources);
-    });
-
+    /**** id sources ****/
     router.get('/idSource/:id', async (req, res) => {
-        const source = await isSourceById(req.params.id);
-        res.send(source);
+        res.send(await isSourceById(req.params.id) as IdSourceGetResponse);
     });
 
     router.post('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
+        const input: IdSourceRequest = req.body;
         const sourceId = req.params.id;
         const foundSource = await isSourceById(sourceId);
         if (foundSource) {
-            return res.status(409).send(sourceId + ' already exists.');
-        } else {
-            const createdIdSource = await createIdSource(sourceId, req.body);
-            res.send(createdIdSource);
+            res.status(409).send(sourceId + ' already exists.');
+            return;
         }
+        res.send(await createIdSource(sourceId, input) as IdSourceResponse);
     });
 
     router.put('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
         const sourceId = req.params.id;
+        const input: IdSourceRequest = req.body;
         const foundSource = await isSourceById(sourceId);
         if (!foundSource) {
-            return res.status(409).send(sourceId + ' does not exist.');
-        } else {
-            const updatedIdSource = await updateIdSource(sourceId, req.body);
-            res.send(updatedIdSource);
+            res.status(409).send(sourceId + ' does not exist.');
+            return;
         }
+        res.send(await updateIdSource(sourceId, input) as IdSourceResponse);
     });
 
     router.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {
         await deleteIdSource(req.params.id);
         res.send();
+    });
+
+    router.get('/idSources', async (req, res) => {
+        res.send(await getAllIdSources() as IdSourcesResponse);
     });
 
     return router;

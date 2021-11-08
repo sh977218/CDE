@@ -108,6 +108,12 @@ function getTicket<T>(cb: (ticket: string) => Promise<T>): Promise<T> {
                     .then(isStatus([200]))
                     .then(text)
                     .then(checkForVsacErrorPage, cleanupRejected('get ticket ERROR'))
+                    .then(ticket => {
+                        if (!ticket) {
+                            throw 'ticket is missing';
+                        }
+                        return ticket;
+                    })
                     .then(cb);
 
                 let fetching = true;
@@ -178,13 +184,13 @@ export function getSourcePT(cui: string, src: string): Promise<string> {
     )
         .then(isStatus([200]))
         .then(text)
-        .then(checkForVsacErrorPage, cleanupRejected('get src PT from umls ERROR' + `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=TTT`));
+        .then(checkForVsacErrorPage, cleanupRejected('get src PT from umls ERROR ' + `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=TTT`));
 }
 
-export function getAtomsFromUMLS(cui: string, source: string): Promise<string> {
+export function getAtomsFromUMLS(cui: string, src: string): Promise<string> {
     return withRetry(() =>
         getTicket(ticket =>
-            fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${source}&pageSize=500&ticket=${ticket}`, {
+            fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&pageSize=500&ticket=${ticket}`, {
                 agent: httpsAgent,
             })
         )

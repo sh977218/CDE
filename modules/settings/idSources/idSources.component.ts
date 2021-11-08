@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import { Source } from 'shared/models.model';
+import { IdSourceRequest, IdSourceResponse, IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
+import { IdSource } from 'shared/models.model';
 
 @Component({
     selector: 'cde-id-sources',
@@ -16,32 +17,32 @@ import { Source } from 'shared/models.model';
 })
 export class IdSourcesComponent {
     newId?: string;
-    sources!: Source[];
+    sources!: IdSource[];
 
     constructor(private alert: AlertService, private http: HttpClient) {
-        this.http.get<Source[]>('/server/system/idSources')
+        this.http.get<IdSourcesResponse>('/server/system/idSources')
             .subscribe(res => this.sources = res,
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }
 
     add() {
-        this.http.post<Source>('/server/system/idSource/' + this.newId, {})
+        this.http.post<IdSourceResponse>('/server/system/idSource/' + this.newId, {} as IdSourceRequest)
             .subscribe(res => this.sources.push(res),
                 err => this.alert.httpErrorMessageAlert(err)
             );
         this.newId = undefined;
     }
 
-    delete(source: Source, i: number) {
+    delete(source: IdSource, i: number) {
         this.http.delete('/server/system/idSource/' + source._id)
             .subscribe(() => this.sources.splice(i, 0),
                 err => this.alert.httpErrorMessageAlert(err)
             );
     }
 
-    update(source: Source) {
-        this.http.put<Source>('/server/system/idSource/' + source._id, source)
+    update(source: IdSource) {
+        this.http.put<IdSourceResponse>('/server/system/idSource/' + source._id, source as IdSourceRequest)
             .subscribe(res => source = res,
                 err => this.alert.httpErrorMessageAlert(err)
             );

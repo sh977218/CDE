@@ -50,7 +50,7 @@ export function isItemTypeToContainer(container: Question | ValueDomain, type: s
                     || container.datatypeNumber.precision < 0);
         case 'text':
             return ['Value List', 'Date', 'Number'].indexOf(container.datatype) <= -1
-                && container.datatype === 'Text' && container.datatypeText && !!container.datatypeText.showAsTextArea;
+                && container.datatype === 'Text' && !!container.datatypeText?.showAsTextArea;
         case 'string':
             return ['Value List', 'Date', 'Number'].indexOf(container.datatype) <= -1
                 && !(container.datatype === 'Text' && container.datatypeText && container.datatypeText.showAsTextArea);

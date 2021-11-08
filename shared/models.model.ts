@@ -531,6 +531,13 @@ export function isBoard(b: Item | Board): b is Board {
     return !!(b as Board).owner;
 }
 
+export interface IdSource {
+    _id: string;
+    linkTemplateDe: string;
+    linkTemplateForm: string;
+    version?: string;
+}
+
 export interface IdVersion {
     id: string;
     version?: string;
@@ -636,17 +643,6 @@ export class RegistrationState {
     };
     unresolvedIssue?: string;
     untilDate?: Date;
-}
-
-export class Source {
-    _id: string;
-    linkTemplateDe: string = '';
-    linkTemplateForm: string = '';
-    version?: string;
-
-    constructor(_id: string) {
-        this._id = _id;
-    }
 }
 
 export interface TableViewFields {

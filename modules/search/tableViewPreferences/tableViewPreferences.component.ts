@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { Source, UserSearchSettings } from 'shared/models.model';
+import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
+import { UserSearchSettings } from 'shared/models.model';
 
 @Component({
     template: ''
@@ -19,7 +20,8 @@ export abstract class TableViewPreferencesComponent {
                 private alert: AlertService,
                 public esService: ElasticService,
                 private http: HttpClient) {
-        this.http.get<Source[]>('/server/system/idSources').subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
+        this.http.get<IdSourcesResponse>('/server/system/idSources')
+            .subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
         this.searchSettings = this.esService.searchSettings;
     }
 
