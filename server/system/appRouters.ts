@@ -73,7 +73,7 @@ export function module() {
     router.get('/site-version', (req, res) => res.send(version));
 
     router.get('/sw.js', (req, res) => {
-        res.sendFile((global as any).appDir('dist/app', 'sw.js'), undefined, err => {
+        res.sendFile(global.appDir('dist/app', 'sw.js'), undefined, err => {
             if (err) {
                 res.sendStatus(404);
             }

@@ -1,6 +1,7 @@
 // to override express.request.user
 import * as authorization from 'server/system/authorization';
 
+import 'server/globals';
 import { syncLinkedFormsByTinyId } from 'server/form/syncLinkedForms';
 import { initEs } from 'server/system/elastic';
 

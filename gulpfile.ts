@@ -21,7 +21,8 @@ require('es6-promise').polyfill();
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
 const runInAppOptions = {cwd: APP_DIR};
-const nodeCmd = APP_DIR === __dirname ? 'npx ts-node -P tsconfigNode.json ' : 'node ';
+const nodeCmd = isRunningAsTs() ? 'npx ts-node -P tsconfigNode.json ' : 'node ';
+const fullBuild = process.argv.includes('--full');
 
 function appDir(path: string) {
     return resolve(APP_DIR, path);
@@ -29,6 +30,10 @@ function appDir(path: string) {
 
 function buildDir(path: string) {
     return resolve(BUILD_DIR, path);
+}
+
+function isRunningAsTs() {
+    return APP_DIR === __dirname;
 }
 
 function run(command: string, options?: ExecOptions): Promise<void> {
@@ -90,42 +95,41 @@ gulp.task('createDist', ['copyThirdParty'], function createDist() {
     //     .pipe(gulp.dest(appDir('./dist/common')));
 });
 
-
 gulp.task('buildNode', ['npmRebuild'], function buildNode() {
-    return run('npm run buildNode');
+    if (fullBuild) {
+        return run('npm run buildIngester', runInAppOptions);
+    }
+    if (isRunningAsTs()) {
+        return run('npm run buildNode', runInAppOptions);
+    }
 });
 
-
 gulp.task('copyCode', ['buildNode'], function copyCode() {
+    const assetFolders: string[] = [
+        'modules/cde/public/assets/img/min',
+        'modules/form/public/assets',
+        'modules/form/public/html',
+        'modules/processManager',
+        'modules/swagger/public',
+        'server/swagger/api',
+        'shared/de/assets',
+        'shared/form/assets',
+        'shared/mapping/fhir/assets'
+    ]
     const streamArray: NodeJS.ReadWriteStream[] = [];
-    ['cde', 'form', 'processManager', 'system', 'board'].forEach(module => {
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.png'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.svg'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.ico'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/**/*.gif'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/')));
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/views/**/*.html'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/views/')));
-        streamArray.push(gulp.src(appDir('./modules/' + module + '/views/bot/*.ejs'))
-            .pipe(gulp.dest(BUILD_DIR + '/modules/' + module + '/views/bot/')));
+    assetFolders.forEach(folder => {
+        streamArray.push(gulp.src(appDir('./' + folder + '/**'))
+             .pipe(gulp.dest(BUILD_DIR + '/' + folder + '/')));
     });
 
+    streamArray.push(gulp.src(appDir('./modules/system/views/**/*.html'))
+        .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/')));
+    streamArray.push(gulp.src(appDir('./modules/system/views/bot/*.ejs'))
+        .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/bot/')));
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach((file) => {
         streamArray.push(gulp.src(appDir('./modules/system/views/' + file))
             .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/')));
     });
-    streamArray.push(gulp.src(appDir('./modules/processManager/pmApp.js'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/processManager/')));
-
-    streamArray.push(gulp.src('./modules/swagger/index.js')
-        .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/')));
-    streamArray.push(gulp.src(appDir('./modules/swagger/api/swagger.yaml'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/api/')));
-    streamArray.push(gulp.src(appDir('./modules/swagger/public/swagger.css'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/swagger/public')));
 
     streamArray.push(gulp.src(appDir('./modules/system/public/robots.txt'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/system/public/')));
@@ -135,33 +139,39 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
         .pipe(gulp.dest(BUILD_DIR + '/config/')));
 
     streamArray.push(gulp.src(appDir('./package.json'))
-        .pipe(replace('"startJs": "node ./buildNode/app.js",', '"startJs": "node app.js",'))
+        .pipe(replace('"startJs": "node ./buildNode/server/app.js",', '"startJs": "node ./server/app.js",'))
         .pipe(replace('"postinstall": "npm run moveCssAngularTree && npx ngcc"', '"postinstall": ""'))
         .pipe(replace('"testServer": "node ./test/testLoginServer.js",', ''))
+        .pipe(fullBuild
+            ? replace('noop', 'noop')
+            : replace('"ingester": "file:./ingester",', '')
+        )
         .pipe(gulp.dest(BUILD_DIR + '/')));
 
     streamArray.push(gulp.src(appDir('./deploy/*'))
         .pipe(gulp.dest(BUILD_DIR + '/deploy/')));
 
-    streamArray.push(gulp.src(appDir('./ingester/**'))
-        .pipe(gulp.dest(BUILD_DIR + '/ingester/')));
-
-    streamArray.push(gulp.src(appDir('./modules/form/public/html/lformsRender.html'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/html/')));
-
-    streamArray.push(gulp.src(appDir('./modules/form/public/assets/**'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/form/public/assets/')));
-
-    // from buildNode (required)
-    streamArray.push(gulp.src('./app.js*')
-        .pipe(replace('APP_DIR = __dirname + "/.."', 'APP_DIR = __dirname'))
-        .pipe(gulp.dest(BUILD_DIR + '/')));
+    // from buildNode
     streamArray.push(gulp.src('./modules/**')
         .pipe(gulp.dest(BUILD_DIR + '/modules/')));
     streamArray.push(gulp.src('./server/**')
-        .pipe(gulp.dest(BUILD_DIR + '/server/')));
+        .pipe(gulp.dest(BUILD_DIR + '/server/'))
+        .on('end', () => {
+            streamArray.push(gulp.src('./server/globals.js')
+                .pipe(replace("APP_DIR = __dirname + '/../..'", "APP_DIR = __dirname + '/..'"))
+                .pipe(gulp.dest(BUILD_DIR + '/server/')));
+        }));
     streamArray.push(gulp.src('./shared/**')
         .pipe(gulp.dest(BUILD_DIR + '/shared/')));
+
+    if (fullBuild) {
+        streamArray.push(gulp.src(appDir('./ingester/**/*.js'))
+            .pipe(gulp.dest(BUILD_DIR + '/ingester/')));
+        streamArray.push(gulp.src('./ingester/**')
+            .pipe(gulp.dest(BUILD_DIR + '/ingester/')));
+        streamArray.push(gulp.src('./scripts/**')
+            .pipe(gulp.dest(BUILD_DIR + '/scripts/')));
+    }
 
     return merge(streamArray);
 });

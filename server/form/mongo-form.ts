@@ -23,13 +23,13 @@ export type CdeFormSource = CdeForm;
 export type CdeFormSourceDocument = Document & CdeFormSource;
 
 const ajvElt = new Ajv({allErrors: true});
-readdirSync(resolve(__dirname, '../../shared/de/assets/')).forEach(file => {
+readdirSync(resolve(global.appDir('shared/de/assets/'))).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
-        ajvElt.addSchema(require('../../shared/de/assets/' + file));
+        ajvElt.addSchema(require(global.appDir('shared/de/assets', file)));
     }
 });
 export let validateSchema: any;
-const file = readFileSync(resolve(__dirname, '../../shared/form/assets/form.schema.json'));
+const file = readFileSync(resolve(global.appDir('shared/form/assets/form.schema.json')));
 try {
     const schema = JSON.parse(file.toString());
     schema.$async = true;

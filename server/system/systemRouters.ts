@@ -26,7 +26,7 @@ import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import {
-    IdSourceGetResponse,
+    IdSourceGetResponse, IdSourcePutResponse,
     IdSourceRequest,
     IdSourceResponse,
     IdSourcesResponse
@@ -324,7 +324,7 @@ export function module() {
             res.status(409).send(sourceId + ' does not exist.');
             return;
         }
-        res.send(await updateIdSource(sourceId, input) as IdSourceResponse);
+        res.send(await updateIdSource(sourceId, input) as IdSourcePutResponse);
     });
 
     router.delete('/idSource/:id', isSiteAdminMiddleware, async (req, res) => {

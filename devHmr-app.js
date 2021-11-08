@@ -1,7 +1,7 @@
 switch (process.argv[2]) {
     case 'prod':
         console.log('Starting app.js');
-        require('./app');
+        require('server/app');
         break;
     case 'none':
         console.log('Not starting app.js to allow debug');

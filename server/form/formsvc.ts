@@ -30,9 +30,9 @@ import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
-readdirSync(resolve(__dirname, '../../shared/mapping/fhir/assets/schema/')).forEach(file => {
+readdirSync(resolve(global.appDir('shared/mapping/fhir/assets/schema/'))).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
-        ajv.addSchema(require('../../shared/mapping/fhir/assets/schema/' + file));
+        ajv.addSchema(require(global.appDir('shared/mapping/fhir/assets/schema/', file)));
     }
 });
 
@@ -129,7 +129,7 @@ export function byId(req: Request, res: Response) {
                 if (req.query.subtype === 'fhirQuestionnaire') {
                     addFormIds(wholeForm);
                     if (req.query.hasOwnProperty('validate')) {
-                        const p = resolve(__dirname, '../../shared/mapping/fhir/assets/schema/Questionnaire.schema.json');
+                        const p = resolve(global.appDir('shared/mapping/fhir/assets/schema/Questionnaire.schema.json'));
                         const data = readFileSync(p, 'utf8');
                         const result = ajv.validate(JSON.parse(data), formToQuestionnaire(wholeForm, null, config));
                         res.send({valid: result, errors: ajv.errors});

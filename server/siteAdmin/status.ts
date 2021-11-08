@@ -160,14 +160,14 @@ setInterval(() => {
                         title: 'Elastic Search Index Issue',
                         options: {
                             body: 'Status reports not normal',
-                            icon: '/cde/public/assets/img/NIH-CDE-FHIR.png',
-                            badge: '/cde/public/assets/img/nih-cde-logo-simple.png',
+                            icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                            badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                             tag: 'cde-es-issue',
                             actions: [
                                 {
                                     action: 'site-mgt-action',
                                     title: 'View',
-                                    icon: '/cde/public/assets/img/nih-cde-logo-simple.png'
+                                    icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
                                 }
                             ]
                         }

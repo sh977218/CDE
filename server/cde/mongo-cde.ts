@@ -11,10 +11,11 @@ import { ItemDao } from 'server/system/itemDao';
 import { DaoModule } from 'server/system/moduleDao';
 import { attachables, auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
-import * as dataElementSchemaJson from 'shared/de/assets/dataElement.schema.json';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { CbError, CbError1, EltLog, User } from 'shared/models.model';
+
+const dataElementSchemaJson = require(global.appDir('shared/de/assets/dataElement.schema.json'));
 
 export type DataElement = DataElementClient;
 export type DataElementDocument = Document & DataElement;
@@ -25,7 +26,7 @@ export type DataElementSourceDocument = Document & DataElementSource;
 export type EltLogDocument = Document & EltLog;
 
 const ajvElt = new Ajv({allErrors: true});
-ajvElt.addSchema(require('../../shared/de/assets/adminItem.schema'));
+ajvElt.addSchema(require(global.appDir('shared/de/assets/adminItem.schema')));
 export let validateSchema: any;
 try {
     const schema = dataElementSchemaJson;
@@ -97,7 +98,8 @@ export function byTinyId(tinyId: string, cb?: CbError1<DataElementDocument | nul
 
 export function byTinyIdAndVersion(tinyId: string, version: string | undefined): Promise<DataElementDocument | null>;
 export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>): void;
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
+export function byTinyIdAndVersion(tinyId: string, version: string | undefined,
+                                   cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
     const _query: any = {tinyId};
     if (version) {
         _query.version = version;

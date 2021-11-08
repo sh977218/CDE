@@ -65,7 +65,7 @@ export function badWorkingGroupStatus(elt: Item, org: Organization) {
 //         pushTask.options.actions.unshift({
 //             action: 'open-url',
 //             title: 'Open',
-//             icon: '/cde/public/assets/img/open_in_browser.png'
+//             icon: '/cde/public/assets/img/min/open_in_browser.png'
 //         });
 //     } else {
 //         pushTask.options.actions.unshift({
@@ -146,7 +146,7 @@ export function notifyForComment(handlerOptions: HandlerOptions, commentOrReply:
                         {
                             action: 'open-url',
                             title: 'Open',
-                            icon: '/cde/public/assets/img/open_in_browser.png'
+                            icon: '/cde/public/assets/img/min/open_in_browser.png'
                         },
                         {
                             action: 'profile-action',
