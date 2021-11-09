@@ -5,8 +5,6 @@ import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     appLogs, getClientErrors, getServerErrors, httpLogs, logClientError, usageByDay
 } from 'server/log/dbLogger';
-import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
-import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { is, parse } from 'useragent';
 
 export function module(roleConfig: {feedbackLog: RequestHandler, superLog: RequestHandler}) {

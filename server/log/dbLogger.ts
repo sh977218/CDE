@@ -4,12 +4,12 @@ import { handleConsoleError } from 'server/errorHandler/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';
-import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { pushRegistrationsFor } from 'server/notification/notificationDb';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { config } from 'server/system/parseConfig';
-import { UserFull } from 'server/user/userDb';
+import { siteAdmins, UserFull } from 'server/user/userDb';
 import { Cb, CbError, CbError1 } from 'shared/models.model';
 import { AuditLog, AuditLogResponse, LogMessage } from 'shared/log/audit';
 
@@ -134,10 +134,8 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
                     ]
                 }
             });
-            pushGetAdministratorRegistrations(registrations => {
-                if (registrations) {
-                    registrations.forEach(r => triggerPushMsg(r, msg));
-                }
+            pushRegistrationsFor(siteAdmins, registrations => {
+                registrations.forEach(r => triggerPushMsg(r, msg));
             });
         }
         if (callback) {
@@ -174,10 +172,8 @@ export function logClientError(req: Request, done: Cb) {
                     ]
                 }
             });
-            pushGetAdministratorRegistrations(registrations => {
-                if (registrations) {
-                    registrations.forEach(r => triggerPushMsg(r, msg));
-                }
+            pushRegistrationsFor(siteAdmins, registrations => {
+                registrations.forEach(r => triggerPushMsg(r, msg));
             });
         }
 

@@ -6,11 +6,12 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import { count } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
-import { pushGetAdministratorRegistrations } from 'server/notification/notificationDb';
+import { pushRegistrationsFor } from 'server/notification/notificationDb';
 import { esClient } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { Cb, Cb1, ElasticQueryResponse, ItemElastic } from 'shared/models.model';
+import { orgAuthorities, siteAdmins } from 'server/user/userDb';
+import { Cb, Cb1 } from 'shared/models.model';
 
 interface IndexStatus {
     name: string;
@@ -38,16 +39,16 @@ export function status(req: Request, res: Response) {
 }
 
 export function checkElasticCount(count: number, index: string, type: string, cb: (status: boolean, errMsg?: string) => void) {
-    esClient.count({index}, (err, response: { body: ElasticQueryResponse<ItemElastic> }) => {
+    esClient.count({index}, (err, response: { body: { count: number }, statusCode: number | null }) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
-        } else {
-            if (!((response as any).count >= count - 5 && (response as any).count <= count + 5)) {
-                cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + (response as any).count);
-            } else {
-                cb(true);
-            }
+            return;
         }
+        if (response.body.count < count - 5 || response.body.count > count + 5) {
+            cb(false, 'Count mismatch because db count = ' + count + ' and esCount = ' + response.body.count);
+            return;
+        }
+        cb(true);
     });
 }
 
@@ -172,7 +173,7 @@ setInterval(() => {
                             ]
                         }
                     });
-                    pushGetAdministratorRegistrations(registrations => {
+                    pushRegistrationsFor(siteAdmins, registrations => {
                         registrations.forEach(r => triggerPushMsg(r, msg));
                     });
 
@@ -180,6 +181,29 @@ setInterval(() => {
                         message: 'Elastic Search Status',
                         details: newReport
                     });
+
+                    const mismatched = statusReport.elastic.indices.filter(index => index.message && index.message.startsWith('Count mismatch'));
+                    if (mismatched.length) {
+                        const reindexMsg = JSON.stringify({
+                            title: 'Elastic Search Index Issue',
+                            options: {
+                                body: 'Document count does not match for index: ' + mismatched.join(', '),
+                                icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                                badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                                tag: 'cde-es-issue',
+                                actions: [
+                                    {
+                                        action: 'site-mgt-action',
+                                        title: 'View and Reindex',
+                                        icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                                    }
+                                ]
+                            }
+                        });
+                        pushRegistrationsFor(orgAuthorities, registrations => {
+                            registrations.forEach(r => triggerPushMsg(r, reindexMsg));
+                        });
+                    }
                 }, config.status.timeouts.notificationTimeout);
             }
         } else {

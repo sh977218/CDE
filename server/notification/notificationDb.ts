@@ -4,8 +4,7 @@ import { ObjectId } from 'server';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { handleError } from 'server/errorHandler/errorHandler';
-import { siteAdmins } from 'server/user/userDb';
-import { Cb1, CbError, CbError1 } from 'shared/models.model';
+import { Cb1, CbError, CbError1, User } from 'shared/models.model';
 import { PushRegistration, PushRegistrationDocument } from 'server/system/mongo-data';
 
 addStringtype(mongoose);
@@ -78,14 +77,14 @@ export function pushFindActive(criteria: any, cb: CbError1<PushRegistrationDocum
     pushRegistrationModel.find(criteria, cb);
 }
 
-export function pushGetAdministratorRegistrations(callback: Cb1<PushRegistrationDocument[]>) {
-    siteAdmins(handleError({}, users => {
+export function pushRegistrationsFor(getUsers: (usersCb: CbError1<User[]>) => void, cb: Cb1<PushRegistrationDocument[]>) {
+    getUsers(handleError({}, users => {
         if (!users) {
-            return callback([]);
+            return cb([]);
         }
         const userIds: ObjectId[] = users.map(u => u._id);
         pushRegistrationModel.find({}).exec(handleError({}, registrations => {
-            callback(registrations ? registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1) : []);
+            cb(Array.isArray(registrations) ? registrations.filter(reg => reg.loggedIn === true && userIds.indexOf(reg.userId) > -1) : []);
         }));
     }));
 }

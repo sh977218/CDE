@@ -44,7 +44,7 @@ export function create(req: Request, res: Response) {
         if (!pushes || !pushes.length) {
             return createUnsubscribed(req, res);
         }
-        const ownPushes = pushes.filter(push => push.userId === req.user._id);
+        const ownPushes = pushes.filter(push => push && push.userId === req.user._id);
         if (ownPushes.length) {
             const push = ownPushes[0];
             if (!push.loggedIn) {
