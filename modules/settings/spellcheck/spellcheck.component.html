@@ -15,6 +15,11 @@
             Add a Whitelist
         </button>
 
+        <button *ngIf="selectedWhiteList" mat-raised-button (click)="copyWhitelist()" id="copyWhitelistBtn" type="button" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
+            <mat-icon>content_copy</mat-icon>
+            Copy Whitelist
+        </button>
+
         <button *ngIf="selectedWhiteList" mat-raised-button (click)="openEditWhitelistModal()" id="openEditWhitelistModalBtn" type="button" [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
             <mat-icon>edit</mat-icon>
             View/Edit Whitelist
@@ -57,17 +62,20 @@
             <th>CDE</th>
             <th>Whitelist?</th>
         </tr>
-        <tr *ngFor="let t of getMisspelledTerms()">
+        <tr *ngFor="let t of currentErrorPage">
             <td>{{t}}</td>
             <td>
                 <ul>
-                    <li *ngFor="let c of spellingErrors[t]">
-                        Row: {{c.row}}, {{c.name}} in {{c.field}}
+                    <li *ngFor="let c of spellingErrors[t].slice(0, this.showAllTermErrors[t] ? spellingErrors[t].length : this.errorLimit)"
+                        [innerHTML]="getErrorDisplayText(c.error, t, c.row, c.field)">
                     </li>
                 </ul>
+                <a *ngIf="spellingErrors[t].length > this.errorLimit" class="fake-link"
+                   (click)="this.showAllTermErrors[t] = !this.showAllTermErrors[t]">{{this.showAllTermErrors[t] ? 'Show Less' : 'More Errors'}}
+                </a>
             </td>
-            <td>
-                <mat-checkbox (change)="addOrRemoveSpellingError($event.checked, t)">
+            <td class="checkBoxCell" (click)="termCheckbox._inputElement.nativeElement.click()">
+                <mat-checkbox #termCheckbox [checked]="this.selectedErrors.has(t)" (click)="$event.stopPropagation()" (change)="addOrRemoveSpellingError($event.checked, t)">
                 </mat-checkbox>
             </td>
         </tr>
@@ -79,6 +87,14 @@
                 Whitelist Selected Terms
             </button>
         </div>
+    </div>
+    <div class="float-left">
+        <mat-paginator *ngIf="getMisspelledTerms().length > 0"
+                       (page)="pageChange($event)"
+                       [pageIndex]="pageIndex"
+                       [length]="getMisspelledTerms().length"
+                       [pageSize]="pageSize">
+        </mat-paginator>
     </div>
 </div>
 

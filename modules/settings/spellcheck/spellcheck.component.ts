@@ -3,10 +3,18 @@ import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { ValidationWhitelist } from 'shared/models.model';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-spellcheck',
     templateUrl: './spellcheck.component.html',
+    styles: [`
+        .checkBoxCell {
+            cursor: pointer;
+            text-align: center;
+            vertical-align: middle;
+        }
+    `]
 })
 export class SpellCheckComponent {
     @ViewChild('newWhitelistModal', {static: true}) newWhitelistModal!: TemplateRef<any>;
@@ -21,8 +29,14 @@ export class SpellCheckComponent {
     spellingErrors: Record<string, {
         row: number,
         name: string,
+        error: string,
         field: string
     }[]> = {}
+    showAllTermErrors: Record<string, boolean> = {}
+    errorLimit: number = 5;
+    currentErrorPage: string [] = [];
+    pageIndex: number = 0;
+    pageSize: number = 10;
 
     currentWhiteLists: ValidationWhitelist[] = [];
     selectedWhiteList: ValidationWhitelist | null = null;
@@ -38,8 +52,9 @@ export class SpellCheckComponent {
     }
 
     openFileDialog(id: string) {
-        const open = document.getElementById(id);
+        const open = document.getElementById(id) as HTMLInputElement;
         if (open && !this.checkingFile) {
+            open.value = '';
             open.click();
         }
     }
@@ -57,6 +72,7 @@ export class SpellCheckComponent {
             this.retrievingWhitelists = false;
         }, error => {
             this.retrievingWhitelists = false;
+            this.alert.httpErrorMessageAlert(error);
         });
     }
 
@@ -81,12 +97,14 @@ export class SpellCheckComponent {
                     for (const t of res.terms) {
                         delete this.spellingErrors[t];
                     }
+                    this.setCurrentErrorPage();
                 }
                 this.getWhiteLists();
                 this.updatingWhitelists = false;
                 this.alert.addAlert('success', 'Whitelist updated');
             }, err => {
                 this.updatingWhitelists = false;
+                this.alert.httpErrorMessageAlert(err);
             });
         }
     }
@@ -103,12 +121,16 @@ export class SpellCheckComponent {
                     this.checkingFile = false;
                     this.fileErrors = response.fileErrors;
                     this.spellingErrors = response.spellingErrors;
+                    this.currentErrorPage = this.getMisspelledTerms().splice(0, this.pageSize);
+                    this.showAllTermErrors = {};
+                    this.pageIndex = 0;
                     if (this.fileErrors.length === 0 && this.getMisspelledTerms().length === 0) {
                         this.alert.addAlert('success', 'No issues found');
                     }
                 },
                 error => {
                     this.checkingFile = false;
+                    this.alert.httpErrorMessageAlert(error);
                 }
             );
         }
@@ -143,6 +165,14 @@ export class SpellCheckComponent {
             }
             this.newWhiteList = '';
         });
+    }
+
+    copyWhitelist() {
+        if (!!this.selectedWhiteList) {
+            this.newWhiteList = `Copy of ${this.selectedWhiteList.collectionName}`;
+            this.newWhiteListTerms = this.selectedWhiteList.terms.join('|');
+            this.openNewWhitelistModal();
+        }
     }
 
     openEditWhitelistModal() {
@@ -183,7 +213,7 @@ export class SpellCheckComponent {
                         },
                         err => {
                             this.updatingWhitelists = false;
-                            this.alert.addAlert('danger', 'Could not remove whitelist.')
+                            this.alert.addAlert('danger', 'Could not remove whitelist.');
                         });
                 }
             }
@@ -191,7 +221,27 @@ export class SpellCheckComponent {
     }
 
     getMisspelledTerms(): string [] {
-        return Object.keys(this.spellingErrors);
+        return Object.keys(this.spellingErrors).sort();
+    }
+
+    pageChange(event: PageEvent) {
+        this.pageIndex = event.pageIndex;
+        this.setCurrentErrorPage();
+    }
+
+    setCurrentErrorPage() {
+        const errorTerms = this.getMisspelledTerms();
+        const errorsSize = errorTerms.length;
+        if (this.pageIndex * this.pageSize > errorsSize - 1) {
+            this.pageIndex = Math.ceil(errorsSize / this.pageSize) - 1;
+        }
+        this.currentErrorPage = errorTerms.splice(this.pageIndex * this.pageSize, this.pageSize);
+    }
+
+    getErrorDisplayText(text: string, term: string, row: number, field: string): string {
+        const regEx = new RegExp(term, 'ig');
+        text = text.replaceAll(regEx, '<strong>$&</strong>');
+        return `Row ${row} - ${field}: ${text}`;
     }
 
     openTermHelp() {

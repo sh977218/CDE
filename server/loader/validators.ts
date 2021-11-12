@@ -158,6 +158,7 @@ export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) 
     const spellingErrors: Record<string, {
         row: number,
         name: string,
+        error: string,
         field: string
     }[]> = {};
     let rowIdx = 2;
@@ -182,9 +183,19 @@ export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) 
                 const badValues = checkValue(row, field, dictionary, whiteListTerms);
                 badValues.forEach(v => {
                     if (!!spellingErrors[v]) {
-                        spellingErrors[v].push({row: rowIdx, name: designation, field: CSV_HEADER_MAP[field] || field});
+                        spellingErrors[v].push({
+                            row: rowIdx,
+                            name: designation,
+                            error: getCell(row, field),
+                            field: CSV_HEADER_MAP[field] || field
+                        });
                     } else {
-                        spellingErrors[v] = [{row: rowIdx, name: designation, field: CSV_HEADER_MAP[field] || field}];
+                        spellingErrors[v] = [{
+                            row: rowIdx,
+                            name: designation,
+                            error: getCell(row, field),
+                            field: CSV_HEADER_MAP[field] || field
+                        }];
                     }
                 });
             }

@@ -50,6 +50,38 @@ public class ValidationWhitelistsTest extends NlmCdeBaseTest {
     }
 
     @Test
+    public void copyWhitelist(){
+        mustBeLoggedInAs(theOrgAuth_username, password);
+        goToSpellCheck();
+
+        clickElement(By.id("openNewWhitelistModalBtn"));
+        findElement(By.id("newWhitelistname")).sendKeys("copy_test");
+        findElement(By.id("newWhitelistterms")).sendKeys("copy|terms");
+        clickElement(By.id("createNewWhitelistBtn"));
+
+        hangon(2);
+
+        nonNativeSelect("", "Whitelist", "copy_test");
+
+        clickElement(By.id("copyWhitelistBtn"));
+
+        clickElement(By.id("createNewWhitelistBtn"));
+
+        hangon(2);
+
+        nonNativeSelect("", "Whitelist", "Copy of copy_test");
+
+        clickElement(By.id("openEditWhitelistModalBtn"));
+
+        textPresent("copy");
+        findElement(By.id("removeWhiteListTerm-copy"));
+        textPresent("terms");
+        findElement(By.id("removeWhiteListTerm-terms"));
+
+        clickElement(By.id("cancelEditWhitelistBtn"));
+    }
+
+    @Test
     public void addRemoveWhitelistTerms(){
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToSpellCheck();
