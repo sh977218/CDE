@@ -232,7 +232,8 @@ export function searchBySystemAndCode(system: string, code: string): Promise<str
         .then(text)
         .then(checkForVsacErrorPage, (err: Error) => {
             _TGT = undefined;
-            respondError(err, {details: 'searchBySystemAndCode ERROR' + config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=TTT'});
+            respondError({details: 'searchBySystemAndCode ERROR' + config.umls.wsHost + '/rest/content/current/source/'
+                    + system + '/' + code + '/atoms?ticket=TTT'})(err);
             throw err;
         });
 }

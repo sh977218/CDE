@@ -1,8 +1,7 @@
 import { Response } from 'express';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
-import { Document, Model, Types, Schema } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { Cb1, CbError1 } from 'shared/models.model';
-const ObjectId = Schema.Types.ObjectId;
 
 // sample: postCheckFn for custom unique id
 // (data, cb) => {
@@ -32,12 +31,12 @@ export function writableCollection<T extends {_id: string, __v: number}>(
     function post(res: Response, data: T, cb: Cb1<Document & T>) {
         const handlerOptions = {res};
         if (!postCheckFn) {
-            respondError(new Error('id generation is not supported'), handlerOptions);
+            respondError(handlerOptions)(new Error('id generation is not supported'));
             return;
         }
         postCheckFn(data, (err, pass) => {
             if (err) {
-                respondError(err, handlerOptions);
+                respondError(handlerOptions)(err);
                 return;
             }
             if (!pass) {

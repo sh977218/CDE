@@ -2,14 +2,14 @@ import * as Ajv from 'ajv';
 import { isEmpty } from 'lodash';
 import { Document, HookNextFunction, Model, QueryCursor } from 'mongoose';
 import { byTinyIdList as elasticByTinyIdList } from 'server/cde/elastic';
-import { updateOrInsert } from 'server/cde/elastic';
+import { updateOrInsertDocument } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { ItemDao } from 'server/system/itemDao';
 import { DaoModule } from 'server/system/moduleDao';
-import { attachables, auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
+import { auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
@@ -45,7 +45,7 @@ function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFu
     }
     validateSchema(elt).then(() => {
         try {
-            updateOrInsert(elt);
+            updateOrInsertDocument(elt);
         } catch (exception) {
             errorLogger.error(`Error Indexing CDE ${elt.tinyId}`, {
                 details: exception,
@@ -76,7 +76,6 @@ export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.mod
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
 export const getAuditLog = auditGetLog(cdeAuditModel);
-attachables.push(dataElementModel);
 
 export function byExisting(elt: DataElement): Promise<DataElementDocument | null>;
 export function byExisting(elt: DataElement, cb: CbError1<DataElementDocument | null>): void;

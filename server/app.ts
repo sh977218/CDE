@@ -5,7 +5,7 @@ import * as Config from 'config';
 import * as cookieParser from 'cookie-parser';
 import * as Domain from 'domain';
 import * as express from 'express';
-import { ErrorRequestHandler, Request, RequestHandler, Response } from 'express';
+import { ErrorRequestHandler, Request } from 'express';
 import * as session from 'express-session';
 import * as httpProxy from 'express-http-proxy';
 import * as helmet from 'helmet';
@@ -17,18 +17,15 @@ import * as path from 'path';
 import * as favicon from 'serve-favicon';
 import * as winston from 'winston';
 import { init as swaggerInit } from './swagger';
-import * as articleDb from 'server/article/articleDb';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
 import { module as deModule } from 'server/cde/deRouters';
-import * as mongo_cde from 'server/cde/mongo-cde';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { DbPlugins } from 'server/dbPlugins';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { module as formModule } from 'server/form/formRouters';
-import * as mongo_form from 'server/form/mongo-form';
 import { module as loaderModule } from 'server/loader/loaderRoutes'
 import { module as logModule } from 'server/log/logRoutes';
 import { mongoPlugins } from 'server/mongo/mongoPlugins';
@@ -53,6 +50,7 @@ import { module as utsModule } from 'server/uts/utsRoutes';
 import { ModuleAll } from 'shared/models.model';
 import { canClassifyOrg } from 'shared/security/authorizationShared';
 
+require('source-map-support').install();
 const flash = require('connect-flash');
 const hsts = require('hsts');
 const Rotate = require('winston-logrotate').Rotate;
@@ -96,7 +94,8 @@ process.on('unhandledRejection', (err) => {
     const message = `Error: Unhandled Promise Rejection: ${err}`;
     console.error(message);
     errorLogger.error(message, {
-        origin: 'app.process.unhandledRejection'
+        origin: 'app.process.unhandledRejection',
+        stack: err && (err as any).stack || err,
     });
 });
 
@@ -104,15 +103,18 @@ process.on('uncaughtException', (err) => {
     console.error('Error: Process Uncaught Exception');
     console.error(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
-        stack: err.stack || err,
-        origin: 'app.process.uncaughtException'
+        origin: 'app.process.uncaughtException',
+        stack: err.stack || err
     });
 });
 
 domain.on('error', (err) => {
     console.error('Error: Domain Error');
     console.error(err.stack || err);
-    errorLogger.error('Error: Domain Error', {stack: err.stack || err, origin: 'app.domain.error'});
+    errorLogger.error('Error: Domain Error', {
+        origin: 'app.domain.error',
+        stack: err.stack || err,
+    });
 });
 
 // all environments
@@ -284,11 +286,9 @@ express.response.render = function renderEjsUsingThis(this: any, view: string, m
 
 try {
     app.use('/', appModule());
-    app.use('/server/attachment', [canAttachMiddleware], attachmentModule([
-        {module: 'cde', db: mongo_cde, crudPermission: checkEditing},
-        {module: 'form', db: mongo_form, crudPermission: checkEditing},
-        {module: 'article', db: articleDb, crudPermission: isDocumentationEditor}
-    ]));
+    app.use('/server/attachment/cde', canAttachMiddleware, attachmentModule(dbPlugins.dataElement, checkEditing));
+    app.use('/server/attachment/form', canAttachMiddleware, attachmentModule(dbPlugins.form, checkEditing));
+    app.use('/server/attachment/article', canAttachMiddleware, attachmentModule(dbPlugins.article, isDocumentationEditor));
     app.use('/server/discuss', discussModule({
         allComments: isOrgAuthorityMiddleware,
         canSeeComment: canSeeCommentMiddleware,

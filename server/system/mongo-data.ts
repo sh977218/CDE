@@ -238,8 +238,6 @@ export function eltAsElastic(doc: Item | ItemDocument): ItemElastic {
     return elt;
 }
 
-export const attachables: Model<Document>[] = [];
-
 export interface FileCreateInfo {
     stream: Readable;
     filename?: string;

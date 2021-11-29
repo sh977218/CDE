@@ -4,11 +4,20 @@ import { logError } from 'server/log/dbLogger';
 import { esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { CbError1, ElasticQueryResponse } from 'shared/models.model';
 
-export function updateOrInsert(elt: CdeFormDocument) {
-    riverFunction(elt.toObject(), doc => {
+export function updateOrInsert(elt: CdeForm): CdeForm {
+    updateOrInsertImpl(Object.assign({}, elt));
+    return elt;
+}
+
+export function updateOrInsertDocument(elt: CdeFormDocument) {
+    return updateOrInsertImpl(elt.toObject());
+}
+
+export function updateOrInsertImpl(elt: CdeForm): void {
+    riverFunction(elt, doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;

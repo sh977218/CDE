@@ -297,7 +297,7 @@ export function module() {
     function getDrafts(req: Request, res: Response, criteria: any) {
         Promise.all([deDraftsList(criteria), formDraftsList(criteria)])
             .then(results => res.send({draftCdes: results[0], draftForms: results[1]}))
-            .catch(err => respondError(err, {req, res}));
+            .catch(err => respondError({req, res})(err));
     }
 
     /**** id sources ****/

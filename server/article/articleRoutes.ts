@@ -1,6 +1,6 @@
 import { RequestHandler, Router } from 'express';
 import * as Parser from 'rss-parser';
-import { byKey, update } from 'server/article/articleDb';
+import { dbPlugins } from 'server/app';
 import { Article } from 'shared/article/article.model';
 
 const parser = new Parser();
@@ -11,7 +11,7 @@ export function module(roleConfig: { update: RequestHandler[] }) {
 
     ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about'].forEach(a => {
         router.get('/' + a, async (req, res) => {
-            const article = await byKey(a);
+            const article = await dbPlugins.article.byKey(a);
             res.send(article);
         });
     });
@@ -20,9 +20,9 @@ export function module(roleConfig: { update: RequestHandler[] }) {
         if (req.body.key !== req.params.key) {
             return res.status(400).send();
         }
-        await update(req.body);
+        await dbPlugins.article.update(req.body);
 
-        const article = await byKey(req.params.key);
+        const article = await dbPlugins.article.byKey(req.params.key);
         res.send(article);
     });
 
@@ -51,13 +51,12 @@ export function module(roleConfig: { update: RequestHandler[] }) {
     }
 
     router.get('/resourcesAndFeed', async (req, res) => {
-        const articleDocument = await byKey('resources');
+        const article = await dbPlugins.article.byKey('resources');
         /* istanbul ignore if */
-        if (!articleDocument) {
+        if (!article) {
             res.status(404).send();
             return;
         }
-        const article = articleDocument.toObject();
         await replaceRssToken(article);
         res.send(article);
     });
@@ -77,13 +76,12 @@ export function module(roleConfig: { update: RequestHandler[] }) {
     }
 
     router.get('/videosAndIframe', async (req, res) => {
-        const articleDocument = await byKey('videos');
+        const article = await dbPlugins.article.byKey('videos');
         /* istanbul ignore if */
-        if (!articleDocument) {
+        if (!article) {
             res.status(404).send();
             return;
         }
-        const article = articleDocument.toObject();
         await replaceVideoToken(article);
         res.send(article);
     });

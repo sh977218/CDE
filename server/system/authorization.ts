@@ -162,7 +162,7 @@ export function canSeeComment(user: User) {
     return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user)
 }
 
-export function isDocumentationEditor(elt: Item, user?: User) {
+export function isDocumentationEditor<T>(elt: T, user?: User) {
     return hasRole(user, 'DocumentationEditor');
 }
 

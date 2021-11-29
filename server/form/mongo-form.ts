@@ -5,13 +5,13 @@ import { resolve } from 'path';
 import { EltLogDocument } from 'server/cde/mongo-cde';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { byTinyIdList as elasticByTinyIdList } from 'server/form/elastic';
-import { updateOrInsert } from 'server/form/elastic';
+import { updateOrInsertDocument } from 'server/form/elastic';
 import { auditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { ItemDao } from 'server/system/itemDao';
 import { DaoModule } from 'server/system/moduleDao';
-import { attachables, auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
+import { auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
 import { config } from 'server/system/parseConfig';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { CbError, CbError1, User } from 'shared/models.model';
@@ -47,7 +47,7 @@ function preSaveUsesThisForSomeReason(this: CdeFormDocument, next: HookNextFunct
     }
     validateSchema(elt).then(() => {
         try {
-            updateOrInsert(elt);
+            updateOrInsertDocument(elt);
         } catch (exception) {
             // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
             errorLogger.error(`Error Indexing Form ${elt.tinyId}`, {
@@ -73,7 +73,6 @@ export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsou
 
 const auditModificationsForm = auditModifications(formAuditModel);
 export const getAuditLog = auditGetLog(formAuditModel);
-attachables.push(formModel);
 
 export function byExisting(elt: CdeForm): Promise<CdeFormDocument | null>;
 export function byExisting(elt: CdeForm, cb: CbError1<CdeFormDocument | null>): void;

@@ -5,13 +5,22 @@ import { storeQuery } from 'server/log/storedQueryDb';
 import { elasticsearch as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { config } from 'server/system/parseConfig';
-import { DataElementElastic } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CbError1, ElasticQueryResponse, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
-export function updateOrInsert(elt: DataElementDocument) {
-    riverFunction(elt.toObject(), doc => {
+export function updateOrInsert(elt: DataElement): DataElement {
+    updateOrInsertImpl(Object.assign({}, elt));
+    return elt;
+}
+
+export function updateOrInsertDocument(elt: DataElementDocument) {
+    return updateOrInsertImpl(elt.toObject());
+}
+
+export function updateOrInsertImpl(elt: DataElement): void {
+    riverFunction(elt, doc => {
         if (doc) {
             let doneCount = 0;
             let doneError;

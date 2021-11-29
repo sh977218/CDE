@@ -22,6 +22,7 @@ import {
 } from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { storeQuery } from 'server/log/storedQueryDb';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
@@ -187,6 +188,8 @@ export function module() {
                         if (elt) {
                             if (!firstElt) {
                                 res.write(',');
+                            } else {
+                                storeQuery(req.body);
                             }
                             elt = stripBsonIdsElt(elt);
                             elt = removeElasticFields(elt);

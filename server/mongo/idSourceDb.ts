@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
+import { establishConnection } from 'server/system/connections';
 import { config } from 'server/system/parseConfig';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { IdSourceDb } from 'shared/boundaryInterfaces/db/idSourceDb';
@@ -10,8 +11,7 @@ type IdSourceDocument = Document & IdSource;
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('server/system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 const idSourceSchema = new Schema({
     _id: String,
     linkTemplateDe: {type: StringType, default: ''},

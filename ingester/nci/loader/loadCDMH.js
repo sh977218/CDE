@@ -1,4 +1,5 @@
 import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
+import { mongoPlugins } from 'server/mongo/mongoPlugins';
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -14,19 +15,20 @@ const CompareCDE = require('../CDE/CompareCDE');
 const MergeCDE = require('../CDE/MergeCDE');
 
 const DataElement = require('../../../server/cde/mongo-cde').dataElementModel;
+const DataElementDb = mongoPlugins.dataElement;
 
 const xmlFile = 'S:/MLB/CDE/NCI/CDE XML/cdmh.xml';
 
 let orgInfo = ORG_INFO_MAP['NCI-CDMH'];
 let counter = 0;
 
-const addAttachments = (originXml, elt) => {
+const addAttachments = (db, originXml, elt) => {
     return new Promise((resolve, reject) => {
         let readable = new Readable();
         let xml = builder.buildObject(originXml).toString();
         readable.push(xml);
         readable.push(null);
-        attachment.addToItem(elt, {
+        attachment.addToItem(db, elt, {
                 originalname: originXml.DataElement.PUBLICID[0] + "v" + originXml.DataElement.VERSION[0] + ".xml",
                 mimetype: "application/xml",
                 size: xml.length,
@@ -53,7 +55,7 @@ fs.readFile(xmlFile, function (err, data) {
             let newCdeObj = await CreateCDE.createCde(nciXmlCde, orgInfo);
             let newCde = new DataElement(newCdeObj);
             let existingCde = await DataElement.findOne({'ids.id': id});
-            await addAttachments({DataElement: nciXmlCde}, newCde);
+            await addAttachments(DataElementDb, {DataElement: nciXmlCde}, newCde);
             if (!existingCde) {
                 await newCde.save();
                 console.log('newCde tinyId: ' + newCde.tinyId);

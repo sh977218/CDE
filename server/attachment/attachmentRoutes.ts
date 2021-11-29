@@ -2,27 +2,25 @@ import * as Config from 'config';
 import { Router } from 'express';
 import * as multer from 'multer';
 import { add, remove, setDefault } from 'server/attachment/attachmentSvc';
-import { Item, ModuleAll, User } from 'shared/models.model';
+import { Attachable, AttachableDb } from 'shared/boundaryInterfaces/db/tags/attachableDb';
+import { User } from 'shared/models.model';
 
 const config = Config as any;
 
-export function module(modules: {module: ModuleAll | 'article', db: any, crudPermission: (elt: Item, user?: User) => boolean}[]) {
+export function module<T extends Attachable>(db: AttachableDb<T>, crudPermission: (elt: T, user?: User) => boolean) {
     const router = Router();
 
-    modules.forEach(m => {
+    router.post(`/add`, multer({...config.multer, storage: multer.memoryStorage()}).any(), (req, res) =>
+        add(req as any, res, db, crudPermission)
+    );
 
-        router.post(`/${m.module}/add`, multer({...config.multer, storage: multer.memoryStorage()}).any(), (req, res) => {
-            add(req as any, res, m.db, m.crudPermission);
-        });
+    router.post(`/remove`, (req, res) =>
+        remove(req, res, db, crudPermission)
+    );
 
-        router.post(`/${m.module}/remove`, (req, res) => {
-            remove(req, res, m.db, m.crudPermission);
-        });
-
-        router.post(`/${m.module}/setDefault`, (req, res) => {
-            setDefault(req, res, m.db, m.crudPermission);
-        });
-    });
+    router.post(`/setDefault`, (req, res) =>
+        setDefault(req, res, db, crudPermission)
+    );
 
     return router;
 }

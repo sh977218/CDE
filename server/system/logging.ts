@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { config } from 'server/system/parseConfig';
-import { CbError, CbError1 } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 import { transports, Logger, Transport } from 'winston';
 
 const util = require('util');

@@ -1,9 +1,11 @@
+import { Attachment, ObjectId } from 'shared/models.model';
+
 export interface Article {
-    _id: string;
+    _id: ObjectId;
     key?: string;
     body: string;
     updated?: Date;
     created?: Date;
-    attachments?: any;
+    attachments: Attachment[];
     rssFeeds?: string[];
 }

@@ -102,11 +102,20 @@ interface ErrorMessage {
     message?: string;
     origin?: string;
     publicMessage?: string;
+    request?: {
+        url: string;
+        params: string;
+        body: string;
+        username: string;
+        ip: string;
+    };
     stack?: string;
 }
 
 export function logError(message: ErrorMessage, callback?: Cb) { // all server errors, express and not
-    message.date = new Date();
+    if (!message.date) {
+        message.date = new Date();
+    }
     if (typeof message.stack === 'string') {
         message.stack = message.stack.substr(0, 1000);
     }

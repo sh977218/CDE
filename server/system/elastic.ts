@@ -242,7 +242,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
                     body: index.indexJson
                 }, err => {
                     if (err) {
-                        respondError(err);
+                        respondError()(err);
                         doneOne(err);
                     } else {
                         consoleLog('index Created: ' + index.indexName);
