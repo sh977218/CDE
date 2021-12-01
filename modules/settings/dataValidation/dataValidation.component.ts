@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { saveAs } from 'file-saver';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-data-validation',
@@ -18,12 +19,21 @@ export class DataValidationComponent {
         logs: string[]
     }[] = [];
 
+    currentErrorPage: {
+        row: number,
+        name: string,
+        logs: string[]
+    }[] = [];
+    pageIndex: number = 0;
+    pageSize: number = 10;
+
     constructor(private alert: AlertService, private http: HttpClient) {
     }
 
     openFileDialog(id: string) {
-        const open = document.getElementById(id);
+        const open = document.getElementById(id) as HTMLInputElement;
         if (open && !this.fileValidating) {
+            open.value = '';
             open.click();
         }
     }
@@ -54,14 +64,27 @@ export class DataValidationComponent {
                     this.fileValidating = false;
                     this.fileErrors = response.fileErrors;
                     this.dataErrors = response.dataErrors;
+                    this.pageIndex = 0;
+                    this.setCurrentErrorPage();
                     if(this.fileErrors.length === 0 && this.dataErrors.length === 0){
                         this.alert.addAlert('success', 'No issues found');
                     }
                 },
                 error => {
                     this.fileValidating = false;
+                    this.alert.httpErrorMessageAlert(error);
                 }
             );
         }
+    }
+
+    pageChange(event: PageEvent) {
+        this.pageIndex = event.pageIndex;
+        this.setCurrentErrorPage();
+    }
+
+    setCurrentErrorPage(){
+        const start = this.pageIndex * this.pageSize;
+        this.currentErrorPage = this.dataErrors.slice(start, start + this.pageSize);
     }
 }

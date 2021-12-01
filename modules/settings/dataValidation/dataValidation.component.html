@@ -39,7 +39,7 @@
             <th>CDE Name</th>
             <th>Issues</th>
         </tr>
-        <tr *ngFor="let e of dataErrors">
+        <tr *ngFor="let e of this.currentErrorPage">
             <td>{{e.row}}</td>
             <td>{{e.name}}</td>
             <td>
@@ -51,4 +51,11 @@
             </td>
         </tr>
     </table>
+    <div class="float-left">
+        <mat-paginator (page)="pageChange($event)"
+                       [pageIndex]="pageIndex"
+                       [length]="dataErrors.length"
+                       [pageSize]="pageSize">
+        </mat-paginator>
+    </div>
 </div>
