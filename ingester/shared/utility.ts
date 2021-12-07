@@ -11,9 +11,18 @@ import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { formModel, formSourceModel } from 'server/form/mongo-form';
 import { PhenxURL } from 'ingester/createMigrationConnection';
-import { CdeId, Classification, Definition, Designation, Item, Property, ReferenceDocument } from 'shared/models.model';
+import {
+    Attachment,
+    CdeId,
+    Classification,
+    Definition,
+    Designation,
+    Item,
+    Property,
+    ReferenceDocument
+} from 'shared/models.model';
 import { CdeForm, FormElement } from 'shared/form/form.model';
-import { addFile, FileCreateInfo } from 'server/system/mongo-data';
+import { addFile } from 'server/mongo/mongo/gfs';
 import { Readable } from 'stream';
 import { idComparator, referenceDocumentComparator } from 'shared/util';
 
@@ -742,27 +751,20 @@ export function sortRefDoc(elt: CdeForm) {
     return sortBy(elt.referenceDocuments, ['docType', 'languageCode', 'document']);
 }
 
-export function addAttachment(readable: Readable, attachment: any) {
-    return new Promise((resolve, reject) => {
-        const file: FileCreateInfo = {
-            stream: readable
-        };
-        const streamDescription = {
+export function addAttachment(readable: Readable, attachment: Attachment): Promise<void> {
+    return addFile(
+        {
             filename: attachment.filename,
-            mode: 'w',
-            content_type: attachment.filetype,
+            stream: readable
+        },
+        {
+            contentType: attachment.filetype,
             metadata: {
                 status: 'approved'
             }
-        };
-        addFile(file, streamDescription, (err, newFile) => {
-            if (err) {
-                reject(err);
-            } else {
-                attachment.fileid = newFile._id;
-                resolve();
-            }
-        });
+        }
+    ).then(fileId => {
+        attachment.fileid = fileId.toString();
     });
 }
 

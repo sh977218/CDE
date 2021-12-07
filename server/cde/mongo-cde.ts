@@ -1,21 +1,18 @@
 import * as Ajv from 'ajv';
 import { isEmpty } from 'lodash';
-import { Document, HookNextFunction, Model, QueryCursor } from 'mongoose';
-import { byTinyIdList as elasticByTinyIdList } from 'server/cde/elastic';
+import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
+import { config } from 'server';
 import { updateOrInsertDocument } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
 import { splitError } from 'server/errorHandler/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { ItemDao } from 'server/system/itemDao';
-import { DaoModule } from 'server/system/moduleDao';
-import { auditGetLog, auditModifications, eltAsElastic, generateTinyId } from 'server/system/mongo-data';
-import { config } from 'server/system/parseConfig';
-import { DataElement as DataElementClient, DataElementElastic } from 'shared/de/dataElement.model';
+import { auditGetLog, auditModifications, generateTinyId } from 'server/system/mongo-data';
+import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { CbError, CbError1, EltLog, User } from 'shared/models.model';
 
-const dataElementSchemaJson = require(global.appDir('shared/de/assets/dataElement.schema.json'));
+const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
 
 export type DataElement = DataElementClient;
 export type DataElementDocument = Document & DataElement;
@@ -26,7 +23,7 @@ export type DataElementSourceDocument = Document & DataElementSource;
 export type EltLogDocument = Document & EltLog;
 
 const ajvElt = new Ajv({allErrors: true});
-ajvElt.addSchema(require(global.appDir('shared/de/assets/adminItem.schema')));
+ajvElt.addSchema(require(global.assetDir('shared/de/assets/adminItem.schema')));
 export let validateSchema: any;
 try {
     const schema = dataElementSchemaJson;
@@ -37,9 +34,10 @@ try {
     process.exit(1);
 }
 
-function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFunction) {
+const preSave: PreSaveMiddlewareFunction<DataElementDocument> = function preSave(this, next) {
     const elt = this;
 
+    /* istanbul ignore if */
     if (elt.archived) {
         return next();
     }
@@ -54,6 +52,7 @@ function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFu
         }
 
         const valueDomain = elt.valueDomain;
+        /* istanbul ignore if */
         if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
             next(new Error(`Cde ${elt.tinyId} Value List with empty permissible values.`));
         } else {
@@ -65,8 +64,8 @@ function preSaveUseThisForSomeReason(this: DataElementDocument, next: HookNextFu
         next(err);
     });
 }
-dataElementSchema.pre('save', preSaveUseThisForSomeReason);
-dataElementSourceSchema.pre('save', preSaveUseThisForSomeReason);
+dataElementSchema.pre('save', preSave);
+dataElementSourceSchema.pre('save', preSave);
 
 const conn = establishConnection(config.database.appData);
 const cdeAuditModel: Model<EltLogDocument> = conn.model('CdeAudit', auditSchema);
@@ -77,69 +76,10 @@ export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.mod
 const auditModificationsDe = auditModifications(cdeAuditModel);
 export const getAuditLog = auditGetLog(cdeAuditModel);
 
-export function byExisting(elt: DataElement): Promise<DataElementDocument | null>;
-export function byExisting(elt: DataElement, cb: CbError1<DataElementDocument | null>): void;
-export function byExisting(elt: DataElement, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
-    return dataElementModel.findOne({_id: elt._id, tinyId: elt.tinyId}).exec(cb);
-}
-
-export function byId(id: string): Promise<DataElementDocument | null>;
-export function byId(id: string, cb: CbError1<DataElementDocument | null>): void;
-export function byId(id: string, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
-    return dataElementModel.findOne({_id: id}).exec(cb);
-}
-
 export function byTinyId(tinyId: string): Promise<DataElementDocument | null>;
 export function byTinyId(tinyId: string, cb: CbError1<DataElementDocument | null>): void;
 export function byTinyId(tinyId: string, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
     return dataElementModel.findOne({tinyId, archived: false}).exec(cb);
-}
-
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined): Promise<DataElementDocument | null>;
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>): void;
-export function byTinyIdAndVersion(tinyId: string, version: string | undefined,
-                                   cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
-    const _query: any = {tinyId};
-    if (version) {
-        _query.version = version;
-    } else {
-        _query.$or = [{version: null}, {version: ''}];
-    }
-    return dataElementModel.findOne(_query).sort({updated: -1}).limit(1).exec(cb);
-}
-
-export function byTinyIdList(tinyIdList: string[], cb: CbError1<DataElement[] | void>): void {
-    dataElementModel.find({archived: false})
-        .where('tinyId').in(tinyIdList)
-        .exec((err, docs) => {
-            /* istanbul ignore if */
-            if (err) {
-                return cb(err);
-            }
-            cb(err, tinyIdList.map(t => docs.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
-        });
-}
-
-export function byTinyIdListElastic(tinyIdList: string[], cb: CbError1<DataElementElastic[] | void>): void {
-    dataElementModel.find({archived: false})
-        .where('tinyId').in(tinyIdList)
-        .slice('valueDomain.permissibleValues', 10)
-        .exec((err, docs) => {
-            /* istanbul ignore if */
-            if (err) {
-                return cb(err);
-            }
-            const cdes = docs.map<DataElementElastic>(eltAsElastic);
-            cb(err, tinyIdList.map(t => cdes.filter(cde => cde.tinyId === t)[0]).filter(cde => !!cde));
-        });
-}
-
-export function byTinyIdVersion(tinyId: string, version: string | undefined, cb: CbError1<DataElementDocument | null>) {
-    if (version) {
-        byTinyIdAndVersion(tinyId, version, cb);
-    } else {
-        byTinyId(tinyId, cb);
-    }
 }
 
 export function draftById(id: string, cb: CbError1<DataElementDraftDocument>) {
@@ -157,8 +97,8 @@ export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocum
     dataElementDraftModel.findOne(cond, cb);
 }
 
-export function draftDelete(tinyId: string, cb: CbError) {
-    dataElementDraftModel.remove({tinyId}, cb);
+export function draftDelete(tinyId: string): Promise<void> {
+    return dataElementDraftModel.deleteMany({tinyId}).then();
 }
 
 export function draftsList(criteria: any): Promise<DataElementDraftDocument[]>;
@@ -194,21 +134,7 @@ export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElement
     }));
 }
 
-export function latestVersionByTinyId(tinyId: string, cb: CbError1<string | undefined>) {
-    dataElementModel.findOne({tinyId, archived: false}, (err, dataElement) => {
-        cb(err, dataElement ? dataElement.version : undefined);
-    });
-}
-
 /* ---------- PUT NEW REST API Implementation above  ---------- */
-
-export function getStream(condition: any): QueryCursor<DataElementDocument> {
-    return dataElementModel.find(condition).sort({_id: -1}).cursor();
-}
-
-export function count(condition: any, callback?: CbError1<number>) {
-    return dataElementModel.countDocuments(condition, callback as (err?: Error, a?: number) => void);
-}
 
 const viewedCdes: Record<string, number> = {};
 const threshold = config.viewsIncrementThreshold;
@@ -243,14 +169,17 @@ export function create(elt: DataElement, user: User, callback: CbError1<DataElem
 
 export function update(elt: DataElementDraft, user: User, options: any = {},
                        callback: CbError1<DataElement | void>): void {
-    dataElementModel.findById(elt._id, (err, dataElement) => {
+    dataElementModel.findById(elt._id, null, null, (err, dataElement) => {
+        /* istanbul ignore if */
         if (err || !dataElement) {
             return callback(new Error('Document Not Found'));
         }
+        /* istanbul ignore if */
         if (dataElement.archived) {
             return callback(new Error('You are trying to edit an archived element'));
         }
         delete elt._id;
+        /* istanbul ignore if */
         if (!elt.history) {
             elt.history = [];
         }
@@ -277,18 +206,20 @@ export function update(elt: DataElementDraft, user: User, options: any = {},
         dataElementModel.findOneAndUpdate({
             _id: dataElement._id,
             archived: false
-        }, {$set: {archived: true}}, (err, doc) => {
+        }, {$set: {archived: true}}, null, (err, doc) => {
+            /* istanbul ignore if */
             if (err || !doc) {
                 return callback(err, doc || undefined);
             }
             newElt.save((err, savedElt) => {
+                /* istanbul ignore if */
                 if (err) {
                     dataElementModel.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}},
                         () => callback(err));
-                } else {
-                    callback(null, savedElt);
-                    auditModificationsDe(user, dataElement, savedElt);
+                    return;
                 }
+                callback(null, savedElt);
+                auditModificationsDe(user, dataElement, savedElt);
             });
         });
     });
@@ -308,7 +239,7 @@ export function findModifiedElementsSince(date: Date | string | number, cb: CbEr
         },
         {$limit: 2000},
         {$sort: {updated: -1}},
-        {$group: {_id: '$tinyId'}},
+        {$group: {_id: '$tinyId'}} as any,
     ], cb);
 
 }
@@ -316,25 +247,6 @@ export function findModifiedElementsSince(date: Date | string | number, cb: CbEr
 export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<DataElementDocument>) {
     dataElementSourceModel.findOne({tinyId, source: sourceName}, cb);
 }
-
-export const daoItem: ItemDao<DataElement, DataElementElastic> = {
-    type: 'cde',
-    _model: dataElementModel,
-    byExisting,
-    byId,
-    byTinyId,
-    byTinyIdAndVersion,
-    byTinyIdListElastic,
-    elastic: {
-        byTinyIdList: elasticByTinyIdList,
-    },
-};
-
-export const daoModule: DaoModule<DataElementDocument> = {
-    type: 'cde',
-    _model: dataElementModel,
-    byKey: byTinyId,
-};
 
 function updateUser(elt: DataElement, user: User) {
     wipeDatatype(elt);

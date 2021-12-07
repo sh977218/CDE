@@ -1,13 +1,11 @@
 import { renderFile } from 'ejs';
 import { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-import { handleError } from 'server/errorHandler/errorHandler';
-import { addFile } from 'server/system/mongo-data';
+import * as md5 from 'md5';
+import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { addFile } from 'server/mongo/mongo/gfs';
 import { CdeForm } from 'shared/form/form.model';
 import { Readable } from 'stream';
-
-const md5 = require('md5');
-const md5File = require('md5-file');
 
 function storeHtmlInDb(req: Request, res: Response, form: CdeForm, fileStr: string) {
     const readable = new Readable();
@@ -16,13 +14,13 @@ function storeHtmlInDb(req: Request, res: Response, form: CdeForm, fileStr: stri
     const f = {
         filename: 'published-' + form.tinyId, type: 'text/html', stream: readable, md5: md5(fileStr)
     };
-    addFile(f, null, (err, newFile) => {
+    addFile(f, null).then(fileId => {
         const user = req.user;
         user.publishedForms.push({
-            name: req.body.publishedFormName, id: newFile._id
+            name: req.body.publishedFormName, id: fileId
         });
-        user.save(handleError({req, res}, () => res.send(newFile._id)));
-    });
+        user.save(handleError({req, res}, () => res.send(fileId)));
+    }, respondError({req, res}));
 }
 
 export function getFormForPublishing(form: CdeForm, req: Request, res: Response) {

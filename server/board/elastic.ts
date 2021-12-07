@@ -1,4 +1,4 @@
-import { config } from 'server/system/parseConfig';
+import { config } from 'server';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { shortHash } from 'server/system/elasticSearchInit';
 import { esClient } from 'server/system/elastic';
@@ -15,20 +15,20 @@ export function boardRefresh() {
     return esClient.indices.refresh({index: config.elastic.boardIndex.name});
 }
 
-export function updateOrInsertBoardById(id: string, board: Board, callback: CbError) {
-    esClient.index({
+export function updateOrInsertBoardById(id: string, board: Board): Promise<void> {
+    return esClient.index({
         index: config.elastic.boardIndex.name,
         type: '_doc',
         id,
         body: board
-    }, callback);
+    }).then();
 }
 
-export function deleteBoardById(id: string, callback: CbError) {
-    esClient.delete({
+export function deleteBoardById(id: string): Promise<void> {
+    return esClient.delete({
         index: config.elastic.boardIndex.name,
         id,
-    }, callback);
+    }).then();
 }
 
 export function myBoards(user: User, filter: BoardFilter) {

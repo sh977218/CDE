@@ -8,12 +8,15 @@ const xml2js = require('xml2js');
 process.env.NODE_CONFIG_DIR = path.resolve('../../../config');
 const config = require('config');
 
-const mongo_cde = require('../../../server/cde/mongo-cde');
 const mongo_data = require('../../../server/system/mongo-data');
-const mongo_form = require('../../../server/form/mongo-form');
 
-const DataElement = mongo_cde.dataElementModel;
-const FormModel = mongo_form.formModel;
+const DataElement = require('../../../server/mongo/mongoose/dataElement.mongoose').dataElementModel;
+const FormModel = require('../../../server/mongo/mongoose/form.mongoose').formModel;
+
+const dataElementStream = require('../../../server/mongo/mongoose/dataElement.mongoose').getStream;
+const formStream = require('../../../server/mongo/mongoose/form.mongoose').getStream;
+
+const {dataElementDb, formDb} = require('../../../server').dbPlugins;
 
 let dir = path.resolve('raw');
 fs.readdir(dir, (err, files) => {
@@ -59,9 +62,9 @@ function addForm(rootElem, cb) {
             {"ids.source": "dbGaP"}
         ]
     };
-    mongo_form.count(condition, (err, count) => {
+    formDb.count(condition).then(count => {
         if (count === 1) {
-            let stream = mongo_form.getStream(condition);
+            let stream = formStream(condition);
             stream.on('data', function (form) {
                 modifyForm(form, rootElem, dataSetName, cb);
             });
@@ -108,7 +111,7 @@ function addForm(rootElem, cb) {
             tinyId: mongo_data.generateTinyId()
         });
         modifyForm(form, rootElem, dataSetName, cb);
-    });
+    }, cb);
 }
 
 function modifyForm(form, rootElem, dataSetName, cb) {
@@ -153,9 +156,9 @@ function addCde(elem, form, study, cb) {
             {"ids.source": "dbGaP"}
         ]
     };
-    DataElement.countDocuments(condition, (err, count) => {
+    dataElementDb.count(condition).then(count => {
         if (count === 1) {
-            let stream = mongo_cde.getStream(condition);
+            let stream = dataElementStream(condition);
             stream.on('data', function (cde) {
                 modifyCde(cde, elem, form, study, description, cb);
             });
@@ -199,7 +202,7 @@ function addCde(elem, form, study, cb) {
             version: "1"
         });
         modifyCde(cde, elem, form, study, description, cb);
-    });
+    }, cb);
 }
 
 function modifyCde(cde, elem, form, study, description, cb) {

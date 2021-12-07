@@ -25,7 +25,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
         try {
             String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             Assert.assertTrue(actual.contains("\"designations\":[{\"tags\":[\"Health\"],\"designation\":\"Spinal column injury number\""));
-            Assert.assertTrue(actual.contains("\"definitions\":[{\"tags\":[\"Health\"],\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\""));
+            Assert.assertTrue(actual.contains("\"definitions\":[{\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"tags\":[\"Health\"]"));
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail("Exception reading 7cDvUXR6SQe.json -- " + e);
@@ -37,7 +37,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
         switchTab(1);
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"designations\":[{\"tags\":[\"Health\"],\"designation\":\"Spinal column injury number\""));
-        Assert.assertTrue(response.contains("\"definitions\":[{\"tags\":[\"Health\"],\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\""));
+        Assert.assertTrue(response.contains("\"definitions\":[{\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"tags\":[\"Health\"]"));
         switchTabAndClose(0);
 
         clickElement(By.id("export"));

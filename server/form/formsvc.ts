@@ -2,15 +2,13 @@ import * as Ajv from 'ajv';
 import { Request, Response } from 'express';
 import { readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
+import { config, dbPlugins } from 'server';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import {
-    byId as formById, byTinyId as formByTinyId, byTinyIdListElastic as formByTinyIdListElastic,
-    byTinyIdAndVersion as formByTinyIdAndVersion,
     create as formCreate, draftById, draftByTinyId, draftDelete as formDraftDelete, draftSave as formDraftSave,
     formModel,
-    latestVersionByTinyId as formLatestVersionByTinyId,
     originalSourceByTinyIdSourceName as formOriginalSourceByTinyIdSourceName, update,
-    CdeFormDraft, byTinyIdListInOrder
+    CdeFormDraft
 } from 'server/form/mongo-form';
 import { splitError, handleError, handleNotFound, respondError, handleErrorVoid } from 'server/errorHandler/errorHandler';
 import { getFormNih } from 'server/form/nihForm';
@@ -20,8 +18,7 @@ import { formToSDC } from 'server/form/sdcForm';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
-import { addFormToViewHistory, eltAsElastic, sortArrayByArray } from 'server/system/mongo-data';
-import { config } from 'server/system/parseConfig';
+import { addFormToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
@@ -30,9 +27,9 @@ import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
-readdirSync(resolve(global.appDir('shared/mapping/fhir/assets/schema/'))).forEach(file => {
+readdirSync(resolve(global.assetDir('shared/mapping/fhir/assets/schema/'))).forEach(file => {
     if (file.indexOf('.schema.json') > -1) {
-        ajv.addSchema(require(global.appDir('shared/mapping/fhir/assets/schema/', file)));
+        ajv.addSchema(require(global.assetDir('shared/mapping/fhir/assets/schema/', file)));
     }
 });
 
@@ -49,15 +46,16 @@ export function fetchWholeForm(form: CdeForm, callback: CbError1<CdeForm>) {
                 cb(undefined, {skip: true});
                 return;
             }
-            formByTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version, (err, result) => {
+            dbPlugins.form.byTinyIdAndVersion(f.inForm.form.tinyId, f.inForm.form.version)
+                .then(item => {
                 /* istanbul ignore if */
-                if (err || !result) {
-                    cb(err || new Error('not found'));
+                if (!item) {
+                    cb(new Error('not found'));
                     return;
                 }
-                f.formElements = result.toObject().formElements;
+                f.formElements = item.formElements;
                 cb(undefined, {return: options.return.concat(f.inForm.form.tinyId)});
-            });
+            }, cb);
         },
         undefined,
         undefined,
@@ -76,7 +74,7 @@ function fetchWholeFormOutdated(form: CdeForm, callback: CbError1<CdeForm>) {
             return;
         }
         iterateFe(wholeForm, (f, cb) => {
-            formModel.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, (err, elt) => {
+            formModel.findOne({tinyId: f.inForm.form.tinyId, archived: false}, {version: 1}, null, (err, elt) => {
                 if (elt && (f.inForm.form.version || null) !== (elt.version || null)) {
                     f.inForm.form.outdated = true;
                     wholeForm.outdated = true;
@@ -87,7 +85,7 @@ function fetchWholeFormOutdated(form: CdeForm, callback: CbError1<CdeForm>) {
             dataElementModel.findOne({
                 tinyId: q.question.cde.tinyId,
                 archived: false
-            }, {version: 1}, (err, elt) => {
+            }, {version: 1}, null, (err, elt) => {
                 if (elt && (q.question.cde.version || null) !== (elt.version || null)) {
                     q.question.cde.outdated = true;
                     wholeForm.outdated = true;
@@ -106,8 +104,11 @@ function wipeRenderDisallowed(form: CdeForm, user: User) {
 
 export function byId(req: Request, res: Response) {
     const id = req.params.id;
-    formById(id, handleNotFound({req, res}, form => {
-        fetchWholeForm(form.toObject(), handleNotFound({req, res}, wholeForm => {
+    return dbPlugins.form.byId(id).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        fetchWholeForm(form, handleNotFound({req, res}, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
                 setResponseXmlHeader(res);
@@ -129,7 +130,7 @@ export function byId(req: Request, res: Response) {
                 if (req.query.subtype === 'fhirQuestionnaire') {
                     addFormIds(wholeForm);
                     if (req.query.hasOwnProperty('validate')) {
-                        const p = resolve(global.appDir('shared/mapping/fhir/assets/schema/Questionnaire.schema.json'));
+                        const p = resolve(global.assetDir('shared/mapping/fhir/assets/schema/Questionnaire.schema.json'));
                         const data = readFileSync(p, 'utf8');
                         const result = ajv.validate(JSON.parse(data), formToQuestionnaire(wholeForm, null, config));
                         res.send({valid: result, errors: ajv.errors});
@@ -143,26 +144,32 @@ export function byId(req: Request, res: Response) {
             }
             addFormToViewHistory(wholeForm, req.user);
         }));
-    }));
+    }, respondError({req, res}));
 }
 
 export function priorForms(req: Request, res: Response) {
     const id = req.params.id;
-    formById(id, handleNotFound({req, res}, form => {
+    return dbPlugins.form.byId(id).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
         const history = form.history.concat([form._id]).reverse();
         formModel.find({}, {'updatedBy.username': 1, updated: 1, changeNote: 1, version: 1, elementType: 1})
             .where('_id').in(history).exec((err, priorForms) => {
             sortArrayByArray(priorForms, history);
             res.send(priorForms);
         });
-    }));
+    }, respondError({req, res}));
 }
 
 export function byTinyId(req: Request, res: Response) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    formByTinyId(tinyId, handleNotFound(handlerOptions, form => {
-        fetchWholeForm(form.toObject(), handleNotFound(handlerOptions, wholeForm => {
+    return dbPlugins.form.byTinyId(tinyId).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        fetchWholeForm(form, handleNotFound(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             if (req.query.type === 'xml') {
                 setResponseXmlHeader(res);
@@ -190,26 +197,29 @@ export function byTinyId(req: Request, res: Response) {
             }
             addFormToViewHistory(wholeForm, req.user);
         }));
-    }));
+    }, respondError(handlerOptions));
 }
 
 export function byTinyIdAndVersion(req: Request, res: Response) {
     const {tinyId, version} = req.params;
-    formByTinyIdAndVersion(tinyId, version, handleNotFound({req, res}, form => {
-        fetchWholeForm(form.toObject(), handleNotFound({req, res}, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req.user);
-            res.send(wholeForm);
-        }));
-    }));
+    return dbPlugins.form.byTinyIdAndVersion(tinyId, version)
+        .then(form => {
+            if (!form) {
+                return res.status(404).send();
+            }
+            fetchWholeForm(form, handleNotFound({req, res}, wholeForm => {
+                wipeRenderDisallowed(wholeForm, req.user);
+                res.send(wholeForm);
+            }));
+        }, respondError({req, res}));
 }
 
 export function draftForEditByTinyId(req: Request, res: Response) { // WORKAROUND: send empty instead of 404 because angular litters console
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    formByTinyId(tinyId, handleError({req, res}, elt => {
+    return dbPlugins.form.byTinyId(tinyId).then(elt => {
         if (!elt || !canEditCuratedItem(req.user, elt)) {
-            res.send();
-            return;
+            return res.send();
         }
         (function getDraft() {
             draftByTinyId(tinyId, handleError(handlerOptions, draft => {
@@ -226,48 +236,54 @@ export function draftForEditByTinyId(req: Request, res: Response) { // WORKAROUN
                 ));
             }));
         })();
-    }));
+    }, respondError({req, res}));
 }
 
 export function forEditById(req: Request, res: Response) {
     const handlerOptions = {req, res};
     const id = req.params.id;
-    formById(id, handleNotFound(handlerOptions, form => {
-        fetchWholeFormOutdated(form.toObject(), handleNotFound(handlerOptions, wholeForm => {
+    return dbPlugins.form.byId(id).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        fetchWholeFormOutdated(form, handleNotFound(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
             addFormToViewHistory(wholeForm, req.user);
         }));
-    }));
+    }, respondError(handlerOptions));
 }
 
 export function forEditByTinyId(req: Request, res: Response) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
-    formByTinyId(tinyId, handleNotFound(handlerOptions, form => {
+    return dbPlugins.form.byTinyId(tinyId).then(form => {
         /* istanbul ignore if */
         if (!form) {
-            res.status(404).send();
-            return;
+            return res.status(404).send();
         }
-        fetchWholeFormOutdated(form.toObject(), handleNotFound(handlerOptions, wholeForm => {
+        fetchWholeFormOutdated(form, handleNotFound(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
             res.send(wholeForm);
             addFormToViewHistory(wholeForm, req.user);
         }));
-    }));
+    }, respondError(handlerOptions));
 }
 
 export function forEditByTinyIdAndVersion(req: Request, res: Response) {
     const handlerOptions = {req, res};
     const tinyId = req.params.tinyId;
     const version = req.params.version;
-    formByTinyIdAndVersion(tinyId, version, handleNotFound(handlerOptions, form => {
-        fetchWholeFormOutdated(form.toObject(), handleNotFound(handlerOptions, wholeForm => {
-            wipeRenderDisallowed(wholeForm, req.user);
-            res.send(wholeForm);
-        }));
-    }));
+    dbPlugins.form.byTinyIdAndVersion(tinyId, version)
+        .then(form => {
+            if (!form) {
+                return res.status(404).send();
+            }
+            fetchWholeFormOutdated(form, handleNotFound(handlerOptions, wholeForm => {
+                wipeRenderDisallowed(wholeForm, req.user);
+                res.send(wholeForm);
+            }));
+        }, respondError(handlerOptions));
 }
 
 export function draftSave(req: RequestWithItem, res: Response) {
@@ -286,25 +302,21 @@ export function draftSave(req: RequestWithItem, res: Response) {
 
 export function draftDelete(req: Request, res?: Response) {
     const tinyId = req.params.tinyId;
-    formDraftDelete(tinyId, handleErrorVoid({req, res}, () => res && res.send()));
+    formDraftDelete(tinyId).then(() => res && res.send(), respondError({req, res}));
 }
 
-export function byTinyIdList(req: Request, res: Response) {
+export function byTinyIdList(req: Request, res: Response): Promise<Response> {
     /* istanbul ignore if */
     if (!req.params.tinyIdList) {
-        return res.status(400).send();
+        return Promise.resolve(res.status(400).send());
     }
-    const tinyIdList = req.params.tinyIdList.split(',');
-    formByTinyIdListElastic(tinyIdList, handleNotFound({req, res}, forms => {
-        res.send(forms.map(eltAsElastic));
-    }));
+    return dbPlugins.form.byTinyIdListElastic(req.params.tinyIdList.split(','))
+        .then(forms => res.send(forms), respondError({req, res}));
 }
 
-export function latestVersionByTinyId(req: Request, res: Response) {
-    const tinyId = req.params.tinyId;
-    formLatestVersionByTinyId(tinyId, handleError({req, res}, latestVersion => {
-        res.send(latestVersion);
-    }));
+export function latestVersionByTinyId(req: Request, res: Response): Promise<Response> {
+    return dbPlugins.form.versionByTinyId(req.params.tinyId)
+        .then(version => res.send(version), respondError({req, res}));
 }
 
 export function publishFormToHtml(req: Request, res: Response) {
@@ -312,13 +324,16 @@ export function publishFormToHtml(req: Request, res: Response) {
     if (!req.params.id || req.params.id.length !== 24) {
         return res.status(400).send();
     }
-    formById(req.params.id, handleNotFound({req, res}, form => {
-        fetchWholeForm(form.toObject(), handleError({
+    return dbPlugins.form.byId(req.params.id).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        fetchWholeForm(form, handleError({
             req, res, message: 'Fetch whole for publish'
         }, wholeForm => {
             getFormForPublishing(wholeForm, req, res);
         }));
-    }));
+    }, respondError({req, res}));
 }
 
 export function create(req: Request, res: Response) {
@@ -338,17 +353,18 @@ function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, optio
         return res.status(400).send();
     }
     const eltToArchive = req.item;
-    orgByName(eltToArchive.stewardOrg.name || '', handleNotFound(handlerOptions, org => {
+    orgByName(eltToArchive.stewardOrg.name).then(org => {
+        if (!org) {
+            return res.status(404).send();
+        }
         if (badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }
-
         trimWholeForm(draft);
-
         update(draft, req.user, options, handleNotFound(handlerOptions, doc => {
-            formDraftDelete(draft.tinyId, handleErrorVoid(handlerOptions, () => res.send(doc)));
+            formDraftDelete(draft.tinyId).then(() => res.send(doc), respondError(handlerOptions));
         }));
-    }));
+    }, respondError(handlerOptions));
 }
 
 export function publishFromDraft(req: RequestWithItem, res: Response) {
@@ -382,7 +398,7 @@ export function originalSourceByTinyIdSourceName(req: Request, res: Response) {
     }));
 }
 
-export function viewHistory(req: Request, res: Response) {
+export function viewHistory(req: Request, res: Response): Promise<Response> {
     const splicedArray = req.user.formViewHistory.splice(0, 10);
     const idList: string[] = [];
     for (const sa of splicedArray) {
@@ -390,7 +406,6 @@ export function viewHistory(req: Request, res: Response) {
             idList.push(sa);
         }
     }
-    byTinyIdListInOrder(idList, (err, forms) => {
-        res.send(forms);
-    });
+    return dbPlugins.form.byTinyIdListElastic(idList)
+        .then(forms => res.send(forms), respondError({req, res}));
 }

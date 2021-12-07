@@ -1,15 +1,12 @@
 import { series } from 'async';
 import { find } from 'lodash';
 import { Request, Response } from 'express';
-import { count as boardCount } from 'server/board/boardDb';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { count } from 'server/form/mongo-form';
+import { config, dbPlugins } from 'server';
 import { logError } from 'server/log/dbLogger';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { pushRegistrationsFor } from 'server/notification/notificationDb';
 import { esClient } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { config } from 'server/system/parseConfig';
 import { orgAuthorities, siteAdmins } from 'server/user/userDb';
 import { Cb, Cb1 } from 'shared/models.model';
 
@@ -97,7 +94,7 @@ export function getStatus(getStatusDone: Cb) {
             const condition = {archived: false};
             series([
                 done => {
-                    dataElementModel.countDocuments(condition, (err, deCount) => {
+                    dbPlugins.dataElement.count(condition).then(deCount => {
                         indices[0].totalCount = deCount;
                         checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
                             tempIndices.push({
@@ -107,10 +104,10 @@ export function getStatus(getStatusDone: Cb) {
                             });
                             done();
                         });
-                    });
+                    }, done);
                 },
                 done => {
-                    count(condition, (err, formCount) => {
+                    dbPlugins.form.count(condition).then(formCount => {
                         indices[1].totalCount = formCount;
                         checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
                             tempIndices.push({
@@ -120,10 +117,10 @@ export function getStatus(getStatusDone: Cb) {
                             });
                             done();
                         });
-                    });
+                    }, done);
                 },
                 done => {
-                    boardCount({}, (err, boardCount) => {
+                    dbPlugins.board.count({}).then(boardCount => {
                         indices[2].totalCount = boardCount;
                         checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
                             tempIndices.push({
@@ -133,7 +130,7 @@ export function getStatus(getStatusDone: Cb) {
                             });
                             done();
                         });
-                    });
+                    }, done);
                 }
             ], () => {
                 statusReport.elastic.indices = tempIndices;

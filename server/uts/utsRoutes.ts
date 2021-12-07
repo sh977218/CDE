@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { config } from 'server';
 import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
-import { config } from 'server/system/parseConfig';
 import {
     getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, umlsCuiFromSrc
 } from 'server/uts/utsSvc';

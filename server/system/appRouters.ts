@@ -3,10 +3,11 @@ import { renderFile } from 'ejs';
 import * as csrf from 'csurf';
 import { Request, Response, Router } from 'express';
 import { existsSync, writeFileSync } from 'fs';
+import { config } from 'server';
+import { respondError } from 'server/errorHandler/errorHandler';
+import { getFile, gfs } from 'server/mongo/mongo/gfs';
 import { isSearchEngine } from 'server/system/helper';
-import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
-import { gfs } from './mongo-data';
 
 require('express-async-errors');
 
@@ -56,16 +57,14 @@ export function module() {
         }
     });
 
-    router.get('/sitemap.txt', (req, res) => {
-        gfs.exist({filename: '/app/sitemap.txt'}, (err, found) => {
-            if (err || !found) {
-                res.status(404).send('File not found.');
-            } else {
-                gfs.findOne({filename: '/app/sitemap.txt'}, (err, file) => {
-                    gfs.createReadStream({filename: '/app/sitemap.txt'}).pipe(res);
-                });
+    router.get('/sitemap.txt', (req, res): Promise<Response> => {
+        return gfs.then(gfs => gfs.find({filename: '/app/sitemap.txt'}).toArray()).then(files => {
+            const file = files[0];
+            if (!file) {
+                return res.status(404).send('File not found.');
             }
-        });
+            return getFile(file._id, res);
+        }, respondError({req, res}));
     });
 
     router.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
@@ -73,7 +72,7 @@ export function module() {
     router.get('/site-version', (req, res) => res.send(version));
 
     router.get('/sw.js', (req, res) => {
-        res.sendFile(global.appDir('dist/app', 'sw.js'), undefined, err => {
+        res.sendFile(global.assetDir('dist/app', 'sw.js'), undefined, err => {
             if (err) {
                 res.sendStatus(404);
             }

@@ -1,6 +1,6 @@
-import { RequestHandler, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import * as Parser from 'rss-parser';
-import { dbPlugins } from 'server/app';
+import { dbPlugins } from 'server';
 import { Article } from 'shared/article/article.model';
 
 const parser = new Parser();
@@ -10,20 +10,16 @@ export function module(roleConfig: { update: RequestHandler[] }) {
     const router = Router();
 
     ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about'].forEach(a => {
-        router.get('/' + a, async (req, res) => {
-            const article = await dbPlugins.article.byKey(a);
-            res.send(article);
+        router.get('/' + a, async (req, res): Promise<Response> => {
+            return res.send(await dbPlugins.article.byKey(a));
         });
     });
 
-    router.post('/:key', ...roleConfig.update, async (req, res) => {
+    router.post('/:key', ...roleConfig.update, async (req, res): Promise<Response> => {
         if (req.body.key !== req.params.key) {
             return res.status(400).send();
         }
-        await dbPlugins.article.update(req.body);
-
-        const article = await dbPlugins.article.byKey(req.params.key);
-        res.send(article);
+        return res.send(dbPlugins.article.update(req.body));
     });
 
     const rssFeeds: string[] = [];
@@ -50,15 +46,14 @@ export function module(roleConfig: { update: RequestHandler[] }) {
         }
     }
 
-    router.get('/resourcesAndFeed', async (req, res) => {
+    router.get('/resourcesAndFeed', async (req, res): Promise<Response> => {
         const article = await dbPlugins.article.byKey('resources');
         /* istanbul ignore if */
         if (!article) {
-            res.status(404).send();
-            return;
+            return res.status(404).send();
         }
         await replaceRssToken(article);
-        res.send(article);
+        return res.send(article);
     });
 
     async function replaceVideoToken(article: Article) {
@@ -75,15 +70,14 @@ export function module(roleConfig: { update: RequestHandler[] }) {
         }
     }
 
-    router.get('/videosAndIframe', async (req, res) => {
+    router.get('/videosAndIframe', async (req, res): Promise<Response> => {
         const article = await dbPlugins.article.byKey('videos');
         /* istanbul ignore if */
         if (!article) {
-            res.status(404).send();
-            return;
+            return res.status(404).send();
         }
         await replaceVideoToken(article);
-        res.send(article);
+        return res.send(article);
     });
 
     return router;

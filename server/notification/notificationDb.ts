@@ -1,19 +1,17 @@
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
-import { ObjectId } from 'server';
-import { config } from 'server/system/parseConfig';
-import { addStringtype } from 'server/system/mongoose-stringtype';
+import { config, ObjectId } from 'server';
 import { handleError } from 'server/errorHandler/errorHandler';
-import { Cb1, CbError, CbError1, User } from 'shared/models.model';
+import { establishConnection } from 'server/system/connections';
 import { PushRegistration, PushRegistrationDocument } from 'server/system/mongo-data';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { Cb1, CbError, CbError1, User } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
-
+const conn = establishConnection(config.database.appData);
 const pushRegistrationSchema = new Schema({
     features: [StringType],
     loggedIn: Boolean,
@@ -39,11 +37,11 @@ export function pushById(id: string, callback: CbError1<PushRegistrationDocument
     pushRegistrationModel.findOne({_id: id}, callback);
 }
 
-export function pushByIds(endpoint: string, userId: string, callback: CbError1<PushRegistrationDocument>) {
+export function pushByIds(endpoint: string, userId: ObjectId, callback: CbError1<PushRegistrationDocument>) {
     pushRegistrationModel.findOne({'subscription.endpoint': endpoint, userId}, callback);
 }
 
-export function pushByIdsCount(endpoint: string, userId: string | undefined, callback: CbError1<number>) {
+export function pushByIdsCount(endpoint: string, userId: ObjectId | undefined, callback: CbError1<number>) {
     pushRegistrationModel.countDocuments({'subscription.endpoint': endpoint, userId}, callback);
 }
 
@@ -52,15 +50,15 @@ export function pushByPublicKey(publicKey: string, callback: CbError1<PushRegist
 }
 
 export function pushClearDb(callback: CbError) {
-    pushRegistrationModel.remove({}, callback);
+    pushRegistrationModel.deleteMany({}, callback);
 }
 
-export function pushDelete(endpoint: string, userId: string, callback: CbError) {
+export function pushDelete(endpoint: string, userId: ObjectId, callback: CbError) {
     pushByIds(endpoint, userId, (err, registration) => {
         if (err || !registration) {
             return callback(err);
         }
-        pushRegistrationModel.remove({_id: registration._id}, callback);
+        pushRegistrationModel.deleteOne({_id: registration._id}, callback);
     });
 }
 

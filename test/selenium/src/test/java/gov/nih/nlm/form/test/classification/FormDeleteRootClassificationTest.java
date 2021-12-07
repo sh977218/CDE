@@ -12,7 +12,7 @@ public class FormDeleteRootClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
 
         goToClassification();
         textPresent("PROMIS / Neuro-QOL");
@@ -22,6 +22,6 @@ public class FormDeleteRootClassificationTest extends NlmCdeBaseTest {
         textNotPresent("PROMIS / Neuro-QOL", By.id("preview-div"));
 
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("general-details-div"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
     }
 }

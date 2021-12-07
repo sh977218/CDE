@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Response, Router } from 'express';
 import {
     addNewOrg,
     addOrgAdmin,
@@ -18,8 +18,8 @@ import { isOrgAdminMiddleware, isOrgAuthorityMiddleware, nocacheMiddleware } fro
 export function module() {
     const router = Router();
 
-    router.get('/org/:name', nocacheMiddleware, (req, res) => {
-        return orgByName(req.params.name, (err, result) => res.send(result));
+    router.get('/org/:name', nocacheMiddleware, (req, res): Promise<Response> => {
+        return orgByName(req.params.name).then(result => res.send(result), err => res.send());
     });
 
     router.get('/managedOrgs', async (req, res) => {

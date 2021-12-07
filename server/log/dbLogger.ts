@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
+import { config } from 'server';
 import { handleConsoleError } from 'server/errorHandler/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
@@ -8,7 +9,6 @@ import { pushRegistrationsFor } from 'server/notification/notificationDb';
 import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
-import { config } from 'server/system/parseConfig';
 import { siteAdmins, UserFull } from 'server/user/userDb';
 import { Cb, CbError, CbError1 } from 'shared/models.model';
 import { AuditLog, AuditLogResponse, LogMessage } from 'shared/log/audit';
@@ -80,7 +80,7 @@ interface MorganLogMessage {
 }
 
 export function log(message: MorganLogMessage, callback?: CbError) { // express only, all others dbLogger.consoleLog(message);
-    if (Number.isNaN(message.responseTime)) {
+    if (message.responseTime as any === '-' || Number.isNaN(message.responseTime)) {
         delete message.responseTime;
     }
 
@@ -212,7 +212,7 @@ export function httpLogs(body: AuditLog, callback: CbError1<AuditLogResponse>) {
     if (body.toDate) {
         modal.where('date').lte(moment(body.toDate));
     }
-    logModel.countDocuments({}, (err, count) => {
+    logModel.countDocuments({}, undefined, (err, count) => {
         modal.sort(sort).limit(itemsPerPage).skip(skip).exec((err, logs) => {
             callback(err, {
                 logs,
@@ -238,7 +238,7 @@ export function appLogs(body: { currentPage: string, fromDate: number, toDate: n
     if (body.toDate) {
         modal.where('date').lte(moment(body.toDate));
     }
-    consoleLogModel.countDocuments({}, (err, count) => {
+    consoleLogModel.countDocuments({}, undefined, (err, count) => {
         modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec((err, logs) => {
             callback(err, {
                 logs,
@@ -317,7 +317,7 @@ export function usageByDay(callback: CbError1<LogAggregate>) {
                     year: {$year: '$date'},
                     month: {$month: '$date'},
                     dayOfMonth: {$dayOfMonth: '$date'}
-                }, number: {$sum: 1}, latest: {$max: '$date'}
+                } as any, number: {$sum: 1}, latest: {$max: '$date'}
             }
         }], callback);
 }

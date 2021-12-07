@@ -1,11 +1,9 @@
-import { splitError } from 'server/errorHandler/errorHandler';
+import { config } from 'server';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
 import { esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
-import { config } from 'server/system/parseConfig';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { CbError1, ElasticQueryResponse } from 'shared/models.model';
+import { CdeForm } from 'shared/form/form.model';
 
 export function updateOrInsert(elt: CdeForm): CdeForm {
     updateOrInsertImpl(Object.assign({}, elt));
@@ -54,30 +52,4 @@ export function updateOrInsertImpl(elt: CdeForm): void {
             });
         }
     });
-}
-
-export function byTinyIdList(idList: string[], size: number, cb: CbError1<CdeFormElastic[] | void>) {
-    idList = idList.filter(id => !!id);
-    esClient.search(
-        {
-            index: config.elastic.formIndex.name,
-            body: {
-                query: {
-                    ids: {
-                        values: idList
-                    }
-                },
-                size
-            }
-        },
-        splitError<{body: ElasticQueryResponse<CdeFormElastic>}>(err => cb(err), response => {
-            // TODO: possible to move this sort to elastic search?
-            if (!response) {
-                cb(null, []);
-                return;
-            }
-            response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-            cb(null, response.body.hits.hits.map(h => h._source));
-        })
-    );
 }

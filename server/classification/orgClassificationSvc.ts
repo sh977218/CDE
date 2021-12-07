@@ -1,11 +1,12 @@
 import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
+import { PipelineStage } from 'mongoose';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
-import { elasticsearch } from 'server/system/elastic';
+import { elasticsearchPromise } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import {
     addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf,
@@ -54,7 +55,7 @@ export async function deleteOrgClassification(user: User, deleteClassification: 
     settings.selectedElements = deleteClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
     parallel([
-        done => elasticsearch('cde', query, settings, handleError({}, result => {
+        done => elasticsearchPromise('cde', query, settings).then(result => {
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
                 eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
@@ -79,8 +80,11 @@ export async function deleteOrgClassification(user: User, deleteClassification: 
             } else {
                 done();
             }
-        })),
-        done => elasticsearch('form', query, settings, handleError({}, result => {
+        }, err => {
+            respondError()(err);
+            done();
+        }),
+        done => elasticsearchPromise('form', query, settings).then(result => {
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
                 eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
@@ -105,10 +109,13 @@ export async function deleteOrgClassification(user: User, deleteClassification: 
             } else {
                 done();
             }
-        }))
+        }, err => {
+            respondError()(err);
+            done();
+        })
     ], (err?: Error | null) => {
         if (err) {
-            respondError(err);
+            respondError()(err);
             return;
         }
         removeJobStatus('deleteClassification', callback);
@@ -133,7 +140,7 @@ export async function renameOrgClassification(user: User, newClassification: Ite
     settings.selectedElements = newClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
     parallel([
-        done => elasticsearch('cde', query, settings, handleError({}, result => {
+        done => elasticsearchPromise('cde', query, settings).then(result => {
             /* istanbul ignore else */
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
@@ -161,8 +168,11 @@ export async function renameOrgClassification(user: User, newClassification: Ite
             } else {
                 done();
             }
-        })),
-        done => elasticsearch('form', query, settings, handleError({}, result => {
+        }, err => {
+            respondError()(err);
+            done();
+        }),
+        done => elasticsearchPromise('form', query, settings).then(result => {
             /* istanbul ignore else */
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
@@ -190,10 +200,13 @@ export async function renameOrgClassification(user: User, newClassification: Ite
             } else {
                 done();
             }
-        }))
+        }, err => {
+            respondError()(err);
+            done();
+        })
     ], (err?: Error | null) => {
         if (err) {
-            respondError(err);
+            respondError()(err);
             return;
         }
         removeJobStatus('renameClassification', callback);
@@ -232,7 +245,7 @@ export async function reclassifyOrgClassification(user: User, oldClassification:
     settings.selectedElements = oldClassification.categories;
     const query = buildElasticSearchQuery(user, settings);
     parallel([
-        done => elasticsearch('cde', query, settings, handleError({}, result => {
+        done => elasticsearchPromise('cde', query, settings).then(result => {
             if (result && result.cdes && result.cdes.length > 0) {
                 const tinyIds = result.cdes.map(c => c.tinyId);
                 eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
@@ -257,8 +270,11 @@ export async function reclassifyOrgClassification(user: User, oldClassification:
             } else {
                 done();
             }
-        })),
-        done => elasticsearch('form', query, settings, handleError({}, result => {
+        }, err => {
+            respondError()(err);
+            done(err);
+        }),
+        done => elasticsearchPromise('form', query, settings).then(result => {
             if (result && result.forms && result.forms.length > 0) {
                 const tinyIds = result.forms.map(c => c.tinyId);
                 eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
@@ -283,10 +299,13 @@ export async function reclassifyOrgClassification(user: User, oldClassification:
             } else {
                 done();
             }
-        }))
+        }, err => {
+            respondError()(err);
+            done();
+        })
     ], (err?: Error | null) => {
         if (err) {
-            respondError(err);
+            respondError()(err);
             return;
         }
         removeJobStatus('reclassifyClassification', callback)
@@ -318,11 +337,11 @@ export function unclassifyElt(item: ItemDocument, orgName: string, categories: s
 }
 
 export async function updateOrgClassification(orgName: string): Promise<any[]> {
-    const aggregate = [
+    const aggregate: PipelineStage[] = [
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
         {$unwind: '$classification'},
         {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
-        {$group: {_id: {name: '$classification.stewardOrg.name', elements: '$classification.elements'}}}
+        {$group: {_id: {name: '$classification.stewardOrg.name', elements: '$classification.elements'} as any}}
     ];
     const cdeClassificationsAggregate: OrgClassificationAggregate[] = await dataElementModel.aggregate(aggregate);
     const formClassificationsAggregate: OrgClassificationAggregate[] = await formModel.aggregate(aggregate);

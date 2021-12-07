@@ -1,9 +1,8 @@
-import * as Config from 'config';
 import fetch from 'node-fetch';
+import { config } from 'server';
 import { consoleLog } from 'server/log/dbLogger';
 import { json, text } from 'shared/fetch';
 
-const config = Config as any;
 let jwt = '';
 
 function checkForVsacErrorPage(body: string): string {

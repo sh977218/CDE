@@ -12,7 +12,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName(cdeName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
         findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
@@ -26,7 +26,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
     }
 
 }

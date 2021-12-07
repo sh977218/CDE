@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { noop, union } from 'lodash';
+import { config, ObjectId } from 'server';
 import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { logError } from 'server/log/dbLogger';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushDelete, pushEndpointUpdate, pushesByEndpoint,
     pushFindActive, pushSave
 } from 'server/notification/notificationDb';
-import { objectId, PushRegistrationDocument } from 'server/system/mongo-data';
-import { config } from 'server/system/parseConfig';
-import { logError } from 'server/log/dbLogger';
+import { PushRegistrationDocument } from 'server/system/mongo-data';
 import { CbError1, User } from 'shared/models.model';
 import { generateVAPIDKeys, sendNotification, setVapidDetails } from 'web-push';
 
@@ -16,7 +16,7 @@ export function checkDatabase(callback = noop) {
     pushById('000000000000000000000000', handleError({}, push => {
         function createDbTag() {
             pushSave(
-                {_id: objectId('000000000000000000000000'), userId: config.publicUrl},
+                {_id: new ObjectId('000000000000000000000000'), features: [config.publicUrl]},
                 handleError({}, callback)
             );
         }
@@ -25,7 +25,7 @@ export function checkDatabase(callback = noop) {
             createDbTag();
             return;
         }
-        if (push.userId !== config.publicUrl) {
+        if (!push.features || !push.features.includes(config.publicUrl)) {
             pushClearDb(handleErrorVoid({publicMessage: 'could not remove'}, createDbTag));
             return;
         }

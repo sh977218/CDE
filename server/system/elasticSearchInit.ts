@@ -1,10 +1,8 @@
-import * as Config from 'config';
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
+import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
 import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
 import { CdeForm, FormElement, FormQuestion } from 'shared/form/form.model';
-
-const config = Config as any;
 
 const primaryNameSuggest = {
     type: 'text',
@@ -393,7 +391,7 @@ export interface ElasticIndex {
     filter?: (elt: Item, cb: Cb1<Item | void>) => void;
     indexJson: any;
     indexName: string;
-    name: string;
+    name: 'cde' | 'form' | 'board' | 'cdeSuggest' | 'formSuggest';
 }
 
 export const indices: ElasticIndex[] = [

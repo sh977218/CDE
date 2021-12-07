@@ -12,9 +12,9 @@ import * as uglify from 'gulp-uglify';
 import * as usemin from 'gulp-usemin';
 import * as merge from 'merge-stream';
 import { resolve } from 'path';
-import * as File from 'vinyl';
+import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
 import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
-import { config } from 'server/system/parseConfig';
+import * as File from 'vinyl';
 
 require('es6-promise').polyfill();
 
@@ -59,6 +59,7 @@ gulp.task('npm', function npm() {
     run('npm -v', runInAppOptions);
     run('npm cache verify', runInAppOptions);
     run('mongo --version', runInAppOptions);
+    run('mongorestore --version', runInAppOptions);
     return run('npm i', runInAppOptions);
 });
 

@@ -1,5 +1,6 @@
 import { Response, Router } from 'express';
 import { toInteger } from 'lodash';
+import { config, dbPlugins } from 'server';
 import {
     byId, byTinyId, byTinyIdAndVersion, byTinyIdList, create, derivationOutputs, draftDelete, draftForEditByTinyId,
     draftSave,
@@ -10,19 +11,11 @@ import {
     viewHistory
 } from 'server/cde/cdesvc';
 import { elasticsearch } from 'server/cde/elastic';
-import {
-    byTinyIdList as mongoByTinyIdList,
-    byTinyIdListElastic,
-    byTinyIdVersion,
-    count,
-    daoItem,
-    daoModule,
-    dataElementModel,
-    getAuditLog
-} from 'server/cde/mongo-cde';
+import { getAuditLog } from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
@@ -31,22 +24,17 @@ import {
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
-import { registerItemDao } from 'server/system/itemDaoManager';
-import { registerDao } from 'server/system/moduleDaoManager';
-import { config } from 'server/system/parseConfig';
-import { SearchSettingsElastic } from 'shared/search/search.model';
 import { stripBsonIdsElt } from 'shared/exportShared';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
-const canEditMiddlewareDe = canEditMiddleware(daoItem);
-const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(daoItem);
+const canEditMiddlewareDe = canEditMiddleware(dbPlugins.dataElement);
+const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(dbPlugins.dataElement);
 const canViewDraftMiddlewareDe = canEditByTinyIdMiddlewareDe;
 
 require('express-async-errors');
 
 export function module() {
     const router = Router();
-    registerDao(daoModule);
-    registerItemDao(daoItem);
 
     // Those end points need to be defined before '/de/:tinyId'
     router.get(['/cde/search', '/de/search'], (req, res) => {
@@ -64,7 +52,7 @@ export function module() {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                count(cond, handleNotFound({req, res}, totalCount => {
+                dbPlugins.dataElement.count(cond).then(totalCount => {
                     dataElementModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
@@ -79,7 +67,7 @@ export function module() {
                             selectedOrg
                         } as any);
                     }));
-                }));
+                }, respondError({req, res}));
             } else {
                 res.render('bot/cdeSearch', 'system' as any);
             }
@@ -112,8 +100,12 @@ export function module() {
 
     router.get('/server/de/viewingHistory', nocacheMiddleware, viewHistory);
     router.get('/server/de/moreLike/:tinyId', nocacheMiddleware, moreLikeThis);
-    router.post('/server/de/byTinyIdList', (req, res) => {
-        byTinyIdListElastic(req.body, handleError({req, res}, cdes => res.send(cdes)));
+    router.post('/server/de/byTinyIdList', (req, res): Promise<Response> => {
+        return dbPlugins.dataElement.byTinyIdListElastic(req.body)
+            .then(items => {
+                hideProprietaryCodes(items, req.user);
+                return res.send(items);
+            }, respondError({req, res}));
     });
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
@@ -140,20 +132,21 @@ export function module() {
             if (err || !result) {
                 return res.status(400).send('invalid query');
             }
-            mongoByTinyIdList(result.cdes.map(item => item.tinyId), handleError({req, res}, data => {
-                if (!data) {
-                    res.status(404).send();
-                    return;
-                }
-                hideProprietaryCodes(data, req.user);
-                const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
-                res.send({
-                    resultsTotal: result.totalNumber,
-                    resultsRetrieved: data.length,
-                    from: documentIndex >= 0 ? documentIndex + 1 : 1,
-                    docs: data,
-                });
-            }));
+            dbPlugins.dataElement.byTinyIdList(result.cdes.map(item => item.tinyId))
+                .then(data => {
+                    if (!data) {
+                        res.status(404).send();
+                        return;
+                    }
+                    hideProprietaryCodes(data, req.user);
+                    const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                    res.send({
+                        resultsTotal: result.totalNumber,
+                        resultsRetrieved: data.length,
+                        from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                        docs: data,
+                    });
+                }, respondError({req, res}));
         });
     });
 
@@ -226,9 +219,10 @@ export function module() {
     router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
         if (isSearchEngine(req)) {
-            byTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
-                res.render('bot/deView', 'system' as any, {elt: cde} as any);
-            }));
+            dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId, version)
+                .then(de => {
+                    res.render('bot/deView', 'system' as any, {elt: de} as any);
+                }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);
         }

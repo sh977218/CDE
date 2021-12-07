@@ -5,8 +5,8 @@
         <a *ngIf="headerLink" [routerLink]="'/board/' + board._id" [id]="'viewBoard_'+board.name"> {{board.name}}</a>
         <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
         <div class="float-right" *ngIf="canEdit">
-            <mat-icon class="editBoard" (click)="openEditBoardModal();">edit</mat-icon>
-            <mat-icon class="deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
+            <mat-icon class="hand-cursor editBoard" (click)="openEditBoardModal();">edit</mat-icon>
+            <mat-icon class="hand-cursor deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
         </div>
     </div>
     <div class="card-body">

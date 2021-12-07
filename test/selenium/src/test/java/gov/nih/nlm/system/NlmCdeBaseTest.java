@@ -291,6 +291,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'check']"));
     }
 
+    protected void generalDetailsPropertyValueContains(String title, String value) {
+        findElement(By.xpath(xpathGeneralDetailsProperty() + "[contains(.,'" + title + "')]/following-sibling::dd[1][contains(.,'" + value + "')]"));
+    }
+
     protected void goToUserMenu() {
         hoverOverElement(findElement(By.id("username_link")));
     }
@@ -1889,6 +1893,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         String capDirection = direction.substring(0, 1).toUpperCase() + direction.substring(1);
         String xpath = "//*[@id='" + section + "-div']//*[contains(@class,'move" + capDirection + "-" + index + "')]";
         clickElement(By.xpath(xpath));
+    }
+
+    protected String xpathGeneralDetailsProperty() {
+        return "//cde-form-general-details/dl/dt";
     }
 
 }

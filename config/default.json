@@ -106,10 +106,8 @@
       "username": "cdeuser",
       "password": "password",
       "options": {
-        "ssl": false,
-        "useCreateIndex": true,
-        "useNewUrlParser": true,
-        "poolSize": 20
+        "maxPoolSize": 20,
+        "ssl": false
       }
     },
     "log": {
@@ -117,10 +115,8 @@
       "username": "cdeuser",
       "password": "password",
       "options": {
-        "ssl": false,
-        "useCreateIndex": true,
-        "useNewUrlParser": true,
-        "poolSize": 20
+        "maxPoolSize": 20,
+        "ssl": false
       },
       "cappedCollectionSizeMB": 262144000
     },
@@ -129,9 +125,7 @@
       "username": "miguser",
       "password": "password",
       "options": {
-        "ssl": false,
-        "useCreateIndex": true,
-        "useNewUrlParser": true
+        "ssl": false
       }
     }
   },

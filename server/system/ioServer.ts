@@ -1,6 +1,5 @@
-import { config } from 'server/system/parseConfig';
-
-const passportSocketIo = require('passport.socketio');
+import { config } from 'server';
+import { authorize } from 'passport.socketio';
 
 export let ioServer: any;
 
@@ -10,7 +9,7 @@ export function startServer(server: any, expressSettings: any) {
     if (config.database.appData.options) {
         ioServer.adapter(mongoAdapter(config.database.appData.uri, config.database.appData.options));
     } else ioServer.adapter(mongoAdapter(config.database.appData.uri));
-    ioServer.use(passportSocketIo.authorize(expressSettings));
+    ioServer.use(authorize(expressSettings));
     ioServer.of('/comment').on('connection', (client: any) => {
         client.on('room', (roomId: any) => {
             client.join(roomId);

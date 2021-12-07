@@ -1,55 +1,59 @@
-import * as mongoose from 'mongoose';
-import { Document, Model, Schema } from 'mongoose';
-import { establishConnection } from 'server/system/connections';
-import { config } from 'server/system/parseConfig';
-import { addStringtype } from 'server/system/mongoose-stringtype';
+import { Model } from 'mongoose';
+import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
+import { IdSourceDocument, idSourceModel } from 'server/mongo/mongoose/isSource.mongoose';
 import { IdSourceDb } from 'shared/boundaryInterfaces/db/idSourceDb';
 import { IdSource } from 'shared/models.model';
 
-type IdSourceDocument = Document & IdSource;
+const idSourceHooks: CrudHooks<IdSource, string> = {
+    read: {
+        post: (idSource) => idSource,
+    },
+    save: {
+        pre: (idSource) => idSource,
+        post: (idSource) => idSource,
+    },
+    delete: {
+        pre: (_id) => _id,
+        post: (_id) => {},
+    },
+};
 
-addStringtype(mongoose);
-const StringType = (Schema.Types as any).StringType;
+class IdSourceDbMongo extends BaseDb<IdSource, string> implements IdSourceDb {
+    constructor(model: Model<IdSourceDocument>) {
+        super(model, idSourceHooks, null);
+    }
 
-const conn = establishConnection(config.database.appData);
-const idSourceSchema = new Schema({
-    _id: String,
-    linkTemplateDe: {type: StringType, default: ''},
-    linkTemplateForm: {type: StringType, default: ''},
-    version: StringType,
-}, {collection: 'idSource'});
-const idSourceModel: Model<IdSourceDocument> = conn.model('IdSource', idSourceSchema);
+    byId(id: string): Promise<IdSource | null> {
+        return this.findOneById(id);
+    }
 
-class IdSourceDbMongo implements IdSourceDb {
-    deleteById(id: string): Promise<{ok?: number, n?: number}> {
-        return idSourceModel.deleteOne({_id: id})
-            .then();
+    deleteOneById(_id: string): Promise<void> {
+        return super.deleteOneById(_id);
     }
 
     findAll(): Promise<IdSource[]> {
-        return idSourceModel.find()
-            .then(docs => docs.map(doc => doc.toObject()));
-    }
-
-    findById(id: string): Promise<IdSource | null> {
-        return idSourceModel.findOne({_id: id})
-            .then(doc => doc && doc.toObject());
+        return this.model.find()
+            .then(docs => Promise.all(docs
+                .map(doc => doc.toObject())
+                .map(idSource => (this.hooks.read.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource))
+            ));
     }
 
     save(idSource: IdSource): Promise<IdSource> {
-        return new idSourceModel(idSource).save()
-            .then(doc => doc.toObject());
+        return new this.model(idSource).save()
+            .then(doc => doc.toObject())
+            .then(idSource => (this.hooks.save.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource));
     }
 
-    updateById(id: string, idSource: IdSource): Promise<void> {
+    updateById(id: string, idSource: IdSource): Promise<IdSource> {
         const newIdSource: Omit<IdSource, '_id'> = {
             linkTemplateDe: idSource.linkTemplateDe,
             linkTemplateForm: idSource.linkTemplateForm,
             version: idSource.version
         };
-        return idSourceModel.updateOne({_id: id}, newIdSource, {upsert: true})
-            .then(() => {});
+        return this.model.updateOne({_id: id}, newIdSource, {upsert: true, new: true})
+            .then();
     }
 }
 
-export const idSourceDb = new IdSourceDbMongo();
+export const idSourceDb = new IdSourceDbMongo(idSourceModel);

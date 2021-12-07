@@ -1,6 +1,7 @@
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm, FormElement } from 'shared/form/form.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic, FormElement } from 'shared/form/form.model';
 import { Item, ModuleAll } from 'shared/models.model';
+import { escape } from 'lodash';
 
 interface ItemActionsApi {
     api: string;
@@ -60,6 +61,17 @@ export const ITEM_MAP: {
         viewById: '/formView?formId=',
     }
 };
+
+export function itemAsElastic<T extends DataElement | CdeForm>(doc: T): T extends DataElement ? DataElementElastic : CdeFormElastic {
+    const elt = doc as unknown as T extends DataElement ? DataElementElastic : CdeFormElastic;
+    elt.stewardOrgCopy = elt.stewardOrg;
+    elt.primaryNameCopy = escape(elt.designations[0].designation);
+    elt.primaryDefinitionCopy = '';
+    if (elt.definitions[0] && elt.definitions[0].definition) {
+        elt.primaryDefinitionCopy = escape(elt.definitions[0].definition);
+    }
+    return elt;
+}
 
 export function isCdeForm(item: Item | FormElement ): item is CdeForm {
     return item.elementType === 'form' && isCdeFormNotFe(item as CdeForm | FormElement);

@@ -45,9 +45,7 @@
       "options": {
         "ssl": true,
         "replicaSet": "rs0",
-        "sslValidate": false,
-        "useCreateIndex": true,
-        "useNewUrlParser": true
+        "sslValidate": false
       }
     },
     "log": {
@@ -59,9 +57,7 @@
       "options": {
         "ssl": true,
         "replicaSet": "rs0",
-        "sslValidate": false,
-        "useCreateIndex": true,
-        "useNewUrlParser": true
+        "sslValidate": false
       }
     }
   }

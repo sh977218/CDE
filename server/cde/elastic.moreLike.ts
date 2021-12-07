@@ -1,8 +1,8 @@
+import { config } from 'server';
+import { handleNotFound } from 'server/errorHandler/errorHandler';
+import { esClient } from 'server/system/elastic';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { Cb1, ElasticQueryResponse } from 'shared/models.model';
-import { esClient } from 'server/system/elastic';
-import { config } from 'server/system/parseConfig';
-import { handleNotFound } from 'server/errorHandler/errorHandler';
 
 interface MoreLike {
     cdes: DataElementElastic[];

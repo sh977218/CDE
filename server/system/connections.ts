@@ -1,11 +1,15 @@
-import { Connection, createConnection } from 'mongoose';
-import { noDbLogger } from './noDbLogger';
 import { Dictionary } from 'async';
+import { Connection, createConnection } from 'mongoose';
+import { noDbLogger } from 'server/system/noDbLogger';
 
 const establishedConnections: Dictionary<Connection> = {};
 
 export function establishConnection(dbConfig: any) {
     const uri = dbConfig.uri;
+    if (!uri) {
+        console.error('Missing db uri for' + dbConfig.db);
+        process.exit(1);
+    }
 
     if (establishedConnections[uri]) {
         return establishedConnections[uri];

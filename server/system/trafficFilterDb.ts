@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
-import { config } from 'server/system/parseConfig';
+import { config } from 'server';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { establishConnection } from 'server/system/connections';
 import { TrafficFilter } from 'shared/security/trafficFilter';
@@ -17,12 +17,12 @@ export const trafficFilterSchema = new Schema({
             strikes: {type: Number, default: 1}
         }
     ]
-}, {usePushEach: true});
+}, {});
 
 const trafficFilterModel: Model<Document & TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema);
 
 export async function initTrafficFilter() {
-    trafficFilterModel.remove({});
+    trafficFilterModel.deleteMany({});
     return new trafficFilterModel({ipList: []}).save();
 }
 

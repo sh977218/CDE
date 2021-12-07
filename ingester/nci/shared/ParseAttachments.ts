@@ -1,53 +1,45 @@
 import { BATCHLOADER, TODAY } from 'ingester/shared/utility';
 import { Readable } from 'stream';
 import { cloneDeep } from 'lodash';
-import { addFile } from 'server/system/mongo-data';
+import { addFile } from 'server/mongo/mongo/gfs';
 import { Attachment } from 'shared/models.model';
 
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
-export function parseAttachments(nciXmlCde: any) {
-    const attachments: Attachment[] = [];
+export function parseAttachments(nciXmlCde: any): Promise<Attachment[]> {
     const nciXml = cloneDeep(nciXmlCde);
-    return new Promise((resolve, reject) => {
-        const readable = new Readable();
-        delete nciXml._id;
-        delete nciXml.index;
-        delete nciXml.xmlFile;
-        const origXml = builder.buildObject(nciXml).toString();
-        readable.push(origXml);
-        readable.push(null);
-        const nciId = nciXmlCde.PUBLICID[0];
-        const nciVersion = nciXmlCde.VERSION[0];
-        const file = {
-            stream: readable
-        };
-        const attachment: Attachment = {
-            comment: 'Original XML File',
-            fileid: '',
-            filename: nciId + 'v' + nciVersion + '.xml',
-            filesize: origXml.length,
-            filetype: 'application/xml',
-            uploadedBy: BATCHLOADER,
-            uploadDate: +TODAY
-        };
-        const streamDescription = {
+    const readable = new Readable();
+    delete nciXml._id;
+    delete nciXml.index;
+    delete nciXml.xmlFile;
+    const origXml = builder.buildObject(nciXml).toString();
+    readable.push(origXml);
+    readable.push(null);
+    const nciId = nciXmlCde.PUBLICID[0];
+    const nciVersion = nciXmlCde.VERSION[0];
+    const attachment: Attachment = {
+        comment: 'Original XML File',
+        fileid: '',
+        filename: nciId + 'v' + nciVersion + '.xml',
+        filesize: origXml.length,
+        filetype: 'application/xml',
+        uploadedBy: BATCHLOADER,
+        uploadDate: +TODAY
+    };
+    return addFile(
+        {
             filename: attachment.filename,
-            mode: 'w',
-            content_type: attachment.filetype,
+            stream: readable
+        },
+        {
+            contentType: attachment.filetype,
             metadata: {
                 status: 'approved'
             }
-        };
-        addFile(file, streamDescription, (err, newFile) => {
-            if (err) {
-                reject(err);
-            } else {
-                attachment.fileid = newFile._id;
-                attachments.push(attachment);
-                resolve(attachments);
-            }
-        });
+        }
+    ).then(fileId => {
+        attachment.fileid = fileId.toString();
+        return [attachment];
     });
 }

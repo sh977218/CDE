@@ -7,7 +7,7 @@ import {
 
 // async callbacks
 type IterateOptions = any;
-type continueCb<E> = (error?: E, options?: any) => void; // options (skip: skip children) (return: pass data to children) extendable
+type continueCb<E> = (error?: E | null, options?: any) => void; // options (skip: skip children) (return: pass data to children) extendable
 type informCb<T extends FormElement, E> = (fe: FormInForm<T>, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
 type quesCb<T extends FormElement, E> = (fe: FormQuestion<T>, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
 type sectionCb<T extends FormElement, E> = (fe: FormSection<T>, continueCb: continueCb<E>, options?: IterateOptions, key?: any) => void;
@@ -118,7 +118,7 @@ export function iterateFes<T extends FormElement = FormElement, E = Error>(fes: 
     if (!Array.isArray(fes)) {
         return callback();
     }
-    forEachOf(fes, (fe: FormElementGeneric<T>, i: number, cb: CbErrorObj<E | void>) => {
+    forEachOf(fes, (fe: FormElementGeneric<T>, i: number, cb: CbErrorObj<E | null | void>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {

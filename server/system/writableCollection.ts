@@ -82,7 +82,7 @@ export function writableCollection<T extends {_id: string, __v: number}>(
     }
     return {
         delete: (res: Response, id: string, cb: Cb1<{deletedCount: number}>) => {
-            model.remove({_id: id} as any, handleError({res}, cb) as any);
+            model.deleteOne({_id: id} as any, handleError({res}, cb) as any);
         },
         find: (res: Response, crit: any, cb: Cb1<(Document & T)[]>) => {
             model.find(crit, handleError({res}, cb));

@@ -237,7 +237,6 @@ export const formJson = {
 };
 export const formSchema = new Schema(formJson, {
     collection: 'forms',
-    usePushEach: true,
 });
 formSchema.path('classification').validate((v: Classification[]) => {
     return !v.map(value => value.stewardOrg.name)
@@ -251,7 +250,6 @@ formSchema.index({tinyId: 1, archived: 1}, {
 
 export const draftSchema = new Schema(formJson, {
     collection: 'formdrafts',
-    usePushEach: true,
     toObject: {
         virtuals: true
     },
@@ -263,7 +261,6 @@ draftSchema.virtual('isDraft').get(() => true);
 
 export const formSourceSchema = new Schema(formJson, {
     collection: 'formsources',
-    usePushEach: true
 });
 formSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 

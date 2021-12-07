@@ -12,7 +12,7 @@ public class FormRemoveClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
         clickElement(By.xpath("//mat-icon[@id = 'PROMIS Instruments,Adult Item Banks,Mental Health-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
@@ -20,7 +20,7 @@ public class FormRemoveClassificationTest extends NlmCdeBaseTest {
         textNotPresent("Mental Health");
 
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
     }
 
 

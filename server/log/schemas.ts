@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from '../system/mongoose-stringtype';
-import { config } from '../system/parseConfig';
+import { config } from 'server';
+import { addStringtype } from 'server/system/mongoose-stringtype';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;

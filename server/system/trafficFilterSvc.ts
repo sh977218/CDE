@@ -1,6 +1,6 @@
 import { Request, RequestHandler } from 'express';
+import { config } from 'server';
 import { findAnyOne, initTrafficFilter } from 'server/system/trafficFilterDb';
-import { config } from 'server/system/parseConfig';
 
 export let bannedIps: string[] = [];
 const banEndsWith: string[] = config.banEndsWith || [];

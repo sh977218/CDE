@@ -296,6 +296,7 @@ export abstract class Elt {
     createdBy?: UserRefSecondary;
     definitions: Definition[] = [];
     designations: Designation[] = [];
+    abstract elementType: ModuleItem;
     history: ObjectId[] = [];
     ids: CdeId[] = [];
     imported?: Date | string | number;
@@ -512,6 +513,7 @@ interface BoardPart {
 }
 
 export interface BoardPin {
+    name: string;
     pinnedDate: Date;
     tinyId: string;
     type: ModuleItem;
@@ -523,7 +525,7 @@ export interface BoardUser {
     username: string;
 }
 
-export type Board = BoardDe | BoardForm;
+export type Board = BoardPart & { elts: (DataElement | CdeForm)[] };
 export type BoardDe = BoardPart & { elts: DataElement[] };
 export type BoardForm = BoardPart & { elts: CdeForm[] };
 

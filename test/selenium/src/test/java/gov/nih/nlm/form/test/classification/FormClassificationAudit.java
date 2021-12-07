@@ -12,7 +12,7 @@ public class FormClassificationAudit extends NlmCdeBaseTest {
         mustBeLoggedInAs(testEditor_username, password);
         goToFormByName(formName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
 
         goToClassification();
         addClassificationByTree("TEST", new String[]{"Eligibility Criteria"});
@@ -22,7 +22,7 @@ public class FormClassificationAudit extends NlmCdeBaseTest {
         clickElement(By.linkText("Functional Imaging"));
         switchTab(1);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         textPresent("Contains data elements collected when an imaging study");
         switchTabAndClose(0);
     }

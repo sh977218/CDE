@@ -43,16 +43,6 @@ export function handleErr<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErr
     };
 }
 
-export function handleErrVoid(options?: HandlerOptions, cb: Cb = noop): CbErrorObj {
-    return function errorHandler(err: string | undefined) {
-        if (err) {
-            respondError(options)(new Error(err));
-            return;
-        }
-        cb();
-    };
-}
-
 export function handleError<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
     return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {
@@ -92,10 +82,11 @@ export function handleNotFound<T>(options?: HandlerOptions,
 
 export function respondError(options?: HandlerOptionsNoRes): (err: HandledError) => void;
 export function respondError(options: HandlerOptionsRes): (err: HandledError) => Response;
-export function respondError(options?: HandlerOptions): (err: HandledError) => void | Response  {
-    return (err) => {
+export function respondError(options: HandlerOptions): (err: HandledError) => Response | void;
+export function respondError<T>(options?: T extends Error ? never : HandlerOptions): (err: HandledError) => void | Response  {
+    const handler = (err: HandledError) => {
         if (!options) {
-            options = {};
+            options = {} as T extends Error ? never : HandlerOptions;
         }
         let sent;
         if (hasRes(options)) {
@@ -127,6 +118,10 @@ export function respondError(options?: HandlerOptions): (err: HandledError) => v
         });
         return sent;
     };
+    if (options instanceof Error) {
+        return handler(options) as any;
+    }
+    return handler;
 }
 
 export function splitError<T = void, U = void, V = void>(errCb: CbError1<T>, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {

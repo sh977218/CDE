@@ -1,7 +1,7 @@
 import { Dictionary } from 'async';
-import * as Config from 'config';
 import { Agent } from 'https';
 import fetch from 'node-fetch';
+import { config } from 'server';
 import { respondError } from 'server/errorHandler/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
 import { handleErrors, isStatus, text } from 'shared/fetch';
@@ -23,7 +23,6 @@ export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
     'SNOMED CT': '',
     SNOMEDCT: '',
 };
-const config = Config as any;
 const CONTINUE_TIMEOUT = 5000;
 const httpsAgent = new Agent({
     rejectUnauthorized: false,
@@ -232,7 +231,7 @@ export function searchBySystemAndCode(system: string, code: string): Promise<str
         .then(text)
         .then(checkForVsacErrorPage, (err: Error) => {
             _TGT = undefined;
-            respondError({details: 'searchBySystemAndCode ERROR' + config.umls.wsHost + '/rest/content/current/source/'
+            respondError({details: 'searchBySystemAndCode ' + config.umls.wsHost + '/rest/content/current/source/'
                     + system + '/' + code + '/atoms?ticket=TTT'})(err);
             throw err;
         });

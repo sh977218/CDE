@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Document, Schema } from 'mongoose';
-import { ObjectId } from 'server';
+import { config, ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { config } from 'server/system/parseConfig';
 import { userRefSchema } from 'server/user/userDb';
 import { CbError1, Comment as CommentClient, CommentReply as CommentReplyClient } from 'shared/models.model';
 
@@ -26,7 +25,7 @@ export const commentSchema = new Schema(Object.assign({
     },
     linkedTab: StringType,
     replies: [replySchema],
-}, replySchema), {usePushEach: true});
+}, replySchema), {});
 
 export type CommentReply = Omit<CommentReplyClient, 'user'> & {organizationName: string, user: {_id: ObjectId, username: string}};
 export type Comment = Omit<CommentClient, 'replies' | 'user'>
@@ -43,7 +42,7 @@ export function byReplyId(id: string, cb: CbError1<CommentDocument>) {
 }
 
 export function byEltId(id: string, cb: CbError1<CommentDocument[]>) {
-    const aggregate = [
+    commentModel.aggregate([
         {$match: {'element.eltId': id}},
         {
             $lookup: {
@@ -58,8 +57,7 @@ export function byEltId(id: string, cb: CbError1<CommentDocument[]>) {
         },
         {$replaceRoot: {newRoot: {$mergeObjects: [{$arrayElemAt: ['$__user', 0]}, '$$ROOT']}}},
         {$project: {__user: 0}}
-    ];
-    commentModel.aggregate(aggregate, cb);
+    ], cb);
 }
 
 export function save(comment: Comment, cb: CbError1<CommentDocument>) {

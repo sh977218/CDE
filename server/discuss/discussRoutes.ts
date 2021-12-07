@@ -1,16 +1,15 @@
 import { Request, RequestHandler, Response, Router } from 'express';
-import { ObjectId } from 'server';
-import { BoardDocument } from 'server/board/boardDb';
+import { dbPlugins, ObjectId } from 'server';
+import { moduleToDbName } from 'server/dbPlugins';
 import {
     byEltId, byId, byReplyId, CommentDocument, CommentReply, orgCommentsByCriteria, save
 } from 'server/discuss/discussDb';
-import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
+import { handleNotFound, handleError, respondError } from 'server/errorHandler/errorHandler';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { notifyForComment } from 'server/system/adminItemSvc';
 import { ioServer } from 'server/system/ioServer';
-import { getDao } from 'server/system/moduleDaoManager';
 import { createMessage, fetchItem, ItemDocument, Message } from 'server/system/mongo-data';
-import { Cb1, Item, ModuleAll } from 'shared/models.model';
+import { Board, Cb1, Item, ModuleAll } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -28,16 +27,17 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
         const comment = req.body;
         const eltModule: ModuleAll = comment.element && comment.element.eltType;
         const eltTinyId: string = comment.element && comment.element.eltId;
-        fetchItem(eltModule, eltTinyId, handleNotFound(handlerOptions, elt => {
-            comment.user = req.user;
-            comment.created = new Date().toJSON();
-            save(comment, handleNotFound(handlerOptions, savedComment => {
-                ioServerCommentUpdated(req.user.username, eltTinyId);
-                notifyForComment({}, savedComment, eltModule, eltTinyId,
-                    (elt as Item).stewardOrg && (elt as Item).stewardOrg.name, [] as ObjectId[]);
-                res.send({});
-            }));
-        }));
+        fetchItem(eltModule, eltTinyId)
+            .then(elt => {
+                comment.user = req.user;
+                comment.created = new Date().toJSON();
+                save(comment, handleNotFound(handlerOptions, savedComment => {
+                    ioServerCommentUpdated(req.user.username, eltTinyId);
+                    notifyForComment({}, savedComment, eltModule, eltTinyId,
+                        (elt as Item).stewardOrg && (elt as Item).stewardOrg.name, [] as ObjectId[]);
+                    res.send({});
+                }));
+            }, respondError(handlerOptions));
     });
 
     router.post('/replyComment', roleConfig.canSeeComment, async (req, res) => {
@@ -50,39 +50,40 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
                 created: new Date().toJSON(),
                 text: req.body.reply
             };
-            fetchItem(eltModule, eltTinyId, handleNotFound({}, elt => {
-                comment.replies.push(reply);
-                save(comment, handleNotFound(handlerOptions, savedComment => {
-                    ioServerCommentUpdated(req.user.username, comment.element.eltId);
-                    notifyForComment({},
-                        savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
-                        eltModule, eltTinyId,
-                        (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, [] as ObjectId[]);
-                    if (req.user.username !== savedComment.user.username) {
-                        const message: Omit<Message, '_id'> = {
-                            author: {authorType: 'user', name: req.user.username},
-                            date: new Date(),
-                            recipient: {recipientType: 'user', name: savedComment.user.username},
-                            type: 'CommentReply',
-                            typeCommentReply: {
-                                // TODO change this when you merge board comments
-                                element: {
-                                    eltType: savedComment.element.eltType,
-                                    eltId: savedComment.element.eltId,
-                                    name: req.body.eltName
+            fetchItem(eltModule, eltTinyId)
+                .then(elt => {
+                    comment.replies.push(reply);
+                    save(comment, handleNotFound(handlerOptions, savedComment => {
+                        ioServerCommentUpdated(req.user.username, comment.element.eltId);
+                        notifyForComment({},
+                            savedComment.replies.filter(r => +new Date(r.created) === +new Date(reply.created))[0] as CommentReply,
+                            eltModule, eltTinyId,
+                            (elt as ItemDocument).stewardOrg && (elt as ItemDocument).stewardOrg.name, [] as ObjectId[]);
+                        if (req.user.username !== savedComment.user.username) {
+                            const message: Omit<Message, '_id'> = {
+                                author: {authorType: 'user', name: req.user.username},
+                                date: new Date(),
+                                recipient: {recipientType: 'user', name: savedComment.user.username},
+                                type: 'CommentReply',
+                                typeCommentReply: {
+                                    // TODO change this when you merge board comments
+                                    element: {
+                                        eltType: savedComment.element.eltType,
+                                        eltId: savedComment.element.eltId,
+                                        name: req.body.eltName
+                                    },
+                                    comment: {
+                                        commentId: savedComment._id,
+                                        text: reply.text
+                                    }
                                 },
-                                comment: {
-                                    commentId: savedComment._id,
-                                    text: reply.text
-                                }
-                            },
-                            states: []
-                        };
-                        createMessage(message);
-                    }
-                    res.send({});
-                }));
-            }));
+                                states: []
+                            };
+                            createMessage(message);
+                        }
+                        res.send({});
+                    }));
+                }, respondError(handlerOptions));
         }));
     });
 
@@ -180,11 +181,15 @@ const ioServerCommentUpdated = (username: string, roomId: string) =>
 
 function getCommentItem(handlerOptions: { req: Request, res: Response },
                         comment: CommentDocument,
-                        cb: Cb1<ItemDocument | BoardDocument>
+                        cb: Cb1<Item | Board>
 ): void {
-    const idRetrievalFunc = getDao(comment.element.eltType).byKey;
     const eltId = comment.element.eltId;
-    idRetrievalFunc(eltId, handleNotFound(handlerOptions, cb));
+    dbPlugins[moduleToDbName(comment.element.eltType)].byKey(eltId).then(item => {
+        if (!item) {
+            return handlerOptions.res.status(404).send();
+        }
+        cb(item);
+    });
 }
 
 function replyTo(req: Request, res: Response, comment: CommentDocument, status?: string, repliesStatus?: string, send = {}) {

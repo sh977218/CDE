@@ -1,7 +1,7 @@
 import { Dictionary, forEachSeries } from 'async';
 import { RequestHandler, Router } from 'express';
-import { handleError, handleErrorVoid, handleErrVoid } from 'server/errorHandler/errorHandler';
-import { daoItem as cdeDAO } from 'server/cde/mongo-cde';
+import { dbPlugins } from 'server';
+import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
 import {
     addOrgClassification,
     deleteOrgClassification, reclassifyOrgClassification, renameOrgClassification, updateOrgClassification
@@ -9,7 +9,6 @@ import {
 import {
     addClassification, classifyEltsInBoard, eltClassification, removeClassification
 } from 'server/classification/classificationNode';
-import { daoItem as formDAO } from 'server/form/mongo-form';
 import { validateBody } from 'server/system/bodyValidator';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { jobStatus } from 'server/system/mongo-data';
@@ -29,82 +28,12 @@ const isValidBody = [
 export function module(roleConfig: { allowClassify: RequestHandler }) {
     const router = Router();
 
-    router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        addClassification(req.body, cdeDAO, handleError({req, res}, result => {
-            if (result === 'Classification Already Exists') {
-                return res.status(409).send(result);
-            }
-            res.send(result);
-            addToClassifAudit({
-                date: new Date(),
-                user: {
-                    username: req.user.username
-                },
-                elements: [{
-                    _id: req.body.eltId
-                }],
-                action: 'add',
-                path: [req.body.orgName].concat(req.body.categories)
-            });
-
-        }));
-    });
-
-    router.post('/removeCdeClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        removeClassification(req.body, cdeDAO, handleError({req, res}, elt => {
-            res.send(elt);
-            addToClassifAudit({
-                date: new Date(),
-                user: {
-                    username: req.user.username
-                },
-                elements: [{
-                    _id: req.body.eltId
-                }],
-                action: 'delete',
-                path: [req.body.orgName].concat(req.body.categories)
-            });
-        }));
-    });
-
-    router.post('/addFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        addClassification(req.body, formDAO, handleError({req, res}, result => {
-            /* istanbul ignore if */
-            if (result === 'Classification Already Exists') {
-                return res.status(409).send(result);
-            } else {
-                res.send(result);
-            }
-            addToClassifAudit({
-                date: new Date(), user: {
-                    username: req.user.username
-                }, elements: [{
-                    _id: req.body.eltId
-                }], action: 'add', path: [req.body.orgName].concat(req.body.categories)
-            });
-        }));
-    });
-
-    router.post('/removeFormClassification/', roleConfig.allowClassify, ...isValidBody, (req, res) => {
-        removeClassification(req.body, formDAO, handleError({req, res}, elt => {
-            res.send(elt);
-            addToClassifAudit({
-                date: new Date(), user: {
-                    username: req.user.username
-                }, elements: [{
-                    _id: req.body.eltId
-                }], action: 'delete', path: [req.body.orgName].concat(req.body.categories)
-            });
-        }));
-    });
-
-    router.post('/classifyCdeBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, cdeDAO, handleErrVoid({req, res}, () => res.send('')));
-    });
-
-    router.post('/classifyFormBoard', roleConfig.allowClassify, (req, res) => {
-        classifyEltsInBoard(req, formDAO, handleErrVoid({req, res}, () => res.send('')));
-    });
+    router.post('/addCdeClassification/', roleConfig.allowClassify, ...isValidBody, addClassification(dbPlugins.dataElement));
+    router.post('/removeCdeClassification/', roleConfig.allowClassify, ...isValidBody, removeClassification(dbPlugins.dataElement));
+    router.post('/addFormClassification/', roleConfig.allowClassify, ...isValidBody, addClassification(dbPlugins.form));
+    router.post('/removeFormClassification/', roleConfig.allowClassify, ...isValidBody, removeClassification(dbPlugins.form));
+    router.post('/classifyCdeBoard', roleConfig.allowClassify, classifyEltsInBoard(dbPlugins.dataElement));
+    router.post('/classifyFormBoard', roleConfig.allowClassify, classifyEltsInBoard(dbPlugins.form));
 
     // @TODO: classification to own file
     // delete org classification
@@ -220,10 +149,10 @@ export function module(roleConfig: { allowClassify: RequestHandler }) {
                 tinyId: element.id,
                 version: element.version
             };
-            eltClassification(classifReq, cdeDAO, () => {
+            eltClassification(classifReq, dbPlugins.dataElement).then(() => {
                 bulkClassifyCdesStatus[user.username + eltId].numberProcessed++;
                 doneOneElement();
-            });
+            }, doneOneElement);
         }, (errs) => {
             if (cb) {
                 cb(errs === undefined ? null : errs);

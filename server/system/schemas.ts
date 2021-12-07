@@ -213,7 +213,7 @@ export const jobQueue = new Schema({
     type: StringType,
     status: {type: StringType, enum: ['Running']},
     error: StringType
-}, {usePushEach: true});
+}, {});
 
 export const referenceDocumentSchema = new Schema({
     docType: StringType,

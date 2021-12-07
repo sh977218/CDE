@@ -1,6 +1,4 @@
-import { Dictionary } from 'async';
-import { Router } from 'express';
-import { RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
 import {
     appLogs, getClientErrors, getServerErrors, httpLogs, logClientError, usageByDay

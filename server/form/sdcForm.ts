@@ -1,7 +1,7 @@
 import { Dictionary } from 'async';
+import { config } from 'server';
 import { sdcExport } from 'server/form/aws';
 import { consoleLog, logError } from 'server/log/dbLogger';
-import { config } from 'server/system/parseConfig';
 import { isInForm, isSection } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSection } from 'shared/form/form.model';
 import { CbError1 } from 'shared/models.model';

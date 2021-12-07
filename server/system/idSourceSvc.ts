@@ -1,4 +1,4 @@
-import { dbPlugins } from 'server/app';
+import { dbPlugins } from 'server';
 import { IdSource } from 'shared/models.model';
 
 export async function getAllIdSources() {
@@ -6,7 +6,7 @@ export async function getAllIdSources() {
 }
 
 export async function isSourceById(id: string): Promise<IdSource | null> {
-    return dbPlugins.idSource.findById(id);
+    return dbPlugins.idSource.byId(id);
 }
 
 export async function createIdSource(id: string, body: IdSource): Promise<IdSource> {
@@ -19,9 +19,10 @@ export async function createIdSource(id: string, body: IdSource): Promise<IdSour
 }
 
 export async function updateIdSource(sourceId: string, sourceBody: IdSource): Promise<void> {
-    return dbPlugins.idSource.updateById(sourceId, sourceBody);
+    return dbPlugins.idSource.updateById(sourceId, sourceBody)
+        .then(() => {});
 }
 
 export async function deleteIdSource(sourceId: string) {
-    return dbPlugins.idSource.deleteById(sourceId);
+    return dbPlugins.idSource.deleteOneById(sourceId);
 }

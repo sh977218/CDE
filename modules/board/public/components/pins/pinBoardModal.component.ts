@@ -38,23 +38,22 @@ export class PinBoardModalComponent {
                         description:'',
                         shareStatus:'Private'
                     };
-                    this.http.post('/server/board', newBoard, {responseType: 'text'}).subscribe(() => {
-                        this.myBoardsSvc.loadMyBoards(this.module,() => {
-                            const board = this.myBoardsSvc.boards?.[0];
-                            this.http.put('/server/board/pinToBoard/', {
-                                boardId: board._id,
-                                tinyIdList: elts.map(e => e.tinyId),
-                                type: this.module
-                            }).subscribe(() => {
-                                if (elts.length === 1) {
-                                    this.alert.addAlert('success', 'Added to new board: ' + newBoardName);
-                                } else { this.alert.addAlert('success', 'All elements pinned to new board: ' + newBoardName); }
-                            }, err => this.alert.httpErrorMessageAlert(err));
-                        });
+                    this.http.post<Board>('/server/board', newBoard).subscribe((board) => {
+                        this.http.put('/server/board/pinToBoard/', {
+                            boardId: board._id,
+                            tinyIdList: elts.map(e => e.tinyId),
+                            type: this.module
+                        }).subscribe(() => {
+                            if (elts.length === 1) {
+                                this.alert.addAlert('success', 'Added to new board: ' + newBoardName);
+                            } else {
+                                this.alert.addAlert('success', 'All elements pinned to new board: ' + newBoardName);
+                            }
+                        }, err => this.alert.httpErrorMessageAlert(err));
                     }, err => this.alert.httpErrorMessageAlert(err));
                 }
                 else if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 1){
-                    const board = this.myBoardsSvc.boards?.[0];
+                    const board = this.myBoardsSvc.boards[0];
                     this.http.put('/server/board/pinToBoard/', {
                         boardId: board._id,
                         tinyIdList: elts.map(e => e.tinyId),

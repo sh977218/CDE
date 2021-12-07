@@ -1,9 +1,9 @@
-import { config } from 'server/system/parseConfig';
+import { config, dbPlugins } from 'server';
 import { esClient } from 'server/system/elastic';
-import { byTinyId, count, getStream } from 'server/cde/mongo-cde';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { ElasticQueryResponse } from 'shared/models.model';
+import { getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
@@ -52,22 +52,18 @@ async function extractedSyncLinkedForms(cde: DataElement) {
 }
 
 export function syncLinkedFormsByTinyId(tinyId: string): Promise<void> {
-    return new Promise(resolve => {
-        byTinyId(tinyId, (err, cde) => {
-            if (cde) {
-                extractedSyncLinkedForms(cde).then(resolve);
-            } else {
-                resolve();
-            }
-        });
-    });
+    return dbPlugins.dataElement.byTinyId(tinyId).then(cde => {
+        if (cde) {
+            return extractedSyncLinkedForms(cde);
+        }
+    }, () => {});
 }
 
 export async function syncLinkedForms() {
     const t0 = Date.now();
     syncLinkedFormsProgress = {done: 0, total: 0};
     const cdeCursor = getStream({archived: false});
-    syncLinkedFormsProgress.total = await count({archived: false});
+    syncLinkedFormsProgress.total = await dbPlugins.dataElement.count({archived: false});
     for (let cde = await cdeCursor.next(); cde != null; cde = await cdeCursor.next()) {
         await extractedSyncLinkedForms(cde);
     }

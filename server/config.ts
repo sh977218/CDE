@@ -1,12 +1,15 @@
 import * as Config from 'config';
-import { readFileSync } from 'fs';
-
 export const config = Config as any;
 
+import { readFileSync } from 'fs';
 ['log', 'appData', 'migration'].forEach(databaseName => {
     const database = config.database[databaseName];
     if (database) {
         const uriOptions: string[] = [];
+        if (database.options.maxPoolSize) {
+            uriOptions.push('maxPoolSize=' + database.options.maxPoolSize);
+            delete database.options.maxPoolSize;
+        }
         if (database.options.replicaSet) {
             uriOptions.push('replicaSet=' + database.options.replicaSet);
         }

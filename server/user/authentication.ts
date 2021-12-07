@@ -4,8 +4,8 @@ import {
     deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
 } from 'passport';
 import { Strategy as CustomStrategy } from 'passport-custom';
+import { config } from 'server';
 import { errorLogger } from 'server/system/logging';
-import { config } from 'server/system/parseConfig';
 import { CbErr1, CbError2, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { isStatus, json, text } from 'shared/fetch';

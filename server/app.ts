@@ -1,7 +1,7 @@
 import 'server/globals';
 import * as bodyParser from 'body-parser';
 import * as compress from 'compression';
-import * as Config from 'config';
+import * as MongoStore from 'connect-mongo';
 import * as cookieParser from 'cookie-parser';
 import * as Domain from 'domain';
 import * as express from 'express';
@@ -11,37 +11,36 @@ import * as httpProxy from 'express-http-proxy';
 import * as helmet from 'helmet';
 import * as http from 'http';
 import * as methodOverride from 'method-override';
+import { MongoClient } from 'mongodb';
 import * as morganLogger from 'morgan';
 import { MulterError } from 'multer';
 import * as path from 'path';
 import * as favicon from 'serve-favicon';
-import * as winston from 'winston';
-import { init as swaggerInit } from './swagger';
+import { config, dbPlugins } from 'server';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
 import { module as deModule } from 'server/cde/deRouters';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
-import { DbPlugins } from 'server/dbPlugins';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { module as formModule } from 'server/form/formRouters';
 import { module as loaderModule } from 'server/loader/loaderRoutes'
 import { module as logModule } from 'server/log/logRoutes';
-import { mongoPlugins } from 'server/mongo/mongoPlugins';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
     canAttachMiddleware, canSeeCommentMiddleware, checkEditing, isDocumentationEditor,
     isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware
 } from 'server/system/authorization';
+import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';
 import { startServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
-import { sessionStore } from 'server/system/mongo-data';
 import { module as systemModule } from 'server/system/systemRouters';
 import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
 import { init as authInit, ticketAuth } from 'server/user/authentication';
@@ -49,21 +48,19 @@ import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { ModuleAll } from 'shared/models.model';
 import { canClassifyOrg } from 'shared/security/authorizationShared';
+import { Logger } from 'winston';
 
 require('source-map-support').install();
 const flash = require('connect-flash');
 const hsts = require('hsts');
 const Rotate = require('winston-logrotate').Rotate;
 
-const config = Config as any;
 const domain = Domain.create();
 
 initEs();
 
 console.log('Node ' + process.versions.node);
 console.log('Node Environment ' + process.env.NODE_ENV);
-
-export const dbPlugins: DbPlugins = mongoPlugins;
 
 const app = express();
 
@@ -122,7 +119,7 @@ app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 
-app.use(favicon(global.appDir('./modules/cde/public/assets/img/min/favicon.ico')));
+app.use(favicon(global.assetDir('./modules/cde/public/assets/img/min/favicon.ico')));
 
 app.use(blockBannedIps);
 app.use(banHackers);
@@ -131,14 +128,6 @@ app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
 app.use(bodyParser.json({limit: '16mb'}));
 app.use(methodOverride());
 app.use(cookieParser());
-const expressSettings = {
-    store: sessionStore,
-    secret: config.sessionKey,
-    proxy: config.proxy,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
-};
 
 declare global {
     namespace Express {
@@ -177,12 +166,33 @@ app.use((req, res, next) => {
     }
 });
 
+
+let mongoClient: MongoClient | null = null;
+establishConnection(config.database.appData).asPromise().then(conn => {
+    mongoClient = conn.getClient();
+}, err => console.log(`app db connection failed with error ${err}`));
+require('deasync').loopWhile(() => !mongoClient);
+if (!mongoClient) {
+    console.log('Error connecting to mongo');
+    process.exit(1);
+}
+const expressSettings = {
+    store: MongoStore.create({
+        client: mongoClient,
+        touchAfter: 60
+    }),
+    secret: config.sessionKey,
+    proxy: config.proxy,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
+};
 app.use(session(expressSettings));
 
-app.use('/cde/public', express.static(global.appDir('modules/cde/public')));
-app.use('/system/public', express.static(global.appDir('modules/system/public')));
-app.use('/swagger/public', express.static(global.appDir('modules/swagger/public')));
-app.use('/form/public', express.static(global.appDir('modules/form/public')));
+app.use('/cde/public', express.static(global.assetDir('modules/cde/public')));
+app.use('/system/public', express.static(global.assetDir('modules/system/public')));
+app.use('/swagger/public', express.static(global.assetDir('modules/swagger/public')));
+app.use('/form/public', express.static(global.assetDir('modules/form/public')));
 
 function getS3Link(subpath: string): httpProxy.ProxyOptions {
     return {
@@ -209,14 +219,14 @@ if (config.s3) {
     app.use('/launch', httpProxy(config.s3.host, getS3Link('launch')));
     app.use('/native', httpProxy(config.s3.host, getS3Link('native')));
 } else {
-    app.use('/app', express.static(global.appDir('dist/app'), {
+    app.use('/app', express.static(global.assetDir('dist/app'), {
         setHeaders: res => res.header('Access-Control-Allow-Origin', '*')
     }));
-    app.use('/common', express.static(global.appDir('dist/common')));
-    app.use('/embed', express.static(global.appDir('dist/embed')));
-    app.use('/fhir', express.static(global.appDir('dist/fhir')));
-    app.use('/launch', express.static(global.appDir('dist/launch')));
-    app.use('/native', express.static(global.appDir('dist/native')));
+    app.use('/common', express.static(global.assetDir('dist/common')));
+    app.use('/embed', express.static(global.assetDir('dist/embed')));
+    app.use('/fhir', express.static(global.assetDir('dist/fhir')));
+    app.use('/launch', express.static(global.assetDir('dist/launch')));
+    app.use('/native', express.static(global.assetDir('dist/native')));
 }
 
 app.use(flash());
@@ -245,7 +255,7 @@ const expressLogger1 = morganLogger(JSON.stringify(logFormat), {
 });
 
 if (config.expressLogFile) {
-    const logger = new (winston.Logger)({
+    const logger = new (Logger)({
         transports: [new Rotate({
             file: config.expressLogFile
         })]
@@ -273,14 +283,14 @@ app.use((req, res, next) => {
     }
 });
 
-app.set('views', path.join(global.appDir('modules')));
+app.set('views', path.join(global.assetDir('modules')));
 
 const originalRender = express.response.render;
 express.response.render = function renderEjsUsingThis(this: any, view: string, module: ModuleAll, msg: string) {
     if (!module) {
         module = 'cde';
     }
-    originalRender.call(this, path.join(global.appDir('modules', module, 'views', view)), msg as any);
+    originalRender.call(this, path.join(global.assetDir('modules', module, 'views', view)), msg as any);
 } as any;
 
 
@@ -333,7 +343,7 @@ try {
     process.exit();
 }
 
-app.use('/robots.txt', express.static(path.join(global.appDir('modules/system/public/robots.txt'))));
+app.use('/robots.txt', express.static(path.join(global.assetDir('modules/system/public/robots.txt'))));
 
 // final route -> 404
 app.use((req, res, next) => {

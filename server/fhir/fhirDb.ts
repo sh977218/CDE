@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
-import { config } from '../system/parseConfig';
-import { addStringtype } from '../system/mongoose-stringtype';
+import { config } from 'server';
+import { addStringtype } from 'server/system/mongoose-stringtype';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
+const connHelper = require('server/system/connections');
 
 const conn = connHelper.establishConnection(config.database.appData);
 

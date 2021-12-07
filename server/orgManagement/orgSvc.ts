@@ -156,10 +156,10 @@ export async function transferSteward(req: Request, res: Response) {
     const to = req.body.to;
     if (isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
         let result = await dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
-        results.push(result.nModified + ' CDEs transferred. ');
+        results.push(result.modifiedCount + ' CDEs transferred. ');
 
         result = await formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
-        results.push(result.nModified + ' forms transferred. ');
+        results.push(result.modifiedCount + ' forms transferred. ');
         return res.send(results.join(''));
     } else {
         res.status(403).send();

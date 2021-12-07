@@ -4,7 +4,6 @@ import { FormControl, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
-    selector: 'add-child-classification-dialog',
     templateUrl: './add-child-classification-dialog.component.html',
 })
 export class AddChildClassificationDialogComponent {

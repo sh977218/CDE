@@ -10,20 +10,20 @@ public class FormGeneralInfoTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Section Inside Section Form");
         goToGeneralDetail();
-        findElement(By.xpath("//dt[contains(.,'Created:')]/following-sibling::dd[1][contains(.,'05/09/2016 @ 5:21PM')]"));
-        findElement(By.xpath("//dt[contains(.,'Updated:')]/following-sibling::dd[1][contains(.,'05/11/2016 @ 11:11AM')]"));
-        findElement(By.xpath("//dt[contains(.,'Created By:')]/following-sibling::dd[1][contains(.,'testAdmin')]"));
-        findElement(By.xpath("//dt[contains(.,'Updated By:')]/following-sibling::dd[1][contains(.,'testAdmin')]"));
+        generalDetailsPropertyValueContains("Created:", "05/09/2016 @ 5:21PM");
+        generalDetailsPropertyValueContains("Updated:", "05/11/2016 @ 11:11AM");
+        generalDetailsPropertyValueContains("Created By:", "testAdmin");
+        generalDetailsPropertyValueContains("Updated By:", "testAdmin");
     }
 
     @Test
     public void formGeneralInformationLoggedOutTest() {
         goToFormByName("Section Inside Section Form");
         goToGeneralDetail();
-        findElement(By.xpath("//dt[contains(.,'Created:')]/following-sibling::dd[1][contains(.,'05/09/2016 @ 5:21PM')]"));
-        findElement(By.xpath("//dt[contains(.,'Updated:')]/following-sibling::dd[1][contains(.,'05/11/2016 @ 11:11AM')]"));
-        assertNoElt(By.xpath("//dt[contains(.,'Created By:')]/following-sibling::dd[1][contains(.,'testAdmin')]"));
-        assertNoElt(By.xpath("//dt[contains(.,'Updated By:')]/following-sibling::dd[1][contains(.,'testAdmin')]"));
+        generalDetailsPropertyValueContains("Created:", "05/09/2016 @ 5:21PM");
+        generalDetailsPropertyValueContains("Updated:", "05/11/2016 @ 11:11AM");
+        textNotPresent("Created By:", By.xpath(xpathGeneralDetailsProperty()));
+        textNotPresent("Updated By:", By.xpath(xpathGeneralDetailsProperty()));
     }
 
 }

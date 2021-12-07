@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Query } from 'mongoose';
+import { config } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { config } from 'server/system/parseConfig';
 import { CbError, CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
 
 addStringtype(mongoose);
@@ -106,7 +106,7 @@ const userSchema = new Schema({
     publishedForms: [publishedFormSchema],
     cdeDefaultBoard: StringType,
     formDefaultBoard: StringType
-}, {usePushEach: true});
+}, {});
 
 export const userRefSchema = {
     _id: Schema.Types.ObjectId,
@@ -130,7 +130,7 @@ export function updateUserIps(userId: string, ips: string[], callback: CbError1<
     }, {new: true}, callback);
 }
 
-export function userByName(name: string, callback?: CbError1<UserDocument>): Query<UserDocument | null> {
+export function userByName(name: string, callback?: CbError1<UserDocument>): Query<UserDocument | null, UserDocument> {
     return userModel.findOne({username: new RegExp('^' + name + '$', 'i')}, callback);
 }
 
@@ -192,8 +192,8 @@ export function userByUsername(username: string, callback: CbError1<UserDocument
     userModel.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function byUsername(username: string, callback?: CbError1<UserDocument>) {
-    return userModel.findOne({username}, userProject).exec(callback as any);
+export function byUsername(username: string, callback?: CbError1<UserDocument>): Promise<UserDocument | null> {
+    return userModel.findOne({username}, userProject).exec(callback as any) as any;
 }
 
 export function save(user: Partial<UserFull>, callback?: CbError1<UserDocument>) {

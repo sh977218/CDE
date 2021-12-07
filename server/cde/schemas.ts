@@ -135,7 +135,6 @@ export const deJson = {
 };
 export const dataElementSchema = new Schema(deJson, {
     collection: 'dataelements',
-    usePushEach: true,
     toJSON: {
         transform(doc, ret) {
             ret._links = {
@@ -158,7 +157,6 @@ dataElementSchema.path('classification').validate((v: Classification[]) => {
 
 export const draftSchema = new Schema(deJson, {
     collection: 'dataelementdrafts',
-    usePushEach: true,
     toObject: {
         virtuals: true
     },
@@ -170,7 +168,6 @@ draftSchema.virtual('isDraft').get(() => true);
 
 export const dataElementSourceSchema = new Schema(deJson, {
     collection: 'dataelementsources',
-    usePushEach: true,
 });
 dataElementSourceSchema.index({tinyId: 1, source: 1}, {unique: true});
 

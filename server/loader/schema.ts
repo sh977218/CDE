@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose';
-import { addStringtype } from 'server/system/mongoose-stringtype';
-
 import { Document, Model } from 'mongoose';
+import { config } from 'server';
+import { addStringtype } from 'server/system/mongoose-stringtype';
 import { establishConnection } from 'server/system/connections';
-import { config } from 'server/system/parseConfig';
 import { ValidationWhitelist } from 'shared/models.model';
 
 addStringtype(mongoose);
@@ -21,7 +20,6 @@ export const validationWhitelistJson = {
 
 export const validationWhitelistSchema = new Schema(validationWhitelistJson, {
     collection: 'validationwhitelist',
-    usePushEach: true
 });
 
 const conn = establishConnection(config.database.appData);

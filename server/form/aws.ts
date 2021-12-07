@@ -1,4 +1,4 @@
-import { config } from 'server/system/parseConfig';
+import { config } from 'server';
 import { logError } from 'server/log/dbLogger';
 import { CdeForm } from 'shared/form/form.model';
 import { CbError1 } from 'shared/models.model';

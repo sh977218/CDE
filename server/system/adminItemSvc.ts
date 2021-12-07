@@ -5,7 +5,6 @@ import { byEltId as discussByEltId, CommentReply } from 'server/discuss/discussD
 import { handleError, handleNotFound, HandlerOptions } from 'server/errorHandler/errorHandler';
 import { typeToCriteria } from 'server/notification/notificationSvc';
 import { pushRegistrationSubscribersByUsers, triggerPushMsg } from 'server/notification/pushNotificationSvc';
-import { exists } from 'server/system/mongooseHelper';
 import { find as userFind, updateUser } from 'server/user/userDb';
 import { uriView } from 'shared/item';
 import { Attachment, CbError, CbError1, Elt, Item, ModuleAll } from 'shared/models.model';
@@ -81,10 +80,6 @@ export function badWorkingGroupStatus(elt: Item, org: Organization) {
 //         }
 //     }), undefined);
 // }
-
-export function fileUsed(collection: Model<any>, id: string, cb: CbError1<boolean>) {
-    exists(collection, {'attachments.fileid': id}, cb);
-}
 
 export function hideProprietaryIds(elt: Item) {
     if (elt && elt.ids) {

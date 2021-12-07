@@ -1,23 +1,21 @@
 import { CronJob } from 'cron';
 import { RequestHandler, Response, Router } from 'express';
 import { toInteger, round } from 'lodash';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { config, dbPlugins } from 'server';
+import { handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
 import {
     viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
     forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
 } from 'server/form/formsvc';
 import {
-    byTinyIdVersion as formByTinyIdVersion,
-    daoItem,
-    daoModule,
     formModel,
     getAuditLog
 } from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 import { validateBody } from 'server/system/bodyValidator';
 import {
-    completionSuggest, elasticsearch, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
+    completionSuggest, elasticsearchPromise, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
@@ -30,17 +28,14 @@ import {
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
-import { registerItemDao } from 'server/system/itemDaoManager';
-import { registerDao } from 'server/system/moduleDaoManager';
-import { config } from 'server/system/parseConfig';
 import { getEnvironmentHost } from 'shared/node/env';
 import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/exportShared';
 
 const {checkSchema, check} = require('express-validator');
 
-const canEditMiddlewareForm = canEditMiddleware(daoItem);
-const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(daoItem);
+const canEditMiddlewareForm = canEditMiddleware(dbPlugins.form);
+const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(dbPlugins.form);
 const canViewDraftMiddlewareForm = canEditByTinyIdMiddlewareForm;
 
 // ucum from lhc uses IndexDB
@@ -69,8 +64,6 @@ require('express-async-errors');
 
 export function module() {
     const router = Router();
-    registerDao(daoModule);
-    registerItemDao(daoItem);
 
     // Those end points need to be defined before '/form/:tinyId'
     router.get('/form/search', (req, res) => {
@@ -88,7 +81,7 @@ export function module() {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified'
                 };
-                formModel.countDocuments(cond, handleNotFound({req, res}, totalCount => {
+                formModel.countDocuments(cond, undefined, handleNotFound({req, res}, totalCount => {
                     formModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
@@ -183,9 +176,10 @@ export function module() {
         if (!req.body.fullRecord) {
             query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
         }
-        elasticsearch('form', query, req.body, handleNotFound({res, statusCode: 422}, result => {
-            res.send(result);
-        }));
+        elasticsearchPromise('form', query, req.body)
+            .then(result => {
+                res.send(result);
+            }, respondError({res, statusCode: 422}));
     });
     router.post('/server/form/searchExport', (req, res) => {
         const query = buildElasticSearchQuery(req.user, req.body);
@@ -268,9 +262,10 @@ export function module() {
         const tinyId = req.query.tinyId as string;
         const version = req.query.version as string;
         if (isSearchEngine(req)) {
-            formByTinyIdVersion(tinyId, version, handleError({req, res}, cde => {
+            dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version)
+                .then(cde => {
                 res.render('bot/formView', 'system' as any, {elt: cde} as any);
-            }));
+            }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);
         }

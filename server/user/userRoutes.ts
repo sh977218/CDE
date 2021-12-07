@@ -1,6 +1,6 @@
-import * as Config from 'config';
 import { RequestHandler, Router } from 'express';
 import { authenticate } from 'passport';
+import { config } from 'server';
 import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import { taskAggregator } from 'server/user/taskAggregatorSvc';
 import {
@@ -8,7 +8,6 @@ import {
 } from 'server/user/userDb';
 import { version } from 'server/version';
 
-const config = Config as any;
 require('express-async-errors');
 
 export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
@@ -30,8 +29,8 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     router.post('/jwt', (req, res, next) => {
         /* istanbul ignore next */
-        authenticate('utsJwt', function (err, user) {
-            req.logIn(user, function () {
+        authenticate('utsJwt', (err, user) => {
+            req.logIn(user, () => {
                 res.status(err ? 401 : 200).send(err ? err : user);
             });
         })(req, res, next);

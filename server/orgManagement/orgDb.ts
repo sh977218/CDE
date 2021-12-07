@@ -1,10 +1,10 @@
 import { Response } from 'express';
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
-import { config } from 'server/system/parseConfig';
+import { config } from 'server';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { CbError, CbError1 } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
 addStringtype(mongoose);
@@ -36,7 +36,7 @@ export const orgSchema = new Schema({
     extraInfo: StringType,
     cdeStatusValidationRules: [statusValidationRuleSchema],
     htmlOverview: StringType
-}, {usePushEach: true});
+}, {});
 export type OrganizationDocument = Document & Organization;
 
 export const organizationModel: Model<OrganizationDocument> = conn.model('Org', orgSchema);
@@ -65,8 +65,8 @@ export async function managedOrgs(orgs = []) {
     }
 }
 
-export async function orgByName(orgName: string, callback?: CbError1<OrganizationDocument | null>) {
-    return organizationModel.findOne({name: orgName}, callback);
+export async function orgByName(orgName: string): Promise<OrganizationDocument | null> {
+    return organizationModel.findOne({name: orgName});
 }
 
 export function listOrgsDetailedInfo() {

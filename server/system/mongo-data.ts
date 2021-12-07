@@ -1,27 +1,26 @@
-import * as connectMongo from 'connect-mongo';
-import { Response } from 'express';
-import * as session from 'express-session';
-import * as Grid from 'gridfs-stream';
-import { escape, findIndex } from 'lodash';
-import * as mongo from 'mongodb2'; // Mongo 2 used by gridfs
-import { connect, MongoClientOptions } from 'mongodb2';
+import { findIndex } from 'lodash';
 import { Document, Model, Types } from 'mongoose';
-import { ObjectId } from 'server';
-import { BoardDocument } from 'server/board/boardDb';
+import { config, dbPlugins, ObjectId } from 'server';
 import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
+import { moduleToDbName } from 'server/dbPlugins';
 import { handleError } from 'server/errorHandler/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { getDao } from 'server/system/moduleDaoManager';
-import { noDbLogger } from 'server/system/noDbLogger';
-import { config } from 'server/system/parseConfig';
 import { jobQueue, message } from 'server/system/schemas';
 import { userModel } from 'server/user/userDb';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
-import { Cb1, CbError, CbError1, CbError2, EltLog, Item, ItemElastic, ModuleAll, User } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import {
+    Board,
+    CbError,
+    CbError1,
+    EltLog,
+    Item,
+    ModuleAll,
+    User
+} from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
 
@@ -101,36 +100,21 @@ export interface PushRegistration {
 }
 
 export type PushRegistrationDocument = Document & PushRegistration;
-const mongoStore = connectMongo(session);
 
 const conn = establishConnection(config.database.appData);
-
 export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue);
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
-
-export let gfs: Grid.Grid;
-connect(config.database.appData.uri, (err?: Error, client?: MongoClientOptions) => {
-    if (err) {
-        noDbLogger.info('Error connection open to legacy mongodb: ' + err);
-    } else {
-        gfs = Grid(client, mongo);
-    }
-});
-export const sessionStore = new mongoStore({
-    mongooseConnection: conn,
-    touchAfter: 60
-});
 
 export function jobStatus(type: string, callback: CbError1<Document & JobStatus>) {
     jobQueueModel.findOne({type}, callback);
 }
 
 export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> {
-    return jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback);
+    return jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback) as any;
 }
 
 export function removeJobStatus(type: string, callback: CbError) {
-    jobQueueModel.remove({type}, callback);
+    jobQueueModel.deleteMany({type}, callback);
 }
 
 export function addCdeToViewHistory(elt: Item, user: User) {
@@ -144,7 +128,7 @@ export function addCdeToViewHistory(elt: Item, user: User) {
             $slice: 1000
         }
     };
-    userModel.updateOne({_id: user._id}, {$push: updStmt}, err => {
+    userModel.updateOne({_id: user._id}, {$push: updStmt}, null, err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addCdeToViewHistory',
@@ -166,7 +150,7 @@ export function addFormToViewHistory(elt: Item, user: User) {
             $slice: 1000
         }
     };
-    userModel.updateOne({_id: user._id}, {$push: updStmt}, err => {
+    userModel.updateOne({_id: user._id}, {$push: updStmt}, null, err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addFormToViewHistory',
@@ -225,65 +209,11 @@ function isDocument<T>(data: T | T & Document): data is T & Document {
     return !!(data as T & Document).toObject;
 }
 
-export function eltAsElastic(doc: DataElement | DataElementDocument): DataElementElastic;
-export function eltAsElastic(doc: CdeForm | CdeFormDocument): CdeFormElastic;
-export function eltAsElastic(doc: Item | ItemDocument): ItemElastic {
-    const elt: ItemElastic = isDocument(doc) ? (doc as ItemDocument).toObject() : doc;
-    elt.stewardOrgCopy = elt.stewardOrg;
-    elt.primaryNameCopy = escape(elt.designations[0].designation);
-    elt.primaryDefinitionCopy = '';
-    if (elt.definitions[0] && elt.definitions[0].definition) {
-        elt.primaryDefinitionCopy = escape(elt.definitions[0].definition);
-    }
-    return elt;
-}
-
 export interface FileCreateInfo {
     stream: Readable;
     filename?: string;
     md5?: string;
     type?: string;
-}
-
-export function addFile(file: FileCreateInfo, streamDescription: any = null, cb: CbError2<File & Document, boolean>) {
-    gfs.findOne({md5: file.md5} as any, (err, f) => {
-        if (f) {
-            return cb(err, f, false);
-        }
-        if (!streamDescription) {
-            streamDescription = {
-                filename: file.filename,
-                mode: 'w',
-                content_type: file.type
-            };
-        }
-
-        file.stream.pipe(gfs.createWriteStream(streamDescription)
-            .on('close', newFile => cb(null, newFile, true))
-            .on('error', cb));
-    });
-}
-
-export function deleteFileById(id: string, callback: CbError) {
-    gfs.remove({_id: id}, callback);
-}
-
-export function getFile(user: User, id: string, res: Response) {
-    gfs.exist({_id: id}, (err, found) => {
-        if (err || !found) {
-            res.status(404).send('File not found.');
-        } else {
-            gfs.findOne({_id: id}, (err, file) => {
-                if (file.contentType.indexOf('csv') !== -1) {
-                    res.setHeader('Content-disposition', 'attachment; filename=' + file.filename);
-                }
-                res.contentType(file.contentType);
-                res.header('Accept-Ranges', 'bytes');
-                res.header('Content-Length', file.length);
-                gfs.createReadStream({_id: id}).pipe(res);
-            });
-        }
-    });
 }
 
 // export function getAllUsernames(cb: CbError<{username: string}[]>) {
@@ -303,18 +233,19 @@ export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError1<MessageDo
     new messageModel(msg).save(cb);
 }
 
-export function fetchItem(module: 'board', tinyId: string, cb: CbError1<BoardDocument | null | void>): void;
-export function fetchItem(module: 'cde' | 'form', tinyId: string, cb: CbError1<ItemDocument | null | void>): void;
-export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError1<BoardDocument | ItemDocument | null | void>): void;
-export function fetchItem(module: ModuleAll, tinyId: string, cb: CbError1<BoardDocument | ItemDocument | null | void> | CbError1<BoardDocument | null | void> | CbError1<ItemDocument | null | void>): void {
-    const db = getDao(module);
+export function fetchItem(module: 'board', tinyId: string): Promise<Board | null>;
+export function fetchItem(module: 'cde', tinyId: string): Promise<DataElement | null>;
+export function fetchItem(module: 'form', tinyId: string): Promise<CdeForm | null>;
+export function fetchItem(module: ModuleAll, tinyId: string): Promise<Board | Item | null>;
+export function fetchItem(module: ModuleAll, tinyId: string): Promise<Board | Item | null> {
+    const db = dbPlugins[moduleToDbName(module)];
     if (!db) {
-        cb(new Error('Module has no database.'));
-        return;
+        return Promise.reject(new Error('Module has no database.'));
     }
-    db.byKey(tinyId, cb as any);
+    return db.byKey(tinyId);
 }
 
 export function sortArrayByArray(unSortArray: Item[], targetArray: ObjectId[]) {
-    unSortArray.sort((a, b) => findIndex(targetArray, a._id) - findIndex(targetArray, b._id));
+    const stringArray = targetArray.map(t => t.toString());
+    unSortArray.sort((a, b) => stringArray.indexOf(a._id.toString()) - stringArray.indexOf(b._id.toString()));
 }

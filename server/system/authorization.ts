@@ -1,6 +1,5 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
-import { handleNotFound } from 'server/errorHandler/errorHandler';
-import { ItemDao } from 'server/system/itemDao';
+import { handleNotFound, respondError } from 'server/errorHandler/errorHandler';
 import {
     canAttach,
     canEditCuratedItem,
@@ -14,7 +13,9 @@ import {
     isOrgCurator,
     isSiteAdmin
 } from 'shared/security/authorizationShared';
-import { Board, Elt, Item, User } from 'shared/models.model';
+import { Board, Item, User } from 'shared/models.model';
+import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
+import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 
 // --------------------------------------------------
 // Middleware
@@ -64,39 +65,45 @@ declare global {
     }
 }
 
-export const canEditMiddleware = <T extends Item, U extends Item>(db: ItemDao<T, U>) =>
+export const canEditMiddleware = (db: DataElementDb | FormDb) =>
     (req: RequestWithItem, res: Response, next: NextFunction) => {
         loggedInMiddleware(req, res, () => {
-            db.byExisting(req.body, handleNotFound({req, res}, (item: Item) => {
-                if (!canEditCuratedItem(req.user, item)) {
-                    // TODO: consider ban
-                    res.status(403).send();
-                    return;
-                }
-                req.item = item;
-                next();
-            }));
+            db.byExisting(req.body)
+                .then(item => {
+                    if (!item) {
+                        return res.status(404).send();
+                    }
+                    if (!canEditCuratedItem(req.user, item)) {
+                        // TODO: consider ban
+                        return res.status(403).send();
+                    }
+                    req.item = item;
+                    next();
+                }, respondError({req, res}));
         });
     };
 
-export const canEditByTinyIdMiddleware = <T extends Item, U extends Item>(db: ItemDao<T, U>) =>
+export const canEditByTinyIdMiddleware = (db: DataElementDb | FormDb) =>
     (req: RequestWithItem, res: Response, next: NextFunction) => {
         if (!req.params.tinyId) {
-            res.status(400).send();
-            return;
+            return res.status(400).send();
         }
         if (hasPrivilegeInRoles(req.user, 'edit')) {
             next();
             return;
         }
         isOrgMiddleware(req, res, () => {
-            db.byTinyId(req.params.tinyId, handleNotFound({req, res}, (item: Item) => {
-                if (!canEditCuratedItem(req.user, item)) {
-                    return res.status(403).send();
-                }
-                req.item = item;
-                next();
-            }));
+            db.byTinyId(req.params.tinyId)
+                .then(item => {
+                    if (!item) {
+                        return res.status(404).send();
+                    }
+                    if (!canEditCuratedItem(req.user, item)) {
+                        return res.status(403).send();
+                    }
+                    req.item = item;
+                    next();
+                }, respondError({req, res}));
         });
     };
 

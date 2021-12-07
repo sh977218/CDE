@@ -10,7 +10,9 @@ async function doOneCollection(collection: Model<UserDocument>) {
     const cursor = collection.find(cond).cursor();
     return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
-        model.roles = modelObj.roles.filter((r: any) => r !== 'AttachmentReviewer');
+        if (Array.isArray(modelObj.roles)) {
+            model.roles = modelObj.roles.filter((r: any) => r !== 'AttachmentReviewer');
+        }
         await model.save();
     });
 }

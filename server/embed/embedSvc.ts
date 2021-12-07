@@ -15,6 +15,6 @@ export const embeds = {
         embedModel.find(crit, cb);
     },
     delete: (id: string, cb: CbError1<EmbedDocument>) => {
-        embedModel.remove({_id: id}, cb as any);
+        embedModel.deleteOne({_id: id}, cb as any);
     }
 };

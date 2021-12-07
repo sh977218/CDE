@@ -1,55 +1,64 @@
-import { Document, Model, Schema } from 'mongoose';
-import { attachmentAdd, attachmentRemove, attachmentSetDefault } from 'server/mongo/shared/attachable';
-import { byId } from 'server/mongo/shared/mongoUtils';
-import { establishConnection } from 'server/system/connections';
-import { config } from 'server/system/parseConfig';
-import { attachmentSchema } from 'server/system/schemas';
+import { ObjectId } from 'mongodb';
+import { Model } from 'mongoose';
+import { AttachableDb } from 'server/mongo/base/attachableDb';
+import { CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
+import { ArticleDocument, articleModel } from 'server/mongo/mongoose/article.mongoose';
 import { Article } from 'shared/article/article.model';
 import { ArticleDb } from 'shared/boundaryInterfaces/db/articleDb';
 import { Attachment } from 'shared/models.model';
 
-type ArticleDocument = Document & Article;
+const articleHooks: CrudHooks<Article, ObjectId> = {
+    read: {
+        post: (article) => article,
+    },
+    save: {
+        pre: (article) => article,
+        post: (article) => article,
+    },
+    delete: {
+        pre: (_id) => _id,
+        post: (_id) => {},
+    },
+};
 
-const conn = establishConnection(config.database.appData);
-const articleSchema = new Schema({
-    key: {type: String, index: true},
-    body: String,
-    created: {type: Date, default: new Date()},
-    updated: {type: Date, default: new Date()},
-    attachments: [attachmentSchema]
-}, {usePushEach: true});
-const articleModel: Model<ArticleDocument> = conn.model('article', articleSchema);
-
-class ArticleDbMongo implements ArticleDb {
-    attach(_id: string, attachment: Attachment): Promise<Article> {
-        return attachmentAdd(articleModel, _id, attachment);
+class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleDb {
+    constructor(model: Model<ArticleDocument>) {
+        super(model, articleHooks, 'updated');
     }
 
-    byId(_id: string): Promise<Article | null> {
-        return byId(articleModel, _id);
+    attach(id: string, attachment: Attachment): Promise<Article | null> {
+        return this.attachmentAdd(new ObjectId(id), attachment);
+    }
+
+    byId(id: string): Promise<Article | null> {
+        return this.findOneById(new ObjectId(id));
     }
 
     byKey(key: string): Promise<Article | null> {
-        return articleModel.findOne({key})
-            .then(doc => doc && doc.toObject());
+        return this.findOne({key});
     }
 
-    removeAttachment(_id: string, attachmentIndex: number): Promise<Article> {
-        return attachmentRemove(articleModel, _id, attachmentIndex);
+    exists(query: any): Promise<boolean> {
+        return super.exists(query);
     }
 
-    setDefaultAttachment(_id: string, attachmentIndex: number, state: boolean): Promise<Article> {
-        return attachmentSetDefault(articleModel, _id, attachmentIndex, state);
+    removeAttachment(id: string, attachmentIndex: number): Promise<Article | null> {
+        return this.attachmentRemove(new ObjectId(id), attachmentIndex);
     }
 
-    update(article: Article): Promise<void> {
-        return articleModel.findOneAndUpdate(
+    setDefaultAttachment(id: string, attachmentIndex: number, state: boolean): Promise<Article | null> {
+        return this.attachmentSetDefault(new ObjectId(id), attachmentIndex, state);
+    }
+
+    update(article: Article): Promise<Article> {
+        return this.model.findOneAndUpdate(
             {key: article.key},
             {$set: {body: article.body, updated: new Date()}},
             {upsert: true, new: true}
         )
-            .then(() => {});
+            .then(newArticle => newArticle.toObject())
+            .then(article => (this.hooks.save.post as (a: Article) => PromiseOrValue<Article>)(article)); // TODO: TypeScript/issues/37181
     }
 }
 
-export const articleDb = new ArticleDbMongo();
+export const articleDb = new ArticleDbMongo(articleModel);

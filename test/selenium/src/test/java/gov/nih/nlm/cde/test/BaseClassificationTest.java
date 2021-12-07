@@ -70,6 +70,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         } else {
             clickElement(By.id("addClassificationUnderRoot"));
         }
+        textPresent("Add a new classification under path:");
         findElement(By.id("addChildClassifInput")).sendKeys(classificationName);
         hangon(5);
         clickElement(By.id("confirmAddChildClassificationBtn"));

@@ -2,9 +2,7 @@ import { hostname } from 'os';
 import { createConnection, Schema } from 'mongoose';
 
 const migrationConn = createConnection('mongodb://miguser:password@localhost:27017/migration', {
-    ssl: false,
-    useCreateIndex: true,
-    useNewUrlParser: true
+    ssl: false
 });
 migrationConn.once('open', function callback() {
     console.log('mongodb local migration connection open');
@@ -14,12 +12,10 @@ migrationConn.once('open', function callback() {
 export const LoincModel = migrationConn.model('LOINC', new Schema({}, {
     strict: false,
     collection: 'LOINC',
-    usePushEach: true
 }));
 export const LOINC_CLASSIFICATION_MAPPING = migrationConn.model('LoincClassificationMapping', new Schema({}, {
     strict: false,
     collection: 'LoincClassificationMapping',
-    usePushEach: true
 }));
 export let LOINC_USERS_GUIDE = 'S:/MLB/CDE/LOINC/LOINCUsersGuide.pdf';
 
@@ -27,14 +23,12 @@ export let LOINC_USERS_GUIDE = 'S:/MLB/CDE/LOINC/LOINCUsersGuide.pdf';
 export const NindsModel = migrationConn.model('NINDS', new Schema({}, {
     strict: false,
     collection: 'NINDS',
-    usePushEach: true
 }));
 
 // PhenX
 export const PROTOCOL = migrationConn.model('PROTOCOL', new Schema({}, {
     strict: false,
     collection: 'Protocol',
-    usePushEach: true
 }));
 export const PhenxURL = 'https://www.phenxtoolkit.org/protocols';
 let redCapZipFolder = 'S:/MLB/CDE/PhenX/www.phenxtoolkit.org/toolkit_content/redcap_zip/';

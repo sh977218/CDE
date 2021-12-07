@@ -1,25 +1,27 @@
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { Request, RequestHandler, Response, Router } from 'express';
+import { GridFSFile } from 'mongodb';
 import { QueryCursor } from 'mongoose';
 import { authenticate } from 'passport';
+import { config, ObjectId } from 'server';
 import { handleError, respondError } from 'server/errorHandler/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
+import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
 import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
-import { config } from 'server/system/parseConfig';
 import { version } from 'server/version';
 import { consoleLog } from 'server/log/dbLogger';
 import {
-    addFile, getFile, gfs, ItemDocument, jobStatus, removeJobStatus, updateJobStatus
+    ItemDocument, jobStatus, removeJobStatus, updateJobStatus
 } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
@@ -56,59 +58,67 @@ export function module() {
                     if (j) {
                         return;
                     }
-                    gfs.findOne({filename: '/app/sitemap.txt'}, (err, file) => {
+                    gfs.then(gfs => gfs.find({filename: '/app/sitemap.txt'}).toArray().then(files => {
+                        const file = files[0];
                         if (!!file && fileCreatedToday(file)) {
                             return;
-                        } else {
-                            updateJobStatus('SiteMap', 'Generating');
-                            consoleLog('Creating sitemap');
-                            const readable = new Readable();
-                            const siteMapLines: string[] = [];
-                            const cond = {
-                                archived: false,
-                                'registrationState.registrationStatus': 'Qualified'
-                            };
-
-                            function handleStream(stream: QueryCursor<ItemDocument>,
-                                                  formatter: (doc: ItemDocument) => string, cb: CbError) {
-                                stream.on('data', doc => siteMapLines.push(formatter(doc)));
-                                stream.on('err', cb);
-                                stream.on('end', cb);
-                            }
-
-                            Promise.all([
-                                promisify(handleStream)(
-                                    dataElementModel.find(cond, 'tinyId').cursor(),
-                                    doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId
-                                ),
-                                promisify(handleStream)(
-                                    formModel.find(cond, 'tinyId').cursor(),
-                                    doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId
-                                )
-                            ]).then(() => {
-                                readable.push(siteMapLines.join('\n'));
-                                readable.push(null);
-                                const streamDescription = {
-                                    filename: '/app/sitemap.txt',
-                                    mode: 'w',
-                                    content_type: 'plain/text'
-                                };
-                                const file = {
-                                    stream: readable
-                                };
-                                gfs.remove({filename: '/app/sitemap.txt'}, (err) => {
-                                    if (err) {
-                                        consoleLog(`Error removing old sitemap file: ${err}`, 'error');
-                                        return;
-                                    }
-                                    addFile(file, streamDescription, (err, newFile) => {
-                                        consoleLog('done with sitemap');
-                                        removeJobStatus('SiteMap', () => {
-                                        });
-                                    });
-                                });
-                            });
                         }
+                        updateJobStatus('SiteMap', 'Generating');
+                        consoleLog('Creating sitemap');
+                        const readable = new Readable();
+                        const siteMapLines: string[] = [];
+                        const cond = {
+                            archived: false,
+                            'registrationState.registrationStatus': 'Qualified'
+                        };
+
+                        function handleStream(stream: QueryCursor<ItemDocument>,
+                                              formatter: (doc: ItemDocument) => string, cb: CbError) {
+                            stream.on('data', doc => siteMapLines.push(formatter(doc)));
+                            stream.on('err', cb);
+                            stream.on('end', cb);
+                        }
+
+                        return Promise.all([
+                            promisify(handleStream)(
+                                dataElementModel.find(cond, 'tinyId').cursor(),
+                                doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId
+                            ),
+                            promisify(handleStream)(
+                                formModel.find(cond, 'tinyId').cursor(),
+                                doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId
+                            )
+                        ]).then(() => {
+                            readable.push(siteMapLines.join('\n'));
+                            readable.push(null);
+                            (
+                                file && file._id
+                                    ? gfs.delete(file._id)
+                                        .catch(err => {
+                                            consoleLog(`Error removing old sitemap file: ${err}`, 'error');
+                                        })
+                                    : Promise.resolve()
+                            )
+                                .then(() => addFile(
+                                    {
+                                        filename: '/app/sitemap.txt',
+                                        stream: readable
+                                    },
+                                    {
+                                        contentType: 'plain/text'
+                                    }
+                                ))
+                                .then(() => {
+                                    consoleLog('done with sitemap');
+                                    removeJobStatus('SiteMap', () => {
+                                    });
+                                })
+                                .catch(err => {
+                                    consoleLog(`Error with sitemap file: ${err}`, 'error');
+                                });
+                        });
+                    })).catch(err => {
+                        consoleLog(`Error finding sitemap file: ${err}`, 'error');
                     });
                 });
             } catch (err) {
@@ -119,7 +129,7 @@ export function module() {
         }, process.env.NODE_ENV === 'dev-test' ? 0 : Math.floor(Math.random() * 3600000) + 1);
     }, null, true, 'America/New_York', undefined, true).start();
 
-    function fileCreatedToday(file: any): boolean {
+    function fileCreatedToday(file: GridFSFile): boolean {
         const today = new Date();
         return (file.uploadDate.getDate() === today.getDate()
             && file.uploadDate.getMonth() === today.getMonth()
@@ -204,7 +214,7 @@ export function module() {
         function passportAuthenticate() {
             authenticate('local', (err, user, info) => {
                 if (err) {
-                    respondError(err);
+                    respondError()(err);
                     return res.status(403).send();
                 }
                 if (!user) {
@@ -218,7 +228,7 @@ export function module() {
                 }
                 req.logIn(user, err => {
                     if (err) {
-                        respondError(err);
+                        respondError()(err);
                         return res.status(403).send();
                     }
                     if (req.session) {
@@ -257,7 +267,7 @@ export function module() {
         if (i > -1) {
             fileId = fileId.substr(0, i);
         }
-        getFile(req.user, fileId, res);
+        getFile(new ObjectId(fileId), res);
     });
 
 

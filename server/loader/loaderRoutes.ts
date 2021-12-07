@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import { Response, Router } from 'express';
+import { config } from 'server';
 import {
     addValidationWhitelist,
     deleteValidationWhitelist,
@@ -8,12 +9,10 @@ import {
     updateValidationWhitelist
 } from 'server/loader/validators';
 
-import * as Config from 'config';
 import * as multer from 'multer';
 
 export function module() {
     const router = Router();
-    const config = Config as any;
 
     router.post('/validateCSVLoad', multer({...config.multer, storage: multer.memoryStorage()}).any(), async (req, res) => {
         if (!req.files) {
@@ -25,18 +24,19 @@ export function module() {
         res.send(reportOutput);
     });
 
-    router.post('/spellcheckCSVLoad', multer({...config.multer, storage: multer.memoryStorage()}).any(), async (req, res) => {
-        if (!req.files) {
-            res.status(400).send('No file uploaded for spell check');
-            return;
+    router.post('/spellcheckCSVLoad', multer({...config.multer, storage: multer.memoryStorage()}).any(),
+        async (req, res): Promise<Response> => {
+            if (!req.files) {
+                return res.status(400).send('No file uploaded for spell check');
+            }
+            if (!req.body.whitelist) {
+                return res.status(400).send('No whitelist specified');
+            }
+            const fileBuffer = (req.files as any)[0].buffer;
+            const reportOutput = await spellcheckCSVLoad(req.body.whitelist, fileBuffer);
+            return res.send(reportOutput);
         }
-        if (!req.body.whitelist) {
-            res.status(400).send('No whitelist specified');
-        }
-        const fileBuffer = (req.files as any)[0].buffer;
-        const reportOutput = await spellcheckCSVLoad(req.body.whitelist, fileBuffer);
-        res.send(reportOutput);
-    });
+    );
 
     router.get('/whitelists', async (req, res) => {
         const whitelists = await getValidationWhitelists();

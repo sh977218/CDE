@@ -1,6 +1,6 @@
-import { config } from 'server/system/parseConfig';
+import { config } from 'server';
 
-var _kibana =
+const _kibana =
     {
       "took" : 2,
       "timed_out" : false,
@@ -114,6 +114,6 @@ var _kibana =
 
 ;
 
-var kibanaAsString = JSON.stringify(_kibana).replace(/cdetest/g, config.elastic.index.name).replace(/storedquerytest/g, config.elastic.storedQueryIndex.name);
+const kibanaAsString = JSON.stringify(_kibana).replace(/cdetest/g, config.elastic.index.name).replace(/storedquerytest/g, config.elastic.storedQueryIndex.name);
 
 export const kibana = JSON.parse(kibanaAsString);

@@ -12,11 +12,11 @@ public class FormAddClassificationTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToFormByName(formName);
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
         addClassificationByTree("NINDS", new String[]{"Disease", "Traumatic Brain Injury"});
         goToGeneralDetail();
-        textNotPresent("Updated:", By.id("generalDiv"));
-
+        textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
     }
+
 }
