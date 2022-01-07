@@ -1,7 +1,6 @@
 import * as Config from 'config';
 export const config = Config as any;
 
-import { readFileSync } from 'fs';
 ['log', 'appData', 'migration'].forEach(databaseName => {
     const database = config.database[databaseName];
     if (database) {
@@ -14,12 +13,12 @@ import { readFileSync } from 'fs';
             uriOptions.push('replicaSet=' + database.options.replicaSet);
         }
         if (database.options.ssl) {
-            uriOptions.push('ssl=true');
+            uriOptions.push('tls=true');
             if (database.sslCAPath) {
-                database.options.sslCA = [readFileSync(database.sslCAPath)];
+                database.options.tlsCAFile = database.sslCAPath;
             }
             if (database.sslCertPath) {
-                database.options.sslCert = readFileSync(database.sslCertPath);
+                database.options.tlsCertificateKeyFile = database.sslCertPath;
             }
         }
         database.uri = 'mongodb://' + database.username + ':' + database.password + '@'
