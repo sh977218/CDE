@@ -48,12 +48,11 @@ import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { ModuleAll } from 'shared/models.model';
 import { canClassifyOrg } from 'shared/security/authorizationShared';
-import { Logger } from 'winston';
+import { Logger, transports } from 'winston';
 
 require('source-map-support').install();
 const flash = require('connect-flash');
 const hsts = require('hsts');
-const Rotate = require('winston-logrotate').Rotate;
 
 const domain = Domain.create();
 
@@ -256,9 +255,11 @@ const expressLogger1 = morganLogger(JSON.stringify(logFormat), {
 
 if (config.expressLogFile) {
     const logger = new (Logger)({
-        transports: [new Rotate({
-            file: config.expressLogFile
-        })]
+        transports: [
+            new (transports.File)({
+                filename: config.expressLogFile
+            })
+        ]
     });
     app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
         ' ":referrer" ":user-agent" ":response-time ms"', {
