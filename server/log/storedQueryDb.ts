@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { config } from 'server';
-import { handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { handleErrorVoid } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { DataType } from 'shared/de/dataElement.model';

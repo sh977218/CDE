@@ -1,14 +1,15 @@
 import * as mongoose from 'mongoose';
 import { config } from 'server';
+import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
+import { FhirApp, FhirObservationInfo } from 'shared/form/form.model';
+import { Document, Model } from 'mongoose';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('server/system/connections');
-
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 
 const fhirAppSchema = new Schema({
     clientId: String,
@@ -32,5 +33,6 @@ const fhirObservationInformationSchema = new Schema({
     }],
 }, {collection: 'fhirObservationInfo'});
 
-export const FhirApps = conn.model('FhirApp', fhirAppSchema);
-export const FhirObservationInfo = conn.model('FhirObservationInfo', fhirObservationInformationSchema);
+export const fhirAppsModel: Model<FhirApp & Document> = conn.model('FhirApp', fhirAppSchema);
+export const fhirObservationInfoModel: Model<FhirObservationInfo & Document>
+    = conn.model('FhirObservationInfo', fhirObservationInformationSchema);

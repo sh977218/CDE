@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
 import { config } from 'server';
-import { handleConsoleError } from 'server/errorHandler/errorHandler';
+import { handleConsoleError } from 'server/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';

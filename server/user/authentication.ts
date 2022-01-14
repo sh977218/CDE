@@ -87,7 +87,7 @@ export function authBeforeVsac(req: Request, username: string, password: string,
         }
         fetch(`${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${req.body.ticket}`)
             .then(isStatus([200]))
-            .then(json)
+            .then<any>(json)
             .then((body) => {
                 let domain: string = '';
                 try {
@@ -128,7 +128,7 @@ passportUse('utsJwt', new CustomStrategy((req, cb) => {
         }
     })
         .then(isStatus([200]))
-        .then(json)
+        .then<any>(json)
         .then((profile) => {
             if (username !== profile.user.username) {
                 cb('usernames did not match');

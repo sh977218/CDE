@@ -33,6 +33,7 @@ declare module 'lodash/curryRight' {
     export = curryRight;
 }
 declare module 'lodash/differenceWith';
+declare module 'lodash/escape';
 declare module 'lodash/find';
 declare module 'lodash/findEach';
 declare module 'lodash/forEach';
@@ -49,6 +50,7 @@ declare module 'lodash/sortBy';
 declare module 'lodash/toString';
 declare module 'lodash/trim';
 declare module 'lodash/union';
+declare module 'lodash/unionWith';
 declare module 'lodash/uniq';
 declare module 'lodash/uniqWith';
 declare module 'simple-spellchecker';

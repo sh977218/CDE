@@ -116,7 +116,8 @@
     <div mat-dialog-actions>
         <button mat-raised-button [mat-dialog-close] color="warn">Cancel</button>
         <button mat-raised-button color="primary" (click)="doMerge()" [disabled]="!allow" id="doMergeBtn">
-            Retire & Merge
+            {{mergeFields.retireCde ? "Retire " + source.tinyId + " & " : ""}}
+            Merge{{mergeFields.retireCde ? "" : " " + source.tinyId}} into {{destination.tinyId}}
         </button>
     </div>
 </ng-template>

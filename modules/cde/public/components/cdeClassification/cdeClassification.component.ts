@@ -7,6 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { DataElement } from 'shared/de/dataElement.model';
+import { ITEM_MAP } from 'shared/item';
 import { Cb, ClassificationClassified } from 'shared/models.model';
 import { canClassify } from 'shared/security/authorizationShared';
 
@@ -61,7 +62,7 @@ export class CdeClassificationComponent {
     }
 
     reloadElt(cb: Cb) {
-        this.http.get<DataElement>('/api/de/' + this.elt.tinyId).subscribe(res => {
+        this.http.get<DataElement>(ITEM_MAP.cde.api + this.elt.tinyId).subscribe(res => {
             this.elt = res;
             this.eltChange.emit(this.elt);
             if (cb) {

@@ -1,16 +1,17 @@
 import * as Ajv from 'ajv';
 import { isEmpty } from 'lodash';
 import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
-import { config } from 'server';
+import { config, ObjectId } from 'server';
 import { updateOrInsertDocument } from 'server/cde/elastic';
 import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
-import { splitError } from 'server/errorHandler/errorHandler';
+import { splitError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { auditGetLog, auditModifications, generateTinyId } from 'server/system/mongo-data';
 import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
-import { CbError, CbError1, EltLog, User } from 'shared/models.model';
+import { UpdateEltOptions } from 'shared/de/updateEltOptions';
+import { CbError1, EltLog, User } from 'shared/models.model';
 
 const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
 
@@ -82,19 +83,15 @@ export function byTinyId(tinyId: string, cb?: CbError1<DataElementDocument | nul
     return dataElementModel.findOne({tinyId, archived: false}).exec(cb);
 }
 
-export function draftById(id: string, cb: CbError1<DataElementDraftDocument>) {
-    const cond = {
-        _id: id,
-    };
-    dataElementDraftModel.findOne(cond, cb);
+export function draftById(_id: ObjectId): Promise<DataElementDraftDocument> {
+    return dataElementDraftModel.findOne({_id}).then();
 }
 
-export function draftByTinyId(tinyId: string, cb: CbError1<DataElementDraftDocument>) {
-    const cond = {
+export function draftByTinyId(tinyId: string): Promise<DataElementDraftDocument> {
+    return dataElementDraftModel.findOne({
         archived: false,
         tinyId,
-    };
-    dataElementDraftModel.findOne(cond, cb);
+    }).then();
 }
 
 export function draftDelete(tinyId: string): Promise<void> {
@@ -167,62 +164,65 @@ export function create(elt: DataElement, user: User, callback: CbError1<DataElem
     });
 }
 
-export function update(elt: DataElementDraft, user: User, options: any = {},
-                       callback: CbError1<DataElement | void>): void {
-    dataElementModel.findById(elt._id, null, null, (err, dataElement) => {
-        /* istanbul ignore if */
-        if (err || !dataElement) {
-            return callback(new Error('Document Not Found'));
-        }
-        /* istanbul ignore if */
-        if (dataElement.archived) {
-            return callback(new Error('You are trying to edit an archived element'));
-        }
-        delete elt._id;
-        /* istanbul ignore if */
-        if (!elt.history) {
-            elt.history = [];
-        }
-        elt.history.push(dataElement._id);
-        updateUser(elt, user);
-
-        // user cannot edit sources.
-        if (!options.updateSource) {
-            elt.sources = dataElement.sources;
-        }
-
-        // because it's draft not edit attachment
-        if (options.updateAttachments) {
-            elt.attachments = dataElement.attachments;
-        }
-
-        // created & createdBy cannot be changed.
-        elt.created = dataElement.created;
-        elt.createdBy = dataElement.createdBy;
-
-        const newElt = new dataElementModel(elt);
-
-        // archive dataElement and replace it with newElt
-        dataElementModel.findOneAndUpdate({
-            _id: dataElement._id,
-            archived: false
-        }, {$set: {archived: true}}, null, (err, doc) => {
+export function update(elt: DataElementDraft, user: User, options: UpdateEltOptions = {}): Promise<DataElement> {
+    return dataElementModel.findById(elt._id, null, null)
+        .then(dataElement => {
             /* istanbul ignore if */
-            if (err || !doc) {
-                return callback(err, doc || undefined);
+            if (!dataElement) {
+                throw new Error('Document Not Found');
             }
-            newElt.save((err, savedElt) => {
-                /* istanbul ignore if */
-                if (err) {
-                    dataElementModel.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}},
-                        () => callback(err));
-                    return;
-                }
-                callback(null, savedElt);
-                auditModificationsDe(user, dataElement, savedElt);
-            });
+            /* istanbul ignore if */
+            if (dataElement.archived) {
+                throw new Error('You are trying to edit an archived element');
+            }
+            delete elt._id;
+            /* istanbul ignore if */
+            if (!elt.history) {
+                elt.history = [];
+            }
+            elt.history.push(dataElement._id);
+            updateUser(elt, user);
+
+            // user cannot edit sources.
+            if (!options.updateSource) {
+                elt.sources = dataElement.sources;
+            }
+
+            // because it's draft not edit attachment
+            if (!options.updateAttachments) {
+                elt.attachments = dataElement.attachments;
+            }
+
+            // created & createdBy cannot be changed.
+            elt.created = dataElement.created;
+            elt.createdBy = dataElement.createdBy;
+
+            const newElt = new dataElementModel(elt);
+
+            // archive dataElement and replace it with newElt
+            return dataElementModel.findOneAndUpdate(
+                {
+                    _id: dataElement._id,
+                    archived: false
+                },
+                {$set: {archived: true}},
+                null
+            )
+                .then(oldElt => {
+                    /* istanbul ignore if */
+                    if (!oldElt) {
+                        throw new Error('Document not found');
+                    }
+                    return newElt.save().then(
+                        savedElt => {
+                            auditModificationsDe(user, dataElement, savedElt);
+                            return savedElt;
+                        },
+                        err => dataElementModel.findOneAndUpdate({_id: dataElement._id}, {$set: {archived: false}})
+                            .then(() => Promise.reject(err))
+                    );
+                });
         });
-    });
 }
 
 export function derivationByInputs(inputTinyId: string, cb: CbError1<DataElementDocument[]>) {

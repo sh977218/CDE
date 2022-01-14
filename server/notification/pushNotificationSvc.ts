@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { noop, union } from 'lodash';
 import { config, ObjectId } from 'server';
-import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { handleError, handleErrorVoid } from 'server/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushDelete, pushEndpointUpdate, pushesByEndpoint,

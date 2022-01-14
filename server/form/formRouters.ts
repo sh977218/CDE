@@ -2,7 +2,7 @@ import { CronJob } from 'cron';
 import { RequestHandler, Response, Router } from 'express';
 import { toInteger, round } from 'lodash';
 import { config, dbPlugins } from 'server';
-import { handleError, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import {
     viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,

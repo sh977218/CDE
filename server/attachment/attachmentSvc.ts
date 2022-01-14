@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as md5 from 'md5';
 import { config, dbPlugins, ObjectId } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { addFile, deleteFileById } from 'server/mongo/mongo/gfs';
 import { FileCreateInfo } from 'server/system/mongo-data';
 import { Attachable, AttachableDb } from 'shared/boundaryInterfaces/db/tags/attachableDb';

@@ -13,7 +13,7 @@ import {
 import { elasticsearch } from 'server/cde/elastic';
 import { getAuditLog } from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
 import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { respondHomeFull } from 'server/system/appRouters';

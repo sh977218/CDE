@@ -25,20 +25,6 @@ import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { WINDOW } from 'window.service';
 
-const TAB_COMMENT_MAP: any = {
-    general: 'general-details',
-    pv: 'permissible-values',
-    naming: 'naming',
-    classification: 'classification',
-    concepts: 'concepts',
-    reference_documents: 'reference-documents',
-    properties: 'properties',
-    identifiers: 'identifiers',
-    attachments: 'attachments',
-    history: 'history',
-    rules: 'rules',
-}
-
 @Component({
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',

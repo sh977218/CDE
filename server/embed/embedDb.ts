@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Document, Model } from 'mongoose';
 import { config } from 'server';
+import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { Embed } from 'shared/models.model';
 import { orderedList } from 'shared/regStatusShared';
@@ -9,8 +10,7 @@ addStringtype(mongoose);
 const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 
 const commonEmbedSchema = {
     nameLabel: StringType,

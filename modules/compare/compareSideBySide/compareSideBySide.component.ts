@@ -11,23 +11,35 @@ import * as _isArray from 'lodash/isArray';
 import * as _isEmpty from 'lodash/isEmpty';
 import * as _isEqual from 'lodash/isEqual';
 import { forkJoin } from 'rxjs';
-import { Cb, Item } from 'shared/models.model';
-import { FormElement, FormElementsContainer, FormQuestion } from 'shared/form/form.model';
+import {
+    Concept,
+    DataElement, DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
+    DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
+    DatatypeContainerValueList,
+    ValueDomainValueList
+} from 'shared/de/dataElement.model';
+import { Cb } from 'shared/models.model';
+import { CdeForm, FormElement, FormElementsContainer, FormQuestion, QuestionValueList } from 'shared/form/form.model';
+import { isDataElement, ITEM_MAP } from 'shared/item';
 
-interface CompareOption {
+export type CompareQuestion = FormQuestion & {isRetired?: boolean};
+export type CompareForm = CdeForm & {questions: CompareQuestion[]};
+export type CompareItem = DataElement | CompareForm;
+
+interface CompareOption<T> {
     displayAs: {
         data: Data[],
         display?: boolean,
         label: string,
         property: string,
     };
-    fullMatches: { left: any, right: any }[];
-    fullMatchFn: (a: any, b: any) => boolean;
-    leftNotMatches: { left: any, right: any }[];
-    notMatchFn: (a: any, b: any) => boolean;
-    partialMatches: { left: any, right: any, diff: {} }[];
-    partialMatchFn: (a: any, b: any) => string[];
-    rightNotMatches: { left: any, right: any }[];
+    fullMatches: { left: T, right: T }[];
+    fullMatchFn: (a: T, b: T) => boolean;
+    leftNotMatches: { left: T, right: T }[];
+    notMatchFn: (a: T, b: T) => boolean;
+    partialMatches: { left: T, right: T, diff: {} }[];
+    partialMatchFn: (a: T, b: T) => string[];
+    rightNotMatches: { left: T, right: T }[];
 }
 
 interface Data {
@@ -36,11 +48,6 @@ interface Data {
     property: string;
     url?: string;
 }
-
-const URL_MAP: { [module: string]: string } = {
-    cde: '/api/de/',
-    form: '/api/form/',
-};
 
 @Component({
     selector: 'cde-compare-side-by-side',
@@ -73,13 +80,13 @@ const URL_MAP: { [module: string]: string } = {
     `]
 })
 export class CompareSideBySideComponent {
-    @Input() elements: Item[] = [];
+    @Input() elements: CompareItem[] = [];
     @ViewChild('compareSideBySideContent', {static: true}) public compareSideBySideContent!: TemplateRef<any>;
-    options: CompareOption[] = [];
+    options: CompareOption<unknown>[] = [];
     leftUrl?: string;
     rightUrl?: string;
-    left: any;
-    right: any;
+    left?: CompareItem;
+    right?: CompareItem;
     canMergeForm = false;
     canMergeDataElement = false;
 
@@ -89,25 +96,23 @@ export class CompareSideBySideComponent {
                 public dialog: MatDialog) {
     }
 
-    doneMerge(event: { left: any, right: any }) {
-        this.left = event.left;
-        this.right = event.right;
-        this.doCompare(this.left, this.right, () => {
+    doneMerge(event: { left: CompareItem, right: CompareItem }) {
+        this.doCompare(this.left = event.left, this.right = event.right, () => {
         });
     }
 
-    doCompare(l: Item, r: Item, cb: Cb) {
-        const leftObservable = this.http.get(URL_MAP[l.elementType] + l.tinyId);
-        const rightObservable = this.http.get(URL_MAP[r.elementType] + r.tinyId);
-        forkJoin([leftObservable, rightObservable]).subscribe((results: [any, any]) => {
-            if (results[0].elementType === 'form') {
-                results[0].questions = this.flatFormQuestions(results[0]);
+    doCompare(l: CompareItem, r: CompareItem, cb: Cb) {
+        const leftObservable = this.http.get<CompareItem>(ITEM_MAP[l.elementType].api + l.tinyId);
+        const rightObservable = this.http.get<CompareItem>(ITEM_MAP[r.elementType].api + r.tinyId);
+        forkJoin([leftObservable, rightObservable]).subscribe((results) => {
+            this.left = results[0] as CompareItem;
+            this.right = results[1] as CompareItem;
+            if (!isDataElement(this.left)) {
+                this.left.questions = this.flatFormQuestions(this.left);
             }
-            if (results[1].elementType === 'form') {
-                results[1].questions = this.flatFormQuestions(results[1]);
+            if (!isDataElement(this.right)) {
+                this.right.questions = this.flatFormQuestions(this.right);
             }
-            this.left = results[0] as any;
-            this.right = results[1] as any;
             this.getOptions(this.left, this.right);
             this.options.forEach(option => {
                 let l = _get(this.left, option.displayAs.property);
@@ -131,8 +136,7 @@ export class CompareSideBySideComponent {
                     r = [r];
                 }
                 _intersectionWith(l, r, (a: any, b: any) => {
-                    const fullMatchFnMatchDiff = option.fullMatchFn(a, b);
-                    if (fullMatchFnMatchDiff) {
+                    if (option.fullMatchFn(a, b)) {
                         option.displayAs.display = true;
                         option.fullMatches.push({left: a, right: b});
                         return true;
@@ -158,8 +162,8 @@ export class CompareSideBySideComponent {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    flatFormQuestions(fe: FormElementsContainer): FormQuestion[] {
-        let questions: FormQuestion[] = [];
+    flatFormQuestions(fe: FormElementsContainer): CompareQuestion[] {
+        let questions: CompareQuestion[] = [];
         if (fe.formElements) {
             fe.formElements.forEach((e: FormElement) => {
                 if (e.elementType && e.elementType === 'question') {
@@ -174,8 +178,8 @@ export class CompareSideBySideComponent {
         return questions;
     }
 
-    getOptions(left: any, right: any) {
-        const commonOption: CompareOption[] = [
+    getOptions(left: CompareItem, right: CompareItem) {
+        const commonOption: CompareOption<any>[] = [
             {
                 displayAs: {
                     label: 'Steward',
@@ -189,7 +193,7 @@ export class CompareSideBySideComponent {
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['stewardOrg']['name']>,
             {
                 displayAs: {
                     label: 'Status',
@@ -203,7 +207,7 @@ export class CompareSideBySideComponent {
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['registrationState']['registrationStatus']>,
             {
                 displayAs: {
                     label: 'Designation',
@@ -213,9 +217,7 @@ export class CompareSideBySideComponent {
                         {label: 'Tags', property: 'tags'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a.designation, b.designation);
-                },
+                fullMatchFn: (a, b) => _isEqual(a.designation, b.designation),
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     const diff = [];
@@ -227,12 +229,10 @@ export class CompareSideBySideComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.designation, b.designation);
-                },
+                notMatchFn: (a, b) => _isEqual(a.designation, b.designation),
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['designations'][number]>,
             {
                 displayAs: {
                     label: 'Definition',
@@ -242,9 +242,7 @@ export class CompareSideBySideComponent {
                         {label: 'Tags', property: 'tags'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a.definition, b.definition);
-                },
+                fullMatchFn: (a, b) => _isEqual(a.definition, b.definition),
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     const diff = [];
@@ -256,12 +254,10 @@ export class CompareSideBySideComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.definition, b.definition);
-                },
+                notMatchFn: (a, b) => _isEqual(a.definition, b.definition),
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['definitions'][number]>,
             {
                 displayAs: {
                     label: 'Identifiers',
@@ -272,9 +268,7 @@ export class CompareSideBySideComponent {
                         {label: 'Version', property: 'version'}
                     ]
                 },
-                fullMatchFn: (a, b) => {
-                    return _isEqual(a.source, b.source) && _isEqual(a.id, b.id) && _isEqual(a.version, b.version);
-                },
+                fullMatchFn: (a, b) => _isEqual(a.source, b.source) && _isEqual(a.id, b.id) && _isEqual(a.version, b.version),
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     const diff = [];
@@ -292,7 +286,23 @@ export class CompareSideBySideComponent {
                 notMatchFn: (a, b) => _isEqual(a.source, b.source),
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['ids'][number]>,
+            {
+                displayAs: {
+                    label: 'Sources',
+                    property: 'sources',
+                    data: [
+                        {label: 'Name', property: 'sourceName'}
+                    ]
+                },
+                fullMatchFn: (a, b) => _isEqual(a.sourceName, b.sourceName),
+                fullMatches: [],
+                partialMatchFn: (a, b) => [],
+                partialMatches: [],
+                notMatchFn: (a, b) => _isEqual(a.sourceName, b.sourceName),
+                leftNotMatches: [],
+                rightNotMatches: []
+            } as CompareOption<CompareItem['sources'][number]>,
             {
                 displayAs: {
                     label: 'Reference Documents',
@@ -330,12 +340,10 @@ export class CompareSideBySideComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.document, b.document);
-                },
+                notMatchFn: (a, b) => _isEqual(a.document, b.document),
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<CompareItem['referenceDocuments'][number]>,
             {
                 displayAs: {
                     label: 'Properties',
@@ -362,15 +370,12 @@ export class CompareSideBySideComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => {
-                    return _isEqual(a.key, b.key);
-                },
+                notMatchFn: (a, b) => _isEqual(a.key, b.key),
                 leftNotMatches: [],
                 rightNotMatches: []
-            }
+            } as CompareOption<CompareItem['properties'][number]>
         ];
-
-        const dataElementOption: CompareOption[] = [
+        const dataElementOption: CompareOption<any>[] = [
             {
                 displayAs: {
                     label: 'Data Element Concept',
@@ -383,14 +388,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<Concept>,
             {
                 displayAs: {
                     label: 'Object Class Concept',
@@ -402,14 +405,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DataElement['objectClass']['concepts'][number]>,
             {
                 displayAs: {
                     label: 'Property Concept',
@@ -421,14 +422,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DataElement['property']['concepts'][number]>,
             {
                 displayAs: {
                     label: 'Unit of Measure',
@@ -439,14 +438,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DataElement['valueDomain']['uom']>,
             {
                 displayAs: {
                     label: 'Data Type',
@@ -457,14 +454,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DataElement['valueDomain']['datatype']>,
             {
                 displayAs: {
                     label: 'Data Type Value List',
@@ -475,14 +470,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerValueList['datatypeValueList']>,
             {
                 displayAs: {
                     label: 'Permissible Values',
@@ -496,14 +489,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<ValueDomainValueList['permissibleValues'][number]>,
             {
                 displayAs: {
                     label: 'Data Type Number',
@@ -516,14 +507,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerNumber['datatypeNumber']>,
             {
                 displayAs: {
                     label: 'Data Type Text',
@@ -537,14 +526,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerText['datatypeText']>,
             {
                 displayAs: {
                     label: 'Data Type Date',
@@ -555,14 +542,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerDate['datatypeDate']>,
             {
                 displayAs: {
                     label: 'Data Type Code',
@@ -573,14 +558,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerDynamicList['datatypeDynamicCodeList']>,
             {
                 displayAs: {
                     label: 'Data Type Time',
@@ -591,14 +574,12 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            },
+            } as CompareOption<DatatypeContainerTime['datatypeTime']>,
             {
                 displayAs: {
                     label: 'Data Type Externally Defined',
@@ -611,16 +592,14 @@ export class CompareSideBySideComponent {
                 },
                 fullMatchFn: _isEqual,
                 fullMatches: [],
-                partialMatchFn: () => {
-                    return [];
-                },
+                partialMatchFn: () => [],
                 partialMatches: [],
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            }
+            } as CompareOption<DatatypeContainerExternal['datatypeExternallyDefined']>
         ];
-        const formOption: CompareOption[] = [
+        const formOption: CompareOption<any>[] = [
             {
                 displayAs: {
                     label: 'Questions',
@@ -651,7 +630,7 @@ export class CompareSideBySideComponent {
                         if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
                             diff.push('question.unitsOfMeasure');
                         }
-                        if (!_isEqual(a.question.answers, b.question.answers)) {
+                        if (!_isEqual((a.question as QuestionValueList).answers, (b.question as QuestionValueList).answers)) {
                             diff.push('question.answers');
                         }
                     }
@@ -661,20 +640,18 @@ export class CompareSideBySideComponent {
                 notMatchFn: _isEqual,
                 leftNotMatches: [],
                 rightNotMatches: []
-            }
+            } as CompareOption<CompareForm['questions'][number]>
         ];
         let isDataElement = false;
         let isForm = false;
+        this.leftUrl = ITEM_MAP[left.elementType].view + left.tinyId;
+        this.rightUrl = ITEM_MAP[right.elementType].view + right.tinyId;
         if (left.elementType === 'cde' && right.elementType === 'cde') {
             this.options = commonOption.concat(dataElementOption);
-            this.leftUrl = 'deView?tinyId=' + left.tinyId;
-            this.rightUrl = 'deView?tinyId=' + right.tinyId;
             isDataElement = true;
         }
         if (left.elementType === 'form' && right.elementType === 'form') {
             this.options = commonOption.concat(formOption);
-            this.leftUrl = 'formView?tinyId=' + left.tinyId;
-            this.rightUrl = 'formView?tinyId=' + right.tinyId;
             isForm = true;
         }
         this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&

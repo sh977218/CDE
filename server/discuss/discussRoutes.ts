@@ -4,7 +4,7 @@ import { moduleToDbName } from 'server/dbPlugins';
 import {
     byEltId, byId, byReplyId, CommentDocument, CommentReply, orgCommentsByCriteria, save
 } from 'server/discuss/discussDb';
-import { handleNotFound, handleError, respondError } from 'server/errorHandler/errorHandler';
+import { handleNotFound, handleError, respondError } from 'server/errorHandler';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { notifyForComment } from 'server/system/adminItemSvc';
 import { ioServer } from 'server/system/ioServer';

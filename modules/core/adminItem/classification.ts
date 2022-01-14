@@ -1,10 +1,11 @@
-import { unionWith } from 'lodash';
+import * as _unionWith from 'lodash/unionWith';
 import { addCategory, findSteward } from 'shared/classification/classificationShared';
-import { ClassificationElement, Item } from 'shared/models.model';
+import { ClassificationElement, Elt, Item } from 'shared/models.model';
 import {
     attachmentComparator, dataSetComparator, definitionComparator, derivationRuleComparator, designationComparator,
     idComparator, propertyComparator, referenceDocumentComparator, sourceComparator
 } from 'shared/util';
+import { DataElement } from 'shared/de/dataElement.model';
 
 export function classifyItem(item: Item, orgName: string, classifPath: string[]): void {
     let steward = findSteward(item, orgName);
@@ -52,38 +53,38 @@ export function flattenClassification(elt: Item): string[] {
     return result;
 }
 
-export function mergeArrayByDesignations(eltFrom: any, eltTo: any) {
-    eltTo.designations = unionWith(eltTo.designations, eltFrom.designations, designationComparator);
+export function mergeArrayByDesignations(eltFrom: Elt, eltTo: Elt) {
+    eltTo.designations = _unionWith(eltTo.designations, eltFrom.designations, designationComparator);
 }
 
-export function mergeArrayByDefinitions(eltFrom: any, eltTo: any) {
-    eltTo.definitions = unionWith(eltTo.definitions, eltFrom.definitions, definitionComparator);
+export function mergeArrayByDefinitions(eltFrom: Elt, eltTo: Elt) {
+    eltTo.definitions = _unionWith(eltTo.definitions, eltFrom.definitions, definitionComparator);
 }
 
-export function mergeArrayByReferenceDocuments(eltFrom: any, eltTo: any) {
-    eltTo.referenceDocuments = unionWith(eltTo.referenceDocuments, eltFrom.referenceDocuments, referenceDocumentComparator);
+export function mergeArrayByReferenceDocuments(eltFrom: Elt, eltTo: Elt) {
+    eltTo.referenceDocuments = _unionWith(eltTo.referenceDocuments, eltFrom.referenceDocuments, referenceDocumentComparator);
 }
 
-export function mergeArrayByProperties(eltFrom: any, eltTo: any) {
-    eltTo.properties = unionWith(eltTo.properties, eltFrom.properties, propertyComparator);
+export function mergeArrayByProperties(eltFrom: Elt, eltTo: Elt) {
+    eltTo.properties = _unionWith(eltTo.properties, eltFrom.properties, propertyComparator);
 }
 
-export function mergeArrayByIds(eltFrom: any, eltTo: any) {
-    eltTo.ids = unionWith(eltTo.ids, eltFrom.ids, idComparator);
+export function mergeArrayByIds(eltFrom: Elt, eltTo: Elt) {
+    eltTo.ids = _unionWith(eltTo.ids, eltFrom.ids, idComparator);
 }
 
-export function mergeArrayByAttachments(eltFrom: any, eltTo: any) {
-    eltTo.attachments = unionWith(eltTo.attachments, eltFrom.attachments, attachmentComparator);
+export function mergeArrayByAttachments(eltFrom: Elt, eltTo: Elt) {
+    eltTo.attachments = _unionWith(eltTo.attachments, eltFrom.attachments, attachmentComparator);
 }
 
-export function mergeArrayByDataSets(eltFrom: any, eltTo: any) {
-    eltTo.dataSets = unionWith(eltTo.dataSets, eltFrom.dataSets, dataSetComparator);
+export function mergeArrayByDataSets(eltFrom: DataElement, eltTo: DataElement) {
+    eltTo.dataSets = _unionWith(eltTo.dataSets, eltFrom.dataSets, dataSetComparator);
 }
 
-export function mergeArrayByDerivationRules(eltFrom: any, eltTo: any) {
-    eltTo.derivationRules = unionWith(eltTo.derivationRules, eltFrom.derivationRules, derivationRuleComparator);
+export function mergeArrayByDerivationRules(eltFrom: DataElement, eltTo: DataElement) {
+    eltTo.derivationRules = _unionWith(eltTo.derivationRules, eltFrom.derivationRules, derivationRuleComparator);
 }
 
-export function mergeArrayBySources(eltFrom: any, eltTo: any) {
-    eltTo.sources = unionWith(eltTo.sources, eltFrom.sources, sourceComparator);
+export function mergeArrayBySources(eltFrom: Elt, eltTo: Elt) {
+    eltTo.sources = _unionWith(eltTo.sources, eltFrom.sources, sourceComparator);
 }

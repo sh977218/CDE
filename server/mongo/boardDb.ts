@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
 import { BoardDocument, boardModel } from 'server/mongo/mongoose/board.mongoose';
 import { BoardDb } from 'shared/boundaryInterfaces/db/boardDb';

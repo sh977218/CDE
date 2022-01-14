@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
+import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
+import { doMerge } from 'compare/mergeDe.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { DeMergeFields } from './deMergeFields.model';
-import { MergeDeService } from '../mergeDe.service';
 
 @Component({
     selector: 'cde-merge-data-element',
@@ -31,10 +31,11 @@ export class MergeDataElementComponent {
         sources: false
     };
 
-    constructor(public dialog: MatDialog,
-                private alert: AlertService,
-                public isAllowedModel: IsAllowedService,
-                public mergeDeService: MergeDeService) {
+    constructor(
+        private alert: AlertService,
+        public isAllowedModel: IsAllowedService,
+        public dialog: MatDialog,
+    ) {
     }
 
     allowToMerge() {
@@ -84,9 +85,7 @@ export class MergeDataElementComponent {
     }
 
     doMerge() {
-        const tinyIdFrom = this.source.tinyId;
-        const tinyIdTo = this.destination.tinyId;
-        this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, this.mergeFields).then(res => {
+        doMerge(this.source.tinyId, this.destination.tinyId, this.mergeFields).then(res => {
             this.alert.addAlert('success', 'Finished merging');
             this.doneMerge.emit(res);
             this.dialogRef?.close();

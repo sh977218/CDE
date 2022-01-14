@@ -2,7 +2,7 @@ import { renderFile } from 'ejs';
 import { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import * as md5 from 'md5';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler';
 import { addFile } from 'server/mongo/mongo/gfs';
 import { CdeForm } from 'shared/form/form.model';
 import { Readable } from 'stream';

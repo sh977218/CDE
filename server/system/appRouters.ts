@@ -4,7 +4,7 @@ import * as csrf from 'csurf';
 import { Request, Response, Router } from 'express';
 import { existsSync, writeFileSync } from 'fs';
 import { config } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { getFile, gfs } from 'server/mongo/mongo/gfs';
 import { isSearchEngine } from 'server/system/helper';
 import { version } from 'server/version';

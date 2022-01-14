@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler';
 import { Document, Model } from 'mongoose';
 import { Cb1, CbError1 } from 'shared/models.model';
 

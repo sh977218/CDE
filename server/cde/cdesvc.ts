@@ -10,15 +10,16 @@ import {
     originalSourceByTinyIdSourceName as deOriginalSourceByTinyIdSourceName,
     update, findModifiedElementsSince, derivationByInputs
 } from 'server/cde/mongo-cde';
-import { handleError, handleErrorVoid, handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
 import { addCdeToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
+import { DataElement } from 'shared/de/dataElement.model';
+import { UpdateEltOptions } from 'shared/de/updateEltOptions';
+import { stripBsonIdsElt } from 'shared/exportShared';
 import { PermissibleValue, User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
-import { stripBsonIdsElt } from 'shared/exportShared';
-import { DataElement } from 'shared/de/dataElement.model';
 
 const js2xml = require('js2xmlparser');
 
@@ -100,27 +101,27 @@ export function byTinyIdAndVersion(req: Request, res: Response): Promise<Respons
         }, respondError({req, res}));
 }
 
-export function draftForEditByTinyId(req: Request, res: Response) { // WORKAROUND: send empty instead of 404 because angular litters console
-    const handlerOptions = {req, res};
+export function draftForEditByTinyId(req: Request, res: Response): Promise<Response> {
     const tinyId = req.params.tinyId;
     return dbPlugins.dataElement.byTinyId(tinyId)
         .then(elt => {
             if (!elt || !canEditCuratedItem(req.user, elt)) {
-                return res.send();
+                return res.send();  // WORKAROUND: send empty instead of 404 because angular litters console
             }
-            (function getDraft() {
-                deDraftByTinyId(tinyId, handleError(handlerOptions, draft => {
+            return (function getDraft(): Promise<Response> {
+                return deDraftByTinyId(tinyId).then(draft => {
                     if (!draft) {
                         return res.send();
                     }
                     if (elt._id.toString() !== draft._id.toString()) {
-                        deDraftDelete(tinyId).then(getDraft, respondError(handlerOptions));
-                        return respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
+                        respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
+                        return deDraftDelete(tinyId).then(getDraft);
                     }
-                    res.send(draft);
-                }));
+                    return res.send(draft);
+                });
             })();
-        }, respondError(handlerOptions));
+        })
+        .catch(respondError({req, res}));
 }
 
 export function draftSave(req: RequestWithItem, res: Response) {
@@ -163,44 +164,51 @@ export function create(req: Request, res: Response) {
     deCreate(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 }
 
-function publish(req: RequestWithItem, res: Response, draft: DataElementDraft, options = {}) {
-    const handlerOptions = {req, res};
+function publish(req: RequestWithItem, res: Response, draft: DataElementDraft, options: UpdateEltOptions = {}): Promise<Response> {
     if (!draft) {
-        return res.status(400).send();
+        return Promise.resolve(res.status(400).send());
     }
     const eltToArchive = req.item;
-    orgByName(eltToArchive.stewardOrg.name).then(org => {
+    return orgByName(eltToArchive.stewardOrg.name).then(org => {
         if (!org) {
             return res.status(404).send();
         }
         if (badWorkingGroupStatus(eltToArchive, org)) {
             return res.status(403).send();
         }
-        update(draft, req.user, options, handleError(handlerOptions, doc => {
-            deDraftDelete(draft.tinyId).then(() => res.send(doc), respondError(handlerOptions));
-        }));
-    }, respondError(handlerOptions));
+        return update(draft, req.user, options).then(doc =>
+            deDraftDelete(draft.tinyId).then(() =>
+                res.send(doc)
+            )
+        );
+    })
+        .catch(respondError({req, res}));
 }
 
-export function publishFromDraft(req: Request, res: Response) {
-    deDraftById(req.body._id, handleNotFound({req, res}, draft => {
+export function publishFromDraft(req: Request, res: Response): Promise<Response> {
+    return deDraftById(req.body._id).then(draft => {
+        /* istanbul ignore if */
+        if (!draft) {
+            return res.status(404).send();
+        }
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
-        publish(req, res, draft.toObject(), {
-            updateAttachments: true,
-            classification: true
-        });
-    }));
+        return publish(req, res, draft.toObject());
+    }, respondError({req, res}));
 }
 
 export function publishExternal(req: Request, res: Response) {
-    deDraftById(req.body._id, handleError({req, res}, draft => {
+    const de: DataElement = req.body;
+    return deDraftById(de._id).then(draft => {
         if (draft) {
             return res.status(400).send('Publishing would override an existing draft. Address the draft first.');
         }
-        publish(req, res, req.body);
-    }));
+        return publish(req, res, de, {
+            updateAttachments: true,
+            updateSource: true
+        });
+    }, respondError({req, res}));
 }
 
 export function viewHistory(req: Request, res: Response): Promise<Response> {

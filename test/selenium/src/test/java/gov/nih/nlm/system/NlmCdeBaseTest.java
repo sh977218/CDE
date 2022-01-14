@@ -291,8 +291,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'check']"));
     }
 
+    protected void dtPropertyValueContains(String dtXpath, String title, String value) {
+        findElement(By.xpath(dtXpath + "[contains(.,'" + title + "')]/following-sibling::dd[1][contains(.,'" + value + "')]"));
+    }
+
     protected void generalDetailsPropertyValueContains(String title, String value) {
-        findElement(By.xpath(xpathGeneralDetailsProperty() + "[contains(.,'" + title + "')]/following-sibling::dd[1][contains(.,'" + value + "')]"));
+        dtPropertyValueContains(xpathGeneralDetailsProperty(), title, value);
+    }
+
+    protected void sourcesPropertyValueContains(String title, String value) {
+        dtPropertyValueContains(xpathSourcesProperty(), title, value);
     }
 
     protected void goToUserMenu() {
@@ -1896,7 +1904,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected String xpathGeneralDetailsProperty() {
-        return "//cde-form-general-details/dl/dt";
+        return "//dl[@id='general-details']/dt";
+    }
+
+    protected String xpathSourcesProperty() {
+        return "//cde-admin-item-sources//dl/dt";
     }
 
 }

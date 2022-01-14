@@ -8,7 +8,7 @@
         <div class="col-lg-12">
             <div class=" mb-3 pull-right">
                 <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
-                <cde-compare-side-by-side [(elements)]="elts"></cde-compare-side-by-side>
+                <cde-compare-side-by-side [elements]="elts"></cde-compare-side-by-side>
                 <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown mr-1 pull-left">
                     <button mat-raised-button type="button" id="export" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false">

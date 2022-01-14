@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { handleNotFound, handleError } from 'server/errorHandler/errorHandler';
+import { handleNotFound, handleError } from 'server/errorHandler';
 import { formModel } from 'server/form/mongo-form';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,  orgEditors as userOrgEditors, userById, userByName } from 'server/user/userDb';

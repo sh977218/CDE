@@ -2,7 +2,7 @@ import { noop } from 'lodash';
 import { Document, Model } from 'mongoose';
 import { ObjectId } from 'server';
 import { byEltId as discussByEltId, CommentReply } from 'server/discuss/discussDb';
-import { handleError, handleNotFound, HandlerOptions } from 'server/errorHandler/errorHandler';
+import { handleError, handleNotFound, HandlerOptions } from 'server/errorHandler';
 import { typeToCriteria } from 'server/notification/notificationSvc';
 import { pushRegistrationSubscribersByUsers, triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { find as userFind, updateUser } from 'server/user/userDb';

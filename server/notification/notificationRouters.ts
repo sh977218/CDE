@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleError } from 'server/errorHandler';
 import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/notification/pushNotificationSvc';
 import { isSiteAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { RequestHandler } from 'express';

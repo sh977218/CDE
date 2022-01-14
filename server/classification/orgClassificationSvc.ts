@@ -2,7 +2,7 @@ import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
 import { PipelineStage } from 'mongoose';
 import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';

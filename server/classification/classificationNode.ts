@@ -1,6 +1,6 @@
 import { Request, RequestHandler, Response } from 'express';
 import { dbPlugins } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';

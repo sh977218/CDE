@@ -4,7 +4,8 @@ import { AlertService } from 'alert/alert.service';
 import * as _isEqual from 'lodash/isEqual';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material/dialog';
-import { FormQuestionDraft, Question } from 'shared/form/form.model';
+import { FormQuestionDraft } from 'shared/form/form.model';
+import { ITEM_MAP } from 'shared/item';
 import { Cb, Item } from 'shared/models.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -63,11 +64,7 @@ export class SaveModalComponent {
         if (!newVersion) {
             newVersion = this.elt.version;
         }
-        let url = '/api/de/' + this.elt.tinyId + '/latestVersion/';
-        if (this.elt.elementType === 'form') {
-            url = '/api/form/' + this.elt.tinyId + '/latestVersion/';
-        }
-        this.http.get(url, {responseType: 'text'}).subscribe(
+        this.http.get(ITEM_MAP[this.elt.elementType].api + this.elt.tinyId + '/latestVersion/', {responseType: 'text'}).subscribe(
             (res: string) => {
                 if (res && newVersion && _isEqual(res, newVersion)) {
                     this.duplicatedVersion = true;

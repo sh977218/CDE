@@ -21,7 +21,7 @@ function getJwt(): Promise<string> {
         headers: {'Content-type': 'application/json'},
         body: `apikey=${config.uts.apikey}`
     }).then(res => {
-        const bearer = res.headers.raw()['authorization'][0];
+        const bearer = res.headers.raw().authorization[0];
         if (!bearer.startsWith('Bearer ')) {
             throw 'vsac not logged in';
         }
@@ -37,7 +37,7 @@ function optionJwt(jwt: string) {
 function getRevision(oid: string, uri: string): Promise<string> {
     return getJwt()
         .then(jwt => fetch(`${config.vsac.host}/vsac/pc/vs/valueset/${oid}/detail?label=Latest`, optionJwt(jwt)))
-        .then(json)
+        .then<any>(json)
         .then(
             body => body.revision,
             handleReject('get revision ERROR')

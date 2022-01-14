@@ -5,7 +5,7 @@ import { noop } from 'lodash';
 import { QueryCursor } from 'mongoose';
 import fetch from 'node-fetch';
 import { config, dbPlugins } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { consoleLog, logError } from 'server/log/dbLogger';
 import { BoardDocument, getStream as boardStream } from 'server/mongo/mongoose/board.mongoose';
 import { DataElementDocument, getStream as dataElementStream } from 'server/mongo/mongoose/dataElement.mongoose';
@@ -142,7 +142,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                     body: req,
                 })
                     .then(handleErrors)
-                    .then(json)
+                    .then<{errors: boolean, err: string}>(json)
                     .then(body => {
                         if (body.errors) {
                             errorHandler(body.err);

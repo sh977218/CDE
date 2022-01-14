@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 
 addStringtype(mongoose);
@@ -28,7 +28,7 @@ export const boardSchema = new Schema({
     pins: [pinSchema],
     users: [{
         username: StringType,
-        role: {type: StringType, default: 'viewer', enum: ['viewer']},
+        role: {type: StringType, default: 'viewer', enum: ['viewer']}, // ??? 'reviewer'
         lastViewed: Date,
     }],
 }, {

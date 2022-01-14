@@ -16,7 +16,7 @@ export function handleErrors(res: Response): Response {
     return res;
 }
 
-export function json(res: Response): Promise<any> {
+export function json<T>(res: Response): Promise<T> {
     return res.json();
 }
 

@@ -147,8 +147,7 @@
                 <div class="row">
                     <ng-container *ngIf="mergeFields.questions">
                         <div class="col-6 no-left-right-padding no-left-right-margin" id="dropArea">
-                            <cde-sortable [left]="source" [right]="destination"
-                                          [mergeFields]="mergeFields"></cde-sortable>
+                            <cde-sortable [left]="source" [right]="destination" [mergeFields]="mergeFields"></cde-sortable>
                         </div>
                         <div class="col-6 no-left-right-padding no-left-right-margin">
                             <div *ngFor="let rightQuestion of destination.questions; let i = index"

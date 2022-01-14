@@ -181,7 +181,7 @@ export class DataSource {
     imported?: Date;
     registrationStatus?: string;
     administrativeStatus?: string;
-    sourceName?: string;
+    sourceName!: string;
     updated?: Date;
 }
 

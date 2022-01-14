@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { FormQuestion, FormSection, Question } from 'shared/form/form.model';
 import { DataElement } from 'shared/de/dataElement.model';
+import { ITEM_MAP } from 'shared/item';
 import { Designation } from 'shared/models.model';
 
 export interface SelectQuestionLabelData {
@@ -33,7 +34,7 @@ export class SelectQuestionLabelComponent {
             this.dialogRef.close();
             return;
         }
-        let url = '/api/de/' + this.question.cde.tinyId;
+        let url = ITEM_MAP.cde.api + this.question.cde.tinyId;
         if (this.question.cde.version) {
             url += '/version/' + this.question.cde.version;
         }

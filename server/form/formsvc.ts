@@ -10,7 +10,7 @@ import {
     originalSourceByTinyIdSourceName as formOriginalSourceByTinyIdSourceName, update,
     CdeFormDraft
 } from 'server/form/mongo-form';
-import { splitError, handleError, handleNotFound, respondError, handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { getFormNih } from 'server/form/nihForm';
 import { getFormOdm } from 'server/form/odmForm';
 import { getFormForPublishing } from 'server/form/publishForm';
@@ -19,11 +19,13 @@ import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
 import { addFormToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
+import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { CbError1, User } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
+import { promisify } from 'util';
 
 const ajv = new Ajv({schemaId: 'auto'}); // current FHIR schema uses legacy JSON Schema version 4
 ajv.addMetaSchema(require('ajv/lib/refs/json-schema-draft-04.json'));
@@ -150,6 +152,7 @@ export function byId(req: Request, res: Response) {
 export function priorForms(req: Request, res: Response) {
     const id = req.params.id;
     return dbPlugins.form.byId(id).then(form => {
+        /* istanbul ignore if */
         if (!form) {
             return res.status(404).send();
         }
@@ -214,29 +217,30 @@ export function byTinyIdAndVersion(req: Request, res: Response) {
         }, respondError({req, res}));
 }
 
-export function draftForEditByTinyId(req: Request, res: Response) { // WORKAROUND: send empty instead of 404 because angular litters console
-    const handlerOptions = {req, res};
+export function draftForEditByTinyId(req: Request, res: Response): Promise<Response> {
     const tinyId = req.params.tinyId;
-    return dbPlugins.form.byTinyId(tinyId).then(elt => {
-        if (!elt || !canEditCuratedItem(req.user, elt)) {
-            return res.send();
-        }
-        (function getDraft() {
-            draftByTinyId(tinyId, handleError(handlerOptions, draft => {
-                if (!draft) {
-                    return res.send();
-                }
-                /* istanbul ignore if */
-                if (elt._id.toString() !== draft._id.toString()) {
-                    draftDelete(req);
-                    return respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
-                }
-                fetchWholeFormOutdated(draft.toObject(), handleError(handlerOptions, wholeForm =>
-                    res.send(wholeForm)
-                ));
-            }));
-        })();
-    }, respondError({req, res}));
+    return dbPlugins.form.byTinyId(tinyId)
+        .then(elt => {
+            if (!elt || !canEditCuratedItem(req.user, elt)) {
+                return res.send(); // WORKAROUND: send empty instead of 404 because angular litters console
+            }
+            return (function getDraft(): Promise<Response> {
+                return draftByTinyId(tinyId).then(draft => {
+                    if (!draft) {
+                        return res.send();
+                    }
+                    /* istanbul ignore if */
+                    if (elt._id.toString() !== draft._id.toString()) {
+                        respondError(new Error('Concurrency Error: Draft of prior elt should not exist'));
+                        return formDraftDelete(tinyId).then(getDraft);
+                    }
+                    return promisify(fetchWholeFormOutdated)(draft.toObject()).then(wholeForm =>
+                        res.send(wholeForm)
+                    );
+                });
+            })();
+        })
+        .catch(respondError({req, res}));
 }
 
 export function forEditById(req: Request, res: Response) {
@@ -300,9 +304,8 @@ export function draftSave(req: RequestWithItem, res: Response) {
     }));
 }
 
-export function draftDelete(req: Request, res?: Response) {
-    const tinyId = req.params.tinyId;
-    formDraftDelete(tinyId).then(() => res && res.send(), respondError({req, res}));
+export function draftDelete(req: Request, res?: Response): Promise<Response | undefined | void> {
+    return formDraftDelete(req.params.tinyId).then(() => res && res.send(), respondError({req, res}));
 }
 
 export function byTinyIdList(req: Request, res: Response): Promise<Response> {
@@ -346,48 +349,57 @@ export function create(req: Request, res: Response) {
     formCreate(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
 }
 
-function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, options = {}) {
-    const handlerOptions = {req, res};
+function publish(req: RequestWithItem, res: Response, draft: CdeFormDraft, options: UpdateEltOptions = {}): Promise<Response> {
     /* istanbul ignore if */
     if (!draft) {
-        return res.status(400).send();
+        return Promise.resolve(res.status(400).send());
     }
     const eltToArchive = req.item;
-    orgByName(eltToArchive.stewardOrg.name).then(org => {
-        if (!org) {
-            return res.status(404).send();
-        }
-        if (badWorkingGroupStatus(eltToArchive, org)) {
-            return res.status(403).send();
-        }
-        trimWholeForm(draft);
-        update(draft, req.user, options, handleNotFound(handlerOptions, doc => {
-            formDraftDelete(draft.tinyId).then(() => res.send(doc), respondError(handlerOptions));
-        }));
-    }, respondError(handlerOptions));
+    return orgByName(eltToArchive.stewardOrg.name)
+        .then(org => {
+            if (!org) {
+                return res.status(404).send();
+            }
+            if (badWorkingGroupStatus(eltToArchive, org)) {
+                return res.status(403).send();
+            }
+            trimWholeForm(draft);
+            return update(draft, req.user, options).then(doc => {
+                /* istanbul ignore if */
+                if (!doc) {
+                    return res.status(404).send();
+                }
+                return formDraftDelete(draft.tinyId).then(() => res.send(doc));
+            });
+        })
+        .catch(respondError({req, res}));
 }
 
-export function publishFromDraft(req: RequestWithItem, res: Response) {
-    draftById(req.body._id, handleNotFound({req, res}, draft => {
+export function publishFromDraft(req: RequestWithItem, res: Response): Promise<Response> {
+    return draftById(req.body._id).then(draft => {
+        /* istanbul ignore if */
+        if (!draft) {
+            return res.status(404).send();
+        }
         /* istanbul ignore if */
         if (draft.__v !== req.body.__v) {
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
-        publish(req, res, draft.toObject(), {
-            updateAttachments: true,
-            classification: true
-        });
-    }));
+        return publish(req, res, draft.toObject());
+    }, respondError({req, res}));
 }
 
-export function publishExternal(req: RequestWithItem, res: Response) {
-    draftById(req.body._id, handleError({req, res}, draft => {
+export function publishExternal(req: RequestWithItem, res: Response): Promise<Response> {
+    return draftById(req.body._id).then(draft => {
         /* istanbul ignore if */
         if (draft) {
             return res.status(400).send('Publishing would override an existing draft. Address the draft first.');
         }
-        publish(req, res, req.body);
-    }));
+        return publish(req, res, req.body, {
+            updateAttachments: true,
+            updateSource: true
+        });
+    }, respondError({req, res}));
 }
 
 export function originalSourceByTinyIdSourceName(req: Request, res: Response) {

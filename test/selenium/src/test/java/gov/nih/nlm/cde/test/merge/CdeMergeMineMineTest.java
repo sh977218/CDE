@@ -50,6 +50,8 @@ public class CdeMergeMineMineTest extends BoardTest {
         textPresent("NLM CDE Dev Team Test");
         textPresent("All Candidates");
         textPresent("caBIG");
+        sourcesPropertyValueContains("Name:", "caDSR");
+        sourcesPropertyValueContains("Name:", "NCI");
     }
 
     @Test(dependsOnMethods={"cdeMergeMineMine"})

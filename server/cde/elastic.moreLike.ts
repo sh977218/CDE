@@ -1,5 +1,5 @@
 import { config } from 'server';
-import { handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleNotFound } from 'server/errorHandler';
 import { esClient } from 'server/system/elastic';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { Cb1, ElasticQueryResponse } from 'shared/models.model';

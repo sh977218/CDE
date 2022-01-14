@@ -4,7 +4,7 @@ import { config, dbPlugins } from 'server';
 import { boardRefresh, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { moduleItemToDbName } from 'server/dbPlugins';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';

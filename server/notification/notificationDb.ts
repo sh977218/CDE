@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 import { config, ObjectId } from 'server';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { PushRegistration, PushRegistrationDocument } from 'server/system/mongo-data';
 import { addStringtype } from 'server/system/mongoose-stringtype';

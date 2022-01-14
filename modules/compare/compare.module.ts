@@ -16,7 +16,6 @@ import { CompareItemComponent } from 'compare/compareItem/compareItem.component'
 import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
-import { MergeDeService } from 'compare/mergeDe.service';
 import { MergeFormService } from 'compare/mergeForm.service';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 
@@ -43,7 +42,7 @@ import { SortableModule } from 'ngx-bootstrap/sortable';
         MergeDataElementComponent,
         MergeFormComponent,
     ],
-    providers: [MergeDeService, MergeFormService],
+    providers: [MergeFormService],
     exports: [
         CompareSideBySideComponent,
         CompareItemArrayComponent,

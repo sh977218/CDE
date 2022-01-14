@@ -5,7 +5,7 @@ import { GridFSFile } from 'mongodb';
 import { QueryCursor } from 'mongoose';
 import { authenticate } from 'passport';
 import { config, ObjectId } from 'server';
-import { handleError, respondError } from 'server/errorHandler/errorHandler';
+import { handleError, respondError } from 'server/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';

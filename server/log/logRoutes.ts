@@ -1,5 +1,5 @@
 import { RequestHandler, Router } from 'express';
-import { handleError, handleNotFound } from 'server/errorHandler/errorHandler';
+import { handleError, handleNotFound } from 'server/errorHandler';
 import {
     appLogs, getClientErrors, getServerErrors, httpLogs, logClientError, usageByDay
 } from 'server/log/dbLogger';

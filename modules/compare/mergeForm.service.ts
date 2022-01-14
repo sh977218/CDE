@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MergeDeService } from 'compare/mergeDe.service';
+import { doMerge as deDoMerge } from 'compare/mergeDe.service';
 import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 import {
     mergeArrayByDefinitions, mergeArrayByDesignations, mergeArrayByIds, mergeArrayByProperties, mergeArrayByReferenceDocuments
 } from 'core/adminItem/classification';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { transferClassifications } from 'shared/classification/classificationShared';
-import { CdeForm } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
+import { CompareForm, CompareQuestion } from 'compare/compareSideBySide/compareSideBySide.component';
 
 @Injectable()
 export class MergeFormService {
@@ -16,13 +16,14 @@ export class MergeFormService {
     maxNumberQuestions!: number;
     numMergedQuestions!: number;
 
-    constructor(private http: HttpClient,
-                public isAllowedModel: IsAllowedService,
-                private mergeDeService: MergeDeService) {
+    constructor(
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService
+    ) {
     }
 
-    saveForm(form: CdeForm, cb: CbErr1<CdeForm | void>) {
-        this.http.post<CdeForm>('/server/form/publishExternal', form).subscribe(
+    saveForm(form: CompareForm, cb: CbErr1<CompareForm | void>) {
+        this.http.post<CompareForm>('/server/form/publishExternal', form).subscribe(
             data => {
                 cb(undefined, data);
             },
@@ -32,7 +33,7 @@ export class MergeFormService {
         );
     }
 
-    private async mergeQuestions(questionsFrom: any, questionsTo: any, fields: FormMergeFields) {
+    private async mergeQuestions(questionsFrom: CompareQuestion[], questionsTo: CompareQuestion[], fields: FormMergeFields) {
         this.numMergedQuestions = 0;
         this.maxNumberQuestions = questionsFrom.length;
         for (let i = 0; i < questionsFrom.length; i++) {
@@ -40,14 +41,14 @@ export class MergeFormService {
             const questionTo = questionsTo[i];
             const tinyIdFrom = questionFrom.question.cde.tinyId;
             const tinyIdTo = questionTo.question.cde.tinyId;
-            await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
+            await deDoMerge(tinyIdFrom, tinyIdTo, fields.cde);
             questionFrom.isRetired = true;
             this.numMergedQuestions++;
         }
 
     }
 
-    async doMerge(mergeFrom: any, mergeTo: any, fields: FormMergeFields) {
+    async doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: FormMergeFields) {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
             throw new Error('number of question on left is not same on right.');
         } else {
@@ -75,7 +76,7 @@ export class MergeFormService {
         }
     }
 
-    validateQuestions(left: any, right: any, fields: FormMergeFields) {
+    validateQuestions(left: CompareForm, right: CompareForm, fields: FormMergeFields) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);

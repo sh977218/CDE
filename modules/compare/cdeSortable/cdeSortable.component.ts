@@ -1,7 +1,8 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { SortableComponent } from 'ngx-bootstrap/sortable';
-import { FormMergeFields } from '../mergeForm/formMergeFields.model';
-import { MergeFormService } from '../mergeForm.service';
+import { CompareForm } from 'compare/compareSideBySide/compareSideBySide.component';
+import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
+import { MergeFormService } from 'compare/mergeForm.service';
 
 @Component({
     selector: 'cde-sortable',
@@ -26,8 +27,8 @@ import { MergeFormService } from '../mergeForm.service';
     `]
 })
 export class CdeSortableComponent {
-    @Input() left!: any;
-    @Input() right!: any;
+    @Input() left!: CompareForm;
+    @Input() right!: CompareForm;
     @Input() mergeFields!: FormMergeFields;
     @ViewChild('sortableComponent', {static: true}) sortableComponent!: SortableComponent;
 
@@ -39,7 +40,7 @@ export class CdeSortableComponent {
             elementType: 'question',
             formElements: [],
             question: {
-                cde: {tinyId: '', name: '', definitions: [], derivationRules: [], designations: [], ids: []},
+                cde: {tinyId: '', name: '', derivationRules: [], ids: []},
                 datatype: 'Text',
                 datatypeText: {},
                 unitsOfMeasure: [],

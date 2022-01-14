@@ -2,16 +2,15 @@ import { Response } from 'express';
 import * as mongoose from 'mongoose';
 import { Document, Model, Schema } from 'mongoose';
 import { config } from 'server';
+import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { csEltSchema, statusValidationRuleSchema } from 'server/system/schemas';
-import { CbError1 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;
 
-const connHelper = require('../system/connections');
-const conn = connHelper.establishConnection(config.database.appData);
+const conn = establishConnection(config.database.appData);
 export const orgSchema = new Schema({
     name: StringType,
     longName: StringType,

@@ -2,7 +2,7 @@ import { Dictionary } from 'async';
 import { Agent } from 'https';
 import fetch from 'node-fetch';
 import { config } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
 import { handleErrors, isStatus, text } from 'shared/fetch';
 import { withRetry } from 'shared/promise';

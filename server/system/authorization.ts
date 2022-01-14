@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
-import { handleNotFound, respondError } from 'server/errorHandler/errorHandler';
+import { handleNotFound, respondError } from 'server/errorHandler';
 import {
     canAttach,
     canEditCuratedItem,

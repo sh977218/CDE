@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
+import { CompareForm } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeFormService } from 'compare/mergeForm.service';
-import { FormMergeFields } from './formMergeFields.model';
+import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 
 @Component({
     selector: 'cde-merge-form',
@@ -28,9 +29,9 @@ import { FormMergeFields } from './formMergeFields.model';
     `]
 })
 export class MergeFormComponent {
-    @Input() source!: any;
-    @Input() destination!: any;
-    @Output() doneMerge = new EventEmitter<{ left: any, right: any }>();
+    @Input() source!: CompareForm;
+    @Input() destination!: CompareForm;
+    @Output() doneMerge = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
     @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
     finishMerge = false;
     mergeFields: FormMergeFields = {
@@ -160,5 +161,4 @@ export class MergeFormComponent {
         this.mergeFormService.validateQuestions(this.source, this.destination, this.mergeFields);
         this.dialog.open(this.mergeFormContent, {width: '1000px'});
     }
-
 }

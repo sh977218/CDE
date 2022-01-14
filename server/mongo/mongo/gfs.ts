@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { GridFSBucket, GridFSBucketWriteStreamOptions } from 'mongodb';
 import { config, ObjectId } from 'server';
-import { respondError } from 'server/errorHandler/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { FileCreateInfo } from 'server/system/mongo-data';
 

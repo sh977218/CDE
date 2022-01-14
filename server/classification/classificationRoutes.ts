@@ -1,7 +1,7 @@
 import { Dictionary, forEachSeries } from 'async';
 import { RequestHandler, Router } from 'express';
 import { dbPlugins } from 'server';
-import { handleError, handleErrorVoid } from 'server/errorHandler/errorHandler';
+import { handleError, handleErrorVoid } from 'server/errorHandler';
 import {
     addOrgClassification,
     deleteOrgClassification, reclassifyOrgClassification, renameOrgClassification, updateOrgClassification

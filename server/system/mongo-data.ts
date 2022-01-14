@@ -4,7 +4,7 @@ import { config, dbPlugins, ObjectId } from 'server';
 import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { moduleToDbName } from 'server/dbPlugins';
-import { handleError } from 'server/errorHandler/errorHandler';
+import { handleError } from 'server/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
