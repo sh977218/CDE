@@ -1,8 +1,9 @@
 const {DefinePlugin} = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const {merge} = require('webpack-merge');
 const baseConfig = require('./webpack.config');
 
-const webpackConfigProd = merge(baseConfig, {
+module.exports = merge(baseConfig, {
     mode: 'production',
     module: {
         rules: [
@@ -19,8 +20,12 @@ const webpackConfigProd = merge(baseConfig, {
     ],
 });
 
-if (process.env.COVERAGE && webpackConfigProd.module) {
-    webpackConfigProd.module.rules.push({
+if (process.env.BUNDLE_REPORT) {
+    module.exports.plugins.push(new BundleAnalyzerPlugin());
+}
+
+if (process.env.COVERAGE) {
+    module.exports.module.rules.push({
         test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
         enforce: 'post',
         exclude: /node_modules|\.spec\.js$/,
@@ -34,5 +39,3 @@ if (process.env.COVERAGE && webpackConfigProd.module) {
         ],
     });
 }
-
-module.exports = webpackConfigProd;

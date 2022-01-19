@@ -1,6 +1,5 @@
-import { transports, Logger } from 'winston';
-
-const config = require('config');
+import { config } from 'server';
+import { Logger, transports } from 'winston';
 
 export const noDbLogger = new (Logger)({
     transports: [

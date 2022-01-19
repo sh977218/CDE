@@ -1,11 +1,10 @@
 import { Request } from 'express';
 import { config } from 'server';
+import { log, logError } from 'server/log/dbLogger';
+import { noDbLogger } from 'server/system/noDbLogger';
 import { CbError1 } from 'shared/models.model';
-import { transports, Logger, Transport } from 'winston';
-
-const util = require('util');
-const dbLogger = require('../log/dbLogger');
-const noDbLogger = require('./noDbLogger');
+import { inherits } from 'util';
+import { Logger, transports, Transport } from 'winston';
 
 export const mongoLogger = (transports as any).MongoLogger = function(options: any) {
     this.name = 'mongoLogger';
@@ -19,21 +18,21 @@ export const mongoErrorLogger = (transports as any).MongoErrorLogger = function(
     this.level = options.level || 'error';
 };
 
-util.inherits(mongoLogger, Transport);
-util.inherits(mongoErrorLogger, Transport);
+inherits(mongoLogger, Transport);
+inherits(mongoErrorLogger, Transport);
 
 mongoLogger.prototype.log = (level: string, msg: string, meta: any, callback: CbError1<boolean>) => {
     try {
         const logEvent = JSON.parse(msg);
         logEvent.level = level;
-        dbLogger.log(logEvent, (err?: Error) => {
+        log(logEvent, (err: Error | null) => {
             if (err) {
-                noDbLogger.noDbLogger.error('Cannot log to DB (1): ' + err);
+                noDbLogger.error('Cannot log to DB (1): ' + err);
             }
             callback(null, true);
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error('Cannot log to DB (2): ' + e);
+        noDbLogger.error('Cannot log to DB (2): ' + e);
     }
 };
 
@@ -80,13 +79,13 @@ mongoErrorLogger.prototype.log = (level: string, msg: string, meta: any) => {
         if (meta.request) {
             message.request = generateErrorLogRequest(meta.request);
         }
-        dbLogger.logError(message, (err?: Error) => {
+        logError(message, (err?: Error) => {
             if (err) {
-                noDbLogger.noDbLogger.error('Cannot log to DB (3): ' + msg);
+                noDbLogger.error('Cannot log to DB (3): ' + msg);
             }
         });
     } catch (e) {
-        noDbLogger.noDbLogger.error('Cannot log to DB (4): ' + e);
+        noDbLogger.error('Cannot log to DB (4): ' + e);
     }
 };
 

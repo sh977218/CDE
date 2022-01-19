@@ -37,7 +37,7 @@ Then, initiate MongoDB replica set:
 rs.initiate()
 ```
 
-## Establish users
+#### Establish users
 Next, you will have to create several users for the app, in order for various aspects to function 
 properly. In the same mongo terminal, run the following commands in this order
 
@@ -61,12 +61,12 @@ use migration;
 db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
 ```
 
-## Restart mongo server with auth on.
+#### Restart mongo server with auth on.
 ```sh
 $> mongod --auth --replSet rs0 --dbpath /path/to/data/db
 ```
 
-## Preparing to run
+### Preparing to run
 Before running the app, run:
 ```sh 
 $/cde/> npm i
@@ -85,11 +85,11 @@ Next, you need to set up the various front end files used in the project:
 $/cde/> npm run gulp
 ```
 
-## Compile Static Homepage
+### Compile Static Homepage
 1. Do a prod build.
 1. Reload node server.
 1. In Chrome, load CDE Search Welcome page, then navigate to home page while logged out. ___(navigating directly to home would serve the existing static page)___
-1. In the Devtool Elements Tab, right click the specified tag and click "Copy Element" to copy the following:
+1. In the Devtool Elements Tab, right-click the specified tag and click "Copy Element" to copy the following:
    1. Copy the matching __\<style>__ tags to __one.css__ and __three.css__.
    1. Copy __<nih-cde>__ to __nihcde.html__ and run `./scripts/buildHomeCleanup.sh` (re-runnable).
       1. If the "Boards" or "Help" menu has changed, manually edit __./scripts/buildHomeCleanup.sh__ to recreate the new menu with JS classes.
@@ -104,21 +104,7 @@ $/cde/> npm run gulp
       1. Quick Board number appears.
 1. To update the production build, run `npm run gulp`.
 
-## Theming
-### Colors
-Update theme.scss
-For custom angular colors extract the colors in common.scss by variable to theme.s
-### Image Minification
-Procedure Lost...
-Trial Procedure
-* SVG
-   * Use as-is.
-* PNG
-   * Run  __/modules/cde/public/assets/img__ through https://tinypng.com/ and place in __/modules/cde/public/assets/img/min__.
-* JPEG/WEBP
-   * Unknown but currently not used.
-
-## Run Node from the cde project directory
+# Run Node
 ```sh
 $/cde/> npm start
 ```
@@ -127,6 +113,52 @@ For the __test__ environment, in a separate window, run:
 ```shell
 $/cde/> npm run testServer
 ```
+
+## Special Runs
+Environment variables:
+* __BUNDLE_REPORT=true__ - _(client only)_ turn on bundle analyzer report, runs a web server and opens the report, report based on the parsed size(size of output JS), Ctrl+c when finished
+* __COVERAGE=true__ - _(client only)_ turn on source mapping (source mapping is always on for server), still need to run from nyc
+
+## Special Builds
+### Server Development
+1. Node without server development
+    * ```npm run buildNode```
+    * ```npm start```
+<!--
+1. Node without server development (interpreted)
+   * ```npm run startTs```
+1. Node with auto restart
+   * ```node dev-app.js ```
+1. Node with auto restart and hot module replacement
+   * ```node devHmr-app.js```
+1. Node with no restart and hot module replacement
+   * ```node devHmr-app.js prod```
+1. Hot module replacement only, start node in debugger
+   * ```node devHmr-app.js none```
+-->
+
+### Angular Client Development
+#### Main App
+1. Angular build without development
+    * ```npm run buildApp```
+1. Angular build with development and watch
+    * ```npm run devApp```
+1. Angular build with hot-module replacement.
+    * ```node devHmr-app.js```
+
+#### Native Render App (Fhir and Embed Apps are similar)
+1. Angular build without development
+    * ```npm run buildNative```
+1. Angular build with development and watch
+    * ```npm run devNative```
+
+
+If your IDE encounter errors like
+
+`'bash' is not recognized as an internal or external command,
+operable program or batch file.
+`
+Run ```npm config set script-shell "/c//tools//git//bin//bash.exe"```
 
 # Test
 ## Prerequisites 
@@ -166,49 +198,27 @@ If, for some reason, you don't want to use it (for example, if you just want to 
 ## Code Coverage
 Run in Bamboo and override variable "browser" with value "coverage"
 
-## Development
-### Server Development
-1. Node without server development
-   * ```npm run buildNode```
-   * ```npm start```
-<!--
-1. Node without server development (interpreted)
-   * ```npm run startTs```
-1. Node with auto restart
-   * ```node dev-app.js ```
-1. Node with auto restart and hot module replacement
-   * ```node devHmr-app.js```
-1. Node with no restart and hot module replacement
-   * ```node devHmr-app.js prod```
-1. Hot module replacement only, start node in debugger
-   * ```node devHmr-app.js none```
--->
+# Code Maintenance
+## Structure
+* Business Rules and Models go into __shared/__
+* View Models and Angular-dependent code go into __modules/__
+* Database entities and Node-dependent code go into __server/__
 
-### Angular Client Development
-#### Main App
-1. Angular build without development
-   * ```npm run buildApp```
-1. Angular build with development and watch
-   * ```npm run devApp```
-1. Angular build with hot-module replacement.
-   * ```node devHmr-app.js```
-
-#### Native Render App (Fhir and Embed Apps are similar)
-1. Angular build without development
-   * ```npm run buildNative```
-1. Angular build with development and watch
-   * ```npm run devNative```
-
-
-If your IDE encounter errors like
-
-`'bash' is not recognized as an internal or external command,
- operable program or batch file.
- `
-Run ```npm config set script-shell "/c//tools//git//bin//bash.exe"```
+## Theming
+### Colors
+Update theme.scss.
+For custom angular colors extract the colors in common.scss by variable to theme.scss
+### Image Minification
+Procedure Lost...
+Trial Procedure
+* SVG
+    * Use as-is.
+* PNG
+    * Run  __/modules/cde/public/assets/img__ through https://tinypng.com/ and place in __/modules/cde/public/assets/img/min__.
+* JPEG/WEBP
+    * Unknown but currently not used.
 
 # CDE Ingesters
-
 For bulk loading new CDEs/Forms into the system a custom program called a loader must be written. To 
 write and test a loader a connection to the QA environment from the local machine needs to be made.
 This process requires multiple steps. More information can be found here: [Ingester README](ingester/README.md)
