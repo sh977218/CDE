@@ -6,6 +6,7 @@ declare let NAVIGATION_HEIGHT: number;
 declare let NAVIGATION_HEIGHT_MOBILE: number;
 
 // Workaround missing types
+declare module 'async-es'
 declare module 'async/forEach';
 declare module 'async/forEachOf';
 declare module 'async/forEachSeries';

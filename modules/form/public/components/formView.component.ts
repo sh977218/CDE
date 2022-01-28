@@ -7,7 +7,7 @@ import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { Dictionary } from 'async';
-import * as async_forEach from 'async/forEach';
+import { forEachOf } from 'async-es';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
@@ -388,7 +388,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 }
                 cb();
             }, () => {
-                async_forEach(newCdeQuestions, (q: FormQuestionDraft, doneOneCde: Cb) => {
+                forEachOf(newCdeQuestions, (q: FormQuestionDraft, index: any, doneOneCde: Cb) => {
                     this.createDataElement(q, doneOneCde);
                 }, () => {
                     const publish = () => {

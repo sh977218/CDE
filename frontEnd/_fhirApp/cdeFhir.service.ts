@@ -14,10 +14,7 @@ import {
 } from './resources';
 import { FhirSmartService } from './fhirSmart.service';
 import { valueSets } from './valueSets';
-import * as async_forEach from 'async/forEach';
-import * as async_memoize from 'async/memoize';
-import * as async_series from 'async/series';
-import * as async_some from 'async/some';
+import { forEachOf, memoize, series, some } from 'async-es';
 import { questionAnswered, findQuestionByTinyId } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getTinyId, getVersion } from 'core/form/formAndFe';
@@ -126,7 +123,7 @@ export interface PatientForm {
 export class CdeFhirService {
     cleanupPatient!: Cb;
     getDisplayFunc = this.getDisplay.bind(this);
-    lookupObservationCategories: (code: string, cb: CbErr1<string[]>) => void = async_memoize(
+    lookupObservationCategories: (code: string, cb: CbErr1<string[]>) => void = memoize(
         (code: string, done: CbErr1<string | undefined>) => {
             this.http.get<{ categories: 'social-history' | 'vital-signs' | 'imaging' | 'laboratory' | 'procedure' | 'survey' | 'exam' | 'therapy' }>(
                 '/fhirObservationInfo?id=' + code).subscribe(r => {
@@ -134,7 +131,7 @@ export class CdeFhirService {
             }, done as any);
         }
     );
-    lookupLoincName: (code: string, cb: CbErr1<any>) => void = async_memoize((code: string, done: CbErrorObj1<string[] | void>) => {
+    lookupLoincName: (code: string, cb: CbErr1<any>) => void = memoize((code: string, done: CbErrorObj1<string[] | void>) => {
         this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r?.result?.results?.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
@@ -395,7 +392,7 @@ export class CdeFhirService {
                     if (codes.length === 0) {
                         codes = getIds(self.crossReference).filter(id => id.source === 'NLM');
                     }
-                    async_some(
+                    some(
                         codes,
                         (id: CdeId, done: CbErr1<boolean>) => {
                             return this.fhirData.search<FhirObservation | FhirQuestionnaireResponse>(self.resourceType,
@@ -546,7 +543,7 @@ export class CdeFhirService {
                         : a,
                     []);
                 let categories: string[] = [];
-                async_forEach(codes, (code: string, doneOne: Cb) => {
+                forEachOf(codes, (code: string, doneOne: Cb) => {
                     this.getObservationCategory('LOINC', code, cats => {
                         if (Array.isArray(cats)) {
                             categories = categories.concat(cats);
@@ -588,7 +585,7 @@ export class CdeFhirService {
 
     // cb(err)
     saveTree(node: ResourceTreeRoot | ResourceTree, cb: CbErr1<any>) {
-        async_series([
+        series([
             (done: Cb1<string | void>) => {
                 if (ResourceTreeUtil.isNotRoot(node) && ResourceTreeUtil.isResource(node)) {
                     this.saveTreeNode(node, done);
@@ -598,7 +595,7 @@ export class CdeFhirService {
             },
             (done: Cb1<string | void>) => {
                 if (ResourceTreeUtil.isRoot(node) || !ResourceTreeUtil.isAttribute(node)) {
-                    async_forEach(node.children, this.saveTree.bind(this), done);
+                    forEachOf(node.children, this.saveTree.bind(this), done);
                 } else {
                     done();
                 }
