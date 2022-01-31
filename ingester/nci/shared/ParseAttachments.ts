@@ -1,14 +1,14 @@
 import { BATCHLOADER, TODAY } from 'ingester/shared/utility';
 import { Readable } from 'stream';
-import { cloneDeep } from 'lodash';
 import { addFile } from 'server/mongo/mongo/gfs';
 import { Attachment } from 'shared/models.model';
+import { deepCopy } from 'shared/util';
 
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
 export function parseAttachments(nciXmlCde: any): Promise<Attachment[]> {
-    const nciXml = cloneDeep(nciXmlCde);
+    const nciXml = deepCopy(nciXmlCde);
     const readable = new Readable();
     delete nciXml._id;
     delete nciXml.index;

@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Organization } from 'shared/organization/organization';
+import { noop } from 'shared/util';
 
 @Component({
     templateUrl: './tagsManagement.component.html'
@@ -30,7 +30,7 @@ export class TagsManagementComponent {
 
     saveOrg(org: Organization) {
         this.http.post('/server/orgManagement/updateOrg', org).subscribe(
-            () => this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Org Updated'), _noop),
+            () => this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Org Updated'), noop),
             () => this.alert.addAlert('danger', 'Error. Unable to save.')
         );
     }

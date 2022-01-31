@@ -20,7 +20,6 @@ import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datat
 import { getTinyId, getVersion } from 'core/form/formAndFe';
 import * as diff from 'deep-diff';
 import * as _intersectionWith from 'lodash/intersectionWith';
-import * as _noop from 'lodash/noop';
 import * as _uniq from 'lodash/uniq';
 import { reduce } from 'shared/array';
 import { getIds } from 'shared/form/formAndFe';
@@ -47,7 +46,7 @@ import {
     assertThrow, assertTrue, assertUnreachable, Cb, Cb1, CbErr, CbErr1, CbErrorObj1, CbRet1, CbRet2, CdeId,
     PermissibleValue
 } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
+import { deepCopy, noop } from 'shared/util';
 
 function isFhirObservation(resource: FhirDomainResource): resource is FhirObservation {
     return resource.resourceType === 'Observation';
@@ -270,7 +269,7 @@ export class CdeFhirService {
         }, cb);
     }
 
-    loadFormData(patientForm: PatientForm, cb: Cb = _noop) {
+    loadFormData(patientForm: PatientForm, cb: Cb = noop) {
         this.renderedPatientForm = patientForm;
         this.renderedResourceTree = addRootNode(deepCopy(patientForm.form), undefined, undefined, undefined);
         const renderedResourceTree = this.renderedResourceTree;
@@ -307,7 +306,7 @@ export class CdeFhirService {
             iterateFe(tree.crossReference,
                 async (f, cb, options, i) => {
                     const parent = await options.return;
-                    const self = addEmptyNode(f, _noop, parent);
+                    const self = addEmptyNode(f, noop, parent);
                     if (self && ResourceTreeUtil.isNotRoot(self)) {
                         if (ResourceTreeUtil.isResource(self)) {
                             await this.readResource(self);
@@ -320,7 +319,7 @@ export class CdeFhirService {
                 },
                 async (s, cb, options, i) => {
                     const parent = await options.return;
-                    const self = addEmptyNode(s, _noop, parent);
+                    const self = addEmptyNode(s, noop, parent);
                     if (self && ResourceTreeUtil.isNotRoot(self)) {
                         if (ResourceTreeUtil.isIntermediate(self)) {
                             CdeFhirService.readIntermediate(self, i);
@@ -330,7 +329,7 @@ export class CdeFhirService {
                 },
                 async (q, cb, options, i) => {
                     const parent = await options.return;
-                    const self = addEmptyNode(q, _noop, parent);
+                    const self = addEmptyNode(q, noop, parent);
                     if (self && ResourceTreeUtil.isNotRoot(self)) {
                         if (ResourceTreeUtil.isResource(self)) {
                             await this.readResource(self);
@@ -361,7 +360,7 @@ export class CdeFhirService {
         }
         if (ResourceTreeUtil.isRoot(self) || !ResourceTreeUtil.isAttribute(self)) {
             return Promise.all((self as ResourceTreeRoot/*workaround*/).children.map(c => this.readAgain(c, self)))
-                .then(_noop);
+                .then(noop);
         }
     }
 

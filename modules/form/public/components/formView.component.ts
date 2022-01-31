@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
+import { ScrollService } from 'angular-aio-toc/scroll.service';
+import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary } from 'async';
 import { forEachOf } from 'async-es';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
@@ -15,8 +17,6 @@ import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea
 import { FormViewService } from 'form/public/components/formView.service';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
-import * as _cloneDeep from 'lodash/cloneDeep';
-import * as _noop from 'lodash/noop';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -34,8 +34,7 @@ import {
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { TocService } from 'angular-aio-toc/toc.service';
-import { ScrollService } from 'angular-aio-toc/scroll.service';
+import { deepCopy, noop } from 'shared/util';
 
 export class LocatableError {
     id?: string;
@@ -117,7 +116,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             this.loadElt(() => {
                 this.orgHelperService.then(() => {
                     this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
-                }).catch(_noop);
+                }).catch(noop);
             });
         });
     }
@@ -185,7 +184,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         );
     }
 
-    eltLoad(getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm, cb = _noop) {
+    eltLoad(getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm, cb = noop) {
         if (getForm instanceof Observable) {
             getForm.subscribe(
                 elt => this.eltLoaded(elt, cb),
@@ -201,7 +200,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    eltLoaded(elt: CdeForm, cb = _noop) {
+    eltLoaded(elt: CdeForm, cb = noop) {
         if (elt) {
             if (elt.isDraft) {
                 this.hasDrafts = true;
@@ -221,7 +220,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadComments(form: CdeForm, cb = _noop) {
+    loadComments(form: CdeForm, cb = noop) {
         if (this.userService.canSeeComment()) {
             this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
                 this.hasComments = res && (res.length > 0);
@@ -233,7 +232,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadElt(cb = _noop) {
+    loadElt(cb = noop) {
         this.eltLoad(this.formViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
@@ -241,7 +240,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         this.highlightedTabs = $event;
     }
 
-    loadPublished(cb = _noop) {
+    loadPublished(cb = noop) {
         this.eltLoad(this.formViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
@@ -263,11 +262,11 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     openCopyElementModal() {
-        const eltCopy = this.eltCopy = _cloneDeep(this.elt);
+        const eltCopy = this.eltCopy = deepCopy(this.elt);
         eltCopy.classification = this.elt.classification
             && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
         eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
-        delete eltCopy.tinyId;
+        delete (eltCopy as any).tinyId;
         delete eltCopy._id;
         delete eltCopy.origin;
         delete eltCopy.created;
@@ -276,9 +275,9 @@ export class FormViewComponent implements OnInit, OnDestroy {
         delete eltCopy.updatedBy;
         delete eltCopy.createdBy;
         delete eltCopy.version;
-        delete eltCopy.history;
+        delete (eltCopy as any).history;
         delete eltCopy.changeNote;
-        delete eltCopy.comments;
+        delete (eltCopy as any).comments;
         eltCopy.ids = [];
         eltCopy.sources = [];
         eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
@@ -376,7 +375,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     saveDraftVoid(): void {
-        this.saveDraft().catch(_noop);
+        this.saveDraft().catch(noop);
     }
 
     saveForm() {
@@ -412,7 +411,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         };
 
         if (this.draftSaving) {
-            this.draftSaving.then(saveFormImpl, _noop);
+            this.draftSaving.then(saveFormImpl, noop);
         } else {
             saveFormImpl();
         }
@@ -462,7 +461,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    validate(cb: Cb = _noop): void {
+    validate(cb: Cb = noop): void {
         this.validationErrors.length = 0;
         this.validateNoFeCycle();
         this.validateRepeat();

@@ -1,4 +1,3 @@
-import { findIndex } from 'lodash';
 import { Document, Model, Types } from 'mongoose';
 import { config, dbPlugins, ObjectId } from 'server';
 import { diff } from 'server/cde/cdediff';
@@ -82,11 +81,11 @@ export const objectId = Types.ObjectId;
 
 export interface PushRegistration {
     _id: ObjectId;
-    features?: string[];
+    features: string[];
     loggedIn?: boolean;
     subscription?: {
         endpoint: string,
-        expirationTime: string,
+        expirationTime: string | null,
         keys: {
             auth: string,
             p256dh: string

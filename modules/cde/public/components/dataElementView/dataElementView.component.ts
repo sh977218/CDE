@@ -13,8 +13,6 @@ import { TocService } from 'angular-aio-toc/toc.service';
 import { DataElementViewService } from 'cde/public/components/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import * as _cloneDeep from 'lodash/cloneDeep';
-import * as _noop from 'lodash/noop';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -23,6 +21,7 @@ import { Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
+import { deepCopy, noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 
 @Component({
@@ -64,7 +63,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
                 });
             });
-        }, _noop);
+        }, noop);
     }
 
     constructor(private route: ActivatedRoute,
@@ -99,7 +98,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         return canEditCuratedItem(this.userService.user, this.elt);
     }
 
-    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb = _noop) {
+    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb = noop) {
         if (getElt instanceof Observable) {
             getElt.subscribe(
                 elt => this.eltLoaded(elt, cb),
@@ -115,7 +114,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    eltLoaded(elt: DataElement, cb = _noop) {
+    eltLoaded(elt: DataElement, cb = noop) {
         if (elt) {
             if (elt.isDraft) {
                 this.hasDrafts = true;
@@ -149,7 +148,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.router.navigate([], {queryParams: this.route.snapshot.queryParams, replaceUrl: true})
     }
 
-    loadComments(de: DataElement, cb = _noop) {
+    loadComments(de: DataElement, cb = noop) {
         if (this.userService.canSeeComment()) {
             this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
                 .subscribe(res => {
@@ -161,7 +160,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    loadElt(cb = _noop) {
+    loadElt(cb = noop) {
         this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
@@ -169,7 +168,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.highlightedTabs = $event;
     }
 
-    loadPublished(cb = _noop) {
+    loadPublished(cb = noop) {
         this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
@@ -187,11 +186,11 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     openCopyElementModal() {
-        const eltCopy = this.eltCopy = _cloneDeep(this.elt);
+        const eltCopy = this.eltCopy = deepCopy(this.elt);
         eltCopy.classification = this.elt.classification
             && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
         eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
-        delete eltCopy.tinyId;
+        delete (eltCopy as any).tinyId;
         delete eltCopy._id;
         delete eltCopy.origin;
         delete eltCopy.created;
@@ -200,9 +199,9 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         delete eltCopy.updatedBy;
         delete eltCopy.createdBy;
         delete eltCopy.version;
-        delete eltCopy.history;
+        delete (eltCopy as any).history;
         delete eltCopy.changeNote;
-        delete eltCopy.comments;
+        delete (eltCopy as any).comments;
         delete eltCopy.forkOf;
         delete eltCopy.views;
         eltCopy.ids = [];
@@ -309,7 +308,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     saveDraftVoid(): void {
-        this.saveDraft().catch(_noop);
+        this.saveDraft().catch(noop);
     }
 
     saveDataElement() {
@@ -324,7 +323,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         };
 
         if (this.draftSaving) {
-            this.draftSaving.then(saveImpl, _noop);
+            this.draftSaving.then(saveImpl, noop);
         } else {
             saveImpl();
         }

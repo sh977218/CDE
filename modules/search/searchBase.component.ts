@@ -24,7 +24,6 @@ import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHe
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { DataType } from 'shared/de/dataElement.model';
@@ -40,6 +39,7 @@ import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { ownKeys } from 'shared/user';
+import { noop } from 'shared/util';
 
 type NamedCounts = { name: string, count: number }[];
 
@@ -459,7 +459,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     private filterOutWorkingGroups(cb: Cb1<string | void>) {
-        this.userService.catch(_noop).then(user => {
+        this.userService.catch(noop).then(user => {
             this.orgHelperService.then(() => {
                 if (this.aggregations) {
                     (this.aggregations.orgs.buckets as any) = this.aggregations.orgs.orgs.buckets
@@ -731,7 +731,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     elts.forEach(elt => {
                         elt.usedBy = this.orgHelperService.getUsedBy(elt);
                     });
-                }, _noop);
+                }, noop);
 
                 this.aggregations = result.aggregations;
 
@@ -763,7 +763,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.filterOutWorkingGroups(() => {
                         this.orgHelperService.then(() => {
                             this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
-                        }, _noop);
+                        }, noop);
                         aggregations.orgs.buckets.sort(
                             (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
                                 const A = a.key.toLowerCase();
@@ -809,7 +809,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                 }
                             });
                             orgs.sort(SearchBaseComponent.compareObjName);
-                        }, _noop);
+                        }, noop);
                     });
 
                     this.topics = {};

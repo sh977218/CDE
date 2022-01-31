@@ -2,8 +2,8 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDesignationComponent } from 'adminItem/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/naming/definition/newDefinition.component';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-naming',
@@ -23,7 +23,7 @@ export class NamingComponent implements OnInit {
         const stewardOrgName = this.elt.stewardOrg.name;
         this.orgHelperService.then(orgsDetailedInfo => {
             this.allTags = orgsDetailedInfo[stewardOrgName]?.nameTags || [];
-        }, _noop);
+        }, noop);
     }
 
     openNewDefinitionModal() {

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm } from 'shared/form/form.model';
 import { supportedFhirResources, supportedFhirResourcesArray } from 'shared/mapping/fhir/fhirResource.model';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-general-details[elt]',
@@ -34,7 +34,7 @@ export class FormGeneralDetailsComponent {
                 public userService: UserService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
-        }, _noop);
+        }, noop);
     }
 
     changeStewardOrg(event: string) {

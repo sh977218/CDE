@@ -1,7 +1,6 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client } from '@elastic/elasticsearch';
 import { Agent } from 'https';
-import { noop } from 'lodash';
 import { QueryCursor } from 'mongoose';
 import fetch from 'node-fetch';
 import { config, dbPlugins } from 'server';
@@ -34,6 +33,7 @@ import {
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { hasRolePrivilege } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 export type ElasticCondition = any;
 export type MongoCondition = any;

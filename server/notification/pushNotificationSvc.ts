@@ -1,24 +1,28 @@
 import { Request, Response } from 'express';
-import { noop, union } from 'lodash';
+import { union } from 'lodash';
 import { config, ObjectId } from 'server';
-import { handleError, handleErrorVoid } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { logError } from 'server/log/dbLogger';
 import {
     pushById, pushByIds, pushByIdsCount, pushByPublicKey, pushClearDb, pushDelete, pushEndpointUpdate, pushesByEndpoint,
     pushFindActive, pushSave
 } from 'server/notification/notificationDb';
 import { PushRegistrationDocument } from 'server/system/mongo-data';
-import { CbError1, User } from 'shared/models.model';
+import { partition } from 'shared/array';
+import {
+    PushRegistrationCreateRequest, PushRegistrationCreateResponse, PushRegistrationDeleteRequest,
+    PushRegistrationSubscribeRequest, PushRegistrationSubscribeResponse,
+    PushRegistrationUpdateRequest, PushRegistrationUpdateResponse
+} from 'shared/boundaryInterfaces/API/notification';
+import { User } from 'shared/models.model';
+import { noop } from 'shared/util';
 import { generateVAPIDKeys, sendNotification, setVapidDetails } from 'web-push';
 
 export function checkDatabase(callback = noop) {
-    // errorHandler.handleError because of circular dependency.
-    pushById('000000000000000000000000', handleError({}, push => {
+    pushById('000000000000000000000000').then(push => {
         function createDbTag() {
-            pushSave(
-                {_id: new ObjectId('000000000000000000000000'), features: [config.publicUrl]},
-                handleError({}, callback)
-            );
+            pushSave({_id: new ObjectId('000000000000000000000000'), features: [config.publicUrl]})
+                .then(callback, respondError());
         }
 
         if (!push) {
@@ -26,91 +30,108 @@ export function checkDatabase(callback = noop) {
             return;
         }
         if (!push.features || !push.features.includes(config.publicUrl)) {
-            pushClearDb(handleErrorVoid({publicMessage: 'could not remove'}, createDbTag));
+            pushClearDb().then(createDbTag, respondError({publicMessage: 'could not remove'}));
             return;
         }
         callback();
-    }));
+    }, respondError());
 }
 
-export function create(req: Request, res: Response) {
-    if (!req.user || !req.user._id) {
-        return res.status(400).send('Required parameters missing.');
-    }
-    if (!req.body.subscription || !req.body.subscription.endpoint) {
-        return createUnsubscribed(req, res);
-    }
-    pushesByEndpoint(req.body.subscription.endpoint, handleError({req, res}, pushes => {
-        if (!pushes || !pushes.length) {
-            return createUnsubscribed(req, res);
-        }
-        const ownPushes = pushes.filter(push => push && push.userId === req.user._id);
-        if (ownPushes.length) {
-            const push = ownPushes[0];
-            if (!push.loggedIn) {
-                push.loggedIn = true;
-                push.save(handleError<PushRegistrationDocument>({req, res}, () => {
-                    res.send({subscribed: true});
-                }));
-            } else {
-                res.send({subscribed: true});
-            }
-        } else {
-            pushes.forEach(push => {
-                if (push.loggedIn) {
-                    push.loggedIn = false;
-                    push.save(handleError<PushRegistrationDocument>({req, res}, noop));
-                }
-            });
-            pushSave({
-                features: Array.isArray(req.body.features) ? req.body.features : ['all'],
-                loggedIn: true,
-                subscription: req.body.subscription,
-                userId: req.user._id,
-                vapidKeys: pushes[0].vapidKeys,
-            }, handleError({req, res}, () => {
-                res.send({subscribed: true});
-            }));
-        }
-    }));
+export function create(req: Request, res: Response): Promise<Response> {
+    // new registration: 1/2 create keys to request subscription with
+    return pushSave({vapidKeys: generateVAPIDKeys()})
+        .then(
+            push => res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false} as PushRegistrationCreateResponse),
+            respondError({req, res})
+        );
 }
 
-export function createUnsubscribed(req: Request, res: Response) {
-    pushSave({vapidKeys: generateVAPIDKeys()}, handleError({req, res}, push => {
-        res.send({applicationServerKey: push.vapidKeys.publicKey, subscribed: false});
-    }));
-}
-
-export function remove(req: Request, res: Response) {
-    if (!req.body.endpoint || !req.user || !req.user._id) {
-        return res.status(400).send('Required parameters missing.');
+export function created(req: Request, res: Response): Promise<Response> {
+    // new registration: 2/2 receive a subscription for the keys
+    const body: PushRegistrationSubscribeRequest = req.body;
+    if (!body.applicationServerKey || !req.user || !req.user._id) {
+        return Promise.resolve(res.status(400).send('Required parameters missing.'));
     }
-    pushDelete(req.body.endpoint, req.user._id,
-        handleErrorVoid({req, res, publicMessage: 'could not remove'}, () => res.send()));
-}
-
-export function subscribe(req: Request, res: Response) {
-    if (!req.body.applicationServerKey || !req.user || !req.user._id) {
-        return res.status(400).send('Required parameters missing.');
-    }
-    if (!req.body || !req.body.subscription || !req.body.subscription.endpoint) {
-        return res.status(400).json({
+    if (!body || !body.subscription || !body.subscription.endpoint) {
+        return Promise.resolve(res.status(400).json({
             error: {
                 id: 'no-endpoint',
                 message: 'Subscription must have an endpoint.'
             }
-        });
+        }));
     }
-    pushByPublicKey(req.body.applicationServerKey, handleError({req, res}, push => {
-        if (!push) {
-            return res.status(400).send('push registration must be created before it is subscribed to.');
-        }
-        push.features = union(push.features, req.body.features);
-        push.loggedIn = true;
-        push.subscription = req.body.subscription;
-        push.userId = req.user._id;
-        push.save(handleError<PushRegistrationDocument>({req, res}, push => res.send(push.features)));
-    }));
+    return pushByPublicKey(body.applicationServerKey)
+        .then(push => {
+            if (!push) {
+                return res.status(400).send('push registration must be created before it is subscribed to.');
+            }
+            push.features = union(push.features, body.features);
+            push.loggedIn = true;
+            push.subscription = body.subscription;
+            push.userId = req.user._id;
+            return push.save()
+                .then(push => res.send(push.features as PushRegistrationSubscribeResponse));
+        })
+        .catch(respondError({req, res}));
+}
+
+export function pushRegistrationsFor(getUsers: () => Promise<User[]>): Promise<PushRegistrationDocument[]> {
+    return getUsers()
+        .then(users => users.length
+            ? pushFindActive({userId: {$in: users.map(u => u._id)}})
+            : []
+        );
+}
+
+export function pushRegistrationSubscribersByUsers(users: User[]): Promise<PushRegistrationDocument[]> {
+    return pushFindActive({userId: {$in: users.map(u => u._id.toString())}});
+}
+
+export function register(req: Request, res: Response): Promise<Response> {
+    const body: PushRegistrationCreateRequest = req.body;
+    if (!req.user || !req.user._id) {
+        return Promise.resolve(res.status(400).send('Required parameters missing.'));
+    }
+    if (!body.subscription || !body.subscription.endpoint) {
+        return create(req, res);
+    }
+    const subscription = body.subscription;
+    return pushesByEndpoint(subscription.endpoint)
+        .then(pushes => {
+            if (!pushes || !pushes.length) {
+                return create(req, res);
+            }
+            const [ownRegistrations, othersRegistations] = partition(pushes, push => push && push.userId === req.user._id);
+            return Promise.all(othersRegistations.map(reg => {
+                if (reg.loggedIn) {
+                    reg.loggedIn = false;
+                    return reg.save();
+                }
+            }))
+                .then(() => {
+                    if (ownRegistrations.length) {
+                        const reg = ownRegistrations[0];
+                        if (reg.loggedIn) {
+                            return res.send({subscribed: true} as PushRegistrationCreateResponse);
+                        }
+                        reg.loggedIn = true;
+                        return reg.save()
+                            .then(() => res.send({subscribed: true} as PushRegistrationCreateResponse));
+                    } else {
+                        return create(req, res);
+                    }
+                });
+        })
+        .catch(respondError({req, res}));
+}
+
+export function remove(req: Request, res: Response): Promise<Response> {
+    const body: PushRegistrationDeleteRequest = req.body;
+    if (!body.endpoint || !req.user || !req.user._id) {
+        return Promise.resolve(res.status(400).send('Required parameters missing.'));
+    }
+    return pushDelete(body.endpoint, req.user._id)
+        .then(() => res.send(), respondError({req, res, publicMessage: 'could not remove'}));
 }
 
 export function triggerPushMsg(push: PushRegistrationDocument, dataToSend: string) {
@@ -141,33 +162,28 @@ export function triggerPushMsg(push: PushRegistrationDocument, dataToSend: strin
         });
 }
 
-export function updateStatus(req: Request, res: Response) {
-    if (!req.body.endpoint) {
-        return res.status(400).send('Error: no subscription');
+export function updateStatus(req: Request, res: Response): Promise<Response> {
+    const body: PushRegistrationUpdateRequest = req.body;
+    if (!body.endpoint) {
+        return Promise.resolve(res.status(400).send('Error: no subscription'));
     }
     if (req.user) {
         // start
-        pushByIds(req.body.endpoint, req.user._id, handleError({req, res}, push => {
-            pushByIdsCount(req.body.endpoint, undefined, handleError({req, res}, countExists => {
+        return pushByIds(body.endpoint, req.user._id)
+            .then(push => {
                 function respond() {
-                    res.send({status: !!push, exist: !!countExists});
+                    return res.send({status: !!push} as PushRegistrationUpdateResponse);
                 }
 
                 if (!push || push.loggedIn) {
                     return respond();
                 }
-                push.updateOne({$set: {loggedIn: true}}, {}, handleError({req, res}, respond));
-            }));
-        }));
+                return push.updateOne({$set: {loggedIn: true}}).then(respond);
+            })
+            .catch(respondError({req, res}));
     } else {
         // stop
-        pushEndpointUpdate(req.body.endpoint, {$set: {loggedIn: false}}, handleErrorVoid({req, res}, () => {
-            res.send({status: false, exist: true});
-        }));
+        return pushEndpointUpdate(body.endpoint, {$set: {loggedIn: false}})
+            .then(() => res.send({status: false} as PushRegistrationUpdateResponse), respondError({req, res}));
     }
-}
-
-export function pushRegistrationSubscribersByUsers(users: User[], cb: CbError1<PushRegistrationDocument[]>) {
-    const userIds = users.map(u => u._id.toString());
-    pushFindActive({userId: {$in: userIds}}, cb);
 }

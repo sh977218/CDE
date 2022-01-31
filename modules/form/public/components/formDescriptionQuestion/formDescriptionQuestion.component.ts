@@ -4,12 +4,12 @@ import { TreeNode } from '@circlon/angular-tree-component';
 import { DataElementService } from 'cde/public/dataElement.service';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import * as _isEqual from 'lodash/isEqual';
-import * as _noop from 'lodash/noop';
 import * as _toString from 'lodash/toString';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { DataElement, DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion, QuestionValueList } from 'shared/form/form.model';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-description-question',
@@ -166,7 +166,7 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 currentQuestion.label = newQuestion.label;
                 this.stageElt.emit();
             }
-        }, _noop);
+        }, noop);
     }
 
     removeNode(node: TreeNode) {

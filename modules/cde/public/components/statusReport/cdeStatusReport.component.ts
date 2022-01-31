@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { ExportRecord, ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { noop } from 'shared/util';
 
 type ExportStatusRecord = ExportRecord | {results: string[]};
 
@@ -63,6 +63,6 @@ export class CdeStatusReportComponent implements OnInit {
                 this.state = 'message';
                 this.message = 'Need to login to complete this task.';
             });
-        }, _noop);
+        }, noop);
     }
 }

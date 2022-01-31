@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Dictionary } from 'async';
-import * as _noop from 'lodash/noop';
 import { BoardFilter } from 'shared/board/board.model';
 import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 @Injectable()
 export class MyBoardsService {
@@ -29,7 +29,7 @@ export class MyBoardsService {
     constructor(private http: HttpClient, private userService: UserService) {
     }
 
-    loadMyBoards(type?: ModuleItem, cb = _noop) {
+    loadMyBoards(type?: ModuleItem, cb = noop) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
@@ -64,7 +64,7 @@ export class MyBoardsService {
         }
     }
 
-    waitAndReload(cb = _noop) {
+    waitAndReload(cb = noop) {
         this.reloading = true;
         setTimeout(() => this.loadMyBoards(undefined, cb), 2000);
     }

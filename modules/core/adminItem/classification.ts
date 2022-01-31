@@ -1,11 +1,11 @@
 import * as _unionWith from 'lodash/unionWith';
 import { addCategory, findSteward } from 'shared/classification/classificationShared';
 import { ClassificationElement, Elt, Item } from 'shared/models.model';
+import { DataElement } from 'shared/de/dataElement.model';
 import {
     attachmentComparator, dataSetComparator, definitionComparator, derivationRuleComparator, designationComparator,
     idComparator, propertyComparator, referenceDocumentComparator, sourceComparator
-} from 'shared/util';
-import { DataElement } from 'shared/de/dataElement.model';
+} from 'shared/elt/comparator';
 
 export function classifyItem(item: Item, orgName: string, classifPath: string[]): void {
     let steward = findSteward(item, orgName);

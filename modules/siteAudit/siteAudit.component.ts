@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { MatTab } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-site-audit',
@@ -18,7 +18,9 @@ export class SiteAuditComponent implements OnInit {
 
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {
-        this.userService.then(user => this.isAdmin = isSiteAdmin(user), _noop);
+        this.userService.then(user => {
+            this.isAdmin = isSiteAdmin(user);
+        }, noop);
     }
 
     ngOnInit() {
@@ -33,7 +35,8 @@ export class SiteAuditComponent implements OnInit {
                         this.selectedTab.setValue(this.clientErrorTab.position);
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+            }
         }, 0);
     }
 }

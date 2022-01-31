@@ -2,12 +2,11 @@ import { Component, ViewChild, Input, Output, EventEmitter, TemplateRef } from '
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode, IActionMapping } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Classification, Item } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
-
+import { noop } from 'shared/util';
 
 export interface DeletedNodeEvent {
     deleteClassificationArray: string[];
@@ -47,7 +46,7 @@ export class ClassificationViewComponent {
                 public isAllowedModel: IsAllowedService,
                 protected userService: UserService,
                 private orgHelperService: OrgHelperService) {
-        this.orgHelperService.then(() => this.orgHelperLoaded = true, _noop);
+        this.orgHelperService.then(() => this.orgHelperLoaded = true, noop);
     }
 
     getClassifLink() {

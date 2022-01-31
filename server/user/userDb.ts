@@ -205,12 +205,12 @@ export function usernamesByIp(ip: string, callback: CbError1<UserDocument[]>) {
     userModel.find({knownIPs: {$in: [ip]}}, {username: 1}, callback);
 }
 
-export function siteAdmins(callback: CbError1<UserDocument[]>) {
-    userModel.find({siteAdmin: true}, 'username email', callback);
+export function siteAdmins(): Promise<UserDocument[]> {
+    return userModel.find({siteAdmin: true}, 'username email').then();
 }
 
-export function orgAuthorities(callback: CbError1<UserDocument[]>) {
-    userModel.find({roles: 'OrgAuthority'}, 'username', callback);
+export function orgAuthorities(): Promise<UserDocument[]> {
+    return userModel.find({roles: 'OrgAuthority'}, 'username').then();
 }
 
 // Org

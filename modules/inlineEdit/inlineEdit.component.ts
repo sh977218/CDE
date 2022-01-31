@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import * as _cloneDeep from 'lodash/cloneDeep';
 import { assertUnreachable } from 'shared/models.model';
+import { deepCopy } from 'shared/util';
 
 type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 
@@ -38,7 +38,7 @@ export class InlineEditComponent {
     @Input() set model(v: any) {
         this._model = v;
         if (!this.inputType) { this.inputType = 'text'; }
-        this.value = _cloneDeep(v);
+        this.value = deepCopy(v);
     }
     get model() {
         return this._model;
@@ -53,7 +53,7 @@ export class InlineEditComponent {
     value!: string;
 
     discard() {
-        this.value = _cloneDeep(this.model);
+        this.value = deepCopy(this.model);
         this.editMode = false;
     }
 

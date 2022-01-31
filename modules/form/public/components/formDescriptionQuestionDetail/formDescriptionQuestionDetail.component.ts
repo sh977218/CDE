@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { AlertService } from 'alert/alert.service';
 import { TreeNode } from '@circlon/angular-tree-component';
+import { pvGetLabel } from 'core/de/deShared';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService, UcumSynonyms } from 'form/public/ucum.service';
@@ -16,18 +17,16 @@ import {
 import {
     SelectQuestionLabelComponent, SelectQuestionLabelData, SelectQuestionLabelOutput
 } from 'form/public/components/selectQuestionLabel/selectQuestionLabel.component';
-import * as _clone from 'lodash/clone';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
-import { pvGetLabel } from 'core/de/deShared';
 import { isScore, iterateFeSync } from 'shared/form/fe';
 import {
     CdeForm, FormElement, FormQuestion, FormQuestionDraft, FormSection, Question, QuestionValueList, SkipLogic
 } from 'shared/form/form.model';
 import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/dataElement.model';
+import { noop } from 'shared/util';
 
 const ignoreDatatypeArray = ['Dynamic Code List', 'Externally Defined'];
 const dataTypeArray = DATA_TYPE_ARRAY.filter(d => ignoreDatatypeArray.indexOf(d) === -1);
@@ -87,7 +86,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         const stewardOrgName: string = this.elt.stewardOrg.name || '';
         this.orgHelperService.then(orgsDetailedInfo => {
             this.tag = orgsDetailedInfo[stewardOrgName].nameTags || [];
-        }, _noop);
+        }, noop);
         this.uomControl.valueChanges
             .pipe(
                 debounceTime(300),
@@ -136,7 +135,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 this.questionAnswers = [];
                 this.onAnswerListChanged();
             } else if (response) {
-                question.answers = _clone(response);
+                question.answers = response.concat();
                 this.questionAnswers = question.answers.map(pvGetLabel);
                 this.eltChange.emit();
             }

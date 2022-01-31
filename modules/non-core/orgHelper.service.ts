@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import * as _noop from 'lodash/noop';
 import { UserService } from '_app/user.service';
 import { CbErr, Elt } from 'shared/models.model';
 import { Organization, StatusValidationRules } from 'shared/organization/organization';
 import { validateOrganization } from 'shared/organization/organizationShared';
 import { isOrgCurator } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 interface OrgDetailedInfo {
     [org: string]: Organization;
@@ -68,7 +68,7 @@ export class OrgHelperService {
 
     reload(): Promise<OrgDetailedInfo> {
         return this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
-            const userPromise = this.userService.catch(_noop);
+            const userPromise = this.userService.catch(noop);
             this.http.get<Organization[]>('/server/orgManagement/listOrgsDetailedInfo').subscribe(response => {
                 this.orgsDetailedInfo = {};
                 response.forEach(org => {

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { flattenClassification } from 'core/adminItem/classification';
-import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _forEach from 'lodash/forEach';
 import * as _get from 'lodash/get';
 import * as _isEqual from 'lodash/isEqual';
 import { sortClassification } from 'shared/classification/classificationShared';
 import { Item } from 'shared/models.model';
+import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-compare-item',
@@ -71,8 +71,8 @@ export class CompareItemComponent implements OnInit {
     ];
 
      ngOnInit(): void {
-        this.newer = _cloneDeep(this.newer);
-        this.older = _cloneDeep(this.older);
+        this.newer = deepCopy(this.newer);
+        this.older = deepCopy(this.older);
         this.newerFlatClassifications = flattenClassification(sortClassification(this.newer)).join(',');
         this.olderFlatClassifications = flattenClassification(sortClassification(this.older)).join(',');
         doCompareObject(this.older, this.newer, this.compareObjectProperties);

@@ -4,11 +4,11 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IActionMapping, ITreeOptions, TreeNode } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
 import { ClassifyItemDialogData } from 'adminItem/classification/classifyItem.component';
-import * as _noop from 'lodash/noop';
 import { ClassificationService } from 'non-core/classification.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
+import { noop } from 'shared/util';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -51,7 +51,7 @@ export class ClassifyItemDialogComponent {
                 if (this.userService.userOrgs.length === 1) {
                     this.onChangeOrg(this.userService.userOrgs[0]);
                 }
-            }, _noop);
+            }, noop);
         }
     }
 

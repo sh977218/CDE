@@ -10,7 +10,6 @@ import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/
 import { convertFormToSection } from 'core/form/form';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import * as _isEqual from 'lodash/isEqual';
-import * as _noop from 'lodash/noop';
 import { fetchForm } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -18,6 +17,7 @@ import { FormattedValue } from 'shared/models.model';
 import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-description-section',
@@ -167,7 +167,7 @@ export class FormDescriptionSectionComponent implements OnInit {
                 this.formDescriptionComponent.updateTree();
                 this.eltChange.emit();
             }
-        }, _noop);
+        }, noop);
     }
 
     removeNode(node: TreeNode) {

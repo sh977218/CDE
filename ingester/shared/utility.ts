@@ -23,8 +23,8 @@ import {
 } from 'shared/models.model';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { addFile } from 'server/mongo/mongo/gfs';
+import { idComparator, referenceDocumentComparator } from 'shared/elt/comparator';
 import { Readable } from 'stream';
-import { idComparator, referenceDocumentComparator } from 'shared/util';
 
 require('chromedriver');
 

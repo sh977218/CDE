@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as _noop from 'lodash/noop';
 import { Question } from 'shared/form/form.model';
 import { Cb1, Cb2, CodeAndSystem } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 export interface UcumSynonyms {
     code: string;
@@ -45,7 +45,7 @@ export class UcumService {
     }
 
     // cb()
-    validateUoms(question: Question, cb = _noop) {
+    validateUoms(question: Question, cb = noop) {
         const ucumUnits = question.unitsOfMeasure.filter((u: CodeAndSystem) => u.system === 'UCUM');
         question.uomsValid = [];
         this.validateUcumUnits(ucumUnits, errors => {

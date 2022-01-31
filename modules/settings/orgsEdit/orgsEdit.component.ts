@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Cb } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { stringCompare } from 'shared/util';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-orgs-edit',
@@ -54,7 +54,7 @@ export class OrgsEditComponent implements OnInit {
     updateOrg(org: Organization) {
         this.http.post('/server/orgManagement/updateOrg', org).subscribe(res => {
                 this.getOrgs(() => {
-                    this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'), _noop);
+                    this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Saved'), noop);
                 });
             }, () => this.alert.addAlert('danger', 'There was an issue updating this org.')
         );

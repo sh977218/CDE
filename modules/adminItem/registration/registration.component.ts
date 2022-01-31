@@ -3,9 +3,9 @@ import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef 
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import * as _noop from 'lodash/noop';
 import { AdministrativeStatus, administrativeStatuses, Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/regStatusShared';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-registration',
@@ -41,7 +41,7 @@ export class RegistrationComponent implements OnInit {
         if (this.elt.classification && this.elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
             this.validRegStatuses.push('Candidate');
             this.http.get<any>('/server/orgManagement/org/' + encodeURIComponent(this.elt.stewardOrg.name || '')).subscribe(res => {
-                this.userService.catch(_noop).then(user => {
+                this.userService.catch(noop).then(user => {
                     if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                         this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
                         if (user && user.siteAdmin) {

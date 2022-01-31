@@ -1,4 +1,4 @@
-import { capString } from 'shared/util';
+import { noop } from 'shared/util';
 
 export const htmlServedUri: string[] = [
     '/',

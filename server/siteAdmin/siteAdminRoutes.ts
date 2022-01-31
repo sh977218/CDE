@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { handleError, handleNotFound } from 'server/errorHandler';
+import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { deleteEsIndex, getStatus } from 'server/siteAdmin/status';
 import { indices } from 'server/system/elasticSearchInit';
 import { orgAuthorities, siteAdmins, userByUsername, UserDocument, usernamesByIp } from 'server/user/userDb';
@@ -29,11 +29,11 @@ export function module() {
         }));
     });
 
-    router.get('/siteAdmins', (req, res) => siteAdmins(handleError({req, res},
-        users => res.send(users))));
+    router.get('/siteAdmins', (req, res) => siteAdmins()
+        .then(users => res.send(users), respondError({req, res})));
 
-    router.get('/orgAuthorities', (req, res) => orgAuthorities(handleError({req, res},
-        users => res.send(users))));
+    router.get('/orgAuthorities', (req, res) => orgAuthorities()
+        .then(users => res.send(users), respondError({req, res})));
 
     router.get('/serverStatuses', (req, res) => {
         getStatus(/* istanbul ignore next */ () => res.send({esIndices: indices}));

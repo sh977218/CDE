@@ -4,7 +4,7 @@ import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser'
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
-import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
+import { onLoad } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
 
@@ -72,14 +72,7 @@ export class CdeAppComponent {
             }
         });
 
-        window.addEventListener('load', () => {
-            if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
-                this.userService.then(
-                    user => PushNotificationSubscriptionService.updateExisting(user._id),
-                    () => PushNotificationSubscriptionService.updateExisting()
-                );
-            }
-        });
+        window.addEventListener('load', onLoad);
 
         iconReg.addSvgIconLiteral('thumb_tack', sanitizer.bypassSecurityTrustHtml(
             /* tslint:disable */

@@ -4,7 +4,7 @@ import { version } from 'server/version';
 import { uriView } from 'shared/item';
 import { Task } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
-import { capString } from 'shared/util';
+import { capitalize } from 'shared/util';
 
 function createTaskFromCommentNotification(c: CommentNotification): Task {
     return {
@@ -13,7 +13,7 @@ function createTaskFromCommentNotification(c: CommentNotification): Task {
         idType: c.eltModule,
         name: c.username + ' commented',
         properties: [{
-            key: capString(c.eltModule),
+            key: capitalize(c.eltModule),
             value: c.eltTinyId,
         }],
         source: 'user',

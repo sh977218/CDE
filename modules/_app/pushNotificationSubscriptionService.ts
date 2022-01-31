@@ -1,239 +1,194 @@
-import * as _noop from 'lodash/noop';
+import { DELETE, POST } from '_commonApp/fetch';
+import {
+    PushRegistrationCreateRequest,
+    PushRegistrationCreateResponse,
+    PushRegistrationDeleteRequest,
+    PushRegistrationSubscribeRequest,
+    PushRegistrationSubscribeResponse,
+    PushRegistrationUpdateRequest,
+    PushRegistrationUpdateResponse,
+    PushSubscriptionJson
+} from 'shared/boundaryInterfaces/API/notification';
+import { noop } from 'shared/util';
 
-export class PushNotificationSubscriptionService {
-    static get lastEndpoint() {
-        return window.localStorage.getItem('nlmcde.push') || '';
-    }
-    static set lastEndpoint(endpoint: string) {
-        window.localStorage.setItem('nlmcde.push', endpoint);
-    }
-    static get lastUser() {
-        return window.localStorage.getItem('nlmcde.push1') || '';
-    }
-    static set lastUser(userId: string) {
-        window.localStorage.setItem('nlmcde.push1', userId);
-    }
-    static registration = new Promise<ServiceWorkerRegistration>((resolve, reject) => {
-        PushNotificationSubscriptionService.registrationResolve = resolve;
-        PushNotificationSubscriptionService.registrationReject = reject;
-    });
-    static registrationResolve: (value: ServiceWorkerRegistration | PromiseLike<ServiceWorkerRegistration>) => void;
-    static registrationReject: (reason?: any) => void;
+let _registration: Promise<ServiceWorkerRegistration> | null = null;
+let subscribedUserId: string | null = null;
 
-    static askNotificationPermission(): Promise<void> {
-        if (!('Notification' in window)) {
-            return Promise.reject(new Error('This browser does not support notifications.'));
+function askForNotificationPermission(): Promise<void> {
+    if (!('Notification' in window)) {
+        return Promise.reject(new Error('This browser does not support notifications.'));
+    }
+    // handle both old callback and new Promise implementations
+    return new Promise<string>((resolve, reject) => {
+        const promise = Notification.requestPermission(resolve);
+        if (promise) {
+            promise.then(resolve, reject);
         }
-        // handle both old callback and new Promise implementations
-        return new Promise<string>((resolve, reject) => {
-            const promise = Notification.requestPermission(resolve);
-            if (promise) {
-                promise.then(resolve, reject);
-            }
-        })
-            .then((permissionResult: string) => permissionResult === 'granted'
-                ? Promise.resolve()
-                : Promise.reject(new Error('Notification permission denied.'))
-            );
-    }
+    })
+        .then((permissionResult: string) => permissionResult === 'granted'
+            ? Promise.resolve()
+            : Promise.reject(new Error('Notification permission denied.'))
+        );
+}
 
-    static async getEndpoint(): Promise<void> {
-        if (!this.lastEndpoint) {
-            try {
-                // generate new endpoint
-                const registration = await this.registration;
-                const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
-                if (pushSubscription && pushSubscription.endpoint) {
-                    this.lastEndpoint = pushSubscription.endpoint;
-                } else {
-                    return Promise.reject('No subscription.');
-                }
-            } catch (e) {
-                return this.fetchError(e);
-            }
-        }
-    }
+function getRegistration(): Promise<ServiceWorkerRegistration> {
+    return _registration || Promise.reject('no service worker');
+}
 
-    static fetchError(error: any): Promise<any> {
-        PushNotificationSubscriptionService.handleError(error);
-        if (error instanceof Error) {
-            if (error.message.indexOf('denied')) {
-                alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
-                return Promise.resolve();
-            }
-            if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
-                throw new Error('Server is not available or you are offline.');
-            }
-        }
-        throw error;
-    }
-
-    static handleError(error: Error) {
-        fetch('./server/log/clientExceptionLogs', {
-            method: 'post',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                stack: error.stack,
-                message: error.message,
-                name: error.name,
-                url: window.location.href
-            }),
-        });
-    }
-
-    static subscriptionCheckClient(): boolean {
-        return !!PushNotificationSubscriptionService.lastEndpoint && !!PushNotificationSubscriptionService.lastUser;
-    }
-
-    static async subscriptionDelete(userId: string): Promise<void> {
-        if (userId && this.lastEndpoint && this.lastUser) {
-            try {
-                await fetch('/server/notification/pushRegistration', {
-                    method: 'delete',
-                    headers: {
-                        'Content-type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        endpoint: this.lastEndpoint,
-                        features: ['all']
-                    }),
-                });
-                this.lastEndpoint = '';
-                this.lastUser = '';
-                return Promise.resolve();
-            } catch (e) {
-                return this.fetchError(e);
-            }
-        } else {
-            throw new Error('Not Subscribed');
-        }
-    }
-
-    static async subscriptionNew(userId: string): Promise<PushSubscription | null> {
-        try {
-            await this.askNotificationPermission();
-            const registration = await this.registration;
-            const pushSubscription: PushSubscription | null = await registration.pushManager.getSubscription();
-            const response: Response = await fetch('/server/notification/pushRegistration', {
-                method: 'post',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    features: ['all'],
-                    subscription: pushSubscription,
-                }),
-            });
-            const res = await response.json();
-            if (res.subscribed) {
-                return pushSubscription;
-            }
-            if (!res.applicationServerKey) {
-                return Promise.reject('');
-            }
-            if (pushSubscription) {
-                await pushSubscription.unsubscribe();
-                return PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
-            }
-            return PushNotificationSubscriptionService.subscriptionNewCreate(registration, res.applicationServerKey, userId);
-        } catch (e) {
-            return this.fetchError(e);
-        }
-    }
-
-    static async subscriptionNewCreate(registration: ServiceWorkerRegistration, applicationServerKey: string, userId: string) {
-        function urlBase64ToUint8Array(base64String: string) {
-            const padding = '='.repeat((4 - base64String.length % 4) % 4);
-            const base64 = (base64String + padding)
-                .replace(/\-/g, '+')
-                .replace(/_/g, '/')
-            ;
-            const rawData = window.atob(base64);
-            return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
-        }
-        try {
-            const pushSubscription: PushSubscription = await registration.pushManager.subscribe({
-                applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
-                userVisibleOnly: true,
-            });
-            if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
-                return this.fetchError(new Error('Bad syntax.'));
-            }
-            await fetch('/server/notification/pushRegistrationSubscribe', {
-                method: 'post',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    applicationServerKey,
-                    features: ['all'],
-                    subscription: pushSubscription,
-                }),
-            });
-            this.lastEndpoint = pushSubscription.endpoint;
-            this.lastUser = userId;
-            return pushSubscription;
-        } catch (e) {
-            return this.fetchError(e);
-        }
-    }
-
-    static async subscriptionServerUpdate(userId: string): Promise<void> {
-        if (!this.lastEndpoint) {
+function getServerStatus(userId: string | null): Promise<void> {
+    return getSubscriptionEndpoint().then(endpoint => {
+        if (!endpoint) {
             throw new Error('Not Subscribed.');
         }
-        let response: Response;
-        try {
-            response = await fetch('/server/notification/pushRegistrationUpdate', {
-                method: 'post',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    endpoint: this.lastEndpoint,
-                    features: ['all']
-                }),
-            });
-        } catch (e) {
-            throw new Error('Network Error');
-        }
-        let body;
-        try {
-            body = await response.json();
-        } catch (e) {
-            throw new Error('Network Error - not json');
-        }
-        if (body && body.exists === false) {
-            this.lastEndpoint = '';
-            this.lastUser = '';
-            throw new Error('This subscription does not exist.');
-        } else if (body && body.status === false) {
-            this.lastUser = '';
-            throw new Error('This subscription does not exist.');
-        } else if (body && body.status === true) {
-            this.lastUser = userId;
-            return Promise.resolve();
-        } else {
-            throw new Error('Network Error');
-        }
-    }
-
-    static async updateExisting(userId?: string) {
-        try {
-            const registration = await navigator.serviceWorker.register('/sw.js').catch();
-            this.registrationResolve(registration);
-            if (userId) {
-                this.subscriptionServerUpdate(userId).catch(_noop);
+        return POST<PushRegistrationUpdateRequest, PushRegistrationUpdateResponse>(
+            '/server/notification/pushRegistrationUpdate',
+            {
+                endpoint,
+                features: ['all']
             }
-        } catch (err) {
-            this.registrationReject();
+        )
+            .then(res => {
+                if (res.status) {
+                    subscribedUserId = userId;
+                } else {
+                    throw new Error('This subscription does not exist.');
+                }
+            }, processError);
+    })
+}
+
+
+function getSubscription(): Promise<PushSubscription | null> {
+    return getRegistration()
+        .then(registration => registration.pushManager.getSubscription());
+}
+
+function getSubscriptionEndpoint(): Promise<string | null> {
+    return getSubscription()
+        .then(pushSubscription => pushSubscription && pushSubscription.endpoint);
+}
+
+function getSubscriptionForAppKey(applicationServerKey: string): Promise<PushSubscription> {
+    return getSubscription().then(async pushSubscription => {
+        if (!(pushSubscription?.options?.applicationServerKey?.toString() === applicationServerKey)) {
+            await pushSubscription?.unsubscribe();
+        }
+        return getRegistration()
+            .then(registration => registration.pushManager.subscribe({
+                applicationServerKey: urlBase64ToUint8Array(applicationServerKey),
+                userVisibleOnly: true,
+            }))
+            .then(pushSubscription => {
+                if (!pushSubscription || !pushSubscription.getKey || !pushSubscription.endpoint) {
+                    return Promise.reject('Bad syntax.');
+                }
+                return pushSubscription;
+            });
+    });
+}
+
+function processError(error: Error | string | void): Promise<never> {
+    if (error instanceof Error) {
+        reportError(error);
+        if (error.message.indexOf('denied')) {
+            alert(`Your browser preferences prevent notifications from this website. (${error.message})`);
+            return Promise.reject();
+        }
+        if (error.message === 'Failed to fetch' || error.message === 'Unexpected token < in JSON at position 0') {
+            throw new Error('Server is not available or you are offline.');
         }
     }
+    throw error;
+}
+
+function reportError(error: Error): void {
+    POST('./server/log/clientExceptionLogs', {
+        stack: error.stack,
+        message: error.message,
+        name: error.name,
+        url: window.location.href
+    }).then(noop, noop);
+}
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/')
+    ;
+    const rawData = window.atob(base64);
+    return Uint8Array.from(Array.from(rawData).map(char => char.charCodeAt(0)));
+}
+
+export function getStatus(userId: string): boolean {
+    return userId === subscribedUserId;
+}
+
+export function onLoad(): void {
+    _registration = (
+        'serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')
+            ? navigator.serviceWorker.register('/sw.js')
+            : null
+    );
+}
+
+// on timeout no action
+export function signInOut(userId: string | null): Promise<void> {
+    return getServerStatus(userId);
+}
+
+export function subscribe(userId: string): Promise<PushSubscription | null> {
+    return askForNotificationPermission()
+        .then(getSubscription)
+        .then(pushSubscription => POST<PushRegistrationCreateRequest, PushRegistrationCreateResponse>(
+                '/server/notification/pushRegistration',
+                {
+                    features: ['all'],
+                    subscription: pushSubscription as unknown as PushSubscriptionJson | null,
+                },
+            )
+                .then(res => {
+                    if (res.subscribed) {
+                        return pushSubscription;
+                    }
+                    if (!res.applicationServerKey) {
+                        return Promise.reject('');
+                    }
+                    return getSubscriptionForAppKey(res.applicationServerKey)
+                        .then(pushSubscription => POST<PushRegistrationSubscribeRequest, PushRegistrationSubscribeResponse>(
+                                '/server/notification/pushRegistration/subscription',
+                                {
+                                    applicationServerKey: res.applicationServerKey,
+                                    features: ['all'],
+                                    subscription: pushSubscription as unknown as PushSubscriptionJson,
+                                }
+                            )
+                                .then(() => pushSubscription, processError)
+                        );
+                }, processError)
+                .then(pushSubscription => {
+                    if (pushSubscription) {
+                        subscribedUserId = userId;
+                    }
+                    return pushSubscription;
+                })
+        );
+}
+
+export function unsubscribe(userId: string): Promise<void> {
+    if (!getStatus(userId)) {
+        return Promise.reject('Not Subscribed');
+    }
+    return getSubscriptionEndpoint().then(endpoint => {
+        if (!endpoint) {
+            return Promise.reject('Not Your Subscription');
+        }
+        return DELETE<PushRegistrationDeleteRequest>('/server/notification/pushRegistration', {
+            endpoint,
+            features: ['all']
+        })
+            .then(() => {
+                subscribedUserId = null;
+            }, processError);
+    });
 }

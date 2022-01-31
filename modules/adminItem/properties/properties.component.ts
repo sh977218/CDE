@@ -2,9 +2,9 @@ import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef 
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import * as _noop from 'lodash/noop';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Property } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-properties',
@@ -32,7 +32,7 @@ export class PropertiesComponent implements OnInit {
                 this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name]?.propertyKeys || [];
             }
             this.onInitDone = true;
-        }, _noop);
+        }, noop);
     }
 
     openNewPropertyModal() {

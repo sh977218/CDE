@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { noop } from 'lodash';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { AuthenticatedRequest } from 'server/user/authentication';
 import { Cb, Cb1, CbError1, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 type HandledError = CastError | Error;
 

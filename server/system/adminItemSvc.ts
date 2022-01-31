@@ -1,8 +1,7 @@
-import { noop } from 'lodash';
 import { Document, Model } from 'mongoose';
 import { ObjectId } from 'server';
 import { byEltId as discussByEltId, CommentReply } from 'server/discuss/discussDb';
-import { handleError, handleNotFound, HandlerOptions } from 'server/errorHandler';
+import { handleNotFound, HandlerOptions, respondError } from 'server/errorHandler';
 import { typeToCriteria } from 'server/notification/notificationSvc';
 import { pushRegistrationSubscribersByUsers, triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { find as userFind, updateUser } from 'server/user/userDb';
@@ -10,7 +9,7 @@ import { uriView } from 'shared/item';
 import { Attachment, CbError, CbError1, Elt, Item, ModuleAll } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { usersToNotify } from 'shared/user';
-import { capString } from 'shared/util';
+import { capitalize, noop } from 'shared/util';
 
 export function attachmentApproved(collection: Model<Item & Document>, id: string, cb: CbError1<Attachment>) {
     collection.updateMany(
@@ -40,8 +39,8 @@ export function badWorkingGroupStatus(elt: Item, org: Organization) {
 //     let name;
 //     switch (type) {
 //         case 'approval':
-//             name = capString(type) + ' Request: ' + user.username + ' added ' + item + ' on '
-//                 + capString(eltModule) + ' ' + eltTinyId + ' and needs approval';
+//             name = capitalize(type) + ' Request: ' + user.username + ' added ' + item + ' on '
+//                 + capitalize(eltModule) + ' ' + eltTinyId + ' and needs approval';
 //     }
 //     const pushTask: any = {
 //         title: name,
@@ -130,7 +129,7 @@ export function notifyForComment(handlerOptions: HandlerOptions, commentOrReply:
 
             // push
             const pushTaskMsg = JSON.stringify({
-                title: commentOrReply.user.username + ' commented on ' + capString(eltModule) + ' ' + eltTinyId,
+                title: commentOrReply.user.username + ' commented on ' + capitalize(eltModule) + ' ' + eltTinyId,
                 options: {
                     body: commentOrReply.text,
                     data: {url: uriView(eltModule, eltTinyId)},
@@ -151,12 +150,12 @@ export function notifyForComment(handlerOptions: HandlerOptions, commentOrReply:
                     ]
                 }
             });
-            pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users), handleError(handlerOptions, registrations => {
-                if (registrations) {
-                    registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
-                }
-                cb();
-            }));
+            pushRegistrationSubscribersByUsers(usersToNotify('comment', 'push', users))
+                .then(registrations => {
+                    if (registrations) {
+                        registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
+                    }
+                }, respondError(handlerOptions));
         }));
     }));
 }

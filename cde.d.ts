@@ -23,7 +23,6 @@ declare module 'gulp-usemin';
 declare module 'merge-stream';
 declare module 'js-toggle-switch/dist/toggle-switch';
 declare module 'jxon';
-declare module 'lodash/clone';
 declare module 'lodash/cloneDeep';
 declare module 'lodash/curry' {
     import { curry } from 'lodash';
@@ -44,7 +43,6 @@ declare module 'lodash/intersectionWith';
 declare module 'lodash/isArray';
 declare module 'lodash/isEmpty';
 declare module 'lodash/isEqual';
-declare module 'lodash/noop';
 declare module 'lodash/remove';
 declare module 'lodash/slice';
 declare module 'lodash/sortBy';

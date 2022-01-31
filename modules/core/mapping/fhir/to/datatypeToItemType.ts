@@ -4,7 +4,7 @@ import {
     containerToItemType, itemTypeToItemDatatype, valueToTypedValue
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { FhirValue } from 'shared/mapping/fhir/fhir.model';
-import { capString } from 'shared/util';
+import { capitalize } from 'shared/util';
 
 export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMulti: boolean = false, prefix?: string,
                                     hasCodeableConcept: boolean = false): void {
@@ -24,5 +24,5 @@ export function questionToFhirValue(q: FormQuestion, fhirObj: FhirValue, fhirMul
 
 export function storeTypedValue(value: any, obj: FhirValue, qType: string, prefix: string = 'value',
                                 hasCodeableConcept: boolean = false): void {
-    obj[prefix + capString(itemTypeToItemDatatype(qType, hasCodeableConcept))] = value;
+    obj[prefix + capitalize(itemTypeToItemDatatype(qType, hasCodeableConcept))] = value;
 }

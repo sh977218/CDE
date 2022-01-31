@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { capString, decamelize } from 'shared/util';
+import { capitalize, decamelize } from 'shared/util';
 
 @Pipe({name: 'cdeCamelCaseToHuman'})
 export class CamelCaseToHumanPipe implements PipeTransform {
@@ -8,7 +8,7 @@ export class CamelCaseToHumanPipe implements PipeTransform {
             return value;
         }
         return args
-            ? capString(decamelize(value))
+            ? capitalize(decamelize(value))
             : decamelize(value);
     }
 }

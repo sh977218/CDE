@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _forEach from 'lodash/forEach';
 import * as _differenceWith from 'lodash/differenceWith';
 import * as _intersectionWith from 'lodash/intersectionWith';
@@ -10,6 +9,7 @@ import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormOrElement, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { FormattedValue } from 'shared/models.model';
+import { deepCopy } from 'shared/util';
 
 class ComparedDe extends DataElement {
     concepts?: Concept[];
@@ -498,15 +498,15 @@ function flatFormQuestions(fe: FormOrElement, questions: (FormElement & { sectio
     if (fe.formElements !== undefined) {
         _forEach(fe.formElements, (e: FormElement) => {
             if (e.elementType && e.elementType === 'question') {
-                const questionCopy = _cloneDeep(e);
+                const questionCopy = deepCopy(e);
                 fixFormElement(questionCopy);
                 questions.push(questionCopy);
             } else if (e.elementType && e.elementType === 'form') {
-                const formCopy = _cloneDeep(e);
+                const formCopy = deepCopy(e);
                 fixFormElement(formCopy);
                 questions.push(formCopy);
             } else if (e.elementType && e.elementType === 'section') {
-                const sectionCopy: FormElement & { sectionId?: string } = _cloneDeep(e);
+                const sectionCopy: FormElement & { sectionId?: string } = deepCopy(e);
                 fixFormElement(sectionCopy);
                 sectionCopy.sectionId = 'section_' + index;
                 index++;

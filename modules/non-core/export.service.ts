@@ -11,7 +11,6 @@ import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import JXON from 'jxon';
 import * as _intersectionWith from 'lodash/intersectionWith';
-import * as _noop from 'lodash/noop';
 import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
@@ -25,6 +24,7 @@ import {
     ItemElastic
 } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
+import { noop } from 'shared/util';
 
 export interface ExportRecord {
     tinyId: string;
@@ -265,7 +265,7 @@ export class ExportService {
     async formCdeExport(form: CdeForm) {
         this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
-        const elts = await this.http.get<DataElement[]>('/server/de/list/' + tinyIdList).toPromise().catch(_noop);
+        const elts = await this.http.get<DataElement[]>('/server/de/list/' + tinyIdList).toPromise().catch(noop);
         let csv;
         if (elts) {
             csv = await this.resultToCsv(elts as DataElementElastic[]);

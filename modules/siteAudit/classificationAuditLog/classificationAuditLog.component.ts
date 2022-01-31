@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
-import * as _noop from 'lodash/noop';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-classification-audit-log',
@@ -25,6 +25,6 @@ export class ClassificationAuditLogComponent {
             limit: 50
         }).subscribe(response => {
             this.records = response;
-        }, _noop);
+        }, noop);
     }
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { handleError } from 'server/errorHandler';
-import { checkDatabase, create, remove, subscribe, updateStatus } from 'server/notification/pushNotificationSvc';
+import { checkDatabase, created, register, remove, updateStatus } from 'server/notification/pushNotificationSvc';
 import { isSiteAdminMiddleware, loggedInMiddleware } from 'server/system/authorization';
 import { RequestHandler } from 'express';
 
@@ -25,9 +25,9 @@ export function module(roleConfig: { notificationDate: RequestHandler }) {
 
 
     checkDatabase();
-    router.post('/pushRegistration', loggedInMiddleware, create);
+    router.post('/pushRegistration', loggedInMiddleware, register);
+    router.post('/pushRegistration/subscription', loggedInMiddleware, created);
     router.delete('/pushRegistration', loggedInMiddleware, remove);
-    router.post('/pushRegistrationSubscribe', loggedInMiddleware, subscribe);
     router.post('/pushRegistrationUpdate', updateStatus);
 
     return router;

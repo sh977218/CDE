@@ -11,7 +11,7 @@ import {
 } from 'shared/mapping/fhir/to/datatypeToItemType';
 import { regStatusToPublicationStatus } from 'shared/mapping/fhir/to/enumToValueSet';
 import { newIdentifier } from 'shared/mapping/fhir/to/toFhir';
-import { capString } from 'shared/util';
+import { capitalize } from 'shared/util';
 
 /*
  * Call as formToQuestionnaire(form, options, window)
@@ -71,7 +71,7 @@ export function feToQuestionnaireItem(form: CdeForm, fe: FormElement, options: a
             item.maxLength = fe.question.datatypeText.maxLength;
         }
         if (fe.question.defaultAnswer) {
-            item['initial' + capString(itemTypeToItemDatatype(item.type))] = valueToTypedValue(fe.question, item.type,
+            item['initial' + capitalize(itemTypeToItemDatatype(item.type))] = valueToTypedValue(fe.question, item.type,
                 fe.question.defaultAnswer);
         }
         if (fe.question.datatype === 'Value List' && Array.isArray(fe.question.answers) && fe.question.answers.length) {
@@ -129,7 +129,7 @@ export function feToQuestionnaireItem(form: CdeForm, fe: FormElement, options: a
                             when.answerString = '';
                         } else {
                             const qType = containerToItemType(q.question);
-                            when['answer' + capString(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
+                            when['answer' + capitalize(itemTypeToItemDatatype(qType))] = valueToTypedValue(q.question,
                                 qType, tokens[i + 2].substring(1, tokens[i + 2].length - 1), tokens[i + 1]);
                             item.enableWhen.push(when);
                         }

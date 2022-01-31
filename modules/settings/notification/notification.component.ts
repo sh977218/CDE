@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
+import { getStatus, subscribe, unsubscribe } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { User } from 'shared/models.model';
 import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-notification',
@@ -21,7 +21,6 @@ import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
     `]
 })
 export class NotificationComponent {
-    clientStatus = PushNotificationSubscriptionService.subscriptionCheckClient;
     hasRole = hasRole;
     isSiteAdmin = isSiteAdmin;
     readonly booleanSettingOptions = ['Disabled', 'Enabled'];
@@ -32,12 +31,16 @@ export class NotificationComponent {
         this.userService.reload();
     }
 
+    clientStatus() {
+        return getStatus(this.user?._id);
+    }
+
     pushSubscribe(user: User) {
-        PushNotificationSubscriptionService.subscriptionNew(user._id).catch(_noop);
+        subscribe(user._id).catch(noop);
     }
 
     pushUnsubscribe(user: User) {
-        PushNotificationSubscriptionService.subscriptionDelete(user._id).catch(_noop);
+        unsubscribe(user._id).catch(noop);
     }
 
     get user(): User | undefined {

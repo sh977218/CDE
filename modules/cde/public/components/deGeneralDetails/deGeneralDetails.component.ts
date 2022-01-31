@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import * as _noop from 'lodash/noop';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { DataElement } from 'shared/de/dataElement.model';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-de-general-details[elt]',
@@ -20,7 +20,7 @@ export class DeGeneralDetailsComponent {
     ) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
-        }, _noop);
+        }, noop);
     }
 
     changeStewardOrg(event: string) {

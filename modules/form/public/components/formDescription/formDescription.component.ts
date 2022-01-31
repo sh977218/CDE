@@ -13,7 +13,6 @@ import { DeCompletionService } from 'cde/public/components/completion/deCompleti
 import { copySectionAnimation } from 'form/public/components/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/public/components/formView.component';
 import * as _isEmpty from 'lodash/isEmpty';
-import * as _noop from 'lodash/noop';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -22,6 +21,7 @@ import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
 import { Cb1 } from 'shared/models.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-description',
@@ -165,7 +165,7 @@ export class FormDescriptionComponent implements OnInit {
         // this.onEltChange.emit(); treeEvent will handle
     }
 
-    addFormFromSearch(form: CdeForm, cb: Cb1<FormInForm> = _noop) {
+    addFormFromSearch(form: CdeForm, cb: Cb1<FormInForm> = noop) {
         this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
             const inForm = convertFormToSection(form);
             if (!inForm) {

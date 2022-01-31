@@ -1,17 +1,17 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PushNotificationSubscriptionService } from '_app/pushNotificationSubscriptionService';
+import { signInOut } from '_app/pushNotificationSubscriptionService';
 import { AlertService } from 'alert/alert.service';
-import * as _noop from 'lodash/noop';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
-import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
+import { Cb1, CbErrorObj, Comment, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege, isSiteAdmin, canViewComment
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
+import { noop } from 'shared/util';
 
 @Injectable()
 export class UserService {
@@ -76,14 +76,14 @@ export class UserService {
         return Promise.resolve(user);
     }
 
-    reload(cb = _noop) {
+    reload(cb = noop) {
         this.clear();
         this.promise = this.http.get<User>('/server/user/').toPromise()
             .then(user => this.processUser(user));
         this.promise.finally(() => {
             this.listeners.forEach(listener => listener(this._user || null));
         });
-        this.promise.then(user => PushNotificationSubscriptionService.subscriptionServerUpdate(user && user._id)).catch(_noop);
+        this.promise.then(user => signInOut(user && user._id)).catch(noop);
         this.promise.then(cb, cb);
     }
 

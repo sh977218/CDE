@@ -3,7 +3,6 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import * as _cloneDeep from 'lodash/cloneDeep';
 import * as _differenceWith from 'lodash/differenceWith';
 import * as _get from 'lodash/get';
 import * as _intersectionWith from 'lodash/intersectionWith';
@@ -21,6 +20,7 @@ import {
 import { Cb } from 'shared/models.model';
 import { CdeForm, FormElement, FormElementsContainer, FormQuestion, QuestionValueList } from 'shared/form/form.model';
 import { isDataElement, ITEM_MAP } from 'shared/item';
+import { deepCopy } from 'shared/util';
 
 export type CompareQuestion = FormQuestion & {isRetired?: boolean};
 export type CompareForm = CdeForm & {questions: CompareQuestion[]};
@@ -169,7 +169,7 @@ export class CompareSideBySideComponent {
                 if (e.elementType && e.elementType === 'question') {
                     e.formElements = [];
                     delete e._id;
-                    questions.push(_cloneDeep(e));
+                    questions.push(deepCopy(e));
                 } else {
                     questions = questions.concat(this.flatFormQuestions(e));
                 }

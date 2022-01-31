@@ -1,12 +1,11 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
 import { config } from 'server';
-import { handleConsoleError } from 'server/errorHandler';
+import { handleConsoleError, respondError } from 'server/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';
-import { pushRegistrationsFor } from 'server/notification/notificationDb';
-import { triggerPushMsg } from 'server/notification/pushNotificationSvc';
+import { pushRegistrationsFor, triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { siteAdmins, UserFull } from 'server/user/userDb';
@@ -143,9 +142,9 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
                     ]
                 }
             });
-            pushRegistrationsFor(siteAdmins, registrations => {
+            pushRegistrationsFor(siteAdmins).then(registrations => {
                 registrations.forEach(r => triggerPushMsg(r, msg));
-            });
+            }, respondError());
         }
         if (callback) {
             callback();
@@ -181,9 +180,9 @@ export function logClientError(req: Request, done: Cb) {
                     ]
                 }
             });
-            pushRegistrationsFor(siteAdmins, registrations => {
+            pushRegistrationsFor(siteAdmins).then(registrations => {
                 registrations.forEach(r => triggerPushMsg(r, msg));
-            });
+            }, respondError());
         }
 
         done();

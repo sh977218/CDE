@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import * as _cloneDeep from 'lodash/cloneDeep';
+import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-inline-select-edit',
@@ -51,7 +51,7 @@ export class InlineSelectEditComponent {
     }
 
     edit() {
-        this._value = _cloneDeep(this.value);
+        this._value = deepCopy(this.value);
         this.editMode = true;
     }
 }

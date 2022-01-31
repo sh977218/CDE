@@ -6,9 +6,9 @@ import { ApprovalService } from '_app/notifications/approval.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
-import * as _noop from 'lodash/noop';
 import { partition } from 'shared/array';
 import { assertUnreachable, Cb, Task, TASK_STATE_UNREAD } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 const TYPES = ['error', 'approve', 'vote', 'message', 'comment']; // in sort order
 
@@ -68,9 +68,9 @@ export class NotificationService {
     }
 
     createTask(tasks: Task[], name?: string): NotificationTask {
-        const abstain = _noop;
-        let approve = _noop;
-        let reject = _noop;
+        const abstain = noop;
+        let approve = noop;
+        let reject = noop;
         const t0 = tasks[0];
         let task: NotificationTask;
         name = name || t0.name;
