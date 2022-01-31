@@ -105,7 +105,7 @@
                                         <mat-icon class="menuActionIcon">help_outline</mat-icon>
                                     </a>
                                 </ng-template>
-                                <a mat-menu-item *ngIf="exportToTab; else exportFileJson" class="no-link"
+                                <a mat-menu-item *ngIf="exportToTab; else exportFileOdm" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml&subtype=odm" target="_blank"
                                    rel="noopener noreferrer">
                                     XML File, CDISC / ODM
