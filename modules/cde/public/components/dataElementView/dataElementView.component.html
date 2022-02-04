@@ -28,10 +28,8 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <main *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
-<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
                         <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="40" width="40"
                              src="/cde/public/assets/img/min/Gold-Ribbon.png">
--->
                     <h1 id="top-of-page" style="display: inline">
                         <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
                                           (isDraftChange)="$event?loadElt():loadPublished()"

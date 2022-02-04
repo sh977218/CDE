@@ -12,7 +12,7 @@ public class ValidRulesPvUmls extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-CIP"));
-        clickElement(By.id("linkToElt_0"));
+        clickElement(By.linkText("Patient Ethnic Group Category"));
         clickElement(By.id("validateAgainstUMLS"));
         textPresent("UMLS Validation Passed");
     }

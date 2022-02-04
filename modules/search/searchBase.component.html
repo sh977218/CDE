@@ -33,7 +33,7 @@
                 <span>Query terms must be 500 characters or less.</span>
             </p>
         </form>
-<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+
         <section class="row justify-content-md-center">
             <div class="col-10">
                 <mat-card class="cde-bg-grey">
@@ -56,7 +56,7 @@
                 </mat-card>
             </div>
         </section>
--->
+
         <section id="tabs">
             <div *ngIf="orgs?.length === 0">
                 <h1>
@@ -161,7 +161,6 @@
             <div *ngIf="filterMode" style="padding-left: .25rem; padding-right: .25rem">
                 <!--FILTERS-->
                 <!-- NIH Endorsed AGGREGATIONS -->
-<!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
                 <div *ngIf="aggregations.orgs.buckets" id="nihEndorsedHolder" class="my-3">
                     <div class="treeTitle">NIH-Endorsed Collection</div>
                     <div>
@@ -171,7 +170,6 @@
                         </mat-checkbox>
                     </div>
                 </div>
--->
 
                 <!-- CLASSIFICATION AGGREGATIONS -->
                 <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder">

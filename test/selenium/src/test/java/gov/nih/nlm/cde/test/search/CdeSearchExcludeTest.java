@@ -37,14 +37,12 @@ public class CdeSearchExcludeTest extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-TEST"));
         textPresent("caBIG", By.id("resultList"));
         textPresent("ONC", By.id("resultList"));
-        textPresent("ECOG-ACRIN", By.id("resultList"));
-        textPresent("NHC-NCI", By.id("resultList"));
+        textPresent("CTEP", By.id("resultList"));
         clickElement(By.id("excludeFilterModeToggle"));
         clickElement(By.id("exludeAllOrgs"));
         textNotPresent("caBIG", By.id("resultList"));
         textNotPresent("ONC", By.id("resultList"));
-        textNotPresent("ECOG-ACRIN", By.id("resultList"));
-        textNotPresent("NHC-NCI", By.id("resultList"));
+        textNotPresent("CTEP", By.id("resultList"));
     }
 
 }

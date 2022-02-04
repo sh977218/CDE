@@ -17,13 +17,11 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
     const allowedStatuses = getAllowedStatuses(user, settings);
 
     // Increase ranking score for high registration status
-    const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+//    const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
-    /* DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE. Using the new score formula after UI
     const script = `
     if (doc['nihEndorsed'].value == true) { return _score * ${endorsedBoost} } else return _score
     `
-    */
 
     // Search for the query term given by user
     const hasSearchTerm = !!settings.searchTerm;
@@ -200,14 +198,12 @@ export function buildElasticSearchQuery(user: User, settings: SearchSettingsElas
         };
     }
 
-    /* DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE.
-            if (sort) {
-                queryStuff.sort = {
-                    nihEndorsed: 'desc',
-                    'primaryNameCopy.raw': 'asc'
-                };
-            }
-    */
+    if (sort) {
+        queryStuff.sort = {
+            nihEndorsed: 'desc',
+            'primaryNameCopy.raw': 'asc'
+        };
+    }
 
     // Get aggregations on classifications and statuses
     if (settings.includeAggregations) {
