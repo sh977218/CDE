@@ -14,7 +14,7 @@ import {
 } from './resources';
 import { FhirSmartService } from './fhirSmart.service';
 import { valueSets } from './valueSets';
-import { forEachOf, memoize, series, some } from 'async-es';
+import { forEachOf, memoize, series, some } from 'async';
 import { questionAnswered, findQuestionByTinyId } from 'core/form/fe';
 import { questionToFhirValue, storeTypedValue } from 'core/mapping/fhir/to/datatypeToItemType';
 import { getTinyId, getVersion } from 'core/form/formAndFe';
@@ -129,14 +129,14 @@ export class CdeFhirService {
                 done(undefined, r ? r.categories : undefined);
             }, done as any);
         }
-    );
+    ) as (code: string, cb: CbErr1<string[]>) => void;
     lookupLoincName: (code: string, cb: CbErr1<any>) => void = memoize((code: string, done: CbErrorObj1<string[] | void>) => {
         this.http.get('/server/uts/umlsCuiFromSrc/' + code + '/LNC').subscribe((r: any) => {
             if (r?.result?.results?.length) {
                 done(undefined, r.result.results[0].name.split(':')[0]);
             }
         }, done as any);
-    });
+    }) as (code: string, cb: CbErr1<string[]>) => void;
     patientForms: PatientForm[] = [];
     renderedPatientForm!: PatientForm;
     renderedResourceTree!: ResourceTreeRoot|ResourceTreeResource;
@@ -407,7 +407,7 @@ export class CdeFhirService {
                                     }
                                 }, done as any);
                         },
-                        (err: string) => {
+                        (err?: string | null) => {
                             if (err) {
                                 reject(err);
                                 return;
@@ -542,7 +542,7 @@ export class CdeFhirService {
                         : a,
                     []);
                 let categories: string[] = [];
-                forEachOf(codes, (code: string, doneOne: Cb) => {
+                forEachOf(codes, (code: string, key: number | string, doneOne: Cb) => {
                     this.getObservationCategory('LOINC', code, cats => {
                         if (Array.isArray(cats)) {
                             categories = categories.concat(cats);
@@ -583,20 +583,20 @@ export class CdeFhirService {
     }
 
     // cb(err)
-    saveTree(node: ResourceTreeRoot | ResourceTree, cb: CbErr1<any>) {
+    saveTree(node: ResourceTreeRoot | ResourceTree, key: string | number | undefined, cb: (err?: string | null) => void) {
         series([
-            (done: Cb1<string | void>) => {
+            (done: (t?: string | null) => void) => {
                 if (ResourceTreeUtil.isNotRoot(node) && ResourceTreeUtil.isResource(node)) {
                     this.saveTreeNode(node, done);
                 } else {
-                    done();
+                    done(null);
                 }
             },
-            (done: Cb1<string | void>) => {
+            (done: (t?: string | null) => void) => {
                 if (ResourceTreeUtil.isRoot(node) || !ResourceTreeUtil.isAttribute(node)) {
-                    forEachOf(node.children, this.saveTree.bind(this), done);
+                    forEachOf<ResourceTreeRoot | ResourceTree, string>(node.children, this.saveTree.bind(this), done);
                 } else {
-                    done();
+                    done(null);
                 }
             }
         ], cb);
@@ -677,7 +677,7 @@ export class CdeFhirService {
 
     submit(cb: Cb1<string | void>) {
         this.write(this.renderedResourceTree).then(() => {
-            this.saveTree(this.renderedResourceTree, (err?: string) => {
+            this.saveTree(this.renderedResourceTree, undefined, (err?: string | null) => {
                 if (err) {
                     cb(err);
                     return;

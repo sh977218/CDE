@@ -2,10 +2,10 @@
 ## Allowed
 * angular
    * to remove `@angular/common/http` and `Observables` in favor of `fetch()`
+* async
+  * coded as `async`, compiler substituted to `async-es` for web
 
 ## Not Allowed Libraries
-* async
-   * use `async/*`
 * lodash
    * use `lodash/*`
 * node

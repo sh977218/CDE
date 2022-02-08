@@ -1,10 +1,19 @@
 import { readFileSync, statSync } from 'fs';
 import { resolve } from 'path';
 
-const config = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), {encoding: 'utf8'}));
+const workindDirectory = process.cwd();
+const config = JSON.parse(readFileSync(resolve(workindDirectory, 'package.json'), {encoding: 'utf8'}));
 
+if (!config) {
+    console.log('Build Check Size FAILED.');
+    console.log('package.json not found');
+    console.log(workindDirectory);
+    process.exit(1);
+}
 if (!Array.isArray(config.bundlesize)) {
-    process.exit(0);
+    console.log('Build Check Size NOT USED.');
+    console.log(workindDirectory);
+    process.exit(1);
 }
 
 const errors: string[] = [];
@@ -14,7 +23,7 @@ config.bundlesize.forEach((b: {compression: string, maxSize: string, path: strin
         console.error('Error: ' + b.path + ' needs "compression: none"');
         process.exit(1);
     }
-    const actualSize = statSync(resolve(__dirname, '..', b.path)).size;
+    const actualSize = statSync(resolve(workindDirectory, b.path)).size;
     const isKb = b.maxSize.indexOf('kB') > -1;
     const isMb = b.maxSize.indexOf('MB') > -1;
     let ratio = 1;

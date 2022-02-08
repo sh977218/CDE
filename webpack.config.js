@@ -1,5 +1,5 @@
 const config = require('config');
-const {ContextReplacementPlugin, DefinePlugin, ProvidePlugin} = require('webpack');
+const {ContextReplacementPlugin, DefinePlugin, NormalModuleReplacementPlugin, ProvidePlugin} = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const APP_DIR = __dirname;
@@ -65,6 +65,7 @@ module.exports = {
             Popper: ['popper.js', 'default'],
         }),
         new ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
+        new NormalModuleReplacementPlugin(/^async$/, 'async-es'),
         new DefinePlugin({
             INACTIVE_TIMEOUT: config.inactivityTimeout,
             NAVIGATION_HEIGHT: 102,

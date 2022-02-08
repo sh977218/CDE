@@ -380,7 +380,7 @@ gulp.task('injectElastic', ['es', 'mongorestoretest', 'npmRebuild'], function in
 });
 
 gulp.task('checkBundleSize', ['buildDist'], function checkBundleSize() {
-    return node('scripts/buildCheckSize');
+    return node('buildNode/scripts/buildCheckSize', runInAppOptions);
 });
 
 gulp.task('refreshDbs', ['es', 'mongorestoretest', 'injectElastic']);

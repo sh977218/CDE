@@ -1,5 +1,4 @@
 import {
-    assertUnreachable,
     CdeId,
     CodeAndSystem, Definition,
     DerivationRule, Designation,
@@ -245,7 +244,7 @@ class FormElementEdit<T extends FormElement> implements FormElementsContainer<T>
     updatedSkipLogic?: boolean; // calculated, formDescription view model
 }
 
-export class FormElementPart<T extends FormElement> extends FormElementEdit<T> implements FormElementsContainer {
+export class FormElementPart<T extends FormElement> extends FormElementEdit<T> implements FormElementsContainer<T> {
     // TODO: private after mixins for nativeSectionMatrix is resolved
     _id?: ObjectId; // TODO: remove
     feId?: string; // calculated, nativeRender and formView view model
@@ -346,7 +345,7 @@ export class MetadataTag {
     }
 }
 
-export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer { // view model
+export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer<FormElementFollow> { // view model
     formElements!: FormElementFollow[]; // volatile, nativeRender
     index?: number;
     nonValuelist?: boolean;

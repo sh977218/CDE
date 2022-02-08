@@ -1,5 +1,4 @@
-import * as forEachOf from 'async/forEachOf';
-import * as forEachSeries from 'async/forEachSeries';
+import { forEachOf, forEachSeries } from 'async';
 import { CbErrorObj } from 'shared/models.model';
 import {
     FormElement, FormElementGeneric, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
@@ -78,9 +77,12 @@ export function isSection(fe: FormElement): fe is FormSection {
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
-export function iterateFe<T extends FormElement, E = Error>(fe: FormElementsContainer<T>, formCb: informCb<T, E> | undefined,
-                                                            sectionCb: sectionCb<T, E> | undefined, questionCb: quesCb<T, E> | undefined,
-                                                            callback: CbErrorObj<E | void>, options?: IterateOptions): void {
+export function iterateFe<T extends FormElementGeneric<T> = FormElement, E = Error>(fe: FormElementsContainer<T>,
+                                                            formCb: informCb<T, E> | undefined,
+                                                            sectionCb: sectionCb<T, E> | undefined,
+                                                            questionCb: quesCb<T, E> | undefined,
+                                                            callback: CbErrorObj<E | void | null | undefined>,
+                                                            options?: IterateOptions): void {
     if (fe) {
         iterateFes(fe.formElements, formCb, sectionCb, questionCb, callback, options);
     } else {
@@ -110,15 +112,16 @@ export function iterateFeSyncOptions(fe: FormElementsContainer, formCb?: informO
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()
 // callback(error)
-export function iterateFes<T extends FormElement = FormElement, E = Error>(fes: T[], formCb: informCb<T, E> = noopIterCb,
+export function iterateFes<T extends FormElementGeneric<T> = FormElement, E = Error>(fes: FormElementGeneric<T>[],
+                                                                           formCb: informCb<T, E> = noopIterCb,
                                                                            sectionCb: sectionCb<T, E> = noopIterCb,
                                                                            questionCb: quesCb<T, E> = noopIterCb,
-                                                                           callback: CbErrorObj<E | void> = () => {},
+                                                                           callback: CbErrorObj<E | void | null | undefined> = () => {},
                                                                            options?: IterateOptions): void {
     if (!Array.isArray(fes)) {
         return callback();
     }
-    forEachOf(fes, (fe: FormElementGeneric<T>, i: number, cb: CbErrorObj<E | null | void>) => {
+    forEachOf(fes, (fe: FormElementGeneric<T>, i: number | string, cb: CbErrorObj<E | null | void>) => {
         switch (fe.elementType) {
             case 'form':
                 formCb(fe, (err, options = undefined) => {

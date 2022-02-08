@@ -8,7 +8,7 @@ import { FormElement, FormElementPart, FormElementsContainer, QuestionValueList 
     templateUrl: 'nativeSectionMatrix.component.html'
 })
 export class NativeSectionMatrixComponent {
-    @Input() formElement!: FormElementsContainer<FormElementPart<FormElement> & {elementType: 'question', question: QuestionValueList}>;
+    @Input() formElement!: FormElementsContainer;
     @Input() numSubQuestions!: number;
     NRS = NativeRenderService;
     questionMulti = questionMulti;
