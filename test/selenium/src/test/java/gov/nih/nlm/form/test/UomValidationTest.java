@@ -89,7 +89,7 @@ public class UomValidationTest extends BaseFormTest {
                 "actually: " + resp);
 
         resp = get(baseUrl + "/server/ucumConvert?value=0&to=0&from=0").asString();
-        Assert.assertEquals(resp, "",
+        Assert.assertEquals(resp, "0",
                 "actually: " + resp);
     }
 

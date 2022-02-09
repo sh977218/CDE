@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "7.10.0",
+    "@lhncbc/ucum-lhc": "^4.1.4",
     "ajv": "^6.10.0",
     "archiver": "^3.0.0",
     "async": "^3.2.3",
@@ -140,7 +141,6 @@
     "swagger-tools": "^0.10.4",
     "tough-cookie": "^4.0.0",
     "trim": "^1.0.1",
-    "ucum": "https://github.com/ivanovgp/ucum-lhc.git",
     "useragent": "^2.3.0",
     "web-push": "^3.4.0",
     "winston": "2.4.5",

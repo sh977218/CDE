@@ -38,13 +38,6 @@ const canEditMiddlewareForm = canEditMiddleware(dbPlugins.form);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(dbPlugins.form);
 const canViewDraftMiddlewareForm = canEditByTinyIdMiddlewareForm;
 
-// ucum from lhc uses IndexDB
-(global as any).location = {origin: 'localhost'};
-const setGlobalVars = require('indexeddbshim');
-(global as any).window = global; // We'll allow ourselves to use `window.indexedDB` or `indexedDB` as a global
-setGlobalVars();
-const ucum = require('ucum').UcumLhcUtils.getInstance();
-
 const allowXOrigin: RequestHandler = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
@@ -61,6 +54,9 @@ const allRequestsProcessing: RequestHandler = (req, res, next) => {
 };
 
 require('express-async-errors');
+
+const ucum = require('@lhncbc/ucum-lhc');
+const ucumUtils = ucum.UcumLhcUtils.getInstance();
 
 export function module() {
     const router = Router();
@@ -273,7 +269,7 @@ export function module() {
 
     router.get('/server/ucumConvert', (req, res) => {
         const value = req.query.value === '0' ? 1e-20 : parseFloat(req.query.value as string); // 0 workaround
-        const result = ucum.convertUnitTo(req.query.from, value, req.query.to);
+        const result = ucumUtils.convertUnitTo(req.query.from, value, req.query.to);
         if (result.status === 'succeeded') {
             const ret = Math.abs(result.toVal) < 1 ? round(result.toVal, 10) : result.toVal; // 0 workaround
             res.send('' + ret);
@@ -285,7 +281,7 @@ export function module() {
     router.get('/server/ucumSynonyms', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
-        const resp = ucum.getSpecifiedUnit(uom, 'validate', 'false');
+        const resp = ucumUtils.getSpecifiedUnit(uom, 'validate', 'false');
         if (!resp || !resp.unit) {
             return res.send([]);
         }
@@ -299,7 +295,7 @@ export function module() {
     router.get('/server/ucumNames', check('uom').isAlphanumeric(), validateBody, (req, res) => {
         const uom = req.query.uom;
 
-        const resp = ucum.getSpecifiedUnit(uom, 'validate', true);
+        const resp = ucumUtils.getSpecifiedUnit(uom, 'validate', true);
         if (!resp || !resp.unit) {
             return res.send([]);
         } else {
@@ -313,7 +309,7 @@ export function module() {
 
     function validateUom(uom: string, cb: CbErr1<string>) {
         let error;
-        const validation = ucum.validateUnitString(uom, true);
+        const validation = ucumUtils.validateUnitString(uom, true);
         if (validation.status === 'valid') {
             return cb(undefined, uom);
         }
@@ -325,7 +321,7 @@ export function module() {
             }
         } else {
             const suggestions: string[] = [];
-            const synonyms = ucum.checkSynonyms(uom);
+            const synonyms = ucumUtils.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
                 synonyms.units.forEach((u: { code: string, name: string }) => u.name === uom ? suggestions.push(u.code) : null);
                 if (suggestions.length) {
@@ -353,7 +349,7 @@ export function module() {
                 }
             });
             if (i > 0 && !errors[0] && !errors[i]) {
-                const result = ucum.convertUnitTo(units[i], 1, units[0], true);
+                const result = ucumUtils.convertUnitTo(units[i], 1, units[0], true);
                 if (result.status !== 'succeeded') {
                     errors[i] = 'Unit not compatible with first unit.' + (result.msg.length ? ' ' + result.msg[0] : '');
                 }
