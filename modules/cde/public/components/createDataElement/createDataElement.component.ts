@@ -18,12 +18,8 @@ import { deepCopy } from 'shared/util';
 @Component({
     selector: 'cde-create-data-element',
     templateUrl: './createDataElement.component.html',
+    styleUrls: ['./createDataElement.component.scss'],
     providers: [DeCompletionService],
-    styles: [`
-        label {
-            font-weight: 700;
-        }
-    `]
 })
 export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;

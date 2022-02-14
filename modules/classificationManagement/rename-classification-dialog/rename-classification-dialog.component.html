@@ -1,5 +1,5 @@
-<h4 mat-dialog-title>Rename Classification</h4>
-<div mat-dialog-content>
+<h1 mat-dialog-title>Rename Classification</h1>
+<mat-dialog-content>
     <p>You are about to rename the following classification</p>
     <p><strong>{{fullClassificationArray.join(' > ')}}</strong></p>
     To:
@@ -9,12 +9,9 @@
                id="newClassificationName" pattern="^[^;]+$">
         <mat-error *ngIf="newClassificationName.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button id="cancelRenameClassificationBtn" mat-raised-button color="warn" [mat-dialog-close]>Cancel
-    </button>
-    <button id="confirmRenameClassificationBtn" mat-raised-button color="primary"
-            [mat-dialog-close]="newClassificationName.value"
-            [disabled]="!newClassificationName.valid">OK
-    </button>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button id="cancelRenameClassificationBtn" class="button fail" [mat-dialog-close]>Cancel</button>
+    <button id="confirmRenameClassificationBtn" class="button"
+            [mat-dialog-close]="newClassificationName.value" [disabled]="!newClassificationName.valid">OK</button>
+</mat-dialog-actions>

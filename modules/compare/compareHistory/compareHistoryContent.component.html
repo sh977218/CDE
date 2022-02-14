@@ -1,30 +1,33 @@
 <div mat-dialog-title>
-    <div class="col-3">
-        <span class="d-inline-block color-box" id="reorderIcon"></span>
-        <strong class="d-inline-block">&nbsp;Reorder&nbsp;</strong>
-        <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.reorder.select">
-    </div>
-    <div class="col-3">
-        <div class="d-inline-block color-box" id="addIcon"></div>
-        <strong class="d-inline-block">&nbsp;Add&nbsp;</strong>
-        <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.add.select">
-    </div>
-    <div class="col-3">
-        <div class="d-inline-block color-box" id="removeIcon"></div>
-        <strong class="d-inline-block">&nbsp;Remove&nbsp;</strong>
-        <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.remove.select">
-    </div>
-    <div class="col-3">
-        <div class="d-inline-block color-box" id="editIcon"></div>
-        <strong class="d-inline-block">&nbsp;Edit&nbsp;</strong>
-        <input class="d-inline-block align-middle" type="checkbox" [(ngModel)]="filter.edited.select">
+    <div class="twoFourGrid">
+        <div>
+            <span id="reorderIcon" class="color-box"></span>
+            <strong>&nbsp;Reorder&nbsp;</strong>
+            <input type="checkbox" [(ngModel)]="filter.reorder.select">
+        </div>
+        <div>
+            <div id="addIcon" class="color-box"></div>
+            <strong>&nbsp;Add&nbsp;</strong>
+            <input type="checkbox" [(ngModel)]="filter.add.select">
+        </div>
+        <div>
+            <div id="removeIcon" class="color-box"></div>
+            <strong>&nbsp;Remove&nbsp;</strong>
+            <input type="checkbox" [(ngModel)]="filter.remove.select">
+        </div>
+        <div>
+            <div id="editIcon" class="color-box"></div>
+            <strong>&nbsp;Edit&nbsp;</strong>
+            <input type="checkbox" [(ngModel)]="filter.edited.select">
+        </div>
     </div>
 </div>
-<div mat-dialog-content *ngIf="newer && older">
-    <cde-compare-item [newer]="newer" [older]="older" [filter]="filter"></cde-compare-item>
-    <cde-compare-item-array [newer]="newer" [older]="older" [filter]="filter"></cde-compare-item-array>
-</div>
-<div mat-dialog-actions>
-    <button mat-raised-button id="closeHistoryCompareModal" [mat-dialog-close]>Close
-    </button>
-</div>
+<mat-dialog-content>
+    <ng-container *ngIf="newer && older">
+        <cde-compare-item [newer]="newer" [older]="older" [filter]="filter"></cde-compare-item>
+        <cde-compare-item-array [newer]="newer" [older]="older" [filter]="filter"></cde-compare-item-array>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button id="closeHistoryCompareModal" class="button secondary" [mat-dialog-close]>Close</button>
+</mat-dialog-actions>

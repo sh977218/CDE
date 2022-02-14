@@ -1,0 +1,47 @@
+@import '../../../../theme';
+
+.displayProfile {
+  display: flex;
+  flex-flow: row wrap;
+
+  > * {
+    flex: 0 0 100%;
+  }
+
+  @media (min-width: $screenLg) {
+    > :nth-child(1) {
+      flex: 0 0 41.67%;
+    }
+
+    > :nth-child(2) {
+      flex: 0 0 58.33%;
+    }
+  }
+}
+
+.displayProfileSettings {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.aliasGrid {
+  display: grid;
+  gap: .5rem;
+  grid-template-columns: 1fr;
+
+  @media (min-width: $screenSm) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (min-width: $screenLg) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: $screenXl) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  > * {
+    min-width: 100%;
+  }
+}

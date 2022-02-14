@@ -1,17 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'non-core/orgHelper.service';
-import { saveAs } from 'file-saver';
-import { Board, ClassificationClassified, ItemElastic, ListTypes } from 'shared/models.model';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
-import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { saveAs } from 'file-saver';
+import { handleDropdown } from 'non-core/dropdown';
+import { Board, ClassificationClassified, ItemElastic, ListTypes } from 'shared/models.model';
 
 export interface BoardQuery {
     board: Board;
@@ -22,13 +21,15 @@ export interface BoardQuery {
 @Component({
     templateUrl: './boardView.component.html',
 })
-export class BoardViewComponent implements OnInit {
+export class BoardViewComponent implements OnInit, OnDestroy {
     @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemComponent;
     board!: Board;
     boardId!: string;
     currentPage: number = 0;
+    dropdownHandler: (() => void) | null = null;
+    dropdownMenus: HTMLElement[] = [];
+    dropdownUnregister: (() => void) | null = null;
     elts: any[] = [];
-    feedbackClass: string[] = [''];
     listViews?: ListTypes;
     modalTitle!: string;
     totalItems!: number;
@@ -38,16 +39,25 @@ export class BoardViewComponent implements OnInit {
                 private route: ActivatedRoute,
                 private title: Title,
                 private alert: AlertService,
-                private dialog: MatDialog,
                 public esService: ElasticService,
-                private orgHelperService: OrgHelperService,
-                protected userService: UserService) {
+                public userService: UserService) {
+        if (!this.dropdownUnregister) {
+            [this.dropdownHandler, this.dropdownUnregister] = handleDropdown(this.dropdownMenus);
+        }
     }
 
     ngOnInit() {
         this.boardId = this.route.snapshot.params.boardId;
         this.reload();
         this.url = location.href;
+    }
+
+    ngOnDestroy() {
+        if (this.dropdownUnregister) {
+            this.dropdownUnregister();
+            this.dropdownHandler = null;
+            this.dropdownUnregister = null;
+        }
     }
 
     addClassification(event: ClassificationClassified) {
@@ -85,11 +95,22 @@ export class BoardViewComponent implements OnInit {
                 });
                 saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
                 this.alert.addAlert('success', 'Export downloaded.');
-                this.feedbackClass = ['fa-download'];
             } else {
                 this.alert.addAlert('danger', 'The server is busy processing similar request, please try again in a minute.');
             }
         });
+    }
+
+    openMenu(event: MouseEvent, dropdownMenu: HTMLElement) {
+        const isOpen = dropdownMenu.classList.contains('show');
+        if (this.dropdownHandler) {
+            this.dropdownHandler();
+        }
+        if (!isOpen) {
+            dropdownMenu.classList.toggle('show');
+            this.dropdownMenus.push(dropdownMenu);
+        }
+        event.stopPropagation();
     }
 
     reload() {

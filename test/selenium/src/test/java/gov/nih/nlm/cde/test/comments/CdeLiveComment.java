@@ -10,7 +10,7 @@ public class CdeLiveComment extends NlmCdeBaseTest {
     public void cdeLiveCommentTest() {
         goHome();
         openLogin();
-        clickElement(By.id("signUpButton"));
+        clickElement(By.xpath("//a[text()='Sign Up']"));
         switchTab(0);
 
         mustBeLoggedInAs(nindsCurator_username, password);

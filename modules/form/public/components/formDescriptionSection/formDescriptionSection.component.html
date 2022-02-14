@@ -1,8 +1,8 @@
 <div class="sectionTitle">
-    <div class="text-truncate p-1"
+    <div class="stretchBar text-truncate" style="padding: .25rem"
          [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
-        <div *ngIf="!isSubForm && canEdit" class="float-left">
-            <mat-icon class="move-handle ml-1"
+        <div *ngIf="!isSubForm && canEdit">
+            <mat-icon class="move-handle" style="margin-left: .25rem"
                       [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
             </mat-icon>
             <mat-icon *ngIf="section.skipLogic?.condition?.length > 0 && section.elementType === 'section'"
@@ -17,32 +17,30 @@
             </mat-icon>
         </div>
         <div id="innerForm_label_edit_icon_{{section.label}}"
-             class="font-weight-bold float-left hand-cursor sectionLabel ml-1"
+             class="sectionLabel shrink grow" style="font-weight: bold; line-height: 24px" role="button" tabindex="0"
              (mouseover)="hoverInSection(section)" (mouseout)="hoverOutSection(section)"
              (click)="editSection(section); section.updatedSkipLogic = false">
             <span *ngIf="section.elementType === 'form'">Embedded Form: </span>
-            <span class="ml-1" title="{{section.label}}">
+            <span style="margin-left: .25rem" title="{{section.label}}">
                 <strong>{{section.label | cdePlaceholder}}</strong>
             </span>
-            <span *ngIf="formSection?.inForm?.form?.outdated" class="mx-1">(Outdated)</span>
+            <span *ngIf="formSection?.inForm?.form?.outdated" style="margin: 0 .25rem">(Outdated)</span>
         </div>
         <ng-container *ngIf="canEdit && formSection?.inForm?.form?.outdated">
-            <button class="btn btn-outline-dark btn-sm updateQuestionBtn d-inline-block"
-                    (click)="openUpdateFormVersion(section);">Update
-            </button>
+            <button class="button light small updateQuestionBtn" (click)="openUpdateFormVersion(section);">Update</button>
         </ng-container>
-        <div class="float-right">
+        <div>
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
                title="{{section.inForm.form.name}}"
-               [routerLink]="'/formView'"
+               [routerLink]="'/formView'" href="javascript:void(0);"
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
                 <mat-icon>visibility</mat-icon>
                 View Form
             </a>
             <ng-container *ngIf="!isSubForm && canEdit">
-                <mat-icon *ngIf="section.elementType === 'section'" title="Copy section" class="hand-cursor"
-                          (click)="copySection(section)">content_copy
-                </mat-icon>
+                <mat-icon *ngIf="section.elementType === 'section'"
+                          title="Copy section" class="fake-button" role="button" tabindex="0"
+                          (click)="copySection(section)">content_copy</mat-icon>
                 <cde-delete-with-confirm (deleted)="removeNode(node)"></cde-delete-with-confirm>
             </ng-container>
         </div>
@@ -62,24 +60,24 @@
                     Show if: {{section.skipLogic.condition}}
             </span>
             <div *ngIf="section.instructions?.value" class="questionInstruction">
-                <span class="font-weight-bold">Instructions:</span>
+                <span style="font-weight: bold">Instructions:</span>
                 <ng-container *ngIf="section.instructions.valueFormat !== 'html'; else instructionsHtml">{{section.instructions.value}}</ng-container>
             </div>
         </div>
         <div *ngIf="canEditSection()">
             <div class="section_label">
-                <span class="font-weight-bold">Label:</span>
+                <span style="font-weight: bold">Label:</span>
                 <cde-inline-edit [(model)]="section.label" [isAllowed]="canEditSection()"
                                  (modelChange)="eltChange.emit()"></cde-inline-edit>
             </div>
             <div class="section_instruction">
-                <span class="font-weight-bold">Instructions:</span>
+                <span style="font-weight: bold">Instructions:</span>
                 <cde-inline-area-edit
                         [(model)]="section.instructions.value"
                         [(defFormat)]="section.instructions.valueFormat"
                         [isAllowed]="canEditSection()" (modelChange)="eltChange.emit()"></cde-inline-area-edit>
             </div>
-            <div class="font-weight-bold section_cardinality">Repeats:
+            <div class="section_cardinality" style="font-weight: bold">Repeats:
                 <mat-form-field>
                     <mat-select [(ngModel)]="section.repeatOption" (ngModelChange)="repeatChange(section)">
                         <mat-option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</mat-option>
@@ -87,13 +85,13 @@
                 </mat-form-field>
             </div>
             <div *ngIf="section.repeatOption === 'N'"
-                 class="font-weight-bold section_cardinality">Repeat Maximum Times:
+                 class="section_cardinality" style="font-weight: bold">Repeat Maximum Times:
                 <input type="number" title="Repeat Maximum Times" class="form-control"
                        [(ngModel)]="section.repeatNumber"
                        (change)="repeatChange(section)"/>
             </div>
             <div *ngIf="section.repeatOption === '='"
-                 class="font-weight-bold section_cardinality">Repeat by Answer of Question:
+                 class="section_cardinality" style="font-weight: bold">Repeat by Answer of Question:
                 <mat-form-field>
                     <mat-select required placeholder="Question Label"
                                 [(ngModel)]="section.repeatQuestion" (ngModelChange)="repeatChange(section)">
@@ -101,7 +99,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="font-weight-bold skipLogicEditTextarea">Show if:
+            <div class="skipLogicEditTextarea" style="font-weight: bold">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
                                     (saved)="eltChange.emit();"></cde-skip-logic>
@@ -130,25 +128,25 @@
                 Show if: {{section.skipLogic.condition}}
             </span>
             <div *ngIf="section.instructions?.value" class="questionInstruction">
-                <span class="font-weight-bold">Instructions:</span>
+                <span style="font-weight: bold">Instructions:</span>
                 <ng-container *ngIf="section.instructions.valueFormat !== 'html'; else instructionsHtml">{{section.instructions.value}}</ng-container>
             </div>
         </div>
         <div *ngIf="canEditSection()">
             <div class="section_label">
-                <span class="font-weight-bold">Label:</span>
+                <span style="font-weight: bold">Label:</span>
                 <cde-inline-edit [(model)]="section.label" [isAllowed]="canEditSection()"
                                  (modelChange)="eltChange.emit()"></cde-inline-edit>
             </div>
             <div class="section_instruction">
-                <span class="font-weight-bold">Instructions:</span>
+                <span style="font-weight: bold">Instructions:</span>
                 <cde-inline-area-edit [(model)]="section.instructions.value"
                                       [(defFormat)]="section.instructions.valueFormat"
                                       [isAllowed]="canEditSection()"
                                       (modelChange)="eltChange.emit()">
                 </cde-inline-area-edit>
             </div>
-            <div class="font-weight-bold section_cardinality">Repeats:
+            <div class="section_cardinality" style="font-weight: bold">Repeats:
                 <mat-form-field>
                     <mat-select [(ngModel)]="section.repeatOption" (ngModelChange)="repeatChange(section)">
                         <mat-option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</mat-option>
@@ -156,13 +154,13 @@
                 </mat-form-field>
             </div>
             <div *ngIf="section.repeatOption === 'N'"
-                 class="font-weight-bold section_cardinality">Repeat Maximum Times:
+                 class="section_cardinality" style="font-weight: bold">Repeat Maximum Times:
                 <input type="number" title="Repeats Maximum Times" class="form-control"
                        [(ngModel)]="section.repeatNumber"
                        (change)="repeatChange(section)"/>
             </div>
             <div *ngIf="section.repeatOption === '='"
-                 class="font-weight-bold section_cardinality">Repeat by Answer of Question:
+                 class="section_cardinality" style="font-weight: bold">Repeat by Answer of Question:
                 <mat-form-field>
                     <mat-select required placeholder="Question Label"
                                 [(ngModel)]="section.repeatQuestion" (ngModelChange)="repeatChange(section)">
@@ -170,7 +168,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="font-weight-bold">Show if:
+            <div style="font-weight: bold">Show if:
                 <span id="dd_s_skipLogic_{{$index}}" [ngClass]="{'has-error':section.skipLogic?.skipLogicError}">
                     <cde-skip-logic [parent]="parent" [formElement]="section" [canEdit]="canEditSection()"
                                     (saved)="eltChange.emit();"></cde-skip-logic>
@@ -181,41 +179,38 @@
 </ng-template>
 
 <ng-template #updateFormVersionTmpl>
-    <h3 mat-dialog-title>Confirm Changes:</h3>
-    <div mat-dialog-content>
+    <h1 mat-dialog-title>Confirm Changes:</h1>
+    <mat-dialog-content>
         <mat-icon *ngIf="reloading" class="spin">autorenew</mat-icon>
-        <div>
-            <div class="row">
-                <div class="col-sm-2 font-weight-bold">Label:</div>
-                <div class="col-sm-8" id="mdd_section_title">
-                    <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
-                    <span *ngIf="updateFormVersion.bLabel"
-                          class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
-                </div>
+        <div class="propertyTable">
+            <div>Label:</div>
+            <div id="mdd_section_title">
+                <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
+                <span *ngIf="updateFormVersion.bLabel"
+                      class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
             </div>
-            <div class="row">
-                <div class="col-sm-2 font-weight-bold">Form:</div>
-                <div class="col-sm-8" id="mdd_d_form">
-                    <a [ngClass]="{mark: updateFormVersion.bForm}"
-                       href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
-                       target="_blank">
-                        <mat-icon>visibility</mat-icon>
-                        <span id="mdd_question_cde_name">{{updateFormVersion.newSection.inForm.form.name}}</span>
-                    </a>
-                    <span *ngIf="updateFormVersion.bForm" class="text-danger">( was
+
+            <div>Form:</div>
+            <div id="mdd_d_form">
+                <a [ngClass]="{mark: updateFormVersion.bForm}"
+                   href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
+                   target="_blank">
+                    <mat-icon>visibility</mat-icon>
+                    <span id="mdd_question_cde_name">{{updateFormVersion.newSection.inForm.form.name}}</span>
+                </a>
+                <span *ngIf="updateFormVersion.bForm" class="text-danger">( was
                         <a href="/deView?tinyId={{updateFormVersion.currentSection.inForm.form.tinyId}}&version={{updateFormVersion.currentSection.inForm.form.version}}"
                            target="_blank"><mat-icon>visibility</mat-icon>
                             <span id="mdd_old_question_cde_name">{{updateFormVersion.currentSection.inForm.form.name}}</span>
                         </a> )
                     </span>
-                </div>
             </div>
         </div>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button color="warn" id="cancelSelect" [mat-dialog-close]="false">Cancel</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="true" id="okSelect">OK</button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]="false">Cancel</button>
+        <button class="button" [mat-dialog-close]="true">OK</button>
+    </mat-dialog-actions>
 </ng-template>
 
 <ng-template #instructionsHtml>

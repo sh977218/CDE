@@ -10,8 +10,8 @@ public class UpdateUserRoles extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToUsers();
         searchUsername(empty_roles_username);
-        clickElement(By.id("searchUsersSubmit"));
-        clickElement(By.id("user_roles_0"));
+        clickElement(By.xpath("//button[text()='Search']"));
+        clickElement(By.xpath("//*[@itemprop='user_roles_0']"));
         selectMatDropdownByText(BOARD_PUBLISHER);
     }
 }

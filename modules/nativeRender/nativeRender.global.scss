@@ -1,4 +1,6 @@
-@media (min-width: 768px) {
+@import '../theme';
+
+@media (min-width: $screenMd) {
     div .col-sm-2-4 {
         flex: 0 0 20%;
         max-width: 20%;
@@ -9,6 +11,14 @@ label.input-group-addon {
     background-color: transparent;
     border-left: 1px solid #ccc;
     display: table-cell;
+}
+
+.flex-sm {
+    display: none;
+
+    @media (min-width: $screenSm) {
+        display: flex;
+    }
 }
 
 .form-horizontal {
@@ -53,9 +63,10 @@ label.input-group-addon {
 }
 
 .native-box {
-    padding-left: 6%;
+    margin-left: 6%;
     margin-top: .0625rem;
     margin-bottom: .0625rem;
+    overflow: hidden;
 }
 
 .native-instructions {
@@ -69,6 +80,7 @@ label.input-group-addon {
 }
 
 .native-question-header {
+    overflow: hidden;
     page-break-inside: avoid;
 }
 
@@ -119,4 +131,41 @@ label.input-group-addon {
 
 .native-valuelist-label {
     word-break: break-word;
+}
+
+.radio-box {
+    display: block;
+    padding-left: 10px
+}
+
+.row-sm {
+    display: flex;
+    flex-flow: row wrap;
+
+    > * {
+        flex: 0 0 100%;
+        padding: 0 7px;
+    }
+
+    @media (min-width: $screenSm) {
+        > .col-sm-2 {
+            flex: 0 0 16.67%;
+        }
+
+        > .col-sm-2-4 {
+            flex: 0 0 20%;
+        }
+
+        > .col-sm-3 {
+            flex: 0 0 25%;
+        }
+
+        > .col-sm-4 {
+            flex: 0 0 33.33%;
+        }
+
+        > .col-sm-6 {
+            flex: 0 0 50%;
+        }
+    }
 }

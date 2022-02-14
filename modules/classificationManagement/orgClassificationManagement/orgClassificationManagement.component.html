@@ -1,20 +1,20 @@
-<div class="container-fluid" id="classMgt">
-    <h4 class="page-header">Manage Classifications</h4>
+<div class="container-fluid">
+    <h1>Manage Classifications</h1>
     <mat-form-field class="w-75" appearance="fill">
         <mat-select [formControl]="selectedOrg" (selectionChange)="orgChanged($event)" id="selectOrgMatSelect"
                     placeholder="Start by choosing your Organization">
             <mat-option *ngFor="let o of orgs" [value]="o.name">{{o.name}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <button mat-raised-button id="updateOrgBtn" (click)="updateOrganization()">Update</button>
-    <div class="boxed-div overflowHidden" *ngIf="selectedOrg.value">
+    <button id="updateOrgBtn" class="button" (click)="updateOrganization()">Update</button>
+    <div class="boxed-div" style="overflow: hidden" *ngIf="selectedOrg.value">
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <!-- This is the tree node template for leaf nodes -->
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
                 <!-- use a disabled button to provide padding for tree leaf -->
                 <button mat-icon-button disabled></button>
                 <a [id]="getClassificationPath(node).categories.join(',')" [routerLink]="['/cde/search']"
-                   target="_blank" [queryParams]="getSearchParam(node)">{{node.name}}</a>
+                   target="_blank" [queryParams]="getSearchParam(node)" href="javascript:void(0);">{{node.name}}</a>
                 <ng-container *ngIf="isOrgAdmin()">
                     <button mat-icon-button title="Add Child Classification" [id]="getAddClassificationRootButtonId()"
                             (click)="openAddChildClassificationModal(node);"
@@ -58,7 +58,7 @@
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
                 </button>
-                <a [id]="getHtmlId(node)" [routerLink]="['/cde/search']" target="_blank"
+                <a [id]="getHtmlId(node)" [routerLink]="['/cde/search']" target="_blank" href="javascript:void(0);"
                    [queryParams]="getSearchParam(node)">{{node.name}}</a>
                 <ng-container *ngIf="isOrgAdmin()">
                     <button mat-icon-button title="Add Child Classification"

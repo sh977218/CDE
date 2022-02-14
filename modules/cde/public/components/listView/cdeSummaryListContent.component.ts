@@ -6,11 +6,7 @@ import { DataElementElastic } from 'shared/de/dataElement.model';
 @Component({
     selector: 'cde-cde-summary-list-content',
     templateUrl: './cdeSummaryListContent.component.html',
-    styles: [`
-        dd {
-            margin-bottom: 0;
-        }
-    `]
+    styleUrls: ['./cdeSummaryListContent.component.scss'],
 })
 export class CdeSummaryListContentComponent implements SummaryComponent {
     @Input() elt!: DataElementElastic;

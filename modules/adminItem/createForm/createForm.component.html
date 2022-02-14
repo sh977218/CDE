@@ -1,5 +1,5 @@
-<div class="col-lg-5">
-    <h3>Create Form</h3>
+<div class="container-fluid">
+    <h1>Create Form</h1>
     <hr>
     <form #dataElementForm="ngForm">
         <div class="form-group">
@@ -12,7 +12,7 @@
             <input type="text" class="form-control" id="eltDefinition" [(ngModel)]="elt.definitions[0].definition"
                    name="eltDefinition" required>
         </div>
-        <div class="form-group ng-scope">
+        <div class="form-group">
             <label for="formVersion">Version</label>
             <input type="text" class="form-control" id="formVersion" [(ngModel)]="elt.version"
                    name="formVersion" placeholder="Version">
@@ -26,11 +26,11 @@
             </select>
         </div>
         <div class="form-group" *ngIf="elt.stewardOrg.name">
-            <button id="openClassificationModalBtn" mat-raised-button (click)="openClassifyItemModal()" color="primary">
+            <button id="openClassificationModalBtn" class="button" (click)="openClassifyItemModal()">
                 <mat-icon>folder_open</mat-icon>
                 Classify this {{ elt.elementType | uppercase}}
             </button>
-            <div id="classificationBody" class="d-inline-block">
+            <div id="classificationBody" style="display: inline-block">
                 <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);">
                 </cde-classification-view>
             </div>
@@ -40,10 +40,10 @@
             {{validationErrors(elt)}}
         </div>
         <div class="clearfix"></div>
-        <div class="form-group">
-            <button (click)="cancelCreateForm()" mat-raised-button color="warn"> Cancel</button>
-            <button id="submit" type="submit" (click)="createForm()" mat-raised-button color="primary"
-                    [disabled]="!dataElementForm.form.valid || !!validationErrors(elt)"> Submit
+        <div class="actions form-group">
+            <button class="button secondary" (click)="cancelCreateForm()">Cancel</button>
+            <button id="submit" class="button" type="submit" (click)="createForm()"
+                    [disabled]="!dataElementForm.form.valid || !!validationErrors(elt)">Submit
             </button>
         </div>
         <hr/>
@@ -51,4 +51,4 @@
 </div>
 
 <cde-classify-item #classifyItemComponent [modalTitle]="'Classify this Form'"
-                         (classified)="afterClassified($event)"></cde-classify-item>
+                   (classified)="afterClassified($event)"></cde-classify-item>

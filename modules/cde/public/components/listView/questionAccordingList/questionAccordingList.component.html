@@ -2,7 +2,7 @@
 <div class="card" *ngFor="let formElement of formElements;let index = index;">
     <div class="card-header">
         {{formElement.label}}
-        <a routerLink="/deView" [queryParams]="{tinyId: formElement.question.cde.tinyId}" target="_blank">
+        <a routerLink="/deView" [queryParams]="{tinyId: formElement.question.cde.tinyId}" target="_blank" href="javascript:void(0);">
             <mat-icon>visibility</mat-icon>
         </a>
     </div>

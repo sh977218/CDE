@@ -22,7 +22,7 @@
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="myDrafts">
                         Drafts
                     </mat-list-item>
-                    <mat-list class="ml-4">
+                    <mat-list style="margin-left: 1rem">
                         <mat-list-item id="myDrafts" [routerLinkActive]="['isActive']" routerLink="myDrafts">
                             My Drafts
                         </mat-list-item>
@@ -41,7 +41,7 @@
                 <mat-list-item [routerLinkActive]="['isActive']" routerLink="myComments">
                     Comments
                 </mat-list-item>
-                <mat-list class="ml-4">
+                <mat-list>
                     <mat-list-item id="myComments" [routerLinkActive]="['isActive']" routerLink="myComments">
                         My Comments
                     </mat-list-item>
@@ -60,7 +60,7 @@
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="orgAdmin">
                         My Organizations
                     </mat-list-item>
-                    <mat-list class="ml-4">
+                    <mat-list style="margin-left: 1rem">
                         <mat-list-item id="admins" [routerLinkActive]="['isActive']" routerLink="orgAdmin">
                             Admins
                         </mat-list-item>
@@ -103,7 +103,7 @@
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="dataValidation">
                         Data Loading
                     </mat-list-item>
-                    <mat-list class="ml-4">
+                    <mat-list style="margin-left: 1rem">
                         <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']" routerLink="dataValidation">
                             Validation
                         </mat-list-item>
@@ -130,8 +130,8 @@
                 </ng-container>
             </mat-list>
         </mat-sidenav>
-        <mat-sidenav-content class="pl-5" id="settingsContent">
-            <button type="button" *ngIf="isMobile" mat-button (click)="drawer.toggle()">
+        <mat-sidenav-content id="settingsContent" style="padding-left: 1rem">
+            <button *ngIf="isMobile" class="button light" (click)="drawer.toggle()">
                 Toggle sidenav
             </button>
             <router-outlet></router-outlet>

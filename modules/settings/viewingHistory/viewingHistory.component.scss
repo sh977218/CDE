@@ -1,0 +1,20 @@
+@import '../../theme';
+
+$matIconDimension: 24px;
+
+.inline-mat-icon {
+  bottom: calc((#{$matIconDimension} - 1em * #{$nlmLineHeight})/2);
+  position: relative;
+  vertical-align: middle;
+}
+
+.itemHistory {
+  display: grid;
+  grid-template-columns: 1fr;
+
+  @media (min-width: $screenLg) {
+    & {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+}

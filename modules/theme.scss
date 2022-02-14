@@ -1,3 +1,48 @@
+/* Screen */
+$screenSm: 576px; // TODO: convert, also convert -1
+$screenMd: 768px;
+$screenLg: 992px;
+$screenXl: 1200px;
+
+/* Color Palette */
+$nlmColorFail: #a71d2a;
+$nlmColorFailLight: #ff1744;
+$nlmColorFailLightest: #ffe5e5;
+
+$nlmColorPrimaryDark: #253b54;
+$nlmColorPrimary: #326295;
+$nlmColorPrimaryLight: #4c94e0;
+$nlmColorPrimaryLightest: #e2f0ff;
+
+$nlmColorSecondaryDark: #2a2a2a;
+$nlmColorSecondary: #6c757d;
+$nlmColorSecondaryLight: #90a4ae;
+$nlmColorSecondaryLightest: #efefef;
+
+$nlmColorSuccess: #008000;
+$nlmColorSuccessLight: #00c853;
+$nlmColorSuccessLightest: #e5ffe5;
+
+$nlmGray: #f1f1f1;
+$nlmGreen: #d9f2d1;
+$nlmYellow: #ffd36b;
+
+$nlmColorDisabled: #c0c0c0;
+$nlmColorLightest: #fff;
+
+/* Theme */
+$nlmBackgroundColor: $nlmColorLightest;
+$nlmLineHeight: 1.25;
+$nlmRem: 16px;
+$nlmSelectedBackgroundColor: #f5f5f5;
+$nlmTextColor: $nlmColorSecondaryDark;
+
+/* Links */
+$linkColor: $nlmColorPrimary;
+
+/* Buttons */
+// use Color Palette directly
+
 /* Navigation */
 $navBackgroundColor: #326295;
 $navColor: #eaeff4;
@@ -7,11 +52,7 @@ $navHeight: 80px; /*NAVIGATION_HEIGHT*/
 $theme-banner-background-color: $navColor;
 $theme-banner-link-color: $navBackgroundColor;
 
-/* Links */
-$linkColor: #0f4e9d;
-
-$navZIndex: 1050; // more than overlay backdrop z-index: 1000
-
-$widthSm: 659px;
-$widthMd: 845px;
-$widthLg: 1200px;
+/* Form Controls */
+$formInputTextColor: #495057;
+$formInputBorderColor: #ced4da;
+$formInputBorderFocusColor: #80bdff;

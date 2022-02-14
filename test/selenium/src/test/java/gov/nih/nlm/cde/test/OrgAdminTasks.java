@@ -16,7 +16,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         goToCurators();
         new Select(findElement(By.name("newOrgCuratorOrgName"))).selectByVisibleText("caBIG");
         searchUsername("userToPromote");
-        clickElement(By.id("newOrgCuratorSubmit"));
+        clickElement(By.xpath("//button[contains(.,'Make Curator')]"));
         checkAlert("Saved");
         textPresent("userToPromote");
         int orgLength = driver.findElements(By.xpath("//td[starts-with(@id, 'existingOrgCuratorOrgName-')]")).size();
@@ -37,7 +37,7 @@ public class OrgAdminTasks extends BaseClassificationTest {
         textNotPresent("userToPromote");
 
         goToAdmins();
-        new Select(findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
+        new Select(findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText("caBIG");
         searchUsername("userToPromote");
         clickElement(By.id("newOrgAdminSubmit"));
         checkAlert("Saved");

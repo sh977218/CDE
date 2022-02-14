@@ -1,6 +1,6 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-5">
+    <div class="createDeLayout">
+        <div>
             <h1>Create Data Element</h1>
             <hr>
             <form #dataElementForm="ngForm">
@@ -24,12 +24,12 @@
                     </select>
                 </div>
                 <div class="form-group" *ngIf="elt.stewardOrg.name">
-                    <button mat-raised-button id="openClassificationModalBtn" (click)="openClassifyItemModal()">
+                    <button id="openClassificationModalBtn" class="button" (click)="openClassifyItemModal()">
                         <mat-icon>folder_open</mat-icon>
                         Classify this {{ elt.elementType | uppercase}}
                     </button>
                     <div class="clearfix"></div>
-                    <div id="classificationBody" class="d-inline-block">
+                    <div id="classificationBody" style="display: inline-block">
                         <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);">
                         </cde-classification-view>
                     </div>
@@ -39,18 +39,18 @@
                     {{validationErrors(elt)}}
                 </div>
 
-                <div class="form-group">
-                    <button mat-raised-button class="ml-sm-5" color="warn" (click)="cancelCreateDataElement()">
+                <div class="actions form-group">
+                    <button class="button fail ml-sm-5" (click)="cancelCreateDataElement()">
                         Cancel
                     </button>
-                    <button id="submit" type="submit" (click)="createDataElement()" mat-raised-button color="primary"
+                    <button id="submit" type="submit" class="button" (click)="createDataElement()"
                             [disabled]="!dataElementForm.form.valid || !!validationErrors(elt)"> Submit
                     </button>
                 </div>
                 <hr/>
             </form>
         </div>
-        <div class="col-lg-7">
+        <div>
             <cde-de-completion></cde-de-completion>
         </div>
     </div>

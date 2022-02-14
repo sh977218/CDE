@@ -27,7 +27,7 @@ export async function startSocketIoServer(server: any, expressSettings: any, mon
         client.on('currentReplying', (roomId: any, commentId: any) => {
             ioServer.of('/comment').to(roomId).emit('userTyping', {
                 commentId,
-                username: client.conn.request.user.username
+                username: client.conn.request.user && client.conn.request.user.username
             });
         });
     });

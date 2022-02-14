@@ -5,34 +5,11 @@ import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
     templateUrl: './settings.component.html',
-    styles: [`
-        mat-list-item {
-            cursor: pointer;
-            height: 20px !important;
-            font-size: 12px !important;
-        }
-
-        mat-list-item:hover {
-            border: solid lightgray;
-            background-color: lightgray;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        .isActive {
-            background-color: #c4d2e7;
-        }
-
-        .settingsContainer {
-            min-height: 700px;
-        }
-    `]
+    styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
     @ViewChild('drawer', {static: true}) drawer!: MatSidenav;
-    isMobile: boolean = (window.screen.width <= 575);
+    isMobile: boolean = (window.innerWidth <= 575);
     opened: boolean = true;
 
     constructor(private router: Router,
@@ -46,7 +23,7 @@ export class SettingsComponent {
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        this.isMobile = (window.screen.width <= 575);
+        this.isMobile = (window.innerWidth <= 575);
     }
 
     scrollTop() {

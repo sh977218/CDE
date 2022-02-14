@@ -62,14 +62,14 @@
             </div>
         </mat-toolbar-row>
         <mat-toolbar-row #minorBar class="cde-nav-minor">
-            <a routerLink="/" title="Common Data Elements">
+            <a routerLink="/" title="Common Data Elements" href="javascript:void(0);">
                 <img src="/cde/public/assets/img/min/NIH-CDE.svg" alt="NIH Common Data Elements (CDE) logo" style="height: 39px">
             </a>
             <span class="spacer"></span>
-            <button mat-icon-button class="d-md-none" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
+            <button mat-icon-button class="forNotMdScreen" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <div class="d-none d-md-block">
+            <div class="forMdScreen">
                 <ng-container *ngFor="let menuItem of menuList">
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                         <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
@@ -114,7 +114,7 @@
                                               (mouseleave)="menu2Leave(minorBar, levelOneTrigger,levelTwoTrigger, button)">
                                             <ng-container *ngFor="let childL2 of childL1.children">
                                                 <li class="p-0" mat-menu-item>
-                                                    <a class="nav-link">{{childL2.label || childL2.labelFn()}}</a>
+                                                    <a class="nav-link" href="javascript:void(0);">{{childL2.label || childL2.labelFn()}}</a>
                                                 </li>
                                             </ng-container>
                                         </span>
@@ -135,12 +135,13 @@
             <ng-container *ngFor="let menuItem of menuList">
                 <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                     <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else mobileMenuWithChildren">
-                        <a mat-list-item [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null" (click)="sidenav.close()">
+                        <a mat-list-item (click)="sidenav.close()" href="javascript:void(0);"
+                           [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null" >
                             {{menuItem.label || menuItem.labelFn()}}
                         </a>
                     </ng-container>
                     <ng-template #mobileMenuWithChildren>
-                        <a mat-list-item [matMenuTriggerFor]="mLevelOne">
+                        <a mat-list-item [matMenuTriggerFor]="mLevelOne" href="javascript:void(0);">
                             {{menuItem.label || menuItem.labelFn()}}<mat-icon>expand_more</mat-icon>
                         </a>
                         <mat-menu #mLevelOne="matMenu">
@@ -172,7 +173,7 @@
     <mat-sidenav-content id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
         <router-outlet></router-outlet>
         <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
-        <div class="d-flex"></div>
+        <div style="display: flex"></div>
     </mat-sidenav-content>
 </mat-sidenav-container>
 
@@ -209,7 +210,7 @@
                     </div>
                     <div></div>
                     <div>
-                        <span class="d-block">National Library of Medicine</span>
+                        <div>National Library of Medicine</div>
                         <span class="address">8600 Rockville Pike, </span>
                         <span class="address">Bethesda, MD 20894</span>
                     </div>

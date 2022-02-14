@@ -28,7 +28,7 @@ public class FormEditSectionAndQuestionsTest extends BaseFormTest {
     private void editQuestion(String text) {
         scrollToViewById("question_0-0");
         startEditQuestionById("question_0-0");
-        selectQuestionLabelByIndex("question_0-0", 1);
+        selectQuestionLabelByIndex("question_0-0", 1, null);
 
 
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'editQuestionInstruction')]//mat-icon[normalize-space() = 'edit']"));

@@ -179,12 +179,12 @@ export class UserService {
 @Component({
     template: `
         <h1 mat-dialog-title>Inactivity timeout</h1>
-        <div mat-dialog-content>
+        <mat-dialog-content>
             <p>Your session was automatically timed out. </p>
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button [mat-dialog-close]="" class="float-right" color="primary">OK</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close]="">OK</button>
+        </mat-dialog-actions>
     `,
 })
 export class InactivityLoggedOutComponent {

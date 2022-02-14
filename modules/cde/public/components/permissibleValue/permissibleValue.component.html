@@ -218,7 +218,7 @@
                         <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
                     </ng-container>
                     <ng-container *ngIf="canEdit">
-                        <mat-icon id="pvRemove_{{i}}" (click)="removePv(i)">delete_outline</mat-icon>
+                        <mat-icon id="pvRemove_{{i}}" class="fake-button" role="button" tabindex="0" (click)="removePv(i)">delete_outline</mat-icon>
                         <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                             (cb)="eltChange.emit()"></cde-sortable-array>
                     </ng-container>
@@ -228,23 +228,21 @@
     </ng-container>
     <div>
         <ng-container *ngIf="canEdit">
-            <button mat-raised-button id="openAddPermissibleValueModelBtn"
-                    color="primary" (click)="openNewPermissibleValueModal()">
+            <button id="openAddPermissibleValueModelBtn" class="button light success" (click)="openNewPermissibleValueModal()">
                 <mat-icon>add</mat-icon>
                 Add Permissible Value
             </button>
-            <button mat-raised-button id="removeAllPermissibleValueBtn"
-                    color="primary" (click)="removeAllPermissibleValues()">
+            <button id="removeAllPermissibleValueBtn" class="button light fail" (click)="removeAllPermissibleValues()">
                 <mat-icon>delete_outline</mat-icon>
                 Remove All Values
             </button>
-            <button mat-raised-button id="openImportPVModalBtn" color="primary"
-                    title="Import All Values" (click)="openImportPermissibleValueModal()">
+            <button id="openImportPVModalBtn" class="button light success" title="Import All Values"
+                    (click)="openImportPermissibleValueModal()">
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
             </button>
-            <button *ngIf="userService.user?.siteAdmin" mat-raised-button id="validateAgainstUMLS" color="primary"
-                    title="Validate Against UMLS" (click)="validatePVAgainstUMLS()">
+            <button *ngIf="userService.user?.siteAdmin" id="validateAgainstUMLS" class="button light secondary" title="Validate Against UMLS"
+                    (click)="validatePVAgainstUMLS()">
                 <mat-icon>check_circle_outline</mat-icon>
                 Validate Against UMLS
             </button>
@@ -274,7 +272,7 @@
     <h3>VSAC Value Set</h3>
     <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>
     <div *ngIf="vsacMappingExists()">
-        <dl class="dl-horizontal">
+        <dl class="cde-property">
             <dt>Value Set Name:</dt>
             <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>
             <dt>Value Set ID:</dt>
@@ -287,19 +285,18 @@
     <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
     <div *ngIf="userService.loggedIn()">
         <div *ngIf="!editMode">
-            <button *ngIf="canEdit" mat-raised-button id="updateOIDBtn"
-                    color="primary" (click)="editMode=true">Update O.I.D
-            </button>
-            <button *ngIf="canEdit && vsacMappingExists()" mat-raised-button
-                    id="removeVSButton" (click)="removeVSMapping()">Remove Mapping
-            </button>
+            <button *ngIf="canEdit" id="updateOIDBtn" class="button light" (click)="editMode=true">Update O.I.D</button>
+            <button *ngIf="canEdit && vsacMappingExists()" id="removeVSButton" class="button light fail"
+                    (click)="removeVSMapping()">Remove Mapping</button>
         </div>
         <div *ngIf="editMode">
             <mat-form-field>
                 <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
                        placeholder="VSAC O.I.D"/>
-                <mat-icon matSuffix id="vsacIdCheck" (click)="checkVsacId()">check</mat-icon>
-                <mat-icon matSuffix (click)="editMode = false">cancel</mat-icon>
+                <mat-icon matSuffix id="vsacIdCheck" title="Save" class="fake-button" role="button" tabindex="0"
+                          (click)="checkVsacId()">check</mat-icon>
+                <mat-icon matSuffix title="Cancel" class="fake-button" role="button" tabindex="0"
+                          (click)="editMode = false">cancel</mat-icon>
             </mat-form-field>
         </div>
     </div>
@@ -326,8 +323,7 @@
         </tr>
     </table>
     <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
-    <button mat-raised-button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="mt20"
-            (click)="addAllVsac()">
+    <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button" (click)="addAllVsac()">
         <mat-icon id="addAllVsac">add</mat-icon>
         Import Missing Values
     </button>
@@ -368,15 +364,14 @@
             <div *ngIf="umlsTerms.length > 0">
                 <h2>Choices from UMLS: </h2>
                 <div *ngFor="let term of umlsTerms; let i = index;">
-                    <a *ngIf="i<10" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</a>
+                    <a *ngIf="i<10" href="javascript:void(0);" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</a>
                 </div>
             </div>
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button color="accent" [mat-dialog-close] type="button">Cancel</button>
-            <button mat-raised-button color="primary" [disabled]="!newPermissibleValueForm.form.valid"
-                    id="createNewPermissibleValueBtn" name="createNewPermissibleValueBtn" type="submit">Save
-            </button>
+            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button type="submit" id="createNewPermissibleValueBtn" class="button"
+                    [disabled]="!newPermissibleValueForm.form.valid">Save</button>
         </div>
     </form>
 </ng-template>
@@ -389,7 +384,6 @@
         </cde-cde-search>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button [mat-dialog-close] id="closeImportPermissibleValueBtn" type="button">Close
-        </button>
+        <button class="button" [mat-dialog-close]>Close</button>
     </div>
 </ng-template>

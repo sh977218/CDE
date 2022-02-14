@@ -1,9 +1,9 @@
-<button id="createFormBtn" (click)="openCreateFormModal()" type="button" color="primary" mat-raised-button>
+<button id="createFormBtn" class="button" (click)="openCreateFormModal()">
     <mat-icon>content_copy</mat-icon> Create Form
 </button>
 
 <ng-template #createFormContent id="createFormModal">
-    <div mat-dialog-content>
+    <mat-dialog-content>
         <cde-create-form [(elt)]="elt" (cancel)="modalRef.close()" (done)="modalRef.close()"></cde-create-form>
-    </div>
+    </mat-dialog-content>
 </ng-template>

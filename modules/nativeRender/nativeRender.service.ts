@@ -16,6 +16,7 @@ import {
 } from 'shared/form/form.model';
 import { addFormIds, isQuestion, iterateFeSync } from 'shared/form/fe';
 import { SkipLogicOperators } from 'shared/form/skipLogic';
+import { handleDropdown } from 'non-core/dropdown';
 
 @Injectable()
 export class NativeRenderService {
@@ -41,6 +42,9 @@ export class NativeRenderService {
         }
     }
     private _nativeRenderType: DisplayType = 'Follow-up';
+    dropdownHandler: (() => void) | null = null;
+    dropdownMenus: HTMLElement[] = [];
+    dropdownUnregister: (() => void) | null = null;
     elt!: CdeFormInputArray;
     private errors: string[] = [];
     followForm!: CdeFormFollow;
@@ -53,6 +57,9 @@ export class NativeRenderService {
 
     constructor(public scoreSvc: ScoreService,
                 public skipLogicService: SkipLogicService) {
+        if (!this.dropdownUnregister) {
+            [this.dropdownHandler, this.dropdownUnregister] = handleDropdown(this.dropdownMenus);
+        }
     }
 
     addListener(cb: Cb1<FormQuestion>) {
@@ -135,6 +142,18 @@ export class NativeRenderService {
                 }
             );
         }
+    }
+
+    openMenu(event: MouseEvent, dropdownMenu: HTMLElement) {
+        const isOpen = dropdownMenu.classList.contains('show');
+        if (this.dropdownHandler) {
+            this.dropdownHandler();
+        }
+        if (!isOpen) {
+            dropdownMenu.classList.toggle('show');
+            this.dropdownMenus.push(dropdownMenu);
+        }
+        event.stopPropagation();
     }
 
     profileSet(profile?: DisplayProfile) {

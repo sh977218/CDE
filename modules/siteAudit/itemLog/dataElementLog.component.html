@@ -1,4 +1,4 @@
-<div class="p-3">
+<div class="container-fluid">
     <mat-checkbox [(ngModel)]="includeBatch" (ngModelChange)="gotoPageLocal()">
         Include Batchloader changes
     </mat-checkbox>
@@ -13,23 +13,23 @@
                 <span class="matched-by">{{edit.date | date : 'MMM d, y, h:mm a' }}</span>
             </mat-panel-description>
         </mat-expansion-panel-header>
-        <dl class="row">
-            <dt class="col-sm-3">User:</dt>
-            <dd class="col-sm-9">{{edit.user.username}}</dd>
-            <dt class="col-sm-3">Date:</dt>
-            <dd class="col-sm-9">{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
-            <dt class="col-sm-3">CDE - New Version:</dt>
-            <dd class="col-sm-9">
+        <dl class="cde-property">
+            <dt>User:</dt>
+            <dd>{{edit.user.username}}</dd>
+            <dt>Date:</dt>
+            <dd>{{edit.date | date : 'MMM d, y, h:mm a'}}</dd>
+            <dt>CDE - New Version:</dt>
+            <dd>
                 <a target="_blank" href="/deView?cdeId={{edit.adminItem._id}}">{{edit.adminItem.name}}</a>
             </dd>
             <ng-container *ngIf="edit.previousItem">
-                <dt class="col-sm-3">CDE - Previous Version:</dt>
-                <dd class="col-sm-9">
+                <dt>CDE - Previous Version:</dt>
+                <dd>
                     <a target="_blank" href="/deView?cdeId={{edit.previousItem._id}}">{{edit.previousItem.name}}</a>
                 </dd>
             </ng-container>
         </dl>
-        <table *ngIf="edit.diff" id="modificationsList" class="table">
+        <table *ngIf="edit.diff" class="table">
             <caption>List of Modifications</caption>
             <thead>
             <tr>
@@ -43,7 +43,8 @@
                     <td>{{d.fieldName}}</td>
                     <td>{{d.modificationType}}</td>
                     <td>
-                        <td-ngx-text-diff [showToolbar]='false'  [showBtnToolbar]='false' [left]="d.previousValue || ''" [right]="d.newValue || ''"
+                        <td-ngx-text-diff [showToolbar]='false' [showBtnToolbar]='false' [left]="d.previousValue || ''"
+                                          [right]="d.newValue || ''"
                                           [format]="'LineByLine'"></td-ngx-text-diff>
                     </td>
                 </tr>
@@ -53,5 +54,5 @@
 </mat-accordion>
 
 <mat-paginator style="font-size: 1.4em" (page)="gotoPageLocal($event)" [length]="1000"
-               [pageIndex]="currentPage" [pageSize]="pageSize" [hidePageSize]="true" >
+               [pageIndex]="currentPage" [pageSize]="pageSize" [hidePageSize]="true">
 </mat-paginator>

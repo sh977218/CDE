@@ -1,11 +1,11 @@
-<mat-icon *ngIf="!confirmDelete; else askConfirmDelete" title="Remove Item" class="hand-cursor"
+<mat-icon *ngIf="!confirmDelete; else askConfirmDelete" title="Remove Item" class="fake-button" role="button" tabindex="0"
           (click)="confirmDelete = true">delete_outline
 </mat-icon>
 <ng-template #askConfirmDelete>
     <span class="badge badge-secondary" style="font-size: 75%">Confirm Delete
-        <a class="badge badge-danger" (click)="deleted.emit()"
-           title="Delete">Delete <mat-icon class="cdeMatIcon">check</mat-icon></a>
-        <a class="badge badge-secondary" (click)="confirmDelete = false"
-           id="cancelRemoveProperty-" title="Cancel">Cancel <mat-icon class="cdeMatIcon">cancel</mat-icon></a>
+        <a title="Delete" class="badge badge-danger fake-button" role="button" tabindex="0"
+           (click)="deleted.emit()" href="javascript:void(0);">Delete <mat-icon class="cdeMatIcon">check</mat-icon></a>
+        <a id="cancelRemoveProperty-" title="Cancel" class="badge badge-secondary fake-button" role="button" tabindex="0"
+           (click)="confirmDelete = false" href="javascript:void(0);">Cancel <mat-icon class="cdeMatIcon">cancel</mat-icon></a>
     </span>
 </ng-template>

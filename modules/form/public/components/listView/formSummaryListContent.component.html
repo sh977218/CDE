@@ -14,23 +14,23 @@
     </cde-summary-heading>
 </h4>
 
-<div class="row">
-    <div class="col-lg-6">
+<div class="contentLayout">
+    <div>
         <b>{{elt.numQuestions}} Questions </b> <span *ngIf="elt.primaryDefinitionCopy"> - </span>
         <span [innerHtml]="elt.primaryDefinitionCopy"></span>
-        <dl class="row">
-            <dt class="col-sm-4 text-right-md">Steward:</dt>
-            <dd class="col-sm-8">{{elt.stewardOrg.name}}</dd>
+        <dl class="cde-property-xl">
+            <dt>Steward:</dt>
+            <dd>{{elt.stewardOrg.name}}</dd>
             <ng-container *ngIf="elt.classification?.length > 0">
-                <dt class="col-sm-4 text-right-md">Used By:</dt>
-                <dd class="col-sm-8" id="usedBy_{{eltIndex}}">
+                <dt>Used By:</dt>
+                <dd id="usedBy_{{eltIndex}}">
                     <span *ngIf="!(elt.classification.length > 0)">None</span>
                     <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
                 </dd>
             </ng-container>
         </dl>
     </div>
-    <div class="col-lg-2">
+    <div>
         <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"
              alt="Image attached to the elt"
              src="/server/system/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>

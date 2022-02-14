@@ -1,11 +1,11 @@
-<div class="clearfix">
+<h2 class="clearfix">
     <ng-content select=".summary-list-before"></ng-content>
     <a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
        [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
-       (click)="select.emit(elt.tinyId)"></a>
+       (click)="select.emit(elt.tinyId)" href="javascript:void(0);"></a>
     <small class="text-muted" id="registrationStatus_{{eltIndex}}"> {{elt.registrationState.registrationStatus}} </small>
     <ng-content select=".summary-list-after"></ng-content>
     <span *ngIf="elt.highlight?.matchedBy" class="pull-right hidden-sm-down small">
         <small class="text-muted small">Matched by: <strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
     </span>
-</div>
+</h2>

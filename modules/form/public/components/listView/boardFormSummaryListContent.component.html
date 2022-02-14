@@ -1,20 +1,19 @@
-<h4>
-    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView">
-        <span class="summary-list-before">
-            <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" [(ngModel)]="elt.checked"/>
-            <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
-                           [currentPage]="boardListService.currentPage" [totalItems]="boardListService.totalItems"></cde-list-sort>
-        </span>
-        <span class="summary-list-after">
-            <cde-unpin-board [elt]="elt" [eltIndex]="eltIndex"></cde-unpin-board>
-        </span>
-    </cde-summary-heading>
-</h4>
-
+<cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView">
+    <span class="summary-list-before">
+        <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" class="mR"
+               [(ngModel)]="elt.checked"/>
+        <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
+                       [currentPage]="boardListService.currentPage"
+                       [totalItems]="boardListService.totalItems"></cde-list-sort>
+    </span>
+    <span class="summary-list-after">
+        <cde-unpin-board [elt]="elt" [eltIndex]="eltIndex"></cde-unpin-board>
+    </span>
+</cde-summary-heading>
 <div class="row">
     <div class="col-lg-6">
         <b>{{elt.numQuestions}} Questions</b> - <span [innerHtml]="elt.primaryDefinitionCopy"></span>
-        <dl class="dl-horizontal" style="margin: 5px 0 10px 0 ">
+        <dl class="cde-property">
             <dt>Steward:</dt>
             <dd [innerHtml]="elt.stewardOrg.name"></dd>
             <dt [hidden]="!(elt.classification?.length > 0)">Used By:</dt>

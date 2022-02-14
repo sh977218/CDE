@@ -15,7 +15,7 @@ public class PinAllCdesInForm extends BoardTest {
         mustBeLoggedInAs(pinAllBoardUser_username, password);
         goToFormByName(formName);
         clickElement(By.id("pinAllCdes"));
-        clickElement(By.xpath("//*[@id='" + boardName + "']//div[contains(@class,'card-header')]"));
+        clickElement(By.xpath("//*[@id='" + boardName + "']//mat-card-title"));
         checkAlert("All elements pinned");
         waitForESUpdate();
 

@@ -5,11 +5,12 @@ type DailyUsage = any;
 
 @Component({
     selector: 'cde-daily-usage',
-    templateUrl: './dailyUsage.component.html'
+    templateUrl: './dailyUsage.component.html',
+    styleUrls: ['./dailyUsage.component.scss'],
 })
 export class DailyUsageComponent {
     entryLimit: number = 50;
-    dailyUsage!: DailyUsage[];
+    dailyUsage?: DailyUsage[];
 
     constructor(
         private http: HttpClient
@@ -25,12 +26,12 @@ export class DailyUsageComponent {
         });
     }
 
-    lookupUsername(ip: string) {
+    lookupUsername(dailyUsage: DailyUsage[], ip: string) {
         this.http.get<any>('/server/siteAdmin/usernamesByIp/' + ip).subscribe(usernames => {
             if (usernames.length === 0) {
                 usernames = [{username: 'Anonymous'}];
             }
-            this.dailyUsage.forEach(d => {
+            dailyUsage.forEach(d => {
                 if (d._id.ip === ip) {
                     d.usernames = usernames;
                 }

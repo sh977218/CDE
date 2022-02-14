@@ -11,7 +11,7 @@ public class UpdateInFormTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Illicit/non-prescription drug use indicator");
         clickElement(By.cssSelector("[itemprop='steward'] mat-icon"));
-        clickElement(By.cssSelector("[itemprop='steward'] button"));
+        clickElement(By.xpath("//*[@itemprop='steward']//button[contains(.,'Confirm')]"));
         newCdeVersion();
 
         String formName = "Form Form Update Test";
@@ -28,7 +28,7 @@ public class UpdateInFormTest extends NlmCdeBaseTest {
         textPresent("Substance User", By.id("mdd_section_title"));
         textPresent("was", By.id("mdd_section_title"));
         textPresent("was", By.id("mdd_d_form"));
-        clickElement(By.id("okSelect"));
+        clickElement(By.xpath("//button[text()='OK']"));
         saveFormEdit();
         newFormVersion();
 

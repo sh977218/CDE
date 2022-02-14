@@ -142,7 +142,7 @@ export class FhirAppComponent {
 
 @Component({
     template: `
-        <div mat-dialog-content>
+        <mat-dialog-content>
             <table class="table">
                 <thead>
                 <tr>
@@ -181,10 +181,10 @@ export class FhirAppComponent {
                 </tr>
                 </tbody>
             </table>
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button color="basic" mat-dialog-close cdkFocusInitial>Close</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button seconndary" mat-dialog-close cdkFocusInitial>Close</button>
+        </mat-dialog-actions>
     `,
 })
 export class ViewFhirEncounterDialogComponent {

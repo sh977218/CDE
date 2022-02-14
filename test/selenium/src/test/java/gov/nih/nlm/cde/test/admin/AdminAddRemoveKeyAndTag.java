@@ -39,10 +39,10 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
 
         goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
-        clickElement(By.id("newKey"));
-        new Select(findElement(By.id("newKey"))).selectByVisibleText(propertyKey);
+        clickElement(By.name("newKey"));
+        new Select(findElement(By.name("newKey"))).selectByVisibleText(propertyKey);
 
-        clickElement(By.id("cancelNewPropertyBtn"));
+        clickElement(By.xpath("//button[text()='Cancel']"));
 
         goToPropertyKeysManagement();
 
@@ -52,10 +52,10 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
 
         goToProperties();
         clickElement(By.id("openNewPropertyModalBtn"));
-        clickElement(By.id("newKey"));
+        clickElement(By.name("newKey"));
 
-        clickElement(By.id("newKey"));
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@id='newKey']//option[@value='doYouSeeThis']")).size(), 0);
+        clickElement(By.name("newKey"));
+        Assert.assertEquals(driver.findElements(By.xpath("//*[@name='newKey']//option[@value='doYouSeeThis']")).size(), 0);
     }
 
 
@@ -87,7 +87,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         selectMatDropdownByText("canYouSeeThis");
-        clickElement(By.id("cancelNewDesignationBtn"));
+        clickElement(By.xpath("//button[text()='Cancel']"));
 
         goToTagsManagement();
 

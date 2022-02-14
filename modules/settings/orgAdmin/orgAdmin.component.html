@@ -1,16 +1,16 @@
 <h1>My Organizations' Admins</h1>
-<form class="form-inline pt40 pb40" #adminForm="ngForm" role="form" id="newOrgAdminForm" novalidate>
+<form class="stack" #adminForm="ngForm" novalidate>
     <cde-username-autocomplete (selected)="newAdmin.username = $event"></cde-username-autocomplete>
     an administrator for
-    <div class="form-group mx-1">
-        <select id="newOrgAdminOrgName" name="newOrgAdminOrgName" class="form-control"
+    <mat-form-field>
+        <select matNativeControl name="newOrgAdminOrgName"
                 [(ngModel)]="newAdmin.orgName" required>
             <option value="" disabled>select organization</option>
             <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
         </select>
-    </div>
-    <button type="submit" class="ml-1" id="newOrgAdminSubmit" (click)="addOrgAdmin()" mat-raised-button color="primary"
-            [disabled]="!adminForm.form.valid">Make Admin
+    </mat-form-field>
+    <button type="submit" id="newOrgAdminSubmit" class="button"
+            (click)="addOrgAdmin()" [disabled]="!adminForm.form.valid">Make Admin
     </button>
 </form>
 <table class="table table-border table-responsive">
@@ -24,11 +24,10 @@
         </td>
         <td>
             <div *ngFor="let user of orgAdmin.users; let uIndex = index">
-                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}"
-                      style="vertical-align: super">{{user.username}}
+                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}">{{user.username}}
                 </span>
-                <mat-icon (click)="removeOrgAdmin(orgAdmin.name, user._id)"
-                          id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}">delete_outline
+                <mat-icon id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}" class="hand-cursor"
+                          (click)="removeOrgAdmin(orgAdmin.name, user._id)">delete_outline
                 </mat-icon>
             </div>
         </td>

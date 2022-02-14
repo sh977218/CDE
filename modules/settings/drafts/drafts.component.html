@@ -1,77 +1,75 @@
-<div class="container-fluid">
-    <h1>{{title}}</h1>
-    <div>
-        <mat-form-field class="w-50">
-            <mat-label>Filter by Organization</mat-label>
-            <mat-select [(ngModel)]="selectedOrganization" (ngModelChange)="filterByOrganization();">
-                <mat-option value="all organizations">All Organizations</mat-option>
-                <mat-option *ngFor="let organization of organizations" [value]="organization">
-                    {{organization}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+<h1>{{title}}</h1>
+<section>
+    <mat-form-field style="width: 50%">
+        <mat-label>Filter by Organization</mat-label>
+        <mat-select [(ngModel)]="selectedOrganization" (ngModelChange)="filterByOrganization();">
+            <mat-option value="all organizations">All Organizations</mat-option>
+            <mat-option *ngFor="let organization of organizations" [value]="organization">
+                {{organization}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
 
-        <h2>Data Elements</h2>
-        <span *ngIf="!draftCdes.length">There are no CDE drafts.</span>
-        <table mat-table *ngIf="draftCdes.length" [dataSource]="deTableData">
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Data Element</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">
-                    <a routerLink="/deView" [queryParams]="{tinyId: draft.tinyId}">
-                        {{draft.designations[0].designation}}</a>
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Id</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.tinyId}}</td>
-            </ng-container>
-            <ng-container matColumnDef="updatedBy">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Updated By</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.updatedBy?.username}}</td>
-            </ng-container>
-            <ng-container matColumnDef="updatedDate">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Updated Date</th>
-                <td mat-cell *matCellDef="let draft"
-                    class="pr-3">{{draft.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-            </ng-container>
-            <ng-container matColumnDef="organization">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Organization</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.stewardOrg?.name}}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="draftColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: draftColumns"></tr>
-        </table>
-    </div>
-    <div>
-        <h2>Forms</h2>
-        <span *ngIf="!draftForms.length">There are no Form drafts.</span>
-        <table mat-table *ngIf="draftForms.length" [dataSource]="formTableData">
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef class="pr-3"> Form</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">
-                    <a routerLink="/formView" [queryParams]="{tinyId: draft.tinyId}">
-                        {{draft.designations[0].designation}}</a>
-                </td>
-            </ng-container>
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Id</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.tinyId}}</td>
-            </ng-container>
-            <ng-container matColumnDef="updatedBy">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Updated By</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.updatedBy?.username}}</td>
-            </ng-container>
-            <ng-container matColumnDef="updatedDate">
-                <th mat-header-cell *matHeaderCellDef class="pr-3"> Updated Date</th>
-                <td mat-cell *matCellDef="let draft"
-                    class="pr-3">{{draft.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
-            </ng-container>
-            <ng-container matColumnDef="organization">
-                <th mat-header-cell *matHeaderCellDef class="pr-3">Organization</th>
-                <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.stewardOrg?.name}}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="draftColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: draftColumns"></tr>
-        </table>
-    </div>
-</div>
+    <h2>Data Elements</h2>
+    <span *ngIf="!draftCdes.length">There are no CDE drafts.</span>
+    <table mat-table *ngIf="draftCdes.length" [dataSource]="deTableData">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Data Element</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">
+                <a href="javascript:void(0);" routerLink="/deView" [queryParams]="{tinyId: draft.tinyId}">
+                    {{draft.designations[0].designation}}</a>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Id</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.tinyId}}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedBy">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Updated By</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.updatedBy?.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedDate">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Updated Date</th>
+            <td mat-cell *matCellDef="let draft"
+                class="pr-3">{{draft.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="organization">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Organization</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.stewardOrg?.name}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="draftColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: draftColumns"></tr>
+    </table>
+</section>
+<section>
+    <h2>Forms</h2>
+    <span *ngIf="!draftForms.length">There are no Form drafts.</span>
+    <table mat-table *ngIf="draftForms.length" [dataSource]="formTableData">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="pr-3"> Form</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">
+                <a href="javascript:void(0);" routerLink="/formView" [queryParams]="{tinyId: draft.tinyId}">
+                    {{draft.designations[0].designation}}</a>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Id</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.tinyId}}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedBy">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Updated By</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.updatedBy?.username}}</td>
+        </ng-container>
+        <ng-container matColumnDef="updatedDate">
+            <th mat-header-cell *matHeaderCellDef class="pr-3"> Updated Date</th>
+            <td mat-cell *matCellDef="let draft"
+                class="pr-3">{{draft.updated | date: 'MM/dd/yyyy @ h:mma'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="organization">
+            <th mat-header-cell *matHeaderCellDef class="pr-3">Organization</th>
+            <td mat-cell *matCellDef="let draft" class="pr-3">{{draft.stewardOrg?.name}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="draftColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: draftColumns"></tr>
+    </table>
+</section>

@@ -7,6 +7,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 @Component({
     selector: 'cde-board-cde-summary-list-content',
     templateUrl: './boardCdeSummaryListContent.component.html',
+    styleUrls: ['./boardCdeSummaryListContent.component.scss']
 })
 export class BoardCdeSummaryListContentComponent implements SummaryComponent {
     @Input() elt!: DataElement;

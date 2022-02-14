@@ -1,38 +1,36 @@
 <div class="container-fluid">
-    <div class="row">
-        <form class="form-search">
-            <div class="form-group col-lg-3">
-                <button id="search.submit" type="submit" (click)="generate()" mat-raised-button>Generate</button>
-            </div>
-        </form>
-    </div>
-    <div class="row">
-        <div class="col-lg-1">Days Ago</div>
-        <div class="col-lg-2">Last Date</div>
-        <div class="col-lg-2">Hits</div>
-        <div class="col-lg-3">IP</div>
-        <div class="col-lg-4">Known Usernames</div>
+    <button id="search.submit" class="button" (click)="generate()">Generate</button>
+</div>
+<ng-container *ngIf="dailyUsage">
+    <div class="usageTable">
+        <div>Days Ago</div>
+        <div>Last Date</div>
+        <div>Hits</div>
+        <div>IP</div>
+        <div>Known Usernames</div>
     </div>
     <hr/>
-    <div class="row" *ngFor="let entry of dailyUsage | slice:0:entryLimit">
-        <div class="col-lg-1">
+    <div class="usageTable" *ngFor="let entry of dailyUsage | slice:0:entryLimit">
+        <div>
             {{entry.daysAgo}}
         </div>
-        <div class="col-lg-2">
+        <div>
             {{entry.latest | date : 'short'}}
         </div>
-        <div class="col-lg-2">
+        <div>
             {{entry.number}}
         </div>
-        <div class="col-lg-3">
+        <div>
             {{entry._id.ip}}
         </div>
-        <div class="col-lg-4">
-            <span *ngIf="entry.usernames && entry.usernames.length > 0">
+        <div>
+            <ng-container *ngIf="entry.usernames && entry.usernames.length > 0">
                 <span *ngFor="let u of entry.usernames">{{u.username}} </span>
-            </span>
-            <button *ngIf="!entry.usernames" mat-raised-button (click)="lookupUsername(entry._id.ip)">Reveal</button>
+            </ng-container>
+            <button *ngIf="!entry.usernames" class="button" (click)="lookupUsername(dailyUsage, entry._id.ip)">
+                Reveal
+            </button>
         </div>
     </div>
-    <button *ngIf="dailyUsage && dailyUsage.length > entryLimit" mat-raised-button (click)="seeMore()">More</button>
-</div>
+    <button *ngIf="dailyUsage.length > entryLimit" class="button" (click)="seeMore()">More</button>
+</ng-container>

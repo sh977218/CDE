@@ -8,8 +8,8 @@ import { Elt } from 'shared/models.model';
 @Component({
     selector: 'cde-unpin-board',
     template: `
-        <mat-icon svgIcon="thumb_tack" id="unpin_{{eltIndex}}" class="hand-cursor" title="Unpin from Board"
-           role="link" (click)="unpin()" style="transform: rotate(90deg)"> </mat-icon>
+        <mat-icon svgIcon="thumb_tack" id="unpin_{{eltIndex}}" class="fake-button" role="button" tabindex="0"
+                  (click)="unpin()" title="Unpin from Board" style="transform: rotate(90deg)"> </mat-icon>
     `,
 })
 export class UnpinBoardComponent {

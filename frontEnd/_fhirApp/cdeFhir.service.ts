@@ -871,16 +871,13 @@ export class CdeFhirService {
 
 @Component({
     styles: [`
-        .mat-raised-button, .mat-raised-button ::ng-deep .mat-button-wrapper {
-            line-height: 28px;
-        }
         .table th, .table td {
             padding: .4rem;
         }
     `],
     template: `
-        <h2 mat-dialog-title>Select One {{data.resources[0]?.resourceType}}:</h2>
-        <div mat-dialog-content>
+        <h1 mat-dialog-title>Select One {{data.resources[0]?.resourceType}}:</h1>
+        <mat-dialog-content>
             <table *ngIf="data.resources.length; else noneFound" class="table">
                 <thead>
                 <tr>
@@ -892,7 +889,7 @@ export class CdeFhirService {
                 <tbody>
                 <tr *ngFor="let resource of data.resources">
                     <td>
-                        <button mat-raised-button color="primary" [mat-dialog-close]="resource">Select</button>
+                        <button class="button" [mat-dialog-close]="resource">Select</button>
                     </td>
                     <td>{{resource.id}}</td>
                     <td *ngFor="let get of columnGetters" [innerHtml]="get(resource)"></td>
@@ -903,10 +900,10 @@ export class CdeFhirService {
                 </tbody>
             </table>
             <ng-template #noneFound>None Found</ng-template>
-        </div>
-        <div mat-dialog-actions>
-            <button mat-raised-button color="basic" mat-dialog-close cdkFocusInitial>{{data.type==='filter'?'None':'New'}}</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button mat-dialog-close cdkFocusInitial>{{data.type==='filter'?'None':'New'}}</button>
+        </mat-dialog-actions>
     `,
 })
 export class SelectOneDialogComponent {

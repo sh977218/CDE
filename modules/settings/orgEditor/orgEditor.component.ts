@@ -7,6 +7,7 @@ import { ObjectId } from 'shared/models.model';
 import { stringCompare } from 'shared/util';
 
 interface OrgUsers {
+    name: string;
     org: string;
     users: {
         _id: ObjectId,

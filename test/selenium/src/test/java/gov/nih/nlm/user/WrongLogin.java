@@ -11,7 +11,7 @@ public class WrongLogin extends NlmCdeBaseTest {
         goToCdeSearch();
 
         openLogin();
-        clickElement(By.id("logInButton"));
+        clickElement(By.xpath("//button[text()='Sign In']"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(bad_username);

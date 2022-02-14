@@ -1,4 +1,5 @@
 const config = require('config');
+const path = require('path');
 const {ContextReplacementPlugin, DefinePlugin, NormalModuleReplacementPlugin, ProvidePlugin} = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -9,6 +10,12 @@ module.exports = {
     module: {
         rules: [
             {test: /\.ts$/, enforce: 'pre', exclude: /node_modules/, use: ['tslint-loader']},
+            {
+                // dev only, does not fail build, AOT compiler does not generate html resources
+                test: /\.html$/,
+                enforce: 'pre',
+                use: [{loader: path.resolve('scripts/htmlValidateLoader.js')}],
+            },
             {
                 test: /\.js$/,
                 exclude: [/node_modules/, /\.module\.ngfactory\.js$/],
@@ -37,7 +44,7 @@ module.exports = {
             },
             {test: /\.css$/, exclude: /node_modules/, use: ['style-loader', 'css-loader']},
             {
-                test: /common\.scss$/, exclude: /node_modules/,
+                test: /(common|app)\.scss$/, exclude: /node_modules/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',

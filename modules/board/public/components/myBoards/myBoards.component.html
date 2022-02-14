@@ -1,15 +1,14 @@
 <div class="container-fluid">
-    <h3 class="mt-4">My Boards
+    <h1>My Boards
         <cde-create-board></cde-create-board>
         <mat-icon *ngIf="myBoardsSvc.reloading" class="spin">autorenew</mat-icon>
-
-    </h3>
+    </h1>
     <hr/>
     <div *ngIf="!userService.user">
-        <div class="modal-header">
-            <h3>Sign up for an account</h3>
+        <div>
+            <h2>Sign up for an account</h2>
         </div>
-        <div class="modal-body">
+        <div>
             With an account, you will be able to:
             <ul>
                 <li>Create Boards and save CDEs and Forms to them</li>
@@ -18,9 +17,7 @@
             </ul>
             <br>
             <div style="text-align: center">
-                <button mat-raised-button>
-                    <a id="signUpLink" routerLink="/login">Sign up or Log In</a>
-                </button>
+                <a class="button" routerLink="/login" href="javascript:void(0);">Sign up or Log In</a>
             </div>
         </div>
     </div>
@@ -31,16 +28,16 @@
                     <h4>Type</h4>
                     <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="d-block">
                         <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
-                               (change)="selectAggregation('types', $index)" class="align-middle">
-                        <span class="align-middle">{{type.key}} ({{type.doc_count}})</span>
+                               (change)="selectAggregation('types', $index)" style="vertical-align: middle">
+                        <span style="vertical-align: middle">{{type.key}} ({{type.doc_count}})</span>
                     </label>
                 </div>
                 <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
                     <h4>Tags</h4>
                     <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="d-block">
                         <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
-                               (change)="selectAggregation('tags', $index)" class="align-middle">
-                        <span class="align-middle">{{tag.key}} ({{tag.doc_count}})</span>
+                               (change)="selectAggregation('tags', $index)" style="vertical-align: middle">
+                        <span style="vertical-align: middle">{{tag.key}} ({{tag.doc_count}})</span>
                     </label>
                 </div>
                 <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
@@ -54,12 +51,12 @@
             </div>
         </div>
         <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
-            <div class="row">
-                <div *ngFor="let board of myBoardsSvc.boards" class="col-xl-4 col-lg-4 col-sm-6 col-12 ">
-                    <cde-board-view-template [board]="board" [canEdit]="true" (saved)="saveBoard($event)"
+
+                <div class="responsiveGrid">
+                    <cde-board-view-template *ngFor="let board of myBoardsSvc.boards"
+                                             [board]="board" [canEdit]="true" (saved)="saveBoard($event)"
                                              (deleted)="deleteBoard($event);"></cde-board-view-template>
                 </div>
-            </div>
         </div>
     </div>
 </div>

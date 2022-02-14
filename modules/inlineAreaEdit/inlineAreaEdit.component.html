@@ -1,6 +1,7 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
-        <mat-icon *ngIf="isAllowed" role="link" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button" role="button" tabindex="0" (click)="edit()">edit
+        </mat-icon>
         <cde-text-truncate *ngIf="localFormat === 'html'; else showText"
                            [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
                            [textType]="'html'">
@@ -11,10 +12,8 @@
         </ng-template>
     </div>
     <div *ngIf="editMode">
-        <div class="btn-group">
-            <button mat-raised-button (click)="setHtml(false)" type="button">Plain Text</button>
-            <button mat-raised-button (click)="setHtml(true)" type="button">Rich Text</button>
-        </div>
+        <button class="button small light" [class.active]="!localFormat" (click)="setHtml(false)" type="button">Plain Text</button>
+        <button class="button small light" [class.active]="localFormat" (click)="setHtml(true)" type="button">Rich Text</button>
 
         <ckeditor *ngIf="localFormat === 'html'; else editText" [config]="{extraPlugins: 'divarea'}"
                   [(ngModel)]="value">
@@ -24,13 +23,15 @@
             <textarea [(ngModel)]="value" class="form-control"></textarea>
         </ng-template>
 
-        <button (click)="confirmSave()">
-            <mat-icon>check</mat-icon>
-            Confirm
-        </button>
-        <button (click)="discard()">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-        </button>
+        <div class="actions">
+            <button class="button small fail" (click)="discard()">
+                <mat-icon>cancel</mat-icon>
+                Cancel
+            </button>
+            <button class="button small success" (click)="confirmSave()">
+                <mat-icon>check</mat-icon>
+                Confirm
+            </button>
+        </div>
     </div>
 </div>

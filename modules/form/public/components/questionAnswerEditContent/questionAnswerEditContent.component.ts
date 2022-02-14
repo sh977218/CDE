@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { PermissibleValue } from 'shared/models.model';
 
@@ -9,7 +9,6 @@ export interface QuestionAnswerEditContentData {
 export type QuestionAnswerEditContentOutput = PermissibleValue[] | 'clear' | undefined;
 
 @Component({
-    selector: 'cde-question-answer-edit',
     templateUrl: './questionAnswerEditContent.component.html',
     providers: []
 })

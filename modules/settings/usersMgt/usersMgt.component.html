@@ -1,66 +1,56 @@
 <h1>Users</h1>
-<div>
-    <form class="form-inline pt40 pb40" role="form" id="newOrgAdminForm" name="newOrgAdminForm" novalidate>
-        <div class="form-group">
-            <button mat-raised-button (click)="openNewUserModal()" id="opeNewUserModalBtn" type="button">
-                <mat-icon>add</mat-icon>
-                Create User
-            </button>
-        </div>
-        <div class="form-group">
-            <cde-username-autocomplete [placeHolder]="'enter username'"
-                                       (selected)="search.username = $event"></cde-username-autocomplete>
-        </div>
-        <button type="submit" mat-raised-button color="primary" id="searchUsersSubmit" (click)="searchUsers()">
-            Search
-        </button>
-    </form>
+<form class="stack" novalidate>
+    <cde-username-autocomplete [placeHolder]="'enter username'"
+                               (selected)="search.username = $event"></cde-username-autocomplete>
+    <button type="submit" class="button" (click)="searchUsers()">Search</button>
+    <button class="button success" (click)="openNewUserModal()">
+        <mat-icon>add</mat-icon>
+        Create User
+    </button>
+</form>
+<ng-container *ngFor="let u of foundUsers; index as i">
+    <dl class="cde-property">
+        <dt>Username:</dt>
+        <dd id="user_username">{{u.username}}</dd>
 
-    <div *ngFor="let u of foundUsers; let $index = index">
-        <dl class="row">
-            <dt class="col-sm-3"><strong>Username:</strong></dt>
-            <dd class="col-sm-9" id="user_username">{{u.username}}</dd>
+        <dt>Avatar:</dt>
+        <dd attr.itemprop="user_avatar_{{i}}">
+            <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
+            <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
+                             class="col-9"></cde-inline-edit>
+        </dd>
 
-            <dt class="col-sm-3"><strong>Avatar:</strong></dt>
-            <dd class="col-sm-9" id="user_avatar_{{$index}}">
-                <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-                <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
-                                 class="col-9"></cde-inline-edit>
-            </dd>
+        <dt>Last Login:</dt>
+        <dd>{{u.lastLogin}}</dd>
 
-            <dt class="col-sm-3"><strong>Last Login:</strong></dt>
-            <dd class="col-sm-9">{{u.lastLogin}}</dd>
+        <dt>Org Editor:</dt>
+        <dd attr.itemprop="user_editor_{{i}}">{{u.orgEditor}}</dd>
 
-            <dt class="col-sm-3"><strong>Org Editor:</strong></dt>
-            <dd class="col-sm-9" id="user_editor">{{u.orgEditor}}</dd>
+        <dt>Org Curator:</dt>
+        <dd attr.itemprop="user_curator_{{i}}">{{u.orgCurator}}</dd>
 
-            <dt class="col-sm-3"><strong>Org Curator:</strong></dt>
-            <dd class="col-sm-9" id="user_curator">{{u.orgCurator}}</dd>
+        <dt>Org Admin:</dt>
+        <dd attr.itemprop="user_orgadmin_{{i}}">{{u.orgAdmin}}</dd>
 
-            <dt class="col-sm-3"><strong>Org Admin: </strong></dt>
-            <dd class="col-sm-9" id="user_orgadmin">{{u.orgAdmin}}</dd>
+        <dt>Site Admin:</dt>
+        <dd attr.itemprop="user_siteadmin_{{i}}" [innerHtml]="u.siteAdmin?'Yes':'No'"></dd>
 
-            <dt class="col-sm-3"><strong>Site Admin: </strong></dt>
-            <dd class="col-sm-9" id="user_siteadmin" [innerHtml]="u.siteAdmin?'Yes':'No'"></dd>
+        <dt>Roles:</dt>
+        <dd attr.itemprop="user_roles_{{i}}">
+            <cde-tag [tags]="u.roles" [allTags]="rolesEnum"
+                     [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
+        </dd>
 
-            <dt class="col-sm-3"><strong>Roles: </strong></dt>
-            <dd class="col-sm-9" id="user_roles_{{$index}}">
-                <cde-tag [tags]="u.roles" [allTags]="rolesEnum"
-                         [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
-            </dd>
-
-            <dt class="col-sm-3"><strong>Known IPs:</strong></dt>
-            <dd class="col-sm-9">{{u.knownIPs}}</dd>
-        </dl>
-        <hr/>
-    </div>
-</div>
-
+        <dt>Known IPs:</dt>
+        <dd>{{u.knownIPs}}</dd>
+    </dl>
+    <hr/>
+</ng-container>
 
 <ng-template #newUserContent>
-    <h4 mat-dialog-title>Add User</h4>
+    <h1 mat-dialog-title>Add User</h1>
     <form role="form" #newUserForm="ngForm">
-        <div mat-dialog-content>
+        <mat-dialog-content>
             <div class="alert alert-info">
                 Please ensure the username matches the UMLS username.
             </div>
@@ -69,14 +59,15 @@
                 <input class="form-control" id="newUsername" name="username" Placeholder="New Username"
                        [(ngModel)]="newUsername" required/>
             </div>
-        </div>
-        <div class="modal-footer" id="newUserModalFooter">
-            <button mat-raised-button color="warn" [mat-dialog-close] id="cancelNewUserBtn" type="button">
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close]>
                 Cancel
             </button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="true" [disabled]="!newUserForm.form.valid"
-                    id="createNewUserBtn" type="submit">Save
+            <button id="createNewUserBtn" type="submit" class="button success" [mat-dialog-close]="true"
+                    [disabled]="!newUserForm.form.valid">
+                Save
             </button>
-        </div>
+        </mat-dialog-actions>
     </form>
 </ng-template>

@@ -14,16 +14,16 @@ public class CreateUser extends NlmCdeBaseTest {
         String newUsername = "Coco Channel";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToUsers();
-        clickElement(By.id("opeNewUserModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Create User')]"));
         findElement(By.id("newUsername")).sendKeys(newUsername);
         hangon(1);
         clickElement(By.id("createNewUserBtn"));
         checkAlert("User created");
-        clickElement(By.id("opeNewUserModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Create User')]"));
         clickElement(By.id("createNewUserBtn"));
         checkAlert("Cannot create user. Does it already exist?");
         searchUsername("Coco Ch");
-        clickElement(By.id("searchUsersSubmit"));
+        clickElement(By.xpath("//button[text()='Search']"));
         textPresent("coco channel");
     }
 

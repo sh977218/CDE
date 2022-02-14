@@ -1,13 +1,15 @@
 <span>
     <span *ngIf="!editMode">
-        <mat-icon *ngIf="isAllowed" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
+        <a *ngIf="isAllowed" title="Edit" href="javascript:void(0);" (click)="edit()">
+            <mat-icon>edit</mat-icon>
+        </a>
         <span *ngIf="!linkSource">
             <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
             <ng-template #NAvalue><span>N/A</span></ng-template>
         </span>
         <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
     </span>
-    <form *ngIf="editMode" #inlineForm="ngForm">
+    <form *ngIf="editMode" #inlineForm="ngForm" (ngSubmit)="save()">
         <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
             <input class="form-control" name="inlineInput" [type]="inputType.toLowerCase()" autocomplete="off"
                    [(ngModel)]="value" [email]="value && inputType.toLowerCase() === 'email' || null"/>
@@ -28,7 +30,10 @@
         <ng-container *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
             <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
         </ng-container>
-        <button (click)="save()" [disabled]="!inlineForm.form.valid" type="button"><mat-icon>check</mat-icon>Confirm</button>
-        <button (click)="discard()" type="button"><mat-icon>cancel</mat-icon>Discard</button>
+        <div class="actions">
+            <button type="button" class="button small fail" (click)="discard()"><mat-icon>cancel</mat-icon>Discard</button>
+            <button type="submit" class="button small success"
+                    [disabled]="!inlineForm.form.valid"><mat-icon>check</mat-icon>Confirm</button>
+        </div>
     </form>
 </span>

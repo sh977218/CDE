@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
+import { handleDropdown } from 'non-core/dropdown';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { isScore, questionMulti } from 'shared/form/fe';
 import { FormQuestion, FormQuestionFollow, QuestionValueList } from 'shared/form/form.model';

@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -525,7 +526,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void saveFormEdit() {
-        clickElement(By.id("editFormCloseBtn"));
+        clickElement(By.xpath("//button[contains(.,'Back to Preview')]"));
     }
 
     protected void goToNaming() {
@@ -910,7 +911,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void login(String username, String password) {
         openLogin();
-        clickElement(By.id("logInButton"));
+        clickElement(By.xpath("//button[text()='Sign In']"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
@@ -922,7 +923,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
-        clickElement(By.id("logInButton"));
+        clickElement(By.xpath("//button[text()='Sign In']"));
         int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
@@ -1115,19 +1116,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void downloadAsFile() {
         clickElement(By.id("searchSettings"));
         clickElement(By.xpath("//label[contains(.,'File')]"));
-        clickElement(By.id("saveSettings"));
+        clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void downloadAsTab() {
         clickElement(By.id("searchSettings"));
         clickElement(By.xpath("//label[contains(.,'New Tab')]"));
-        clickElement(By.id("saveSettings"));
+        clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void includeRetiredSetting() {
         clickElement(By.id("searchSettings"));
         clickElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
-        clickElement(By.id("saveSettings"));
+        clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void loadDefaultTableViewSettings() {
@@ -1204,7 +1205,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 textPresent(tag);
             }
         }
-        clickElement(By.id("createNewDesignationBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         if (tags != null) {
             for (String tag : tags) {
                 textPresent(tag);
@@ -1217,8 +1218,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         hangon(1);
         textPresent("Tags are managed in Org Management > List Management");
         findElement(By.xpath("//*[@id='newDefinition']//textarea")).sendKeys(definition);
-        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newDefinition']/button/span[contains(text(),'Plain Text')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newDefinition']/button[contains(text(),'Plain Text')]"));
         if (tags != null) {
             String tagsInputXpath = "//*[@id='newDefinitionTags']//input";
             for (String tag : tags) {
@@ -1227,7 +1228,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 textPresent(tag);
             }
         }
-        clickElement(By.id("createNewDefinitionBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         if (tags != null) {
             for (String tag : tags) {
                 textPresent(tag);
@@ -1244,20 +1245,20 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             clickElement(By.id("conceptType"));
             clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
         }
-        clickElement(By.id("createNewConceptBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         modalGone();
     }
 
     protected void addNewProperty(String key, String value, boolean isHtml) {
         clickElement(By.id("openNewPropertyModalBtn"));
         textPresent("Property keys are managed in Org Management > List Management");
-        new Select(findElement(By.id("newKey"))).selectByVisibleText(key);
+        new Select(findElement(By.name("newKey"))).selectByVisibleText(key);
 
         findElement(By.xpath("//*[@id='newValue']//textarea")).sendKeys(value);
-        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Rich Text')]"));
-        else clickElement(By.xpath("//*[@id='newValue']/button/span[contains(text(),'Plain Text')]"));
+        if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
+        else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
         hangon(1);
-        clickElement(By.id("createNewPropertyBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         modalGone();
     }
 
@@ -1272,7 +1273,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
-        clickElement(By.id("openNewReferenceDocumentModalBtn"));
+        clickElement(By.xpath("//button[contains(.,'Add Reference Document')]"));
         findElement(By.name("newId")).sendKeys(id);
         findElement(By.name("newTitle")).sendKeys(title);
         findElement(By.name("newUri")).sendKeys(uri);
@@ -1280,7 +1281,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.name("newLanguageCode")).sendKeys(languageCode);
         findElement(By.name("newDocument")).sendKeys(document);
         hangon(2);
-        clickElement(By.id("createNewReferenceDocumentBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         modalGone();
     }
 
@@ -1295,7 +1296,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.name("id")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
-        clickElement(By.id("createNewIdentifierBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         modalGone();
     }
 
@@ -1416,7 +1417,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             findElement(By.name("newAdministrativeNote")).sendKeys(administrativeNote);
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
             findElement(By.name("newUnresolvedIssue")).sendKeys(unresolvedIssue);
-        clickElement(By.id("saveRegStatus"));
+        clickElement(By.xpath("//button[text()='Save']"));
     }
 
     protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {
@@ -1688,7 +1689,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void deleteDraft() {
         clickElement(By.id("deleteDraftBtn"));
         textPresent("Delete Draft?");
-        clickElement(By.id("confirmDeleteBtn"));
+        clickElement(By.xpath("//button[text()='Delete']"));
         textNotPresent("Delete Draft?");
     }
 
@@ -1817,10 +1818,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         else textNotPresent(commentText, By.xpath("//cde-comments"));
     }
 
-    protected void selectQuestionLabelByIndex(String questionId, int index) {
+    protected void selectQuestionLabelByIndex(String questionId, int index, Consumer<Integer> extraChecksFunc) {
         clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
-        clickElement(By.xpath("//*[@id='q_select_name_" + index + "']/div/button"));
+        if (extraChecksFunc != null) {
+            extraChecksFunc.accept(index);
+        }
+        clickElement(By.xpath("//button[@id='q_select_name_" + index + "']"));
     }
 
     protected void selectQuestionNoLabel(String questionId) {

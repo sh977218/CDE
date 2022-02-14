@@ -585,12 +585,12 @@ img {
 }
 
 @media (min-width: 64em) {
-  .usa-banner__content {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+  //.site-banner .usa-banner__inner {
+  //  padding-left: 2rem;
+  //  padding-right: 2rem;
+  //}
 
-  .site-banner .usa-banner__inner {
+  .usa-banner__content {
     padding-left: 2rem;
     padding-right: 2rem;
   }

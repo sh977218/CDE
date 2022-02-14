@@ -13,14 +13,8 @@ import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-description-question',
-    templateUrl: 'formDescriptionQuestion.component.html',
-    styles: [`
-        .outdated-bg {
-            background-color: #ffecc5;
-            border: 1px;
-            border-radius: 10px;
-        }
-    `]
+    templateUrl: './formDescriptionQuestion.component.html',
+    styleUrls: ['../formDescription/formDescription.style.scss'],
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit = false;

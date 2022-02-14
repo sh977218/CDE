@@ -1,11 +1,11 @@
 import { Component, OnInit, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { Board } from 'shared/models.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Board } from 'shared/models.model';
 
 @Component({
     selector: 'cde-board-view-template',
-    templateUrl: './boardViewTemplate.component.html'
+    templateUrl: './boardViewTemplate.component.html',
 })
 export class BoardViewTemplateComponent implements OnInit {
     @Input() board: any;

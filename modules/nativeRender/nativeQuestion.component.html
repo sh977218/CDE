@@ -57,9 +57,9 @@
                         <ng-container *ngIf="nrs.nativeRenderType !== 'Dynamic' || formElement.question.displayAs !== 'likert scale' || formElement.question.multiselect; else likertDisplay">
                             <ng-container
                                     *ngIf="nrs.nativeRenderType !== 'Dynamic' || nrs.profile?.answerDropdownLimit <= 0 || nrs.profile.answerDropdownLimit >= formElement.question?.answers.length; else dropdownValueList">
-                                <div class="row">
+                                <div class="row-sm">
                                     <div *ngFor="let pv of formElement.question.answers; index as i"
-                                         [ngClass]="classColumns(pv.index, i)" class="col-12">
+                                         [ngClass]="classColumns(pv.index, i)">
                                         <div *ngIf="!pv.nonValuelist" class="form-check">
                                             <label class="form-check-label native-valuelist-label"
                                                    [ngClass]="{'native-question-oneline-l': pv.formElements
@@ -165,7 +165,7 @@
                     </ng-container>
                     <ng-container *ngSwitchCase="'Geo Location'">
                         <div class="input-group">
-                            <div class="input-group-prepend d-none d-sm-flex">
+                            <div class="input-group-prepend flex-sm">
                                 <span class="input-group-text">Coordinates:</span>
                             </div>
                             <input type="text" class="form-control"
@@ -194,13 +194,13 @@
                                    [required]="formElement.question.required"
                                    [disabled]="!formElement.question.editable">
                             <div class="input-group-append">
-                                <button *ngIf="nrs.locationDenied; else templateLocation" class="btn btn-disabled"
+                                <button *ngIf="nrs.locationDenied; else templateLocation" class="button" disabled
                                         title="Location is disabled. Enable on browser to use this feature."
                                         (click)="nrs.getCurrentGeoLocation(formElement)">
                                     <i class="material-icons iconFit">location_disabled</i>
                                 </button>
                                 <ng-template #templateLocation>
-                                    <button [id]="formElement.feId+'_location'" class="btn btn-primary"
+                                    <button [id]="formElement.feId+'_location'" class="button"
                                             title="Fill in with current location">
                                         <i class="material-icons iconFit"
                                            (click)="nrs.getCurrentGeoLocation(formElement)">location_searching</i>
@@ -233,7 +233,7 @@
                                     <input type="radio"
                                            [name]="formElement.feId + '_uom_' + i"
                                            [attr.name]="formElement.feId + '_uom_' + i"
-                                           class="mr-1"
+                                           style="margin-right: .25rem"
                                            [(ngModel)]="formElement.question.answerUom"
                                            (change)="nrs.convert(formElement)"
                                            [value]="formElement.question.unitsOfMeasure[i]"
@@ -262,7 +262,7 @@
                                     <label *ngFor="let uom of formElement.question.uomsAlias; index as i"
                                            class="input-group-text"
                                            [ngClass]="{'nativeRequiredBox': formElement.question.required}">
-                                        <input type="radio" class="mr-1"
+                                        <input type="radio" style="margin-right: .25rem"
                                                [name]="formElement.feId + '_uom_' + i"
                                                [attr.name]="formElement.feId + '_uom_' + i"
                                                [(ngModel)]="formElement.question.answerUom"
@@ -314,7 +314,7 @@
             </ng-container>
         </div>
         <div *ngIf="nrs.profile.metadata.device && (metadataTagsNew || formElement.metadataTags?.length)"
-             class="ml-3" style="font-size: .8rem; font-style: italic; color: grey">
+             style="font-size: .8rem; font-style: italic; color: grey; margin-left: .75rem">
             <div class="native-question-label">
                 Metadata:
                 <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
@@ -325,12 +325,13 @@
 </div>
 
 <ng-template #metadataAddButton>
-    <span class="dropdown noPrint">
-        <i class="material-icons iconButton" data-toggle="dropdown"
+    <span class="dropdown noPrint" style="vertical-align: text-bottom">
+        <i class="material-icons iconButton" (click)="nrs.openMenu($event, dropdownMenu)"
+           data-toggle="dropdown" aria-haspopup="true"
            style="font-size: 20px; height: 20px; vertical-align: top; width: 20px">add</i>
-        <div class="dropdown-menu" style="font-size: .8rem; font-weight: initial">
-            <a class="dropdown-item" (click)="metadataTagsNew = 'UDI'">Add Device by UDI</a>
-            <a class="dropdown-item" (click)="metadataTagsNew = 'DI'">Add Device by DI</a>
+        <div #dropdownMenu class="dropdown-menu" style="font-size: .8rem; font-weight: initial">
+            <a class="dropdown-item" href="javascript:void(0);" (click)="metadataTagsNew = 'UDI'">Add Device by UDI</a>
+            <a class="dropdown-item" href="javascript:void(0);" (click)="metadataTagsNew = 'DI'">Add Device by DI</a>
         </div>
     </span>
 </ng-template>

@@ -1,22 +1,10 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TourService } from 'home/tour.service';
 
 @Component({
-    selector: 'cde-home',
     templateUrl: 'home.component.html',
-    encapsulation: ViewEncapsulation.None,
-    styles: [`
-        .center {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 50%;
-        }
-        #quickSearchForm .mat-form-field-infix {
-            padding: .3rem 0;
-        }
-    `]
+    styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
     cdeSearchTerm!: string;

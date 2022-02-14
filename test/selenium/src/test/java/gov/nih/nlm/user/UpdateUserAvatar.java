@@ -11,10 +11,10 @@ public class UpdateUserAvatar extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToUsers();
         searchUsername(empty_avatar_username);
-        clickElement(By.id("searchUsersSubmit"));
-        clickElement(By.xpath("//*[@id='user_avatar_0']//mat-icon"));
-        findElement(By.xpath("//*[@id='user_avatar_0']//input")).sendKeys(avatarUrl);
-        clickElement(By.xpath("//*[@id = 'user_avatar_0']//button/mat-icon[normalize-space() = 'check']"));
-        findElement(By.xpath("//*[@id='user_avatar_0']//img"));
+        clickElement(By.xpath("//button[text()='Search']"));
+        clickElement(By.xpath("//*[@itemprop='user_avatar_0']//mat-icon"));
+        findElement(By.xpath("//*[@itemprop='user_avatar_0']//input")).sendKeys(avatarUrl);
+        clickElement(By.xpath("//*[@itemprop='user_avatar_0']//button/mat-icon[normalize-space() = 'check']"));
+        findElement(By.xpath("//*[@itemprop='user_avatar_0']//img"));
     }
 }

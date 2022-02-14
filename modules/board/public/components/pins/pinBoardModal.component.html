@@ -1,47 +1,46 @@
 <ng-template #pinModal>
-    <h3 mat-dialog-title>Choose a Board to pin this {{module | uppercase}} to
+    <h1 mat-dialog-title>Choose a Board to pin this {{module | uppercase}} to
         <cde-create-board [module]="module"></cde-create-board>
-    </h3>
-    <div mat-dialog-content>
+    </h1>
+    <mat-dialog-content>
         <mat-icon *ngIf="myBoardsSvc.reloading || !myBoardsSvc.boards" class="spin">autorenew</mat-icon>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" class="ml-10"> You don't have any boards
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" style="margin-left: 2.5rem"> You don't have any boards
         </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
-            <div class="pl-10" *ngIf="myBoardsSvc.filter">
-                <div *ngIf="myBoardsSvc.filter.tags.length > 0">
-                    <h4>Tags</h4>
+            <div *ngIf="myBoardsSvc.filter" style="padding-left: 2.5rem">
+                <section *ngIf="myBoardsSvc.filter.tags.length > 0">
+                    <h2>Tags</h2>
                     <label *ngFor="let tag of myBoardsSvc.filter.tags" class="d-block">
                         <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="tag-{{tag.key}}" class="align-middle">
-                        <span class="align-middle">{{tag.key}} ({{tag.doc_count}})</span>
+                               attr.data-id="tag-{{tag.key}}">
+                        {{tag.key}} ({{tag.doc_count}})
                     </label>
-                </div>
-                <div *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
-                    <h4>Share Status</h4>
+                </section>
+                <section *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
+                    <h2>Share Status</h2>
                     <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="d-block">
                         <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="status-{{ss.key}}" class="align-middle">
-                        <span class="align-middle">{{ss.key}} ({{ss.doc_count}})</span>
+                               attr.data-id="status-{{ss.key}}">
+                        {{ss.key}} ({{ss.doc_count}})
                     </label>
-                </div>
+                </section>
             </div>
-            <div class="row">
-                <div *ngFor="let board of myBoardsSvc.boards; let $index = index" class="col-lg-4 col-md-3">
-                    <cde-board-view-template [board]="board" [headerLink]="false"
-                                             (headerClicked)="selectBoard(board); ">
-                    </cde-board-view-template>
-                </div>
+            <div class="responsiveGrid">
+                <cde-board-view-template *ngFor="let board of myBoardsSvc.boards"
+                                         [board]="board" [headerLink]="false"
+                                         (headerClicked)="selectBoard(board); ">
+                </cde-board-view-template>
             </div>
         </div>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button color="warn" [mat-dialog-close] id="cancelSelect">Cancel</button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    </mat-dialog-actions>
 </ng-template>
 
 <ng-template #ifYouLoginModal>
-    <h3 mat-dialog-title>Sign up for an account</h3>
-    <div mat-dialog-content>
+    <h1 mat-dialog-title>Sign up for an account</h1>
+    <mat-dialog-content>
         With an account, you will be able to:
         <ul>
             <li>Create Boards and attach CDEs to them</li>
@@ -51,10 +50,10 @@
         </ul>
         <br>
         <div style="text-align: center">
-            <a id="signUpLink" routerLink="/login"><button [mat-dialog-close] mat-raised-button>Sign up or Log In</button></a>
+            <a class="button" [mat-dialog-close] routerLink="/login" href="javascript:void(0);">Sign up or Log In</a>
         </div>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button color="warn" [mat-dialog-close] id="cancelSelect">Cancel</button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    </mat-dialog-actions>
 </ng-template>

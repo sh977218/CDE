@@ -1,11 +1,10 @@
-<button *ngIf="userSvc.user" mat-raised-button value="add" (click)="openNewBoard()" id="addBoard" color="primary"
-        style="margin-bottom: 10px;">
+<button *ngIf="userSvc.user" id="addBoard" class="button" value="add" (click)="openNewBoard()">
     <mat-icon>add</mat-icon>
     {{buttonName}}
 </button>
 
 <ng-template #createBoardModal id="newBoardModal">
-    <h4 mat-dialog-title>Create New Board</h4>
+    <h1 mat-dialog-title>Create New Board</h1>
     <form name="form" role="form" #bForm="ngForm">
         <div mat-dialog-content>
             <div class="form-group">
@@ -35,10 +34,8 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button color="warn" [mat-dialog-close] id="cancelCreate" type="button">Cancel</button>
-            <button mat-raised-button color="primary" (click)="doCreateBoard()"
-                    [disabled]="!bForm.form.valid" id="createBoard" type="submit">Save
-            </button>
+            <button class="button secondary" [mat-dialog-close]>Cancel</button>
+            <button class="button" type="submit" (click)="doCreateBoard()" [disabled]="!bForm.form.valid">Save</button>
         </div>
     </form>
 </ng-template>

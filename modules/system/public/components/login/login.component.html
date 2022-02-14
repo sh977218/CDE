@@ -1,32 +1,29 @@
-<div class="container py-3">
-    <div class="d-flex flex-column">
-        <h4 class="text-color">Our sign in process has changed.</h4>
-        <div class="py-1 px-1">
-            We are migrating UMLS Terminology Service (UTS) accounts to a service that will allow you to sign in to UTS
-            using your NIH credentials, Google, Microsoft, Facebook, or another identity provider of your choice.
-        </div>
-        <div class="d-flex flex-column flex-md-row justify-content-start align-items-start">
-            <div class="login-box d-flex flex-column justify-content-even">
-                <div class="d-flex justify-content-center text-color">Already have a UTS account?</div>
-                <div class="d-flex justify-content-center py-2">
-                    <button id="logInButton" mat-raised-button color="primary" (click)="loginService.openLogin()">Sign In</button>
-                </div>
-                <div class="d-flex justify-content-center">
-                    Select this option to sign in via NIH, Google, Microsoft, Facebook, your research organization, or
-                    Login.gov
-                </div>
+<div class="container">
+    <h1>Our sign in process has changed.</h1>
+    <section>
+        We are migrating UMLS Terminology Service (UTS) accounts to a service that will allow you to sign in to UTS
+        using your NIH credentials, Google, Microsoft, Facebook, or another identity provider of your choice.
+    </section>
+    <section class="loginBoxes">
+        <div>
+            <div>Already have a UTS account?</div>
+            <div>
+                <button class="button" (click)="loginService.openLogin()">Sign In</button>
             </div>
-            <div class="login-box d-flex flex-column justify-content-even">
-                <div class="d-flex justify-content-center text-color">Don't have an account?</div>
-                <div class="d-flex justify-content-center py-2">
-                    <a mat-raised-button color="primary" id="signUpButton" href="https://uts.nlm.nih.gov/uts/signup-login"
-                       target="_blank">Sign Up</a>
-                </div>
-                <div class="d-flex justify-content-center">
-                    Select this option if you don't have a UMLS Terminology Services (UTS) license/account.
-                </div>
+            <div>
+                Select this option to sign in via NIH, Google, Microsoft, Facebook, your research organization, or
+                Login.gov
             </div>
         </div>
-
-    </div>
+        <div>
+            <div>Don't have an account?</div>
+            <div>
+                <a class="button" href="https://uts.nlm.nih.gov/uts/signup-login"
+                   target="_blank">Sign Up</a>
+            </div>
+            <div>
+                Select this option if you don't have a UMLS Terminology Services (UTS) license/account.
+            </div>
+        </div>
+    </section>
 </div>

@@ -36,6 +36,7 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     imports: [
@@ -60,7 +61,8 @@ import { TagModule } from 'tag/tag.module';
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
-        MatTabsModule
+        MatTabsModule,
+        MatCardModule
     ],
     declarations: [
         AttachmentsComponent,

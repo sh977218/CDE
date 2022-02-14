@@ -8,7 +8,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-merge-data-element',
-    templateUrl: './mergeDataElement.component.html'
+    templateUrl: './mergeDataElement.component.html',
+    styleUrls: ['./mergeDataElement.component.scss'],
 })
 export class MergeDataElementComponent {
     @Input() source!: DataElement;

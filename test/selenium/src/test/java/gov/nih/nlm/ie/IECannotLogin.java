@@ -15,7 +15,7 @@ public class IECannotLogin extends NlmCdeBaseTest {
 //        textPresent("Internet Explorer is no longer supported to");
 //
 //        textPresent("Please note that the NIH CDE Repository no longer supports Internet Explorer");
-//        clickElement(By.id("ignoreIeWarning"));
+//        clickElement(By.xpath("//button[text()='Ignore']"));
 //        textNotPresent("Please note that the NIH CDE Repository no longer supports Internet Explorer");
 //
 //    }

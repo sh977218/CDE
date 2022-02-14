@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-
 import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
@@ -9,13 +9,12 @@ import { UserService } from '_app/user.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
+import { SearchBaseComponent } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-form-search',
-    styles: [searchStyles],
+    styleUrls: ['../../../../search/searchBase.component.scss'],
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class FormSearchComponent extends SearchBaseComponent {

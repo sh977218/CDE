@@ -5,15 +5,18 @@
 <mat-card *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
     <mat-card-header>
         <mat-card-title>
-            <h3 class="d-inline">{{dPVM.profile.name}}</h3>
-            <cde-delete-with-confirm class="d-inline" (click)="interruptEvent($event)"
-                                     (deleted)="removeDisplayProfile(index)">
-            </cde-delete-with-confirm>
+            <h3>
+                {{dPVM.profile.name}}
+                <cde-delete-with-confirm (click)="interruptEvent($event)"
+                                         (deleted)="removeDisplayProfile(index)">
+                </cde-delete-with-confirm>
+            </h3>
+
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div class="row">
-            <div class="col-lg-5 col-sm-12">
+        <div class="displayProfile">
+            <div>
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>
@@ -23,7 +26,7 @@
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                        <section class="d-flex flex-column">
+                        <section class="displayProfileSettings">
                             <label>
                                 Default Value
                                 <select class="form-control" [disabled]="!canEdit"
@@ -81,11 +84,11 @@
                 <mat-card *ngIf="getMapToFhirResource(elt) === 'Procedure'">
                     <mat-card-header>Procedure Mapping</mat-card-header>
                     <mat-card-actions>
-                        <button mat-raised-button (click)="openProcedureMapping(dPVM)">Procedure Mapping</button>
+                        <button class="button" (click)="openProcedureMapping(dPVM)">Procedure Mapping</button>
                     </mat-card-actions>
                 </mat-card>
             </div>
-            <div class="col-lg-7 col-sm-12">
+            <div>
                 <mat-card>
                     <mat-card-header>
                         <mat-card-title>
@@ -103,7 +106,7 @@
                     <mat-card-header>
                         <mat-card-title>
                             Unit of Measure Aliases
-                            <button mat-raised-button (click)="uomAliasEdit(dPVM)" *ngIf="canEdit">
+                            <button class="button light small" (click)="uomAliasEdit(dPVM)" *ngIf="canEdit">
                                 <ng-container *ngIf="dPVM.aliases.edit; else uomEdit">
                                     Okay
                                     <mat-icon>done</mat-icon>
@@ -116,14 +119,14 @@
                         </mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
-                        <div class="row">
+                        <div class="aliasGrid">
                             <ng-template #displayAliases>
                                 <ng-container *ngFor="let u of dPVM.profile.unitsOfMeasureAlias">
-                                    <span class="col-12 col-sm-6 col-lg-12 col-xl-6 mb-1">
+                                    <div>
                                         <ng-container *ngIf="u.unitOfMeasure.system">
                                             {{u.unitOfMeasure.system}}/</ng-container>
                                         {{u.unitOfMeasure.code}}: {{u.alias}}
-                                    </span>
+                                    </div>
                                 </ng-container>
                                 <div *ngIf="!dPVM.profile.unitsOfMeasureAlias.length" class="w-100 text-center">
                                     No Aliases are Defined.
@@ -131,8 +134,7 @@
                             </ng-template>
                             <ng-container *ngIf="dPVM.aliases.edit; else displayAliases">
                                 <ng-container *ngFor="let u of uoms">
-                                    <span class="col-sm-6 col-lg-12 col-xl-6 mb-1"
-                                          id="alias-{{u.u.system}}-{{u.u.code}}">
+                                    <div id="alias-{{u.u.system}}-{{u.u.code}}">
                                         <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>
                                         {{u.u.code}}:
                                         <select class="form-control" [disabled]="!canEdit"
@@ -140,7 +142,7 @@
                                                 (ngModelChange)="profileAliasSet(dPVM, u.u, $event)">
                                             <option *ngFor="let option of u.a">{{option}}</option>
                                         </select>
-                                    </span>
+                                    </div>
                                 </ng-container>
                                 <div *ngIf="!uoms.length" class="w-100 text-center">
                                     This form contains no units of measure.
@@ -175,8 +177,8 @@
         </div>
     </mat-card-content>
 </mat-card>
-<button *ngIf="canEdit" mat-raised-button class="mt-2" (click)="addProfile()" color="primary">
-    <mat-icon style="font-weight: 900">add</mat-icon>
+<button *ngIf="canEdit" class="button mT" (click)="addProfile()">
+    <mat-icon>add</mat-icon>
     Add Profile
 </button>
 

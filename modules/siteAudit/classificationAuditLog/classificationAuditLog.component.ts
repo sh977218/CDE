@@ -10,6 +10,7 @@ import { noop } from 'shared/util';
 })
 export class ClassificationAuditLogComponent {
     currentPage: number = 0;
+    readonly pageSize = 50;
     records: ClassificationAudit[] = [];
 
     constructor(private http: HttpClient) {
@@ -21,8 +22,8 @@ export class ClassificationAuditLogComponent {
             this.currentPage = event.pageIndex;
         }
         this.http.post<ClassificationAudit[]>('/server/system/getClassificationAuditLog', {
-            skip: this.currentPage * 50,
-            limit: 50
+            skip: this.currentPage * this.pageSize,
+            limit: this.pageSize
         }).subscribe(response => {
             this.records = response;
         }, noop);

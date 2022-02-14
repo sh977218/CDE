@@ -6,8 +6,10 @@ import { interruptEvent } from 'non-core/browser';
 @Component({
     selector: 'cde-pin-board',
     template: `
-        <mat-icon id="pinToBoard_{{eltIndex}}" class="hand-cursor" title="Attach to Board" role="link"
-           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt])" svgIcon="thumb_tack"></mat-icon>
+        <a id="pinToBoard_{{eltIndex}}" title="Attach to Board" class="fake-button" role="button" tabindex="0"
+           (click)="interruptEvent($event);mltPinModal.pinMultiple([elt])">
+            <mat-icon svgIcon="thumb_tack"></mat-icon>
+        </a>
         <cde-pin-board-modal #mltPinModal [module]="module"></cde-pin-board-modal>
     `
 })

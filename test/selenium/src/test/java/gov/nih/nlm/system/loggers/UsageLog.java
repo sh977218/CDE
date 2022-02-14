@@ -14,7 +14,7 @@ public class UsageLog extends NlmCdeBaseTest {
         clickElement(By.xpath("//div[. = 'Usage']"));
         clickElement(By.id("search.submit"));
         textPresent("Days Ago");
-        clickElement(By.xpath("//button[. = 'Reveal']"));
+        clickElement(By.xpath("//button[contains(.,'Reveal')]"));
     }
 
 }

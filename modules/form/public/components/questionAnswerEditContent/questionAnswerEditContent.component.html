@@ -1,7 +1,5 @@
-<div class="modal-header">
-    <h3>Edit Answer</h3>
-</div>
-<div class="modal-body" id="edit-answer-div">
+<h1 mat-dialog-title>Edit Answer</h1>
+<mat-dialog-content id="edit-answer-div">
     <table class="table table-border">
         <thead>
         <tr>
@@ -26,9 +24,9 @@
         </tr>
         </tbody>
     </table>
-</div>
-<div class="modal-footer">
-    <button mat-raised-button [mat-dialog-close]="'clear'">Clear All</button>
-    <button mat-raised-button [mat-dialog-close] id="cancelEditAnswerBtn">Cancel</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="answers" id="saveEditAnswerBtn">Save</button>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="button fail" [mat-dialog-close]="'clear'">Clear All</button>
+    <button class="button secondary" [mat-dialog-close] cdkFocusInitial>Cancel</button>
+    <button class="button success" [mat-dialog-close]="answers">Save</button>
+</mat-dialog-actions>

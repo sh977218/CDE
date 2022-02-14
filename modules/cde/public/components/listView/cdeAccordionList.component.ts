@@ -7,7 +7,6 @@ import { noop } from 'shared/util';
 
 @Component({
     templateUrl: './cdeAccordionList.component.html',
-    selector:'cde-according-list'
 })
 export class CdeAccordionListComponent {
     @Input() addMode: string = '';

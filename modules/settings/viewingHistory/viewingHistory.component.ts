@@ -14,7 +14,8 @@ class FormUI extends CdeForm {
 }
 
 @Component({
-    templateUrl: './viewingHistory.component.html'
+    templateUrl: './viewingHistory.component.html',
+    styleUrls: ['./viewingHistory.component.scss'],
 })
 export class ViewingHistoryComponent {
     cdes: DataElementUI[] = [];

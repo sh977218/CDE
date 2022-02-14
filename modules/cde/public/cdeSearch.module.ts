@@ -14,6 +14,7 @@ import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cd
 import { TagModule } from 'tag/tag.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -26,7 +27,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
     imports: [
@@ -34,6 +34,7 @@ import { MatCardModule } from '@angular/material/card';
         FormsModule,
         MatAutocompleteModule,
         MatButtonModule,
+        MatCardModule,
         MatCheckboxModule,
         MatChipsModule,
         MatDialogModule,
@@ -46,7 +47,6 @@ import { MatCardModule } from '@angular/material/card';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-        MatCardModule,
         NgbModule,
         RouterModule,
         // non-core

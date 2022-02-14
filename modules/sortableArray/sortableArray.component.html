@@ -1,6 +1,6 @@
-<mat-icon class="moveUp-{{index}}" (click)="moveUp()"
-      *ngIf="index !== 0" title="Up">arrow_upward</mat-icon>
-<mat-icon class="moveDown-{{index}}" (click)="moveDown()"
-      *ngIf="index < theArray.length - 1" title="Down">arrow_downward</mat-icon>
-<mat-icon class="moveTop-{{index}}" (click)="moveTop()"
-      *ngIf="index !== 0" title="Move to top">vertical_align_top</mat-icon>
+<mat-icon *ngIf="index !== 0" title="Up" class="moveUp-{{index}} fake-button" role="button" tabindex="0"
+          (click)="moveUp()">arrow_upward</mat-icon>
+<mat-icon *ngIf="index < theArray.length - 1" title="Down" class="moveDown-{{index}} fake-button" role="button" tabindex="0"
+          (click)="moveDown()">arrow_downward</mat-icon>
+<mat-icon *ngIf="index !== 0" title="Move to top" class="moveTop-{{index}} fake-button" role="button" tabindex="0"
+          (click)="moveTop()">vertical_align_top</mat-icon>

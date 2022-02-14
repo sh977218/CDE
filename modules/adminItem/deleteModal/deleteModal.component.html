@@ -1,7 +1,7 @@
 <ng-template #deleteElementContent>
-    <h4 mat-dialog-title>Delete Draft?</h4>
+    <h1 mat-dialog-title>Delete Draft?</h1>
     <div mat-dialog-actions>
-        <button id="cancelDeleteBtn" [mat-dialog-close] mat-raised-button color="primary">Cancel</button>
-        <button id="confirmDeleteBtn" [mat-dialog-close]="true" mat-raised-button color="warn">Delete</button>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+        <button class="button fail" [mat-dialog-close]="true">Delete</button>
     </div>
 </ng-template>

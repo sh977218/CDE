@@ -44,6 +44,10 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
     static validate(elt: CdeForm) {
         Elt.validate(elt);
 
+        if (elt.isCopyrighted && !elt.copyright) {
+            elt.copyright = {};
+        }
+
         elt.displayProfiles.forEach(dp => {
             if (!dp.metadata) {
                 dp.metadata = {};

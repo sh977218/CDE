@@ -1,67 +1,64 @@
-<div class="container-fluid">
-    <h1>Notifications</h1>
-    <div *ngIf="user">
-        <mat-checkbox class="my-3"
-                      [checked]="clientStatus()"
-                      (change)="clientStatus() ? pushUnsubscribe(user) : pushSubscribe(user)">
-            Subscribe for Push Notifications
-        </mat-checkbox>
-        <table class="table">
-            <thead>
-            <tr>
-                <th></th>
-                <th>Banner Notification</th>
-                <th>Push Notification</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    Relevant Comment
-                    <mat-icon class="infoIcon"
-                              aria-label="New comment on an item you are having a comment conversation on or are a curator for."
-                              matTooltip="New comment on an item you are having a comment conversation on or are a curator for."
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
-                    </mat-icon>
-                </td>
-                <td>
-                    <mat-slide-toggle [checked]="user.notificationSettings.comment.drawer"
-                                      (change)="user.notificationSettings.comment.drawer = $event.checked; userService.save()">
-                        {{booleanSettingOptions[user.notificationSettings.comment.drawer ? 1 : 0]}}
-                    </mat-slide-toggle>
-                </td>
-                <td>
-                    <mat-slide-toggle [checked]="user.notificationSettings.comment.push"
-                                      (change)="user.notificationSettings.comment.push = $event.checked; userService.save()">
-                        {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
-                    </mat-slide-toggle>
-                </td>
-            </tr>
-            <tr *ngIf="isSiteAdmin(user)">
-                <td>Administrative System Events</td>
-                <!--<td colspan="3" style="text-align: center">Required across all channels and cannot be unsubscribed</td>-->
-                <td>
-                    <mat-slide-toggle checked="true" disabled>
-                        <span class="disabled">Enabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="Required across all channels and cannot be unsubscribed"
-                              matTooltip="Required across all channels and cannot be unsubscribed"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
-                    </mat-icon>
-                </td>
-                <td>
-                    <mat-slide-toggle checked="true" disabled>
-                        <span class="disabled">Enabled</span>
-                    </mat-slide-toggle>
-                    <mat-icon class="infoIcon"
-                              aria-label="Required across all channels and cannot be unsubscribed"
-                              matTooltip="Required across all channels and cannot be unsubscribed"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
-                    </mat-icon>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+<h1>Notifications</h1>
+<ng-container *ngIf="user">
+    <mat-checkbox [checked]="clientStatus()"
+                  (change)="clientStatus() ? pushUnsubscribe(user) : pushSubscribe(user)">
+        Subscribe for Push Notifications
+    </mat-checkbox>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Banner Notification</th>
+            <th>Push Notification</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                Relevant Comment
+                <mat-icon class="infoIcon"
+                          aria-label="New comment on an item you are having a comment conversation on or are a curator for."
+                          matTooltip="New comment on an item you are having a comment conversation on or are a curator for."
+                          matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                </mat-icon>
+            </td>
+            <td>
+                <mat-slide-toggle [checked]="user.notificationSettings.comment.drawer"
+                                  (change)="user.notificationSettings.comment.drawer = $event.checked; userService.save()">
+                    {{booleanSettingOptions[user.notificationSettings.comment.drawer ? 1 : 0]}}
+                </mat-slide-toggle>
+            </td>
+            <td>
+                <mat-slide-toggle [checked]="user.notificationSettings.comment.push"
+                                  (change)="user.notificationSettings.comment.push = $event.checked; userService.save()">
+                    {{booleanSettingOptions[user.notificationSettings.comment.push ? 1 : 0]}}
+                </mat-slide-toggle>
+            </td>
+        </tr>
+        <tr *ngIf="isSiteAdmin(user)">
+            <td>Administrative System Events</td>
+            <!--<td colspan="3" style="text-align: center">Required across all channels and cannot be unsubscribed</td>-->
+            <td>
+                <mat-slide-toggle checked="true" disabled>
+                    <span class="disabled">Enabled</span>
+                </mat-slide-toggle>
+                <mat-icon class="infoIcon"
+                          aria-label="Required across all channels and cannot be unsubscribed"
+                          matTooltip="Required across all channels and cannot be unsubscribed"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                </mat-icon>
+            </td>
+            <td>
+                <mat-slide-toggle checked="true" disabled>
+                    <span class="disabled">Enabled</span>
+                </mat-slide-toggle>
+                <mat-icon class="infoIcon"
+                          aria-label="Required across all channels and cannot be unsubscribed"
+                          matTooltip="Required across all channels and cannot be unsubscribed"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="above">help_outline
+                </mat-icon>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</ng-container>

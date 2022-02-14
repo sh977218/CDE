@@ -1,4 +1,4 @@
-<h4 mat-dialog-title [innerHtml]="data.title"></h4>
+<h1 mat-dialog-title [innerHtml]="data.title"></h1>
 <div mat-dialog-content>
     <mat-tab-group>
         <mat-tab id="treeViewTab" label="By Classification tree">
@@ -12,7 +12,7 @@
                 <tree-root #tree [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                     <ng-template #treeNodeTemplate let-node="node" let-index="index">
                         <span [id]="node.path" class="mr-1">{{ node.data.name }}</span>
-                        <button mat-raised-button (click)="classifyItemByTree(node, selectedOrg)" color="primary">
+                        <button class="button" (click)="classifyItemByTree(node, selectedOrg)">
                             <mat-icon>add</mat-icon>
                             Classify
                         </button>
@@ -34,14 +34,11 @@
         </mat-tab>
         <mat-tab id="recentlyAddViewTab" label="By recently added">
             <p>Select from recently used classifications...</p>
-            <div class="smallSpace"></div>
-            <ng-container
-                    *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; let i = index">
+            <ng-container *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; index as i">
                 <div class="breadcrumb" id="recentlyClassification_{{i}}">
                     {{orgClassificationRecentlyAddView.orgName}} /
                     {{orgClassificationRecentlyAddView.categories.join(" / ")}}
-                    <button mat-raised-button style="margin-left: 10px" color="primary"
-                            (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
+                    <button class="button" (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
                         <mat-icon>add</mat-icon>
                         Classify
                     </button>
@@ -51,5 +48,5 @@
     </mat-tab-group>
 </div>
 <div mat-dialog-actions>
-    <button [mat-dialog-close] mat-raised-button>Close</button>
+    <button class="button" [mat-dialog-close]>Close</button>
 </div>

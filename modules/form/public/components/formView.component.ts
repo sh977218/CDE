@@ -82,13 +82,13 @@ export class FormViewComponent implements OnInit, OnDestroy {
     isMobile = false;
 
     constructor(private alert: AlertService,
+                private cdr: ChangeDetectorRef,
                 private dialog: MatDialog,
                 public exportService: ExportService,
                 private formViewService: FormViewService,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
                 private orgHelperService: OrgHelperService,
-                private ref: ChangeDetectorRef,
                 private route: ActivatedRoute,
                 private router: Router,
                 private scrollService: ScrollService,
@@ -331,7 +331,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }).subscribe(res => {
             this.elt = res;
             this.alert.addAlert('success', 'Attachment Removed.');
-            this.ref.detectChanges();
+            this.cdr.detectChanges();
         });
     }
 
@@ -430,7 +430,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             }).subscribe(res => {
             this.elt = res;
             this.alert.addAlert('success', 'Saved');
-            this.ref.detectChanges();
+            this.cdr.detectChanges();
         });
     }
 
@@ -453,7 +453,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     } else {
                         this.elt = r;
                         this.alert.addAlert('success', 'Attachment added.');
-                        this.ref.detectChanges();
+                        this.cdr.detectChanges();
                     }
                 }
             );

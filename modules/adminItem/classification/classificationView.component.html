@@ -4,7 +4,7 @@
         <hr/>
         <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
             <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a [routerLink]="[getClassifLink()]"
+                <a [routerLink]="[getClassifLink()]" href="javascript:void(0);"
                    [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
                     {{ node.data.name }}</a>
                 <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" style="vertical-align: middle; font-size: 1.5em"
@@ -26,14 +26,12 @@
 <div class="clearfix"></div>
 
 <ng-template #deleteClassificationContent>
-    <h4 mat-dialog-title>Remove Classification</h4>
+    <h1 mat-dialog-title>Remove Classification</h1>
     <div mat-dialog-content>
         You are about to delete <b>{{deleteClassificationString}}</b> classification. Are you sure?
     </div>
     <div mat-dialog-actions>
-        <button [mat-dialog-close] id="cancelDeleteClassificationBtn" type="button"
-                mat-raised-button color="warn">Cancel</button>
-        <button [mat-dialog-close]="'confirm'" id="confirmDeleteClassificationBtn"
-                type="button" mat-raised-button color="primary">OK</button>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+        <button id="confirmDeleteClassificationBtn" class="button fail" [mat-dialog-close]="'confirm'">Delete</button>
     </div>
 </ng-template>

@@ -4,31 +4,7 @@ import { Item } from 'shared/models.model';
 
 @Component({
     templateUrl: './compareHistoryContent.component.html',
-    styles: [`
-        caption {
-            caption-side: top;
-        }
-        #addIcon{
-            background-color: #008000;
-        }
-        #editIcon{
-            background-color: #0000ff;
-        }
-        #removeIcon{
-            background-color: #a94442;
-        }
-        #reorderIcon{
-            background-color: #fad000;
-        }
-        .color-box {
-            width: 10px;
-            height: 10px;
-        }
-        .isSelected {
-            background-color: #f5f5f5;
-        }
-    `],
-    providers: []
+    styleUrls: ['./compareHistoryContent.component.scss'],
 })
 export class CompareHistoryContentComponent {
     newer: Item;
@@ -48,7 +24,7 @@ export class CompareHistoryContentComponent {
         }
     };
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: {newer: Item, older: Item}) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { newer: Item, older: Item }) {
         this.newer = data.newer;
         this.older = data.older;
     }

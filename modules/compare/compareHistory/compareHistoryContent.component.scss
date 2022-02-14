@@ -1,0 +1,53 @@
+@import '../../theme';
+
+caption {
+  caption-side: top;
+}
+
+#addIcon {
+  background-color: #008000;
+}
+
+#editIcon {
+  background-color: #0000ff;
+}
+
+#removeIcon {
+  background-color: #a94442;
+}
+
+#reorderIcon {
+  background-color: #fad000;
+}
+
+.color-box {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+}
+
+.isSelected {
+  background-color: #f5f5f5;
+}
+
+.twoFourGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: $screenMd) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (min-width: $screenLg) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  > * {
+    min-width: 100%;
+  }
+
+  input {
+    vertical-align: middle;
+  }
+}

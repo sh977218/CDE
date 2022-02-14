@@ -5,12 +5,11 @@
     </div>
 </ng-template>
 <ng-container *ngIf="!elt.isDraft; else notAvailable">
-    <button *ngIf="canClassify(userService.user)" mat-raised-button id="openClassificationModalBtn"
-            (click)="openClassifyItemModal()" color="primary">
+    <button *ngIf="canClassify(userService.user)" id="openClassificationModalBtn" class="button" (click)="openClassifyItemModal()">
         <mat-icon>folder_open</mat-icon> Classify this Form
     </button>
     <button *ngIf="canClassify(userService.user) && elt.formElements.length > 0"
-            mat-raised-button id="openClassifyCdesModalBtn" color="primary"
+            id="openClassifyCdesModalBtn" class="button"
             (click)="openClassifyCdesModal()">
         <mat-icon>folder_open</mat-icon> Classify CDEs
     </button>

@@ -13,19 +13,19 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
         textPresent("results for");
         clickElement(By.id("pinAll"));
         textPresent("Create Boards and attach CDEs to them");
-        clickElement(By.id("signUpLink"));
+        clickElement(By.xpath("//a[text()='Sign up or Log In']"));
         isLoginPage();
         driver.navigate().back();
 
         clickElement(By.id("pinToBoard_0"));
         textPresent("Create Boards and attach CDEs to them");
-        clickElement(By.id("cancelSelect"));
+        clickElement(By.xpath("//button[text()='Cancel']"));
         modalGone();
 
         clickElement(By.id("linkToElt_0"));
         clickElement(By.id("addToBoard"));
         textPresent("Create Boards and attach CDEs to them");
-        clickElement(By.id("cancelSelect"));
+        clickElement(By.xpath("//button[text()='Cancel']"));
         modalGone();
     }
 

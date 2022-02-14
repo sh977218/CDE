@@ -4,12 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
     selector: 'cde-banner',
     templateUrl: 'banner.component.html',
-    styles: [`
-        .covid-banner-dialog-container > .mat-dialog-container {
-            background: #be2c2c;
-            color: white;
-        }
-    `],
+    styleUrls: ['./banner.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class BannerComponent implements AfterViewInit {

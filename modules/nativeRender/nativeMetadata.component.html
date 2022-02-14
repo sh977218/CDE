@@ -62,21 +62,24 @@
         </article>
     </article>
     <footer class="noPrint">
-        <a title="Delete" (click)="nativeFe.formElement.metadataTags.splice(i, 1)"><i class="material-icons">delete_outline</i></a>
+        <a title="Delete" href="javascript:void(0);"
+           (click)="nativeFe.formElement.metadataTags.splice(i, 1)"><i class="material-icons">delete_outline</i></a>
     </footer>
 </section>
 <section *ngIf="nativeFe.metadataTagsNew === 'DI' || nativeFe.metadataTagsNew === 'UDI'" class="metadata-item">
     <article>
         <div><label for="deviceSearchInput">Search for Device by
             <ng-container *ngIf="nativeFe.metadataTagsNew === 'UDI'">Unique</ng-container>Device Id:</label></div>
-        <div class="input-group mr-2 mb-1">
+        <div class="input-group" style="margin-bottom: .25rem; margin-right: .5rem">
             <input #searchField id="deviceSearchInput" class="form-control" [(ngModel)]="metadataSearch"/>
-            <button class="btn btn-outline-dark input-group-addon" (click)="accessGUDIdSearch()">Add</button>
+            <button class="button light input-group-addon" (click)="accessGUDIdSearch()">Add</button>
         </div>
         <ng-container *ngIf="nativeFe.metadataTagsNew !== watchNewState && moveFocus(searchField)"></ng-container>
-        <div><a *ngIf="metadataSearchResult === null" style="color: red">Device Identifier(DI) Not Found</a></div>
+        <div><a *ngIf="metadataSearchResult === null" style="color: red"
+                href="javascript:void(0);">Device Identifier(DI) Not Found</a></div>
     </article>
     <footer class="noPrint">
-        <a title="Delete" (click)="nativeFe.metadataTagsNew = undefined"><i class="material-icons">delete_outline</i></a>
+        <a title="Delete" href="javascript:void(0);"
+           (click)="nativeFe.metadataTagsNew = undefined"><i class="material-icons">delete_outline</i></a>
     </footer>
 </section>

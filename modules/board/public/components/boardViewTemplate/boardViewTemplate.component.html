@@ -1,29 +1,32 @@
-<div class="card mb-1 cdeBoard" [id]="board.name">
-    <div class="card-header" (click)="clickHeader(board);">
+<mat-card [id]="board.name">
+    <mat-card-title class="stretchBar fake-button" role="button" tabindex="0" (click)="clickHeader(board);">
         <mat-icon *ngIf="board.shareStatus ==='Public'">public</mat-icon>
         <mat-icon *ngIf="board.shareStatus ==='Private'">lock</mat-icon>
-        <a *ngIf="headerLink" [routerLink]="'/board/' + board._id" [id]="'viewBoard_'+board.name"> {{board.name}}</a>
-        <ng-container *ngIf="!headerLink">{{board.name}}</ng-container>
-        <div class="float-right" *ngIf="canEdit">
-            <mat-icon class="hand-cursor editBoard" (click)="openEditBoardModal();">edit</mat-icon>
-            <mat-icon class="hand-cursor deleteBoard" (click)="openDeleteBoardModal();">delete</mat-icon>
+        <a *ngIf="headerLink; else spanTitle" class="filler" style="line-height: 1.1em" href="javascript:void(0);"
+           [routerLink]="'/board/' + board._id" [id]="'viewBoard_'+board.name"> {{board.name}}</a>
+        <ng-template #spanTitle>
+            <span class="shrink grow">{{board.name}}</span>
+        </ng-template>
+        <div *ngIf="canEdit" class="actions">
+            <mat-icon class="editBoard fake-button" role="button" tabindex="0" (click)="openEditBoardModal();">edit</mat-icon>
+            <mat-icon class="deleteBoard fake-button" role="button" tabindex="0" (click)="openDeleteBoardModal();">delete</mat-icon>
         </div>
-    </div>
-    <div class="card-body">
-        <span class="card-text numElement">{{board.pins.length + ' '}}</span>{{boardTitle}}
-        <p class="card-text">{{board.description}}</p>
-        <p class="card-text">
+    </mat-card-title>
+    <mat-card-content>
+        <span class="numElement">{{board.pins.length + ' '}}</span>{{boardTitle}}
+        <p style="height: 3rem">{{board.description}}</p>
+        <p>
             <small class="text-muted">
                 Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}
             </small>
         </p>
-    </div>
-    <div class="card-footer" *ngIf="board.tags.length > 0">
+    </mat-card-content>
+    <mat-card-footer *ngIf="board.tags.length > 0">
         <ng-container *ngFor="let tag of board.tags">
             <span class="badge badge-secondary"><i># </i>{{tag}}</span>
         </ng-container>
-    </div>
-</div>
+    </mat-card-footer>
+</mat-card>
 
 <ng-template #editBoardContent>
     <form role="form" #editBoardForm="ngForm" (ngSubmit)="save(board);">
@@ -34,7 +37,7 @@
         </div>
         <div mat-dialog-content>
             <mat-form-field class="w-100">
-                <textarea name="boardDescription" id="boardDescription" matInput placeholder="Board Description"
+                <textarea name="boardDescription" matInput placeholder="Board Description"
                           [(ngModel)]="board.description"></textarea>
             </mat-form-field>
             <mat-button-toggle-group [value]="board.shareStatus" (change)="onBoardShareStatusChange($event)">
@@ -47,14 +50,12 @@
                     Private
                 </mat-button-toggle>
             </mat-button-toggle-group>
-            <cde-tag id="boardTag" name="boardTag" [tags]="board.tags" [allTags]="board.tags"
+            <cde-tag id="boardTag" [tags]="board.tags" [allTags]="board.tags"
                      [canEdit]="true" [allowFreeType]="true"></cde-tag>
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button [mat-dialog-close] id="cancelEditBoardBtn" color="warn">Cancel</button>
-            <button mat-raised-button color="primary" [disabled]="!editBoardForm.form.valid" id="saveEditBoardBtn"
-                    name="saveEditBoardBtn" type="submit">Save
-            </button>
+            <button class="button secondary" [mat-dialog-close] id="cancelEditBoardBtn">Cancel</button>
+            <button type="submit" class="button success" [disabled]="!editBoardForm.form.valid">Save</button>
         </div>
     </form>
 </ng-template>
@@ -64,9 +65,9 @@
         Delete {{board.name}}?
     </div>
     <form role="form" #deleteBoardForm="ngForm" (ngSubmit)="delete(board);">
-        <div mat-dialog-actions>
-            <button mat-raised-button color="warn" [mat-dialog-close] id="cancelDeleteBoardBtn">Cancel</button>
-            <button mat-raised-button color="primary" id="saveDeleteBoardBtn" type="submit">Save</button>
-        </div>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close]>Cancel</button>
+            <button type="submit" id="saveDeleteBoardBtn" class="button fail">Save</button>
+        </mat-dialog-actions>
     </form>
 </ng-template>

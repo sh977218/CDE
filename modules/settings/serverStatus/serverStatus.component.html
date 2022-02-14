@@ -1,34 +1,31 @@
 <h1>Server Status</h1>
-<div class="container-fluid" id="serverStatuses">
-    <div class="row">
-        <div class="col boxed-div">
-            <h4>Elastic Search</h4>
-            <hr/>
-            <div *ngFor="let i of esIndices; let $index = index">
-                <button (click)="reIndex($index)" mat-raised-button>
-                    <mat-icon>refresh</mat-icon>
-                    Re-index: <b>{{i.name}}</b> / {{i.indexName}}
-                </button>
-                <mat-progress-bar *ngIf="i.totalCount > 0 && i.count > 0" [value]="i.count * 100 / i.totalCount">
-                    \
-                </mat-progress-bar>
-            </div>
 
-            <button mat-raised-button (click)="syncLinkedForms()" id="syncLinkedFormsButton">Sync Linked Forms</button>
-            <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
-                              [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
-            </mat-progress-bar>
-        </div>
+<div class="boxed-div">
+    <h4>Elastic Search</h4>
+    <hr/>
+    <div *ngFor="let i of esIndices; let $index = index">
+        <button class="button" (click)="reIndex($index)">
+            <mat-icon>refresh</mat-icon>
+            Re-index: <b>{{i.name}}</b> / {{i.indexName}}
+        </button>
+        <mat-progress-bar *ngIf="i.totalCount > 0 && i.count > 0" [value]="i.count * 100 / i.totalCount">
+            \
+        </mat-progress-bar>
     </div>
+
+    <button class="button" (click)="syncLinkedForms()">Sync Linked Forms</button>
+    <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
+                      [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
+    </mat-progress-bar>
 </div>
 
 <ng-template #confirmReindex>
-    <h3 mat-dialog-title>Are you sure you want to re-index?</h3>
-    <div mat-dialog-content>
+    <h1 mat-dialog-title>Are you sure you want to re-index?</h1>
+    <mat-dialog-content>
         <h4>Re-indexing: {{esIndices[indexToReindex].indexName}}</h4>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button color="warn" type="button" [mat-dialog-close]>Cancel</button>
-        <button mat-raised-button color="primary" (click)="okReIndex()" [mat-dialog-close]>OK</button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+        <button class="button" (click)="okReIndex()" [mat-dialog-close]>OK</button>
+    </mat-dialog-actions>
 </ng-template>

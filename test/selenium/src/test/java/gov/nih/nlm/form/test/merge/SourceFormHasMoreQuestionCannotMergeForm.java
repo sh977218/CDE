@@ -28,7 +28,7 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BoardTest {
         goToBoard(boardName);
 
         clickElement(By.id("qb_compare"));
-        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[contains(@class,'mergeForm')]"));
+        clickElement(By.xpath("//*[contains(@class,'leftObj')]//*[@id='openMergeFormModalBtn']"));
         textPresent("Form merge from has too many questions", By.id("mergeFormErrorDiv"));
 
         clickElement(By.id("removeLeftQuestion_3"));

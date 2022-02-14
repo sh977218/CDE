@@ -1,5 +1,5 @@
-<div class="container">
-    <div *ngIf="missingCdes.length > 0" class="alert alert-warning mt20" role="alert">
+<div class="container-fluid">
+    <div *ngIf="missingCdes.length > 0" class="alert alert-warning" role="alert">
         <mat-icon>warning</mat-icon>
         The following CDEs are part of a score but are missing from this form:
         <ul class="list-inline">
@@ -8,42 +8,41 @@
                 <span *ngIf="i < missingCdes.length">,</span></li>
         </ul>
     </div>
-    <div *ngIf="validationErrors.length > 0" class="alert alert-warning mt20" role="alert">
+    <div *ngIf="validationErrors.length > 0" class="alert alert-warning" role="alert">
         <mat-icon>warning</mat-icon>
         The following errors need to be corrected in order to Publish:
         <ul class="list-inline">
             <li *ngFor="let error of validationErrors">
                 <ng-container *ngIf="!error.id">{{error.message}}</ng-container>
-                <a class="fake-link" *ngIf="error.id" (click)="scrollToDescriptionId(error.id)">{{error.message}}</a>
+                <a *ngIf="error.id" class="fake-link" (click)="scrollToDescriptionId(error.id)" href="javascript:void(0);">{{error.message}}</a>
             </li>
         </ul>
     </div>
     <h3>{{elt.designations[0].designation}}</h3>
-    <button role="button" mat-raised-button color="primary" [routerLink]="'/formView'"
-            id="editFormCloseBtn" class="text-white" [queryParams]="{tinyId:elt.tinyId}">
+    <button class="button" style="color: #fff" [routerLink]="'/formView'" [queryParams]="{tinyId:elt.tinyId}">
         <mat-icon>arrow_back</mat-icon>
-        <span> Back to Preview</span>
+        Back to Preview
     </button>
-    <div class="row">
-        <div class="col-12">
+    <div>
+        <div>
             <div #descToolbox *ngIf="canEdit()" class="descriptionToolbox"
                  [style.top]="isMobile ? navHeightMobile : navHeight" [style.right]="isMobile ? 0 : '17px'">
-                <button role="button" id="addSectionTop" class="btn btn-light formDescriptionTool"
+                <button role="button" id="addSectionTop" class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"
-                        style="width: 74px;">
+                        style="width: 75px;">
                     <mat-icon class="toolbar-icon">assignment</mat-icon>
                     <span class="toolSection"></span>
                 </button>
                 <button *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
-                        class="btn btn-light formDescriptionTool"
+                        class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"
                         style="width: 87px;">
                     <mat-icon class="toolbar-icon">contact_support</mat-icon>
                     <span class="toolQuestion"></span>
                 </button>
-                <button role="button" id="startAddingForms" class="btn btn-light formDescriptionTool"
+                <button role="button" id="startAddingForms" class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                         style="width: 68px;">
@@ -51,11 +50,10 @@
                     <span class="toolForm"></span>
                 </button>
                 <button role="button" *ngIf="hasCopiedSection()" id="pasteSection"
-                        class="btn btn-light formDescriptionTool"
+                        class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref: 'pasteSection'}" [treeDragEnabled]="true" style="width: 68px">
-                    <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy
-                    </mat-icon>
+                    <mat-icon class="toolbar-icon" [ngClass]="{'pasteSectionWrench':elt.isCopied}">content_copy</mat-icon>
                     <span class="toolCopySection"></span>
                 </button>
             </div>
@@ -93,7 +91,8 @@
                             <div class="card" [@copySection]="node.data.isCopied">
                                 <div class="card-header">
                                     <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                                        <div class="node-content-wrapper w-100" [ngClass]="{'dragActive':dragActive}"
+                                        <div class="node-content-wrapper w-100"
+                                             [ngClass]="{'dragActive':dragActive}"
                                              (click)="node.mouseAction('click', $event)"
                                              (dblclick)="node.mouseAction('dblClick', $event)"
                                              (contextmenu)="node.mouseAction('contextMenu', $event)"
@@ -114,13 +113,13 @@
                                      [ngClass]="{'panel-body-form': node.data.elementType === 'form'}">
                                     <div *ngIf="node.data.elementType === 'form' && !node.data.expanded"
                                          (click)="node.data.expanded = true; node.expand()"
-                                         class="btn btn-outline-dark expand-form">
+                                         class="button light secondary small expand-form">
                                         <mat-icon>keyboard_arrow_right</mat-icon>
                                         Expand
                                     </div>
                                     <div *ngIf="node.data.elementType === 'form' && node.data.expanded"
                                          (click)="node.data.expanded = false; node.collapse()"
-                                         class="btn btn-outline-dark expand-form">
+                                         class="button light secondary small expand-form">
                                         <mat-icon>keyboard_arrow_down</mat-icon>
                                         Collapse
                                     </div>
@@ -142,71 +141,68 @@
     </div>
 </div>
 <ng-template #formSearchTmpl>
-    <div mat-dialog-title>
-        <h3>Search Forms</h3>
-    </div>
-    <div mat-dialog-content>
+    <h1 mat-dialog-title>Search Forms</h1>
+    <mat-dialog-content>
         <cde-form-search class="panel-group" id="accordion_form" addMode="True" [embedded]="true"
                          (add)="addFormFromSearch($event)">
         </cde-form-search>
-    </div>
-    <div mat-dialog-actions align="end">
-        <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectF">
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button id="cancelSelectF" class="button secondary" [mat-dialog-close]>
             Close
         </button>
-    </div>
+    </mat-dialog-actions>
 </ng-template>
 
 <ng-template #questionSearchTmpl>
     <ng-container *ngIf="questionModelMode === 'search'">
-        <div mat-dialog-title>
-            <h4>Search Data Elements</h4>
-            <button mat-raised-button id="addNewCdeBtn" (click)="questionModelMode = 'add'">
+        <h1 mat-dialog-title>
+            Search Data Elements
+            <button id="addNewCdeBtn" class="button" (click)="questionModelMode = 'add'">
                 Create Data Element
             </button>
-        </div>
-        <div mat-dialog-content>
+        </h1>
+        <mat-dialog-content>
             <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)">
             </cde-cde-search>
-        </div>
-        <div mat-dialog-actions align="end">
-            <button mat-raised-button color="accent" [mat-dialog-close] id="cancelSelectQ">
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close] id="cancelSelectQ">
                 Close
             </button>
-        </div>
+        </mat-dialog-actions>
     </ng-container>
     <ng-container *ngIf="questionModelMode === 'add'">
-        <div mat-dialog-title>
-            <h4>Create Data Element</h4>
-            <button mat-raised-button (click)="questionModelMode = 'search'" tabindex="-1">
+        <h1 mat-dialog-title>
+            Create Data Element
+            <button class="button" (click)="questionModelMode = 'search'" tabindex="-1">
                 Search Data Elements
             </button>
-        </div>
-        <form #newDataElementForm="ngForm" (ngSubmit)="createNewDataElement()">
-            <div mat-dialog-content>
+        </h1>
+        <form #newDataElementForm="ngForm">
+            <mat-dialog-content>
                 <label for="newDEName"></label>
                 <input [(ngModel)]="newDataElement.designations[0].designation" class="form-control" id="newDEName"
                        name="newDEName" placeholder="New Data Element Name" autocomplete="off"
                        (ngModelChange)="deCompletionService.next($event);"
                        required autofocus/>
                 <cde-de-completion (add)="createNewDataElement($event)"></cde-de-completion>
-            </div>
-            <div mat-dialog-actions align="end">
-                <button mat-raised-button color="accent" type="submit" [disabled]="!newDataElementForm.valid" id="createNewDataElement">
+            </mat-dialog-content>
+            <mat-dialog-actions>
+                <button id="createNewDataElement" class="button success"
+                        (click)="createNewDataElement()" [disabled]="!newDataElementForm.valid">
                     Create
                 </button>
-            </div>
+            </mat-dialog-actions>
         </form>
     </ng-container>
 </ng-template>
 
 
 <ng-template #confirmCancelTmpl>
-    <div mat-dialog-title>
-        <h4>You have unsaved changes.</h4>
-    </div>
-    <div mat-dialog-actions align="end">
-        <button mat-raised-button color="accent" [mat-dialog-close]="true">Save</button>
-        <button mat-raised-button color="accent" [mat-dialog-close]="false">Cancel</button>
-    </div>
+    <h1 mat-dialog-title>You have unsaved changes.</h1>
+    <mat-dialog-actions>
+        <button class="button fail" [mat-dialog-close]="false">Cancel</button>
+        <button class="button" [mat-dialog-close]="true">Save</button>
+    </mat-dialog-actions>
 </ng-template>

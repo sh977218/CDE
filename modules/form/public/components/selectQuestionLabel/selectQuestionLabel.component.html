@@ -1,33 +1,29 @@
-<mat-dialog-title>Select a question label from a CDE Name</mat-dialog-title>
+<h1 mat-dialog-title>Select a question label from a CDE Name</h1>
 <mat-dialog-content>
-    <div class="alert alert-warning mt20" role="alert">
+    <div class="alert alert-warning" role="alert">
         There is skip logic using this label. It will be updated.
     </div>
 
     <ng-container *ngIf="cde; else loading">
-        <div *ngFor="let designation of cde.designations; index as i" class="row"
-             id="q_select_name_{{i}}">
-            <div class="col-3">
-                <button mat-raised-button [mat-dialog-close]="designation">
-                    <mat-icon>check</mat-icon>
-                    Select
-                </button>
-            </div>
-            <div class="col-9">
-                <dl class="row">
-                    <dt class="col-2">Designation:</dt>
-                    <dd class="col-10 selectQuestionLabel">{{designation.designation}}</dd>
-                    <dt class="col-2"> Tags:</dt>
-                    <dd class="col-10">
+        <div class="splitQuarter" style="gap: 1rem 0">
+            <ng-container *ngFor="let designation of cde.designations; index as i">
+                <div>
+                    <button id="q_select_name_{{i}}" class="button light" [mat-dialog-close]="designation">
+                        <mat-icon>check</mat-icon>
+                        Select
+                    </button>
+                </div>
+                <dl class="cde-property">
+                    <dt>Designation:</dt>
+                    <dd>{{designation.designation}}</dd>
+                    <dt> Tags:</dt>
+                    <dd>
                         <span *ngFor="let tag of designation.tags" class="badge badge-secondary">{{tag}}</span>
                     </dd>
                 </dl>
-            </div>
-            <hr/>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <button mat-raised-button [mat-dialog-close]="null" id="selectQuestionNoLabel">
+            </ng-container>
+            <div>
+                <button id="selectQuestionNoLabel" class="button light" [mat-dialog-close]="null">
                     <mat-icon>indeterminate_check_box</mat-icon>
                     No Label
                 </button>
@@ -39,7 +35,5 @@
     </ng-template>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-raised-button [mat-dialog-close] id="closeSelectQuestionLabelBtn">
-        Close
-    </button>
+    <button class="button" [mat-dialog-close]>Close</button>
 </mat-dialog-actions>

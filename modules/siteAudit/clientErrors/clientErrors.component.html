@@ -1,31 +1,31 @@
-<div class="row">
-    <div class="col-4 col-md-3">
-        <label>Chrome</label>
+<div class="container-fluid stack" style="gap: 0 2rem">
+    <label>
         <input id="chrome" type="checkbox" [(ngModel)]="browserInclude.chrome" (ngModelChange)="filter()">
-    </div>
-    <div class="col-3 col-md-3">
-        <label>Firefox</label>
+        Chrome
+    </label>
+    <label>
         <input id="firefox" type="checkbox" [(ngModel)]="browserInclude.firefox" (ngModelChange)="filter()">
-    </div>
-    <div class="col-2">
-        <label>IE</label>
+        Firefox
+    </label>
+    <label>
         <input id="ie" type="checkbox" [(ngModel)]="browserInclude.ie" (ngModelChange)="filter()">
-    </div>
-    <div class="col-3">
-        <label>Edge</label>
+        IE
+    </label>
+    <label>
         <input id="edge" type="checkbox" [(ngModel)]="browserInclude.edge" (ngModelChange)="filter()">
-    </div>
+        Edge
+    </label>
 </div>
 
 <table class="table table-responsive">
     <thead>
-        <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Agent</th>
-            <th>Message</th>
-            <th>URL</th>
-        </tr>
+    <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Agent</th>
+        <th>Message</th>
+        <th>URL</th>
+    </tr>
     </thead>
     <tbody>
     <tr *ngFor="let err of filteredRecords; let errIndex = index">
@@ -46,43 +46,43 @@
 </mat-paginator>
 
 <ng-template #errorDetailModal>
-    <h4 mat-dialog-title="">Error Details</h4>
-    <div mat-dialog-content>
-        <div class="row">
-            <strong class="col-2 col-md-1">Date: </strong>
-            <div class="col-10 col-md-11">{{error.date | date:'MM/dd/yyyy @h:mma'}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">Name: </strong>
-            <div class="col-10 col-md-11">{{error.name}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">Message: </strong>
-            <div class="col-10 col-md-11" >{{error.message}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">User: </strong>
-            <div class="col-10 col-md-11">{{error.user}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">IP: </strong>
-            <div class="col-10 col-md-11">{{error.ip}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">Browser: </strong>
-            <div class="col-10 col-md-11">{{error.agent}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">User Agent: </strong>
-            <div class="col-10 col-md-11">{{error.userAgent}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">URL: </strong>
-            <div class="col-10 col-md-11">{{error.url}}</div>
-        </div>
-        <div class="row">
-            <strong class="col-2 col-md-1">Stack: </strong>
-            <div class="col-10 col-md-11">{{error.stack}}</div>
-        </div>
-    </div>
+    <h1 mat-dialog-title="">Error Details</h1>
+    <mat-dialog-content>
+        <section>
+            <strong>Date: </strong>
+            {{error.date | date:'MM/dd/yyyy @h:mma'}}
+        </section>
+        <section>
+            <strong>Name: </strong>
+            {{error.name}}
+        </section>
+        <section>
+            <strong>Message: </strong>
+            {{error.message}}
+        </section>
+        <section>
+            <strong>User: </strong>
+            {{error.user}}
+        </section>
+        <section>
+            <strong>IP: </strong>
+            {{error.ip}}
+        </section>
+        <section>
+            <strong>Browser: </strong>
+            {{error.agent}}
+        </section>
+        <section>
+            <strong>User Agent: </strong>
+            {{error.userAgent}}
+        </section>
+        <section>
+            <strong>URL: </strong>
+            {{error.url}}
+        </section>
+        <section>
+            <strong>Stack: </strong>
+            {{error.stack}}
+        </section>
+    </mat-dialog-content>
 </ng-template>

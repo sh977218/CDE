@@ -1,12 +1,37 @@
-.login-box {
-  max-width: 300px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 10px 10px 20px 20px;
-  border-radius: 25px;
-  border: solid #17a2b8;
+@import '../../../../theme';
+
+h1 {
+  color: #005ea2;
 }
 
-.text-color {
-  color: #005ea2;
+.loginBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px 20px;
+
+  @media (min-width: $screenMd) {
+    & {
+      flex-direction: row;
+    }
+  }
+
+  > * {
+    max-width: 300px;
+    padding: 10px 10px 10px 20px;
+    border-radius: 25px;
+    border: solid #17a2b8;
+
+    > * {
+      display: flex;
+      justify-content: center;
+    }
+
+    > :nth-child(1) {
+      color: #005ea2;
+    }
+
+    > :nth-child(2) {
+      padding: .5rem 0;
+    }
+  }
 }

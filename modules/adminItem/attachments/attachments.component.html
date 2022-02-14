@@ -1,5 +1,5 @@
 <h2>Attachments</h2>
-<div *ngIf="elt.isDraft" class="my-4" style="font-size: 20px; line-height: 1">
+<div *ngIf="elt.isDraft" style="font-size: 20px; line-height: 1">
     Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
 </div>
 <ng-container *ngIf="!elt.isDraft">
@@ -10,10 +10,10 @@
         <dl id="attachment_{{i}}" class="cde-property">
             <dt>Filename:</dt>
             <dd>
-                <a id="attachment_file_url_{{i}}" class="mr-1"
+                <a id="attachment_file_url_{{i}}"
                    href="/server/system/data/{{attachment.fileid}}"
                    target="_blank">{{attachment.filename}}</a>
-                <button (click)="copyUrl(attachment)" mat-raised-button color="primary">
+                <button class="button small mL" (click)="copyUrl(attachment)">
                     <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon>
                     Copy URL
                 </button>
@@ -61,7 +61,7 @@
     </ng-container>
     <div *ngIf="canEdit">
         <label for="fileToUpload">
-            <button color="primary" mat-raised-button (click)="openFileDialog()">
+            <button class="button mT" (click)="openFileDialog()">
                 <mat-icon>cloud_upload</mat-icon>
                 Upload more files
             </button>

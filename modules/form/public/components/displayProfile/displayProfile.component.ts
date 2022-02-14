@@ -23,6 +23,7 @@ interface DisplayProfileVM {
 @Component({
     selector: 'cde-display-profile',
     templateUrl: './displayProfile.component.html',
+    styleUrls: ['./displayProfile.component.scss'],
 })
 export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {

@@ -9,7 +9,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-mlt',
-    templateUrl: 'moreLikeThis.component.html',
+    templateUrl: './moreLikeThis.component.html',
+    styleUrls: ['./moreLikeThis.component.scss'],
 })
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;

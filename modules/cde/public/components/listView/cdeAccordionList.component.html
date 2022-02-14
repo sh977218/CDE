@@ -1,42 +1,42 @@
 <div *ngIf="elts" id="accordionList">
-    <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
+    <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; index as i">
         <div class="card-header">
-            <button mat-raised-button color="accent" (click)="add.emit(elt);">
+            <button class="button success" (click)="add.emit(elt);">
                 <mat-icon>add</mat-icon> Add
             </button>
-            <span class="hand-cursor" (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0]?.designation}}</span>
-            <a href="/deView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
-                <mat-icon class="iconColor">visibility</mat-icon>
+            <span class="fake-button" role="button" tabindex="0"
+                  (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0]?.designation}} </span>
+            <a id="acc_link_{{i}}" title="View" href="/deView?tinyId={{elt.tinyId}}" target="_blank">
+                <mat-icon>visibility</mat-icon>
             </a>
-            <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+            <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="'cde'"></cde-pin-board>
             <small class="matched-by hidden-sm-down pull-right">
                 Matched by: <strong>Classification</strong>
             </small>
         </div>
         <div class="card-body" [ngbCollapse]="!elt.isCollapsed">
-            <div class="row">
-                <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="deCardLayout">
+                <div>
                     <div [innerHtml]="elt.primaryDefinitionCopy"></div>
-                    <dl class="row">
+                    <dl class="cde-property-lg">
                         <ng-container *ngIf="elt.usedBy">
-                            <dt class="col-4 text-right">Used By:</dt>
-                            <dd class="col-8" id="usedBy_{{i}}">
+                            <dt>Used By:</dt>
+                            <dd id="usedBy_{{i}}">
                                 <div *ngIf="elt.classification.length === 0">None</div>
                                 <div *ngIf="elt.classification.length > 0">
                                     <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
                                 </div>
                             </dd>
                         </ng-container>
-                        <dt class="col-4 text-right">Steward:</dt>
-                        <dd class="col-8">{{elt.stewardOrg.name}}</dd>
+                        <dt>Steward:</dt>
+                        <dd>{{elt.stewardOrg.name}}</dd>
                         <ng-container *ngIf="elt.source">
-                            <dt class="col-4 text-right">Source:</dt>
-                            <dd class="col-8">{{elt.source}}</dd>
+                            <dt>Source:</dt>
+                            <dd>{{elt.source}}</dd>
                         </ng-container>
                     </dl>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12"
-                     *ngIf="elt.valueDomain.permissibleValues && elt.valueDomain.permissibleValues.length > 0">
+                <div *ngIf="elt.valueDomain.permissibleValues && elt.valueDomain.permissibleValues.length > 0">
                     <table class="table-bordered">
                         <tr>
                             <th>Value</th>
@@ -53,7 +53,7 @@
                          alt="Image attached to the CDE" src="/server/system/data/{{attachment.fileid}}"
                          class='cdeAttachmentThumbnail'/>
                 </div>
-                <div class="col-md-4 col-sm-6 col-xs-12" *ngIf="elt.ids.length > 0">
+                <div *ngIf="elt.ids.length > 0">
                     <table class="table cdeTable">
                         <tr>
                             <th>Id</th>

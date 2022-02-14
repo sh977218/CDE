@@ -1,57 +1,56 @@
 <h2>Preview</h2>
 <div class="noGridPadLarge">
-    <div class="dropdown d-inline-block">
-        <button id="selectRenderButton" mat-raised-button #exportMenuTrigger="matMenuTrigger"
-                color="primary" [matMenuTriggerFor]="optionsMenu">
+    <span class="dropdown">
+        <button id="selectRenderButton" class="button" #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="optionsMenu">
             Options <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #optionsMenu>
-            <span attr.data-url="/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
-                    onclick="window.open(this.getAttribute('data-url'),'_blank')" mat-menu-item>
-                <a id="button_print_follow">Printable</a>
-            </span>
-            <span attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}" mat-menu-item
+            <button mat-menu-item id="button_print_follow"
+                    attr.data-url="/nativeRender?tinyId={{elt.tinyId}}&selectedProfile={{selectedProfileNameDecode}}"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                <a class="d-inline" id="button_lforms">LHC-Forms</a>
-                (Provided by <a class="d-inline" href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" rel="noopener noreferrer"
+                Printable
+            </button>
+            <button mat-menu-item id="button_lforms"
+                    attr.data-url="/form/public/html/lformsRender.html?tinyId={{elt.tinyId}}"
+                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
+                LHC-Forms
+                (Provided by <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" rel="noopener noreferrer"
                                 (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">LHNCBC</a>)
-            </span>
-            <span mat-menu-item
+            </button>
+            <span mat-menu-item id="button_sdc"
                     attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                <a class="d-inline" id="button_sdc">SDC</a>
-                (Provided by <a class="d-inline" href="https://www.healthit.gov/techlab/" target="_blank" rel="noopener noreferrer"
+                SDC
+                (Provided by <a href="https://www.healthit.gov/techlab/" target="_blank" rel="noopener noreferrer"
                                 (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">ONC</a>)
             </span>
-            <span id="printableLogicCb" (click)="overridePrintable = !overridePrintable" mat-menu-item>
+            <button mat-menu-item id="printableLogicCb" (click)="overridePrintable = !overridePrintable">
                 Print View:
-                <mat-icon *ngIf="overridePrintable">check_box</mat-icon>
-                <mat-icon *ngIf="!overridePrintable">check_box_outline_blank</mat-icon>
-            </span>
+                <mat-icon>{{overridePrintable ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>
+            </button>
         </mat-menu>
-        <button id="openFormEditBtn" mat-raised-button *ngIf="canEdit" [routerLink]="'/formEdit'"
-                [queryParams]="{tinyId: elt.tinyId}">
-            <mat-icon>edit</mat-icon>
-            Edit
-        </button>
-    </div>
-    <div *ngIf="elt.displayProfiles?.length > 0" class="d-inline-block">
-        <button id="select_display_profile" mat-raised-button [matMenuTriggerFor]="dpMenu">
+    </span>
+    <button *ngIf="canEdit" id="openFormEditBtn" class="button light"
+            [routerLink]="'/formEdit'" [queryParams]="{tinyId: elt.tinyId}">
+        <mat-icon>edit</mat-icon>
+        Edit
+    </button>
+    <ng-container *ngIf="elt.displayProfiles?.length > 0">
+        <button id="select_display_profile" class="button light" [matMenuTriggerFor]="dpMenu">
             Display Profile: {{selectedProfileName}} <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #dpMenu>
-            <button *ngFor="let p of elt.displayProfiles; let i = index" mat-menu-item
+            <button *ngFor="let p of elt.displayProfiles; index as i" mat-menu-item
                     (click)="selectProfile(i);">{{p.name}}
             </button>
         </mat-menu>
-    </div>
+    </ng-container>
 </div>
 <div class="noGridPadSmall">
     <div *ngIf="elt.noRenderAllowed"
-         class="text-center mt20">Rendering has been disabled for this form.
+         class="text-center">Rendering has been disabled for this form.
     </div>
-    <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)"
-         id="warningNoCde" style="max-width: 600px; margin: auto">
+    <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" style="max-width: 600px; margin: auto">
         This form is empty. Form Editors can add content to this form by navigating
         to "Form Description" on the left side of the screen.
     </p>

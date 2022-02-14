@@ -1,19 +1,14 @@
 <h1>My Organizations' Curators</h1>
-<form class="form-inline pt40 pb40" #newCuratorForm="ngForm" id="newOrgCuratorForm" novalidate>
-    <span class="mr-2"></span>
-    <div class="form-group">
-        <cde-username-autocomplete (selected)="newUsername = $event"></cde-username-autocomplete>
-    </div>
-    <span class="mx-2">a curator for</span>
-    <div *ngIf="userService.user" class="form-group">
-        <select id="newOrgCuratorOrgName" name="newOrgCuratorOrgName" class="form-control"
-                [(ngModel)]="newOrgName" required>
+<form class="stack" #newCuratorForm="ngForm" novalidate>
+    <cde-username-autocomplete (selected)="newUsername = $event"></cde-username-autocomplete>
+    a curator for
+    <mat-form-field>
+        <select *ngIf="userService.user" matNativeControl name="newOrgCuratorOrgName" [(ngModel)]="newOrgName" required>
             <option value="">select organization</option>
             <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
         </select>
-    </div>
-    <button type="submit" id="newOrgCuratorSubmit" (click)="addOrgCurator()"
-            [disabled]="!newCuratorForm.valid" mat-raised-button color="primary">
+    </mat-form-field>
+    <button type="submit" class="button" (click)="addOrgCurator()" [disabled]="!newCuratorForm.valid">
         Make Curator
     </button>
 </form>

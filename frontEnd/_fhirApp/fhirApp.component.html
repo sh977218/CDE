@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xl-3 col-lg-4 col-12">
-            <div class="mx-3 mt-3 mb-3">
+        <div class="col-xl-3 col-lg-4">
+            <div style="margin: .75rem">
                 <div *ngIf="cdeFhir.fhirData.client?.userId">
                     <span class="info-heading">Logged in as:</span>
                     <span class="info-label">{{cdeFhir.fhirData.client.userId}}</span>
@@ -19,7 +19,7 @@
                     <span class="info-heading">Gender:</span>
                     <span class="info-label" style="text-transform: capitalize">{{cdeFhir.fhirData.patient?.gender}}</span>
                 </div>
-                <div class="list-group mt-3">
+                <div class="list-group" style="margin-top: .75rem">
                     <button type="button" class="list-group-item" (click)="modeChange('filter')">
                         Filter
                         <span *ngIf="cdeFhir.fhirData.context" class="badge badge-primary"
@@ -28,12 +28,12 @@
                         </span>
                     </button>
                 </div>
-                <div class="list-group mt-1">
+                <div class="list-group" style="margin-top: .25rem">
                     <button type="button" class="list-group-item" (click)="modeChange('browse')">
                         Browse
                     </button>
                 </div>
-                <div class="list-group mt-3">
+                <div class="list-group" style="margin-top: .75rem">
                     <div class="info-heading">Panels:</div>
                     <button type="button" class="list-group-item" *ngFor="let f of cdeFhir.patientForms"
                             (click)="modeChange('form'); loadForm(f)">
@@ -53,20 +53,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-9 col-lg-8 col-12">
+        <div class="col-xl-9 col-lg-8">
             <div style="padding: 5px; max-width: 1010px; margin: 0 auto">
-                <h2 *ngIf="errorMessage" class="my-3 text-center" style="color: red">{{errorMessage}}</h2>
-                <div *ngIf="mode === 'filter'" class="my-3">
-                    <div class="my-2">
-                        <button mat-raised-button color="primary"
-                                (click)="cdeFhir.selectPatient()">Patient</button> {{cdeFhir.fhirData.patient?.id}}
+                <h2 *ngIf="errorMessage" class="text-center" style="color: red; margin: .75rem 0">{{errorMessage}}</h2>
+                <div *ngIf="mode === 'filter'" style="margin: .75rem 0">
+                    <div style="margin: .5rem 0">
+                        <button class="button" (click)="cdeFhir.selectPatient()">Patient</button> {{cdeFhir.fhirData.patient?.id}}
                     </div>
-                    <div class="my-2">
-                        <button mat-raised-button color="primary"
-                                (click)="cdeFhir.selectEncounter()">Encounter</button> {{cdeFhir.fhirData.context?.id}}
+                    <div style="margin: .5rem 0">
+                        <button class="button" (click)="cdeFhir.selectEncounter()">Encounter</button> {{cdeFhir.fhirData.context?.id}}
                     </div>
                 </div>
-                <div *ngIf="mode === 'browse' && cdeFhir.fhirData.patient" class="my-3">
+                <div *ngIf="mode === 'browse' && cdeFhir.fhirData.patient" style="margin: .75rem 0">
                     <h2>
                         Browse
                         <mat-form-field>
@@ -84,9 +82,8 @@
                                        [profile]="selectedProfile"
                                        nativeRenderType="default">
                     </cde-native-render>
-                    <button mat-raised-button color="primary" [disabled]="saving"
-                            type="submit" id="button_submit" (click)="submitForm()"
-                            style="margin-left: 0; margin-top: 20px; font-weight: bold; width: 100px">
+                    <button type="submit" class="button" style="margin-top: 20px; width: 100px"
+                            [disabled]="saving" (click)="submitForm()">
                         <mat-icon *ngIf="saving" class="spin">refresh</mat-icon>
                         <mat-icon *ngIf="saved">done</mat-icon>
                         Submit

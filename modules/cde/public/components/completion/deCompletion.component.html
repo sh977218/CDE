@@ -1,15 +1,15 @@
-<div id="accordionList" *ngIf="deCompletionService.suggestedCdes?.length > 0">
+<div *ngIf="deCompletionService.suggestedCdes?.length > 0" id="accordionList" style="margin-top: 1rem">
     <h4>Possible Matches</h4>
-    <div class="card" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
+    <div class="card mB" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
         <div class="card-header">
-            <button *ngIf="adding" mat-raised-button color="accent" type="button" (click)="add.emit(de)">
+            <button *ngIf="adding" class="button success" (click)="add.emit(de)">
                 <mat-icon>add</mat-icon> Add
             </button>
             <span class="hand-cursor" (click)="de.isCollapsed = !de.isCollapsed">
                 {{de.designations[0].designation}}
             </span>
-            <a routerLink="/deView" [queryParams]="{tinyId: de.tinyId}" target="_blank">
-                <mat-icon class="iconColor">visibility</mat-icon></a>
+            <a title="View" href="/deView?tinyId={{de.tinyId}}" target="_blank">
+                <mat-icon>visibility</mat-icon></a>
             <cde-pin-board [elt]="de" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
         </div>
         <div class="card-body" [ngbCollapse]="!de.isCollapsed">

@@ -15,7 +15,6 @@ export interface SelectQuestionLabelData {
 export type SelectQuestionLabelOutput = Designation | null | undefined;
 
 @Component({
-    selector: 'cde-select-question-label',
     templateUrl: 'selectQuestionLabel.component.html'
 })
 export class SelectQuestionLabelComponent {

@@ -1,7 +1,7 @@
-<h4 mat-dialog-title>Add a Name</h4>
+<h1 mat-dialog-title>Add a Name</h1>
 
 <form role="form" #newDesignationForm="ngForm">
-    <div mat-dialog-content>
+    <mat-dialog-content>
         <div class="form-group">
             <label for="newDesignation">Name</label>
             <input class="form-control" id="newDesignation" name="newDesignation"
@@ -16,12 +16,9 @@
         <div class="alert alert-info">
             Tags are managed in Org Management > List Management
         </div>
-    </div>
-    <div mat-dialog-actions>
-        <button [mat-dialog-close] id="cancelNewDesignationBtn" type="button" mat-raised-button color="warn">Cancel
-        </button>
-        <button [disabled]="!newDesignationForm.form.valid" id="createNewDesignationBtn"
-                type="button" mat-raised-button color="primary" [mat-dialog-close]="newDesignation">Save
-        </button>
-    </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]>Cancel</button>
+        <button class="button" [mat-dialog-close]="newDesignation" [disabled]="!newDesignationForm.form.valid">Save</button>
+    </mat-dialog-actions>
 </form>

@@ -24,7 +24,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
         hangon(2);
-        clickElement(By.id("createBoard"));
+        clickElement(By.xpath("//button[text()='Save']"));
         checkAlert(response);
     }
 
@@ -37,7 +37,7 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     protected void clickBoardHeaderByName(String boardName) {
-        clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'card-header')]"));
+        clickElement(By.xpath("//*[@id='" + boardName + "']//mat-card-title"));
     }
 
     private void pinTo(String eltName, String boardName, String type) {
@@ -59,7 +59,7 @@ public class BoardTest extends NlmCdeBaseTest {
             gotoMyBoards();
             textPresent(boardName);
             clickElement(By.xpath("//*[@id='" + boardName + "']//a"));
-            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+            textPresent(boardName, By.xpath("//*[@id='board_name_" + boardName + "']"));
         }
     }
 
@@ -74,7 +74,7 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'editBoard')]"));
         hangon(1);
         if (boardNameChange != null) findElement(By.id("boardName")).sendKeys(boardNameChange);
-        if (boardDescriptionChange != null) findElement(By.id("boardDescription")).sendKeys(boardDescriptionChange);
+        if (boardDescriptionChange != null) findElement(By.name("boardDescription")).sendKeys(boardDescriptionChange);
         if (isPublic) clickElement(By.id("makePublicBtn"));
         else clickElement(By.id("makePrivateBtn"));
         if (boardTags != null) {
@@ -83,7 +83,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag + ",");
             }
         }
-        clickElement(By.id("saveEditBoardBtn"));
+        clickElement(By.xpath("//button[text()='Save']"));
         checkAlert(response);
     }
 }

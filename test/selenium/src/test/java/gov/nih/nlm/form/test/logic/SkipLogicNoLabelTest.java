@@ -21,13 +21,13 @@ public class SkipLogicNoLabelTest extends BaseFormTest {
         startEditQuestionById("question_0-5");
         clickElement(By.xpath("//*[@id='question_0-5']//*[contains(@class,'skipLogicEditTextarea')]//mat-icon[.='edit']"));
         clickElement(By.id("addNewSkipLogicButton"));
-        clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
+        clickElement(By.xpath(" //*[@class='mat-dialog-title']"));
         clickElement(By.id("skipLogicLabelSelection_0"));
         List<WebElement> options = findElements(By.xpath("//*[@id='skipLogicLabelSelection_0']/option"));
         for (int i = 0; i < expectedOptions.length; i++) {
             Assert.assertEquals(options.get(i).getText().trim(), expectedOptions[i]);
         }
-        clickElement(By.xpath(" //h1[@class='mat-dialog-title']"));
+        clickElement(By.xpath("//*[@class='mat-dialog-title']"));
         clickElement(By.id("cancelNewSkipLogicButton"));
         saveEditQuestionById("question_0-5");
     }

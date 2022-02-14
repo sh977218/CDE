@@ -1,31 +1,26 @@
-<div id="appLogDiv">
-    <div class="col-12">
-        <form role="form" class="form-inline">
-            <label class="sr-only" for="appFromDate">From Date</label>
-            <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="appFromDate" name="formDate" type="datetime-local"
-                   [(ngModel)]="fromDate" placeholder="From Date">
-            <label class="sr-only" for="appToDate">Until Date</label>
-            <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="appToDate" name="toDate" type="datetime-local"
-                   [(ngModel)]="toDate" placeholder="Until Date">
-            <button type="submit" mat-raised-button id="searchBtn" (click)="searchLogs()">Submit</button>
-        </form>
-        <table class="table table-striped table-bordered table-condensed table-responsive">
-            <tr>
-                <th>Date</th>
-                <th>Level</th>
-                <th>Message</th>
-            </tr>
-            <tr *ngFor="let log of gridLogEvents">
-                <td>{{log.date}}</td>
-                <td>{{log.level}}</td>
-                <td>{{log.message}}</td>
-            </tr>
-        </table>
+<form role="form" class="stack" style="margin-top: 8px">
+    <label class="screenReaderOnly" for="appFromDate">From Date</label>
+    <input class="form-control" id="appFromDate" name="formDate" type="datetime-local"
+           [(ngModel)]="fromDate" placeholder="From Date">
+    <label class="screenReaderOnly" for="appToDate">Until Date</label>
+    <input class="form-control" id="appToDate" name="toDate" type="datetime-local"
+           [(ngModel)]="toDate" placeholder="Until Date">
+    <button type="submit" id="searchBtn" class="button" (click)="searchLogs()">Submit</button>
+</form>
+<table class="table table-striped table-bordered table-condensed table-responsive">
+    <tr>
+        <th>Date</th>
+        <th>Level</th>
+        <th>Message</th>
+    </tr>
+    <tr *ngFor="let log of gridLogEvents">
+        <td>{{log.date}}</td>
+        <td>{{log.level}}</td>
+        <td>{{log.message}}</td>
+    </tr>
+</table>
 
-        <mat-paginator (page)="searchLogs($event)" [length]="totalItems"
-                       [pageIndex]="currentPage"
-                       [pageSize]="50" [hidePageSize]="true" style="font-size: 1.4em">
-        </mat-paginator>
-
-    </div>
-</div>
+<mat-paginator (page)="searchLogs($event)" [length]="totalItems"
+               [pageIndex]="currentPage"
+               [pageSize]="50" [hidePageSize]="true" style="font-size: 1.4em">
+</mat-paginator>

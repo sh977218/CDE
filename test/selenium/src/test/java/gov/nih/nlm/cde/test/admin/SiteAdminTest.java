@@ -26,16 +26,16 @@ public class SiteAdminTest extends NlmCdeBaseTest {
         addOrg(testOrg, null, null);
 
         goToAdmins();
-        new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         searchUsername(test_username);
         clickElement(By.xpath("//button[contains(.,'Make Admin')]"));
         logout();
 
         loginAs(test_username, password);
         goToAdmins();
-        new Select(driver.findElement(By.id("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.name("newOrgAdminOrgName"))).selectByVisibleText(testOrg);
         goToEditors();
-        new Select(driver.findElement(By.id("newOrgEditorOrgName"))).selectByVisibleText(testOrg);
+        new Select(driver.findElement(By.name("newOrgEditorOrgName"))).selectByVisibleText(testOrg);
         searchUsername(testEditor_username);
         clickElement(By.xpath("//button[contains(.,'Make Editor')]"));
         logout();

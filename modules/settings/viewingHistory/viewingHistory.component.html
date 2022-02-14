@@ -1,100 +1,94 @@
-<div class="container-fluid">
-    <h1>Viewing History</h1>
-    <div id="accordionList">
-        <h2>CDE Viewing History</h2>
-        <span *ngIf="!cdes.length">There are no CDE viewing History</span>
-        <div class="card" *ngFor="let cde of cdes;let index = index;">
-            <div class="card-header">
-                <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed">
-                    {{cde.designations[0].designation}}
-                </span>
-                <a routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
-                    <mat-icon>visibility</mat-icon>
-                </a>
-                <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
-            </div>
-            <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
-                <div class="row">
-                    <div class="col-4">
-                        <dl class="row">
-                            <dt class="col-sm-3">Steward:</dt>
-                            <dd class="col-sm-9">{{cde.stewardOrg.name}}</dd>
-                            <dt class="col-sm-3">Source:</dt>
-                            <dd class="col-sm-9">{{cde.source}}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-4" *ngIf="cde.valueDomain.permissibleValues?.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Value</th>
-                                <th>Code Name</th>
-                                <th>Code</th>
-                            </tr>
-                            <tr *ngFor="let pv of cde.valueDomain?.permissibleValues">
-                                <td>{{pv.permissibleValue}}</td>
-                                <td>{{pv.valueMeaningName}}
-                                <td>{{pv.valueMeaningCode}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-4" *ngIf="cde.ids?.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Id</th>
-                                <th>Version</th>
-                                <th>Source</th>
-                            </tr>
-                            <tr *ngFor="let id of cde?.ids">
-                                <td>{{id.id}}</td>
-                                <td>{{id.version}}
-                                <td>{{id.source}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<h1>Viewing History</h1>
+<section>
+    <h2>CDE Viewing History</h2>
+    <span *ngIf="!cdes.length">There are no CDE viewing History</span>
 
-    <div id="formAccordionList">
-        <h2>Form Viewing History</h2>
-        <span *ngIf="!forms.length">There are no Form viewing History</span>
-        <div class="card" *ngFor="let form of forms;let index = index;">
-            <div class="card-header">
-                <span class="hand-cursor" (click)="form.isCollapsed = !form.isCollapsed">
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let cde of cdes; index as i;" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{cde.designations[0].designation}}
+                    <a class="inline-mat-icon mL" title="View"
+                       href="javascript:void(0);"
+                       routerLink="/deView" [queryParams]="{tinyId: cde.tinyId}">
+                        <mat-icon>visibility</mat-icon>
+                    </a>
+                    <cde-pin-board [elt]="cde" [eltIndex]="i" [module]="'cde'"></cde-pin-board>
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="itemHistory">
+                <dl class="cde-property">
+                    <dt>Steward:</dt>
+                    <dd>{{cde.stewardOrg.name}}</dd>
+                    <dt>Source:</dt>
+                    <dd>{{cde.source}}</dd>
+                </dl>
+                <table *ngIf="cde.valueDomain.permissibleValues?.length > 0" class="table-bordered">
+                    <tr>
+                        <th>Value</th>
+                        <th>Code Name</th>
+                        <th>Code</th>
+                    </tr>
+                    <tr *ngFor="let pv of cde.valueDomain?.permissibleValues">
+                        <td>{{pv.permissibleValue}}</td>
+                        <td>{{pv.valueMeaningName}}
+                        <td>{{pv.valueMeaningCode}}</td>
+                    </tr>
+                </table>
+                <table *ngIf="cde.ids?.length > 0" class="table-bordered">
+                    <tr>
+                        <th>Id</th>
+                        <th>Version</th>
+                        <th>Source</th>
+                    </tr>
+                    <tr *ngFor="let id of cde?.ids">
+                        <td>{{id.id}}</td>
+                        <td>{{id.version}}
+                        <td>{{id.source}}</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</section>
+<section>
+    <h2>Form Viewing History</h2>
+    <span *ngIf="!forms.length">There are no Form viewing History</span>
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let form of forms; index as i;" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
                     {{form.designations[0].designation}}
-                </span>
-                <a routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
-                    <mat-icon>visibility</mat-icon>
-                </a>
-                <cde-pin-board [elt]="form" [eltIndex]="index" [module]="'form'"></cde-pin-board>
+                    <a class="inline-mat-icon mL" title="View"
+                       href="javascript:void(0);"
+                       routerLink="/formView" [queryParams]="{tinyId: form.tinyId}">
+                        <mat-icon>visibility</mat-icon>
+                    </a>
+                    <cde-pin-board [elt]="form" [eltIndex]="i" [module]="'form'"></cde-pin-board>
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="itemHistory">
+                <dl class="cde-property">
+                    <dt>Steward:</dt>
+                    <dd>{{form.stewardOrg.name}}</dd>
+                    <dt>Source:</dt>
+                    <dd>{{form.source}}</dd>
+                </dl>
+                <table *ngIf="form.ids?.length > 0" class="table-bordered">
+                    <tr>
+                        <th>Id</th>
+                        <th>Version</th>
+                        <th>Source</th>
+                    </tr>
+                    <tr *ngFor="let id of form.ids">
+                        <td>{{id.id}}</td>
+                        <td>{{id.version}}
+                        <td>{{id.source}}</td>
+                    </tr>
+                </table>
             </div>
-            <div class="card-body" [ngbCollapse]="!form.isCollapsed">
-                <div class="row">
-                    <div class="col-4">
-                        <dl class="row">
-                            <dt class="col-sm-3">Steward:</dt>
-                            <dd class="col-sm-9">{{form.stewardOrg.name}}</dd>
-                            <dt class="col-sm-3">Source:</dt>
-                            <dd class="col-sm-9">{{form.source}}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-4" *ngIf="form.ids?.length > 0">
-                        <table class="table-bordered">
-                            <tr>
-                                <th>Id</th>
-                                <th>Version</th>
-                                <th>Source</th>
-                            </tr>
-                            <tr *ngFor="let id of form.ids">
-                                <td>{{id.id}}</td>
-                                <td>{{id.version}}
-                                <td>{{id.source}}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</section>

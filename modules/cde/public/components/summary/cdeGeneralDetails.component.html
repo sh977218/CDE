@@ -1,15 +1,15 @@
 <div [innerHtml]="elt.primaryDefinitionCopy"></div>
 <br>
-<dl class="row">
+<dl class="cde-property-xs">
     <ng-container *ngIf="elt.usedBy">
-        <dt class="col-sm-5">Used By:</dt>
-        <dd class="col-sm-7 " id="usedBy">
+        <dt>Used By:</dt>
+        <dd id="usedBy">
             <div *ngIf="elt.classification.length === 0">None</div>
             <div *ngIf="elt.classification.length > 0">
                 <span *ngFor="let ub of elt.usedBy">{{ub}} </span>
             </div>
         </dd>
     </ng-container>
-    <dt class="col-sm-5">Steward:</dt>
-    <dd class="col-sm-7 ">{{elt.stewardOrg.name}}</dd>
+    <dt>Steward:</dt>
+    <dd>{{elt.stewardOrg.name}}</dd>
 </dl>

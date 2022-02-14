@@ -1,5 +1,5 @@
-<h4 mat-dialog-title>Remove Classification</h4>
-<div mat-dialog-content>
+<h1 mat-dialog-title>Remove Classification</h1>
+<mat-dialog-content>
     <p>You are about to delete the following classification:</p>
     <p><strong>{{fullClassificationArray.join(' > ')}}</strong></p>
     <p>This will affect multiple CDEs.</p>
@@ -11,10 +11,9 @@
                id="removeClassificationUserTyped">
         <mat-error *ngIf="userTyped.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button mat-raised-button color="warn" [mat-dialog-close]>Cancel</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="true"
-            [disabled]="!userTyped.valid" id="confirmDeleteClassificationBtn" cdkFocusInitial>Ok
-    </button>
-</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="button fail" [mat-dialog-close]>Cancel</button>
+    <button cdkFocusInitial id="confirmDeleteClassificationBtn"  class="button" [mat-dialog-close]="true"
+            [disabled]="!userTyped.valid">Ok</button>
+</mat-dialog-actions>

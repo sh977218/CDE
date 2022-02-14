@@ -1,14 +1,14 @@
 <ng-template #updateElementContent>
     <form #updateElementForm="ngForm">
-        <h4 mat-dialog-title>Save</h4>
-        <div mat-dialog-content>
+        <h1 mat-dialog-title>Save</h1>
+        <mat-dialog-content>
             <div *ngIf="newQuestions.length > 0" class="form-group">
                 <div class="text-truncate m-2">
-                    <span class="font-weight-bold">There are new CDEs</span>
+                    <span style="font-weight: bold">There are new CDEs</span>
                 </div>
-                <div *ngFor="let newQuestion of newQuestions" class="card">
-                    <div class="card-header">
-                        <div class="float-left" (click)="newQuestion.isCollapsed = !newQuestion.isCollapsed"
+                <mat-card *ngFor="let newQuestion of newQuestions">
+                    <mat-card-header>
+                        <mat-card-title (click)="newQuestion.isCollapsed = !newQuestion.isCollapsed"
                              [ngClass]="{'text-danger':newQuestion.cde.newCde.designations.length === 0}">
                             <span class="hand-cursor">
                                 {{
@@ -17,32 +17,32 @@
                                     : 'Designation is Required but Missing'
                                 }}
                             </span>
-                        </div>
-                    </div>
-                    <div class="card-body" [ngbCollapse]="!newQuestion.isCollapsed">
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content [ngbCollapse]="!newQuestion.isCollapsed">
                         <dl class="cde-property">
                             <dt>Designations:</dt>
                             <dd>
-                                <dl *ngFor="let cdeDesignation of newQuestion.cde.newCde.designations" class="row">
-                                    <dt class="col-3 text-right">Designation:</dt>
-                                    <dd class="col-9">{{cdeDesignation.designation}}</dd>
-                                    <dt class="col-3 text-right">Tags:</dt>
-                                    <dd class="col-9">
+                                <dl *ngFor="let cdeDesignation of newQuestion.cde.newCde.designations" class="cde-property-md">
+                                    <dt>Designation:</dt>
+                                    <dd>{{cdeDesignation.designation}}</dd>
+                                    <dt>Tags:</dt>
+                                    <dd>
                                         <span *ngFor="let cdeTag of cdeDesignation.tags"
-                                              class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                              class="badge badge-secondary" style="margin: 0 .25rem">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>
 
                             <dt>Definitions:</dt>
                             <dd>
-                                <dl *ngFor="let cdeDefinition of newQuestion.cde.newCde.definitions" class="row">
-                                    <dt class="col-3 text-right">Definition:</dt>
-                                    <dd class="col-9">{{cdeDefinition.definition}}</dd>
-                                    <dt class="col-3 text-right">Tags:</dt>
-                                    <dd class="col-9">
+                                <dl *ngFor="let cdeDefinition of newQuestion.cde.newCde.definitions" class="cde-property">
+                                    <dt>Definition:</dt>
+                                    <dd>{{cdeDefinition.definition}}</dd>
+                                    <dt>Tags:</dt>
+                                    <dd>
                                         <span *ngFor="let cdeTag of cdeDefinition.tags"
-                                              class="badge badge-secondary mx-1">{{cdeTag}}</span>
+                                              class="badge badge-secondary" style="margin: 0 .25rem">{{cdeTag}}</span>
                                     </dd>
                                 </dl>
                             </dd>
@@ -52,18 +52,18 @@
 
                             <dt>Identifiers:</dt>
                             <dd>
-                                <dl *ngFor="let cdeId of newQuestion.cde.ids" class="row">
-                                    <dt class="col-3 text-right">Source:</dt>
-                                    <dd class="col-9">{{cdeId.source}}</dd>
-                                    <dt class="col-3 text-right">Id:</dt>
-                                    <dd class="col-9">{{cdeId.id}}</dd>
-                                    <dt class="col-3 text-right">Version:</dt>
-                                    <dd class="col-9">{{cdeId.version}}</dd>
+                                <dl *ngFor="let cdeId of newQuestion.cde.ids" class="cde-property">
+                                    <dt>Source:</dt>
+                                    <dd>{{cdeId.source}}</dd>
+                                    <dt>Id:</dt>
+                                    <dd>{{cdeId.id}}</dd>
+                                    <dt>Version:</dt>
+                                    <dd>{{cdeId.version}}</dd>
                                 </dl>
                             </dd>
                         </dl>
-                    </div>
-                </div>
+                    </mat-card-content>
+                </mat-card>
             </div>
 
             <div class="form-group">
@@ -86,14 +86,12 @@
                            [(ngModel)]="overrideVersion"/>
                 </div>
             </div>
-        </div>
-        <div mat-dialog-actions>
-            <button [mat-dialog-close] id="cancelSaveBtn" type="button"
-                mat-raised-button color="accent">Cancel</button>
-            <button id="confirmSaveBtn" (click)="save.emit()" type="button"
-                    mat-raised-button color="primary" [mat-dialog-close]
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button id="cancelSaveBtn" class="button fail" [mat-dialog-close]>Cancel</button>
+            <button id="confirmSaveBtn" class="button" (click)="save.emit()" [mat-dialog-close]
                     [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
             </button>
-        </div>
+        </mat-dialog-actions>
     </form>
 </ng-template>

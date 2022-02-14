@@ -1,6 +1,5 @@
-<div class="collapse show" id="collapseContent">
-    <button type="button" class="close" data-toggle="collapse" aria-label="Close Banner" aria-expanded="true" aria-controls="collapseContent"
-            data-target="#collapseContent" style="padding:5px;">
+<div #bannerBox>
+    <button class="close" title="Close" style="padding:5px;" (click)="bannerBox.classList.add('closed')">
         <span aria-hidden="true">&times;</span>
     </button>
     <div id="block-bean-emergency-message" class="block block--bean emergency-message block--bean-emergency-message"
@@ -9,11 +8,11 @@
             COVID-19 is an emerging, rapidly evolving situation.
         </div>
         <div>Get the latest public health information from CDC:
-            <a class="text-white" style="text-decoration: underline;" href="https://www.coronavirus.gov"
+            <a style="color: #fff; text-decoration: underline;" href="https://www.coronavirus.gov"
                target="_blank">https://www.coronavirus.gov</a>
         </div>
         <div>Get the latest research information from NIH:
-            <a class="text-white" style="text-decoration: underline;" href="https://www.nih.gov/coronavirus"
+            <a style="color: #fff; text-decoration: underline;" href="https://www.nih.gov/coronavirus"
                target="_blank">https://www.nih.gov/coronavirus</a>
         </div>
     </div>

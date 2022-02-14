@@ -1,0 +1,214 @@
+@import '../theme';
+
+#quickSearchForm {
+  margin: 1rem auto;
+  width: 100%;
+  @media (min-width: $screenMd) {
+    max-width: 1000px;
+    width: 80%;
+  }
+}
+
+#searchResultInfoBar {
+  vertical-align: middle;
+}
+
+// <!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
+//.cde-bg-grey {
+//  background-color: #f2f2f2;
+//}
+
+.dark-icon {
+  background-color: transparent;
+  border: 1px solid;
+  color: black;
+
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+}
+
+.searchFilterLayout {
+  display: flex;
+  flex-flow: row wrap;
+
+  > :nth-child(1) {
+    flex: 0 0 100%;
+
+    @media (min-width: $screenSm) {
+      flex: 0 0 28%;
+    }
+
+    @media (min-width: $screenMd) {
+      flex: 0 0 21%;
+    }
+
+    @media (min-width: $screenLg) {
+      flex: 0 0 16.67%;
+    }
+  }
+
+  > :nth-child(2) {
+    flex: 0 0 100%;
+
+    @media (min-width: $screenSm) {
+      flex: 0 0 72%;
+    }
+
+    @media (min-width: $screenMd) {
+      flex: 0 0 79%;
+    }
+
+    @media (min-width: $screenLg) {
+      flex: 0 0 83.33%;
+    }
+  }
+}
+
+.searchResultBar {
+  background-color: #f8f9fa;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: .25rem .5rem;
+
+  @media (max-width: $screenLg - 1px) {
+    flex-flow: row wrap;
+  }
+
+  button {
+    margin-top: .1rem;
+  }
+
+  form {
+    align-items: stretch;
+    display: flex;
+    width: 100%;
+
+    button {
+      background-color: inherit;
+    }
+
+    mat-form-field {
+      flex-grow: 1;
+      margin-bottom: -20px;
+      margin-top: -4px;
+      padding-left: .25rem;
+    }
+  }
+
+  > :nth-child(2) {
+    min-width: max-content;
+    margin-left: .5rem;
+
+    @media (max-width: $screenLg - 1px) {
+      margin-left: 0;
+      margin-top: .5rem;
+
+      &.collapse {
+        display: none;
+      }
+    }
+  }
+}
+
+.treeTitle {
+  display: inline-block;
+  font-weight: bold;
+  text-indent: -1px;
+}
+
+.treeItem {
+  margin-left: 15px;
+}
+
+.treeItemIcon {
+  font-size: 14px;
+  height: 14px;
+  line-height: 15px;
+  width: 5px;
+}
+
+.treeItemText {
+  font-size: 80%;
+  word-wrap: break-word;
+  margin-left: .2rem;
+}
+
+.treeParent {
+  line-height: 1;
+  margin-bottom: .2rem;
+  margin-top: .2rem;
+  padding-left: 10px;
+  text-indent: -5px;
+}
+
+.treeCurrent {
+  cursor: default;
+  font-weight: bolder;
+  line-height: 1;
+  margin-bottom: .2rem;
+  margin-top: .2rem;
+  text-indent: -1px;
+}
+
+.treeChild {
+  line-height: 1;
+  margin-bottom: .2rem;
+  margin-top: .2rem;
+  padding-left: 10px;
+  text-indent: -5px;
+}
+
+.welcomeCount {
+  bottom: -10px;
+  right: 23px;
+  position: absolute;
+  background-color: white;
+  padding: 0 5px 0 5px;
+}
+
+.welcomeDetailIcon {
+  cursor: pointer;
+  position: absolute !important;
+  right: 21px;
+  top: 25px;
+  color: lightslategrey;
+  font-size: 1.5em !important;
+  border-radius: 28px;
+  width: 23px;
+  height: 21px;
+  display: block;
+  text-align: center;
+
+  &:hover {
+    background-color: #337ab7;
+    color: white;
+  }
+}
+
+.badge-success {
+  background-color: #087721;
+}
+
+.badge-secondary {
+  background-color: #70777d;
+}
+
+.remove-filter {
+  font-size: 12px;
+}
+
+.filter-cb {
+  font-size: 14px;
+  height: 14px;
+  line-height: 12px;
+  width: 14px;
+  vertical-align: middle;
+}
+
+.classification-filter {
+  height: 17px;
+  width: 15px;
+  font-size: 15px;
+}

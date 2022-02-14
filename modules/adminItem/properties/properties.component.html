@@ -7,12 +7,14 @@
         <dl class="cde-property-lg">
             <dt>
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
-                    <mat-icon (click)="removePropertyByIndex(i)" id="confirmRemoveProperty-{{i}}">check</mat-icon>
-                    <mat-icon (click)="prop.edit = false" id="cancelRemoveProperty-{{i}}">cancel</mat-icon>
+                    <mat-icon id="confirmRemoveProperty-{{i}}" class="fake-button" role="button" tabindex="0"
+                              title="Confirm Delete" (click)="removePropertyByIndex(i)">check</mat-icon>
+                    <mat-icon id="cancelRemoveProperty-{{i}}" class="fake-button" role="button" tabindex="0"
+                              title="Cancel" (click)="prop.edit = false">cancel</mat-icon>
                 </ng-container>
-                <mat-icon (click)="prop.edit = true" *ngIf="canEdit && !prop.edit"
-                          id="removeProperty-{{i}}">delete
-                </mat-icon>
+                <mat-icon *ngIf="canEdit && !prop.edit" id="removeProperty-{{i}}"
+                          class="fake-button" role="button" tabindex="0" title="Delete Property"
+                          (click)="prop.edit = true">delete</mat-icon>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
                                     (cb)="eltChange.emit()"></cde-sortable-array>
                 Key:
@@ -27,8 +29,7 @@
         </dl>
         <hr>
     </ng-container>
-    <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" mat-raised-button
-            color="primary" (click)="openNewPropertyModal()">
+    <button *ngIf="canEdit && onInitDone" id="openNewPropertyModalBtn" class="button mT" (click)="openNewPropertyModal()">
         <mat-icon>add</mat-icon>
         Add Property
     </button>
@@ -36,8 +37,8 @@
 
 <ng-template #newPropertyContent>
     <h1 mat-dialog-title>Add Property</h1>
-    <form role="form" #newPropertyForm="ngForm">
-        <div mat-dialog-content>
+    <form #newPropertyForm="ngForm">
+        <mat-dialog-content>
             <div class="form-group">
                 <label for="newKey">Key</label>
                 <select class="form-control" id="newKey" name="newKey" [(ngModel)]="newProperty.key" required>
@@ -47,9 +48,10 @@
             <div class="form-group">
                 <label for="newValue">Value</label>
                 <div id="newValue">
-                    <button mat-raised-button (click)="newProperty.valueFormat = ''" type="button">Plain Text</button>
-                    <button mat-raised-button (click)="newProperty.valueFormat = 'html'" type="button">Rich Text
-                    </button>
+                    <button class="button light" [class.active]="!newProperty.valueFormat"
+                            (click)="newProperty.valueFormat = ''">Plain Text</button>
+                    <button class="button light" [class.active]="newProperty.valueFormat"
+                            (click)="newProperty.valueFormat = 'html'">Rich Text</button>
                     <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
                               [(ngModel)]="newProperty.value" class="form-control" Placeholder="Property Value"
                               required></textarea>
@@ -62,13 +64,11 @@
             <div class="alert alert-info">
                 Property keys are managed in Org Management > List Management
             </div>
-        </div>
-        <div mat-dialog-actions>
-            <button [mat-dialog-close] color="accent" id="cancelNewPropertyBtn" mat-raised-button type="button">Cancel
-            </button>
-            <button [disabled]="!newPropertyForm.form.valid" id="createNewPropertyBtn" mat-raised-button color="primary"
-                    type="submit" [mat-dialog-close]="true">Save
-            </button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button [mat-dialog-close] class="button fail">Cancel</button>
+            <button type="submit" class="button"
+                    [mat-dialog-close]="true" [disabled]="!newPropertyForm.form.valid">Save</button>
+        </mat-dialog-actions>
     </form>
 </ng-template>

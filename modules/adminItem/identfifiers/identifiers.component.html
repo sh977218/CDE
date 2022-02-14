@@ -1,5 +1,5 @@
 <h2>Identifiers</h2>
-<div *ngIf="elt.ids.length === 0" class="my-2">
+<div *ngIf="elt.ids.length === 0" style="margin: .5rem 0">
     There are no identifiers.
 </div>
 <dl class="cde-property">
@@ -18,10 +18,15 @@
     <dl class="cde-property">
         <dt>
             <ng-container *ngIf="id.edit">Confirm Delete
-                <mat-icon (click)="removeIdentifierByIndex(i)" id="confirmRemoveIdentifier-{{i}}">check</mat-icon>
-                <mat-icon (click)="id.edit = false" id="cancelRemoveIdentifier-{{i}}">cancel</mat-icon>
+                <mat-icon id="confirmRemoveIdentifier-{{i}}" title="Cofirm Delete"
+                          class="fake-button" role="button" tabindex="0"
+                          (click)="removeIdentifierByIndex(i)">check</mat-icon>
+                <mat-icon id="cancelRemoveIdentifier-{{i}}" title="Cancel"
+                          class="fake-button" role="button" tabindex="0"
+                          (click)="id.edit = false">cancel</mat-icon>
             </ng-container>
-            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}"
+            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}" class="fake-button" role="button" tabindex="0"
+                      title="Delete Identifier"
                       (click)="id.edit = true">delete</mat-icon>
             Source:
         </dt>
@@ -37,14 +42,14 @@
         <dd attr.itemprop="version_{{i}}">{{id.version}}</dd>
     </dl>
 </ng-container>
-<button *ngIf="canEdit" id="openNewIdentifierModalBtn" mat-raised-button (click)="openNewIdentifierModal()" color="primary">
+<button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="button" (click)="openNewIdentifierModal()">
     <mat-icon>add</mat-icon> Add Identifier
 </button>
 
 <ng-template #newIdentifierContent>
-    <h4 mat-dialog-title>Add Identifier</h4>
+    <h1 mat-dialog-title>Add Identifier</h1>
     <form role="form" #newIdentifierForm="ngForm">
-        <div mat-dialog-content>
+        <mat-dialog-content>
             <div class="form-group">
                 <label for="newSource">Source</label>
                 <select id="newSource" class="form-control" name="source" required [(ngModel)]="newIdentifier.source">
@@ -62,11 +67,10 @@
                 <input class="form-control" name="version"
                        Placeholder="Version" id="newVersion" [(ngModel)]="newIdentifier.version"/>
             </div>
-        </div>
-        <div mat-dialog-actions>
-            <button [mat-dialog-close] color="accent" id="cancelNewIdentifierBtn" mat-raised-button>Cancel</button>
-            <button (click)="addNewIdentifier()" mat-raised-button color="primary" [disabled]="!newIdentifierForm.form.valid"
-                    id="createNewIdentifierBtn" type="button">Save</button>
-        </div>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close]>Cancel</button>
+            <button class="button" (click)="addNewIdentifier()" [disabled]="!newIdentifierForm.form.valid">Save</button>
+        </mat-dialog-actions>
     </form>
 </ng-template>

@@ -5,8 +5,7 @@
     </div>
 </ng-template>
 <ng-container *ngIf="!elt.isDraft; else notAvailable">
-    <button *ngIf="canClassify(userService.user)" mat-raised-button id="openClassificationModalBtn"
-            (click)="openClassifyItemModal()" color="primary">
+    <button *ngIf="canClassify(userService.user)" id="openClassificationModalBtn" class="button" (click)="openClassifyItemModal()">
         <mat-icon>folder_open</mat-icon>
         Classify this CDE
     </button>

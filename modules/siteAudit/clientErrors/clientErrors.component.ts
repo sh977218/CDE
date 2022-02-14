@@ -8,7 +8,7 @@ type ClientErrorRecord = any;
 
 @Component({
     selector: 'cde-client-errors',
-    templateUrl: './clientErrors.component.html'
+    templateUrl: './clientErrors.component.html',
 })
 export class ClientErrorsComponent {
     @ViewChild('errorDetailModal', {static: true}) errorDetailModal!: TemplateRef<any>;

@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode">
-        <mat-icon *ngIf="isAllowed" title="Edit" class="hand-cursor" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button" role="button" tabindex="0" (click)="edit()">edit</mat-icon>
         <span [matTooltip]="cdeTooltip" [matTooltipClass]="cdeTooltipClass"
               [matTooltipPosition]="cdeTooltipPosition">{{value}}</span>
     </div>
@@ -10,13 +10,15 @@
                 {{selectOption}}
             </option>
         </select>
-        <button (click)="confirmSave()" type="button">
-            <mat-icon>check</mat-icon>
-            Confirm
-        </button>
-        <button (click)="discard()" type="button">
-            <mat-icon>cancel</mat-icon>
-            Discard
-        </button>
+        <div class="actions">
+            <button class="button small fail" (click)="discard()">
+                <mat-icon>cancel</mat-icon>
+                Discard
+            </button>
+            <button class="button small success" (click)="confirmSave()">
+                <mat-icon>check</mat-icon>
+                Confirm
+            </button>
+        </div>
     </div>
 </div>

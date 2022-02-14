@@ -22,9 +22,9 @@ public class UpdateSkipLogicWhenEditLabel extends BaseFormTest {
         goToFormDescription();
 
         startEditQuestionById("question_0-0");
-        clickElement(By.xpath("//*[@id='question_0-0']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
-        textPresent("There is skip logic using this label. It will be updated.");
-        clickElement(By.xpath("//*[@id='q_select_name_0']//button"));
+        selectQuestionLabelByIndex("question_0-0", 0, (Integer i) -> {
+            textPresent("There is skip logic using this label. It will be updated.");
+        });
         String cssClass = findElement(By.xpath("//*[@id='question_0-4']//mat-icon[contains(@class,'updatedSkipLogicIcon')]")).getAttribute("class");
         Assert.assertEquals(cssClass.contains("fa-spin"), true);
         saveEditQuestionById("question_0-0");

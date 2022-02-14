@@ -8,8 +8,8 @@
     <table *ngIf="sources?.length" class="table">
         <tr *ngFor="let source of sources;let i = index;">
             <td style="min-width: 30px">
-                <a class="hand-cursor" (click)="delete(source,i)">
-                    <mat-icon class="ml-2">delete_outline</mat-icon>
+                <a class="hand-cursor" href="javascript:void(0);" (click)="delete(source,i)">
+                    <mat-icon style="margin-left: .5rem">delete_outline</mat-icon>
                 </a>
             </td>
             <td style="min-width: 50px">
@@ -33,11 +33,13 @@
         </tr>
     </table>
 
-    <mat-form-field class="m-3">
-        <input matInput placeholder="New Id:" [(ngModel)]="newId">
-    </mat-form-field>
-    <button mat-raised-button [disabled]="!newId" (click)="add()">
-        <mat-icon>add</mat-icon>
-        Add
-    </button>
+    <div class="stack">
+        <mat-form-field>
+            <input matInput placeholder="New Id:" [(ngModel)]="newId">
+        </mat-form-field>
+        <button class="button" [disabled]="!newId" (click)="add()">
+            <mat-icon>add</mat-icon>
+            Add
+        </button>
+    </div>
 </ng-container>

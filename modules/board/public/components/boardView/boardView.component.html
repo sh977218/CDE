@@ -1,54 +1,47 @@
-<div class="container-fluid">
-    <div *ngIf="board" class="row overflowHidden">
-        <div class="col-lg-12 mt-4 mb-2">
-            <h3 class="ib pull-left" id="board_name_{{board.name}}">
-                {{board.name}}
-            </h3>
-        </div>
-        <div class="col-lg-12">
-            <div class=" mb-3 pull-right">
-                <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
-                <cde-compare-side-by-side [elements]="elts"></cde-compare-side-by-side>
-                <div *ngIf="board.type === 'cde' && elts.length > 0" class="dropdown mr-1 pull-left">
-                    <button mat-raised-button type="button" id="export" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                        <mat-icon>play_for_work</mat-icon>
-                        Export Board
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="export">
-                        <a id="csvExport" class="dropdown-item" (click)="exportBoard()" onmouseover="">
-                            CSV File, NIH/CDE</a>
-                        <a id='jsonExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=json"
-                           target="_blank">
-                            JSON File, NIH/CDE Schema</a>
-                        <a id='xmlExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=xml"
-                           target="_blank">
-                            XML File, NIH/CDE Schema</a>
-                    </div>
-                </div>
-                <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
-                        id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
-                        mat-raised-button (click)="classifyEltBoard()">
-                    <mat-icon>folder_open</mat-icon>
-                    Classify All {{board.type === 'form' ? 'Form' : 'CDE'}}s
-                </button>
-                <cde-create-form-from-board
-                        *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
-                        [board]="board"></cde-create-form-from-board>
+<div *ngIf="board" class="container-fluid">
+    <h1 id="board_name_{{board.name}}">{{board.name}}</h1>
+    <div class="actions">
+        <div class="dropdown" style="display: inline-block">
+            <button *ngIf="board.type === 'cde' && elts.length > 0" (click)="openMenu($event, dropdownMenu)"
+                    id="export" class="button"
+                    data-toggle="dropdown" aria-haspopup="true">
+                <mat-icon>play_for_work</mat-icon>
+                Export Board
+            </button>
+            <div #dropdownMenu class="dropdown-menu" aria-labelledby="export">
+                <a id="csvExport" class="dropdown-item" href="javascript:void(0);" (click)="exportBoard()">
+                    CSV File, NIH/CDE</a>
+                <a id='jsonExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=json"
+                   target="_blank">
+                    JSON File, NIH/CDE Schema</a>
+                <a id='xmlExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=xml"
+                   target="_blank">
+                    XML File, NIH/CDE Schema</a>
             </div>
         </div>
+        <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
+        <cde-compare-side-by-side [elements]="elts"></cde-compare-side-by-side>
 
-        <div id="border-cdes-div">
-            <div *ngIf="elts.length === 0">The board is empty.</div>
-            <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
-                           [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
-                           (add)="reload()"></cde-list-view>
+        <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"
+                id="board.classifyAll{{board.type==='form'?'Form':'Cde'}}s"
+                class="button" (click)="classifyEltBoard()">
+            <mat-icon>folder_open</mat-icon>
+            Classify All {{board.type === 'form' ? 'Form' : 'CDE'}}s
+        </button>
+        <cde-create-form-from-board
+                *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
+                [board]="board"></cde-create-form-from-board>
+    </div>
+    <div id="border-cdes-div">
+        <div *ngIf="elts.length === 0">The board is empty.</div>
+        <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
+                       [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"
+                       (add)="reload()"></cde-list-view>
 
-            <mat-paginator (page)="setPage($event)" [length]="totalItems"
-                           [pageIndex]="currentPage"
-                           [pageSize]="20" [hidePageSize]="true" style="font-size: 1.4em">
-            </mat-paginator>
-        </div>
+        <mat-paginator (page)="setPage($event)" [length]="totalItems"
+                       [pageIndex]="currentPage"
+                       [pageSize]="20" [hidePageSize]="true" style="font-size: 1.4em">
+        </mat-paginator>
     </div>
 </div>
 

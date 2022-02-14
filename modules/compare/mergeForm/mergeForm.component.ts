@@ -9,24 +9,7 @@ import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 @Component({
     selector: 'cde-merge-form',
     templateUrl: './mergeForm.component.html',
-    styles: [`
-        .no-left-right-padding {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .no-left-right-margin {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        div.mergeCdeName {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            height: 24px;
-        }
-    `]
+    styleUrls: ['./mergeForm.component.scss'],
 })
 export class MergeFormComponent {
     @Input() source!: CompareForm;

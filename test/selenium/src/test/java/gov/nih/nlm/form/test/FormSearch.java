@@ -16,7 +16,7 @@ public class FormSearch extends BaseFormTest {
         clickElement(By.id("openLinkedFormsModalBtn"));
         textPresent("There is 1 form that uses this cde");
         textPresent(formName);
-        clickElement(By.id("seeAllLinkedFormsButton"));
+        clickElement(By.xpath("//button[contains(.,'See all linked forms')]"));
         switchTab(1);
         textPresent("1 form results for qz_W3XYk7jF");
         textPresent(formName);

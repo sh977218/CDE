@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 
 class TransferSteward {

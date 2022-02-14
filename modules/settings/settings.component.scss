@@ -1,0 +1,26 @@
+mat-list mat-list {
+  margin-left: 1rem;
+}
+
+mat-list-item {
+  cursor: pointer;
+  height: 20px !important;
+  font-size: 12px !important;
+
+  &:hover {
+    border: solid lightgray;
+    background-color: lightgray;
+  }
+}
+
+ul {
+  list-style: none;
+}
+
+.isActive {
+  background-color: #c4d2e7;
+}
+
+.settingsContainer {
+  min-height: 700px;
+}

@@ -37,8 +37,8 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
     @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
-    navHeight = NAVIGATION_HEIGHT - 4 + 'px';
-    navHeightMobile = NAVIGATION_HEIGHT_MOBILE - 4 + 'px';
+    navHeight = NAVIGATION_HEIGHT + 'px';
+    navHeightMobile = NAVIGATION_HEIGHT_MOBILE + 'px';
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
@@ -118,6 +118,7 @@ export class FormDescriptionComponent implements OnInit {
         addFormIds(this.elt);
         this.missingCdes = areDerivationRulesSatisfied(this.elt);
         CdeForm.validate(this.elt);
+        this.onResize();
     }
 
     ngOnInit(): void {

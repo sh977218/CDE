@@ -1,28 +1,19 @@
 <h1>Site Admins</h1>
-<form name="form" class="form-inline pt40 pb40" novalidate>
+<form class="stack" novalidate>
     <cde-username-autocomplete [placeHolder]="'Make the user '"
                                (selected)="newAdmin = $event;"></cde-username-autocomplete>
-    <span class="mx-2">a site admin</span>
-    <button mat-raised-button (click)="addSiteAdmin()" id="saveMessage">Make Admin</button>
+    a site admin
+    <button id="saveMessage" class="button" (click)="addSiteAdmin()">Make Admin</button>
 </form>
-
-<table class="table table-bordered table-responsive">
-    <tr>
-        <th>Site Admins:</th>
-    </tr>
-    <tr *ngFor="let user of siteAdmins">
-        <td>
-            <span class="mr-1" id="existingSiteAdmin-{{index}}">{{user.username}}</span>
-            <mat-icon (click)="removeSiteAdmin(user.username)" id="removeSiteAdmin-{{index}}">delete</mat-icon>
-        </td>
-    </tr>
-</table>
-
-<table class="table table-bordered table-responsive">
-    <tr>
-        <th>Org Authorities:</th>
-    </tr>
-    <tr *ngFor="let user of orgAuthorities">
-        <td>{{user.username}}</td>
-    </tr>
-</table>
+<section>
+    <h2>Site Admins:</h2>
+    <div *ngFor="let user of siteAdmins">
+        <span class="admin">{{user.username}}</span>
+        <mat-icon class="hand-cursor" (click)="removeSiteAdmin(user.username)">delete</mat-icon>
+    </div>
+</section>
+<br>
+<section>
+    <h2>Org Authorities:</h2>
+    <div *ngFor="let user of orgAuthorities" class="orgAuth">{{user.username}}</div>
+</section>

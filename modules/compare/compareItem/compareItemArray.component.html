@@ -1,9 +1,9 @@
 <ng-container *ngFor="let option of options;">
     <ng-container *ngIf="option.result.length">
-        <div class="row" id="{{option.label}}">
+        <div id="{{option.label}}">
             <strong>{{option.label}}:</strong>
             <ng-container *ngFor="let r of option.result;let i = index">
-                <div class="col-12" id="{{option.label}}_{{i}}">
+                <div id="{{option.label}}_{{i}}">
                     <div class="arrayObj arrayObjAdd" *ngIf="r.add">
                         <div *ngFor="let d of option.data" class="{{d.property}}">
                             <strong>{{d.label}}:</strong>

@@ -22,13 +22,7 @@ import { noop } from 'shared/util';
 @Component({
     selector: 'cde-form-description-section',
     templateUrl: 'formDescriptionSection.component.html',
-    styles: [`
-        .outdated-bg {
-            background-color: #ffecc5;
-            border: 1px;
-            border-radius: 10px;
-        }
-    `]
+    styleUrls: ['../formDescription/formDescription.style.scss'],
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt!: CdeForm;

@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Help</h1>
-<div mat-dialog-content>
-    <h5>Embedding Youtube Videos</h5>
+<mat-dialog-content>
+    <h2>Embedding Youtube Videos</h2>
     <p>
         To embed a youtube video, surround your URL with &lt;cde-youtube-video&gt;
     </p>
@@ -8,7 +8,8 @@
         For example:<br>
         https://www.youtube.com/watch?v=tBHLNhX2nK8
         &lt;cde-youtube-video&gt;tBHLNhX2nK8&lt;/cde-youtube-video&gt;
-</div>
-<div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Close</button>
-</div>
+    </p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="button light" (click)="onNoClick()">Close</button>
+</mat-dialog-actions>

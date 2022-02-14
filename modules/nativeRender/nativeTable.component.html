@@ -37,7 +37,7 @@
                        [(ngModel)]="nrs.elt.formInput[ni + q.name]"/>
             </div>
             <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
-                <label style="display: block" *ngFor="let a of q.fe.question.answers">
+                <label class="d-block" *ngFor="let a of q.fe.question.answers">
                     <input type="radio"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div *ngIf="q.type === 'mlist'" class="checkbox native-table-cell native-table-list">
-                <label style="display: block" *ngFor="let a of q.fe.question.answers">
+                <label class="d-block" *ngFor="let a of q.fe.question.answers">
                     <input type="checkbox"
                            [name]="ni + q.name"
                            [attr.name]="ni + q.name"
@@ -90,7 +90,7 @@
             </div>
             <div *ngIf="q.type === 'geo'">
                 <div class="input-group">
-                    <div class="input-group-prepend d-none d-sm-flex">
+                    <div class="input-group-prepend flex-sm">
                         <span class="input-group-text">Coordinates:</span>
                     </div>
                     <input type="text" class="form-control" [disabled]="nrs.locationDenied"
@@ -103,12 +103,12 @@
                            [id]="q.fe.feId+'_longitude'"
                            value="{{q.fe.question.answer?.longitude}}">
                     <div class="input-group-append">
-                        <button *ngIf="nrs.locationDenied; else templateLocation" class="btn btn-disabled"
+                        <button *ngIf="nrs.locationDenied; else templateLocation" class="button" disabled
                                 (click)="nrs.getCurrentGeoLocation(q.fe)">
                             <i class="material-icons iconFit">location_disabled</i>
                         </button>
                         <ng-template #templateLocation>
-                            <button [id]="q.fe.feId+'_location'" class="btn btn-primary">
+                            <button [id]="q.fe.feId+'_location'" class="button">
                                 <i class="material-icons iconFit"
                                    (click)="nrs.getCurrentGeoLocation(q.fe)">location_searching</i>
                             </button>
@@ -135,7 +135,7 @@
                 <div *ngIf="q.fe.question.uomsAlias.length > 0">Units of Measure:</div>
                 <label *ngFor="let uom of q.fe.question.uomsAlias; index as i"
                        [ngClass]="{'nativeRequiredBox': q.fe.question.required}"
-                       style="padding-left: 10px;display: block">
+                       class="radio-box">
                     <input type="radio"
                            [name]="ni + q.name + '_uom_' + i"
                            [attr.name]="ni + q.name + '_uom_' + i"
@@ -164,7 +164,7 @@
                     <div *ngIf="q.fe.question.uomsAlias.length > 0">Units of Measure:</div>
                     <label *ngFor="let uom of q.fe.question.uomsAlias; index as i"
                            [ngClass]="{'nativeRequiredBox': q.fe.question.required}"
-                           style="padding-left: 10px;display: block">
+                           class="radio-box">
                         <input type="radio"
                                [name]="ni + q.name + '_uom_' + i"
                                [attr.name]="ni + q.name + '_uom_' + i"

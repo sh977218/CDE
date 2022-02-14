@@ -1,0 +1,47 @@
+@import '../../theme';
+
+mat-checkbox {
+  display: block;
+}
+
+.mergeFormLayout {
+  display: flex;
+  flex-flow: row wrap;
+
+  > :nth-child(1) {
+    flex: 0 0 100%;
+    min-width: 0;
+
+    @media (min-width: $screenLg) {
+      flex: 0 0 18%
+    }
+
+    display: flex;
+    flex-flow: row wrap;
+
+    > * {
+      flex: 0 0 50%;
+
+      @media (min-width: $screenLg) {
+        flex: 0 0 100%;
+      }
+    }
+  }
+
+  > :nth-child(2) {
+    flex: 0 0 100%;
+    min-width: 0;
+
+    @media (min-width: $screenLg) {
+      flex: 0 0 82%
+    }
+  }
+}
+
+.questionToken {
+  line-height: 24px;
+  margin: 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

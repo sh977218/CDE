@@ -1,72 +1,75 @@
-<div *ngFor="let comment of comments; index as i" class="mb-5">
+<div *ngFor="let comment of comments; index as i" style="margin-bottom: 1.25rem">
     <div class="commentDiv" id="commentDiv_{{i}}">
-        <div class="comment border">
-            <div class="commentHeader p-2">
-                <img class="mr-1" style="vertical-align: text-bottom" width="32" height="32" alt="portrait"
+        <div class="comment">
+            <div class="commentHeader" style="padding: .5rem">
+                <img style="vertical-align: text-bottom; margin-right: .25rem" width="32" height="32" alt="portrait"
                      [src]="comment.avatarUrl ? comment.avatarUrl : '/cde/public/assets/img/min/portrait.png'"/>
-                <mat-icon id="reopenComment_{{i}}" class="float-right iconButton" *ngIf="canReopenComment(comment)" title="Reopen"
+                <mat-icon *ngIf="canReopenComment(comment)" id="reopenComment_{{i}}" title="Reopen"
+                          class="iconButton" style="float: right"
                           role="button" tabindex="0" (click)="reopenComment(comment._id)">undo
                 </mat-icon>
-                <mat-icon id="resolveComment_{{i}}" class="float-right iconButton" *ngIf="canResolveComment(comment)" title="Resolve"
+                <mat-icon *ngIf="canResolveComment(comment)" id="resolveComment_{{i}}" title="Resolve"
+                          class="iconButton" style="float: right"
                           role="button" tabindex="0" (click)="resolveComment(comment._id)">check_circle_outline
                 </mat-icon>
-                <mat-icon id="removeComment_{{i}}" class="float-right iconButton" *ngIf="canManageComment(comment)"
+                <mat-icon *ngIf="canManageComment(comment)" id="removeComment_{{i}}" class="iconButton" style="float: right"
                           role="button" tabindex="0" (click)="removeComment(comment._id)">delete_outline
                 </mat-icon>
-                <div class="d-inline-block">
+                <div style="display: inline-block">
                     <div style="font-size:13px;">{{comment.user.username}}</div>
                     <div style="font-size:11px;">{{comment.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                 </div>
             </div>
             <div class="clearfix"></div>
-            <div class="commentBody p-2">
+            <div class="commentBody" style="padding: .5rem">
                 <span style="word-wrap: break-word" [class.strike]="comment.status === 'resolved'">{{comment.text}}</span>
             </div>
             <ng-container *ngFor="let reply of comment.replies; index as j">
-                <div *ngIf="showReply(comment,j)" class="p-2 border commentBox">
+                <div *ngIf="showReply(comment,j)" class="commentBox" style="padding: .5rem">
                     <div class="replyHeader">
-                        <img class="mr-1" style="vertical-align: text-bottom" width="32" height="32" alt="portrait"
+                        <img style="vertical-align: text-bottom; margin-right: .25rem" width="32" height="32" alt="portrait"
                              [src]="reply.avatarUrl ? comment.avatarUrl : '/cde/public/assets/img/min/portrait.png'"/>
-                        <mat-icon *ngIf="canReopenComment(reply)" id="reopenReply_{{i}}_{{j}}" class="float-right iconButton"
+                        <mat-icon *ngIf="canReopenComment(reply)" id="reopenReply_{{i}}_{{j}}"
+                                  class="iconButton" style="float: right"
                                   role="button" tabindex="0" (click)="reopenReply(reply._id)">undo
                         </mat-icon>
-                        <mat-icon *ngIf="canResolveComment(reply)" id="resolveReply_{{i}}_{{j}}" class="float-right iconButton"
+                        <mat-icon *ngIf="canResolveComment(reply)" id="resolveReply_{{i}}_{{j}}"
+                                  class="iconButton" style="float: right"
                                   role="button" tabindex="0" (click)="resolveReply(reply._id)">check_circle_outline
                         </mat-icon>
-                        <mat-icon *ngIf="canManageComment(reply)" id="removeReply_{{i}}_{{j}}" class="float-right iconButton"
+                        <mat-icon *ngIf="canManageComment(reply)" id="removeReply_{{i}}_{{j}}"
+                                  class="iconButton" style="float: right"
                                   role="button" tabindex="0" (click)="removeReply(reply._id)">delete_outline
                         </mat-icon>
-                        <div class="d-inline-block">
+                        <div style="display: inline-block">
                             <div style="font-size:13px;">{{reply.user.username}}</div>
                             <div style="font-size:11px;">{{reply.created | date: 'MM/dd/yyyy @ h:mma'}}</div>
                         </div>
                     </div>
                     <div class="clearfix"></div>
-                    <div class="replyBody pt-3">
+                    <div class="replyBody" style="padding-top: .75rem">
                         <span style="word-wrap: break-word;" [ngClass]="{'strike':reply.status === 'resolved'}">
                             {{reply.text}}
                         </span>
                     </div>
                 </div>
-                <div *ngIf="showInfo(comment,j);" class="p-2 border commentBox">
+                <div *ngIf="showInfo(comment,j);" class="commentBox" style="padding: .5rem">
                     <span class="fake-link" *ngIf="!comment.showAllReplies" id="showAllRepliesButton_{{i}}"
                           (click)="comment.showAllReplies = true;">Show all {{comment.replies.length}} replies
                     </span>
                 </div>
             </ng-container>
-            <div *ngIf="userService.user && !comment.pendingApproval" class="pl-2 py-2 border commentBox">
+            <div *ngIf="userService.user && !comment.pendingApproval" class="commentBox" style="padding: .5rem 0 .5rem .5rem">
                 <div class="newReplyInfo" *ngIf="comment.currentlyReplying">Someone is typing</div>
-                <form #newReplyForm="ngForm" name="newReplyForm_{{i}}" id="newReplyForm_{{i}}" novalidate
-                      (ngSubmit)="replyToComment(comment);">
+                <form #newReplyForm="ngForm" id="newReplyForm_{{i}}" novalidate (ngSubmit)="replyToComment(comment);">
                     <input [(ngModel)]="comment.newReply.text" (ngModelChange)="changeOnReply(comment)"
                            class="form-control" style="margin-bottom: 5px"
                            id="newReplyTextArea_{{i}}" name="newReplyTextArea" placeholder="Reply to this comment"
                            required/>
                     <ng-container *ngIf="comment.newReply.text">
-                        <button mat-raised-button id="replyBtn_{{i}}" name="replyBtn_{{i}}"
-                                type="submit" [disabled]="!newReplyForm.form.valid">Reply
-                        </button>
-                        <button mat-raised-button (click)="cancelReply(comment)">Cancel</button>
+                        <button type="submit" id="replyBtn_{{i}}" class="button"
+                                [disabled]="!newReplyForm.form.valid">Reply</button>
+                        <button class="button" (click)="cancelReply(comment)">Cancel</button>
                     </ng-container>
                 </form>
             </div>

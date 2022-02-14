@@ -15,7 +15,7 @@ public class RemoveSiteAdmin extends NlmCdeBaseTest {
         goToSiteAdmins();
 
 
-        clickElement(By.xpath("//td[span[. = 'promoteSiteAdmin']]/mat-icon"));
+        clickElement(By.xpath("//div[span[@class='admin'][. = 'promoteSiteAdmin']]/mat-icon"));
         checkAlert("Removed");
         textNotPresent("promoteSiteAdmin");
     }

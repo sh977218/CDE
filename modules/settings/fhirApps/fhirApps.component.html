@@ -1,14 +1,15 @@
 <h1>FHIR apps</h1>
+
 <div *ngIf="!fhirApps || !fhirApps.length">
     No Fhir Apps
 </div>
 
 <div *ngIf="fhirApps?.length">
-    <table class="table-striped" style="width: -webkit-fill-available">
+    <table class="table-striped">
         <ng-container *ngFor="let app of fhirApps">
             <tr>
                 <td rowspan="2">
-                    <mat-icon (click)="deleteApp(app)">delete_outline</mat-icon>
+                    <mat-icon class="hand-cursor" (click)="deleteApp(app)">delete_outline</mat-icon>
                 </td>
                 <td rowspan="2">{{app._id}}</td>
                 <td>
@@ -59,7 +60,7 @@
                         <tfoot>
                         <tr>
                             <td colspan="5">
-                                <button mat-raised-button (click)="app.mapping.push({})">
+                                <button class="button" (click)="app.mapping.push({})">
                                     <mat-icon>add</mat-icon>
                                     Add
                                 </button>
@@ -73,7 +74,7 @@
     </table>
 </div>
 
-<button mat-raised-button (click)="newApp()">
+<button class="button success" (click)="newApp()">
     <mat-icon>add</mat-icon>
     Add
 </button>

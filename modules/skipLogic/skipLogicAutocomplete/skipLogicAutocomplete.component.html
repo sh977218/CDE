@@ -1,6 +1,6 @@
 <form [formGroup]="skipLogicForm">
     <h1 mat-dialog-title>Edit Skip Logic:</h1>
-    <div mat-dialog-content formArrayName="items">
+    <mat-dialog-content formArrayName="items">
         <ng-container *ngFor="let item of items.controls let i = index;">
             <ng-container [formGroup]="item">
                 <mat-form-field class="col-2" *ngIf="i !== 0">
@@ -58,15 +58,15 @@
                 <mat-icon (click)="items.removeAt(i)" [id]="'skipLogicDelete_'+i" style="vertical-align: middle">delete</mat-icon>
             </ng-container>
         </ng-container>
-        <button mat-raised-button (click)="addToken()" id="addNewSkipLogicButton">
+        <button id="addNewSkipLogicButton" class="button" (click)="addToken()">
             <mat-icon>add</mat-icon>
             Add Condition
         </button>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button id="cancelNewSkipLogicButton" color="warn" [mat-dialog-close]>Cancel</button>
-        <button mat-raised-button id="saveNewSkipLogicButton" color="primary"
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button id="cancelNewSkipLogicButton" class="button fail" [mat-dialog-close]>Cancel</button>
+        <button id="saveNewSkipLogicButton" class="button success"
                 [mat-dialog-close]="skipLogicForm.getRawValue().items" [disabled]="skipLogicForm.invalid">Save
         </button>
-    </div>
+    </mat-dialog-actions>
 </form>

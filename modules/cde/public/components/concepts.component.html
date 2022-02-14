@@ -14,14 +14,15 @@
             </tr>
             <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                 itemtype="http://schema.org/MedicalCode">
-                <td><span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                <td>
+                    <span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
                           itemprop="name" class="fake-link">{{concept.name}}</span>
                 </td>
                 <td itemprop="codeSystem">{{concept.origin}}</td>
                 <td itemprop="codeValue">{{concept.originId}}</td>
                 <td headers="conceptActions_{{config.type}}" *ngIf="canEdit">
-                    <mat-icon id="remove{{config.type}}-{{$index}}"
-                              (click)="removeConcept(config.type, $index)" title="Remove">delete_outline
+                    <mat-icon id="remove{{config.type}}-{{$index}}" class="fake-button" role="button" tabindex="0"
+                              title="Remove" (click)="removeConcept(config.type, $index)">delete_outline
                     </mat-icon>
                     <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"
                                         (cb)="eltChange.emit()"></cde-sortable-array>
@@ -30,14 +31,13 @@
         </table>
     </div>
 </div>
-<button mat-raised-button *ngIf="canEdit" id="openNewConceptModalBtn"
-        color="primary" (click)="openNewConceptModal()">
+<button *ngIf="canEdit" id="openNewConceptModalBtn" class="button" (click)="openNewConceptModal()">
     <mat-icon>add</mat-icon>
     Add Concept
 </button>
 
 <ng-template #newConceptContent>
-    <h4 mat-dialog-title>Add Concept</h4>
+    <h1 mat-dialog-title>Add Concept</h1>
     <form role="form" #newConceptForm="ngForm" (ngSubmit)="addNewConcept()">
         <div mat-dialog-content>
             <mat-form-field style="width: 100%">
@@ -62,10 +62,8 @@
             </mat-form-field>
         </div>
         <div mat-dialog-actions>
-            <button mat-raised-button color="accent" [mat-dialog-close] type="button">Cancel</button>
-            <button mat-raised-button color="primary" [disabled]="!newConceptForm.form.valid" id="createNewConceptBtn"
-                    type="submit">Save
-            </button>
+            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button class="button" type="submit" [disabled]="!newConceptForm.form.valid">Save</button>
         </div>
     </form>
 </ng-template>

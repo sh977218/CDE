@@ -1,4 +1,4 @@
-<h4 style="margin-top: 8px">
+<h2 style="margin-top: 8px">
     <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView" (select)="select.emit($event)">
         <span class="summary-list-before">
 <!-- DO NOT REMOVE, LEAVE IT COMMENTED FOR NIH ENDORSED CDE
@@ -12,31 +12,31 @@
             <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
         </span>
     </cde-summary-heading>
-</h4>
+</h2>
 
-<div class="row">
-    <div class="col-md-4 col-sm-12 col-xs-12">
+<div class="contentLayout">
+    <div>
         <span [innerHtml]="elt.primaryDefinitionCopy"></span>
-        <dl class="row">
-            <dt class="col-4 text-right">Steward:</dt>
-            <dd class="col-8">{{elt.stewardOrg.name}}</dd>
+        <dl class="cde-property-xl">
+            <dt>Steward:</dt>
+            <dd>{{elt.stewardOrg.name}}</dd>
             <ng-container *ngIf="elt.classification?.length > 0">
-                <dt class="col-4 text-right">Used By:</dt>
-                <dd class="col-8" id="usedBy_{{eltIndex}}" style="margin-top: 4px">
+                <dt>Used By:</dt>
+                <dd id="usedBy_{{eltIndex}}" style="margin-top: 4px">
                     <span *ngIf="!(elt.classification.length > 0)">None</span>
                     <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
                 </dd>
             </ng-container>
             <ng-container *ngIf="elt.source">
-                <dt class="col-4 text-right">Source:</dt>
-                <dd class="col-8">{{elt.source}}</dd>
+                <dt>Source:</dt>
+                <dd>{{elt.source}}</dd>
             </ng-container>
         </dl>
     </div>
-    <div class="col-md-5 col-sm-8 col-xs-12">
+    <div>
         <cde-value-domain-summary [elt]="elt" [eltIndex]="eltIndex"></cde-value-domain-summary>
     </div>
-    <div class="col-md-3 col-sm-4 col-xs-12">
+    <div>
         <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"
              alt="Image attached to the CDE"
              src="/server/system/data/{{attachment.fileid}}" class='cdeAttachmentThumbnail'/>

@@ -1,13 +1,13 @@
-<button mat-raised-button id="openDataSetModalBtn" (click)="openDatasetsModal()" color="primary">Data Set</button>
+<button id="openDataSetModalBtn" class="button" (click)="openDatasetsModal()">Data Set</button>
 
 <ng-template #datasetsContent>
-    <h4 mat-dialog-title>Data Set</h4>
+    <h1 mat-dialog-title>Data Set</h1>
     <div mat-dialog-content>
-        <div *ngIf="!elt.dataSets || elt.dataSets.length === 0" id="noDataSetsDiv">
-            <div class="col-12">No Data sets using this CDE</div>
+        <div *ngIf="!elt.dataSets || elt.dataSets.length === 0">
+            <div>No Data sets using this CDE</div>
         </div>
-        <div *ngIf="elt.dataSets && elt.dataSets.length >0" id="dataSetsDiv">
-            <div class="col-12">
+        <div *ngIf="elt.dataSets && elt.dataSets.length >0">
+            <div>
                 Data sets using this CDE
                 <table class="table table-bordered table-condensed table-striped">
                     <thead>
@@ -35,6 +35,6 @@
         </div>
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button [mat-dialog-close]>Close</button>
+        <button class="button" [mat-dialog-close]>Close</button>
     </div>
 </ng-template>

@@ -9,12 +9,12 @@ import { AlertService } from 'alert/alert.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { SearchBaseComponent, searchStyles } from 'search/searchBase.component';
+import { SearchBaseComponent } from 'search/searchBase.component';
 import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-cde-search',
-    styles: [searchStyles],
+    styleUrls: ['../../../../search/searchBase.component.scss'],
     templateUrl: '../../../../search/searchBase.component.html'
 })
 export class CdeSearchComponent extends SearchBaseComponent {

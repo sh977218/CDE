@@ -1,6 +1,6 @@
 <h1>Steward Transfer</h1>
-<form class="form-inline pt40 pb40" role="form" id="transferStewardForm" name="transferStewardForm" novalidate>
-    <span class="mr-2">Transfer CDEs and forms owned by</span>
+<form>
+    Transfer CDEs and forms owned by
     <div class="form-group">
         <select id="transferSteward_from" name="transferSteward_from" class="form-control"
                 [(ngModel)]="transferStewardObj.from" required>
@@ -8,7 +8,7 @@
             <option *ngFor="let myOrg of userService.user?.orgAdmin">{{myOrg}}</option>
         </select>
     </div>
-    <span class="mx-2">to</span>
+    to
     <div class="form-group">
         <select id="transferSteward_to" name="transferSteward_to" class="form-control"
                 [(ngModel)]="transferStewardObj.to" required>
@@ -16,8 +16,8 @@
             <option *ngFor="let myOrg of userService.user?.orgAdmin">{{myOrg}}</option>
         </select>
     </div>
-    <button type="submit" id="transferStewardButton" mat-raised-button (click)="transferSteward()"
-            ng-disabled="transferStewardForm.transferSteward_from.$error.required || transferStewardForm.transferSteward_to.$error.required">
+    <button type="submit" id="transferStewardButton" class="button" (click)="transferSteward()"
+            [disabled]="!transferStewardObj.from || !transferStewardObj.to">
         Transfer Now
     </button>
 </form>

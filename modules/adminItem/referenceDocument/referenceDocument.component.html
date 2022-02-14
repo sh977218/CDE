@@ -6,12 +6,14 @@
     <dl class="cde-property">
         <dt>
             <ng-container *ngIf="canEdit && rd.edit">Confirm Delete
-                <mat-icon (click)="removeReferenceDocumentByIndex(i)" id="confirmRemoveReferenceDocument-{{i}}">check
-                </mat-icon>
-                <mat-icon (click)="rd.edit = false" id="cancelRemoveReferenceDocument-{{i}}">cancel</mat-icon>
+                <mat-icon id="confirmRemoveReferenceDocument-{{i}}" class="fake-button" role="button" tabindex="0"
+                          title="Confirm Delete" (click)="removeReferenceDocumentByIndex(i)">check</mat-icon>
+                <mat-icon id="cancelRemoveReferenceDocument-{{i}}" class="fake-button" role="button" tabindex="0"
+                          title="Cancel" (click)="rd.edit = false">cancel</mat-icon>
             </ng-container>
-            <mat-icon (click)="rd.edit = true" *ngIf="canEdit && !rd.edit" id="removeReferenceDocument-{{i}}">delete
-            </mat-icon>
+            <mat-icon *ngIf="canEdit && !rd.edit" title="Delete Reference Document"
+                      id="removeReferenceDocument-{{i}}" class="fake-button" role="button" tabindex="0"
+                      (click)="rd.edit = true">delete</mat-icon>
             <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
                                 (cb)="eltChange.emit()"></cde-sortable-array>
             ID:
@@ -35,14 +37,13 @@
     </dl>
     <hr>
 </ng-container>
-<button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" mat-raised-button
-        (click)="openNewReferenceDocumentModal()" color="primary">
+<button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" class="button mT" (click)="openNewReferenceDocumentModal()">
     <mat-icon>add</mat-icon>
     Add Reference Document
 </button>
 
 <ng-template #newReferenceDocumentContent>
-    <h4 mat-dialog-title>Add ReferenceDocument</h4>
+    <h1 mat-dialog-title>Add ReferenceDocument</h1>
     <form #newReferenceDocumentForm="ngForm" (ngSubmit)="addNewReferenceDocument()">
         <div mat-dialog-content>
             <div class="form-group">
@@ -82,10 +83,8 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button id="cancelNewReferenceDocumentBtn" type="button" [mat-dialog-close] mat-raised-button color="warn">
-                Cancel
-            </button>
-            <button id="createNewReferenceDocumentBtn" mat-raised-button color="primary">Save</button>
+            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button type="submit" class="button">Save</button>
         </div>
     </form>
 </ng-template>

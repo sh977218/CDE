@@ -7,24 +7,7 @@ import { MergeFormService } from 'compare/mergeForm.service';
 @Component({
     selector: 'cde-sortable',
     templateUrl: './cdeSortable.component.html',
-    styles: [`
-        .no-left-right-padding {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .no-left-right-margin {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        div.mergeCdeName {
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
-            height: 24px;
-        }
-    `]
+    styleUrls: ['./cdeSortable.component.scss'],
 })
 export class CdeSortableComponent {
     @Input() left!: CompareForm;

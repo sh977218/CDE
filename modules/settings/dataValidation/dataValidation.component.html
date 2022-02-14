@@ -3,7 +3,7 @@
 <div>
     <p>Validate a CSV</p>
     <label for="fileToValidate">
-        <button color="primary" mat-raised-button (click)="openFileDialog('fileToValidate')" [disabled]="fileValidating || fileDownloading">
+        <button class="button" (click)="openFileDialog('fileToValidate')" [disabled]="fileValidating || fileDownloading">
             <mat-icon>cloud_upload</mat-icon>
             Upload CSV file
         </button>
@@ -28,7 +28,7 @@
 <div *ngIf="dataErrors.length > 0">
     <p>Data validation errors are listed below. Row numbers are based on CSV file</p>
     <label for="fileToValidate">
-        <button color="primary" mat-raised-button (click)="downloadReport()" [disabled]="fileValidating">
+        <button class="button" (click)="downloadReport()" [disabled]="fileValidating">
             <mat-icon>play_for_work</mat-icon>
             Download Report
         </button>
@@ -51,7 +51,7 @@
             </td>
         </tr>
     </table>
-    <div class="float-left">
+    <div>
         <mat-paginator (page)="pageChange($event)"
                        [pageIndex]="pageIndex"
                        [length]="dataErrors.length"

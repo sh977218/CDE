@@ -1,6 +1,4 @@
 {{formElement.skipLogic?.condition}}
-<span *ngIf="canEdit">
-    <button mat-raised-button (click)="editSkipLogic()">
-        <mat-icon>edit</mat-icon>
-    </button>
-</span>
+<button *ngIf="canEdit" class="button light" (click)="editSkipLogic()">
+    <mat-icon>edit</mat-icon>
+</button>

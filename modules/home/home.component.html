@@ -1,45 +1,44 @@
 <cde-banner></cde-banner>
 <div class="container">
-    <div class="mt-0 mt-sm-5">
-        <div class="row align-items-center">
-            <div class="col-12 text-center">
-                <img class="img-center-responsive" src="/cde/public/assets/img/min/NIH-CDE.svg"
-                     alt="NIH Common Data Elements (CDE) logo" style="margin: 10px 0 50px 0; width: 75%; min-width: 300px; max-width: 600px"/>
-            </div>
-            <div class="col-md-10 mx-auto">
-                <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px" class="mx-auto">
-                    <mat-form-field style="width: 100%; font-size: 25px">
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="searchForm = false">
-                                <span>CDEs</span>
-                            </button>
-                            <button mat-menu-item (click)="searchForm = true">
-                                <span>Forms</span>
-                            </button>
-                        </mat-menu>
-                        <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
-                               maxlength="500" [(ngModel)]="cdeSearchTerm">
-                        <mat-icon [matMenuTriggerFor]="menu" matSuffix style="height: 42px">keyboard_arrow_down</mat-icon>
-                        <button mat-raised-button matSuffix color="primary" (click)="search()">
-                            <mat-icon id="search.submit">search</mat-icon> Search
+    <div>
+        <div class="text-center">
+            <img class="largeLogo" src="/cde/public/assets/img/min/NIH-CDE.svg"
+                 alt="NIH Common Data Elements (CDE) logo"/>
+        </div>
+        <div style="max-width: 83.33%; margin: 0 auto">
+            <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px; margin: 0 auto">
+                <mat-form-field style="width: 100%; font-size: 25px">
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="searchForm = false">
+                            <span>CDEs</span>
                         </button>
-                    </mat-form-field>
-                    <button style="display: none" type="submit" (click)="search()"></button>
-                    <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
-                       class="error-block">
-                        <span>Query terms must be 500 characters or less.</span>
-                    </p>
-                </form>
-            </div>
-            <div id="introduction" class="offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 col-sm-12">
-                <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to
-                    structured
-                    human and machine-readable definitions of data elements that have been recommended or
-                    required by
-                    NIH Institutes and Centers and other organizations for use in research and for other
-                    purposes.
+                        <button mat-menu-item (click)="searchForm = true">
+                            <span>Forms</span>
+                        </button>
+                    </mat-menu>
+                    <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
+                           maxlength="500" [(ngModel)]="cdeSearchTerm">
+                    <mat-icon [matMenuTriggerFor]="menu" matSuffix style="height: 42px">keyboard_arrow_down</mat-icon>
+                    <button class="button" matSuffix (click)="search()">
+                        <mat-icon id="search.submit">search</mat-icon>
+                        Search
+                    </button>
+                </mat-form-field>
+                <button style="display: none" type="submit" (click)="search()"></button>
+                <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+                   class="error-block">
+                    <span>Query terms must be 500 characters or less.</span>
                 </p>
-            </div>
+            </form>
+        </div>
+        <div id="introduction" style="max-width: 650px; margin: 0 auto">
+            <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to
+                structured
+                human and machine-readable definitions of data elements that have been recommended or
+                required by
+                NIH Institutes and Centers and other organizations for use in research and for other
+                purposes.
+            </p>
         </div>
     </div>
 </div>

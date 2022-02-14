@@ -30,7 +30,7 @@
                 </ng-container>
 -->
                 <ng-container *ngSwitchCase="'name'">
-                    <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View"
+                    <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View" href="javascript:void(0);"
                        [queryParams]="{tinyId: prop.elt.tinyId}">{{prop.elt.designations[0].designation}}</a>
                 </ng-container>
                 <ng-container *ngSwitchCase="'naming'">
@@ -71,7 +71,7 @@
                 </ng-container>
                 <ng-container *ngSwitchCase="'linkedForms'">
                     <div *ngFor="let v of prop.values">
-                        <a routerLink="/formView" [queryParams]="{tinyId: v.tinyId}" target="_blank">{{v.name}}</a>
+                        <a href="/formView?tinyId={{v.tinyId}}" target="_blank">{{v.name}}</a>
                     </div>
                 </ng-container>
                 <ng-container *ngSwitchDefault>{{prop.value}}</ng-container>
