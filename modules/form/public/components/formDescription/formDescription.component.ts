@@ -101,6 +101,7 @@ export class FormDescriptionComponent implements OnInit {
     updateDataCredit = 0;
     missingCdes: string[] = [];
     validationErrors: LocatableError[] = [];
+    topSpacing: number = 132;
 
     constructor(
         private router: Router,
@@ -119,6 +120,15 @@ export class FormDescriptionComponent implements OnInit {
         this.missingCdes = areDerivationRulesSatisfied(this.elt);
         CdeForm.validate(this.elt);
         this.onResize();
+        this.topSpacing = this.isMobile ? 110 : 132;
+        window.document.getElementById('scrollRoot')?.addEventListener('scroll', (e) => {
+            if(((e.srcElement as HTMLInputElement).scrollTop > 100)){
+                this.topSpacing = this.isMobile ? 0 : 22;
+            }
+            else{
+                this.topSpacing = this.isMobile ? 110 : 132;
+            }
+        })
     }
 
     ngOnInit(): void {

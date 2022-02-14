@@ -44,6 +44,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
 
         clickElement(By.xpath("//button[text()='Cancel']"));
 
+        modalGone();
         goToPropertyKeysManagement();
 
         removePropertyKeyByOrg(orgName, propertyKey);
@@ -89,6 +90,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         selectMatDropdownByText("canYouSeeThis");
         clickElement(By.xpath("//button[text()='Cancel']"));
 
+        modalGone();
         goToTagsManagement();
 
         removeTagByOrg(orgName, tag);

@@ -17,6 +17,7 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
         clickElement(By.id("classif-CTEP"));
         clickElement(By.id("classif-DISEASE"));
         textPresent("Bladder");
+        scrollHeaderIntoView();
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.id("browseOrg-CCR"));
         textPresent("C3D Domain (");

@@ -13,6 +13,42 @@
   background-color: white;
 }
 
+.mat-button-focus-overlay{
+  transition: unset !important;
+}
+
+.mat-list-item.mat-focus-indicator:focus{
+  outline-color: #000000;
+  outline-offset: -2px;
+  outline-style: auto;
+  outline-width: 5px;
+
+  z-index: 10;
+}
+
+.mat-menu-item.mat-focus-indicator:focus{
+  outline-color: #000000;
+  outline-offset: -2px;
+  outline-style: auto;
+  outline-width: 5px;
+
+  z-index: 10;
+}
+
+.cdk-keyboard-focused .mat-button-focus-overlay{
+  outline-color: #000000;
+  outline-offset: -2px;
+  outline-style: auto;
+  outline-width: 5px;
+  opacity: 1 !important;
+
+  background: none;
+}
+
+.mat-drawer:not(.mat-drawer-side) {
+  box-shadow: 0 3px 8px rgb(0 0 0 / 35%);
+}
+
 .navbar-nav > li > a {
   padding-left: 15px;
   padding-right: 15px;

@@ -305,6 +305,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToUserMenu() {
+        scrollHeaderIntoView();
         hoverOverElement(findElement(By.id("username_link")));
     }
 
@@ -316,8 +317,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void goToSettings() {
         goToUserMenu();
-        textPresent("Settings");
-        clickElement(By.xpath("//button[normalize-space(text())='Settings']"));
+        clickElement(By.id("user_settings"));
 
         hangon(.5);
         if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
@@ -341,6 +341,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToHelp() {
+        scrollHeaderIntoView();
         hoverOverElement(findElement(By.id("helpLink")));
     }
 
@@ -738,6 +739,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         } catch (StaleElementReferenceException e) {
             closeAlert();
             findElement(by).click();
+        } catch (ElementClickInterceptedException e) {
+            hangon(.5);
+            if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0) {
+                clickElement(By.id("username_link"));
+            }
+            if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
+                clickElement(By.id("helpLink"));
+            }
+            if (driver.findElements(By.xpath("//button[normalize-space()='Form']")).size() > 0) {
+                clickElement(By.id("createEltLink"));
+            }
+            if(!e.getMessage().contains("Other element would receive the click")){
+                scrollDownBy(500);
+            }
+            findElement(by).click();
         } catch (WebDriverException e) {
             System.out.println("Exception 1: " + e);
             JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
@@ -979,6 +995,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         scrollTo(0);
     }
 
+    public void scrollHeaderIntoView(){
+        String jsScroll = "document.getElementById('scrollRoot')?.scrollTo(0,0);";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
     protected void checkElementDoesNotExistByLocator(By locator) {
         Assert.assertTrue(!(driver.findElements(locator).size() > 0));
     }
@@ -1114,19 +1135,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void downloadAsFile() {
-        clickElement(By.id("searchSettings"));
+        driver.get(baseUrl + "/searchPreferences");
         clickElement(By.xpath("//label[contains(.,'File')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void downloadAsTab() {
-        clickElement(By.id("searchSettings"));
+        driver.get(baseUrl + "/searchPreferences");
         clickElement(By.xpath("//label[contains(.,'New Tab')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void includeRetiredSetting() {
-        clickElement(By.id("searchSettings"));
+        driver.get(baseUrl + "/searchPreferences");
         clickElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
@@ -1336,6 +1357,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void gotoMyBoards() {
+        scrollHeaderIntoView();
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");

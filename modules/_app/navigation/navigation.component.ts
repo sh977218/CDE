@@ -33,7 +33,7 @@ import {
     isSiteAdmin
 } from 'shared/security/authorizationShared';
 
-const NAV_Z_INDEX_STANDARD = '1000';
+const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
 const enum SECTIONS {
     home,
@@ -146,6 +146,8 @@ export class NavigationComponent {
     isOrgAuthority = isOrgAuthority;
     isSiteAdmin = isSiteAdmin;
     isMobile: boolean = (window.innerWidth < 768);
+    showHeader: boolean = true;
+    subMenuActive: Record<string, boolean> = {};
     menuList: CdeNavMenu = [
         {
             label: 'CDEs',
@@ -181,7 +183,6 @@ export class NavigationComponent {
             label: 'My Boards',
             id: 'myBoardsLink',
             section: SECTIONS.board,
-            // condition: () => !!this.userService.user,
             link: '/myBoards',
         },
         {
@@ -222,6 +223,38 @@ export class NavigationComponent {
                     link: 'https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/'
                 },
             ],
+        },
+        {
+            label: 'Sign In',
+            id: 'signInLink',
+            condition: () => window.innerWidth <= 500 && !this.userService.user,
+            section: SECTIONS.user,
+            link: '/login',
+        },
+        {
+            labelFn: () => this.userService.user ? this.userService.user.username : '',
+            id: 'usernameLink',
+            condition: () => window.innerWidth <= 500 && !!this.userService.user,
+            section: SECTIONS.user,
+            children: [
+                {
+                    labelFn: () => isSiteAdmin(this.userService.user) ? 'Settings' : 'Profile',
+                    id: 'settingsLink',
+                    link: '/settings/profile',
+                },
+                {
+                    label: 'Classifications',
+                    id: 'classificationsLink',
+                    condition: () => canClassify(this.userService.user),
+                    link: '/classificationManagement',
+                },
+                {
+                    label: 'Audit',
+                    id: 'auditLink',
+                    condition: () => isOrgAuthority(this.userService.user),
+                    link: '/siteAudit',
+                },
+            ]
         }
     ];
     sectionActive: SECTIONS = SECTIONS.home;
@@ -258,6 +291,10 @@ export class NavigationComponent {
     @HostListener('window:resize', [])
     onResize() {
         this.isMobile = window.innerWidth < 768;
+    }
+
+    onScroll(e: Event) {
+        this.showHeader = !((e.srcElement as HTMLInputElement).scrollTop > 100 && this.sectionActive !== SECTIONS.home);
     }
 
     checkNotificationDrawer() {

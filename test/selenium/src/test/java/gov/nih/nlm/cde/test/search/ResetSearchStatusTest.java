@@ -9,6 +9,7 @@ public class ResetSearchStatusTest extends NlmCdeBaseTest {
     public void resetSearchStatus() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-caBIG"));
+        scrollHeaderIntoView();
         clickElement(By.id("menu_cdes_link"));
         isSearchWelcome();
     }

@@ -26,7 +26,7 @@
     <div>
         <div>
             <div #descToolbox *ngIf="canEdit()" class="descriptionToolbox"
-                 [style.top]="isMobile ? navHeightMobile : navHeight" [style.right]="isMobile ? 0 : '17px'">
+                 [style.top]="topSpacing+'px'" [style.right]="isMobile ? 0 : '17px'">
                 <button role="button" id="addSectionTop" class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"

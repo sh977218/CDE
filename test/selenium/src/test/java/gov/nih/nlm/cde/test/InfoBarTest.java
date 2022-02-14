@@ -25,7 +25,7 @@ public class InfoBarTest extends NlmCdeBaseTest {
         textPresent("Standard", By.id("status_crumb"));
         clickElement(By.id("regstatus-Candidate"));
         textPresent("Standard, Candidate", By.id("status_crumb"));
-        scrollToTop();
+        scrollHeaderIntoView();
         clickElement(By.id("menu_cdes_link"));
         isSearchWelcome();
     }

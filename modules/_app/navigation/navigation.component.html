@@ -1,7 +1,7 @@
 <header class="app-toolbar">
     <uswds-banner *ngIf="!isMobile"></uswds-banner>
     <cde-ie-banner></cde-ie-banner>
-    <mat-toolbar class="noPrint">
+    <mat-toolbar *ngIf="showHeader" class="noPrint">
         <mat-toolbar-row #majorBar class="cde-nav-major">
             <a href="https://www.nih.gov/" aria-label="NIH" target="_blank" rel="noopener noreferrer">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
@@ -25,62 +25,24 @@
             </a>
 
             <span class="spacer"></span>
-            <div>
-                <button mat-icon-button id="notificationLink" title="Banner Notifications"
-                        (click)="notificationService.drawerToggle(); interruptEvent($event)">
-                    <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
-                              [matBadgeHidden]="notificationService.getBadge() === '0'"
-                              style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
-                </button>
-                <button mat-icon-button [class.active]="isActiveSearchSettings()"
-                        routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
-                    <mat-icon>settings</mat-icon>
-                </button>
-                <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
-                        [class.active]="isActiveUserMenu()"
-                        (click)="loginSvc.goToLogin()" routerLink="/login">
-                    <span>Login</span>
-                </button>
-                <ng-template #loggedInButton>
-                    <button #userButton mat-button  id="username_link"
-                            [class.active]="isActiveUserMenu()"
-                            [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
-                            (mouseenter)="menuEnter(majorBar, userMenuTrigger, loginMenu)"
-                            (mouseleave)="menuLeave(majorBar, userMenuTrigger, userButton)">
-                        {{userService.user.username | uppercase | cdeTruncateLongName}}
-                        <mat-icon>expand_more</mat-icon>
-                    </button>
-                    <mat-menu #loginMenu="matMenu">
-                        <div (mouseenter)="menu1Enter(majorBar)" (mouseleave)="menu1Leave(majorBar, userMenuTrigger, userButton)">
-                            <button mat-menu-item routerLink="/settings/profile">Settings</button>
-                            <button mat-menu-item *ngIf="canClassify(userService.user)" routerLink="/classificationManagement">Classifications</button>
-                            <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
-                            <button mat-menu-item (click)="logout()">Log Out</button>
-                        </div>
-                    </mat-menu>
-                </ng-template>
-            </div>
         </mat-toolbar-row>
         <mat-toolbar-row #minorBar class="cde-nav-minor">
             <a routerLink="/" title="Common Data Elements" href="javascript:void(0);">
-                <img src="/cde/public/assets/img/min/NIH-CDE.svg" alt="NIH Common Data Elements (CDE) logo" style="height: 39px">
+                <img src="/cde/public/assets/img/min/NIHCDELogo_Light.svg" alt="NIH Common Data Elements (CDE) logo" style="height: 60px">
             </a>
             <span class="spacer"></span>
-            <button mat-icon-button class="forNotMdScreen" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <div class="forMdScreen">
+            <div class="" style="height: 100%;">
                 <ng-container *ngFor="let menuItem of menuList">
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                         <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
-                            <button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                            <button class="navBarButton" mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
                                     [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null">
                                 {{menuItem.label || menuItem.labelFn()}}
                             </button>
                         </ng-container>
                     </ng-container>
                     <ng-template #dropdownWithChildren>
-                        <button #button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                        <button class="navBarButton" #button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
                                 [matMenuTriggerFor]="levelOne" #levelOneTrigger="matMenuTrigger"
                                 (click)="menuClickCleanup(minorBar, levelOneTrigger, button, levelOne)"
                                 (mouseenter)="menuEnter(minorBar, levelOneTrigger, levelOne)"
@@ -125,30 +87,75 @@
                         </mat-menu>
                     </ng-template>
                 </ng-container>
+                <button *ngIf="userService.user" mat-icon-button id="notificationLink" title="Banner Notifications"
+                        (click)="notificationService.drawerToggle(); interruptEvent($event)">
+                    <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
+                              [matBadgeHidden]="notificationService.getBadge() === '0'"
+                              style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
+                </button>
+                <button *ngIf="userService.user" mat-icon-button [class.active]="isActiveSearchSettings()"
+                        routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
+                    <mat-icon>settings</mat-icon>
+                </button>
+                <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
+                        [class.active]="isActiveUserMenu()"
+                        (click)="loginSvc.goToLogin()" routerLink="/login">
+                    <span>Sign In</span>
+                </button>
+                <ng-template #loggedInButton>
+                    <button #userButton mat-button  id="username_link"
+                            [class.active]="isActiveUserMenu()"
+                            [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
+                            (mouseenter)="menuEnter(minorBar, userMenuTrigger, loginMenu)"
+                            (mouseleave)="menuLeave(minorBar, userMenuTrigger, userButton)">
+                        {{userService.user.username | uppercase | cdeTruncateLongName}}
+                        <mat-icon>expand_more</mat-icon>
+                    </button>
+                    <mat-menu #loginMenu="matMenu">
+                        <div (mouseenter)="menu1Enter(minorBar)" (mouseleave)="menu1Leave(minorBar, userMenuTrigger, userButton)">
+                            <button mat-menu-item routerLink="/settings/profile" id="user_settings">{{isSiteAdmin(userService.user) ? 'Settings' : 'Profile'}}</button>
+                            <button mat-menu-item *ngIf="canClassify(userService.user)" routerLink="/classificationManagement">Classifications</button>
+                            <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
+                            <button mat-menu-item (click)="logout()">Log Out</button>
+                        </div>
+                    </mat-menu>
+                </ng-template>
             </div>
+            <button mat-icon-button class="navHamburger" style="display: none;" aria-label="Menu" title="Menu" (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
         </mat-toolbar-row>
     </mat-toolbar>
 </header>
-<mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1">
-    <mat-sidenav #sidenav mode="over" position="end">
+<mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1" hasBackdrop="false">
+    <mat-sidenav style="width: 192px" #sidenav mode="over" position="end" fixedInViewport="true" [fixedTopGap]="isMobile ? 30 : 52.4" [fixedBottomGap]="0">
+        <div class="menuTitle">
+            <span>MENU
+            </span>
+            <button mat-icon-button (click)="sidenav.close()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
         <mat-nav-list>
             <ng-container *ngFor="let menuItem of menuList">
                 <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                     <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else mobileMenuWithChildren">
                         <a mat-list-item (click)="sidenav.close()" href="javascript:void(0);"
-                           [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null" >
+                           [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null"
+                           [class.active]="sectionActive === menuItem.section" >
                             {{menuItem.label || menuItem.labelFn()}}
                         </a>
                     </ng-container>
                     <ng-template #mobileMenuWithChildren>
-                        <a mat-list-item [matMenuTriggerFor]="mLevelOne" href="javascript:void(0);">
+                        <a mat-list-item (click)="subMenuActive[menuItem.label] = !subMenuActive[menuItem.label]"
+                           [class.subMenuParentActive]="sectionActive === menuItem.section" href="javascript:void(0);">
                             {{menuItem.label || menuItem.labelFn()}}<mat-icon>expand_more</mat-icon>
                         </a>
-                        <mat-menu #mLevelOne="matMenu">
+                        <ng-container *ngIf="subMenuActive[menuItem.label]">
                             <ng-container *ngFor="let child of menuItem.children">
                                 <ng-container *ngIf="!child.condition || child.condition()">
                                     <ng-container *ngIf="child.label === 'Contact Us'; else mobileMenuItemStandard">
-                                        <a mat-menu-item [id]="child.id" [href]="child.link"
+                                        <a mat-menu-item style="margin-left: 16px;" [id]="child.id" [href]="child.link"
                                            target="_blank" rel="noopener noreferrer"
                                         >
                                             Contact Us
@@ -156,7 +163,7 @@
                                     </ng-container>
                                     <ng-template #mobileMenuItemStandard>
                                         <ng-container *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
-                                            <button mat-menu-item [routerLink]="child.link" [queryParams]="child.queryParams || null"
+                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link" [queryParams]="child.queryParams || null"
                                                     (click)="sidenav.close()">
                                                 {{child.label || child.labelFn()}}
                                             </button>
@@ -164,13 +171,14 @@
                                     </ng-template>
                                 </ng-container>
                             </ng-container>
-                        </mat-menu>
+                            <button *ngIf="menuItem.id === 'usernameLink'" mat-menu-item style="margin-left: 16px;" (click)="sidenav.close(); logout()">Log Out</button>
+                        </ng-container>
                     </ng-template>
                 </ng-container>
             </ng-container>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
+    <mat-sidenav-content (scroll)="onScroll($event)" id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
         <router-outlet></router-outlet>
         <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
         <div style="display: flex"></div>

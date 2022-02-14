@@ -63,6 +63,7 @@ public class EditConceptsTest extends NlmCdeBaseTest {
         textPresent(newDataElementConceptId, By.xpath("//*[@id='Concepts_2']//div[contains(@class,'arrayObjRemove')]"));
         clickElement(By.id("closeHistoryCompareModal"));
 
+        modalGone();
         logout();
         openAuditDataElement(cdeName);
         textPresent(newDataElementConceptId);

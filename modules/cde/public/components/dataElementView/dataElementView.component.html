@@ -8,7 +8,7 @@
 <mat-sidenav-container>
     <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0" [style.right]="isMobile ? 0 : '17px'"
                  [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
-                 fixedInViewport="true" [fixedTopGap]="isMobile ? 80 : 239" [fixedBottomGap]="isMobile ? 0 : 130">
+                 fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 239" [fixedBottomGap]="isMobile ? 0 : 130">
         <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
             <aio-toc></aio-toc>
         </div>
