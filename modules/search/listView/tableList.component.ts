@@ -128,7 +128,7 @@ export class TableListComponent implements OnInit {
         }
 
         this.rows = (this.elts as DataElementElastic[]).map(e => {
-            const row: Row[] = [{css: 'nihEndorsed', elt: e}];
+            const row: Row[] = [];
             if (tableSetup.name) {
                 row.push({
                     css: 'name',
