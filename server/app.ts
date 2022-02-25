@@ -39,7 +39,7 @@ import {
 } from 'server/system/authorization';
 import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';
-import { startServer } from 'server/system/ioServer';
+import { startSocketIoServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { module as systemModule } from 'server/system/systemRouters';
 import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
@@ -407,11 +407,10 @@ app.use(((err, req, res, next) => {
     res.status(500).send('Something broke!');
 }) as ErrorRequestHandler);
 
-domain.run(() => {
+domain.run(async () => {
     const server = http.createServer(app);
-    exports.server = server;
+    await startSocketIoServer(server, expressSettings, mongoClient);
     server.listen(app.get('port'), () => {
         console.log('Express server listening on port ' + app.get('port'));
     });
-    startServer(server, expressSettings);
 });

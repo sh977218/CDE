@@ -7,7 +7,7 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { empty, Subject, timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
-import * as io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 interface ReplyDraft {
     text?: string;
@@ -79,11 +79,12 @@ export class CommentsComponent implements OnInit, OnDestroy {
         });
     }
 
+    socket: any;
+
     private _currentTab!: string;
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
-    socket = io(window.publicUrl + '/comment');
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();
 
@@ -95,8 +96,11 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.loadComments();
+        // join channel "comment"
+        this.socket = io(window.publicUrl + '/comment');
+        // join sub channel "$eltId"
         this.socket.emit('room', this.eltId);
+        this.loadComments();
         this.socket.on('commentUpdated', () => this.loadComments());
         this.socket.on('userTyping', (data: { commentId: string, username: string }) => {
             this.comments.forEach(c => {

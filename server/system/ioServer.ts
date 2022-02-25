@@ -1,15 +1,25 @@
 import { config } from 'server';
 import { authorize } from 'passport.socketio';
 
+const {createAdapter} = require('@socket.io/mongo-adapter');
+
+const DB = config.database.appData.db;
+const COLLECTION = 'socket.io-adapter-events';
 export let ioServer: any;
 
-export function startServer(server: any, expressSettings: any) {
+export async function startSocketIoServer(server: any, expressSettings: any, mongoClient: any) {
     ioServer = require('socket.io')(server);
-    const mongoAdapter = require('socket.io-adapter-mongo'); // TODO: update to new version when available for mongodb 3 used by mongoose
-    if (config.database.appData.options) {
-        ioServer.adapter(mongoAdapter(config.database.appData.uri, config.database.appData.options));
-    } else ioServer.adapter(mongoAdapter(config.database.appData.uri));
     ioServer.use(authorize(expressSettings));
+    try {
+        await mongoClient.db(DB).createCollection(COLLECTION, {
+            capped: true,
+            size: 1e6
+        });
+    } catch (e) {
+    }
+    const mongoCollection = mongoClient.db(DB).collection(COLLECTION)
+    ioServer.adapter(createAdapter(mongoCollection));
+
     ioServer.of('/comment').on('connection', (client: any) => {
         client.on('room', (roomId: any) => {
             client.join(roomId);
@@ -22,3 +32,4 @@ export function startServer(server: any, expressSettings: any) {
         });
     });
 }
+
