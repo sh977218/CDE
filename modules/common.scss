@@ -148,15 +148,16 @@ body {
   padding: 20px;
 }
 
-a, .fake-link { /* fake link requires role="link" tabindex="0" */
-  //color: #337ab7;
-  color: #2e6fa7; /* to pass chrome audit low contrast ratio */
-  text-decoration: none;
+a,
+.fake-button, /* fake link requires role="button" tabindex="0" */ /* icon button requires title="" */
+.fake-link /* fake link requires role="link" tabindex="0" */
+{
+  color: $linkColor;
   cursor: pointer;
+  transition: all .1s ease-in-out;
 
   &:hover {
-    color: #23527c;
-    text-decoration: underline;
+    color: $nlmColorPrimaryDark;
   }
 
   .mat-icon {
@@ -173,13 +174,8 @@ a.no-link {
   }
 }
 
-.fake-button { /* fake link requires role="button" tabindex="0" */ /* icon button requires title="" */
-  color: #337ab7;
-  cursor: pointer;
-
-  &:hover {
-    color: #23527c;
-  }
+a:hover, .fake-link:hover {
+  text-decoration: underline;
 }
 
 @mixin h1 {
@@ -247,7 +243,7 @@ h3, h4, h5, h6 {
     //height: 1em;
     line-height: $nlmLineHeight;
     margin-bottom: 0;
-    vertical-align: text-top;
+    //vertical-align: text-top;
     //width: 1em;
 
     // workaround for small font size
@@ -316,7 +312,7 @@ h3, h4, h5, h6 {
 
   &:hover {
     background-color: $nlmColorPrimaryLight;
-
+    transition: all .1s ease-in-out;
   }
 
   &:active, &.active {
@@ -464,16 +460,6 @@ h3, h4, h5, h6 {
       width: 1.2em;
       vertical-align: sub;
     }
-  }
-}
-
-.link {
-  color: $linkColor;
-
-  &:hover {
-    text-decoration: underline;
-    /* animation dissolve(fade) .1s */
-    transition: all .1s ease-in-out;
   }
 }
 
@@ -989,6 +975,10 @@ $formControlHeight: 38px;
     display: flex;
     flex-wrap: wrap;
 
+    > * {
+      min-width: 0;
+    }
+
     dt {
       flex: 0 0 100%;
 
@@ -1120,17 +1110,6 @@ table.table-striped tbody tr:nth-of-type(odd) {
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* BEGIN Bootstrap overrides */

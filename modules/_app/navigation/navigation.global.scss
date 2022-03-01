@@ -1,14 +1,3 @@
-.logo-font {
-  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  line-height: 1;
-  color: #767777;
-  font-weight: 500;
-}
-
-.cde-nav-minor {
-  border-bottom: #63666a 1px solid;
-}
-
 .mat-drawer-container {
   background-color: white;
 }
@@ -54,16 +43,10 @@
   padding-right: 15px;
 }
 
-/**** Large layout ****/
-@media (min-width: 901px) {
-  .largeLayout {
-    display: block;
-  }
-}
+.largeLayout {
+  display: none;
 
-/**** Mobile layout ****/
-@media (max-width: 900px) {
-  .largeLayout {
-    display: none;
+  @media (min-width: 901px) {
+    display: block;
   }
 }

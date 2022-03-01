@@ -7,7 +7,7 @@
         <mat-card-title>
             <h3>
                 {{dPVM.profile.name}}
-                <cde-delete-with-confirm (click)="interruptEvent($event)"
+                <cde-delete-with-confirm *ngIf="canEdit" (click)="interruptEvent($event)"
                                          (deleted)="removeDisplayProfile(index)">
                 </cde-delete-with-confirm>
             </h3>

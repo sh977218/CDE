@@ -7,6 +7,10 @@
     }
 }
 
+label {
+    margin-bottom: 0;
+}
+
 label.input-group-addon {
     background-color: transparent;
     border-left: 1px solid #ccc;
@@ -66,7 +70,6 @@ label.input-group-addon {
     margin-left: 6%;
     margin-top: .0625rem;
     margin-bottom: .0625rem;
-    overflow: hidden;
 }
 
 .native-instructions {
@@ -80,7 +83,6 @@ label.input-group-addon {
 }
 
 .native-question-header {
-    overflow: hidden;
     page-break-inside: avoid;
 }
 

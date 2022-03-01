@@ -154,7 +154,7 @@
                 *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText?.showAsTextArea)">
             <dt>Units of Measure:</dt>
             <dd class="questionUom">
-                <div class="border rounded p-1">
+                <div class="border rounded">
                     <span *ngFor="let u of question.question.unitsOfMeasure; index as i"
                           class="badge badge-info formViewSummaryLabel">
                         <mat-icon class="action-icon-dark" role="button" tabindex="0"
@@ -162,15 +162,15 @@
                         <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
                         <ng-container>{{u.code}}</ng-container>
                     </span>
-                    <div class="p-1">
+                    <div style="padding: .25rem; display: flex; flex-flow: row wrap; gap: .5rem; align-items: center">
                         Add
-                        <select class="form-control" style="display: inline-block"
+                        <select class="form-control" style="display: inline-block; width: max-content"
                                 [(ngModel)]="newUomSystem" title="New Unit of Measure System">
                             <option value="UCUM">UCUM</option>
                             <option value="">Other</option>
                         </select>
                         <ng-container *ngIf="newUomSystem === 'UCUM'; else manualUom">
-                            <mat-form-field style="display: inline-block">
+                            <mat-form-field style="display: inline-block; flex-grow: 1">
                                 <input type="text" placeholder="New Unit of Measure Code" matInput name="searchUomInput"
                                        [formControl]="uomControl" [matAutocomplete]="auto">
                                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayUom">

@@ -32,7 +32,7 @@
                 <span class="text-muted">{{formElement.instructions.value}}</span>
             </ng-template>
         </div>
-        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}">
+        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}" style="overflow: hidden">
             <ng-template #scoreDisplay>Score:
                 {{formElement.question.answer | number }}{{formElement.question.scoreError}}
             </ng-template>

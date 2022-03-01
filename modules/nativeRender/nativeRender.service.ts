@@ -154,6 +154,7 @@ export class NativeRenderService {
             this.dropdownMenus.push(dropdownMenu);
         }
         event.stopPropagation();
+        event.preventDefault();
     }
 
     profileSet(profile?: DisplayProfile) {

@@ -129,6 +129,11 @@ table {
         }
 }
 
+.mat-drawer-container {
+        background-color: $nlmBackgroundColor;
+        color: $nlmTextColor;
+}
+
 .mdl-layout__header { /* fix navbar height so form description toolbar can float consistently */
         min-height: 56px;
 }

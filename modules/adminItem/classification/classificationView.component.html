@@ -7,9 +7,9 @@
                 <a [routerLink]="[getClassifLink()]" href="javascript:void(0);"
                    [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
                     {{ node.data.name }}</a>
-                <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" style="vertical-align: middle; font-size: 1.5em"
-                   class="hand-cursor" title="Remove" [id]="node.path+'-unclassifyBtn'"
-                   (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)">delete_outline</mat-icon>
+                <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="node.path+'-unclassifyBtn'" title="Remove"
+                          (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"
+                          class="fake-button" role="button" tabindex="0">delete_outline</mat-icon>
             </ng-template>
             <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                 <div [class.tree-node-expanded]="true" [ngClass]="{'pull-left boxed-div':node.level===1}">

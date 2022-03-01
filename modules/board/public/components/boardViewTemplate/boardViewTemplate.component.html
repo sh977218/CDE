@@ -2,7 +2,7 @@
     <mat-card-title class="stretchBar fake-button" role="button" tabindex="0" (click)="clickHeader(board);">
         <mat-icon *ngIf="board.shareStatus ==='Public'">public</mat-icon>
         <mat-icon *ngIf="board.shareStatus ==='Private'">lock</mat-icon>
-        <a *ngIf="headerLink; else spanTitle" class="filler" style="line-height: 1.1em" href="javascript:void(0);"
+        <a *ngIf="headerLink; else spanTitle" class="shrink grow" style="line-height: 1.1em" href="javascript:void(0);"
            [routerLink]="'/board/' + board._id" [id]="'viewBoard_'+board.name"> {{board.name}}</a>
         <ng-template #spanTitle>
             <span class="shrink grow">{{board.name}}</span>

@@ -5,52 +5,45 @@ $screenLg: 992px;
 $screenXl: 1200px;
 
 /* Color Palette */
+$nlmDarkBlue: #253b54;
+$nlmBlue: #326295;
+$nlmLightBlue: #4c94e0;
+
+$nlmDarkGray: #2a2a2a;
+$nlmGray: #6f6f6f;
+$nlmLightGray: #f1f1f1;
+
+$nlmGreen: #d9f2d1;
+
+$nlmYellow: #ffd36b;
+
+/* Buttons */
 $nlmColorFail: #a71d2a;
 $nlmColorFailLight: #ff1744;
 $nlmColorFailLightest: #ffe5e5;
 
-$nlmColorPrimaryDark: #253b54;
-$nlmColorPrimary: #326295;
-$nlmColorPrimaryLight: #4c94e0;
+$nlmColorPrimaryDark: $nlmDarkBlue;
+$nlmColorPrimary: $nlmBlue;
+$nlmColorPrimaryLight: $nlmLightBlue;
 $nlmColorPrimaryLightest: #e2f0ff;
 
-$nlmColorSecondaryDark: #2a2a2a;
-$nlmColorSecondary: #6c757d;
-$nlmColorSecondaryLight: #90a4ae;
-$nlmColorSecondaryLightest: #efefef;
+$nlmColorSecondaryDark: $nlmDarkGray;
+$nlmColorSecondary: #545454;
+$nlmColorSecondaryLight: $nlmGray;
+$nlmColorSecondaryLightest: $nlmLightGray;
 
 $nlmColorSuccess: #008000;
 $nlmColorSuccessLight: #00c853;
 $nlmColorSuccessLightest: #e5ffe5;
 
-$nlmGray: #f1f1f1;
-$nlmGreen: #d9f2d1;
-$nlmYellow: #ffd36b;
-
 $nlmColorDisabled: #c0c0c0;
 $nlmColorLightest: #fff;
-
-/* Theme */
-$nlmBackgroundColor: $nlmColorLightest;
-$nlmLineHeight: 1.25;
-$nlmRem: 16px;
-$nlmSelectedBackgroundColor: #f5f5f5;
-$nlmTextColor: $nlmColorSecondaryDark;
 
 /* Links */
 $linkColor: $nlmColorPrimary;
 
-/* Buttons */
-// use Color Palette directly
-
 /* Navigation */
-$nlmBlue: #326295;
-$darkBlue: #253B54;
-$lightGray: #f1f1f1;
-$darkGray: #2a2a2a;
-$nlmGray: #6f6f6f;
-$lightBlue: #4c94e0;
-$navBackgroundColor: #326295;
+$navBackgroundColor: $nlmColorPrimary;
 $navColor: #eaeff4;
 $navSecondBackgroundColor: $navColor;
 $navSecondColor: $navBackgroundColor;
@@ -62,3 +55,12 @@ $theme-banner-link-color: $navBackgroundColor;
 $formInputTextColor: #495057;
 $formInputBorderColor: #ced4da;
 $formInputBorderFocusColor: #80bdff;
+
+/* Typography */
+$nlmBackgroundColor: $nlmColorLightest;
+$nlmBannerBackgroundColor: $nlmYellow;
+$nlmLineHeight: 1.25;
+$nlmQualifiedColor: $nlmGreen;
+$nlmRem: 16px;
+$nlmSelectedBackgroundColor: #f5f5f5;
+$nlmTextColor: $nlmColorSecondaryDark;
