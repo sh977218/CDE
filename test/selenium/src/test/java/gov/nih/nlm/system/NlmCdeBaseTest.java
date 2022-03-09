@@ -584,6 +584,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         } else {
             try {
                 searchElt(name, type);
+                hangon(1);
                 clickElement(By.id("linkToElt_0"));
                 textPresent(name);
                 textNotPresent("is archived");
@@ -741,17 +742,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             findElement(by).click();
         } catch (ElementClickInterceptedException e) {
             hangon(.5);
-            if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0) {
-                clickElement(By.id("username_link"));
-            }
-            if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
-                clickElement(By.id("helpLink"));
-            }
-            if (driver.findElements(By.xpath("//button[normalize-space()='Form']")).size() > 0) {
-                clickElement(By.id("createEltLink"));
-            }
             if(!e.getMessage().contains("Other element would receive the click")){
                 scrollDownBy(500);
+            } else if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0) {
+                clickElement(By.id("username_link"));
+            } else if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
+                clickElement(By.id("helpLink"));
+            } else if (driver.findElements(By.xpath("//button[normalize-space()='Form']")).size() > 0) {
+                clickElement(By.id("createEltLink"));
             }
             findElement(by).click();
         } catch (WebDriverException e) {

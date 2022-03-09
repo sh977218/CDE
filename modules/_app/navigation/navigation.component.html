@@ -149,7 +149,8 @@
                     <ng-template #mobileMenuWithChildren>
                         <a mat-list-item (click)="subMenuActive[menuItem.label] = !subMenuActive[menuItem.label]"
                            [class.subMenuParentActive]="sectionActive === menuItem.section" href="javascript:void(0);">
-                            {{menuItem.label || menuItem.labelFn()}}<mat-icon>expand_more</mat-icon>
+                            {{menuItem.label || menuItem.labelFn()}}
+                            <mat-icon>{{subMenuActive[menuItem.label] ? 'expand_less' : 'expand_more'}}</mat-icon>
                         </a>
                         <ng-container *ngIf="subMenuActive[menuItem.label]">
                             <ng-container *ngFor="let child of menuItem.children">
