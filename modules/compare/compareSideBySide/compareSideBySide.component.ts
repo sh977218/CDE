@@ -15,7 +15,7 @@ import {
 import { Cb } from 'shared/models.model';
 import { CdeForm, FormElement, FormElementsContainer, FormQuestion, QuestionValueList } from 'shared/form/form.model';
 import { isDataElement, ITEM_MAP } from 'shared/item';
-import { deepCopy } from 'shared/util';
+import { copyDeep } from 'shared/util';
 
 export type CompareQuestion = FormQuestion & {isRetired?: boolean};
 export type CompareForm = CdeForm & {questions: CompareQuestion[]};
@@ -164,7 +164,7 @@ export class CompareSideBySideComponent {
                 if (e.elementType && e.elementType === 'question') {
                     e.formElements = [];
                     delete e._id;
-                    questions.push(deepCopy(e));
+                    questions.push(copyDeep(e));
                 } else {
                     questions = questions.concat(this.flatFormQuestions(e));
                 }

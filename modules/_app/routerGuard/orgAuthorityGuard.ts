@@ -8,7 +8,6 @@ import {
     Router,
     RouterStateSnapshot,
 } from '@angular/router';
-
 import { UserService } from '_app/user.service';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 

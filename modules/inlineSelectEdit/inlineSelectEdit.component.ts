@@ -1,12 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-inline-select-edit',
     templateUrl: './inlineSelectEdit.component.html',
 })
 export class InlineSelectEditComponent {
-    @Input() value = 'N/A';
+    @Input() value: string = 'N/A';
     @Input() selectOptions = [];
     @Input() isAllowed = false;
     @Output() save = new EventEmitter<string>();
@@ -26,7 +25,7 @@ export class InlineSelectEditComponent {
     }
 
     edit() {
-        this._value = deepCopy(this.value);
+        this._value = this.value;
         this.editMode = true;
     }
 }

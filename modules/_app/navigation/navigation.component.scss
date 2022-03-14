@@ -98,17 +98,15 @@ mat-toolbar {
 
 .navBarButton {
   @media (max-width: $mediumScreen) {
-    & {
-      display: none;
-    }
+    display: none;
   }
 }
 
 .navHamburger {
+  display: none;
+
   @media (max-width: $mediumScreen) {
-    & {
-      display: block !important;
-    }
+    display: block !important;
   }
 }
 

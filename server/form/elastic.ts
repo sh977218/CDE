@@ -4,9 +4,10 @@ import { logError } from 'server/log/dbLogger';
 import { esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { CdeForm } from 'shared/form/form.model';
+import { copyShallow } from 'shared/util';
 
 export function updateOrInsert(elt: CdeForm): CdeForm {
-    updateOrInsertImpl(Object.assign({}, elt));
+    updateOrInsertImpl(copyShallow(elt));
     return elt;
 }
 

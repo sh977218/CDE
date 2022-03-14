@@ -1,5 +1,6 @@
 import { Dictionary, forEachSeries } from 'async';
 import { RequestHandler, Router } from 'express';
+import { check } from 'express-validator';
 import { dbPlugins } from 'server';
 import { handleError, handleErrorVoid } from 'server/errorHandler';
 import {
@@ -15,7 +16,6 @@ import { jobStatus } from 'server/system/mongo-data';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { Cb1, ClassificationClassifier, User } from 'shared/models.model';
 
-const {check} = require('express-validator');
 require('express-async-errors');
 
 const isValidBody = [

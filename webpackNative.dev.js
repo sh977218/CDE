@@ -9,6 +9,12 @@ module.exports = merge(baseConfig, nativeConfig, {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
                 use: [
                     {loader: 'ts-loader', options: {configFile: '../../tsconfigNative.json', transpileOnly: true}},
+                    {
+                        loader: 'ifdef-loader', options: {
+                            env: 'BROWSER',
+                            "ifdef-uncomment-prefix": "// #code ",
+                        }
+                    },
                     'angular-router-loader',
                     'angular2-template-loader'
                 ]

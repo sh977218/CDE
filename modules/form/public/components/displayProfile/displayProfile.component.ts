@@ -6,7 +6,7 @@ import 'form/public/components/displayProfile/displayProfile.global.scss';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem, DateType } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
+import { copyDeep } from 'shared/util';
 import { interruptEvent } from 'non-core/browser';
 
 interface DisplayProfileVM {
@@ -153,7 +153,7 @@ export class DisplayProfileComponent {
     }
 
     setDisplayType(dPVM: DisplayProfileVM) {
-        const profile = deepCopy(dPVM.profile);
+        const profile = copyDeep(dPVM.profile);
         this.substituteProfile(dPVM, profile);
         this.eltChange.emit();
     }

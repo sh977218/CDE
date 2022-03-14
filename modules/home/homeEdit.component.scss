@@ -1,0 +1,21 @@
+@import '../theme';
+
+:host ::ng-deep .updatesBox > mat-icon {
+  display: none;
+}
+
+.colorFail {
+  color: $nlmColorFail;
+
+  &:hover {
+    filter: drop-shadow(0 0 3px #888);
+  }
+}
+
+.updateButtonCard {
+  border: 1px black solid;
+  border-radius: .25rem;
+  display: inline-block;
+  margin: 0 1rem 1rem 0;
+  padding: 1rem;
+}

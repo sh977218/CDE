@@ -9,7 +9,16 @@ module.exports = merge(baseConfig, {
         rules: [
             {
                 test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-                use: ['@ngtools/webpack']
+                use: [
+                    {loader: 'ts-loader', options: {configFile: '../../tsconfigApp.json', transpileOnly: true}},
+                    {
+                        loader: 'ifdef-loader', options: {
+                            env: 'BROWSER',
+                            "ifdef-uncomment-prefix": "// #code ",
+                        }
+                    },
+                    '@ngtools/webpack'
+                ]
             }
         ]
     },

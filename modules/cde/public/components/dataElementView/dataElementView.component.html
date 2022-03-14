@@ -114,7 +114,7 @@
                         </button>
                         <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
                                 id="copyCdeBtn" class="button" title="Copy CDE"
-                                (click)="openCopyElementModal()" color="primary">
+                                (click)="openCopyElementModal(elt)" color="primary">
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
                         </button>
@@ -147,9 +147,9 @@
                     <article>
                         <section>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
-                                                    (eltChange)="saveDraftVoid()"></cde-de-general-details>
+                                                    (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid()"
+                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
                                               [canEdit]="canEdit()"></cde-registration>
                             <div role="group" aria-label="More Info">
                                 <cde-linked-forms [elt]="elt"></cde-linked-forms>
@@ -159,35 +159,35 @@
                         </section>
                         <section id="permissible-value-div">
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
-                                                   (eltChange)="saveDraftVoid()"></cde-permissible-value>
+                                                   (eltChange)="saveDraftVoid(elt)"></cde-permissible-value>
                         </section>
-                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()"></cde-naming>
+                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)"></cde-naming>
                         <section id="classification-div">
                             <cde-cde-classification [elt]="elt"
                                                     (eltChange)="eltLoaded($event)"></cde-cde-classification>
                         </section>
                         <section id="concepts-div">
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
-                                          (eltChange)="saveDraftVoid()"></cde-concepts>
+                                          (eltChange)="saveDraftVoid(elt)"></cde-concepts>
                         </section>
                         <section id="reference-documents-div">
                             <cde-reference-document [elt]="elt" [canEdit]="canEdit()"
-                                                    (eltChange)="saveDraftVoid()"></cde-reference-document>
+                                                    (eltChange)="saveDraftVoid(elt)"></cde-reference-document>
                         </section>
                         <section id="properties-div">
-                            <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid()">
+                            <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-properties>
                         </section>
                         <section id="identifiers-div">
                             <cde-identifiers [elt]="elt" [canEdit]="canEdit()"
-                                             (eltChange)="saveDraftVoid()">
+                                             (eltChange)="saveDraftVoid(elt)">
                             </cde-identifiers>
                         </section>
                         <section id="attachments-div">
                             <cde-attachments [elt]="elt" [canEdit]="canEdit()"
-                                             (removeAttachment)="removeAttachment($event);"
-                                             (setDefault)="setDefault($event)"
-                                             (upload)="upload($event);"></cde-attachments>
+                                             (removeAttachment)="removeAttachment(elt, $event);"
+                                             (setDefault)="setDefault(elt, $event)"
+                                             (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
                         <section id="history-div">
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
@@ -195,12 +195,12 @@
                         <section>
                             <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
-                                                  (eltChange)="saveDraftVoid()"></cde-derivation-rules>
+                                                  (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
                         </section>
                     </article>
-                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid()"
-                                    (save)="saveDataElement()"></cde-save-modal>
-                    <cde-delete-modal #deleteModal (confirm)="removeDraft()"></cde-delete-modal>
+                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid(elt)"
+                                    (save)="saveDataElement(elt)"></cde-save-modal>
+                    <cde-delete-modal #deleteModal (confirm)="removeDraft(elt)"></cde-delete-modal>
                 </main>
             </mat-sidenav-content>
         </mat-sidenav-container>

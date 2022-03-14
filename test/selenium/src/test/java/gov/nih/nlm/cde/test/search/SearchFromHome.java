@@ -9,8 +9,8 @@ public class SearchFromHome extends NlmCdeBaseTest {
     @Test
     public void searchCdesFromHome() {
         goHome();
-        findElement(By.xpath("//input[@data-placeholder='Search CDEs']"));
-        findElement(By.id("ftsearch-input")).sendKeys("Height Measurement");
+        clickElement(By.xpath("//button[normalize-space()='Search All CDEs']"));
+        findElement(By.xpath("//input[@placeholder='Search by topic, keyword, or organization']")).sendKeys("Height Measurement");
         clickElement(By.id("search.submit"));
         textPresent("Height Measurement Feet");
     }
@@ -18,11 +18,9 @@ public class SearchFromHome extends NlmCdeBaseTest {
     @Test
     public void searchFormsFromHome() {
         goHome();
-        findElement(By.xpath("//input[@data-placeholder='Search CDEs']"));
-        clickElement(By.xpath("//mat-icon[. = 'keyboard_arrow_down']"));
-        clickElement(By.xpath("//button[@role='menuitem']/span[. = 'Forms']"));
-        findElement(By.xpath("//input[@data-placeholder='Search Forms']"));
-        findElement(By.id("ftsearch-input")).sendKeys("Blood Pressure");
+        clickElement(By.xpath("//button[contains(.,'Search Forms')]"));
+        findElement(By.xpath("//button[contains(.,'Search Forms')][contains(@class,'active')]"));
+        findElement(By.xpath("//input[@placeholder='Search by topic, keyword, or organization']")).sendKeys("Blood Pressure");
         clickElement(By.id("search.submit"));
         textPresent("Vital Signs");
     }

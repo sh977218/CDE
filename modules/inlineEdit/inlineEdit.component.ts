@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { assertUnreachable } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
 
 type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 
@@ -10,10 +9,10 @@ type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 })
 export class InlineEditComponent {
     private _model!: string;
-    @Input() set model(v: any) {
+    @Input() set model(v: string) {
         this._model = v;
         if (!this.inputType) { this.inputType = 'text'; }
-        this.value = deepCopy(v);
+        this.value = v;
     }
     get model() {
         return this._model;
@@ -28,7 +27,7 @@ export class InlineEditComponent {
     value!: string;
 
     discard() {
-        this.value = deepCopy(this.model);
+        this.value = this.model;
         this.editMode = false;
     }
 

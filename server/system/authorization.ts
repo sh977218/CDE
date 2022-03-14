@@ -1,12 +1,12 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
-import { handleNotFound, respondError } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import {
     canAttach,
     canEditCuratedItem,
     canViewComment,
     hasPrivilegeForOrg,
     hasPrivilegeInRoles,
-    hasRole,
+    hasRole, isNlmCurator,
     isOrg,
     isOrgAdmin,
     isOrgAuthority,
@@ -106,6 +106,15 @@ export const canEditByTinyIdMiddleware = (db: DataElementDb | FormDb) =>
                 }, respondError({req, res}));
         });
     };
+
+export const isNlmCuratorMiddleware: RequestHandler = (req, res, next) => {
+    if (!isNlmCurator(req.user)) {
+        res.status(403).send();
+        return;
+    }
+    next();
+};
+
 
 export const isOrgAdminMiddleware: RequestHandler = (req, res, next) => {
     if (!isOrgAdmin(req.user, req.body.org)) {

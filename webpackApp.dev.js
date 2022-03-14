@@ -23,6 +23,12 @@ module.exports = merge(baseConfig, appConfig, {
                     // {loader: 'cache-loader', options: {cacheKey}},
                     {loader: 'ts-loader', options: {configFile: '../../tsconfigApp.json', transpileOnly: true}},
                     // {loader: 'awesome-typescript-loader', options: {configFileName: 'tsconfigApp.json', transpileOnly: true}},
+                    {
+                        loader: 'ifdef-loader', options: {
+                            env: 'BROWSER',
+                            "ifdef-uncomment-prefix": "// #code ",
+                        }
+                    },
                     'angular-router-loader',
                     // 'ng-router-loader'
                     'angular2-template-loader'

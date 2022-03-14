@@ -1,12 +1,210 @@
 @import '../theme';
 
-.largeLogo {
-  margin: 10px 0 50px 0;
-  width: 75%;
-  min-width: 300px;
-  max-width: 600px;
+$homeMobileWidth: 699px;
 
-  @media (min-width: $screenSm) {
-    margin-top: 3rem;
+.mat-menu-item {
+  background-color: $nlmColorLightest;
+  color: $nlmColorSecondaryDark;
+  border-top: $nlmColorSecondaryLightest 2px solid;
+
+  &:hover {
+    background-color: $nlmColorSecondaryLightest;
+    color: $nlmColorSecondaryDark;
+  }
+
+  &.active {
+    background-color: $nlmColorLightest;
+    color: $nlmColorPrimary;
+  }
+
+  &.subMenuParentActive {
+    background-color: $nlmColorSecondaryLight;
+    color: $nlmColorLightest;
+  }
+
+}
+
+.mat-menu-panel {
+  width: 100%;
+}
+
+button {
+  border-radius: .25rem;
+}
+
+.displayBox {
+  margin: 0 auto;
+  max-width: 894px; // 830px + 32px + 32px
+  padding: 64px 32px;
+  width: 100%;
+}
+
+.formHomeLargeScreen {
+  @media (max-width: $homeMobileWidth) {
+    display: none;
+  }
+
+  .button {
+    margin-bottom: 0;
+  }
+}
+
+.formHomeSmallScreen {
+  display: none;
+
+  @media (max-width: $homeMobileWidth) {
+    display: initial;
+  }
+}
+
+.featuresBox {
+  $featuresMobileWidth: 670px;
+
+  background-color: #ceddea;
+
+  .tiles {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+    justify-content: center;
+
+    @media (max-width: $featuresMobileWidth) {
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #learnButton {
+      @media (max-width: $featuresMobileWidth) {
+        order: 5;
+      }
+    }
+
+    #submitButton {
+      @media (max-width: $featuresMobileWidth) {
+        order: 7;
+      }
+    }
+
+    .arrow {
+      display: block;
+      height: 20px;
+      margin: 18px auto -16px;
+    }
+
+    .menuButton1 {
+      height: 158px;
+      width: 175px;
+      margin: 0;
+      padding: 0 0 1rem;
+
+      img {
+        padding: 1rem 0;
+        width: 175px;
+      }
+
+      &:active img, &.active img {
+        filter: invert(.5) sepia(1) hue-rotate(170.5deg) contrast(1) saturate(3.05) brightness(0.588); // #fff to #326295
+      }
+    }
+
+
+    .featureCard {
+      background-color: $nlmColorLightest;
+      box-shadow: 0 3px 3px 0 rgb(0 0 0 / 15%);
+      padding: 2rem;
+      min-width: 100%;
+      width: 100%;
+
+      .button {
+        margin: 1rem 1rem 0 0;
+
+        @media (max-width: $featuresMobileWidth) {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.searchBox {
+  background-image: url("/cde/public/assets/img/min/homepage/searchBoxBackground.png");
+  background-position: center;
+  background-size: cover;
+
+  form {
+    max-width: 787px;
+
+    @media (max-width: $homeMobileWidth) {
+      max-width: 330px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .input-group {
+    box-shadow: 0 3px 3px 0 rgb(0 0 0 / 15%);
+    border-radius: 0 4px 4px 4px;
+
+    input.form-control {
+      border: none !important;
+      border-radius: 0 0 0 4px;
+      height: 40px;
+      padding-left: 1rem;
+      width: 100%;
+
+      &::placeholder {
+        color: rgb(42 42 42 / 40%);
+      }
+    }
+
+    @media (max-width: $homeMobileWidth) {
+      border-top-left-radius: .25rem;
+
+      input.form-control {
+        border-radius: 4px 0 0 4px;
+      }
+    }
+  }
+
+  .input-topside {
+    button {
+      border-radius: .25rem .25rem 0 0;
+    }
+  }
+
+
+  .hero {
+    //max-width: 520px; // required but does not align words as pictured
+    max-width: 380px;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    max-width: 553px;
+  }
+}
+
+.updatesBox {
+  background-color: $nlmColorSecondaryLightest;
+
+  .tiles {
+    align-items: center;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+    justify-content: center;
+
+    .uswdsCard {
+      border-color: #ceddea;
+      max-width: 399px; // (830px - 32px) / 2
+
+      img {
+        max-width: 100%;
+        max-height: 225px; // 16:9
+        height: auto;
+        width: auto;
+      }
+    }
   }
 }

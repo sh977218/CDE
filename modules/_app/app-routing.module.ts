@@ -5,6 +5,7 @@ import { OfflineComponent } from '_app/routing/offline.component';
 import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
 import { IEGuard } from '_app/routerGuard/ieGuard';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { NlmCuratorGuard } from '_app/routerGuard/nlmCuratorGuard';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
@@ -156,6 +157,7 @@ const appRoutes: Routes = [
         ClassifyGuard,
         IEGuard,
         LoggedInGuard,
+        NlmCuratorGuard,
         OrgAdminGuard,
         OrgAuthorityGuard,
         OrgCuratorGuard,

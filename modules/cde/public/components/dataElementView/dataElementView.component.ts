@@ -17,11 +17,11 @@ import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
-import { Comment, Elt } from 'shared/models.model';
+import { Cb1, Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
-import { deepCopy, noop } from 'shared/util';
+import { copyDeep, noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 
 @Component({
@@ -34,11 +34,11 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
+    _elt?: DataElement;
     commentMode?: boolean;
     currentTab = 'general_tab';
     displayStatusWarning?: boolean;
-    draftSaving?: Promise<DataElement>;
-    elt!: DataElement;
+    draftSaving?: Promise<void>;
     eltCopy?: DataElement;
     exportToTab: boolean = false;
     hasDrafts = false;
@@ -59,8 +59,8 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.orgHelperService.then(() => {
             this.route.queryParams.subscribe(() => {
                 this.hasDrafts = false;
-                this.loadElt(() => {
-                    this.elt.usedBy = this.orgHelperService.getUsedBy(this.elt);
+                this.loadElt((elt) => {
+                    elt.usedBy = this.orgHelperService.getUsedBy(elt);
                 });
             });
         }, noop);
@@ -86,8 +86,9 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.onResize();
         this.route.fragment.subscribe(() => {
             if (this.elt) {
+                const elt = this.elt
                 setTimeout(() => {
-                    this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
+                    this.title.setTitle('Data Element: ' + Elt.getLabel(elt));
                     this.scrollService.scroll();
                 }, 0);
             }
@@ -98,7 +99,11 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         return canEditCuratedItem(this.userService.user, this.elt);
     }
 
-    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb = noop) {
+    get elt(): DataElement | undefined {
+        return this._elt;
+    }
+
+    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb: Cb1<DataElement> = noop) {
         if (getElt instanceof Observable) {
             getElt.subscribe(
                 elt => this.eltLoaded(elt, cb),
@@ -114,22 +119,22 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    eltLoaded(elt: DataElement, cb = noop) {
+    eltLoaded(elt: DataElement, cb: Cb1<DataElement> = noop) {
         if (elt) {
             if (elt.isDraft) {
                 this.hasDrafts = true;
             }
             DataElement.validate(elt);
-            this.elt = elt;
-            this.title.setTitle('Data Element: ' + Elt.getLabel(this.elt));
-            this.validate();
-            this.loadComments(this.elt, () => {
+            this._elt = elt;
+            this.title.setTitle('Data Element: ' + Elt.getLabel(elt));
+            this.validate(elt);
+            this.loadComments(elt, () => {
                 setTimeout(() => {
                     this.viewReady();
                 }, 0);
             });
             if (this.userService.user) {
-                checkPvUnicity(this.elt.valueDomain);
+                checkPvUnicity(elt.valueDomain);
             }
             this.displayStatusWarning = (() => {
                 if (!this.elt || this.elt.archived || this.userService.user && isOrgAuthority(this.userService.user)) {
@@ -139,8 +144,14 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     (this.elt.registrationState.registrationStatus === 'Standard' ||
                         this.elt.registrationState.registrationStatus === 'Preferred Standard');
             })();
-            cb();
+            cb(elt);
         }
+    }
+
+    eltLoadedFromOwnUpdate(elt: DataElement) {
+        this._elt = elt;
+        this.validate(elt);
+        this.ref.detectChanges();
     }
 
     gotoTop() {
@@ -160,7 +171,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    loadElt(cb = noop) {
+    loadElt(cb: Cb1<DataElement> = noop) {
         this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
@@ -185,11 +196,11 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    openCopyElementModal() {
-        const eltCopy = this.eltCopy = deepCopy(this.elt);
-        eltCopy.classification = this.elt.classification
-            && this.elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
-        eltCopy.registrationState.administrativeNote = 'Copy of: ' + this.elt.tinyId;
+    openCopyElementModal(elt: DataElement) {
+        const eltCopy = this.eltCopy = copyDeep(elt);
+        eltCopy.classification = elt.classification
+            && elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
+        eltCopy.registrationState.administrativeNote = 'Copy of: ' + elt.tinyId;
         delete (eltCopy as any).tinyId;
         delete eltCopy._id;
         delete eltCopy.origin;
@@ -209,7 +220,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
         eltCopy.registrationState = {
             registrationStatus: 'Incomplete',
-            administrativeNote: 'Copy of: ' + this.elt.tinyId
+            administrativeNote: 'Copy of: ' + elt.tinyId
         };
         this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
     }
@@ -218,31 +229,32 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.currentTab = currentTab;
     }
 
-    removeAttachment(index: number) {
+    removeAttachment(elt: DataElement, index: number) {
         this.http.post<DataElement>('/server/attachment/cde/remove', {
             index,
-            id: this.elt._id
+            id: elt._id
         }).subscribe(res => {
-            this.elt = res;
-            this.alert.addAlert('success', 'Attachment Removed.');
-            this.ref.detectChanges();
+            if (res) {
+                this.eltLoadedFromOwnUpdate(res);
+                this.alert.addAlert('success', 'Attachment Removed.');
+            }
         });
     }
 
-    setDefault(index: number) {
-        this.http.post<DataElement>('/server/attachment/cde/setDefault',
-            {
-                index,
-                state: this.elt.attachments[index].isDefault,
-                id: this.elt._id
-            }).subscribe(res => {
-            this.elt = res;
-            this.alert.addAlert('success', 'Saved');
-            this.ref.detectChanges();
+    setDefault(elt: DataElement, index: number) {
+        this.http.post<DataElement>('/server/attachment/cde/setDefault', {
+            index,
+            state: elt.attachments[index].isDefault,
+            id: elt._id
+        }).subscribe(res => {
+            if (res) {
+                this.eltLoadedFromOwnUpdate(res);
+                this.alert.addAlert('success', 'Saved');
+            }
         });
     }
 
-    upload(event: Event) {
+    upload(elt: DataElement, event: Event) {
         if (event.srcElement) {
             const files = (event.srcElement as HTMLInputElement).files;
             if (files && files.length > 0) {
@@ -252,15 +264,16 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     formData.append('uploadedFiles', files[i]);
                 }
                 /* tslint:enable */
-                formData.append('id', this.elt._id);
+                formData.append('id', elt._id);
                 this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
                     r => {
                         if (r.message) {
                             this.alert.addAlert('info', r);
                         } else {
-                            this.elt = r;
-                            this.alert.addAlert('success', 'Attachment added.');
-                            this.ref.detectChanges();
+                            if (r) {
+                                this.eltLoadedFromOwnUpdate(r);
+                                this.alert.addAlert('success', 'Attachment added.');
+                            }
                         }
                     }
                 );
@@ -268,32 +281,33 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    removeDraft() {
-        this.http.delete('/server/de/draft/' + this.elt.tinyId, {responseType: 'text'}).subscribe(
+    removeDraft(elt: DataElement) {
+        this.http.delete('/server/de/draft/' + elt.tinyId, {responseType: 'text'}).subscribe(
             () => this.loadElt(() => this.hasDrafts = false),
             err => this.alert.httpErrorMessageAlert(err)
         );
     }
 
-    saveDraft(): Promise<any> {
-        if (!this.elt.isDraft) {
-            this.elt.changeNote = '';
+    saveDraft(elt: DataElement): Promise<void> {
+        if (!elt.isDraft) {
+            elt.changeNote = '';
         }
-        this.elt.isDraft = true;
+        elt.isDraft = true;
         this.hasDrafts = true;
         this.savingText = 'Saving ...';
         if (this.draftSaving) {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<DataElement>('/server/de/draft/' + this.elt.tinyId, this.elt)
+        return this.draftSaving = this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, this.elt)
             .toPromise().then(newElt => {
                 this.draftSaving = undefined;
-                this.elt = newElt;
-                this.validate();
+                if (newElt) {
+                    this.eltLoadedFromOwnUpdate(newElt);
+                }
                 if (this.unsaved) {
                     this.unsaved = false;
-                    return this.saveDraft();
+                    return this.saveDraft(elt);
                 }
                 this.savingText = 'Saved';
                 setTimeout(() => {
@@ -307,13 +321,13 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             });
     }
 
-    saveDraftVoid(): void {
-        this.saveDraft().catch(noop);
+    saveDraftVoid(elt: DataElement): void {
+        this.saveDraft(elt).catch(noop);
     }
 
-    saveDataElement() {
+    saveDataElement(elt: DataElement) {
         const saveImpl = () => {
-            const publishData = {_id: this.elt._id, tinyId: this.elt.tinyId, __v: this.elt.__v};
+            const publishData = {_id: elt._id, tinyId: elt.tinyId, __v: elt.__v};
             this.http.post('/server/de/publish', publishData).subscribe(res => {
                 if (res) {
                     this.hasDrafts = false;
@@ -329,13 +343,13 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    validate() {
+    validate(elt: DataElement): void {
         this.validationErrors.length = 0;
-        const defError = checkDefinitions(this.elt);
+        const defError = checkDefinitions(elt);
         if (defError.allValid !== true) {
             this.validationErrors.push({message: defError.message});
         }
-        const pvErrors = checkPvUnicity(this.elt.valueDomain);
+        const pvErrors = checkPvUnicity(elt.valueDomain);
         if (pvErrors.allValid !== true) {
             this.validationErrors.push({message: pvErrors.message});
         }

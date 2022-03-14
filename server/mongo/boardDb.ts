@@ -6,7 +6,7 @@ import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
 import { BoardDocument, boardModel } from 'server/mongo/mongoose/board.mongoose';
 import { BoardDb } from 'shared/boundaryInterfaces/db/boardDb';
 import { Board } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
+import { copyShallow } from 'shared/util';
 
 const boardHooks: CrudHooks<Board, ObjectId> = {
     read: {
@@ -24,7 +24,7 @@ const boardHooks: CrudHooks<Board, ObjectId> = {
         },
         post: (board): Board | null => {
             if (board) {
-                const elasticBoard = deepCopy(board);
+                const elasticBoard = copyShallow(board);
                 delete elasticBoard._id;
                 updateOrInsertBoardById(board._id.toString(), elasticBoard)
                     .catch(respondError({publicMessage: 'Unable to index board: ' + board._id}));

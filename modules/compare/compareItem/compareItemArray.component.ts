@@ -4,7 +4,7 @@ import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormOrElement, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
 import { FormattedValue } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
+import { copyDeep } from 'shared/util';
 
 class ComparedDe extends DataElement {
     concepts?: Concept[];
@@ -460,15 +460,15 @@ function flatFormQuestions(fe: FormOrElement, questions: (FormElement & { sectio
     if (fe.formElements !== undefined) {
         forEach(fe.formElements, (e: FormElement) => {
             if (e.elementType && e.elementType === 'question') {
-                const questionCopy = deepCopy(e);
+                const questionCopy = copyDeep(e);
                 fixFormElement(questionCopy);
                 questions.push(questionCopy);
             } else if (e.elementType && e.elementType === 'form') {
-                const formCopy = deepCopy(e);
+                const formCopy = copyDeep(e);
                 fixFormElement(formCopy);
                 questions.push(formCopy);
             } else if (e.elementType && e.elementType === 'section') {
-                const sectionCopy: FormElement & { sectionId?: string } = deepCopy(e);
+                const sectionCopy: FormElement & { sectionId?: string } = copyDeep(e);
                 fixFormElement(sectionCopy);
                 sectionCopy.sectionId = 'section_' + index;
                 index++;

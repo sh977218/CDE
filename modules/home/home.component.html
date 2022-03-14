@@ -1,43 +1,208 @@
-<div class="container">
-    <div>
-        <div class="text-center">
-            <img class="largeLogo" src="/cde/public/assets/img/min/NIH-CDE.svg"
-                 alt="NIH Common Data Elements (CDE) logo"/>
+<div class="searchBox">
+    <div class="displayBox">
+        <div class="hero">
+            Use Common Data Elements for More FAIR Research Data
         </div>
-        <div style="max-width: 83.33%; margin: 0 auto">
-            <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="max-width: 1000px; margin: 0 auto">
-                <mat-form-field style="width: 100%; font-size: 25px">
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="searchForm = false">
-                            <span>CDEs</span>
-                        </button>
-                        <button mat-menu-item (click)="searchForm = true">
-                            <span>Forms</span>
-                        </button>
-                    </mat-menu>
-                    <input matInput name="q" id="ftsearch-input" placeholder="Search {{searchForm?'Forms':'CDEs'}}"
-                           maxlength="500" [(ngModel)]="cdeSearchTerm">
-                    <mat-icon [matMenuTriggerFor]="menu" matSuffix style="height: 42px">keyboard_arrow_down</mat-icon>
-                    <button class="button" matSuffix (click)="search()">
+        <div class="subtitle">
+            Common data elements (CDEs) help researchers share and combine datasets, meet funding requirements, and save
+            time.
+        </div>
+        <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate style="margin-top: 50px">
+            <button style="display: none" type="submit" (click)="search()"></button>
+            <div class="input-topside formHomeLargeScreen">
+                <button class="button"
+                        [class.active]="searchType === 'endorsedCde'"
+                        (click)="searchType = 'endorsedCde'">
+                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                         style="height: 20px; vertical-align: text-top">
+                    Search NIH-Endorsed CDEs
+                </button>
+                <button class="button"
+                        [class.active]="searchType === 'cde'"
+                        (click)="searchType = 'cde'">
+                    Search All CDEs
+                </button>
+                <button class="button"
+                        [class.active]="searchType === 'form'"
+                        (click)="searchType = 'form'">
+                    Search Forms
+                </button>
+            </div>
+            <div class="stretchBar input-group" style="gap: 0; margin-bottom: 10px">
+                <label class="shrink grow d-block mN">
+                    <input name="search" class="form-control"
+                           [placeholder]="isMobile ? 'Search by topic, keyword, or org...' : 'Search by topic, keyword, or organization'"
+                           [(ngModel)]="cdeSearchTerm" required/>
+                </label>
+                <div class="input-group-append">
+                    <button class="button" style="margin: 0; padding: .5rem" (click)="search()">
                         <mat-icon id="search.submit">search</mat-icon>
-                        Search
                     </button>
-                </mat-form-field>
-                <button style="display: none" type="submit" (click)="search()"></button>
-                <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
-                   class="error-block">
-                    <span>Query terms must be 500 characters or less.</span>
-                </p>
-            </form>
-        </div>
-        <div id="introduction" style="max-width: 650px; margin: 0 auto">
-            <p>The NIH Common Data Elements (CDE) Repository has been designed to provide access to
-                structured
-                human and machine-readable definitions of data elements that have been recommended or
-                required by
-                NIH Institutes and Centers and other organizations for use in research and for other
-                purposes.
+                </div>
+            </div>
+            <div class="formHomeSmallScreen">
+                <div class="note text-center" style="margin: 1rem 0">within</div>
+                <button class="button" style="width: 100%" [matMenuTriggerFor]="searchMenu">
+                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                         style="height: 20px; vertical-align: text-top">
+                    {{getSearchLabel(searchType)}}
+                    <mat-icon style="float: right">arrow_drop_down</mat-icon>
+                </button>
+                <mat-menu #searchMenu="matMenu">
+                    <button mat-menu-item [class.active]="searchType === 'endorsedCde'"
+                            (click)="searchType = 'endorsedCde'">
+                        <span>Search NIH-Endorsed CDEs</span>
+                    </button>
+                    <button mat-menu-item [class.active]="searchType === 'cde'" (click)="searchType = 'cde'">
+                        <span>Search All CDEs</span>
+                    </button>
+                    <button mat-menu-item [class.active]="searchType === 'form'" (click)="searchType = 'form'">
+                        <span>Search Forms</span>
+                    </button>
+                </mat-menu>
+            </div>
+            <div class="note" style="margin-top: 12px">
+                <ng-container *ngIf="searchType === 'endorsedCde'">
+                    NIH-endorsed CDEs have been reviewed and approved by an expert panel, and meet established criteria.
+                    They are designated with a gold ribbon.
+                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                         style="height: 20px; vertical-align: text-top">
+                    <!--                link "Learn more"-->
+                </ng-container>
+                <ng-container *ngIf="searchType === 'cde'">
+                    CDEs in the Repository have been submitted by NIH recognized bodies.
+                </ng-container>
+                <ng-container *ngIf="searchType === 'form'">
+                    Forms are composed of multiple CDEs that are intended to be used together.
+                </ng-container>
+            </div>
+            <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+               class="error-block">
+                <span>Query terms must be 500 characters or less.</span>
             </p>
+        </form>
+    </div>
+</div>
+<div class="featuresBox">
+    <div class="displayBox tiles">
+        <div>
+            <button class="button menuButton1"
+                    [class.active]="featureSelected === 'explore'"
+                    (click)="featureSelected = 'explore'">
+                <img src="/cde/public/assets/img/min/homepage/ExploreIcon.png">
+                Explore
+            </button>
+            <img *ngIf="featureSelected === 'explore'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+        </div>
+        <div id="learnButton">
+            <button class="button menuButton1"
+                    [class.active]="featureSelected === 'learn'"
+                    (click)="featureSelected = 'learn'">
+                <img src="/cde/public/assets/img/min/homepage/LearnIcon.png">
+                Learn
+            </button>
+            <img *ngIf="featureSelected === 'learn'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+        </div>
+        <div id="submitButton">
+            <button class="button menuButton1"
+                    [class.active]="featureSelected === 'submit'"
+                    (click)="featureSelected = 'submit'">
+                <img src="/cde/public/assets/img/min/homepage/SubmitIcon.png">
+                Submit
+            </button>
+            <img *ngIf="featureSelected === 'submit'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+        </div>
+        <div *ngIf="featureSelected === 'explore'" class="featureCard" style="order: 4">
+            <h2>Explore CDEs and Forms</h2>
+            <p>
+                A <strong>Common Data Element</strong> (CDE) is a standardized, precisely defined question,
+                paired with a set of allowable responses, used systematically across different sites, studies, or
+                clinical trials to ensure consistent data collection.
+            </p>
+            <p>
+                Multiple CDEs (from one or more Collections) can be curated into <strong>Forms</strong>. Forms in
+                the Repository might be original, or might recreate the format of real-world data collection
+                instruments or case report forms.
+            </p>
+            <p>
+                NIH has endorsed collections of CDEs that meet established criteria.
+                <strong>NIH-endorsed CDEs</strong> are designated with a gold ribbon.
+            </p>
+            <button class="button light" routerLink="/cde/search" [queryParams]="{q: 'nihEndorsed:true'}">Browse NIH-Endorsed CDEs</button>
+            <button class="button light" routerLink="/cde/search">Browse All CDEs</button>
+            <button class="button light" routerLink="/form/search">Browse Forms</button>
+        </div>
+        <div *ngIf="featureSelected === 'learn'" class="featureCard" style="order: 6">
+            <h2>Learn How CDEs Support FAIR Data Sharing</h2>
+            <p>
+                NIH encourages the use of common data elements (CDEs) in biomedical research, because CDEs support
+                FAIR data principles, and increase interoperability of research datasets across diverse studies.
+            </p>
+            <p>
+                Learn more about the benefits of CDEs and how to use the NIH CDE Repository from the resources below.
+            </p>
+            <button class="button light" routerLink="/guides">NIH CDE Repository Guides</button>
+            <a class="button light" href="https://www.nlm.nih.gov/oet/ed/cde/tutorial/index.html"
+               target="_blank">Self-Paced CDE Tutorial</a>
+            <a class="button light" href="https://datascience.nih.gov/nih-strategic-plan-data-science"
+               target="_blank">NIH Strategic Plan for Data Science</a>
+            <!--                <button class="button light" routerLink="/">NIH CDE Repository FAQs</button>-->
+            <!--                <button class="button light" routerLink="/">NIH Strategic Plan for Data Science</button>-->
+        </div>
+        <div *ngIf="featureSelected === 'submit'" class="featureCard" style="order: 8">
+            <h2>Submit CDEs For NIH Endorsement</h2>
+            <p>
+                NIH Institutes, Centers, and Offices and trans-NIH research groups may submit collections of CDEs
+                for consideration for endorsement by the NIH CDE Governance Committee.
+            </p>
+            <p style="margin-bottom: 0">
+                The Governance Committee will decide whether to endorse collections of CDEs according to the
+                following criteria, which were set by the NIH Scientific Data Council:
+            </p>
+            <ul>
+                <li>
+                    Clear definition of the variable as a specified question and a permissible type, set, or range
+                    of answers
+                </li>
+                <li>
+                    Documented evidence of reliability
+                </li>
+                <li>
+                    Human- and machine-readable format
+                </li>
+                <li>
+                    Clear licensing and intellectual property status (prefer Creative Commons or open source)
+                </li>
+                <li>
+                    Recommended or designated by a recognized NIH body (ICO, NIH research initiative working group,
+                    trans-NIH committee, etc.)
+                </li>
+            </ul>
+            <p>
+                In the Repository, NIH-endorsed CDEs are designated with a gold ribbon.
+            </p>
+            <p>
+                Questions about submitting CDEs for endorsement? Email the NIH CDE Governance Committee at
+                <a href="mailto:NIH-CDE-Governance@nih.gov">NIH-CDE-Governance@nih.gov</a>
+            </p>
+            <!--                <button class="button light" routerLink="/">Learn more about submitting CDEs</button>-->
         </div>
     </div>
+</div>
+<div class="updatesBox" style="flex-grow: 1">
+    <div *ngIf="updates?.length" class="displayBox tiles">
+        <div *ngFor="let card of updates" class="uswdsCard">
+            <section *ngIf="card.image?.fileId" style="text-align: center">
+                <img [src]="getCardImage(card.image)">
+            </section>
+            <header>
+                <h2>{{card.title}}</h2>
+            </header>
+            <div class="body note" [innerHTML]="card.body"></div>
+            <footer>
+                <a *ngFor="let b of card.buttons" class="button" [href]="b.link" target="_blank">{{b.title}}</a>
+            </footer>
+        </div>
+    </div>
+    <mat-icon *ngIf="canEdit()" class="fake-button" role="button" tabindex="0" routerLink="/home/edit">edit</mat-icon>
 </div>

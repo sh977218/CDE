@@ -1,5 +1,6 @@
 import { CronJob } from 'cron';
 import { RequestHandler, Response, Router } from 'express';
+import { check, checkSchema } from 'express-validator';
 import { toInteger, round } from 'lodash';
 import { config, dbPlugins } from 'server';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler';
@@ -31,8 +32,6 @@ import { isSearchEngine } from 'server/system/helper';
 import { getEnvironmentHost } from 'shared/node/env';
 import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/exportShared';
-
-const {checkSchema, check} = require('express-validator');
 
 const canEditMiddlewareForm = canEditMiddleware(dbPlugins.form);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(dbPlugins.form);

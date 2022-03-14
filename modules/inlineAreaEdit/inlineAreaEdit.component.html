@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
-        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button" role="button" tabindex="0" (click)="edit()">edit
+        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button colorFail" role="button" tabindex="0" (click)="edit()">edit
         </mat-icon>
         <cde-text-truncate *ngIf="localFormat === 'html'; else showText"
                            [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
@@ -12,8 +12,8 @@
         </ng-template>
     </div>
     <div *ngIf="editMode">
-        <button class="button small light" [class.active]="!localFormat" (click)="setHtml(false)" type="button">Plain Text</button>
-        <button class="button small light" [class.active]="localFormat" (click)="setHtml(true)" type="button">Rich Text</button>
+        <button class="button small light" [class.active]="localFormat !== 'html'" (click)="setHtml(false)">Plain Text</button>
+        <button class="button small light" [class.active]="localFormat === 'html'" (click)="setHtml(true)">Rich Text</button>
 
         <ckeditor *ngIf="localFormat === 'html'; else editText" [config]="{extraPlugins: 'divarea'}"
                   [(ngModel)]="value">

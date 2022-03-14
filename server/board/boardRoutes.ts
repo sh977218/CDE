@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import { check } from 'express-validator';
 import { intersection, isEmpty, uniqBy } from 'lodash';
 import { config, dbPlugins } from 'server';
 import { boardRefresh, myBoards } from 'server/board/elastic';
@@ -14,7 +15,6 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { stripBsonIds } from 'shared/exportShared';
 
 const js2xml = require('js2xmlparser');
-const {check} = require('express-validator');
 require('express-async-errors');
 
 export function module() {

@@ -3,11 +3,25 @@ import { renderFile } from 'ejs';
 import * as csrf from 'csurf';
 import { Request, Response, Router } from 'express';
 import { existsSync, writeFileSync } from 'fs';
-import { config } from 'server';
+import * as md5 from 'md5';
+import * as multer from 'multer';
+import { config, dbPlugins } from 'server';
+import { removeUnusedAttachment, scanFile } from 'server/attachment/attachmentSvc';
 import { respondError } from 'server/errorHandler';
-import { getFile, gfs } from 'server/mongo/mongo/gfs';
+import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
+import { isNlmCuratorMiddleware } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
+import { FileCreateInfo } from 'server/system/mongo-data';
 import { version } from 'server/version';
+import {
+    HomepageAttachResponse,
+    HomepageDetachRequest, HomepageDraftGetResponse, HomepageDraftPutRequest, HomepageDraftPutResponse,
+    HomepageGetResponse,
+    HomepagePutRequest, HomepagePutResponse
+} from 'shared/boundaryInterfaces/API/system';
+import { SingletonServer as Singleton } from 'shared/singleton.model';
+
+const createReadStream = require('streamifier').createReadStream;
 
 require('express-async-errors');
 
@@ -55,6 +69,118 @@ export function module() {
         } else {
             respondHomeFull(req, res);
         }
+    });
+
+    router.get('/home/edit', (req, res) => {
+        respondHomeFull(req, res);
+    });
+
+    router.get('/server/home', (req, res): Promise<Response> => {
+        return dbPlugins.singleton.byId('home')
+            .then(homeData => {
+                if (homeData) {
+                    (homeData as any)._id = undefined;
+                }
+                return res.send(homeData as HomepageGetResponse);
+            });
+    });
+
+    router.put('/server/home', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
+        const homepage: Singleton = req.body as HomepagePutRequest & {_id: string};
+        (homepage as any)._id = 'home';
+        if (!homepage.body) {
+            return Promise.resolve(res.status(400).send());
+        }
+        return dbPlugins.singleton.update('home', {}, req.user._id, homepage)
+            .then((newHomepage) => res.send(newHomepage as HomepagePutResponse));
+    });
+
+    router.post('/server/homeAttach', isNlmCuratorMiddleware,
+        multer({...config.multer, storage: multer.memoryStorage()}).any(),
+        (req, res): Promise<Response> => {
+            const file = (req.files as any)[0];
+            const fileBuffer = file.buffer;
+            const stream = createReadStream(fileBuffer);
+            const streamFS1 = createReadStream(fileBuffer);
+            return scanFile(stream).then(scanned => {
+                const fileCreate: FileCreateInfo = {
+                    filename: file.originalname,
+                    stream: streamFS1,
+                    md5: md5(fileBuffer),
+                };
+                return addFile(
+                    fileCreate,
+                    {
+                        contentType: file.mimetype,
+                        metadata: {
+                            md5: fileCreate.md5,
+                            status: scanned ? 'approved' : 'uploaded',
+                        }
+                    }
+                )
+                    .then(newId => res.send({fileId: newId.toString()} as HomepageAttachResponse));
+            });
+        }
+    );
+
+    router.post('/server/homeDetach', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
+        const body: HomepageDetachRequest = req.body;
+        if (!body.fileId) {
+            return Promise.resolve(res.send());
+        }
+        return removeUnusedAttachment(body.fileId)
+            .then(() => res.send());
+    });
+
+    router.delete('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
+        return dbPlugins.singleton.byId('homeEdit').then(draft => {
+            return dbPlugins.singleton.deleteOneById('homeEdit')
+                .then(() => res.send());
+        });
+    });
+
+    router.get('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
+        return dbPlugins.singleton.byId('homeEdit')
+            .then(homeData => {
+                if (homeData) {
+                    (homeData as any)._id = undefined;
+                }
+                return res.send(homeData as HomepageDraftGetResponse);
+            });
+    });
+
+    function isSingleton(s: any): s is Singleton {
+        return !!s.body;
+    }
+
+    router.put('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
+        const homepage: Singleton | {updated: number, updateInProgress?: boolean}
+            = req.body as HomepageDraftPutRequest & {_id: string} as any;
+        (homepage as any)._id = 'homeEdit';
+        return dbPlugins.singleton.byId('homeEdit').then(draft => {
+            let query = {};
+            if (isSingleton(homepage)) { // save
+                if (draft) {
+                    if (homepage.updated !== draft.updated || draft.updatedBy.toString() !== req.user._id.toString()) {
+                        return res.status(409).send();
+                    }
+                    query = {updated: draft.updated, updatedBy: draft.updatedBy};
+                }
+            } else { // metadata
+                if (draft === null) {
+                    return res.send();
+                }
+                if (homepage.updated) {
+                    if (homepage.updated !== draft.updated) {
+                        return res.status(409).send();
+                    }
+                    query = {updated: homepage.updated};
+                }
+            }
+            delete (homepage as any).updated;
+            return dbPlugins.singleton.update('homeEdit', query, req.user._id, homepage)
+                .then((newHomepage) => res.send(newHomepage as HomepageDraftPutResponse));
+        });
     });
 
     router.get('/sitemap.txt', (req, res): Promise<Response> => {

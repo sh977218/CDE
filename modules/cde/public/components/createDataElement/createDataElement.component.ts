@@ -13,7 +13,7 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
+import { copyDeep } from 'shared/util';
 
 @Component({
     selector: 'cde-create-data-element',
@@ -63,7 +63,7 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     confirmDelete(event: DeletedNodeEvent) {
-        const eltCopy = deepCopy(this.elt);
+        const eltCopy = copyDeep(this.elt);
         const steward = findSteward(eltCopy, event.deleteOrgName);
         if (!steward || !eltCopy.classification) {
             this.alert.addAlert('success', 'No classification to remove.');

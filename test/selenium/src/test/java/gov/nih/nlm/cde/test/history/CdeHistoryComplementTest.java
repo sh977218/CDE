@@ -37,8 +37,6 @@ public class CdeHistoryComplementTest extends NlmCdeBaseTest {
 
         goToCdeByName(cdeName);
         editRegistrationStatus(newStatus, null, null, null, null);
-        closeAlert();
-        modalGone();
 
         clickElement(By.id("viewChangesBtn"));
         textPresent(newStatus, By.xpath("//*[@id='Status']//td-ngx-text-diff"));

@@ -150,6 +150,10 @@ export function canEditCuratedItem(user: User | undefined, item: Item | undefine
     return hasPrivilegeForOrg(user, 'edit', item.stewardOrg.name);
 }
 
+export function isNlmCurator(user: User | undefined): boolean {
+    return hasRole(user, 'NlmCurator');
+}
+
 export function isOrg(user: User | undefined): boolean {
     if (!user) {
         return false;

@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
-
-import { HomeComponent } from 'home/home.component';
 import { RouterModule, Routes } from '@angular/router';
+import { NlmCuratorGuard } from '_app/routerGuard/nlmCuratorGuard';
+import { HomeComponent } from 'home/home.component';
+import { HomeEditComponent } from 'home/homeEdit.component';
 
 const appRoutes: Routes = [
     {path: '', component: HomeComponent},
+    {path: 'edit', component: HomeEditComponent, canActivate: [NlmCuratorGuard]},
 ];
-
 
 @NgModule({
     imports: [

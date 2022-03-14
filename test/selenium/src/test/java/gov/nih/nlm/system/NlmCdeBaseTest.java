@@ -305,7 +305,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToUserMenu() {
-        scrollHeaderIntoView();
+        scrollToTop();
         hoverOverElement(findElement(By.id("username_link")));
     }
 
@@ -341,7 +341,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToHelp() {
-        scrollHeaderIntoView();
+        scrollToTop();
         hoverOverElement(findElement(By.id("helpLink")));
     }
 
@@ -890,7 +890,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void goHome() {
         driver.get(baseUrl);
-        textPresent("has been designed to provide access", By.id("introduction"));
+        textPresent("Use Common Data Elements for More FAIR Research Data");
     }
 
     protected void goToCdeSearch() {
@@ -989,11 +989,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         hangon(2);
     }
 
-    public void scrollToTop() {
-        scrollTo(0);
-    }
-
-    public void scrollHeaderIntoView(){
+    public void scrollToTop(){
         String jsScroll = "document.getElementById('scrollRoot')?.scrollTo(0,0);";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
@@ -1359,7 +1355,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void gotoMyBoards() {
-        scrollHeaderIntoView();
+        scrollToTop();
         textPresent("My Boards");
         clickElement(By.id("myBoardsLink"));
         textPresent("Add Board");
@@ -1442,6 +1438,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
             findElement(By.name("newUnresolvedIssue")).sendKeys(unresolvedIssue);
         clickElement(By.xpath("//button[text()='Save']"));
+        modalGone();
     }
 
     protected void checkRecentlyUsedClassifications(String org, String[] classificationArray) {

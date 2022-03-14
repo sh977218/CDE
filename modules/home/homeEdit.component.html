@@ -1,0 +1,84 @@
+<ng-container *ngIf="homepage">
+    <cde-home [updates]="homepage.body.updates"></cde-home>
+    <div class="container-fluid">
+        <ng-container *ngIf="editing; else notEditing">
+            <button class="button" (click)="stopEditing(homepage)">Save for Later</button>
+            <button class="button fail" (click)="deleteDraft()">Delete Draft</button>
+            <button class="button success" (click)="publish(homepage)">Publish</button>
+        </ng-container>
+        <ng-template #notEditing>
+            <ng-container *ngIf="lockedByMe(); else lockedBySomeoneElse">
+                You are already editing this page somewhere else.
+                <button class="button" (click)="getEditLock(homepage)">Start Editing</button>
+            </ng-container>
+            <ng-template #lockedBySomeoneElse>
+                <mat-icon style="vertical-align: middle">lock</mat-icon>
+                This page is currently being edited.
+                <ng-container *ngIf="editLockAvailable(); else waitForTimeout">
+                    To take over where it was left off, click:
+                    <button class="button" (click)="getEditLock(homepage)">Takeover Editing</button>
+                </ng-container>
+                <ng-template #waitForTimeout>
+                    There are {{waitTimeInMinutes(timestampExpire)}} minutes left until this page will be available for editing.
+                    <button class="button" (click)="refresh()">Refresh</button>
+                </ng-template>
+            </ng-template>
+        </ng-template>
+    </div>
+    <ng-container *ngIf="editing">
+        <mat-card *ngFor="let u of homepage.body.updates">
+            <mat-card-content>
+                <mat-icon title="Delete Update" class="fake-button colorFail" role="button" tabindex="0" style="float: right"
+                          (click)="deleteUpdate(homepage, u)">delete_outline
+                </mat-icon>
+                <div class="clearfix"></div>
+                <label class="d-block mB">
+                    Title:
+                    <input class="form-control" [(ngModel)]="u.title" (ngModelChange)="autoSave(homepage)">
+                </label>
+                <label class="d-block mB">
+                    Image:
+                    <mat-icon *ngIf="u.image" title="Delete Image" class="fake-button colorFail" role="button" tabindex="0"
+                              (click)="deleteImage(u); autoSave(homepage)">delete_outline</mat-icon>
+                    <input *ngIf="!u.image" class="form-control" type="file" (change)="attachmentUpload(homepage, u, $event)">
+                </label>
+                <div class="mB">
+                    <label class="d-block mN">
+                        Body:
+                    </label>
+                    <cde-inline-area-edit defFormat="html" [isAllowed]="true"
+                                          [(model)]="u.body" (modelChange)="autoSave(homepage)"></cde-inline-area-edit>
+                </div>
+                <label class="d-block">Buttons:</label>
+                <div *ngFor="let b of u.buttons" class="updateButtonCard">
+                    <div>
+                        Title:
+                        <mat-icon title="Delete Button" class="fake-button colorFail" role="button" tabindex="0"
+                                  (click)="u.buttons.splice(u.buttons.indexOf(b), 1); autoSave(homepage)"
+                                  style="float: right">delete_outline
+                        </mat-icon>
+                        <input class="form-control" [(ngModel)]="b.title" (ngModelChange)="autoSave(homepage)">
+                    </div>
+                    <div>
+                        Link: <input class="form-control" [(ngModel)]="b.link" (ngModelChange)="autoSave(homepage)">
+                    </div>
+                </div>
+                <div>
+                    <button class="button" (click)="u.buttons.push({title: '', link: ''}); autoSave(homepage)">
+                        <mat-icon>add</mat-icon>
+                        Add Button
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-title-group>
+                <button class="button" style="width: 200px"
+                        (click)="homepage.body.updates.push({title: '', body: '', buttons: []}); autoSave(homepage)">
+                    <mat-icon>add</mat-icon>
+                    Add Update
+                </button>
+            </mat-card-title-group>
+        </mat-card>
+    </ng-container>
+</ng-container>

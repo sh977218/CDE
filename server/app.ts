@@ -33,8 +33,13 @@ import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
-    canAttachMiddleware, canSeeCommentMiddleware, checkEditing, isDocumentationEditor,
-    isOrgAdminMiddleware, isOrgAuthorityMiddleware, isSiteAdminMiddleware
+    canAttachMiddleware,
+    canSeeCommentMiddleware,
+    checkEditing,
+    isDocumentationEditor,
+    isOrgAdminMiddleware,
+    isOrgAuthorityMiddleware,
+    isSiteAdminMiddleware
 } from 'server/system/authorization';
 import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';

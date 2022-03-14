@@ -8,9 +8,10 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CbError1, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { copyShallow } from 'shared/util';
 
 export function updateOrInsert(elt: DataElement): DataElement {
-    updateOrInsertImpl(Object.assign({}, elt));
+    updateOrInsertImpl(copyShallow(elt));
     return elt;
 }
 

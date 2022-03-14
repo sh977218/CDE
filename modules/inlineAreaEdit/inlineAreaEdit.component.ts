@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import 'inlineAreaEdit/inlineAreaEdit.global.scss';
-import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-inline-area-edit',
@@ -21,8 +20,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this.value = deepCopy(this.model);
-        this.localFormat = deepCopy(this.defFormat);
+        this.value = this.model;
+        this.localFormat = this.defFormat;
     }
 
     ngAfterViewInit() {
@@ -43,8 +42,8 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     discard() {
-        this.value = deepCopy(this.model);
-        this.localFormat = deepCopy(this.defFormat);
+        this.value = this.model;
+        this.localFormat = this.defFormat;
         this.editMode = false;
     }
 

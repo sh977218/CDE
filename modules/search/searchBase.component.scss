@@ -35,6 +35,7 @@
 
   > :nth-child(1) {
     flex: 0 0 100%;
+    min-width: 0;
 
     @media (min-width: $screenSm) {
       flex: 0 0 28%;
@@ -51,6 +52,7 @@
 
   > :nth-child(2) {
     flex: 0 0 100%;
+    min-width: 0;
 
     @media (min-width: $screenSm) {
       flex: 0 0 72%;

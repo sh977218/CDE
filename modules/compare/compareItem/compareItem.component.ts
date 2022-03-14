@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { flattenClassification } from 'core/adminItem/classification';
-import { cloneDeep, forEach, get, isEqual } from 'lodash';
+import { forEach, get, isEqual } from 'lodash';
 import { sortClassification } from 'shared/classification/classificationShared';
 import { Item } from 'shared/models.model';
-import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-compare-item',
