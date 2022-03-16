@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { getMapToFhirResource } from 'core/form/formAndFe';
 import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
 import 'form/public/components/displayProfile/displayProfile.global.scss';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem, DateType } from 'shared/models.model';
@@ -40,7 +38,6 @@ export class DisplayProfileComponent {
     @Output() eltChange = new EventEmitter();
     private _elt!: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
-    getMapToFhirResource = getMapToFhirResource;
     interruptEvent = interruptEvent;
     uoms: { u: CodeAndSystem, a: string[] }[] = [];
     uomsDate?: DateType;
@@ -85,23 +82,6 @@ export class DisplayProfileComponent {
                     });
                 }
             });
-        });
-    }
-
-    openProcedureMapping(dpvm: DisplayProfileVM) {
-        this.dialog.open(FhirProcedureMappingComponent, {
-            width: '700px',
-            data: {
-                questions: getFormQuestions(this.elt),
-                mapping: this.elt.displayProfiles[0].fhirProcedureMapping,
-                usedRefs: findQuestionByTinyId(this.elt.displayProfiles[0].fhirProcedureMapping
-                    && this.elt.displayProfiles[0].fhirProcedureMapping.usedReferences || '', this.elt)
-            }
-        }).afterClosed().subscribe(result => {
-            if (result) {
-                dpvm.profile.fhirProcedureMapping = result;
-                this.eltChange.emit();
-            }
         });
     }
 

@@ -18,7 +18,6 @@ import {
     QuestionTypeText,
 } from 'shared/de/dataElement.model';
 import { iterateFeSync } from 'shared/form/fe';
-import { supportedFhirResources } from 'shared/mapping/fhir/fhirResource.model';
 
 export type QuestionValue = any;
 
@@ -33,7 +32,6 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
     formElements: T[] = []; // mutable
     isCopied?: 'copied' | 'clear'; // volatile, form description
     isCopyrighted?: boolean;
-    mapTo?: ExternalMappings; // calculated, used by: FHIR
     noRenderAllowed?: boolean;
     outdated?: boolean; // volatile, server calculated
 
@@ -166,23 +164,6 @@ export interface CdeFormElastic extends CdeForm { // all volatile
     score: number;
 }
 
-export class FhirProcedureMapping {
-    [key: string]: any;
-
-    statusQuestionID?: string;
-    statusStatic?: string;
-    performedDate?: string;
-    procedureQuestionID?: string;
-    procedureCode?: string;
-    procedureCodeSystem?: string;
-    bodySiteQuestionID?: string;
-    bodySiteCode?: string;
-    bodySiteCodeSystem?: string;
-    usedReferences?: string;
-    usedReferencesMaps?: string[];
-    complications?: string;
-}
-
 export class DisplayProfile {
     _id!: ObjectId; // TODO: remove
     answerDropdownLimit = 10;
@@ -198,7 +179,6 @@ export class DisplayProfile {
     repeatFormat = '#.';
     sectionsAsMatrix = true;
     unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
-    fhirProcedureMapping?: FhirProcedureMapping = {};
 
     constructor(name = '') {
         this.name = name;
@@ -213,24 +193,6 @@ class EltRefCaching extends EltRef {
 
 export class ExternalMappings {
     [system: string]: any;
-    fhir?: {
-        resourceType?: supportedFhirResources,
-    };
-}
-
-export class FhirApp {
-    _id!: ObjectId;
-    clientId = '';
-    dataEndpointUrl = '';
-    forms: { tinyId?: string }[] = [];
-    mapping: { cdeSystem?: string, cdeCode?: string, fhirSystem?: string, fhirCode?: string }[] = [];
-    timestamp?: Date;
-}
-
-export class FhirObservationInfo {
-    _id?: string;
-    categories?: string[];
-    timestamp?: Date;
 }
 
 export interface FormElementsContainer<T extends FormElement = FormElement> {
@@ -254,8 +216,7 @@ export class FormElementPart<T extends FormElement> extends FormElementEdit<T> i
     feId?: string; // calculated, nativeRender and formView view model
     instructions?: Instruction;
     label?: string = '';
-    mapTo?: ExternalMappings; // calculated, used by: FHIR
-    metadataTags?: MetadataTag[]; // calculated, used by FHIR
+    metadataTags?: MetadataTag[]; // calculated, used by native
     repeat?: string;
     skipLogic?: SkipLogic = new SkipLogic();
 }

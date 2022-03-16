@@ -146,7 +146,7 @@ Environment variables:
 1. Angular build with hot-module replacement.
     * ```node devHmr-app.js```
 
-#### Native Render App (Fhir and Embed Apps are similar)
+#### Native Render App (Embed Apps is similar)
 1. Angular build without development
     * ```npm run buildNative```
 1. Angular build with development and watch

@@ -34,7 +34,6 @@ import { FormSearchModule } from 'form/public/formSearch.module';
 import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
 import { UcumService } from 'form/public/ucum.service';
 import { DisplayProfileComponent } from 'form/public/components/displayProfile/displayProfile.component';
-import { FhirProcedureMappingComponent } from 'form/public/components/fhir/fhirProcedureMapping.component';
 import { FormClassificationComponent } from 'form/public/components/formClassification/formClassification.component';
 import { FormGeneralDetailsComponent } from 'form/public/components/formGeneralDetails/formGeneralDetails.component';
 import { NativeRenderFullComponent } from 'form/public/components/nativeRenderFull/nativeRenderFull.component';
@@ -115,7 +114,6 @@ const appRoutes: Routes = [
         FormViewComponent,
         FormClassificationComponent,
         FormGeneralDetailsComponent,
-        FhirProcedureMappingComponent,
         NativeRenderFullComponent,
         QuestionAccordionListComponent,
     ],

@@ -23,7 +23,6 @@ import { module as boardModule } from 'server/board/boardRoutes';
 import { module as deModule } from 'server/cde/deRouters';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
-import { module as fhirModule } from 'server/fhir/fhirRouters';
 import { module as formModule } from 'server/form/formRouters';
 import { module as loaderModule } from 'server/loader/loaderRoutes'
 import { module as logModule } from 'server/log/logRoutes';
@@ -204,17 +203,10 @@ function getS3Link(subpath: string): httpProxy.ProxyOptions {
     };
 }
 
-function getS3LinkFhir(subpath: string): httpProxy.ProxyOptions {
-    const link = getS3Link(subpath);
-    link.filter = req => !req.url.startsWith('/launch/') && !req.url.startsWith('/form/');
-    return link;
-}
-
 if (config.s3) {
     app.use('/app', httpProxy(config.s3.host, getS3Link('app')));
     app.use('/common', httpProxy(config.s3.host, getS3Link('common')));
     app.use('/embed', httpProxy(config.s3.host, getS3Link('embed')));
-    app.use('/fhir', httpProxy(config.s3.host, getS3LinkFhir('fhir')));
     app.use('/launch', httpProxy(config.s3.host, getS3Link('launch')));
     app.use('/native', httpProxy(config.s3.host, getS3Link('native')));
 } else {
@@ -223,7 +215,6 @@ if (config.s3) {
     }));
     app.use('/common', express.static(global.assetDir('dist/common')));
     app.use('/embed', express.static(global.assetDir('dist/embed')));
-    app.use('/fhir', express.static(global.assetDir('dist/fhir')));
     app.use('/launch', express.static(global.assetDir('dist/launch')));
     app.use('/native', express.static(global.assetDir('dist/native')));
 }
@@ -318,7 +309,6 @@ try {
         }
     }));
     app.use('/nativeRender', nativeRenderModule());
-    app.use('/', fhirModule());
     app.use('/server/system', systemModule());
     app.use('/', deModule());
     app.use('/', formModule());

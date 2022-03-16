@@ -29,21 +29,7 @@ const displayProfileSchema = new Schema({
     displayInvisible: {type: Boolean},
     repeatFormat: {type: StringType, default: ''},
     answerDropdownLimit: {type: Number, min: 0},
-    unitsOfMeasureAlias: [{unitOfMeasure: codeAndSystemSchema, alias: StringType}],
-    fhirProcedureMapping: {
-        statusQuestionID: String,
-        statusStatic: String,
-        performedDate: String,
-        procedureQuestionID: String,
-        procedureCode: String,
-        procedureCodeSystem: String,
-        bodySiteQuestionID: String,
-        bodySiteCode: String,
-        bodySiteCodeSystem: String,
-        usedReferences: String,
-        usedReferencesMaps: [String],
-        complications: String,
-    }
+    unitsOfMeasureAlias: [{unitOfMeasure: codeAndSystemSchema, alias: StringType}]
 }, {_id: false});
 
 const instructionSchema = new Schema({
@@ -58,9 +44,6 @@ const datatypeNumberSchema = new Schema({
 }, {_id: false});
 
 const mapToSchema = new Schema({
-    fhir: {
-        resourceType: StringType,
-    },
 });
 
 const questionSchema = new Schema({

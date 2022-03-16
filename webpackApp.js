@@ -12,7 +12,6 @@ const APP_DIR = __dirname;
 
 const assets = [
     '/cde/public/assets/img/min/NIH-CDE.svg',
-    '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
     '/cde/public/assets/img/min/nih-cde-logo-simple.png',
     '/cde/public/assets/img/min/usagov_logo.png',
     '/cde/public/assets/img/min/NLM-logo.png',

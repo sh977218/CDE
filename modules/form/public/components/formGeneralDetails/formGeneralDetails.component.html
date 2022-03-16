@@ -88,14 +88,4 @@
             {{elt.updatedBy.username}}
         </dd>
     </ng-container>
-    <ng-container>
-        <dt>Fhir Resource:</dt>
-        <dd>
-            <select class="form-control" [(ngModel)]="tagFhirResource" (change)="updateTagFhir()" [disabled]="!canEdit">
-                <option value="Not Mapped">Not Mapped</option>
-                <option value="Default Mapping">Default Mapping</option>
-                <option *ngFor="let resource of supportedFhirResourcesArray" [value]="resource">{{resource}}</option>
-            </select>
-        </dd>
-    </ng-container>
 </dl>

@@ -120,10 +120,6 @@
                   class="badge badge-primary formViewSummaryLabel">
                 Repeats: {{repeatFeLabel(section)}}
             </span>
-            <span *ngIf="section.mapTo && section.mapTo.fhir" class="badge badge-primary formViewSummaryLabel">
-                FHIR <ng-container
-                    *ngIf="section.mapTo.fhir.resourceType">Resource: {{section.mapTo.fhir.resourceType}}</ng-container>
-            </span>
             <span *ngIf="section.skipLogic?.condition" class="badge badge-warning formViewSummaryLabel">
                 Show if: {{section.skipLogic.condition}}
             </span>

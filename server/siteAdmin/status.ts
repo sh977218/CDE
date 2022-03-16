@@ -158,7 +158,7 @@ setInterval(() => {
                         title: 'Elastic Search Index Issue',
                         options: {
                             body: 'Status reports not normal',
-                            icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                            icon: '/cde/public/assets/img/min/NIH-CDE.png',
                             badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                             tag: 'cde-es-issue',
                             actions: [
@@ -185,7 +185,7 @@ setInterval(() => {
                             title: 'Elastic Search Index Issue',
                             options: {
                                 body: 'Document count does not match for index: ' + mismatched.join(', '),
-                                icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                                icon: '/cde/public/assets/img/min/NIH-CDE.png',
                                 badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                                 tag: 'cde-es-issue',
                                 actions: [

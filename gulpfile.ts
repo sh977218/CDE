@@ -190,7 +190,6 @@ gulp.task('buildDist', ['createDist'], function copyDist() {
     const runAll = [
         run('npm run buildApp', runInAppOptions),
         run('npm run buildNative', runInAppOptions),
-        run('npm run buildFhir', runInAppOptions)
     ];
 
     if (config.provider.faas === 'AWS') {
@@ -206,8 +205,6 @@ gulp.task('copyDist', ['buildDist'], function copyDist() {
             .pipe(gulp.dest(BUILD_DIR + '/dist/app')),
         gulp.src([appDir('./dist/embed/**/*'), '!' + appDir('./dist/embed/embed.css'), '!' + appDir('./dist/embed/embed.js')])
             .pipe(gulp.dest(BUILD_DIR + '/dist/embed')),
-        gulp.src([appDir('./dist/fhir/*'), '!' + appDir('./dist/fhir/fhir.css'), '!' + appDir('./dist/fhir/fhir.js')])
-            .pipe(gulp.dest(BUILD_DIR + '/dist/fhir')),
         gulp.src([appDir('./dist/native/**/*'), '!' + appDir('./dist/native/native.css'), '!' + appDir('./dist/native/native.js')])
             .pipe(gulp.dest(BUILD_DIR + '/dist/native')),
         gulp.src(appDir('./modules/system/views/home-launch.ejs')).pipe(gulp.dest(BUILD_DIR + '/modules/system/views')),
@@ -220,13 +217,12 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
     [
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'},
         {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
     ].forEach(item => {
         const useminOutputs: string[] = [];
 
         function outputFile(file: File) {
-            const matches = file.path.match(/(\\|\/)(app|embed|fhir|native)(\\|\/).*$/);
+            const matches = file.path.match(/(\\|\/)(app|embed|native)(\\|\/).*$/);
             if (!matches || !matches.length) {
                 throw new Error('bad file path for being processed: ' + file.path);
             }
@@ -265,7 +261,6 @@ gulp.task('usemin', ['copyDist'], function useminTask() {
             }))
             .pipe(replace('"/app/cde.css"', getCssLink))
             .pipe(replace('"/embed/embed.css"', getCssLink))
-            .pipe(replace('"/fhir/fhir.css"', getCssLink))
             .pipe(replace('"/native/native.css"', getCssLink))
             .pipe(replace('"/native/native.js"', getJsLink))
             .pipe(gulp.dest(BUILD_DIR + '/dist/'));
@@ -292,8 +287,7 @@ gulp.task('copyUsemin', ['usemin'], function usemin() {
     [
         {folder: './modules/system/views/bot/', filename: '*.ejs'},
         {folder: './modules/system/views/', filename: 'index.ejs'},
-        {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'},
-        {folder: './frontEnd/_fhirApp/', filename: 'fhirApp.ejs'}
+        {folder: './frontEnd/_nativeRenderApp/', filename: 'nativeRenderApp.ejs'}
     ].forEach(item => {
         streamArray.push(gulp.src(BUILD_DIR + '/dist/' + item.filename)
             .pipe(gulp.dest(BUILD_DIR + '/' + item.folder)));

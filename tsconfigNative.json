@@ -38,7 +38,6 @@
     "ingester",
     "modules/_app",
     "frontEnd/_embedApp",
-    "frontEnd/_fhirApp",
     "modules/adminItem",
     "modules/board",
     "modules/cde",

@@ -109,7 +109,6 @@ const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
         '/settings/resources',
         '/settings/siteAdmins',
         '/settings/serverStatus',
-        '/settings/fhirApps',
         '/settings/idSources',
         '/classificationManagement',
         '/siteAudit',

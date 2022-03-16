@@ -64,15 +64,6 @@
           "title": "mapTo",
           "type": "object",
           "properties": {
-            "fhir": {
-              "title": "fhir",
-              "type": "object",
-              "properties": {
-                "resourceType": {
-                  "type": "string"
-                }
-              }
-            }
           }
         },
         "question": {
@@ -302,65 +293,6 @@
                     }
                   }
                 }
-              },
-              "fhirProcedureMapping": {
-                "title": "fhirProcedureMapping",
-                "anyOf": [
-                  {
-                    "type": "null"
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "statusQuestionID": {
-                        "type": ["string", "null"]
-                      },
-                      "statusStatic": {
-                        "type": ["string", "null"]
-                      },
-                      "performedDate": {
-                        "type": ["string", "null"]
-                      },
-                      "procedureQuestionID": {
-                        "type": ["string", "null"]
-                      },
-                      "procedureCode": {
-                        "type": ["string", "null"]
-                      },
-                      "procedureCodeSystem": {
-                        "type": ["string", "null"]
-                      },
-                      "bodySiteQuestionID": {
-                        "type": ["string", "null"]
-                      },
-                      "bodySiteCode": {
-                        "type": ["string", "null"]
-                      },
-                      "bodySiteCodeSystem": {
-                        "type": ["string", "null"]
-                      },
-                      "usedReferences": {
-                        "type": ["string", "null"]
-                      },
-                      "usedReferencesMaps": {
-                        "anyOf": [
-                          {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
-                      },
-                      "complications": {
-                        "type": ["string", "null"]
-                      }
-                    }
-                  }
-                ]
               }
             }
           }
@@ -374,21 +306,6 @@
         },
         "isCopyrighted": {
           "type": "boolean"
-        },
-        "mapTo": {
-          "title": "mapTo",
-          "type": "object",
-          "properties": {
-            "fhir": {
-              "title": "fhir",
-              "type": "object",
-              "properties": {
-                "resourceType": {
-                  "type": "string"
-                }
-              }
-            }
-          }
         },
         "noRenderAllowed": {
           "type": "boolean"

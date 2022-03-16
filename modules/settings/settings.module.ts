@@ -61,7 +61,6 @@ import { DraftsService } from 'settings/drafts/drafts.service';
 import { MyDraftsResolve } from 'settings/drafts/myDrafts.resolve';
 import { MyOrgDraftsResolve } from 'settings/drafts/myOrgDrafts.resolve';
 import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.component';
-import { FhirAppsComponent } from 'settings/fhirApps/fhirApps.component';
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
@@ -239,12 +238,6 @@ const appRoutes: Routes = [
                 data: {title: 'Resources'}
             },
             {
-                path: 'fhirApps',
-                component: FhirAppsComponent,
-                canActivate: [SiteAdminGuard],
-                data: {title: 'Fhir Apps'}
-            },
-            {
                 path: 'idSources',
                 component: IdSourcesComponent,
                 canActivate: [SiteAdminGuard],
@@ -327,7 +320,6 @@ const appRoutes: Routes = [
         CommentsComponent,
         DraftsComponent,
         EditSiteAdminsComponent,
-        FhirAppsComponent,
         IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,

@@ -44,7 +44,6 @@
     "ingester",
     "frontEnd/_embedApp",
     "frontEnd/_nativeRenderApp",
-    "frontEnd/_fhirApp",
     "modules/form/public/assets",
     "node_modules",
     "protractor",

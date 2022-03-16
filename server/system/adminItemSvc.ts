@@ -34,52 +34,6 @@ export function badWorkingGroupStatus(elt: Item, org: Organization) {
         && allowedRegStatuses.indexOf(elt.registrationState.registrationStatus) === -1;
 }
 
-// export function createTask(user: User, role: UserRoles, type: 'approval', eltModule: ModuleAll, eltTinyId: string,
-//                            item: 'attachment' | 'comment') {
-//     let name;
-//     switch (type) {
-//         case 'approval':
-//             name = capitalize(type) + ' Request: ' + user.username + ' added ' + item + ' on '
-//                 + capitalize(eltModule) + ' ' + eltTinyId + ' and needs approval';
-//     }
-//     const pushTask: any = {
-//         title: name,
-//         options: {
-//             body: 'Tasks can be completed using the notification bell menu on the navigation bar',
-//             icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
-//             badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
-//             tag: 'cde-' + role + '-' + type,
-//             actions: [
-//                 {
-//                     action: 'profile-action',
-//                     title: 'Edit Subscription',
-//                     icon: '/cde/public/assets/img/min/portrait.png'
-//                 }
-//             ]
-//         }
-//     };
-//     if (!!eltTinyId) {
-//         pushTask.options.data = {url: uriView(eltModule, eltTinyId)};
-//         pushTask.options.actions.unshift({
-//             action: 'open-url',
-//             title: 'Open',
-//             icon: '/cde/public/assets/img/min/open_in_browser.png'
-//         });
-//     } else {
-//         pushTask.options.actions.unshift({
-//             action: 'open-app-action',
-//             title: 'View in Notification Bell',
-//             icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
-//         });
-//     }
-//     const pushTaskMsg = JSON.stringify(pushTask);
-//     pushRegistrationSubscribersByType(type + role as any, handleError({}, registrations => {
-//         if (registrations) {
-//             registrations.forEach(r => triggerPushMsg(r, pushTaskMsg));
-//         }
-//     }), undefined);
-// }
-
 export function hideProprietaryIds(elt: Item) {
     if (elt && elt.ids) {
         const blackList = [
@@ -133,7 +87,7 @@ export function notifyForComment(handlerOptions: HandlerOptions, commentOrReply:
                 options: {
                     body: commentOrReply.text,
                     data: {url: uriView(eltModule, eltTinyId)},
-                    icon: '/cde/public/assets/img/min/NIH-CDE-FHIR.png',
+                    icon: '/cde/public/assets/img/min/NIH-CDE.png',
                     badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
                     tag: 'cde-comment-' + eltModule + '-' + eltTinyId,
                     actions: [
