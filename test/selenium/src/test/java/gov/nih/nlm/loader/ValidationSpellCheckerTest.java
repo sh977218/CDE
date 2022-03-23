@@ -107,12 +107,20 @@ public class ValidationSpellCheckerTest extends NlmCdeBaseTest {
     }
 
     String spellCheckString = ",\"CDE Name\",\"CDE Definition\"\n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
             "Test Name One,Test Definition One\n" +
             "Test Name Two,Test Definition Two\n" +
             "Test Name Three,Test Definiton Three\n" +
             "Test Name Four,Test Definiton Four";
 
     String spellCheckTerms = ",\"CDE Name\",\"CDE Definition\"\n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
             "Test,hello wprld\n" +
             "Test,hellk world";
 }

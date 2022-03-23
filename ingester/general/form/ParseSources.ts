@@ -1,5 +1,5 @@
 import { imported } from 'ingester/shared/utility';
-import { DEFAULT_RADX_CONFIG } from 'ingester/radx/shared/utility';
+import { DEFAULT_LOADER_CONFIG } from 'ingester/general/shared/utility';
 import { getCell } from 'shared/loader/utilities/utility';
 
 export function parseSources(row: any) {
@@ -9,5 +9,5 @@ export function parseSources(row: any) {
     }
     return [{sourceName: source, imported}];*/
 
-    return [{sourceName: DEFAULT_RADX_CONFIG.source, imported}];
+    return [{sourceName: DEFAULT_LOADER_CONFIG.source, imported}];
 }

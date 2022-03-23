@@ -4,12 +4,12 @@ import { PermissibleValueCodeSystem } from 'shared/models.model';
 export const CSV_HEADER_MAP: Record<string, string> = {
     'naming.designation': 'CDE Name',
     'naming.definiton': 'CDE Definition',
-    source: 'Question Source /Origin/Reference',
+    source: 'CDE Source',
     'datatypeValueList:datatype': 'CDE Data Type',
-    valueMeaningName: 'Value Meaning Label\r\n',
+    valueMeaningName: 'Permissible Value (PV) Labels',
     valueMeaningCode: 'Value/Code',
     codeSystemName: 'Value Code System',
-    valueMeaningDefinition: 'Value Meaning Definition',
+    valueMeaningDefinition: 'Permissible Value (PV) Definitions',
     origin: 'DEC Concept Terminology Source',
     originId: 'Data Element Concept (DEC) Identifier'
 };
@@ -19,7 +19,7 @@ export const REQUIRED_FIELDS: string[] = [
     'naming.definiton',
     'datatypeValueList:datatype',
     'source',
-    'Question Text / Item Text',
+    'Preferred Question Text',
     'origin',
     'originId'
 ];
@@ -29,9 +29,12 @@ export const SPELL_CHECK_FIELDS: string[] = [
     'naming.definiton'
 ];
 
-export function formatRows(csvFileName: string, rows: any[]) {
+export function formatRows(csvFileName: string, rows: any[], skipCount: number) {
     const formattedRows: Record<string,string>[] = [];
     rows.forEach((row, i) => {
+        if(i < skipCount){
+            return;
+        }
         const formattedRow: Record<string,string> = {};
         for (const p in row) {
             if (row.hasOwnProperty(p)) {
@@ -70,25 +73,21 @@ export function formatKey(key: string) {
 }
 
 export function parsePermissibleValueArray(row: Record<string, string>): string[] {
-    return getCell(row, 'valueMeaningName').replace(/,|\n/g, ';').split(';')
+    return getCell(row, 'valueMeaningName').split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
 
 export function parseValueDefinitionArray(row: Record<string,string>) {
-    let valueMeaningDefinitionString = getCell(row, 'valueMeaningDefinition').split(';\n').join(';');
-    valueMeaningDefinitionString = valueMeaningDefinitionString.split(String.fromCharCode(145, 145)).join('"');
-    valueMeaningDefinitionString = valueMeaningDefinitionString.split(String.fromCharCode(146, 146)).join('"');
-    valueMeaningDefinitionString = valueMeaningDefinitionString.split(String.fromCharCode(145)).join("'");
-    valueMeaningDefinitionString = valueMeaningDefinitionString.split(String.fromCharCode(146)).join("'");
-
-    return valueMeaningDefinitionString.split(';').filter(t => t.trim()).map(t => t.trim());
+    return getCell(row, 'valueMeaningDefinition').split('|')
+        .map(t => t.trim())
+        .filter(t => t);
 }
 
 export function parseValueMeaningCodeArray(row: Record<string,string>) {
-    const valueMeaningCodeString = getCell(row, 'Value Meaning Terminology Concept Identifier').split(';\n').join(';');
-
-    return valueMeaningCodeString.split(';').filter(t => t.trim()).map(t => t.trim());
+    return getCell(row, 'Permissible Value (PV) \nConcept Identifiers').split('|')
+        .map(t => t.trim())
+        .filter(t => t);
 }
 
 const CODE_SYSTEM_MAP: Record<string, PermissibleValueCodeSystem> = {

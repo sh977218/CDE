@@ -77,6 +77,7 @@ For elastic.hosts: set to "https://localhost:40001" (or whatever port number was
 For the mongo hosts: delete two of the database.servers hosts. For the remaining one, change host to "localhost" and port to 37017 (or whichever port for mongo you want to use that was set in SecureCRT)
 For mongoCdePassword set this to the mongo password. (Will need to ask for this).
 For both "sslCAPath" and "sslCertPath" properties to path of a new mongo.pem file that needs to be put somewhere on the machine. This can be placed in a new folder structure "ssl/qa" in the root of the cde repo. Can be placed anywhere but if in the ssl folder it will be git ignored. Some other properties can also be removed: logFile, expressLogFile, proxy, logBufferSize.
+Under appData.options and log.options add "directConnection: true".
 
 At this point, if a bastion host is running and SecureCRT is connected, then running the server with the qa-live configuration should allow for a connection to the QA database. It should start without errors if everything is working. A loader can be run and the data will be put directly on QA for verification/testing.
 

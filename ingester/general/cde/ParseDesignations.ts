@@ -4,16 +4,12 @@ import { getCell } from 'shared/loader/utilities/utility';
 
 export function parseDesignations(row: any){
     const title = getCell(row, 'naming.designation');
-    let questionText = getCell(row, 'Question Text / Item Text');
-    questionText = questionText.split(String.fromCharCode(145,145)).join('"');
-    questionText = questionText.split(String.fromCharCode(146,146)).join('"');
-    questionText = questionText.split(String.fromCharCode(145)).join("'");
-    questionText = questionText.split(String.fromCharCode(146)).join("'");
+    const questionText = getCell(row, 'Preferred Question Text');
     const designations = [];
     if(isEqual(title, questionText)){
         designations.push({
             designation: title,
-            tags: ['Question Text']
+            tags: ['Preferred Question Text']
         });
     }
     else{
@@ -23,7 +19,7 @@ export function parseDesignations(row: any){
         });
         designations.push({
             designation: questionText,
-            tags: ['Question Text']
+            tags: ['Preferred Question Text']
         });
     }
     return designations;

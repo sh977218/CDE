@@ -3,11 +3,14 @@ import { Definition, Designation } from 'shared/models.model';
 
 const XLSX = require('xlsx');
 
-const DEFAULT_REGISTRATION_STATUS = 'Qualified';
-const DEFAULT_CLASSIFICATION_ORG_NAME = 'RADx Executive Committee';
-const DEFAULT_CLASSIFICATION_ARRAY: string[] = [];
-const DEFAULT_STEWARD_ORG_NAME = 'RADx Executive Committee';
-const DEFAULT_SOURCE = 'RADx';
+const DEFAULT_REGISTRATION_STATUS = 'Candidate';
+const DEFAULT_ADMINISTRATIVE_STATUS = 'Org Approve';
+const DEFAULT_CLASSIFICATION_ORG_NAME = 'Project 5';
+const DEFAULT_CLASSIFICATION_ARRAY: string[] = ['Tier 1'];
+const DEFAULT_STEWARD_ORG_NAME = 'Project 5';
+const DEFAULT_SOURCE = 'Project 5';
+const SKIP_ROWS = 4;
+const ENDORSED = true;
 
 const MAPPING_CSV_FILE = 'S:/MLB/CDE/RADX/NIH CDE-R Fields 2021-06-14.xlsx';
 
@@ -18,15 +21,18 @@ const CSV_HEADER_MAP: any = {
 
 };
 
-export class RadXConfig {
+export class LoaderConfig {
     registrationStatus = DEFAULT_REGISTRATION_STATUS;
+    administrativeStatus = DEFAULT_ADMINISTRATIVE_STATUS;
     classificationOrgName = DEFAULT_CLASSIFICATION_ORG_NAME;
     classificationArray: string[] = DEFAULT_CLASSIFICATION_ARRAY;
     source = DEFAULT_SOURCE;
     stewardOrg = DEFAULT_STEWARD_ORG_NAME;
+    skipRows = SKIP_ROWS;
+    endorsed = ENDORSED;
 }
 
-export const DEFAULT_RADX_CONFIG = new RadXConfig();
+export const DEFAULT_LOADER_CONFIG = new LoaderConfig();
 
 function populateHeaderMap(){
     const workbook = XLSX.readFile(MAPPING_CSV_FILE);

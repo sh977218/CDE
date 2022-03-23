@@ -69,12 +69,16 @@ public class ValidateCSVLoadTest extends NlmCdeBaseTest{
         Assert.assertTrue(resp.getBody().print().contains("Mismatch between amount of permissible values"));
     }
 
-    String simpleCSVString = ",\"CDE Name\",\"CDE Data Type\",\"CDE Type\",\"Value Meaning Label\",\"Value Meaning Definition\",\"Value Meaning Terminology Concept Identifier\",\"Value Meaning Terminology Source\"\n" +
-            "2,Ethnicity,Value List,Individual CDE,\"Hispanic or Latino; \n" +
+    String simpleCSVString = ",\"CDE Name\",\"CDE Data Type\",\"CDE Type\",\"Permissible Value (PV) Labels\",\"Permissible Value (PV) Definitions\",\"Permissible Value (PV) \nConcept Identifiers\",\"Permissible Value (PV) Terminology Sources\"\n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
+            " , \n" +
+            "2,Ethnicity,Value List,Individual CDE,\"Hispanic or Latino| \n" +
             "Not Hispanic or Latino\",\"Hispanic or Latino: A person of Cuban, Mexican, Puerto Rican, \n" +
             "South or Central American, or other Spanish culture or origin, \n" +
-            "regardless of race.  The term “Spanish origin” can also be used \n" +
-            "in addition to “Hispanic or Latino.”;\n" +
-            "\",\"C0086409;\n" +
+            "regardless of race.  The term Spanish origin can also be used \n" +
+            "in addition to Hispanic or Latino.|\n" +
+            "\",\"C0086409|\n" +
             "C1518424\",UMLS Metathesaurus";
 }

@@ -16,7 +16,7 @@ export async function parseValueDomain(row: any){
     };
 
     const datatype = getCell(row, 'datatypeValueList:datatype');
-    const permissibleValueString = getCell(row, 'valueMeaningName').replace(/,|\n/g, ';');
+    const permissibleValueString = getCell(row, 'valueMeaningName');
 
     if(datatype !== 'Value List' && permissibleValueString){
         console.log(`Error: bad pvs: Name :'${title}' Data type is : '${datatype}' but permissible values were specified. Should this be a Value List type?`);
@@ -25,7 +25,7 @@ export async function parseValueDomain(row: any){
 
     if (datatype === 'Value List') {
         valueDomain.datatype = 'Value List';
-        const valueMeaningCodeSystem = getCell(row, 'Value Meaning Terminology Source');
+        const valueMeaningCodeSystem = getCell(row, 'Permissible Value (PV) Terminology Sources').split('|')[0];
         if(permissibleValueString){
             const permissibleValueArray = parsePermissibleValueArray(row);
             const valueMeaningDefinitionArray = parseValueDefinitionArray(row);
@@ -33,7 +33,7 @@ export async function parseValueDomain(row: any){
 
             const validOutput = validatePermissibleValues(permissibleValueArray, valueMeaningDefinitionArray, valueMeaningCodeArray, title);
 
-            if(!!validOutput){
+            if(validOutput.length > 0){
                 console.log(`Permissible values error for ${title}: ${validOutput}`);
                 // process.exit(1);
             }
@@ -43,20 +43,20 @@ export async function parseValueDomain(row: any){
                     permissibleValue: pv,
                     valueMeaningName: pv,
                     valueMeaningCode: valueMeaningCodeArray[i],
-                    valueMeaningDefinition: valueMeaningDefinitionArray[i] ? valueMeaningDefinitionArray[i].split(':')[1].trim() : null,
+                    valueMeaningDefinition: valueMeaningDefinitionArray[i] ? valueMeaningDefinitionArray[i].split('|')[0].trim() : null,
                     codeSystemName: valueMeaningCodeSystem
                 };
                 valueDomain.permissibleValues.push(permissibleValue);
             });
 
-            const umlsOutput = await validateAgainstUMLS(valueDomain.permissibleValues, title);
+            const umlsOutput = ''; // await validateAgainstUMLS(valueDomain.permissibleValues, title);
             if(!!umlsOutput){
                 console.log(`UMLS Error for ${title}: ${umlsOutput}`);
                 // process.exit(1);
             }
         }
         else{
-            console.log(`Error: bad pvs: Name :'${title}' datatype: '${datatype}' permissibleValue '${permissibleValueString}'`);
+            console.log(`Error: missing permissible values. Name :'${title}'. Permissible values must be provided for a Value List type`);
             process.exit(1);
         }
     }

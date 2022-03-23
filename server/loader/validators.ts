@@ -10,7 +10,7 @@ import {
     CSV_HEADER_MAP
 } from 'shared/loader/utilities/utility';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
-import { PermissibleValue, PermissibleValueCodeSystem } from 'shared/models.model';
+import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
 import { validatePvs } from 'server/cde/utsValidate';
 import * as XLSX from 'xlsx';
 import * as spellChecker from 'simple-spellchecker';
@@ -33,12 +33,6 @@ export function validatePermissibleValues(pvs: string[], valueDefs: string[], va
 
     if (valueDefs.length !== pvs.length || valueCodes.length !== pvs.length) {
         output.push('Mismatch between amount of permissible values and amount of codes and/or value definitions');
-    }
-
-    for (const i in valueDefs) {
-        if (valueDefs[i].split(':')[0].trim() !== pvs[i]) {
-            output.push(`Value Def: '${valueDefs[i]}' does not match Permissible Value: '${pvs[i]}'`);
-        }
     }
 
     return output;
@@ -89,9 +83,9 @@ export async function runValidationOnLoadCSV(csvFile: string) {
         name: string,
         logs: string[]
     }[];
-    let rowIdx = 2; // Rows start at 1 in excel so first row with data, after header, is row 2
-    // Do the formatting and then start validating
-    const formattedRows = formatRows('UploadedFile', workBookRows);
+    let rowIdx = 6;
+
+    const formattedRows = formatRows('UploadedFile', workBookRows, 4);
 
     if (!formattedRows || formattedRows.length === 0) {
         fileErrors.push('No data found to validate. Was this a valid CSV file?');
@@ -101,7 +95,7 @@ export async function runValidationOnLoadCSV(csvFile: string) {
             currentLogs.push(...checkRequiredFields(row));
             const title = getCell(row, 'naming.designation');
             const datatype = getCell(row, 'datatypeValueList:datatype');
-            const permissibleValueString = getCell(row, 'valueMeaningName').replace(/,|\n/g, ';');
+            const permissibleValueString = getCell(row, 'valueMeaningName');
             if (datatype !== 'Value List' && permissibleValueString) {
                 currentLogs.push(`Data type is: '${datatype}' but permissible values were specified. Should this be a Value List type?`);
             }
@@ -111,12 +105,12 @@ export async function runValidationOnLoadCSV(csvFile: string) {
                 const pvArray = parsePermissibleValueArray(row);
                 const valueDefArray = parseValueDefinitionArray(row);
                 const valueMeaningArray = parseValueMeaningCodeArray(row);
-                const valueMeaningCodeSystem: PermissibleValueCodeSystem = parseCodeSystemName(getCell(row, 'Value Meaning Terminology Source'));
+                const valueMeaningCodeSystem: PermissibleValueCodeSystem = parseCodeSystemName(getCell(row, 'Permissible Value (PV) Terminology Sources').split('|')[0]);
 
                 currentLogs.push(...validatePermissibleValues(pvArray, valueDefArray, valueMeaningArray, title));
 
-                if (!valueMeaningCodeSystem) {
-                    currentLogs.push(`Data type is: '${datatype}' but no Value Meaning Terminology Source was provided.`);
+                if (!valueMeaningCodeSystem || !permissibleValueCodeSystems.includes(valueMeaningCodeSystem)) {
+                    currentLogs.push(`Data type is: '${datatype}' but no valid Value Meaning Terminology Source was provided.`);
                 }
 
                 const valueDomain = {
@@ -126,7 +120,7 @@ export async function runValidationOnLoadCSV(csvFile: string) {
                         permissibleValue: value,
                         valueMeaningName: value,
                         valueMeaningCode: valueMeaningArray[i],
-                        valueMeaningDefinition: valueDefArray[i] ? valueDefArray[i].split(':')[1].trim() : '',
+                        valueMeaningDefinition: valueDefArray[i] ? valueDefArray[i].split('|')[0].trim() : '',
                         codeSystemName: valueMeaningCodeSystem
                     })) as PermissibleValue[]
                 };
@@ -161,9 +155,9 @@ export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) 
         error: string,
         field: string
     }[]> = {};
-    let rowIdx = 2;
+    let rowIdx = 6;
 
-    const formattedRows = formatRows('UploadedFile', workBookRows);
+    const formattedRows = formatRows('UploadedFile', workBookRows, 4);
 
     if (!formattedRows || formattedRows.length === 0) {
         fileErrors.push('No data found to validate. Was this a valid CSV file?');

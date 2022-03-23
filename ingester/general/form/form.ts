@@ -1,12 +1,12 @@
 import { isEmpty } from 'lodash';
 import { generateTinyId } from 'server/system/mongo-data';
-import { parseDesignations } from 'ingester/radx/form/ParseDesignations';
-import { parseDefinitions } from 'ingester/radx/form/ParseDefinitions';
-import { parseSources } from 'ingester/radx/form/ParseSources';
+import { parseDesignations } from 'ingester/general/form/ParseDesignations';
+import { parseDefinitions } from 'ingester/general/form/ParseDefinitions';
+import { parseSources } from 'ingester/general/form/ParseSources';
 import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
-import { parseFormElements } from 'ingester/radx/form/ParseFormElements';
-import { parseOrigin } from 'ingester/radx/form/ParseOrigin';
-import { parseProperties } from 'ingester/radx/form/ParseProperties';
+import { parseFormElements } from 'ingester/general/form/ParseFormElements';
+import { parseOrigin } from 'ingester/general/form/ParseOrigin';
+import { parseProperties } from 'ingester/general/form/ParseProperties';
 
 
 export async function createForm(row: any, formCdes: any[]) {
@@ -16,7 +16,7 @@ export async function createForm(row: any, formCdes: any[]) {
     const origin = parseOrigin(row);
     const properties = parseProperties(row);
 
-    const radxForm: any = {
+    const newForm: any = {
         tinyId: generateTinyId(),
         stewardOrg: {
             name: 'RADx Executive Committee'
@@ -41,12 +41,12 @@ export async function createForm(row: any, formCdes: any[]) {
     };
 
     if (!isEmpty(formCdes)) {
-        radxForm.formElements = await parseFormElements(radxForm, formCdes);
+        newForm.formElements = await parseFormElements(newForm, formCdes);
         for (const cde of formCdes) {
-            // parseNhlbiCdeClassification(radxForm, cde);
+            // parseNhlbiCdeClassification(newForm, cde);
         }
     }
 
 
-    return radxForm;
+    return newForm;
 }
