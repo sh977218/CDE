@@ -58,7 +58,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
-    @ViewChild('exportPublishModal', {static: true}) exportPublishModal!: TemplateRef<any>;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
     commentMode?: boolean;
     currentTab = 'preview_tab';
@@ -165,22 +164,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
             }, err => {
                 this.alert.httpErrorMessageAlert(err);
             });
-    }
-
-    exportPublishForm() {
-        this.http.post('/server/form/publish/' + this.elt._id, {
-            publishedFormName: this.formInput.publishedFormName,
-            endpointUrl: this.formInput.endpointUrl
-        }).subscribe(
-            () => {
-                this.userService.reload();
-                this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
-                this.dialogRef.close();
-            }, err => {
-                this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
-                this.dialogRef.close();
-            }
-        );
     }
 
     eltLoad(getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm, cb = noop) {
@@ -290,11 +273,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     openFormCdesModal() {
         this.questions = formQuestions(this.elt);
         this.dialogRef = this.dialog.open(this.formCdesContent, {width: '800px'});
-    }
-
-    openExportPublishModal() {
-        this.formInput = {};
-        this.dialogRef = this.dialog.open(this.exportPublishModal, {width: '800px'});
     }
 
     pinAllCdesIntoBoard() {

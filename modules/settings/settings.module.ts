@@ -64,7 +64,6 @@ import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
-import { MyPublishedFormsComponent } from 'settings/myPublishedForms/myPublishedForms.component';
 import { NotificationComponent } from 'settings/notification/notification.component';
 import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
 import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
@@ -113,12 +112,6 @@ const appRoutes: Routes = [
                 component: ViewingHistoryComponent,
                 canActivate: [LoggedInGuard],
                 data: {title: 'Viewing History'}
-            },
-            {
-                path: 'publishedForms',
-                component: MyPublishedFormsComponent,
-                canActivate: [LoggedInGuard],
-                data: {title: 'My Published Forms'}
             },
             {
                 path: 'myDrafts',
@@ -323,7 +316,6 @@ const appRoutes: Routes = [
         IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,
-        MyPublishedFormsComponent,
         NotificationComponent,
         OneListMgtComponent,
         OrgsEditComponent,

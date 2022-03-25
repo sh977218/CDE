@@ -164,9 +164,6 @@
                                         XML File, NIH/CDE Schema
                                     </button>
                                 </ng-template>
-                                <button mat-menu-item (click)="openExportPublishModal()">
-                                    Published Form
-                                </button>
                                 <button mat-menu-item (click)="exportService.redcapExport(elt)">
                                     REDCap
                                     <a class="darken" title="Information"
@@ -325,40 +322,6 @@
     <div mat-dialog-content>
         <question-according-list [formElements]="questions"></question-according-list>
     </div>
-</ng-template>
-<ng-template #exportPublishModal id="publishFormModal">
-    <h1 mat-dialog-title="">Export to a Published Form</h1>
-    <form #createPublishedForm="ngForm">
-        <div mat-dialog-content>
-            <p class="text-info">This export will generate a published version of this form that will submit data to
-                the endpoint of your choice. Note that the NIH CDE Repository will not have access to any of the
-                submitted.
-                You will need to ensure that your endpoint meets your own security standards. A sample endpoint could be
-                a Google Spreadsheet (via a Google Script published as a web app).
-            </p>
-            To get started, please follow these steps:
-            <div class="form-group">
-                <label for="publishedFormUrl">Copy paste that URL here:</label>
-                <input type="url" class="form-control" id="publishedFormUrl" [(ngModel)]="formInput.endpointUrl"
-                       name="publishedFormUrl" #endpointUrl="ngModel" required>
-                <p *ngIf="endpointUrl.errors">Not a valid URL.</p>
-                <p>Your published forms will appear in your profile.</p>
-            </div>
-            <div class="form-group">
-                <label for="publishedFormName">Give your published form a name so you can find it more easily.</label>
-                <input class="form-control" id="publishedFormName" [(ngModel)]="formInput.publishedFormName"
-                       name="publishedFormName" required>
-                Click "Publish my form" below and write down the final URL. This is the url you will open to start
-                recording your data.
-            </div>
-        </div>
-        <div mat-dialog-actions>
-            <button id="cancelExport" class="button fail" [mat-dialog-close]>Cancel</button>
-            <button id="goExport" class="button" (click)="exportPublishForm()"
-                    [disabled]="!createPublishedForm.form.valid">Publish my form.
-            </button>
-        </div>
-    </form>
 </ng-template>
 <cde-pin-board-modal #mltPinModal module="form"></cde-pin-board-modal>
 <cde-pin-board-modal #mltPinModalCde module="cde"></cde-pin-board-modal>

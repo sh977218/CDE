@@ -6,7 +6,7 @@ import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import {
     viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
-    forEditById, publishFormToHtml, forEditByTinyId, forEditByTinyIdAndVersion
+    forEditById, forEditByTinyId, forEditByTinyIdAndVersion
 } from 'server/form/formsvc';
 import {
     formModel,
@@ -159,9 +159,6 @@ export function module() {
         }),
         validateBody, forEditById);
 
-    router.post('/server/form/publish/:id', loggedInMiddleware, publishFormToHtml);
-
-
     /* ---------- PUT NEW REST API above ---------- */
 
     router.post('/server/form/search', (req, res) => {
@@ -225,33 +222,6 @@ export function module() {
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
         });
-    });
-
-    // This is for tests only
-    router.post('/server/sendMockFormData', (req, res) => {
-        const mapping = JSON.parse(req.body.mapping);
-        if (req.body['0-0'] === '1' && req.body['0-1'] === '2'
-            && req.body['0-2'] === 'Lab Name'
-            && req.body['0-3'] === 'FEMALE'
-            && mapping.sections[0].questions[0].question === 'Number of CAG repeats on a larger allele'
-            && mapping.sections[0].questions[0].name === '0-0'
-            && mapping.sections[0].questions[0].ids[0].source === 'NINDS'
-            && mapping.sections[0].questions[0].ids[0].id === 'C14936'
-            && mapping.sections[0].questions[0].ids[0].version === '3'
-            && mapping.sections[0].questions[0].ids[1].source === 'NINDS Variable Name'
-            && mapping.sections[0].questions[0].ids[1].id === 'CAGRepeatsLargerAlleleNum'
-            && mapping.sections[0].questions[0].tinyId === 'VTO0Feb6NSC'
-            && mapping.sections[0].questions[1].tinyId === 'uw_koHkZ_JT'
-            && mapping.sections[0].questions[2].question === 'Name of laboratory that performed this molecular study'
-            && mapping.sections[0].questions[2].name === '0-2'
-            && mapping.sections[0].questions[2].tinyId === 'EdUB2kWmV61'
-            && mapping.sections[0].questions[3].name === '0-3'
-            && mapping.sections[0].questions[3].tinyId === 'JWWpC2baVwK'
-        ) {
-            res.send('<html lang="en"><body>Form Submitted</body></html>');
-        } else {
-            res.status(401).send('<html lang="en"><body>Not the right input</body></html>');
-        }
     });
 
     router.get('/formView', (req, res) => {

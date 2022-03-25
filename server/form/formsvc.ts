@@ -13,7 +13,6 @@ import {
 import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { getFormNih } from 'server/form/nihForm';
 import { getFormOdm } from 'server/form/odmForm';
-import { getFormForPublishing } from 'server/form/publishForm';
 import { formToSDC } from 'server/form/sdcForm';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
@@ -320,23 +319,6 @@ export function byTinyIdList(req: Request, res: Response): Promise<Response> {
 export function latestVersionByTinyId(req: Request, res: Response): Promise<Response> {
     return dbPlugins.form.versionByTinyId(req.params.tinyId)
         .then(version => res.send(version), respondError({req, res}));
-}
-
-export function publishFormToHtml(req: Request, res: Response) {
-    /* istanbul ignore if */
-    if (!req.params.id || req.params.id.length !== 24) {
-        return res.status(400).send();
-    }
-    return dbPlugins.form.byId(req.params.id).then(form => {
-        if (!form) {
-            return res.status(404).send();
-        }
-        fetchWholeForm(form, handleError({
-            req, res, message: 'Fetch whole for publish'
-        }, wholeForm => {
-            getFormForPublishing(wholeForm, req, res);
-        }));
-    }, respondError({req, res}));
 }
 
 export function create(req: Request, res: Response) {

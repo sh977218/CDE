@@ -14,9 +14,6 @@
                 <mat-list-item id="viewingHistory" [routerLinkActive]="['isActive']" routerLink="viewingHistory">
                     Viewing History
                 </mat-list-item>
-                <mat-list-item id="myPublishedForms" [routerLinkActive]="['isActive']" routerLink="publishedForms">
-                    My Published Forms
-                </mat-list-item>
                 <ng-container *ngIf="userSvc.isOrgCurator()">
                     <mat-divider></mat-divider>
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="myDrafts">
