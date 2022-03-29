@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Resolve, Router } from '@angular/router';
-import { empty, Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DraftsService } from 'settings/drafts/drafts.service';
 import { Article } from 'shared/article/article.model';
@@ -15,7 +15,7 @@ export class AllDraftsResolve implements Resolve<Observable<Article>> {
         return this.draftSvc.allDrafts()
             .pipe(catchError(() => {
                 this.router.navigate(['/404']);
-                return empty();
+                return EMPTY;
             }));
     }
 }

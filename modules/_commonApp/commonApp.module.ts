@@ -1,5 +1,5 @@
 import { ErrorHandler, NgModule } from '@angular/core';
-import { FrontExceptionHandler } from '_commonApp/frontExceptionHandler';
+import { FrontExceptionHandler } from '_app/frontExceptionHandler';
 
 @NgModule({
     imports: [

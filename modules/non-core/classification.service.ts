@@ -2,8 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import * as _isEqual from 'lodash/isEqual';
-import * as _uniqWith from 'lodash/uniqWith';
+import { uniqWith, isEqual } from 'lodash';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import {
     Cb,
@@ -34,8 +33,8 @@ export class ClassificationService {
             categories: i,
             orgName: item.orgName
         }));
-        recentlyClassification = _uniqWith(recentlyClassification, (a: any, b: any) =>
-            _isEqual(a.categories, b.categories) && _isEqual(a.orgName, b.orgName));
+        recentlyClassification = uniqWith(recentlyClassification, (a: any, b: any) =>
+            isEqual(a.categories, b.categories) && isEqual(a.orgName, b.orgName));
         this.localStorageService.setItem('classificationHistory', recentlyClassification);
 
     }

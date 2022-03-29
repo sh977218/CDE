@@ -1,7 +1,4 @@
-import * as _find from 'lodash/find';
-import * as _slice from 'lodash/slice';
-import * as _sortBy from 'lodash/sortBy';
-import * as _uniqWith from 'lodash/uniqWith';
+import { find, slice, sortBy, uniqWith } from 'lodash';
 import { Cb1, Classification, ClassificationElement, Item, ObjectId } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
@@ -16,7 +13,7 @@ export const actions: {
 };
 
 function findClassifOrCreate(elements: ClassificationElement[], category: string): ClassificationElement {
-    let found = _find(elements, (element: ClassificationElement) => element.name === category);
+    let found = find(elements, (element: ClassificationElement) => element.name === category);
     if (!found) {
         found = {name: category, elements: []};
         elements.push(found);
@@ -28,7 +25,7 @@ export function addCategoriesToOrg(org: Organization, categories: string[]): voi
     if (!org.classifications) {
         org.classifications = [];
     }
-    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), _slice(categories, 1));
+    addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), slice(categories, 1));
 }
 
 export function addCategoriesToTree(tree: Classification | ClassificationElement, categories: string[]): void {
@@ -55,7 +52,7 @@ export function findLeaf(classification: Classification, categories: string[]): 
     let leaf: Classification | ClassificationElement | undefined = classification;
     let parent: Classification | ClassificationElement | undefined = classification;
     categories.forEach((category, i) => {
-        const found = _find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
+        const found = find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
         if (i === categories.length - 2) {
             parent = found;
         }
@@ -237,7 +234,7 @@ export interface OrgClassificationAggregate {
 
 function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
     const duplicatedElements: Element[] = e1.concat(e2);
-    const uniqElements = _uniqWith(duplicatedElements, (arrVal: Element, othVal: Element) => {
+    const uniqElements = uniqWith(duplicatedElements, (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
             othVal.elements = mergeElements(arrVal.elements, othVal.elements);
             return true;
@@ -245,7 +242,7 @@ function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
             return false;
         }
     });
-    const sortElements = _sortBy(uniqElements, 'name');
+    const sortElements = sortBy(uniqElements, 'name');
     return sortElements;
 }
 

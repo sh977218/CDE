@@ -3,10 +3,10 @@ package gov.nih.nlm.board.cde;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class BoardClassification extends BoardTest {
+public class BoardClassifyAllCdesTest extends BoardTest {
 
     @Test
-    public void classifyAllCdes() {
+    public void boardClassifyAllCdes() {
         mustBeLoggedInAs(classifyBoardUser_username, password);
         goToBoard("Classify Board");
         clickElement(By.id("board.classifyAllCdes"));

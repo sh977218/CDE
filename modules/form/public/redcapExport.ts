@@ -2,8 +2,7 @@ import { Dictionary } from 'async';
 import { saveAs } from 'file-saver';
 import { Parser } from 'json2csv';
 import * as JSZip from 'jszip';
-import * as _isEqual from 'lodash/isEqual';
-import * as _uniqWith from 'lodash/uniqWith';
+import { isEqual, uniqWith } from 'lodash';
 import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection } from 'shared/form/form.model';
 import { isQuestion } from 'shared/form/fe';
 
@@ -124,7 +123,9 @@ export class RedcapExport {
                     redCapSkipLogic = redCapSkipLogic.replace(label, '[' + foundVariable + ']');
                 }
             });
-        } else { redCapSkipLogic = 'Error Parse ' + skipLogicString; }
+        } else {
+            redCapSkipLogic = 'Error Parse ' + skipLogicString;
+        }
         return redCapSkipLogic;
     }
 
@@ -139,15 +140,19 @@ export class RedcapExport {
             const sectionHeader = formElement.label ? formElement.label : '';
             const fieldLabel = formElement.instructions ? formElement.instructions.value : '';
             if (sectionsAsMatrix) {
-                const temp = _uniqWith(formElement.formElements, (a: FormElement, b: FormElement) => _isEqual(
+                const temp = uniqWith(formElement.formElements, (a: FormElement, b: FormElement) => isEqual(
                     isQuestion(a) && a.question.datatype === 'Value List' && a.question.answers,
                     isQuestion(b) && b.question.datatype === 'Value List' && b.question.answers
                 ));
-                if (temp.length > 1) { sectionsAsMatrix = false; }
+                if (temp.length > 1) {
+                    sectionsAsMatrix = false;
+                }
             }
             let _sectionSkipLogic = '';
             const sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (sectionSkipLogic) { _sectionSkipLogic = RedcapExport.formatSkipLogic(sectionSkipLogic, labelToVariablesMap); }
+            if (sectionSkipLogic) {
+                _sectionSkipLogic = RedcapExport.formatSkipLogic(sectionSkipLogic, labelToVariablesMap);
+            }
             return {
                 'Variable / Field Name': 'insect_' + i,
                 'Form Name': form.designations[0].designation,
@@ -173,8 +178,12 @@ export class RedcapExport {
             const q = formElement.question;
             let _questionSkipLogic = '';
             const questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
-            if (questionSkipLogic) { _questionSkipLogic = RedcapExport.formatSkipLogic(questionSkipLogic, labelToVariablesMap); }
-            if (!q.cde.tinyId) { q.cde.tinyId = 'missing question cde'; }
+            if (questionSkipLogic) {
+                _questionSkipLogic = RedcapExport.formatSkipLogic(questionSkipLogic, labelToVariablesMap);
+            }
+            if (!q.cde.tinyId) {
+                q.cde.tinyId = 'missing question cde';
+            }
             let variableName = 'nlmcde_' + form.tinyId.toLowerCase() + '_' +
                 variableCounter++ + '_' + q.cde.tinyId.toLowerCase();
             if (existingVariables[variableName]) {

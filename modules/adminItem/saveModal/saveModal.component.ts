@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, ViewChild, EventEmitter, TemplateRef } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
-import * as _isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import { iterateFormElements } from 'shared/form/fe';
 import { MatDialog } from '@angular/material/dialog';
 import { FormQuestionDraft } from 'shared/form/form.model';
@@ -66,7 +66,7 @@ export class SaveModalComponent {
         }
         this.http.get(ITEM_MAP[this.elt.elementType].api + this.elt.tinyId + '/latestVersion/', {responseType: 'text'}).subscribe(
             (res: string) => {
-                if (res && newVersion && _isEqual(res, newVersion)) {
+                if (res && newVersion && isEqual(res, newVersion)) {
                     this.duplicatedVersion = true;
                 } else {
                     this.duplicatedVersion = false;

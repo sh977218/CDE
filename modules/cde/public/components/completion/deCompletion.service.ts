@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
-import { empty, Subject } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement } from 'shared/de/dataElement.model';
 import { SearchSettings } from 'shared/search/search.model';
@@ -26,7 +26,7 @@ export class DeCompletionService {
                     settings.searchTerm = term;
                     return this.http.post<any[]>('/server/de/completion/' + encodeURI(term), settings);
                 } else {
-                    return empty();
+                    return EMPTY;
                 }
             })
         ).subscribe(res => {

@@ -24,9 +24,9 @@ public class DisplayProfilesTest extends BaseFormTest {
         while (i >= 0) {
             if (i == 0) Assert.fail("Unexpected y value");
             int firstGradeY = findElement(By.xpath(baseXpath + byValueListValueXPath("1st Grade"))).getLocation().y;
-            int fifthGrade = findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y;
+            int fifthGradeY = findElement(By.xpath(baseXpath + byValueListValueXPath("5th Grade"))).getLocation().y;
 
-            if (firstGradeY == fifthGrade) {
+            if (firstGradeY == fifthGradeY) {
                 break;
             }
             i--;

@@ -6,20 +6,7 @@ import { EltLog } from 'shared/models.model';
 
 @Component({
     selector: 'cde-form-log',
-    templateUrl: './formLog.component.html',
-    styles: [`
-        :host >>> ins {
-            color: black;
-            background: #bbffbb;
-        }
-        :host >>> del {
-            color: black;
-            background: #ffbbbb;
-        }
-        :host >>> label {
-            margin-bottom: 0;
-        }
-    `]
+    templateUrl: './formLog.component.html'
 })
 export class FormLogComponent {
     records: EltLog[] = [];

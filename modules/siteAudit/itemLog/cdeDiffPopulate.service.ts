@@ -5,7 +5,7 @@
 //   <td class="newValue">{{d.newValue}}</td>
 //   <td class="previousValue">{{d.previousValue}}</td>
 // </tr>
-import * as _isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 import { capCase, decamelize } from 'shared/util';
 import { EltLogDiff, EltLogDiffAmend } from 'shared/models.model';
 
@@ -16,7 +16,7 @@ export function ignoredDiff(d: EltLogDiff): boolean {
         case 'E':
             return !d.previousValue && !d.newValue;
         case 'N':
-            return !d.newValue || typeof d.newValue === 'object' && _isEmpty(d.newValue);
+            return !d.newValue || typeof d.newValue === 'object' && isEmpty(d.newValue);
         default:
             return false;
     }

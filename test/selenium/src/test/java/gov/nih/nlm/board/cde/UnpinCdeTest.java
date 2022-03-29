@@ -2,7 +2,7 @@ package gov.nih.nlm.board.cde;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
-public class UnpinTest extends BoardTest {
+public class UnpinCdeTest extends BoardTest {
 
     @Test
     public void unpinCde() {

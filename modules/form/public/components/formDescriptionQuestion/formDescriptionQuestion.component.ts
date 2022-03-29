@@ -3,8 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from '@circlon/angular-tree-component';
 import { DataElementService } from 'cde/public/dataElement.service';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
-import * as _isEqual from 'lodash/isEqual';
-import * as _toString from 'lodash/toString';
+import { isEqual, toString } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { DataElement, DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
@@ -114,17 +113,19 @@ export class FormDescriptionQuestionComponent implements OnInit {
             newQuestion
         };
         modal.bCde = true;
-        modal.bLabel = !_isEqual(newCde.designations, oldCde.designations);
+        modal.bLabel = !isEqual(newCde.designations, oldCde.designations);
         modal.bDatatype = currentQuestion.question.datatype !== newQuestion.question.datatype;
-        modal.bDefault = _toString(currentQuestion.question.defaultAnswer) !== _toString(newQuestion.question.defaultAnswer);
-        modal.bUom = !_isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
+        modal.bDefault = toString(currentQuestion.question.defaultAnswer) !== toString(newQuestion.question.defaultAnswer);
+        modal.bUom = !isEqual(currentQuestion.question.unitsOfMeasure, newQuestion.question.unitsOfMeasure);
 
         switch (newQuestion.question.datatype) {
             case 'Value List':
                 if (currentQuestion.question.datatype === 'Value List') {
-                    modal.bValuelist = !_isEqual(currentQuestion.question.cde.permissibleValues,
+                    modal.bValuelist = !isEqual(currentQuestion.question.cde.permissibleValues,
                         newQuestion.question.cde.permissibleValues);
-                    if (!modal.bValuelist) { newQuestion.question.answers = currentQuestion.question.answers; }
+                    if (!modal.bValuelist) {
+                        newQuestion.question.answers = currentQuestion.question.answers;
+                    }
 
                     if (currentQuestion.question.defaultAnswer && newQuestion.question.answers.filter(
                         a => a.permissibleValue === currentQuestion.question.defaultAnswer).length > 0) {
@@ -136,7 +137,9 @@ export class FormDescriptionQuestionComponent implements OnInit {
                 break;
             case 'Date':
                 if (currentQuestion.question.datatype === 'Date' && currentQuestion.question.datatypeDate) {
-                    if (!newQuestion.question.datatypeDate) { newQuestion.question.datatypeDate = {}; }
+                    if (!newQuestion.question.datatypeDate) {
+                        newQuestion.question.datatypeDate = {};
+                    }
                     newQuestion.question.datatypeDate.precision = currentQuestion.question.datatypeDate.precision;
                 }
                 break;

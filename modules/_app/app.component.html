@@ -1,0 +1,5 @@
+<cde-navigation></cde-navigation>
+<iframe *ngIf="ssoServerReceiver" #receiver [src]="ssoServerReceiver" (load)="frameReady()"
+        width="0" height="0" style="display: none">
+    <p>Your browser does not support iframes.</p>
+</iframe>

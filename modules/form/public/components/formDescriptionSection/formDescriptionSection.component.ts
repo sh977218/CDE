@@ -9,7 +9,7 @@ import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
-import * as _isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import { fetchForm } from 'nativeRender/form.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -150,7 +150,7 @@ export class FormDescriptionSectionComponent implements OnInit {
             newSection
         };
         modal.bForm = true;
-        modal.bLabel = !_isEqual(newForm.designations, oldForm.designations);
+        modal.bLabel = !isEqual(newForm.designations, oldForm.designations);
 
         this.updateFormVersion = modal;
         this.dialog.open<boolean>(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {

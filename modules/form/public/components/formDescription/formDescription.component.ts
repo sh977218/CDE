@@ -12,7 +12,7 @@ import { convertFormToSection } from 'core/form/form';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/components/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/public/components/formView.component';
-import * as _isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -134,7 +134,7 @@ export class FormDescriptionComponent implements OnInit {
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
-                if (!this.isModalOpen && !_isEmpty(this.formElementEditing) &&
+                if (!this.isModalOpen && !isEmpty(this.formElementEditing) &&
                     this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
                     this.formElementEditing.index++;
                     this.openQuestionSearch();
@@ -257,7 +257,7 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
-        if (_isEmpty(this.formElementEditing.formElement)) {
+        if (isEmpty(this.formElementEditing.formElement)) {
             this.formElementEditing = {
                 formElement,
                 formElements,

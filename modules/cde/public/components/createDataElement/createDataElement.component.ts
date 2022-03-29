@@ -7,7 +7,7 @@ import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.com
 import { AlertService } from 'alert/alert.service';
 import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
 import { classifyItem } from 'core/adminItem/classification';
-import * as _isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
@@ -105,7 +105,7 @@ export class CreateDataElementComponent implements OnInit {
             if (o.cdeId) {
                 o.eltId = o.cdeId;
             }
-            return _isEqual(o, item);
+            return isEqual(o, item);
         });
         recentlyClassification.unshift(item);
         this.localStorageService.setItem('classificationHistory', recentlyClassification);

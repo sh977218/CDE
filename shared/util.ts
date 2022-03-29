@@ -1,4 +1,4 @@
-import * as _cloneDeep from 'lodash/cloneDeep';
+import {cloneDeep} from 'lodash';
 
 export function capCase(str: string): string {
     return str.split(' ').map(capitalize).join(' ');
@@ -18,7 +18,7 @@ export function decamelize(str: string = '', sep: string = ' '): string {
 }
 
 export function deepCopy<T>(obj: T): T {
-    return _cloneDeep(obj);
+    return cloneDeep(obj);
 }
 
 export function noop(...args: any[]): void {

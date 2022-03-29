@@ -4,7 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
-import { empty, Subject } from 'rxjs';
+import { EMPTY, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
@@ -73,9 +73,9 @@ export class PermissibleValueComponent {
             distinctUntilChanged(),
             switchMap(term => term
                 ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
-                    catchError(() => empty())
+                    catchError(() => EMPTY)
                 )
-                : empty()
+                : EMPTY
             )
         ).subscribe((res: any) => {
             if (res?.result?.results) {

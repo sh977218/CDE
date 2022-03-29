@@ -10,13 +10,7 @@ import { MatIconRegistry } from '@angular/material/icon';
 
 @Component({
     selector: 'nih-cde',
-    template: `
-        <cde-navigation></cde-navigation>
-        <iframe *ngIf="ssoServerReceiver" #receiver [src]="ssoServerReceiver" (load)="frameReady()"
-                width="0" height="0" style="display: none">
-            <p>Your browser does not support iframes.</p>
-        </iframe>
-    `
+    templateUrl: 'app.component.html'
 })
 export class CdeAppComponent {
     @ViewChild('receiver') receiver?: ElementRef<HTMLIFrameElement>;

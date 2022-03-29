@@ -1,5 +1,4 @@
-import * as _isEmpty from 'lodash/isEmpty';
-import * as _trim from 'lodash/trim';
+import {isEmpty, trim }from 'lodash';
 import { PermissibleValueCodeSystem } from 'shared/models.model';
 
 export const CSV_HEADER_MAP: Record<string, string> = {
@@ -37,11 +36,11 @@ export function formatRows(csvFileName: string, rows: any[]) {
         for (const p in row) {
             if (row.hasOwnProperty(p)) {
                 const formattedP = formatKey(p);
-                if (!_isEmpty(formattedP)) {
+                if (!isEmpty(formattedP)) {
                     if (formattedP.split('\n')[1] === 'nlm qa recommendation') {
-                        formattedRow[_trim(formattedP.split('\n')[0])] = _trim(row[p]);
+                        formattedRow[trim(formattedP.split('\n')[0])] = trim(row[p]);
                     } else {
-                        formattedRow[formattedP] = _trim(row[p]);
+                        formattedRow[formattedP] = trim(row[p]);
                     }
                 }
             }
@@ -54,8 +53,8 @@ export function formatRows(csvFileName: string, rows: any[]) {
 export function getCell(row: Record<string,string>, header: string) : string {
     const key = formatKey(header);
     const value = row[key];
-    if (!_isEmpty(value)) {
-        return _trim(value);
+    if (!isEmpty(value)) {
+        return trim(value);
     } else {
         return '';
     }
@@ -64,9 +63,9 @@ export function getCell(row: Record<string,string>, header: string) : string {
 export function formatKey(key: string) {
     const mappedKey = CSV_HEADER_MAP[key];
     if (!mappedKey) {
-        return _trim(key.toLowerCase());
+        return trim(key.toLowerCase());
     } else {
-        return _trim(mappedKey.toLowerCase());
+        return trim(mappedKey.toLowerCase());
     }
 }
 

@@ -7,20 +7,7 @@ import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-de-log',
-    templateUrl: './dataElementLog.component.html',
-    styles: [`
-        :host >>> ins {
-            color: black;
-            background: #bbffbb;
-        }
-        :host >>> del {
-            color: black;
-            background: #ffbbbb;
-        }
-        :host >>> label {
-            margin-bottom: 0;
-        }
-    `]
+    templateUrl: './dataElementLog.component.html'
 })
 export class DataElementLogComponent {
     records: EltLog[] = [];

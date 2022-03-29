@@ -54,6 +54,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
         this.questionAnswers = (this.question.question.datatype === 'Value List' && this.question.question.answers || []).map(pvGetLabel);
     }
+
     @Input() canEdit = false;
     @Input() elt!: CdeForm;
     @Output() eltChange: EventEmitter<void> = new EventEmitter<void>();
@@ -177,7 +178,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) { input.value = ''; }
+        if (input) {
+            input.value = '';
+        }
         this.eltChange.emit();
     }
 
@@ -197,7 +200,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) { input.value = ''; }
+        if (input) {
+            input.value = '';
+        }
         this.eltChange.emit();
     }
 
@@ -219,7 +224,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
 
         // Reset the input value
-        if (input) { input.value = ''; }
+        if (input) {
+            input.value = '';
+        }
         question.answers = question.cde.permissibleValues.concat([]) as any;
         this.eltChange.emit();
     }

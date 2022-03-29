@@ -10,7 +10,7 @@ import { RedcapExport } from 'form/public/redcapExport';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import JXON from 'jxon';
-import * as _intersectionWith from 'lodash/intersectionWith';
+import { intersectionWith } from 'lodash';
 import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
@@ -75,7 +75,7 @@ export class ExportService {
                             formCounter++;
                             const esForm = hit._source;
                             const formCdes = getFormQuestionsAsQuestionCde(esForm);
-                            const interArr: ItemElastic[] = _intersectionWith(
+                            const interArr: ItemElastic[] = intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
                                 (a: any, b: any) => a.tinyId === b.tinyId);

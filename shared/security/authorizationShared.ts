@@ -1,5 +1,4 @@
-import * as _intersection from 'lodash/intersection';
-import * as _union from 'lodash/union';
+import { intersection, union } from 'lodash';
 import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRoles } from 'shared/models.model';
 
 export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
@@ -272,8 +271,8 @@ export function hasRolePrivilege(user: User | undefined, privilege: RolePrivileg
 
 export function addRole(user: User, role: UserRoles) {
     if (!hasRole(user, role)) {
-        user.roles = _intersection(
-            _union(
+        user.roles = intersection(
+            union(
                 Array.isArray(user.roles) ? user.roles : [],
                 [role]
             ),

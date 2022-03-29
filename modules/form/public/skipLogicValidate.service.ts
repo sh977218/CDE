@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { tokenSanitizer } from 'core/form/skipLogic';
-import * as _trim from 'lodash/trim';
+import { trim } from 'lodash';
 import { FormElement, FormElementsContainer, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSplitter } from 'shared/form/skipLogic';
 
@@ -106,8 +106,8 @@ export class SkipLogicValidateService {
     }
 
     static validateSkipLogicSingleExpression(parent: FormElementsContainer, fe: FormElement, tokens: string[]): string {
-        const filteredQuestion = getQuestionPriorByLabel(parent, fe, _trim(tokens[0], '"'));
-        const filteredAnswer = _trim(tokens[2], '"');
+        const filteredQuestion = getQuestionPriorByLabel(parent, fe, trim(tokens[0], '"'));
+        const filteredAnswer = trim(tokens[2], '"');
         if (!filteredQuestion) {
             return tokens[0] + ' is not a valid question label';
         }

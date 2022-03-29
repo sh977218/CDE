@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { empty, Subject, timer } from 'rxjs';
+import { EMPTY, Subject, timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
 import { io } from 'socket.io-client';
@@ -70,6 +70,7 @@ type CommentWithShowReplies = Comment & {
 export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltId!: string;
     @Input() eltName!: string;
+    @Input() ownElt!: boolean;
     @Input() canManageComment!: (comment: Comment) => boolean;
 
     @Input() set currentTab(t: string) {
@@ -85,6 +86,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     comments: Array<any> = [];
     newReply: CommentReply = new CommentReply();
+
     subscriptions: any = {};
     private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();
 
@@ -120,7 +122,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
             distinctUntilChanged(),
             map(obj => {
                 this.socket.emit('currentReplying', this.eltId, obj._id);
-                return empty();
+                return EMPTY;
             })
         ).subscribe();
 

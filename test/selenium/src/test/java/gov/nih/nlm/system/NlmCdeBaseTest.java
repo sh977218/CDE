@@ -1098,6 +1098,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + leftIndex + "]"));
         clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + rightIndex + "]"));
+        int leftSelect = findElementsSize(By.xpath(" //*[@id='historyTable']/tr[td][" + leftIndex + "]//mat-icon[normalize-space(text()) = 'check_box']"));
+        int rightSelect = findElementsSize(By.xpath(" //*[@id='historyTable']/tr[td][" + rightIndex + "]//mat-icon[normalize-space(text()) = 'check_box']"));
+        Assert.assertEquals(1, leftSelect);
+        Assert.assertEquals(1, rightSelect);
         clickElement(By.id("historyCompareBtn"));
     }
 

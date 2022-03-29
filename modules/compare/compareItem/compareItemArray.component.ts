@@ -1,10 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import * as _forEach from 'lodash/forEach';
-import * as _differenceWith from 'lodash/differenceWith';
-import * as _intersectionWith from 'lodash/intersectionWith';
-import * as _get from 'lodash/get';
-import * as _isEmpty from 'lodash/isEmpty';
-import * as _isEqual from 'lodash/isEqual';
+import { forEach, get, isEmpty, isEqual, intersectionWith, differenceWith } from 'lodash';
 import { Concept, Concepts, DataElement } from 'shared/de/dataElement.model';
 import { CdeForm, FormElement, FormOrElement, SkipLogic } from 'shared/form/form.model';
 import { isCdeForm, isDataElement } from 'shared/item';
@@ -29,27 +24,27 @@ const compareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            const result = _isEqual(a.document, b.document);
+            const result = isEqual(a.document, b.document);
             if (result) {
-                if (!_isEqual(a.title, b.title)) {
+                if (!isEqual(a.title, b.title)) {
                     a.diff.add('title');
                     b.diff.add('title');
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.uri, b.uri)) {
+                if (!isEqual(a.uri, b.uri)) {
                     a.diff.add('uri');
                     b.diff.add('uri');
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.providerOrg, b.providerOrg)) {
+                if (!isEqual(a.providerOrg, b.providerOrg)) {
                     a.diff.add('providerOrg');
                     b.diff.add('providerOrg');
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.languageCode, b.languageCode)) {
+                if (!isEqual(a.languageCode, b.languageCode)) {
                     a.diff.add('languageCode');
                     b.diff.add('languageCode');
                     a.display = true;
@@ -76,9 +71,9 @@ const compareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            const result = _isEqual(a.designation, b.designation);
+            const result = isEqual(a.designation, b.designation);
             if (result) {
-                if (!_isEqual(a.tags, b.tags)) {
+                if (!isEqual(a.tags, b.tags)) {
                     a.diff.add('tags');
                     b.diff.add('tags');
                     a.display = true;
@@ -102,15 +97,15 @@ const compareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            const result = _isEqual(a.definition, b.definition);
+            const result = isEqual(a.definition, b.definition);
             if (result) {
-                if (!_isEqual(a.definitionFormat, b.definitionFormat)) {
+                if (!isEqual(a.definitionFormat, b.definitionFormat)) {
                     a.diff.add('definitionFormat');
                     b.diff.add('definitionFormat');
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.tags, b.tags)) {
+                if (!isEqual(a.tags, b.tags)) {
                     a.diff.add('tags');
                     b.diff.add('tags');
                     a.display = true;
@@ -135,9 +130,9 @@ const compareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            const result = _isEqual(a.key, b.key);
+            const result = isEqual(a.key, b.key);
             if (result) {
-                if (!_isEqual(a.value, b.value)) {
+                if (!isEqual(a.value, b.value)) {
                     a.diff.add('value');
                     b.diff.add('value');
                     a.display = true;
@@ -161,9 +156,9 @@ const compareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            const result = _isEqual(a.source, b.source) && _isEqual(a.id, b.id);
+            const result = isEqual(a.source, b.source) && isEqual(a.id, b.id);
             if (result) {
-                if (!_isEqual(a.version, b.version)) {
+                if (!isEqual(a.version, b.version)) {
                     a.diff.add('version');
                     b.diff.add('version');
                     a.display = true;
@@ -186,21 +181,21 @@ const cdeCompareArrayOption: any[] = [
     {
         label: 'Value List',
         isEqual(a: any, b: any) {
-            const result = _isEqual(a.valueMeaningName, b.valueMeaningName);
-            if (_isEmpty(a.diff)) {
+            const result = isEqual(a.valueMeaningName, b.valueMeaningName);
+            if (isEmpty(a.diff)) {
                 a.diff = new Set<string>();
             }
-            if (_isEmpty(b.diff)) {
+            if (isEmpty(b.diff)) {
                 b.diff = new Set<string>();
             }
             if (result) {
-                if (!_isEqual(a.permissibleValue, b.permissibleValue)) {
+                if (!isEqual(a.permissibleValue, b.permissibleValue)) {
                     a.diff.add('permissibleValue');
                     b.diff.add('permissibleValue');
                     a.display = true;
                     b.display = true;
                 }
-                if (!_isEqual(a.valueMeaningDefinition, b.valueMeaningDefinition)) {
+                if (!isEqual(a.valueMeaningDefinition, b.valueMeaningDefinition)) {
                     a.diff.add('valueMeaningDefinition');
                     b.diff.add('valueMeaningDefinition');
                     a.display = true;
@@ -227,7 +222,7 @@ const cdeCompareArrayOption: any[] = [
             if (!b.diff) {
                 b.diff = new Set<string>();
             }
-            return _isEqual(a, b);
+            return isEqual(a, b);
         },
         property: 'concepts',
         data: [
@@ -249,34 +244,34 @@ const formCompareArrayOption: any[] = [
                 if (!b.diff) {
                     b.diff = new Set<string>();
                 }
-                const result = _isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
+                const result = isEqual(a.question.cde.tinyId, b.question.cde.tinyId);
                 if (result) {
-                    if (!_isEqual(a.label, b.label)) {
+                    if (!isEqual(a.label, b.label)) {
                         a.diff.add('label');
                         b.diff.add('label');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
+                    if (!isEqual(a.instructions && a.instructions.value, b.instructions && b.instructions.value)) {
                         a.diff.add('instructions.value');
                         b.diff.add('instructions.value');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
+                    if (!isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
                         a.diff.add('question.unitsOfMeasure');
                         b.diff.add('question.unitsOfMeasure');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
+                    if (!isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
                         a.diff.add('skipLogic.condition');
                         b.diff.add('skipLogic.condition');
                         a.display = true;
                         b.display = true;
                     }
                     if (a.question.datatype === 'Value List' && b.question.datatype === 'Value List'
-                        && !_isEqual(a.question.answers, b.question.answers)) {
+                        && !isEqual(a.question.answers, b.question.answers)) {
                         a.diff.add('question.answers');
                         b.diff.add('question.answers');
                         a.question.answers = JSON.stringify(a.question.answers);
@@ -288,32 +283,32 @@ const formCompareArrayOption: any[] = [
                 return result;
             }
             if ((a.elementType === 'form' && b.elementType === 'form') || (a.elementType === 'section' && b.elementType === 'section')) {
-                if (_isEmpty(a.diff)) {
+                if (isEmpty(a.diff)) {
                     a.diff = new Set<string>();
                 }
-                if (_isEmpty(b.diff)) {
+                if (isEmpty(b.diff)) {
                     b.diff = new Set<string>();
                 }
 
-                let result = _isEqual(a.sectionId, b.sectionId);
+                let result = isEqual(a.sectionId, b.sectionId);
                 if (a.elementType === 'form' && b.elementType === 'form') {
-                    result = _isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
+                    result = isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 }
                 if (result) {
-                    if (!_isEqual(a.instructions && a.instructions.value ? a.instructions.value : '',
+                    if (!isEqual(a.instructions && a.instructions.value ? a.instructions.value : '',
                         b.instructions && b.instructions.value ? b.instructions.value : '')) {
                         a.diff.add('instructions.value');
                         b.diff.add('instructions.value');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.repeat, b.repeat)) {
+                    if (!isEqual(a.repeat, b.repeat)) {
                         a.diff.add('repeat');
                         b.diff.add('repeat');
                         a.display = true;
                         b.display = true;
                     }
-                    if (!_isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
+                    if (!isEqual(a.skipLogic && a.skipLogic.condition, b.skipLogic && b.skipLogic.condition)) {
                         a.diff.add('skipLogic.condition');
                         b.diff.add('skipLogic.condition');
                         a.display = true;
@@ -342,48 +337,15 @@ const formCompareArrayOption: any[] = [
 
 @Component({
     selector: 'cde-compare-item-array',
-    templateUrl: './compareItemArray.component.html',
-    styles: [`
-        :host .arrayObj {
-            border: 1px solid #ccc;
-            padding: 9.5px;
-            margin: 0 0 10px;
-        }
-
-        :host .arrayObjRemove {
-            border-left: 5px solid #a94442
-        }
-
-        :host .arrayObjAdd {
-            border-left: 5px solid #008000
-        }
-
-        :host .arrayObjEdit {
-            border-left: 5px solid #0000ff
-        }
-
-        :host .arrayObjReorder {
-            border-left: 5px solid #fad000
-        }
-
-        :host >>> ins {
-            color: black;
-            background: #bbffbb;
-        }
-
-        :host >>> del {
-            color: black;
-            background: #ffbbbb;
-        }
-    `]
+    templateUrl: './compareItemArray.component.html'
 })
 export class CompareItemArrayComponent implements OnInit {
     @Input() older!: ComparedDe | ComparedForm;
     @Input() newer!: ComparedDe | ComparedForm;
     @Input() filter!: { add: { select: any }, edited: { select: any }, remove: { select: any }, reorder: { select: any } };
     options: any[] = [];
-    _get = _get;
-    _isEmpty = _isEmpty;
+    _get = get;
+    _isEmpty = isEmpty;
 
     ngOnInit(): void {
         if (isDataElement(this.newer) && isDataElement(this.older)) {
@@ -424,36 +386,36 @@ export class CompareItemArrayComponent implements OnInit {
 }
 
 function doCompareArray(newer: any, older: any, options: any[]) {
-    _forEach(options, (option: any) => {
+    forEach(options, (option: any) => {
         if (!newer && !older) {
             option.match = true;
             option.display = false;
             return;
         }
         if (!option.isEqual) {
-            option.isEqual = _isEqual;
+            option.isEqual = isEqual;
         }
         let l = [];
         if (newer) {
-            l = _get(newer, option.property);
+            l = get(newer, option.property);
         }
         let r = [];
         if (older) {
-            r = _get(older, option.property);
+            r = get(older, option.property);
         }
         doCompareArrayImpl(l, r, option);
     });
 }
 
 function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any) {
-    const inCurrentNotInPrior = _differenceWith(currentArray, priorArray, option.isEqual).map((o: any) => {
+    const inCurrentNotInPrior = differenceWith(currentArray, priorArray, option.isEqual).map((o: any) => {
         const temp: any = {};
         temp.currentElt = o;
         temp.priorElt = o;
         temp.add = true;
         return temp;
     });
-    const inPriorNotInCurrent: any[] = _differenceWith(priorArray, currentArray, option.isEqual).map((o: any) => {
+    const inPriorNotInCurrent: any[] = differenceWith(priorArray, currentArray, option.isEqual).map((o: any) => {
         const temp: any = {};
         temp.currentElt = o;
         temp.priorElt = o;
@@ -461,7 +423,7 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
         return temp;
     });
     const inPriorInCurrent: any[] = [];
-    _intersectionWith(priorArray, currentArray, (a: any, b: any) => {
+    intersectionWith(priorArray, currentArray, (a: any, b: any) => {
         const equal = option.isEqual(a, b);
         if (equal) {
             const temp: any = {};
@@ -469,12 +431,12 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
             temp.priorElt = a;
             const diff = new Set();
             Array.from(a.diff).concat(Array.from(b.diff)).forEach(d => {
-                if (!_isEmpty(d)) {
+                if (!isEmpty(d)) {
                     diff.add(d);
                 }
             });
             temp.diff = Array.from(diff);
-            temp.edit = !_isEmpty(diff);
+            temp.edit = !isEmpty(diff);
             if (temp.edit) {
                 inPriorInCurrent.push(temp);
             }
@@ -496,7 +458,7 @@ function fixFormElement(f: FormElement) {
 function flatFormQuestions(fe: FormOrElement, questions: (FormElement & { sectionId?: string })[]) {
     let index = 0;
     if (fe.formElements !== undefined) {
-        _forEach(fe.formElements, (e: FormElement) => {
+        forEach(fe.formElements, (e: FormElement) => {
             if (e.elementType && e.elementType === 'question') {
                 const questionCopy = deepCopy(e);
                 fixFormElement(questionCopy);

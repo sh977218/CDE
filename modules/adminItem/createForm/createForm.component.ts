@@ -8,7 +8,7 @@ import { DeletedNodeEvent } from 'adminItem/classification/classificationView.co
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { AlertService } from 'alert/alert.service';
 import { classifyItem } from 'core/adminItem/classification';
-import * as _isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
@@ -104,7 +104,7 @@ export class CreateFormComponent implements OnInit {
             if (o.cdeId) {
                 o.eltId = o.cdeId;
             }
-            return _isEqual(o, item);
+            return isEqual(o, item);
         });
         recentlyClassification.unshift(item);
         this.localStorageService.setItem('classificationHistory', recentlyClassification);

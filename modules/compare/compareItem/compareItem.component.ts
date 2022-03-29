@@ -1,31 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { flattenClassification } from 'core/adminItem/classification';
-import * as _forEach from 'lodash/forEach';
-import * as _get from 'lodash/get';
-import * as _isEqual from 'lodash/isEqual';
+import { cloneDeep, forEach, get, isEqual } from 'lodash';
 import { sortClassification } from 'shared/classification/classificationShared';
 import { Item } from 'shared/models.model';
 import { deepCopy } from 'shared/util';
 
 @Component({
     selector: 'cde-compare-item',
-    templateUrl: './compareItem.component.html',
-    styles: [`
-        :host >>> ins {
-            color: black;
-            background: #bbffbb;
-        }
-
-        :host >>> del {
-            color: black;
-            background: #ffbbbb;
-        }
-    `]
+    templateUrl: './compareItem.component.html'
 })
 export class CompareItemComponent implements OnInit {
     @Input() older!: Item;
     @Input() newer!: Item;
-    @Input() filter!: {add: {select: any}, edited: {select: any}, remove: {select: any}, reorder: {select: any}};
+    @Input() filter!: { add: { select: any }, edited: { select: any }, remove: { select: any }, reorder: { select: any } };
     newerFlatClassifications!: string;
     olderFlatClassifications!: string;
     map = {
@@ -71,8 +58,6 @@ export class CompareItemComponent implements OnInit {
     ];
 
      ngOnInit(): void {
-        this.newer = deepCopy(this.newer);
-        this.older = deepCopy(this.older);
         this.newerFlatClassifications = flattenClassification(sortClassification(this.newer)).join(',');
         this.olderFlatClassifications = flattenClassification(sortClassification(this.older)).join(',');
         doCompareObject(this.older, this.newer, this.compareObjectProperties);
@@ -80,23 +65,27 @@ export class CompareItemComponent implements OnInit {
 }
 
 function doCompareObject(newer: any, older: any, option: any) {
-    _forEach(option, (property: any) => {
+    forEach(option, (property: any) => {
         if (!newer && !older) {
             property.match = true;
             property.newer = '';
             property.older = '';
             return;
         }
-        const l = newer ? _get(newer, property.property) : '';
-        const r = older ? _get(older, property.property) : '';
+        const l = newer ? get(newer, property.property) : '';
+        const r = older ? get(older, property.property) : '';
         if (property.data) {
             doCompareObject(l, r, property.data);
-            if (property.data) { property.match = !property.data.some((p: any) => !p.match); }
+            if (property.data) {
+                property.match = !property.data.some((p: any) => !p.match);
+            }
         } else {
-            property.match = _isEqual(l, r);
+            property.match = isEqual(l, r);
             property.newer = l ? l.toString() : '';
             property.older = r ? r.toString() : '';
-            if (!newer && !older) { property.match = true; }
+            if (!newer && !older) {
+                property.match = true;
+            }
         }
     });
     return option;

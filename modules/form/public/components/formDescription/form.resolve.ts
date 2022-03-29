@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap } from 'rxjs/operators';
-import { empty, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 
 @Injectable()
 export class FormResolve implements Resolve<Observable<any>> {
@@ -23,7 +23,7 @@ export class FormResolve implements Resolve<Observable<any>> {
                 }),
                 catchError(err => {
                     this.router.navigate(['/404']);
-                    return empty();
+                    return EMPTY;
                 }));
     }
 }
