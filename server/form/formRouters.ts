@@ -89,7 +89,7 @@ export function module() {
                             forms,
                             totalPages,
                             selectedOrg
-                        } as any);
+                        });
                     }));
                 }));
             } else {
@@ -229,7 +229,7 @@ export function module() {
         if (isSearchEngine(req)) {
             dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version)
                 .then(cde => {
-                res.render('bot/formView', {elt: cde} as any);
+                res.render('bot/formView', {elt: cde});
             }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);

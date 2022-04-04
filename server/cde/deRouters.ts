@@ -65,7 +65,7 @@ export function module() {
                             cdes,
                             totalPages,
                             selectedOrg
-                        } as any);
+                        });
                     }));
                 }, respondError({req, res}));
             } else {
@@ -221,7 +221,7 @@ export function module() {
         if (isSearchEngine(req)) {
             dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId, version)
                 .then(de => {
-                    res.render('bot/deView', {elt: de} as any);
+                    res.render('bot/deView', {elt: de});
                 }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);

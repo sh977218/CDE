@@ -85,9 +85,13 @@ export function module() {
             });
     });
 
+    function addId<T, U>(t: T, u: U): T & {_id: U} {
+        (t as T & {_id: U})._id = u;
+        return t as T & {_id: U};
+    }
+
     router.put('/server/home', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
-        const homepage: Singleton = req.body as HomepagePutRequest & {_id: string};
-        (homepage as any)._id = 'home';
+        const homepage: Singleton = addId(req.body as HomepagePutRequest, 'home');
         if (!homepage.body) {
             return Promise.resolve(res.status(400).send());
         }
@@ -154,9 +158,8 @@ export function module() {
     }
 
     router.put('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
-        const homepage: Singleton | {updated: number, updateInProgress?: boolean}
-            = req.body as HomepageDraftPutRequest & {_id: string} as any;
-        (homepage as any)._id = 'homeEdit';
+        type Req = Singleton | {updated: number, updateInProgress?: boolean};
+        const homepage: Req = addId(req.body as HomepageDraftPutRequest, 'homeEdit') as Req;
         return dbPlugins.singleton.byId('homeEdit').then(draft => {
             let query = {};
             if (isSingleton(homepage)) { // save
@@ -321,7 +324,7 @@ export function module() {
         `);
     });
 
-    router.get('/loginText', csrf(), (req, res) => res.render('loginText', {csrftoken: req.csrfToken()} as any));
+    router.get('/loginText', csrf(), (req, res) => res.render('loginText', {csrftoken: req.csrfToken()}));
 
     return router;
 }

@@ -1,7 +1,4 @@
 <h2>Identifiers</h2>
-<div *ngIf="elt.ids.length === 0" style="margin: .5rem 0">
-    There are no identifiers.
-</div>
 <dl class="cde-property">
     <dt>Source:</dt>
     <dd>NLM</dd>
@@ -13,9 +10,8 @@
 
     <dt>Version:</dt>
     <dd itemprop="version">{{elt.version}}</dd>
-</dl>
-<ng-container *ngFor="let id of elt.ids; let i = index">
-    <dl class="cde-property">
+
+    <ng-container *ngFor="let id of elt.ids; let i = index">
         <dt>
             <ng-container *ngIf="id.edit">Confirm Delete
                 <mat-icon id="confirmRemoveIdentifier-{{i}}" title="Cofirm Delete"
@@ -40,8 +36,8 @@
 
         <dt>Version:</dt>
         <dd attr.itemprop="version_{{i}}">{{id.version}}</dd>
-    </dl>
-</ng-container>
+    </ng-container>
+</dl>
 <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="button" (click)="openNewIdentifierModal()">
     <mat-icon>add</mat-icon> Add Identifier
 </button>
