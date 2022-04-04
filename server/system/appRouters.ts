@@ -65,7 +65,7 @@ export function module() {
 
     router.get(['/', '/home'], (req, res) => {
         if (isSearchEngine(req)) {
-            res.render('bot/home', 'system' as any);
+            res.render('bot/home');
         } else {
             respondHomeFull(req, res);
         }
@@ -210,7 +210,7 @@ export function module() {
         res.redirect('/server/system/data/' + fileId);
     });
 
-    router.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers', 'system' as any));
+    router.get('/supportedBrowsers', (req, res) => res.render('supportedBrowsers'));
 
     router.get('/loginFederated', (req, res) => {
         res.send(`
@@ -321,7 +321,7 @@ export function module() {
         `);
     });
 
-    router.get('/loginText', csrf(), (req, res) => res.render('loginText', 'system' as any, {csrftoken: req.csrfToken()} as any));
+    router.get('/loginText', csrf(), (req, res) => res.render('loginText', {csrftoken: req.csrfToken()} as any));
 
     return router;
 }

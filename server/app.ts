@@ -121,6 +121,7 @@ domain.on('error', (err) => {
 app.set('port', config.port || 3000);
 app.set('view engine', 'ejs');
 app.set('trust proxy', true);
+app.set('views', __dirname);
 
 app.use(favicon(global.assetDir('./modules/cde/public/assets/img/min/favicon.ico')));
 
@@ -136,7 +137,7 @@ declare global {
     namespace Express {
         interface Request {
             _remoteAddress: string; // morgan bug
-            // files: any; // attachementSvc impl differs from multer
+            // files: any; // attachmentSvc impl differs from multer
         }
     }
 }
@@ -279,17 +280,6 @@ app.use((req, res, next) => {
         expressLogger1(req, res, next);
     }
 });
-
-app.set('views', path.join(global.assetDir('modules')));
-
-const originalRender = express.response.render;
-express.response.render = function renderEjsUsingThis(this: any, view: string, module: ModuleAll, msg: string) {
-    if (!module) {
-        module = 'cde';
-    }
-    originalRender.call(this, path.join(global.assetDir('modules', module, 'views', view)), msg as any);
-} as any;
-
 
 try {
     app.use('/', appModule());

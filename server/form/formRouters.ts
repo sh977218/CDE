@@ -85,7 +85,7 @@ export function module() {
                         if (totalPages % 1 > 0) {
                             totalPages = totalPages + 1;
                         }
-                        res.render('bot/formSearchOrg', 'system' as any, {
+                        res.render('bot/formSearchOrg', {
                             forms,
                             totalPages,
                             selectedOrg
@@ -93,7 +93,7 @@ export function module() {
                     }));
                 }));
             } else {
-                res.render('bot/formSearch', 'system' as any);
+                res.render('bot/formSearch');
             }
         } else {
             respondHomeFull(req, res);
@@ -229,7 +229,7 @@ export function module() {
         if (isSearchEngine(req)) {
             dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version)
                 .then(cde => {
-                res.render('bot/formView', 'system' as any, {elt: cde} as any);
+                res.render('bot/formView', {elt: cde} as any);
             }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);

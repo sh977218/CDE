@@ -125,8 +125,6 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
 
     streamArray.push(gulp.src(appDir('./modules/system/views/**/*.html'))
         .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/')));
-    streamArray.push(gulp.src(appDir('./modules/system/views/bot/*.ejs'))
-        .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/bot/')));
     ['supportedBrowsers.ejs', 'loginText.ejs'].forEach((file) => {
         streamArray.push(gulp.src(appDir('./modules/system/views/' + file))
             .pipe(gulp.dest(BUILD_DIR + '/modules/system/views/')));
@@ -155,6 +153,8 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
     // from buildNode
     streamArray.push(gulp.src('./modules/**')
         .pipe(gulp.dest(BUILD_DIR + '/modules/')));
+    streamArray.push(gulp.src(appDir('./server/bot/*.ejs'))
+        .pipe(gulp.dest(BUILD_DIR + '/server/bot/')));
     streamArray.push(gulp.src('./server/**')
         .pipe(gulp.dest(BUILD_DIR + '/server/'))
         .on('end', () => {

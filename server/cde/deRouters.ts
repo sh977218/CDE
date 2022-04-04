@@ -61,7 +61,7 @@ export function module() {
                         if (totalPages % 1 > 0) {
                             totalPages = totalPages + 1;
                         }
-                        res.render('bot/cdeSearchOrg', 'system' as any, {
+                        res.render('bot/cdeSearchOrg', {
                             cdes,
                             totalPages,
                             selectedOrg
@@ -69,7 +69,7 @@ export function module() {
                     }));
                 }, respondError({req, res}));
             } else {
-                res.render('bot/cdeSearch', 'system' as any);
+                res.render('bot/cdeSearch');
             }
         } else {
             respondHomeFull(req, res);
@@ -221,7 +221,7 @@ export function module() {
         if (isSearchEngine(req)) {
             dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId, version)
                 .then(de => {
-                    res.render('bot/deView', 'system' as any, {elt: de} as any);
+                    res.render('bot/deView', {elt: de} as any);
                 }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);
