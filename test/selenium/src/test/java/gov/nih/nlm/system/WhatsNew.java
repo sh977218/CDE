@@ -9,8 +9,7 @@ public class WhatsNew extends NlmCdeBaseTest {
     public void whatsNew() {
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToArticles();
-
-        nonNativeSelect("", "Article Key", "whatsNew");
+        selectArticleByKey("whatsNew");
 
         clickElement(By.xpath("//mat-icon[normalize-space() = 'edit']"));
         hangon(5);

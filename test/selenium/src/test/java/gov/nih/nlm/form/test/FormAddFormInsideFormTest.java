@@ -38,7 +38,7 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         goToFormDescription();
         clickElement(By.partialLinkText("View Form"));
         switchTab(1);
-        textPresent("Vessel Imaging Angiography", By.cssSelector("h1"));
+        textPresent("Vessel Imaging Angiography", By.cssSelector(".cdeFormTitle"));
         switchTabAndClose(0);
 
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();

@@ -1,8 +1,8 @@
 <h2>Attachments</h2>
-<div *ngIf="elt.isDraft" style="font-size: 20px; line-height: 1">
+<div *ngIf="elt?.isDraft" style="font-size: 20px; line-height: 1">
     Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
 </div>
-<ng-container *ngIf="!elt.isDraft">
+<ng-container *ngIf="!elt?.isDraft">
     <div *ngIf="elt.attachments.length === 0">
         There are no attachments.
     </div>

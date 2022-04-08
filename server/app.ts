@@ -318,9 +318,7 @@ try {
     app.use('/server/notification', notificationModule({
         notificationDate: isSiteAdminMiddleware
     }));
-    app.use('/server/article', articleModule({
-        update: [isOrgAuthorityMiddleware],
-    }));
+    app.use('/server/article', articleModule());
 
     app.use('/server/loader', isOrgAuthorityMiddleware, loaderModule());
 

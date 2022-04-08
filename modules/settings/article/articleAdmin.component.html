@@ -2,7 +2,7 @@
 <div>
     <mat-icon (click)="openHelp()">help_outline</mat-icon>
 </div>
-<mat-form-field style="width: 50%">
+<mat-form-field style="width: 50%" id="selectArticleKey">
     <mat-select placeholder="Article Key" [(ngModel)]="selectedKey" (ngModelChange)="keyChanged()">
         <mat-option *ngFor="let key of articles" [value]="key">{{key}}</mat-option>
     </mat-select>
@@ -10,3 +10,7 @@
 
 <cde-inline-area-edit *ngIf="article" [(model)]="article.body" [defFormat]="'html'" [isAllowed]="true"
                       (modelChange)="save()"></cde-inline-area-edit>
+<cde-attachments [elt]="article" [canEdit]="true"
+                 (removeAttachment)="removeAttachment($event);"
+                 (upload)="upload($event);">
+</cde-attachments>

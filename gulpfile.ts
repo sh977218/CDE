@@ -54,13 +54,13 @@ function node(file: string, options?: ExecOptions): Promise<void> {
     return run(nodeCmd + file, options);
 }
 
-gulp.task('npm', function npm() {
-    run('node --version', runInAppOptions);
-    run('npm -v', runInAppOptions);
-    run('npm cache verify', runInAppOptions);
-    run('mongo --version', runInAppOptions);
-    run('mongorestore --version', runInAppOptions);
-    return run('npm i', runInAppOptions);
+gulp.task('npm', async function npm() {
+    await run('node --version', runInAppOptions);
+    await run('npm -v', runInAppOptions);
+    await run('npm cache verify', runInAppOptions);
+    await run('mongo --version', runInAppOptions);
+    await run('mongorestore --version', runInAppOptions);
+    await run('npm i', runInAppOptions);
 });
 
 gulp.task('npmRebuild', ['npm'], function npmRebuild() {
@@ -120,7 +120,7 @@ gulp.task('copyCode', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
     assetFolders.forEach(folder => {
         streamArray.push(gulp.src(appDir('./' + folder + '/**'))
-             .pipe(gulp.dest(BUILD_DIR + '/' + folder + '/')));
+            .pipe(gulp.dest(BUILD_DIR + '/' + folder + '/')));
     });
 
     streamArray.push(gulp.src(appDir('./modules/system/views/**/*.html'))

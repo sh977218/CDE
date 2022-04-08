@@ -115,8 +115,8 @@ const appRoutes: Routes = [
     },
     {
         path: 'guides',
-        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
-        data: {title: 'Guides', article: 'guides', preload: false}
+        loadChildren: () => import('system/public/guide.module').then(m => m.GuideModule),
+        data: {title: 'Guides', preload: false}
     },
     {
         path: 'videos',

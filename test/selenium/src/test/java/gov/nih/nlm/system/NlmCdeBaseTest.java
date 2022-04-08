@@ -381,11 +381,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent("Create User", By.id("settingsContent"));
     }
 
-    protected void goToResources() {
-        goToSettings();
-        clickElement(By.id("resources"));
-    }
-
     protected void goToAPI() {
         goToSettings();
         clickElement(By.id("apiLink"));
@@ -1934,6 +1929,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected String xpathSourcesProperty() {
         return "//cde-admin-item-sources//dl/dt";
+    }
+
+    protected void cdeFormTitleExists(){
+        findElement(By.cssSelector(".cdeFormTitle"));
+    }
+
+    protected void selectArticleByKey(String key){
+        clickElement(By.xpath("//*[@id='selectArticleKey']//mat-select"));
+        selectMatDropdownByText(key);
+
     }
 
 }

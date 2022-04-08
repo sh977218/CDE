@@ -11,7 +11,8 @@ public class ResourcesPage extends BaseAttachmentTest {
         String attachmentName = "painLocationInapr.png";
         String resourceText = "This resources page is under construction";
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToResources();
+        goToArticles();
+        selectArticleByKey("resources");
         // wait for ckeditor <script> to resolve.
         hangon(2);
         addAttachment(attachmentName);

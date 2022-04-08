@@ -45,8 +45,10 @@
                         <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
                         <mat-card-subtitle>
                             <div style="float: left; max-width: 75%"> NIH has endorsed collections of CDEs that
-                                meet <a href="" target="_blank">established criteria</a>.
-                                NIH-Endorsed CDEs are designated with a gold ribbon. <a href="">Learn more...</a>
+                                meet <a href="javascript:void(0);" [routerLink]="['/guides']" [fragment]="'nih-endorsement-and-submissions'">established
+                                    criteria</a>.
+                                NIH-Endorsed CDEs are designated with a gold ribbon.
+                                <a href="javascript:void(0);" [routerLink]="['/guides']" [fragment]="'nih-endorsement-and-submissions'">Learn more...</a>
                             </div>
                             <button class="button" (click)="addNihEndorsedFilter(true)">
                                 View NIH-Endorsed CDEs

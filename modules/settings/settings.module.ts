@@ -71,8 +71,6 @@ import { OrgEditorComponent } from 'settings/orgEditor/orgEditor.component';
 import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ProfileComponent } from 'settings/profile/profile.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
-import { ResourcesAdminComponent } from 'settings/resources/resourcesAdmin.component';
-import { ResourcesHelpDialogComponent } from 'settings/resources/resourceHelpDialog.component';
 import { SearchSettingsComponent } from 'settings/search/searchSettings.component';
 import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
 import { SettingsComponent } from 'settings/settings.component';
@@ -225,12 +223,6 @@ const appRoutes: Routes = [
                 data: {title: 'Articles'}
             },
             {
-                path: 'resources',
-                component: ResourcesAdminComponent,
-                canActivate: [OrgAuthorityGuard],
-                data: {title: 'Resources'}
-            },
-            {
                 path: 'idSources',
                 component: IdSourcesComponent,
                 canActivate: [SiteAdminGuard],
@@ -324,8 +316,6 @@ const appRoutes: Routes = [
         OrgEditorComponent,
         ProfileComponent,
         PropertiesManagementComponent,
-        ResourcesHelpDialogComponent,
-        ResourcesAdminComponent,
         SearchSettingsComponent,
         ServerStatusComponent,
         SettingsComponent,
