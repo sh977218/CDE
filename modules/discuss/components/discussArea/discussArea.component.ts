@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
+import { curry } from 'lodash';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { curry } from 'shared/composition';
 import { Board, Comment, Item } from 'shared/models.model';
 import { canCommentManage } from 'shared/security/authorizationShared';
 

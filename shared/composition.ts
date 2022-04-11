@@ -1,9 +1,4 @@
-// @ts-ignore
-import * as _curry from 'lodash/curry';
-export const curry = _curry;
-// @ts-ignore
-import * as _curryRight from 'lodash/curryRight';
-export const curryRight = _curryRight
+import { curry, curryRight } from 'lodash';
 
 export type CurriedFunction = (x: any) => any;
 export const compose = (...fns: CurriedFunction[]) => (x: CurriedFunction) => fns.reduceRight((y, f) => f(y), x);

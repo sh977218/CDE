@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Params } from '@angular/router';
-import { ownKeys } from 'shared/user';
+import { ownKeys } from 'shared/util';
 
 export function httpErrorMessage(err: HttpErrorResponse): string {
     if (typeof (err.error) === 'string') { // response body

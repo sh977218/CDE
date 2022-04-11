@@ -26,6 +26,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
+import { partition } from 'shared/array';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -38,11 +39,9 @@ import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
-import { ownKeys } from 'shared/user';
-import { noop } from 'shared/util';
-import { partition } from 'shared/array';
+import { noop, ownKeys } from 'shared/util';
 
-type NamedCounts = { name: string, count: number }[];
+type NamedCounts = {name: string, count: number}[];
 
 const orderedFirstOrgNames = Object.freeze(['Project 5']);
 
@@ -71,14 +70,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     autocompleteSuggestions?: string[];
     cutoffIndex?: number;
     elts?: ItemElastic[];
-    exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: { id: string, display: string } } = {
+    exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: {id: string, display: string} } = {
         json: {id: 'jsonExport', display: 'JSON Export'},
         xml: {id: 'xmlExport', display: 'XML Export'}
     };
     filterMode = true;
     goToPage = 1;
     lastQueryTimeStamp?: number;
-    private lastTypeahead: { [term: string]: string } = {};
+    private lastTypeahead: {[term: string]: string} = {};
     module!: ModuleItem;
     numPages?: number;
     orgs?: Organization[];
@@ -94,7 +93,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     searchedTerm?: string;
     searchTermAutoComplete = new EventEmitter<string>();
     took?: number;
-    topics?: { [topic: string]: NamedCounts };
+    topics?: {[topic: string]: NamedCounts};
     topicsKeys: string[] = [];
     totalItems?: number;
     totalItemsLimited?: number;
@@ -330,8 +329,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.reload();
         } else {
             this.searchSettings.page = 1;
-            const query = this.generateSearchForTerm();
-            this.redirect(query);
+            this.redirect(this.generateSearchForTerm());
         }
     }
 
@@ -364,7 +362,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     generateSearchForTerm(pageNumber = 0): Params {
-        // TODO: replace with router
         const searchTerms: Params = {};
         if (this.searchSettings.q) {
             searchTerms.q = this.searchSettings.q;
@@ -630,7 +627,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
                         (c: ElasticQueryResponseAggregationBucket) => ({
                             name: c.key.split(';').pop() || '',
-                            count: c.doc_count
+                            count: c.doc_count,
                         })
                     )
                     : [];
@@ -639,7 +636,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.aggregationsFlatClassificationsAlt = this.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
                         (c: ElasticQueryResponseAggregationBucket) => ({
                             name: c.key.split(';').pop() || '',
-                            count: c.doc_count
+                            count: c.doc_count,
                         })
                     );
                 } else {
@@ -827,7 +824,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    static compareObjName(a: { name: string }, b: { name: string }): number {
+    static compareObjName(a: {name: string}, b: {name: string}): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
 

@@ -1,10 +1,12 @@
  # Shared Client Code
+ ## Allowed Libraries
+ * async
+   * coded as `async`, compiler substituted to `async-es` for web
+ * lodash
+   * coded as `lodash`, compiler substituted to `lodash-es` for web
+
  ## Not Allowed Libraries
  * angular
- * async
-    * use `async/*`
- * lodash
-    * use `lodash/*`
  * node
  * rxjs
     * use pipe() with `rxjs/operators`

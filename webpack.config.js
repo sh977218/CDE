@@ -73,6 +73,7 @@ module.exports = {
         }),
         new ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
         new NormalModuleReplacementPlugin(/^async$/, 'async-es'),
+        new NormalModuleReplacementPlugin(/^lodash$/, 'lodash-es'),
         new DefinePlugin({
             INACTIVE_TIMEOUT: config.inactivityTimeout,
             NAVIGATION_HEIGHT: 102,

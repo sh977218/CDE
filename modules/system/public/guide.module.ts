@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule, Routes } from '@angular/router';
 import { TocModule } from 'angular-aio-toc/toc.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { GuideComponent } from 'system/public/components/guide/guide.component';
-import {MatIconModule} from "@angular/material/icon";
-import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
     {path: '', component: GuideComponent},

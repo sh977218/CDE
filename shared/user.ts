@@ -15,10 +15,6 @@ export function newNotificationSettingsMediaDrawer(): NotificationSettingsMedia 
     return {drawer: true, push: undefined};
 }
 
-export function ownKeys<T extends object>(obj?: T): (keyof T)[] {
-    return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) as any : [];
-}
-
 export function usersToNotify<T extends User>(type: NotificationSettingsType, medium: NotificationSettingsMediaType, users: T[]): T[] {
     return users.filter(u => {
         const media = u.notificationSettings && u.notificationSettings[type];

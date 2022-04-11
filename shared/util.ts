@@ -32,6 +32,10 @@ export function decamelize(str: string = '', sep: string = ' '): string {
 export function noop(...args: any[]): void {
 }
 
+export function ownKeys<T extends {}>(obj?: T): (keyof T)[] {
+    return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) as (keyof T)[] : [];
+}
+
 export function stringCompare(a: string, b: string): number {
     return a > b ? 1 : (a < b ? -1 : 0);
 }

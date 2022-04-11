@@ -16,33 +16,4 @@ declare module 'gulp-usemin';
 declare module 'merge-stream';
 declare module 'js-toggle-switch/dist/toggle-switch';
 declare module 'jxon';
-declare module 'lodash/cloneDeep';
-declare module 'lodash/curry' {
-    import { curry } from 'lodash';
-    export = curry;
-}
-declare module 'lodash/curryRight' {
-    import { curryRight } from 'lodash';
-    export = curryRight;
-}
-declare module 'lodash/differenceWith';
-declare module 'lodash/escape';
-declare module 'lodash/find';
-declare module 'lodash/findEach';
-declare module 'lodash/forEach';
-declare module 'lodash/get';
-declare module 'lodash/intersection';
-declare module 'lodash/intersectionWith';
-declare module 'lodash/isArray';
-declare module 'lodash/isEmpty';
-declare module 'lodash/isEqual';
-declare module 'lodash/remove';
-declare module 'lodash/slice';
-declare module 'lodash/sortBy';
-declare module 'lodash/toString';
-declare module 'lodash/trim';
-declare module 'lodash/union';
-declare module 'lodash/unionWith';
-declare module 'lodash/uniq';
-declare module 'lodash/uniqWith';
 declare module 'simple-spellchecker';

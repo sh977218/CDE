@@ -1,13 +1,13 @@
 # Clients(Angular)
-## Allowed
+## Allowed Libraries
 * angular
    * to remove `@angular/common/http` and `Observables` in favor of `fetch()`
 * async
   * coded as `async`, compiler substituted to `async-es` for web
+* lodash
+  * coded as `lodash`, compiler substituted to `lodash-es` for web
 
 ## Not Allowed Libraries
-* lodash
-   * use `lodash/*`
 * node
 * rxjs
    * use pipe() with `rxjs/operators`
