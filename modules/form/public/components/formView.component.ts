@@ -63,7 +63,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef!: MatDialogRef<any>;
-    draftSaving?: Promise<CdeForm>;
+    draftSaving?: Promise<void>;
     eltCopy?: CdeForm;
     questions: any[] = [];
     exportToTab: boolean = false;
@@ -351,7 +351,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         );
     }
 
-    saveDraft(elt: CdeFormDraft): Promise<any> {
+    saveDraft(elt: CdeFormDraft): Promise<void> {
         if (!elt.isDraft) {
             elt.changeNote = '';
         }

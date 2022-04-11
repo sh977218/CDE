@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserService } from '_app/user.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
-import { Router } from '@angular/router';
-import { Article } from "shared/article/article.model";
-import { HttpClient } from "@angular/common/http";
-import { UserService } from "_app/user.service";
+import { Article } from 'shared/article/article.model';
 
 @Component({
     selector: 'cde-guide',

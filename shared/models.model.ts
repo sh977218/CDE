@@ -258,10 +258,11 @@ export type SearchResponseAggregationForm =
     & { maxScore: number, took: number, totalNumber: number };
 export type SearchResponseAggregationItem = SearchResponseAggregationDe | SearchResponseAggregationForm;
 
-export interface ElasticQueryResponseAggregation {
-    [key: string]: { // 1 or 2 levels of keys...
-        [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] } & ElasticQueryResponseAggregationBucket[],
-        buckets: { buckets: ElasticQueryResponseAggregationBucket[] } & ElasticQueryResponseAggregationBucket[]
+export interface ElasticQueryResponseAggregation { // 1 or 2 levels of keys followed by buckets
+    [key: string]: {
+        buckets: ElasticQueryResponseAggregationBucket[]
+    } & {
+        [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] },
     };
 }
 

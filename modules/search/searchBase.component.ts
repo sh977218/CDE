@@ -40,8 +40,11 @@ import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { ownKeys } from 'shared/user';
 import { noop } from 'shared/util';
+import { partition } from 'shared/array';
 
 type NamedCounts = { name: string, count: number }[];
+
+const orderedFirstOrgNames = Object.freeze(['Project 5']);
 
 @Component({
     template: ''
@@ -652,18 +655,18 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                         this.orgHelperService.then(() => {
                             this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
                         }, noop);
-                        aggregations.orgs.buckets.sort(
-                            (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) => {
-                                const A = a.key.toLowerCase();
-                                const B = b.key.toLowerCase();
-                                if (B > A) {
-                                    return -1;
-                                }
-                                if (A === B) {
-                                    return 0;
-                                }
-                                return 1;
-                            });
+                        const [firstOrgs, otherOrgs] = partition(aggregations.orgs.buckets, org => orderedFirstOrgNames.includes(org.key));
+                        firstOrgs.sort((a, b) => {
+                            const A = orderedFirstOrgNames.indexOf(a.key);
+                            const B = orderedFirstOrgNames.indexOf(b.key);
+                            return B > A ? -1 : A === B ? 0 : 1;
+                        });
+                        otherOrgs.sort((a, b) => {
+                            const A = a.key.toLowerCase();
+                            const B = b.key.toLowerCase();
+                            return B > A ? -1 : A === B ? 0 : 1;
+                        });
+                        aggregations.orgs.buckets = firstOrgs.concat(otherOrgs);
                         resolve();
                     });
                 });
@@ -696,7 +699,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                     });
                                 }
                             });
-                            orgs.sort(SearchBaseComponent.compareObjName);
                         }, noop);
                     });
 
