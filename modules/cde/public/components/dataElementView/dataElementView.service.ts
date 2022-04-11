@@ -12,7 +12,7 @@ export class DataElementViewService {
                 private userService: UserService) {
     }
 
-    fetchEltForEditing(queryParams: Params) {
+    fetchEltForEditing(queryParams: Params): Promise<DataElement> {
         if (!queryParams.tinyId) {
             return this.fetchPublished(queryParams);
         }
