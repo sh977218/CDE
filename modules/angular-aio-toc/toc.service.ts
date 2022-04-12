@@ -79,7 +79,15 @@ export class TocService {
         });
 
         return {
-            content: this.domSanitizer.bypassSecurityTrustHtml(div.innerHTML.trim()),
+            // content: this.domSanitizer.bypassSecurityTrustHtml(div.innerHTML.trim()),
+            content: (
+                Array.from(div.childNodes)
+                    .filter(node => node.nodeType === Node.TEXT_NODE)
+                    .map(node => node.textContent)
+                    .join()
+                    .trim()
+                || ''
+            ).trim(),
             title: (div.textContent || '').trim(),
         };
     }

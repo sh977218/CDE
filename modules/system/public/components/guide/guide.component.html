@@ -1,7 +1,7 @@
 <div id="guideDiv" class="sidenav-content-container py-5" *ngIf="article?.body">
     <main class="sidenav-content">
         <div id="main-content">
-            <button mat-raised-button routerLink="/settings/articles" *ngIf="userService.isOrgAuthority()">
+            <button class="button light" routerLink="/settings/articles" *ngIf="userService.isOrgAuthority()">
                 <mat-icon>edit</mat-icon>
                 Edit
             </button>

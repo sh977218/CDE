@@ -231,6 +231,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
+    protected void cdeFormTitleExists(){
+        findElement(By.cssSelector("h1"));
+    }
+
     protected void clearStorage() {
         String clearStorage = "localStorage.clear();";
         ((JavascriptExecutor) driver).executeScript(clearStorage, "");
@@ -1834,6 +1838,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         else textNotPresent(commentText, By.xpath("//cde-comments"));
     }
 
+    protected void selectArticleByKey(String key){
+        clickElement(By.xpath("//*[@id='selectArticleKey']//mat-select"));
+        selectMatDropdownByText(key);
+    }
+
     protected void selectQuestionLabelByIndex(String questionId, int index, Consumer<Integer> extraChecksFunc) {
         clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
         textPresent("Select a question label from a CDE Name");
@@ -1929,16 +1938,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected String xpathSourcesProperty() {
         return "//cde-admin-item-sources//dl/dt";
-    }
-
-    protected void cdeFormTitleExists(){
-        findElement(By.cssSelector(".cdeFormTitle"));
-    }
-
-    protected void selectArticleByKey(String key){
-        clickElement(By.xpath("//*[@id='selectArticleKey']//mat-select"));
-        selectMatDropdownByText(key);
-
     }
 
 }

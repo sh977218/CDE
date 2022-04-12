@@ -1,8 +1,11 @@
 <h2>Attachments</h2>
-<div *ngIf="elt?.isDraft" style="font-size: 20px; line-height: 1">
-    Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
-</div>
-<ng-container *ngIf="!elt?.isDraft">
+<ng-container *ngIf="elt">
+    <div *ngIf="elt.isDraft; else displayAttachments" style="font-size: 20px; line-height: 1">
+        Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
+    </div>
+</ng-container>
+
+<ng-template #displayAttachments>
     <div *ngIf="elt.attachments.length === 0">
         There are no attachments.
     </div>
@@ -68,4 +71,4 @@
         </label>
         <input id="fileToUpload" style="display: none" type="file" (change)="upload.emit($event)">
     </div>
-</ng-container>
+</ng-template>

@@ -96,8 +96,8 @@ export class NotificationService {
                         approve = () => {};
                         reject = () => {};
                 }
-                task.actions.push({color: 'primary', icon: 'done', text: 'Approve', click: approve});
-                task.actions.push({color: 'warn', icon: 'clear', text: 'Reject', click: reject});
+                task.actions.push({color: '', icon: 'done', text: 'Approve', click: approve});
+                task.actions.push({color: 'fail', icon: 'clear', text: 'Reject', click: reject});
                 break;
             case 'error': // idType: version
                 task = {
@@ -120,9 +120,9 @@ export class NotificationService {
             case 'vote': // idType:
                 task = {
                     actions: [
-                        {color: 'primary', icon: 'thumb_up', text: 'Yes', click: approve},
-                        {color: 'warn', icon: 'thumb_down', text: 'No', click: reject},
-                        {color: 'accent', icon: 'thumbs_up_down', text: 'Abstain', click: abstain}
+                        {color: 'sucsess', icon: 'thumb_up', text: 'Yes', click: approve},
+                        {color: 'fail', icon: 'thumb_down', text: 'No', click: reject},
+                        {color: 'secondary', icon: 'thumbs_up_down', text: 'Abstain', click: abstain}
                     ],
                     background: '#cce5ff',
                     icon: 'done_all',

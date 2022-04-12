@@ -95,8 +95,11 @@ a, a>em, input, input>em, li, li>em, ol, ol>em, p, p>em, ul, ul>em {
 
 .toc-inner ul.toc-list li a {
   color: #5e5e5e;
-  overflow: visible;
+  display: table-cell;
   font-size: 1.2 * $fontSize;
   line-height: 1.6 * $fontSize;
-  display: table-cell;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

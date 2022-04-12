@@ -44,7 +44,10 @@
             </div>
         </div>
         <div *ngIf="task.actions?.length" style="display: flex; flex-direction: column">
-            <button *ngFor="let action of task.actions" mat-raised-button [color]="action.color"
+            <button *ngFor="let action of task.actions" class="button"
+                    [class.fail]="action.color === 'fail'"
+                    [class.secondary]="action.color === 'secondary'"
+                    [class.success]="action.color === 'success'"
                     (click)="interruptEvent($event); action.click()">
                 <mat-icon *ngIf="action.icon">{{action.icon}}</mat-icon>
                 {{action.text}}
