@@ -5,12 +5,10 @@ import {
     ComponentFactoryResolver,
     ElementRef,
     EmbeddedViewRef,
-    EventEmitter,
     forwardRef,
     HostListener,
     Inject,
     Injector,
-    Output,
     Renderer2
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';

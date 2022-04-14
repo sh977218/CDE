@@ -167,7 +167,6 @@
   "account": "CDE Account <cdeuser@nlm.nih.gov>",
   "inactivityTimeout": 3600000,
   "maxLogsPerMinute": 1000,
-  "maxPin": 500,
   "userAlertTime": 5000,
   "expressToStdout": false,
   "viewsIncrementThreshold": 3,

@@ -13,7 +13,7 @@
                 <button class="button"
                         [class.active]="searchType === 'endorsedCde'"
                         (click)="searchType = 'endorsedCde'">
-                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                    <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top">
                     Search NIH-Endorsed CDEs
                 </button>
@@ -43,7 +43,7 @@
             <div class="formHomeSmallScreen">
                 <div class="note text-center" style="margin: 1rem 0">within</div>
                 <button class="button" style="width: 100%" [matMenuTriggerFor]="searchMenu">
-                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                    <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top">
                     {{getSearchLabel(searchType)}}
                     <mat-icon style="float: right">arrow_drop_down</mat-icon>
@@ -65,7 +65,7 @@
                 <ng-container *ngIf="searchType === 'endorsedCde'">
                     NIH-endorsed CDEs have been reviewed and approved by an expert panel, and meet established criteria.
                     They are designated with a gold ribbon.
-                    <img src="/cde/public/assets/img/min/homepage/endorsedRibbon.png"
+                    <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top">
                     <!--                link "Learn more"-->
                 </ng-container>

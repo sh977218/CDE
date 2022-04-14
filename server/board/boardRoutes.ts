@@ -10,6 +10,7 @@ import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthoriz
 import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise } from 'server/system/elastic';
+import { MAX_PINS } from 'shared/constants';
 import { Board, BoardPin, Elt, ModuleItem } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { stripBsonIds } from 'shared/exportShared';
@@ -230,7 +231,7 @@ export function module() {
             return res.status(404).send();
         }
         const query = buildElasticSearchQuery(req.user, req.body.query);
-        if (query.size > config.maxPin) {
+        if (query.size > MAX_PINS) {
             return res.status(403).send('Maximum number excesses.');
         }
         return elasticsearchPromise('cde', query, req.body.query)

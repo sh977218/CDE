@@ -27,6 +27,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { partition } from 'shared/array';
+import { MAX_PINS } from 'shared/constants';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -44,6 +45,7 @@ import { noop, ownKeys } from 'shared/util';
 type NamedCounts = {name: string, count: number}[];
 
 const orderedFirstOrgNames = Object.freeze(['Project 5']);
+const orderedFirstOrgIcons = Object.freeze(['/cde/public/assets/img/min/endorsedRibbonIcon.png']);
 
 @Component({
     template: ''
@@ -80,7 +82,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     private lastTypeahead: {[term: string]: string} = {};
     module!: ModuleItem;
     numPages?: number;
-    orgs?: Organization[];
+    orgs?: (Organization & {featureIcon?: string})[];
     orgHtmlOverview?: string;
     ownKeys = ownKeys;
     pinComponent!: Type<PinBoardModalComponent>;
@@ -543,7 +545,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 boardId: selectedBoard._id,
                 itemType: this.module
             };
-            data.query.resultPerPage = window.maxPin;
+            data.query.resultPerPage = MAX_PINS;
             this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
                 this.alert.addAlert('success', 'All elements pinned.');
                 this.http.post('/server/board/myBoards', filter).subscribe();
@@ -694,6 +696,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                         htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
                                         cdeStatusValidationRules: []
                                     });
+                                }
+                            });
+                            let orgIndex = 0;
+                            orderedFirstOrgNames.forEach((name, i, names) => {
+                                if (orgs[orgIndex].name === name) {
+                                    orgs[orgIndex].featureIcon = orderedFirstOrgIcons[i];
+                                    orgIndex++;
                                 }
                             });
                         }, noop);

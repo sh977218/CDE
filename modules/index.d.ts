@@ -9,7 +9,6 @@ declare global {
         gtag: any; // Google Global Site Tag
         // frames: Dictionary<Window>; // ts lib.dom definition is wrong
         loggedIn: () => void;
-        maxPin: number;
         publicUrl: string;
         showCovidBanner: boolean;
         siteKey: string;

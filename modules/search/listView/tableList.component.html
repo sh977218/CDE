@@ -7,8 +7,8 @@
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
         </th>
         <th *ngFor="let heading of headings">{{heading}}
-            <mat-icon *ngIf="heading === 'Name'" id="tableViewSettings" (click)="openTableViewPreferences()">settings
-            </mat-icon>
+            <mat-icon *ngIf="heading === 'Name'" id="tableViewSettings" class="fake-button" role="button" tabindex="0"
+                      (click)="openTableViewPreferences()">settings</mat-icon>
         </th>
     </tr>
     </thead>

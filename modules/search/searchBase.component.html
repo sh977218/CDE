@@ -34,29 +34,27 @@
             </p>
         </form>
 
-        <section class="row justify-content-md-center">
-            <div class="col-10">
-                <mat-card class="cde-bg-grey">
-                    <mat-card-header>
-                        <div mat-card-avatar class="d-flex align-items-center justify-content-center">
-                            <img aria-label="nihEndorsed" height="40" width="40"
-                                 src="/cde/public/assets/img/min/Gold-Ribbon.png">
+        <section>
+            <mat-card class="cde-bg-grey">
+                <mat-card-header>
+                    <img mat-card-avatar aria-label="nihEndorsed" height="40" width="40"
+                         src="/cde/public/assets/img/min/Gold-Ribbon.png">
+                    <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
+                    <mat-card-subtitle style="max-width: 75%">
+                        <div> NIH has endorsed collections of CDEs that
+                            meet <a href="javascript:void(0);" [routerLink]="['/guides']"
+                                    [fragment]="'nih-endorsement-and-submissions'">established
+                                criteria</a>.
+                            NIH-Endorsed CDEs are designated with a gold ribbon.
+                            <a href="javascript:void(0);" [routerLink]="['/guides']"
+                               [fragment]="'nih-endorsement-and-submissions'">Learn more...</a>
                         </div>
-                        <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
-                        <mat-card-subtitle>
-                            <div style="float: left; max-width: 75%"> NIH has endorsed collections of CDEs that
-                                meet <a href="javascript:void(0);" [routerLink]="['/guides']" [fragment]="'nih-endorsement-and-submissions'">established
-                                    criteria</a>.
-                                NIH-Endorsed CDEs are designated with a gold ribbon.
-                                <a href="javascript:void(0);" [routerLink]="['/guides']" [fragment]="'nih-endorsement-and-submissions'">Learn more...</a>
-                            </div>
-                            <button class="button" (click)="addNihEndorsedFilter(true)">
-                                View NIH-Endorsed CDEs
-                            </button>
-                        </mat-card-subtitle>
-                    </mat-card-header>
-                </mat-card>
-            </div>
+                        <button class="button" style="margin: .5rem 0 0 0" (click)="addNihEndorsedFilter(true)">
+                            View NIH-Endorsed CDEs
+                        </button>
+                    </mat-card-subtitle>
+                </mat-card-header>
+            </mat-card>
         </section>
 
         <section id="tabs">
@@ -72,6 +70,7 @@
                     <fieldset class="cdeFieldset welcomeSearchFieldset"
                               (click)="browseOrg(org.name)">
                         <legend>
+                            <img *ngIf="org.featureIcon" [src]="org.featureIcon" class="mR">
                             <span id="browseOrg-{{org.name}}" class="fake-link">{{org.name}}</span>
                         </legend>
                         <div *ngIf="org.longName">{{org.longName}}</div>
