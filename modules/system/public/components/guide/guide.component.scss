@@ -1,5 +1,10 @@
+@import 'modules/theme';
+
 .sidenav-content-container {
   padding-left: 18vw;
+  @media (max-width: $screenMd) {
+    padding-left: 2vw;
+  }
 }
 
 .toc-container {
@@ -8,9 +13,18 @@
   left: 0;
   top: 135px;
   height: 400px;
+
+  @media (max-width: $screenMd) {
+    display: none;
+  }
 }
 
 .toc-container ul li {
   padding-top: 1px !important;
   padding-bottom: 1px !important;
+}
+
+.toc-container ul li a {
+  font-size: 14px !important;
+  max-width: 200px !important;
 }
