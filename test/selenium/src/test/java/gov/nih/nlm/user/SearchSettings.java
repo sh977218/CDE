@@ -42,7 +42,7 @@ public class SearchSettings extends NlmCdeBaseTest {
 
     private void noDrafts() {
         driver.get(baseUrl + "/cde/search?selectedOrg=ACRIN");
-        textPresent("0 data element results for");
+        textPresent("No results were found.");
         driver.get(baseUrl + "/form/search?selectedOrg=NINDS");
         textNotPresent("Recorded (", By.id("registrationStatusListHolder"));
     }

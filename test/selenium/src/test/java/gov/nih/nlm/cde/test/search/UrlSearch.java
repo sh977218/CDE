@@ -8,6 +8,7 @@ public class UrlSearch extends NlmCdeBaseTest {
 
     @Test
     public void urlSearch() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         String curUrl = driver.getCurrentUrl();
         driver.get(curUrl + "?regStatuses=Candidate&selectedOrg=caBIG");

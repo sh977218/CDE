@@ -27,11 +27,12 @@ public class SaveSearchState extends NlmCdeBaseTest {
         checkSearchResultInfo(null, "CTEP > CATEGORY", null, "Standard", null);
         findElement(By.name("q")).sendKeys("name");
         clickElement(By.id("search.submit"));
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "Standard", null);
+        textPresent("No results were found.");
         clickElement(By.id("menu_forms_link"));
         hangon(1);
         textNotPresent("CATEGORY");
         driver.navigate().back();
-        checkSearchResultInfo("name", "CTEP > CATEGORY", null, "Standard", null);
+        textPresent("CATEGORY");
+        textPresent("No results were found.");
     }
 }

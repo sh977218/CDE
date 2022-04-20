@@ -295,7 +295,7 @@
             <div style="padding-left: .25rem; padding-right: .25rem"
                  [style.display]="searching ? 'none' : 'block'">
                 <!-- BREADCRUMBS -->
-                <div *ngIf="elts && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">
+                <div *ngIf="elts?.length > 0 && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">
                     <strong id="searchResultNum">{{totalItems}}</strong>
                     <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results for</ng-container>
                     <span *ngIf="searchSettings.nihEndorsed"
@@ -365,11 +365,17 @@
                     <div id="resultListTour"></div>
                     <h1 [hidden]="elts.length >= 0">
                         <mat-icon class="spin">auto_renew</mat-icon>Searching...</h1>
-                    <h2 [hidden]="elts.length !== 0"><mat-icon>sentiment_very_dissatisfied</mat-icon>
-                        No results were found. Try other criterias or selecting more statuses</h2>
+                    <ng-container *ngIf="elts.length === 0">
+                        <h1>No results were found.</h1>
+                        <p>Try expanding your search or removing active filters.</p>
+                        <div>
+                            <img style="width:100%; height: auto; max-width: 532px" alt="No Results" src="/cde/public/assets/img/min/NoResults.png"/>
+                        </div>
+                        <span>Not sure where to start? <a style="text-decoration: underline" href="/tour">Take a tour</a> or review the <a style="text-decoration: underline" href="/guides">Guides</a>.</span>
+                    </ng-container>
                     <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
                                    (add)="add.emit($event)"></cde-list-view>
-                    <div>
+                    <div *ngIf="elts.length > 0">
                         <div style="float: right">
                             <mat-form-field style="width:20%;" id="goToPage">
                                 <input matInput placeholder="Go to page:" type="number" min="1"
