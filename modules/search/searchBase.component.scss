@@ -1,5 +1,8 @@
 @import '../theme';
 
+$searchBarMd: 932px;
+$searchBarSm: 771px;
+
 #quickSearchForm {
   margin: 1rem auto;
   width: 100%;
@@ -74,7 +77,7 @@
   flex-flow: row nowrap;
   padding: .25rem .5rem;
 
-  @media (max-width: $screenLg - 1px) {
+  @media (max-width: $searchBarSm) {
     flex-flow: row wrap;
   }
 
@@ -85,30 +88,48 @@
   form {
     align-items: stretch;
     display: flex;
+    min-height: 45px;
     width: 100%;
 
     button {
       background-color: inherit;
     }
 
-    mat-form-field {
+    mat-form-field.centered {
       flex-grow: 1;
       margin-bottom: -20px;
-      margin-top: -4px;
+      margin-top: -13px;
       padding-left: .25rem;
     }
   }
 
+  .searchHamburger {
+    display: none;
+    @media (max-width: $searchBarSm) {
+      display: initial;
+    }
+  }
+
   > :nth-child(2) {
-    min-width: max-content;
+    min-width: fit-content;
     margin-left: .5rem;
 
-    @media (max-width: $screenLg - 1px) {
+    @media (max-width: $searchBarSm) {
       margin-left: 0;
       margin-top: .5rem;
 
       &.collapse {
         display: none;
+      }
+    }
+
+    .searchBarTopRow {
+      display: inline-block;
+      @media (max-width: $searchBarMd) {
+        display: block;
+      }
+      @media (max-width: $searchBarSm) {
+        display: inline-block;
       }
     }
   }

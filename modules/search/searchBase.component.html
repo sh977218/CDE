@@ -107,12 +107,12 @@
         <form class="input-group">
             <button style="display: none" type="submit" (click)="termSearch()"></button>
             <div>
-                <button class="button light secondary forNotLgScreen"
+                <button *ngIf="totalItems > 0" class="button light secondary searchHamburger"
                         (click)="searchResultOptions.classList.toggle('collapse')">
                     <mat-icon>menu</mat-icon>
                 </button>
             </div>
-            <mat-form-field>
+            <mat-form-field class="centered">
                 <input matInput name="q" id="ftsearch-input" placeholder="Search"
                        #autoCompleteInput maxlength="500" [matAutocomplete]="auto"
                        [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)">
@@ -125,37 +125,42 @@
             </mat-autocomplete>
         </form>
         <div #searchResultOptions>
-            <button id="showHideFilters" class="button" (click)="hideShowFilter()">
-                <mat-icon>filter_list</mat-icon>
-                <ng-container *ngIf="!filterMode"> Show Filters</ng-container>
-                <ng-container *ngIf="filterMode"> Hide Filters</ng-container>
-            </button>
-            <cde-list-view-controls [(listView)]="resultsView" *ngIf="!embedded"></cde-list-view-controls>
-            <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button" (click)="reset()">
-                <mat-icon>delete_outline</mat-icon>
-                Reset
-            </button>
-            <ng-template #notEmbedButtons>
-                <button id="pinAll" class="button" [hidden]="totalItems <= 0 || module === 'form'" (click)="openPinModal()">
-                    <mat-icon svgIcon="thumb_tack"></mat-icon>
-                    Pin All
-                </button>
-            </ng-template>
-            <button *ngIf="!embedded" id="export" class="button" style="margin-right: 0" [matMenuTriggerFor]="exportMenu">
-                <mat-icon>play_for_work</mat-icon>
-                Export
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-            <mat-menu #exportMenu>
-                <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
-                    <button *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}" mat-menu-item
-                       (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
-                    >{{exporters[key].display}}</button>
+            <ng-container *ngIf="totalItems > 0">
+                <div class="searchBarTopRow">
+                    <button id="showHideFilters" class="button" (click)="hideShowFilter()">
+                        <mat-icon>filter_list</mat-icon>
+                        {{filterMode ? 'Hide' : 'Show'}} Filters
+                    </button>
+                    <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button" (click)="reset()">
+                        <mat-icon>delete_outline</mat-icon>
+                        Reset
+                    </button>
+                    <ng-template #notEmbedButtons>
+                        <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
+                    </ng-template>
+                </div>
+                <ng-container *ngIf="!embedded">
+                    <button id="pinAll" class="button" [hidden]="module === 'form'" (click)="openPinModal()">
+                        <mat-icon svgIcon="thumb_tack"></mat-icon>
+                        Pin All
+                    </button>
+                    <button id="export" class="button" style="margin-right: 0" [matMenuTriggerFor]="exportMenu">
+                        <mat-icon>play_for_work</mat-icon>
+                        Export
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                    <mat-menu #exportMenu>
+                        <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
+                            <button *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}" mat-menu-item
+                                    (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
+                            >{{exporters[key].display}}</button>
+                        </ng-container>
+                        <ng-template #exportFormNotAuthorized>
+                            <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to export forms.</a>
+                        </ng-template>
+                    </mat-menu>
                 </ng-container>
-                <ng-template #exportFormNotAuthorized>
-                    <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to export forms.</a>
-                </ng-template>
-            </mat-menu>
+            </ng-container>
         </div>
     </section>
     <section *ngIf="elts && aggregations" class="mT" [class.searchFilterLayout]="filterMode">

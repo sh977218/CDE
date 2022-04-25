@@ -100,6 +100,11 @@ mat-card {
         }
 }
 
+mat-form-field.centered > .mat-form-field-wrapper {
+        top: 50%;
+        transform: translateY(-50%);
+}
+
 mat-form-field.mat-form-field .mat-form-field-infix {
         padding: .3rem 0;
 }
