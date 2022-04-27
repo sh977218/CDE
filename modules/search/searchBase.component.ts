@@ -44,7 +44,7 @@ import { noop, ownKeys } from 'shared/util';
 
 type NamedCounts = {name: string, count: number}[];
 
-const orderedFirstOrgNames = Object.freeze(['Project 5']);
+const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)']);
 const orderedFirstOrgIcons = Object.freeze(['/cde/public/assets/img/min/endorsedRibbonIcon.png']);
 
 @Component({
