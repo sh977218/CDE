@@ -94,7 +94,7 @@
                               style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
                 </button>
                 <button *ngIf="userService.user" mat-icon-button [class.active]="isActiveSearchSettings()"
-                        routerLink="/searchPreferences" id="searchSettings" title="Search Settings">
+                        routerLink="/searchPreferences" id="searchPreferences" title="Search Preferences">
                     <mat-icon>settings</mat-icon>
                 </button>
                 <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"

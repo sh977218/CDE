@@ -126,6 +126,7 @@ const appRoutes: Routes = [
     {
         path: 'searchPreferences',
         loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
+        canLoad: [LoggedInGuard],
         data: {title: 'Search Preferences', preload: false},
     },
     {

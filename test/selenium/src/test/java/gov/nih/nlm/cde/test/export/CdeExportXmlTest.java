@@ -11,9 +11,10 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
     @Test
     public void cdeExportXml() {
         String cdeName = "Patient Gender Code";
+        mustBeLoggedInAs(reguser_username, password);
         goToCdeByName(cdeName);
         downloadAsTab();
-        findElement(By.id("export")).click();
+        clickElement(By.id("export"));
         String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).getAttribute("href");
         String response = get(url).asString();
         Assert.assertTrue(response.contains("<designation>Patient Gender Code</designation>"));

@@ -14,6 +14,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
     @Test
     public void cdeExportJson() {
         String cdeName = "Spinal column injury number";
+        loginAs(reguser_username,password);
         goToCdeByName(cdeName);
 
         downloadAsFile();

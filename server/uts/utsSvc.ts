@@ -5,7 +5,6 @@ import { config } from 'server';
 import { respondError } from 'server/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
 import { handleErrors, isStatus, text } from 'shared/fetch';
-import { withRetry } from 'shared/promise';
 
 export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
     LOINC: 'LNC',
@@ -62,11 +61,12 @@ function getTGT(): Promise<string> {
     if (!config.uts.apikey) {
         return Promise.reject('apikey is missing, will need that to log in');
     }
-    return _TGT = fetch(config.uts.tgtUrl + '?apikey=' + config.uts.apikey, {
+    return _TGT = fetch(config.uts.tgtUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({apikey: config.uts.apikey})
     })
         .then(isStatus([201]))
         .then(text)
@@ -83,11 +83,12 @@ function getTGT(): Promise<string> {
 function getTicket<T>(cb: (ticket: string) => Promise<T>): Promise<T> {
     function fetchTicket() {
         return getTGT()
-            .then(tgt => fetch(config.uts.tgtUrl + '/' + tgt + '?service=' + config.uts.service, {
+            .then(tgt => fetch(config.uts.tgtUrl + '/' + tgt, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({service: config.uts.service})
             }));
     }
 
@@ -158,76 +159,56 @@ export function getValueSet(oid: string): Promise<string> {
 }
 
 export function searchUmls(term: string): Promise<string> {
-    return withRetry(() =>
-        getTicket(ticket =>
-            fetch(`${config.umls.wsHost}/rest/search/current?ticket=${ticket}&string=${term}`)
-        )
-            .then(handleErrors)
-            .then(isStatus([200]))
-            .catch(cleanupRejected('reject searchUmls'))
-    )
+    return fetch(`${config.umls.wsHost}/rest/search/current?apiKey=${config.uts.apikey}&string=${term}`)
+        .then(handleErrors)
+        .then(isStatus([200]))
+        .catch(cleanupRejected('reject searchUmls'))
         .then(text)
         .then(checkForVsacErrorPage, cleanupRejected('get umls ERROR'));
 }
 
 export function getSourcePT(cui: string, src: string): Promise<string> {
-    return withRetry(() =>
-        getTicket(ticket =>
-            fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=${ticket}`, {
+    return fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&apiKey=${config.uts.apikey}`, {
                 agent: httpsAgent,
             })
-        )
             .then(handleErrors)
             .then(isStatus([200]))
             .catch(cleanupRejected('reject getSourcePT'))
-    )
         .then(isStatus([200]))
         .then(text)
         .then(checkForVsacErrorPage, cleanupRejected('get src PT from umls ERROR ' + `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=TTT`));
 }
 
 export function getAtomsFromUMLS(cui: string, src: string): Promise<string> {
-    return withRetry(() =>
-        getTicket(ticket =>
-            fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&pageSize=500&ticket=${ticket}`, {
+    return fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&pageSize=500&apiKey=${config.uts.apikey}`, {
                 agent: httpsAgent,
             })
-        )
             .then(handleErrors)
             .then(isStatus([200]))
             .catch(cleanupRejected('reject getAtomsFromUMLS'))
-    )
         .then(text)
         .then(checkForVsacErrorPage, cleanupRejected('get atoms from umls ERROR'));
 }
 
 export function umlsCuiFromSrc(id: string, src: string): Promise<string> {
-    return withRetry(() =>
-        getTicket(ticket =>
-            fetch(`${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact`
-                + `&inputType=sourceUi&sabs=${src}&includeObsolete=true&includeSuppressible=true&ticket=${ticket}`, {
+    return fetch(`${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact`
+                + `&inputType=sourceUi&sabs=${src}&includeObsolete=true&includeSuppressible=true&apiKey=${config.uts.apikey}`, {
                 agent: httpsAgent,
             })
-        )
             .then(handleErrors)
             .then(isStatus([200]))
             .catch(cleanupRejected('reject umlsCuiFromSrc'))
-    )
         .then(text)
         .then(checkForVsacErrorPage, cleanupRejected('get cui from src ERROR'));
 }
 
 export function searchBySystemAndCode(system: string, code: string): Promise<string> {
-    return withRetry(() =>
-        getTicket(ticket =>
-            fetch(config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?ticket=' + ticket, {
+    return fetch(config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?apiKey=' + config.uts.apikey, {
                 agent: httpsAgent,
             })
-        )
             .then(handleErrors)
             .then(isStatus([200]))
             .catch(cleanupRejected('reject searchBySystemAndCode'))
-    )
         .then(text)
         .then(checkForVsacErrorPage, (err: Error) => {
             _TGT = undefined;

@@ -12,6 +12,7 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
     @Test
     public void exportPreviousVersion() {
         String cdeName = "ExportLatest";
+        mustBeLoggedInAs(reguser_username, password);
         goToCdeByName(cdeName);
         downloadAsTab();
         clickElement(By.id("export"));

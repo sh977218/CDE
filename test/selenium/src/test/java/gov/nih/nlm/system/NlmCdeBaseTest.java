@@ -457,10 +457,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.id("allComments"));
     }
 
-    protected void goToValidationRules() {
-        goToSettings();
-        clickElement(By.id("validationRules"));
-        textPresent("Add New Rule", By.id("settingsContent"));
+    protected void goToSearchPreferences() {
+        clickElement(By.id("searchPreferences"));
+        textPresent("File (default)");
     }
 
     protected void goToSearchSettings() {
@@ -1132,19 +1131,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void downloadAsFile() {
-        driver.get(baseUrl + "/searchPreferences");
+        goToSearchPreferences();
         clickElement(By.xpath("//label[contains(.,'File')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void downloadAsTab() {
-        driver.get(baseUrl + "/searchPreferences");
+        goToSearchPreferences();
         clickElement(By.xpath("//label[contains(.,'New Tab')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }
 
     protected void includeRetiredSetting() {
-        driver.get(baseUrl + "/searchPreferences");
+        goToSearchPreferences();
         clickElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
     }

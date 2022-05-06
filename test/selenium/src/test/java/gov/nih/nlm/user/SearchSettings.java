@@ -10,16 +10,14 @@ public class SearchSettings extends NlmCdeBaseTest {
 
     @Test
     public void retiredTest() {
-        goToCdeSearch();
-        driver.get(baseUrl + "/searchPreferences");
-        assertNoElt(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
-
-        mustBeLoggedInAs(ninds_username, password);
-        assertNoElt(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
-
         mustBeLoggedInAs(nlm_username, nlm_password);
-        clickElement(By.id("searchSettings"));
-        findElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
+        goToCdeSearch();
+        clickElement(By.id("search_by_classification_CTEP"));
+        textNotPresent("Retired");
+        goToSearchPreferences();
+        clickElement(By.id("includeRetired"));
+        clickElement(By.xpath("//button[contains(.,'Save')]"));
+        textPresent("Retired");
     }
 
     @Test
