@@ -63,11 +63,11 @@
             </div>
             <div class="note" style="margin-top: 12px">
                 <ng-container *ngIf="searchType === 'endorsedCde'">
-                    NIH-endorsed CDEs have been reviewed and approved by an expert panel, and meet established criteria.
+                    NIH-endorsed CDEs have been reviewed and approved by an expert panel, and meet
+                    <a routerLink="/guides" fragment="nih-endorsement-and-submissions">established criteria</a>.
                     They are designated with a gold ribbon.
                     <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top">
-                    <!--                link "Learn more"-->
                 </ng-container>
                 <ng-container *ngIf="searchType === 'cde'">
                     CDEs in the Repository have been submitted by NIH recognized bodies.
@@ -185,7 +185,7 @@
                 Questions about submitting CDEs for endorsement? Email the NIH CDE Governance Committee at
                 <a href="mailto:NIH-CDE-Governance@nih.gov">NIH-CDE-Governance@nih.gov</a>
             </p>
-            <!--                <button class="button light" routerLink="/">Learn more about submitting CDEs</button>-->
+            <a class="button light" routerLink="/guides" fragment="nih-endorsement-and-submissions">Learn more about submitting CDEs</a>
         </div>
     </div>
 </div>
