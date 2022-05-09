@@ -20,7 +20,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         textPresent("results for");
         clickElement(By.id("export"));
         clickElement(By.id("xmlExport"));
-        textPresent("Export downloaded.");
+        textPresent("Search results downloaded as XML.");
         String fileName = downloadFolder + "/SearchExport_XML.zip";
         waitForDownload(fileName);
 ;

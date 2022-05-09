@@ -4,6 +4,7 @@ import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
+import { addOrRemoveFromArray } from 'shared/array';
 
 @Component({
     selector: 'cde-tag',
@@ -49,12 +50,7 @@ export class TagComponent {
 
     selected(event: MatAutocompleteSelectedEvent): void {
         const selectedTag = event.option.viewValue;
-        const tagIndex = this.tags.indexOf(selectedTag);
-        if (tagIndex === -1) {
-            this.tags.push(selectedTag);
-        } else {
-            this.tags.splice(tagIndex, 1);
-        }
+        addOrRemoveFromArray(this.tags, selectedTag);
         this.changed.emit();
         this.tagInput.nativeElement.value = '';
         this.tagCtrl.setValue('');

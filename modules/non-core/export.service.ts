@@ -171,12 +171,12 @@ export class ExportService {
                         const csv = await this.resultToCsv(result);
                         const blob = new Blob([csv], {type: 'text/csv'});
                         saveAs(blob, 'SearchExport.csv');
-                        this.alertService.addAlert('', 'Export downloaded.');
+                        this.alertService.addAlert('', 'Search results downloaded as CSV.');
                     },
                     json: (result: ItemElastic[]) => {
                         const blob = new Blob([JSON.stringify(result)], {type: 'application/json'});
                         saveAs(blob, 'SearchExport.json');
-                        this.alertService.addAlert('', 'Export downloaded.');
+                        this.alertService.addAlert('', 'Search results downloaded as JSON.');
                     },
                     xml: (result: ItemElastic[]) => {
                         const zip = new JSZip();
@@ -188,7 +188,7 @@ export class ExportService {
                             zip.file(oneElt.tinyId + '.xml', JXON.jsToString({element: oneElt}));
                         });
                         zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, 'SearchExport_XML.zip'));
-                        this.alertService.addAlert('success', 'Export downloaded.');
+                        this.alertService.addAlert('success', 'Search results downloaded as XML.');
                     },
                     odm: (elts: CdeFormElastic[]) => {
                         const zip = new JSZip();
@@ -200,7 +200,7 @@ export class ExportService {
                             });
                         });
                         zip.generateAsync({type: 'blob'}).then((content: any) => saveAs(content, 'SearchExport_ODM.zip'));
-                        this.alertService.addAlert('success', 'Export downloaded.');
+                        this.alertService.addAlert('success', 'Search results downloaded as ODM XML.');
                     },
                     validationRules: (elts: ItemElastic[]) => {
                         const orgName = exportSettings.searchSettings.selectedOrg;

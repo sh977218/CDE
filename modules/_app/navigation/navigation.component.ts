@@ -22,7 +22,7 @@ import { NotificationDrawerPaneComponent } from '_app/notifications/notification
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
-import { cumulative, range } from 'shared/array';
+import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
 import {
     canClassify,
@@ -453,5 +453,5 @@ function getWebsiteSection(path: string, sections: string[], bucketIndexes: numb
 function scanSections(sections: typeof SECTIONS_MAP): [string[], number[], number[]] {
     const sectionsArray = Object.values(sections);
     const indexSums = cumulative(sectionsArray, (a, s) => a + s.length, 0);
-    return [([] as string[]).concat(...sectionsArray), indexSums, range(indexSums.length)];
+    return [concat(...sectionsArray), indexSums, range(indexSums.length)];
 }

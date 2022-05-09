@@ -38,6 +38,6 @@ export class CdeSearchComponent extends SearchBaseComponent {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
 
-        this.exporters.csv = {id: 'csvExport', display: 'CSV Export'};
+        this.exporters.csv = {id: 'csvExport', display: 'CSV'};
     }
 }

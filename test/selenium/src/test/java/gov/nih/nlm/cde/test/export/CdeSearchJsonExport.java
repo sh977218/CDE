@@ -22,7 +22,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));
         clickElement(By.id("jsonExport"));
-        textPresent("Export downloaded.");
+        textPresent("Search results downloaded as JSON.");
         String fileName = downloadFolder + "/SearchExport.json";
         waitForDownload(fileName);
 

@@ -35,7 +35,7 @@ export class FormSearchComponent extends SearchBaseComponent {
     ) {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
-        this.exporters.odm = {id: 'odmExport', display: 'ODM Export'};
+        this.exporters.odm = {id: 'odmExport', display: 'ODM'};
         this.module = 'form';
         this.pinComponent = PinBoardModalComponent;
     }

@@ -1,5 +1,14 @@
 import { CbRet3 } from 'shared/models.model';
 
+export function addOrRemoveFromArray<T>(arr: T[], elem: T): void {
+    const index = arr.indexOf(elem);
+    if (index > -1) {
+        arr.splice(index, 1);
+    } else {
+        arr.push(elem);
+    }
+}
+
 export function concat<T>(...lists: T[][]): T[] { // concat [] with type
     return ([] as T[]).concat(...lists);
 }

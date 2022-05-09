@@ -26,7 +26,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { partition } from 'shared/array';
+import { addOrRemoveFromArray, partition } from 'shared/array';
 import { MAX_PINS } from 'shared/constants';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
@@ -73,8 +73,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     cutoffIndex?: number;
     elts?: ItemElastic[];
     exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: {id: string, display: string} } = {
-        json: {id: 'jsonExport', display: 'JSON Export'},
-        xml: {id: 'xmlExport', display: 'XML Export'}
+        json: {id: 'jsonExport', display: 'JSON'},
+        xml: {id: 'xmlExport', display: 'XML'}
     };
     filterMode = true;
     goToPage = 1;
@@ -101,10 +101,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     totalItemsLimited?: number;
     trackByKey = trackByKey;
     trackByName = trackByName;
-    validRulesOrg?: string;
-    validRulesOrgs?: string[];
-    validRulesStatus?: CurationStatus;
-    view?: 'welcome' | 'results';
+    view: 'welcome' | 'results' = this.isSearched() ? 'results' : 'welcome';
 
     constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
                 protected alert: AlertService,
@@ -191,7 +188,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     addNihEndorsedFilter(nihEndorsed: boolean) {
-        this.searchSettings.nihEndorsed = nihEndorsed ? true : false;
+        this.searchSettings.nihEndorsed = nihEndorsed;
         this.doSearch();
     }
 
@@ -199,13 +196,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.searchSettings.datatypes) {
             this.searchSettings.datatypes = [];
         }
-        const index = this.searchSettings.datatypes.indexOf(datatype);
-        if (index > -1) {
-            this.searchSettings.datatypes.splice(index, 1);
-        } else {
-            this.searchSettings.datatypes.push(datatype);
-        }
-
+        addOrRemoveFromArray(this.searchSettings.datatypes, datatype);
         this.doSearch();
     }
 
@@ -213,13 +204,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (!this.searchSettings.regStatuses) {
             this.searchSettings.regStatuses = [];
         }
-        const index = this.searchSettings.regStatuses.indexOf(status);
-        if (index > -1) {
-            this.searchSettings.regStatuses.splice(index, 1);
-        } else {
-            this.searchSettings.regStatuses.push(status);
-        }
-
+        addOrRemoveFromArray(this.searchSettings.regStatuses, status);
         this.doSearch();
     }
 

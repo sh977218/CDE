@@ -41,7 +41,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
             clickElement(By.id("csvExport"));
         }
 
-        checkAlert("Export downloaded.");
+        checkAlert("Search results downloaded as CSV.");
 
         String[] expected = {
                 "Name, Question Texts, Value Type, Permissible Values, Nb of Permissible Values, Steward, Used By, Registration Status, Identifiers",
@@ -78,15 +78,13 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
 
         try {
             clickElement(By.id("export"));
-            textPresent("CSV Export");
             clickElement(By.id("csvExport"));
         } catch (TimeoutException e) {
             clickElement(By.id("export"));
-            textPresent("CSV Export");
             clickElement(By.id("csvExport"));
         }
 
-        checkAlert("Export downloaded.");
+        checkAlert("Search results downloaded as CSV.");
         hangon(1);
         String[] expected2 = {
                 "Name, Question Texts, Other Names, Value Type, Permissible Values, Code Names, Nb of Permissible Values, Unit of Measure, Steward, Used By, Registration Status, Administrative Status, NINDS Variable Name, Source, Updated",

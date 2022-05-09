@@ -95,18 +95,18 @@ $searchBarSm: 771px;
       background-color: inherit;
     }
 
-    mat-form-field.centered {
+    mat-form-field {
       flex-grow: 1;
       margin-bottom: -20px;
       margin-top: -13px;
       padding-left: .25rem;
     }
-  }
 
-  .searchHamburger {
-    display: none;
-    @media (max-width: $searchBarSm) {
-      display: initial;
+    .searchHamburger {
+      display: none;
+      @media (max-width: $searchBarSm) {
+        display: initial;
+      }
     }
   }
 
