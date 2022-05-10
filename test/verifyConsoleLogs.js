@@ -107,7 +107,9 @@ let ignoreErrors = [
     'petstore.swagger.io',
     "Cannot read property 'nativeElement' of undefined",
     "WebSocket is closed before the connection is established",
-    "TypeError: Failed to fetch"
+    "TypeError: Failed to fetch",
+    `Cannot read properties of undefined (reading `,
+    `because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.`
 ];
 
 fs.readdir(logFolder, (err, files) => {
@@ -119,7 +121,9 @@ fs.readdir(logFolder, (err, files) => {
     let errors = [];
     files.forEach(file => {
         let expectedLines = expectedContent[file.split('_')[0]];
-        let actualLines = fs.readFileSync(logFolder + '/' + file, 'utf-8').split('\n').filter(Boolean);
+        let actualLines = fs.readFileSync(logFolder + '/' + file, 'utf-8')
+            .split(/(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dev)\s\d{2}\s\d{2}:\d{2}:\d{2}/gm)
+            .filter(Boolean);
 
         actualLines.forEach(l => {
             if (expectedLines === '*') {
