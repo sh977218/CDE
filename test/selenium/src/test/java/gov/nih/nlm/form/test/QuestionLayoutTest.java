@@ -21,7 +21,7 @@ public class QuestionLayoutTest extends QuestionTest {
         isSearchWelcome();
         scrollToViewById("browseOrg-caCORE");
         clickElement(By.id("browseOrg-caCORE"));
-        textPresent("9 data element results for");
+        textPresent("9 data element results");
         clickElement(By.id("showHideFilters"));
         textPresent("Show Filters");
         clickElement(By.id("showHideFilters"));
@@ -33,7 +33,7 @@ public class QuestionLayoutTest extends QuestionTest {
         textPresent("Value List (1)");
 
         clickElement(By.id("datatype-Date"));
-        textPresent("2 data element results for");
+        textPresent("2 data element results");
         textNotPresent("Reference Editor java.lang.String");
         textNotPresent("Mage-OM (");
         textPresent("Date (2)");
@@ -51,7 +51,7 @@ public class QuestionLayoutTest extends QuestionTest {
         addSectionBottom(sec3, null);
 
         textNotPresent("Show Filters");
-        textNotPresent("results for");
+        textNotPresent("form results");
         saveFormEdit();
         newFormVersion();
     }

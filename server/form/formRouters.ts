@@ -14,6 +14,7 @@ import {
     getAuditLog
 } from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
+import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
     completionSuggest, elasticsearchPromise, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
@@ -80,7 +81,7 @@ export function module() {
                     formModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
-                    }, handleError({req, res}, forms => {
+                    }, handleError<FormDocument[]>({req, res}, forms => {
                         let totalPages = totalCount / pageSize;
                         if (totalPages % 1 > 0) {
                             totalPages = totalPages + 1;

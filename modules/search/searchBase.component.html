@@ -103,7 +103,7 @@
 </ng-template>
 
 <ng-template #searchResults>
-    <section *ngIf="elts && aggregations" class="searchResultBar">
+    <section *ngIf="elts && aggregations" class="searchResultBar" style="margin-bottom: 0">
         <form class="input-group">
             <button style="display: none" type="submit" (click)="termSearch()"></button>
             <div>
@@ -131,7 +131,8 @@
                         <mat-icon>filter_list</mat-icon>
                         {{filterMode ? 'Hide' : 'Show'}} Filters
                     </button>
-                    <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button" (click)="reset()">
+                    <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button"
+                            (click)="resetFilters()">
                         <mat-icon>delete_outline</mat-icon>
                         Reset
                     </button>
@@ -156,88 +157,202 @@
                             >{{exporters[key].display}}</button>
                         </ng-container>
                         <ng-template #exportFormNotAuthorized>
-                            <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to export forms.</a>
+                            <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to export
+                                forms.</a>
                         </ng-template>
                     </mat-menu>
                 </ng-container>
             </ng-container>
         </div>
     </section>
-    <section *ngIf="elts && aggregations" class="mT" [class.searchFilterLayout]="filterMode">
-            <div *ngIf="filterMode" style="padding-left: .25rem; padding-right: .25rem">
-                <!--FILTERS-->
-                <!-- NIH Endorsed AGGREGATIONS -->
-                <div *ngIf="aggregations.orgs.buckets" id="nihEndorsedHolder" class="my-3">
-                    <div class="treeTitle">NIH-Endorsed Collection</div>
-                    <div>
-                        <mat-checkbox class="example-margin" [(ngModel)]="searchSettings.nihEndorsed" color="primary"
-                                      (change)="addNihEndorsedFilter($event.checked)">
-                            NIH-Endorsed
-                        </mat-checkbox>
+    <!--FILTERS-->
+    <section *ngIf="elts && aggregations" [class.searchFilterLayout]="filterMode">
+        <aside *ngIf="filterMode">
+            <!-- BREADCRUMBS / Active Filters -->
+            <div>
+                <div class="searchFilterTitle">ACTIVE {{module === 'cde' ? 'CDE' : 'FORM'}} FILTERS</div>
+                <div *ngIf="aggregations" class="searchFilterLayoutActive">
+                    <div *ngIf="searchSettings.nihEndorsed" class="activeFilterClause">
+                        <span class="pill" role="button" tabindex="0" (click)="addNihEndorsedFilter(false)">
+                            <span class="text">NIH-Endorsed {{module === 'cde' ? 'CDEs' : 'Forms'}}</span>
+                            <span class="close">X</span>
+                        </span>
+                    </div>
+                    <div *ngIf="searchedTerm" class="activeFilterClause">
+                        <span id="term_crumb"
+                              class="pill" role="button" tabindex="0"
+                              aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                              (click)="searchSettings.q = ''; doSearch()">
+                            <span class="text">{{searchedTerm}}</span>
+                            <span class="close">X</span>
+                        </span>
+                    </div>
+                    <ng-container *ngIf="hasSelectedClassifications()">
+                        <div class="flex-break"></div>
+                        <div *ngFor="let c of getSelectedClassifications(); first as isFirst"
+                             class="activeFilterClause">
+                            <span *ngIf="!isFirst" class="keyboard-arrow lightgray"></span>
+                            <span class="classif_crumb pill" role="button" tabindex="0"
+                                  aria-label="Remove this classification filter"
+                                  matTooltip="Remove this classification filter"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  (click)="clearSelectedClassifications(c)">
+                                <span class="text">{{c}}</span>
+                                <span class="close">X</span>
+                            </span>
+                        </div>
+                        <div class="flex-break" tourAnchor="classif_crumb"></div>
+                    </ng-container>
+                    <ng-container *ngIf="altClassificationFilterMode">
+                        <div class="flex-break"></div>
+                        <span style="margin-right: 10px">and</span>
+                        <span *ngFor="let c of getSelectedClassificationsAlt(); first as isFirst"
+                              class="activeFilterClause">
+                            <span *ngIf="!isFirst" class="keyboard-arrow lightgray"></span>
+                            <span class="classifAlt_filter pill" role="button" tabindex="0"
+                                  aria-label="Remove this classification filter"
+                                  matTooltip="Remove this classification filter"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  (click)="clearSelectedClassificationsAlt(c)">
+                                <span class="text">{{c}}</span>
+                                <span class="close">X</span>
+                            </span>
+                        </span>
+                        <div class="flex-break"></div>
+                    </ng-container>
+                    <ng-container *ngIf="excludeOrgFilterMode">
+                        <div class="flex-break"></div>
+                        <div class="activeFilterClause">
+                            <span style="margin-right: 10px">not</span>
+                            <span class="pill" role="button" tabindex="0"
+                                  aria-label="Remove this classification filter"
+                                  matTooltip="Remove this classification filter"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  (click)="clearExcludeOrgs()">
+                                <span class="text">{{getExcludedOrgs()}}</span>
+                                <span class="close">X</span>
+                            </span>
+                        </div>
+                        <div class="flex-break"></div>
+                    </ng-container>
+                    <ng-container *ngIf="hasSelectedStatuses()">
+                        <div *ngFor="let s of searchSettings.regStatuses" class="activeFilterClause">
+                            <span class="status_crumb pill" role="button" tabindex="0"
+                                  aria-label="Remove this registration statuses filter"
+                                  matTooltip="Remove this registration statuses filter"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  (click)="clearSelectedStatus(s)">
+                                <span class="text">{{s}}</span>
+                                <span class="close">X</span>
+                            </span>
+                        </div>
+                        <div class="flex-break"></div>
+                    </ng-container>
+                    <ng-container *ngIf="module === 'cde' && hasSelectedDatatypes()">
+                        <div *ngFor="let d of searchSettings.datatypes" class="activeFilterClause">
+                            <span class="datatype_crumb pill" role="button" tabindex="0"
+                                  aria-label="Remove this datatype filter"
+                                  matTooltip="Remove this datatype filter"
+                                  matTooltipClass="cdeTooltip" matTooltipPosition="right"
+                                  (click)="clearSelectedDatatype(d)">
+                                <span class="text">{{d}}</span>
+                                <span class="close">X</span>
+                            </span>
+                        </div>
+                        <div class="flex-break"></div>
+                    </ng-container>
+                    <div class="activeFilterClause">
+                        <span (click)="resetFilters()" class="clearAllPill" role="button" tabindex="0">
+                            Clear all
+                            <span class="close">X</span>
+                        </span>
                     </div>
                 </div>
+            </div>
 
-                <!-- CLASSIFICATION AGGREGATIONS -->
-                <div *ngIf="aggregations.orgs.buckets" tourAnchor="classificationListHolder" id="classificationListHolder">
-                    <div>
-                        <span class="treeTitle">Classification</span>
-                        <a *ngIf="!altClassificationFilterMode && !embedded && !excludeOrgFilterMode"
-                           id="altClassificationFilterModeToggle" class="hand-cursor classification-filter" style="line-height: 12px"
-                           (click)="setAltClassificationFilterMode()" href="javascript:void(0);"
-                           aria-label="Add a second classification filter as an AND condition"
-                           matTooltip="Add a second classification filter as an AND condition"
-                           matTooltipClass="cdeTooltip" matTooltipPosition="right">
-                            <mat-icon>add_box</mat-icon>
-                        </a>
-                        <a *ngIf="!excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
-                           tourAnchor="excludeFilterModeToggle"
-                           id="excludeFilterModeToggle" class="classification-filter" style="line-height: 12px"
-                           (click)="setExcludeOrgFilterMode()" href="javascript:void(0);"
-                           aria-label="Add a second classification filter as a NOT condition"
-                           matTooltip="Add a second classification filter as a NOT condition"
-                           matTooltipClass="cdeTooltip" matTooltipPosition="right">
-                            <mat-icon>indeterminate_check_box</mat-icon>
-                        </a>
-                    </div>
-                    <div *ngIf="excludeOrgFilterMode" class="treeChild hand-cursor" id="exludeAllOrgs"
-                         (click)="searchExcludeAllOrgs()">
+            <!-- NIH Endorsed AGGREGATIONS -->
+            <div *ngIf="aggregations.orgs.buckets" id="nihEndorsedHolder" style="margin-bottom: 1rem">
+                <div class="searchFilterTitle">REFINE {{module === 'cde' ? 'CDE' : 'FORM'}} RESULTS</div>
+                <div>
+                    <label class="input-hover">
+                        <input type="checkbox" class="checkbox"
+                               [(ngModel)]="searchSettings.nihEndorsed"
+                               (ngModelChange)="addNihEndorsedFilter($event)"/>
+                        NIH-Endorsed
+                        <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
+                             style="height: 19px; vertical-align: text-top">
+                    </label>
+                </div>
+            </div>
+
+            <!-- CLASSIFICATION AGGREGATIONS -->
+            <div *ngIf="aggregations.orgs.buckets" #classificationSection tourAnchor="classificationListHolder"
+                 id="classificationListHolder" class="searchFilterCollapse">
+                <div class="searchFilterCollapseHeading" (click)="classificationSection.classList.toggle('collapsed')">
+                    Classification
+                    <span style="display: inline-block; width: 19px">
+                        <span class="keyboard-arrow down"></span>
+                        <span class="keyboard-arrow up"></span>
+                    </span>
+                    <a *ngIf="userService.isSiteAdmin() && !altClassificationFilterMode && !embedded && !excludeOrgFilterMode"
+                       id="altClassificationFilterModeToggle" class="classification-filter"
+                       style="line-height: 12px"
+                       (click)="setAltClassificationFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
+                       aria-label="Add a second classification filter as an AND condition"
+                       matTooltip="Add a second classification filter as an AND condition"
+                       matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                        <mat-icon>add_box</mat-icon>
+                    </a>
+                    <a *ngIf="userService.isSiteAdmin() && !excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
+                       id="excludeFilterModeToggle" class="classification-filter" style="line-height: 12px"
+                       tourAnchor="excludeFilterModeToggle"
+                       (click)="setExcludeOrgFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
+                       aria-label="Add a second classification filter as a NOT condition"
+                       matTooltip="Add a second classification filter as a NOT condition"
+                       matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                        <mat-icon>indeterminate_check_box</mat-icon>
+                    </a>
+                </div>
+                <div class="searchFilterCollapseContent">
+                    <button *ngIf="excludeOrgFilterMode" id="exludeAllOrgs" class="treeChild fake-link"
+                            (click)="searchExcludeAllOrgs()">
                         All (Except {{searchSettings.selectedOrg}})
-                    </div>
+                    </button>
                     <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
                         <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                             <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                                 <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
-                                     id="classif-{{t.key}}" class="treeParent hand-cursor"
+                                     id="classif-{{t.key}}" class="treeParent input-hover"
                                      [attr.aria-label]="t.longName" (click)="alterOrgFilter(t.key)" role="link">
-                                    <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
-                                    <a class="treeItemText" [matTooltip]="t.longName" href="javascript:void(0);"
-                                       matTooltipClass="cdeTooltip" matTooltipPosition="right"> {{t.key}}</a>
+                                    <span class="keyboard-arrow left treeItemIcon"></span>
+                                    <span class="treeItemText" [matTooltip]="t.longName"
+                                          matTooltipClass="cdeTooltip" matTooltipPosition="right"> {{t.key}}</span>
                                 </div>
                                 <ng-template #classifSelf>
                                     <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
-                                         [attr.aria-label]="t.longName">
-                                        <span [matTooltip]="t.longName" matTooltipClass="cdeTooltip"
-                                              matTooltipPosition="right">{{t.key}}
-                                        </span>
+                                         [matTooltip]="t.longName" [attr.aria-label]="t.longName"
+                                         matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                                        {{t.key}}
                                     </div>
                                 </ng-template>
                             </ng-container>
                         </ng-container>
                         <ng-template #classifOrg>
-                            <div id="classif-{{t.key}}" class="treeChild hand-cursor" (click)="alterOrgFilter(t.key)"
+                            <div id="classif-{{t.key}}" class="treeChild input-hover" (click)="alterOrgFilter(t.key)"
                                  role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
                                  matTooltipClass="cdeTooltip" matTooltipPosition="right">
-                                <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
-                                <a class="treeItemText" href="javascript:void(0);">{{t.key}} (<span
-                                        id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</a>
+                                <span class="keyboard-arrow treeItemIcon"></span>
+                                <span class="treeItemText">{{t.key}} (<span
+                                        id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</span>
                             </div>
                         </ng-template>
                     </ng-container>
                     <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
-                        <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent hand-cursor"
+                        <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" class="treeParent input-hover"
                              (click)="selectElement(e, 'parent', i)" role="link">
-                            <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
-                            <a class="treeItemText" href="javascript:void(0);"> {{e}}</a>
+                            <span class="keyboard-arrow left treeItemIcon"></span>
+                            <span class="treeItemText"> {{e}}</span>
                         </div>
                         <ng-template #classifSelf2>
                             <div id="classif-{{e}}" class="treeCurrent treeItemText"
@@ -246,154 +361,105 @@
                         </ng-template>
                     </ng-container>
                     <div *ngFor="let b of getClassificationSelectedOrg(); index as i; trackBy: trackByName"
-                         id="classif-{{b.name}}" class="treeChild hand-cursor"
+                         id="classif-{{b.name}}" class="treeChild input-hover"
                          [class.treeItem]="getCurrentSelectedClassification().length"
                          (click)="selectElement(b.name, 'child', i)" role="link">
-                        <mat-icon class="treeItemIcon">keyboard_arrow_right</mat-icon>
-                        <a class="treeItemText" href="javascript:void(0);">{{b.name}} (<span
-                                id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</a>
+                        <span class="keyboard-arrow treeItemIcon"></span>
+                        <span class="treeItemText">{{b.name}} (<span
+                                id="nbOfClassifElts-{{b.name}}">{{b.count}}</span>)</span>
                     </div>
                 </div>
-                <!-- REGISTRATION STATUS AGGREGATION -->
-                <div *ngIf="aggregations.statuses.statuses.buckets" tourAnchor="registrationStatusListHolder"
-                     id="registrationStatusListHolder"
-                     style="margin-bottom: .75rem; margin-top: .75rem">
-                    <span class="treeTitle">Registration Status</span>
+            </div>
+            <!-- REGISTRATION STATUS AGGREGATION -->
+            <div *ngIf="aggregations.statuses.statuses.buckets" #regStatusSection
+                 tourAnchor="registrationStatusListHolder"
+                 id="registrationStatusListHolder" class="searchFilterCollapse">
+                <div class="searchFilterCollapseHeading" (click)="regStatusSection.classList.toggle('collapsed')">
+                    Registration Status
+                    <span style="display: inline-block; width: 19px">
+                        <span class="keyboard-arrow down"></span>
+                        <span class="keyboard-arrow up"></span>
+                    </span>
+                </div>
+                <div class="searchFilterCollapseContent">
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
-                        <div *ngIf="t.doc_count > 0" id="regstatus-{{t.key}}" class="treeItem hand-cursor"
-                             (click)="addStatusFilter(t.key)" role="link"
-                             [attr.aria-label]="getRegStatusHelp(t.key)">
-                            <ng-container
-                                    *ngIf="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1; else else06">
-                                <mat-icon class="filter-cb">check_box</mat-icon>
-                            </ng-container>
-                            <ng-template #else06>
-                                <mat-icon class="filter-cb">check_box_outline_blank</mat-icon>
-                            </ng-template>
-                            <a class="treeItemText" [matTooltip]="getRegStatusHelp(t.key)" href="javascript:void(0);"
-                               matTooltipClass="cdeTooltip" matTooltipPosition="right">{{t.key}} ({{t.doc_count}})</a>
-                        </div>
-                    </ng-container>
-                </div>
-                <!--DATA TYPE AGGREGATION-->
-                <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length"
-                     tourAnchor="datatypeListHolder" id="datatypeListHolder" style="margin: .75rem 0">
-                    <span class="treeTitle">Data Types</span>
-                    <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
-                        <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
-                             (click)="addDatatypeFilter(t.key)" role="link">
-                            <ng-container
-                                    *ngIf="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1; else else07">
-                                <mat-icon class="filter-cb">check_box</mat-icon>
-                            </ng-container>
-                            <ng-template #else07>
-                                <mat-icon class="filter-cb">check_box_outline_blank</mat-icon>
-                            </ng-template>
-                            <a class="treeItemText" href="javascript:void(0);">{{t.key}} ({{t.doc_count}})</a>
-                        </div>
+                        <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
+                               [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
+                               matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                            <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
+                                   [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
+                                   (change)="addStatusFilter(t.key)"/>
+                            {{t.key}} ({{t.doc_count}})
+                        </label>
                     </ng-container>
                 </div>
             </div>
-            <div style="padding-left: .25rem; padding-right: .25rem"
-                 [style.display]="searching ? 'none' : 'block'">
-                <!-- BREADCRUMBS -->
-                <div *ngIf="elts?.length > 0 && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">
-                    <strong id="searchResultNum">{{totalItems}}</strong>
-                    <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results for</ng-container>
-                    <span *ngIf="searchSettings.nihEndorsed"
-                          class="badge badge-light remove-filter hand-cursor dark-icon"
-                          style="margin-left: .25rem; margin-right: .25rem"> NIH-Endorsed {{module === 'cde' ? 'CDEs' : 'Forms'}} </span>
-                    <span *ngIf="searchedTerm" id="term_crumb"
-                          class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                          style="margin-left: .25rem; margin-right: .25rem"
-                          aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="searchSettings.q = ''; doSearch()">
-                        {{searchedTerm}}
+            <!--DATA TYPE AGGREGATION-->
+            <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" #datatypeSection
+                 tourAnchor="datatypeListHolder" id="datatypeListHolder" class="searchFilterCollapse">
+                <div class="searchFilterCollapseHeading" (click)="datatypeSection.classList.toggle('collapsed')">
+                    Data Types
+                    <span style="display: inline-block; width: 19px">
+                        <span class="keyboard-arrow down"></span>
+                        <span class="keyboard-arrow up"></span>
                     </span>
-                    <span *ngIf="hasSelectedClassifications()" tourAnchor="classif_crumb" id="classif_crumb"
-                          class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                          style="margin-left: .25rem; margin-right: .25rem"
-                          aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedClassifications()">
-                        {{getSelectedClassifications()}}
-                    </span>
-                    <ng-container *ngIf="altClassificationFilterMode">
-                        and
-                        <span id="classifAlt_filter" class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                              style="padding-left: .25rem"
-                              aria-label="Remove this classification filter"
-                              matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearSelectedClassificationsAlt()">
-                            {{getSelectedClassificationsAlt()}}
-                        </span>
-                    </ng-container>
-                    <ng-container *ngIf="excludeOrgFilterMode">
-                        not
-                        <span class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                              style="padding-left: .25rem;"
-                              aria-label="Remove this classification filter"
-                              matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearExcludeOrgs()">
-                            {{getExcludedOrgs()}}
-                        </span>
-                    </ng-container>
-                    <span *ngIf="hasSelectedStatuses()" id="status_crumb"
-                          class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                          style="margin-left: .25rem; margin-right: .25rem"
-                          aria-label="Remove this registration statuses filter"
-                          matTooltip="Remove this registration statuses filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedStatuses()">
-                        {{getSelectedStatuses()}}
-                    </span>
-                    <span *ngIf="module === 'cde' && hasSelectedDatatypes()" id="datatype_crumb"
-                          class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
-                          style="margin-left: .25rem; margin-right: .25rem"
-                          aria-label="Remove this datatype filter"
-                          matTooltip="Remove this datatype filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="clearSelectedDatatypes()">
-                        {{getSelectedDatatypes()}}
-                    </span>
-                    <a (click)="reset()" href="javascript:void(0);" style="font-size: small">Clear All</a>
-                    <small> ({{took / 1000}} secs)</small>
                 </div>
-                <!-- SEARCH RESULTS -->
-                <div id="resultList">
-                    <div tourAnchor="resultListTour" id="resultListTour"></div>
-                    <h1 [hidden]="elts.length >= 0">
-                        <mat-icon class="spin">auto_renew</mat-icon>Searching...</h1>
-                    <ng-container *ngIf="elts.length === 0">
-                        <h1>No results were found.</h1>
-                        <p>Try expanding your search or removing active filters.</p>
-                        <div>
-                            <img style="width:100%; height: auto; max-width: 532px" alt="No Results" src="/assets/img/NoResults.png"/>
-                        </div>
-                        <span>Not sure where to start? <a style="text-decoration: underline" href="/tour">Take a tour</a> or review the <a style="text-decoration: underline" href="/guides">Guides</a>.</span>
+                <div class="searchFilterCollapseContent">
+                    <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
+                        <label *ngIf="t.doc_count > 0" class="treeItem input-hover">
+                            <input type="checkbox" id="datatype-{{t.key}}" class="checkbox treeItemText"
+                                   [ngModel]="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1"
+                                   (change)="addDatatypeFilter(t.key)"/>
+                            {{t.key}} ({{t.doc_count}})
+                        </label>
                     </ng-container>
-                    <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
-                                   (add)="add.emit($event)"></cde-list-view>
-                    <div *ngIf="elts.length > 0">
-                        <div style="float: right">
-                            <mat-form-field style="width:20%;" id="goToPage">
-                                <input matInput placeholder="Go to page:" type="number" min="1"
-                                       [max]="numPages" [ngModel]="searchSettings.page"
-                                       (ngModelChange)="pageChange({pageIndex: $event-1})">
-                            </mat-form-field>
-                            <mat-paginator (page)="pageChange($event)" [length]="totalItemsLimited"
-                                           [pageIndex]="searchSettings.page - 1"
-                                           [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true"
-                                           style="float: right; font-size: 1.4em">
-                            </mat-paginator>
-                            <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
-                        </div>
+                </div>
+            </div>
+        </aside>
+        <div style="padding: 30px 0 0 30px"
+             [style.display]="searching ? 'none' : 'block'">
+            <div *ngIf="elts?.length > 0 && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">
+                <strong id="searchResultNum">{{totalItems}}</strong>
+                <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results</ng-container>
+                <small> ({{took / 1000}} secs)</small>
+            </div>
+
+            <!-- SEARCH RESULTS -->
+            <div id="resultList">
+                <div id="resultListTour" tourAnchor="resultListTour"></div>
+                <h1 [hidden]="elts.length >= 0">
+                    <mat-icon class="spin">auto_renew</mat-icon>
+                    Searching...
+                </h1>
+                <ng-container *ngIf="elts.length === 0">
+                    <h1>No results were found.</h1>
+                    <p>Try expanding your search or removing active filters.</p>
+                    <div>
+                        <img style="width:100%; height: auto; max-width: 532px" alt="No Results"
+                             src="/assets/img/NoResults.png"/>
+                    </div>
+                    <span>Not sure where to start? <a style="text-decoration: underline" href="/tour">Take a tour</a> or review the <a
+                            style="text-decoration: underline" href="/guides">Guides</a>.</span>
+                </ng-container>
+                <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
+                               (add)="add.emit($event)"></cde-list-view>
+                <div *ngIf="elts.length > 0">
+                    <div style="float: right">
+                        <mat-form-field style="width:20%;" id="goToPage">
+                            <input matInput placeholder="Go to page:" type="number" min="1"
+                                   [max]="numPages" [ngModel]="searchSettings.page"
+                                   (ngModelChange)="pageChange({pageIndex: $event-1})">
+                        </mat-form-field>
+                        <mat-paginator (page)="pageChange($event)" [length]="totalItemsLimited"
+                                       [pageIndex]="searchSettings.page - 1"
+                                       [pageSize]="searchSettings.resultPerPage" [hidePageSize]="true"
+                                       style="float: right; font-size: 1.4em">
+                        </mat-paginator>
+                        <a [hidden]="true" href="{{fakeNextPageLink()}}" rel="next">Next Page</a>
                     </div>
                 </div>
             </div>
+        </div>
     </section>
     <ng-container #pinModal></ng-container>
 </ng-template>

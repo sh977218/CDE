@@ -8,42 +8,47 @@ public class TwoClassifSearch extends BoardTest {
 
     @Test
     public void twoClassificationSearch() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         clickElement(By.id("classif-Disease"));
         clickElement(By.id("classif-Neuromuscular Disease"));
-        textPresent("NINDS > Disease > Neuromuscular Disease");
+        checkSearchResultInfo(null, new String[]{"NINDS", "Disease", "Neuromuscular Disease"}, null, null, null);
 
         clickElement(By.id("altClassificationFilterModeToggle"));
-        textPresent("and", By.id("searchResultInfoBar"));
-        textPresent("(Select Orgs)", By.id("classifAlt_filter"));
+        textPresent("and", By.className("searchFilterLayoutActive"));
+        textPresent("(Select Orgs)", By.className("classifAlt_filter"));
         hangon(1);
         clickElement(By.id("classif-NINDS"));
         clickElement(By.id("classif-Domain"));
         clickElement(By.id("classif-Assessments and Examinations"));
-        textPresent("NINDS > Domain > Assessments and Examinations", By.id("classifAlt_filter"));
+        checkSearchResultInfo(null, null, new String[]{"NINDS", "Domain", "Assessments and Examinations"}, null, null);
         textPresent("Imaging Diagnostics (30");
 
         int numbOfImages = Integer.parseInt(findElement(By.id("nbOfClassifElts-Imaging Diagnostics")).getText());
 
         clickElement(By.id("classif-Imaging Diagnostics"));
-        textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
-        textPresent(numbOfImages + " data element results for");
+        checkSearchResultInfo(null, null, new String[]{"NINDS", "Domain", "Assessments and Examinations", "Imaging Diagnostics"}, null, null);
+        textPresent(numbOfImages + " data element results");
         hangon(1);
 
         goHome();
         hangon(1);
         driver.navigate().back();
-        textPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
+        checkSearchResultInfo(null, null, new String[]{"NINDS", "Domain", "Assessments and Examinations", "Imaging Diagnostics"}, null, null);
 
-        clickElement(By.id("classifAlt_filter"));
-        textNotPresent("NINDS > Domain > Assessments and Examinations > Imaging Diagnostics", By.id("classifAlt_filter"));
+        clickElement(By.className("classifAlt_filter"));
+        String altSection = "//*[contains(@class,'classifAlt_filter')]";
+        searchNoActiveFilter("NINDS", altSection);
+        searchNoActiveFilter("Domain", altSection);
+        searchNoActiveFilter("Assessments and Examinations", altSection);
+        searchNoActiveFilter("Imaging Diagnostics", altSection);
         textPresent("Classification (100");
 
         clickElement(By.id("menu_cdes_link"));
         findElement(By.id("browseOrg-caCORE"));
         clickElement(By.id("browseOrg-NINDS"));
-        checkSearchResultInfo(null, "NINDS", null, null, null);
+        checkSearchResultInfo(null, new String[]{"NINDS"}, null, null, null);
     }
 
 }

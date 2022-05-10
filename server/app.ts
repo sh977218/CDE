@@ -7,7 +7,6 @@ import * as Domain from 'domain';
 import * as express from 'express';
 import { ErrorRequestHandler, Request } from 'express';
 import * as session from 'express-session';
-import * as httpProxy from 'express-http-proxy';
 import * as helmet from 'helmet';
 import * as http from 'http';
 import * as methodOverride from 'method-override';
@@ -47,7 +46,6 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { init as authInit, ticketAuth } from 'server/user/authentication';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
-import { ModuleAll } from 'shared/models.model';
 import { canClassifyOrg } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
 

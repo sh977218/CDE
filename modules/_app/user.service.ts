@@ -13,6 +13,7 @@ import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'sha
 import { noop } from 'shared/util';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
+import { removeFromArray } from 'shared/array';
 
 @Injectable()
 export class UserService {
@@ -141,10 +142,7 @@ export class UserService {
         }
         this.listeners.push(cb);
         return () => {
-            const i = this.listeners.indexOf(cb);
-            if (i > -1) {
-                this.listeners.splice(i, 1);
-            }
+            removeFromArray(this.listeners, cb)
         };
     }
 

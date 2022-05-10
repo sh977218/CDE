@@ -17,7 +17,7 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         textPresent("caCORE 3.2");
         clickElement(By.xpath("//*[@id='classif-caCORE' and contains(@class, 'treeChild')]"));
         clickElement(By.id("classif-CSM"));
-        textPresent("2 data element results for");
+        textPresent("2 data element results");
         List<WebElement> linkList = driver.findElements(By.cssSelector("div.singleSearchResult"));
         Assert.assertEquals(linkList.size(), 2);
         clickElement(By.id("menu_cdes_link"));
@@ -35,7 +35,8 @@ public class ResetSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys(searchTerm);
         clickElement(By.id("search.submit"));
-        textPresent("results for some search");
+        textPresent("data element results");
+        textPresent(searchTerm, By.id("term_crumb"));
         clickElement(By.id("menu_cdes_link"));
         isSearchWelcome();
         String actual = findElement(By.id("ftsearch-input")).getAttribute("value");

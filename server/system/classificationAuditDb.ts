@@ -1,11 +1,13 @@
 import * as mongoose from 'mongoose';
 import { Document, Model } from 'mongoose';
-import { config } from 'server';
+import { config, ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
-import { Cb } from 'shared/models.model';
+import { CbError1 } from 'shared/models.model';
 import { orderedList } from 'shared/regStatusShared';
+
+type ClassificationAuditDocument = Document<ObjectId, {}, ClassificationAudit> & ClassificationAudit;
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -30,9 +32,10 @@ export const classificationAuditSchema = new Schema({
     path: [StringType]
 }, {collection: 'classificationAudit'});
 
-const classificationAuditModel: Model<Document & ClassificationAudit> = conn.model('classificationAudit', classificationAuditSchema);
+const classificationAuditModel: Model<ClassificationAuditDocument>
+    = conn.model('classificationAudit', classificationAuditSchema);
 
-export function saveClassificationAudit(msg: ClassificationAudit, callback?: Cb) {
+export function saveClassificationAudit(msg: ClassificationAudit, callback: CbError1<ClassificationAuditDocument> = () => {}) {
     new classificationAuditModel(msg).save(callback);
 }
 

@@ -25,6 +25,7 @@ public class NlmCuratorTest extends BaseClassificationTest {
         String cdeDef = "create by NLM Curator";
         String cdeOrg = "SeleniumOrg";
 
+        scrollToTop();
         hoverOverElement(findElement(By.id("createEltLink")));
         clickElement(By.id("createCDELink"));
         textPresent("Please enter a name for the new CDE");

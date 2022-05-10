@@ -18,7 +18,7 @@ export interface CrudHooks<T, U> {
 
 export abstract class BaseDb<T, U> {
     protected constructor(
-        protected model: Model<Document & T>,
+        protected model: Model<Document<U, {}, T> & T>,
         protected hooks: CrudHooks<T, U>,
         protected updateDateField: keyof T | null) {
     }

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class CodesFromNCI extends NlmCdeBaseTest {
 
-//    @Test
+    @Test
     public void codesFromNCI() {
         String cdeName = "Race Category Text";
         goToCdeByName(cdeName);

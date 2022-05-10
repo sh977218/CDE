@@ -34,14 +34,14 @@ class IdSourceDbMongo extends BaseDb<IdSource, string> implements IdSourceDb {
     findAll(): Promise<IdSource[]> {
         return this.model.find()
             .then(docs => Promise.all(docs
-                .map(doc => doc.toObject())
+                .map(doc => doc.toObject<IdSource>())
                 .map(idSource => (this.hooks.read.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource))
             ));
     }
 
     save(idSource: IdSource): Promise<IdSource> {
         return new this.model(idSource).save()
-            .then(doc => doc.toObject())
+            .then(doc => doc.toObject<IdSource>())
             .then(idSource => (this.hooks.save.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource));
     }
 

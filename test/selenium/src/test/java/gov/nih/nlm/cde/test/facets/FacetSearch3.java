@@ -18,7 +18,7 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         textPresent("blah blah blah");
         clickElement(By.id("menu_cdes_link"));
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("results for");
+        textPresent("data element results");
     }
 
     @Test
@@ -26,15 +26,16 @@ public class FacetSearch3 extends NlmCdeBaseTest {
         goToCdeSearch();
         textPresent("Albert Einstein Cancer Center");
         clickElement(By.id("browseOrg-AECC"));
-        hoverOverElement(findElement(By.id("menu_cdes_link")));
         textNotPresent("Albert Einstein Cancer Center");
-        hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]//span")));
+        scrollToTop();
+        hoverOverElement(findElement(By.id("menu_cdes_link")));
+        hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC']")));
         try {
             textPresent("Albert Einstein Cancer Center");
         } catch (TimeoutException e) {
             hoverOverElement(findElement(By.id("menu_cdes_link")));
             hangon(1);
-            hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC' and contains(@class,'treeItemText')]//span")));
+            hoverOverElement(findElement(By.xpath("//*[@id='classif-AECC']")));
             textPresent("Albert Einstein Cancer Center");
         }
         hoverOverElement(findElement(By.id("menu_cdes_link")));

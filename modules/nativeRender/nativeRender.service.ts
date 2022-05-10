@@ -1,28 +1,42 @@
 import { Injectable } from '@angular/core';
+import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import { repeatFe } from 'core/form/fe';
 import { getShowIfQ } from 'core/form/skipLogic';
 import { callbackify } from 'non-core/browser';
 import { convertUnits } from 'nativeRender/form.service';
 import { ScoreService } from 'nativeRender/score.service';
 import { SkipLogicService } from 'nativeRender/skipLogic.service';
+import { handleDropdown } from 'non-core/dropdown';
+import { addToArray, removeFromArray } from 'shared/array';
 import { assertUnreachable, Cb1, CbErr1, CdeId, CodeAndSystem } from 'shared/models.model';
-import { pvGetDisplayValue, pvGetLabel } from 'core/de/deShared';
 import {
-    CdeForm, CdeFormFollow, CdeFormInputArray, DisplayProfile, DisplayType, FormElement, FormElementFollow, FormElementsContainer,
+    CdeForm,
+    CdeFormFollow,
+    CdeFormInputArray,
+    DisplayProfile,
+    DisplayType,
+    FormElement,
+    FormElementFollow,
+    FormElementsContainer,
     FormOrElement,
-    FormQuestion, FormQuestionFollow, FormSection,
+    FormQuestion,
+    FormQuestionFollow,
+    FormSection,
     FormSectionOrForm,
-    PermissibleFormValue, Question, QuestionValue, QuestionValueList
+    PermissibleFormValue,
+    Question,
+    QuestionValue,
+    QuestionValueList
 } from 'shared/form/form.model';
 import { addFormIds, isQuestion, iterateFeSync } from 'shared/form/fe';
 import { SkipLogicOperators } from 'shared/form/skipLogic';
-import { handleDropdown } from 'non-core/dropdown';
 
 @Injectable()
 export class NativeRenderService {
     get nativeRenderType(): DisplayType {
         return this._nativeRenderType;
     }
+
     set nativeRenderType(userType: DisplayType) {
         if (!this.profile) {
             this.profileSet();
@@ -41,6 +55,7 @@ export class NativeRenderService {
             this.vm = this.nativeRenderType === NativeRenderService.SHOW_IF ? this.elt : this.followForm;
         }
     }
+
     private _nativeRenderType: DisplayType = 'Follow-up';
     dropdownHandler: (() => void) | null = null;
     dropdownMenus: HTMLElement[] = [];
@@ -70,13 +85,13 @@ export class NativeRenderService {
         const unit = formElement.question.answerUom;
         if (formElement.question.previousUom && unit && formElement.question.answer != null) {
             let value: number;
-            if (typeof(formElement.question.answer) === 'string') {
+            if (typeof (formElement.question.answer) === 'string') {
                 value = parseFloat(formElement.question.answer);
             } else {
                 value = formElement.question.answer;
             }
 
-            if (typeof(value) === 'number' && !isNaN(value)) {
+            if (typeof (value) === 'number' && !isNaN(value)) {
                 NativeRenderService.convertUnits(value, formElement.question.previousUom, unit, (error?: string, result?: number) => {
                     if (!error && result !== undefined && !isNaN(result) && unit === formElement.question.answerUom) {
                         formElement.question.answer = result;
@@ -196,8 +211,12 @@ export class NativeRenderService {
                         p => p.permissibleValue === answer.permissibleValue)) {
                         q.question.answers.splice(i--, 1);
                     } else {
-                        if (answer.formElements) { answer.formElements = []; }
-                        if (answer.index) { answer.index = undefined; }
+                        if (answer.formElements) {
+                            answer.formElements = [];
+                        }
+                        if (answer.index) {
+                            answer.index = undefined;
+                        }
                     }
                 }
             }
@@ -251,7 +270,7 @@ export class NativeRenderService {
     }
 
     addError(msg: string) {
-        if (this.errors.indexOf(msg) === -1) { this.errors.push(msg); }
+        addToArray(this.errors, msg);
     }
 
     getErrors() {
@@ -259,22 +278,19 @@ export class NativeRenderService {
     }
 
     checkboxOnChange(checked: boolean, model: Question, value: any, q: FormQuestion) {
-        if (!Array.isArray(model.answer)) { model.answer = []; }
-        const index = model.answer.indexOf(value);
-        if (checked) {
-            if (index === -1) {
-                model.answer.push(value);
-            }
-        } else {
-            if (index > -1) {
-                model.answer.splice(model.answer.indexOf(value), 1);
-            }
+        if (!Array.isArray(model.answer)) {
+            model.answer = [];
         }
+        checked
+            ? addToArray(model.answer, value)
+            : removeFromArray(model.answer, value);
         this.emit(q);
     }
 
     checkboxIsChecked(model: Question, value: any) {
-        if (!Array.isArray(model.answer)) { model.answer = []; }
+        if (!Array.isArray(model.answer)) {
+            model.answer = [];
+        }
         return (model.answer.indexOf(value) !== -1);
     }
 
@@ -369,13 +385,17 @@ export class NativeRenderService {
                         } else {
                             const answer = parentQ.question.answers.filter(a => a.permissibleValue === match[3])[0];
                             if (answer) {
-                                if (!answer.formElements) { answer.formElements = []; }
+                                if (!answer.formElements) {
+                                    answer.formElements = [];
+                                }
                                 answer.formElements.push(Object.create(fe, {feId: {value: fe.feId + getNotMappedSuffix()}}));
                             }
                             // else non-existing value is ignored
                         }
                     } else {
-                        if (!parentQ.question.answers) { parentQ.question.answers = []; }
+                        if (!parentQ.question.answers) {
+                            parentQ.question.answers = [];
+                        }
                         const existingLogic = parentQ.question.answers.filter(
                             a => a.nonValuelist && a.formElements.length === 1 && a.formElements[0] === fe);
                         if (existingLogic.length > 0) {
@@ -408,7 +428,9 @@ export class NativeRenderService {
                 && NativeRenderService.transformFormToInline(fe)) {
                 (fe as FormSectionOrForm).forbidMatrix = true;
             }
-            if (fe.skipLogic) { fe.skipLogic = undefined; }
+            if (fe.skipLogic) {
+                fe.skipLogic = undefined;
+            }
         }
         return transformed;
     }
@@ -493,6 +515,7 @@ export class NativeRenderService {
             question: string;
             tinyId: string;
         }
+
         interface SectionQuestions {
             questions: QuestionStruct[];
             section: string;
@@ -528,7 +551,9 @@ export class NativeRenderService {
             let questions: QuestionStruct[] = [];
             let output: SectionQuestions[] | QuestionStruct[];
             for (let i = 0; i < repeats; i++) {
-                if (repeats > 1) { repeatNum = ' #' + i; }
+                if (repeats > 1) {
+                    repeatNum = ' #' + i;
+                }
                 fe.formElements.forEach(feIter => {
                     output = flattenFormFe(feIter, sectionHeading.concat(feIter.label || ''),
                         namePrefix + (repeats > 1 ? i + '_' : ''), repeatNum);
@@ -633,14 +658,14 @@ export class NativeRenderService {
     }
 
     static setLatitude(fe: FormQuestion, value: number) {
-        if (typeof(fe.question.answer) !== 'object') {
+        if (typeof (fe.question.answer) !== 'object') {
             fe.question.answer = {};
         }
         fe.question.answer.latitude = value;
     }
 
     static setLongitude(fe: FormQuestion, value: number) {
-        if (typeof(fe.question.answer) !== 'object') {
+        if (typeof (fe.question.answer) !== 'object') {
             fe.question.answer = {};
         }
         fe.question.answer.longitude = value;

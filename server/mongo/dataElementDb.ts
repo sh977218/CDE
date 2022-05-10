@@ -108,7 +108,7 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
             query.$or = [{version: null}, {version: ''}];
         }
         return this.model.findOne(query).sort({updated: -1}).limit(1)
-            .then(doc => doc && doc.toObject())
+            .then(doc => doc && doc.toObject<DataElement>())
             .then(item => this.hooks.read.post(item));
     }
 
@@ -127,7 +127,7 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
                 tinyIdList
                     .map(t => docs.filter(item => item.tinyId === t)[0])
                     .filter(isNotNull)
-                    .map<DataElement>(doc => doc.toObject())
+                    .map(doc => doc.toObject<DataElement>())
                     .map(item => (this.hooks.read.post as (d: DataElement) => PromiseOrValue<DataElement>)(item))
             ));
     }
@@ -140,7 +140,7 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
                 tinyIdList
                     .map(t => docs.filter(item => item.tinyId === t)[0])
                     .filter(isNotNull)
-                    .map<DataElement>(doc => doc.toObject())
+                    .map(doc => doc.toObject<DataElement>())
                     .map(item => (this.hooks.read.post as (d: DataElement) => PromiseOrValue<DataElement>)(item))
             ))
             .then(items => items

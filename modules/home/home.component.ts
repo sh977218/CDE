@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { assertUnreachable } from 'shared/models.model';
-import { hasRole } from 'shared/security/authorizationShared';
 import { UserService } from '_app/user.service';
-import { UpdateCard } from 'shared/singleton.model';
 import { HomepageGetResponse } from 'shared/boundaryInterfaces/API/system';
+import { assertUnreachable } from 'shared/models.model';
+import { SearchSettings } from 'shared/search/search.model';
+import { hasRole } from 'shared/security/authorizationShared';
+import { UpdateCard } from 'shared/singleton.model';
 
 type SearchType = 'cde' | 'endorsedCde' | 'form';
-
 
 const mobileWidth = 699;
 
@@ -71,9 +71,9 @@ export class HomeComponent implements OnInit {
     }
 
     search() {
-        const query = {q: this.cdeSearchTerm};
+        const query: Partial<SearchSettings> = {q: this.cdeSearchTerm};
         if (this.searchType === 'endorsedCde') {
-            query.q = 'nihEndorsed:true' + (this.cdeSearchTerm ? ' ' + this.cdeSearchTerm : '');
+            query.nihEndorsed = true;
         }
         this.router.navigate([getSearchUrl(this.searchType)], {queryParams: query});
     }

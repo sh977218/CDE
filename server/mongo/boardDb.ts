@@ -73,7 +73,7 @@ class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
     save(board: Board): Promise<Board> {
         return Promise.resolve(this.hooks.save.pre(board))
             .then(board => this.model.findOneAndReplace({_id: new ObjectId(board._id)}, board, {new: true, upsert: true}))
-            .then(doc => doc.toObject())
+            .then(doc => doc.toObject<Board>())
             .then(board => (this.hooks.save.post as (b: Board) => PromiseOrValue<Board>)(board)); // TODO: TypeScript/issues/37181
     }
 }

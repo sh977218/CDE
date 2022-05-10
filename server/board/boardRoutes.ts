@@ -10,6 +10,7 @@ import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthoriz
 import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise } from 'server/system/elastic';
+import { removeFromArrayBy } from 'shared/array';
 import { MAX_PINS } from 'shared/constants';
 import { Board, BoardPin, Elt, ModuleItem } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
@@ -28,11 +29,9 @@ export function module() {
             if (!board) {
                 return res.status(404).send();
             }
-            const index = board.pins.map(p => p.tinyId).indexOf(tinyId);
-            if (index === -1) {
+            if (!removeFromArrayBy(board.pins, p => p.tinyId === tinyId)) {
                 return res.status(422).send();
             }
-            board.pins.splice(index, 1);
             await dbPlugins.board.save(board);
             return res.send('Removed');
         }
@@ -69,7 +68,7 @@ export function module() {
             if (!board) {
                 return res.status(404).send();
             }
-            const index = board.pins.findIndex((p: BoardPin) => p.tinyId === tinyId);
+            const index = board.pins.findIndex(p => p.tinyId === tinyId);
             if (index === -1) {
                 return res.status(422).send();
             }
@@ -93,7 +92,7 @@ export function module() {
             if (!board) {
                 return res.status(404).send();
             }
-            const index = board.pins.findIndex((p: BoardPin) => p.tinyId === tinyId);
+            const index = board.pins.findIndex(p => p.tinyId === tinyId);
             if (index === -1) {
                 return res.status(422).send('Nothing to move');
             }

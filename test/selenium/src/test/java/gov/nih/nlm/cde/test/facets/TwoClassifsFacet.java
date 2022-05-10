@@ -8,6 +8,7 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
 
     @Test
     public void twoOrgsNoClassif() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-TEST"));
         clickElement(By.id("altClassificationFilterModeToggle"));
@@ -15,7 +16,7 @@ public class TwoClassifsFacet extends NlmCdeBaseTest {
         textPresent("NHLBI (");
         clickElement(By.id("classif-CIP"));
         textNotPresent("Person Birth Date");
-        textPresent("1 data element results for");
+        textPresent("1 data element results");
     }
 
 }

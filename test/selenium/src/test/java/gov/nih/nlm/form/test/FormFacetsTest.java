@@ -14,7 +14,8 @@ public class FormFacetsTest extends BaseFormTest {
         textPresent("Traumatic Brain Injury - Adverse Events");
         clickElement(By.id("regstatus-Qualified"));
         textNotPresent("Vision Deficit Report");
-        textPresent("Qualified", By.id("status_crumb"));
+        findElement(By.xpath("//*[contains(@class,'status_crumb')][contains(.,'Qualified')]"));
+
         clickElement(By.id("regstatus-Recorded"));
         textPresent("Vision Deficit Report");
         assertSearchFilterSelected("regstatus-Recorded", true);

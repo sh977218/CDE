@@ -1,7 +1,7 @@
 import { eachOf, filter, forEach } from 'async';
 import { Client } from '@elastic/elasticsearch';
 import { Agent } from 'https';
-import { QueryCursor } from 'mongoose';
+import { Cursor, QueryOptions } from 'mongoose';
 import fetch from 'node-fetch';
 import { config, dbPlugins } from 'server';
 import { respondError } from 'server/errorHandler';
@@ -14,10 +14,11 @@ import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { concat } from 'shared/array';
-import { DataElementElastic } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { handleErrors, json } from 'shared/fetch';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import {
+    Board,
     Cb,
     Cb1,
     CbError1,
@@ -25,7 +26,7 @@ import {
     ElasticQueryResponse,
     ElasticQueryResponseAggregations,
     Item,
-    ItemElastic, ModuleAll,
+    ItemElastic,
     ModuleItem,
     SearchResponseAggregationDe,
     SearchResponseAggregationForm,
@@ -41,9 +42,18 @@ export type MongoCondition = any;
 interface DbQuery {
     condition: MongoCondition;
     dao: {
-        name: ModuleAll;
+        name: 'board';
         count: (query: any) => Promise<number>;
-        getStream: (query: MongoCondition) => QueryCursor<BoardDocument | DataElementDocument | FormDocument>;
+        getStream: (query: MongoCondition) => Cursor<BoardDocument, QueryOptions<Board>>;
+    }
+    | {
+        name: 'cde';
+        count: (query: any) => Promise<number>;
+        getStream: (query: MongoCondition) => Cursor<DataElementDocument, QueryOptions<DataElement>>;
+    } | {
+        name: 'form';
+        count: (query: any) => Promise<number>;
+        getStream: (query: MongoCondition) => Cursor<FormDocument, QueryOptions<CdeForm>>;
     };
 }
 

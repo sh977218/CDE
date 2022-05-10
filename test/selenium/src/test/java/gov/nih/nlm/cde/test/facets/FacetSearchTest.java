@@ -16,7 +16,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-All Candidates"));
 
         textPresent(numOfElts, By.id("searchResultNum"));
-        checkSearchResultInfo(null, "caBIG > All Candidates", null, null, null);
+        checkSearchResultInfo(null, new String[]{"caBIG", "All Candidates"}, null, null, null);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class FacetSearchTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-Classification"));
         int numRes = getNumberOfResults();
         clickElement(By.id("classif-Basic"));
-        textNotPresent(numRes + "data element results for");
+        textNotPresent(numRes + "data element results");
         numRes = getNumberOfResults();
         Assert.assertTrue(numRes > 248);
         Assert.assertTrue(numRes < 254);
@@ -117,13 +117,9 @@ public class FacetSearchTest extends NlmCdeBaseTest {
 
         clickElement(By.id("classif-DISEASE"));
 
-        textPresent(numOfDiseaseElts + " data element results for");
-
-        int expectedNumberOfPages = (int) Math.ceil((double) numOfDiseaseElts / 20);
-        for (int i = 1; i < expectedNumberOfPages; i++) {
-            findElement(By.partialLinkText("" + i));
-        }
-        Assert.assertEquals(driver.findElements(By.xpath("//*[@class='page-link'][contains(.,'" + (expectedNumberOfPages + 1) + "')]")).size(), 0);
+        textPresent(numOfDiseaseElts + " data element results");
+        scrollDownBy(10000);
+        textPresent("1 – 20 of " + numOfDiseaseElts);
     }
 
 

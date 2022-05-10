@@ -2,16 +2,17 @@ import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { Request, RequestHandler, Response, Router } from 'express';
 import { GridFSFile } from 'mongodb';
-import { QueryCursor } from 'mongoose';
+import { Cursor, QueryOptions } from 'mongoose';
 import { authenticate } from 'passport';
 import { config, ObjectId } from 'server';
 import { handleError, respondError } from 'server/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import { dataElementModel, draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { getClassificationAuditLog } from 'server/system/classificationAuditSvc';
@@ -27,6 +28,7 @@ import { indices } from 'server/system/elasticSearchInit';
 import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
+import { removeFromArrayBy } from 'shared/array';
 import {
     IdSourceGetResponse, IdSourcePutResponse,
     IdSourceRequest,
@@ -72,7 +74,7 @@ export function module() {
                             'registrationState.registrationStatus': 'Qualified'
                         };
 
-                        function handleStream(stream: QueryCursor<ItemDocument>,
+                        function handleStream(stream: Cursor<ItemDocument, QueryOptions>,
                                               formatter: (doc: ItemDocument) => string, cb: CbError) {
                             stream.on('data', doc => siteMapLines.push(formatter(doc)));
                             stream.on('err', cb);
@@ -283,9 +285,7 @@ export function module() {
 
     router.post('/removeBan', isSiteAdminMiddleware, async (req, res) => {
         const elt = await getTrafficFilter();
-        const foundIndex = elt.ipList.findIndex(r => r.ip === req.body.ip);
-        if (foundIndex > -1) {
-            elt.ipList.splice(foundIndex, 1);
+        if (removeFromArrayBy(elt.ipList, r => r.ip === req.body.ip)) {
             await elt.save();
         }
         res.send();

@@ -1,7 +1,7 @@
 import { config } from 'server';
-import { DataElementDocument } from 'server/cde/mongo-cde';
 import { logError } from 'server/log/dbLogger';
 import { storeQuery } from 'server/log/storedQueryDb';
+import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
 import { elasticsearchPromise as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { DataElement } from 'shared/de/dataElement.model';

@@ -26,7 +26,7 @@ public class PaginationTest extends NlmCdeBaseTest {
         clickElement(By.id("regstatus-Qualified"));
         clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
         hangon(2);
-        checkSearchResultInfo("patient", "NINDS > Disease", null, "Qualified", null);
+        checkSearchResultInfo("patient", new String[]{"NINDS", "Disease"}, null, new String[]{"Qualified"}, null);
     }
 
 }

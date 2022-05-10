@@ -12,7 +12,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("created:<2015-05-14");
         clickElement(By.id("search.submit"));
-        textPresent("created:<2015-05-14", By.id("searchResultInfoBar"));
+        textPresent("created:<2015-05-14", By.className("searchFilterLayoutActive"));
         Assert.assertTrue(getNumberOfResults() > 850);
 
         findElement(By.id("ftsearch-input")).clear();
@@ -28,7 +28,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("updated:<2015-09-22");
         clickElement(By.id("search.submit"));
-        textPresent("updated:<2015-09-22", By.id("searchResultInfoBar"));
+        textPresent("updated:<2015-09-22", By.className("searchFilterLayoutActive"));
         Assert.assertTrue(getNumberOfResults() > 9790);
 
         findElement(By.id("ftsearch-input")).clear();
@@ -39,7 +39,7 @@ public class CDEDateRangeSearch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("imported:<2014-12-11");
         clickElement(By.id("search.submit"));
-        textPresent("imported:<2014-12-11", By.id("searchResultInfoBar"));
+        textPresent("imported:<2014-12-11", By.className("searchFilterLayoutActive"));
         Assert.assertTrue(getNumberOfResults() > 330);
     }
 

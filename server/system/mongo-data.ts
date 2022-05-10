@@ -223,7 +223,7 @@ export function generateTinyId() {
     return shortIdGenerate().replace(/-/g, '_');
 }
 
-export function createMessage(msg: Omit<Message, '_id'>, cb?: CbError1<MessageDocument>) {
+export function createMessage(msg: Omit<Message, '_id'>, cb: CbError1<MessageDocument> = () => {}) {
     msg.states = [{
         action: 'Filed',
         date: new Date(),

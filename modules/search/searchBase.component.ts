@@ -27,7 +27,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { addOrRemoveFromArray, partition } from 'shared/array';
+import { addOrRemoveFromArray, partition, removeFromArray } from 'shared/array';
 import { MAX_PINS } from 'shared/constants';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
@@ -253,25 +253,40 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    clearSelectedClassifications() {
-        this.searchSettings.selectedOrg = undefined;
-        this.searchSettings.classification.length = 0;
+    clearSelectedClassifications(c: string) {
+        if (c === this.searchSettings.selectedOrg) {
+            this.searchSettings.selectedOrg = undefined;
+            this.searchSettings.classification.length = 0;
 
-        if (this.hasSelectedClassificationsAlt()) {
-            this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
-            if (this.searchSettings.classificationAlt.length > 0) {
-                this.searchSettings.classification = this.searchSettings.classificationAlt;
-                this.searchSettings.classificationAlt = [];
+            if (this.hasSelectedClassificationsAlt()) {
+                this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
+                if (this.searchSettings.classificationAlt.length > 0) {
+                    this.searchSettings.classification = this.searchSettings.classificationAlt;
+                    this.searchSettings.classificationAlt = [];
+                }
             }
-        }
 
-        this.clearSelectedClassificationsAlt();
+            this.clearSelectedClassificationsAlt();
+        } else {
+            const index = this.searchSettings.classification.indexOf(c);
+            if (index > -1) {
+                this.searchSettings.classification.length = index;
+            }
+            this.doSearch();
+        }
     }
 
-    clearSelectedClassificationsAlt() {
-        this.altClassificationFilterMode = false;
-        this.searchSettings.selectedOrgAlt = undefined;
-        this.searchSettings.classificationAlt.length = 0;
+    clearSelectedClassificationsAlt(c?: string) {
+        if (!c || c === this.searchSettings.selectedOrgAlt) {
+            this.altClassificationFilterMode = false;
+            this.searchSettings.selectedOrgAlt = undefined;
+            this.searchSettings.classificationAlt.length = 0;
+        } else {
+            const index = this.searchSettings.classificationAlt.indexOf(c);
+            if (index > -1) {
+                this.searchSettings.classificationAlt.length = index;
+            }
+        }
 
         this.doSearch();
     }
@@ -283,33 +298,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
-    clearSelectedDatatypes() {
-        if (this.searchSettings.datatypes) {
-            this.searchSettings.datatypes.length = 0;
-
+    clearSelectedDatatype(datatype: DataType) {
+        if (this.searchSettings.datatypes && removeFromArray(this.searchSettings.datatypes, datatype)) {
             this.doSearch();
         }
     }
 
-    clearSelectedStatuses() {
-        if (this.searchSettings.regStatuses) {
-            this.searchSettings.regStatuses.length = 0;
-
+    clearSelectedStatus(status: CurationStatus) {
+        if (this.searchSettings.regStatuses && removeFromArray(this.searchSettings.regStatuses, status)) {
             this.doSearch();
         }
     }
 
     clearSelectedTopics() {
         this.doSearch();
-    }
-
-    displayValidation(): boolean {
-        if (!this.userService.user) {
-            return false;
-        }
-        const org = this.searchSettings.selectedOrg;
-        const curatorOf = this.userService.user.orgAdmin.concat(this.userService.user.orgCurator);
-        return org && curatorOf.indexOf(org) > -1 || hasRole(this.userService.user, 'OrgAuthority');
     }
 
     doSearch() {
@@ -416,20 +418,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     // Create string representation of what filters are selected. Use the hasSelected...() first.
-    getSelectedClassifications(): string {
-        return this.searchSettings.selectedOrg + (
-            this.searchSettings.classification && this.searchSettings.classification.length > 0
-                ? ' > ' + this.searchSettings.classification.join(' > ')
-                : ''
-        );
+    getSelectedClassifications(): string[] {
+        if (!this.searchSettings.selectedOrg) {
+            return [];
+        }
+        return [this.searchSettings.selectedOrg]
+            .concat(Array.isArray(this.searchSettings.classification) ? this.searchSettings.classification : []);
     }
 
-    getSelectedClassificationsAlt(): string {
-        if (this.searchSettings.selectedOrgAlt) {
-            return [this.searchSettings.selectedOrgAlt].concat(this.searchSettings.classificationAlt).join(' > ');
-        } else {
-            return '(Select Orgs)';
+    getSelectedClassificationsAlt(): string[] {
+        if (!this.searchSettings.selectedOrgAlt) {
+            return ['(Select Orgs)'];
         }
+        return [this.searchSettings.selectedOrgAlt]
+            .concat(Array.isArray(this.searchSettings.classificationAlt) ? this.searchSettings.classificationAlt : []);
     }
 
     getExcludedOrgs(): string {
@@ -455,14 +457,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else {
             return this.aggregationsFlatClassifications;
         }
-    }
-
-    getSelectedDatatypes() {
-        return this.searchSettings.datatypes.join(', ');
-    }
-
-    getSelectedStatuses() {
-        return this.searchSettings.regStatuses.join(', ');
     }
 
     hasSelectedClassifications() {
@@ -716,6 +710,15 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     reset() {
         this.searchSettings = new SearchSettings();
         this.aggregations = undefined;
+        this.doSearch();
+    }
+
+    resetFilters() {
+        const endorsed = this.searchSettings.nihEndorsed;
+        const org = this.searchSettings.selectedOrg;
+        this.searchSettings = new SearchSettings(this.searchSettings.q);
+        this.searchSettings.nihEndorsed = endorsed;
+        this.searchSettings.selectedOrg = org;
         this.doSearch();
     }
 

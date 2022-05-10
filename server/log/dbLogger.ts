@@ -243,7 +243,7 @@ export function getClientErrors(params: { limit: number, skip: number }, callbac
     clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
 }
 
-export function getClientErrorsNumber(user: UserFull, callback) {
+export function getClientErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
     const condition = user.notificationDate && user.notificationDate.clientLogDate
         ? {date: {$gt: user.notificationDate.clientLogDate}}
         : {};
@@ -280,7 +280,7 @@ export function getServerErrors(params: { limit: number, skip: number, badInput:
         .exec(callback);
 }
 
-export function getServerErrorsNumber(user: UserFull, callback) {
+export function getServerErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
     const condition = user.notificationDate && user.notificationDate.serverLogDate
         ? {date: {$gt: user.notificationDate.serverLogDate}} as any
         : {};

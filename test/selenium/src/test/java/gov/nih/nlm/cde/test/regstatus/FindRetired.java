@@ -16,12 +16,12 @@ public class FindRetired extends NlmCdeBaseTest {
         includeRetiredSetting();
         textPresent("Retired (");
         clickElement(By.id("regstatus-Retired"));
-        checkSearchResultInfo(null, null, null, "Retired", null);
+        checkSearchResultInfo(null, null, null, new String[]{"Retired"}, null);
         findElement(By.id("ftsearch-input")).sendKeys("Height");
         clickElement(By.id("search.submit"));
         textPresent("Height or length alternative measurement");
         driver.get(driver.getCurrentUrl());
-        textPresent("Retired", By.id("status_crumb"));
+        findElement(By.xpath("//*[contains(@class,'status_crumb')][contains(.,'Retired')]"));
         textPresent("Height or length alternative measurement");
         textPresent("Retired (2");
     }

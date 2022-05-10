@@ -22,7 +22,7 @@ public class ResetPageNumberTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
         textNotPresent("Patient Ethnic Group Category");
-        clickElement(By.id("status_crumb"));
+        clickElement(By.className("status_crumb"));
         textPresent("Patient Ethnic Group Category ");
 
         // clear data type reset page to 1
@@ -31,7 +31,7 @@ public class ResetPageNumberTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
         textNotPresent("Patient Ethnic Group Category");
-        clickElement(By.id("datatype_crumb"));
+        clickElement(By.className("datatype_crumb"));
         textPresent("Patient Ethnic Group Category ");
 
         // clear classification reset page to 1
@@ -40,7 +40,7 @@ public class ResetPageNumberTest extends NlmCdeBaseTest {
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("2");
         textNotPresent("Patient Ethnic Group Category");
-        clickElement(By.id("classif_crumb"));
+        clickElement(By.className("classif_crumb"));
         textPresent("Patient Ethnic Group Category ");
 
     }

@@ -12,23 +12,23 @@ public class CdeSearchFilterTest extends NlmCdeBaseTest {
         goToCdeSearch();
 
         clickElement(By.id("search_by_classification_ACRIN"));
-        textPresent("4 data element results for");
+        textPresent("4 data element results");
         textPresent("Under Review (2)");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
         textPresent("Value List (3)");
         textPresent("Number (1)");
 
-        clickElement(By.xpath("//*[@id='regstatus-Candidate']//a"));
-        textPresent("3 data element results for");
+        clickElement(By.xpath("//*[@id='regstatus-Candidate']"));
+        textPresent("3 data element results");
         textPresent("Under Review (1)");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
         textPresent("Value List (2)");
         textPresent("Number (1)");
 
-        clickElement(By.xpath("//*[@id='datatype-Value List']/*[@class='treeItemText']"));
-        textPresent("2 data element results for");
+        clickElement(By.xpath("//*[@id='datatype-Value List']"));
+        textPresent("2 data element results");
         textPresent("Candidate (3)");
         textPresent("Incomplete (1)");
         textPresent("Value List (2)");

@@ -16,12 +16,12 @@ import { CbError1, EltLog, User } from 'shared/models.model';
 const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
 
 export type DataElement = DataElementClient;
-export type DataElementDocument = Document & DataElement;
+export type DataElementDocument = Document<ObjectId, {}, DataElement> & DataElement;
 export type DataElementDraft = DataElement;
-export type DataElementDraftDocument = Document & DataElementDraft;
+export type DataElementDraftDocument = Document<ObjectId, {}, DataElementDraft> & DataElementDraft;
 export type DataElementSource = DataElement;
-export type DataElementSourceDocument = Document & DataElementSource;
-export type EltLogDocument = Document & EltLog;
+export type DataElementSourceDocument = Document<ObjectId, {}, DataElementSource> & DataElementSource;
+export type EltLogDocument = Document<ObjectId, {}, EltLog> & EltLog;
 
 const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require(global.assetDir('shared/de/assets/adminItem.schema')));

@@ -15,7 +15,7 @@ import { getAuditLog } from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, respondError } from 'server/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
-import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
@@ -56,7 +56,7 @@ export function module() {
                     dataElementModel.find(cond, 'tinyId designations', {
                         skip: pageSize * (pageNum - 1),
                         limit: pageSize
-                    }, handleError({req, res}, cdes => {
+                    }, handleError<DataElementDocument[]>({req, res}, cdes => {
                         let totalPages = totalCount / pageSize;
                         if (totalPages % 1 > 0) {
                             totalPages = totalPages + 1;
@@ -219,7 +219,7 @@ export function module() {
     router.get('/deView', (req, res) => {
         const {tinyId, version} = req.query;
         if (isSearchEngine(req)) {
-            dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId, version)
+            dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId as string, version as string)
                 .then(de => {
                     res.render('bot/deView', {elt: de});
                 }, respondError({req, res}));

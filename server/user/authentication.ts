@@ -37,7 +37,7 @@ export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
         .then(text)
         .then((body) => {
             // Parse xml result from ticket validation
-            parser.parseString(body, (err?: Error, jsonResult?: any) => {
+            parser.parseString(body, (err: Error | null, jsonResult?: any) => {
                 /* istanbul ignore if */
                 if (err) {
                     return cb('ticketValidate: ' + err);

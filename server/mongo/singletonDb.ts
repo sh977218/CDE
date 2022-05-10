@@ -42,7 +42,7 @@ class SingletonDbMongo extends BaseDb<Singleton, string> implements SingletonDb 
             {$set: {updateInProgress: {updated: new Date(), updatedBy: user}}},
             {upsert: true, new: true}
         )
-            .then(newSingleton => newSingleton.toObject());
+            .then(newSingleton => newSingleton.toObject<Singleton>());
     }
 
     update(_id: string, query: {}, userId: ObjectId, setClause: {}): Promise<Singleton> {
@@ -51,7 +51,7 @@ class SingletonDbMongo extends BaseDb<Singleton, string> implements SingletonDb 
             {$set: Object.assign({updated: new Date(), updatedBy: userId}, setClause)},
             {upsert: true, new: true}
         )
-            .then(newSingleton => newSingleton.toObject())
+            .then(newSingleton => newSingleton.toObject<Singleton>())
             .then(singleton => (this.hooks.save.post as (a: Singleton) =>
                 PromiseOrValue<Singleton>)(singleton)); // TODO: TypeScript/issues/37181
     }

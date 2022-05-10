@@ -7,6 +7,7 @@ export class SearchSettings {
     datatypes: DataType[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
+    nihEndorsed: boolean = false;
     page?: number = 1;
     q?: string = '';
     regStatuses: CurationStatus[] = [];
@@ -14,7 +15,6 @@ export class SearchSettings {
     searchTerm?: string;
     selectedOrg?: string = '';
     selectedOrgAlt?: string;
-    nihEndorsed: boolean = false;
 
     constructor(q = '', resultsPerPage = 20) {
         this.q = q;
@@ -30,6 +30,7 @@ export class SearchSettingsElastic {
     fullRecord?: boolean;
     includeAggregations?: boolean;
     includeRetired?: boolean;
+    nihEndorsed: boolean = false;
     page?: number = 1;
     q?: string;
     resultPerPage = 20;
@@ -41,7 +42,6 @@ export class SearchSettingsElastic {
     selectedOrg?: string;
     selectedOrgAlt?: string;
     selectedStatuses: CurationStatus[] = [];
-    nihEndorsed: boolean = false;
 
     constructor(resultPerPage = 20) {
         this.resultPerPage = resultPerPage;

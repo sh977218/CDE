@@ -14,11 +14,11 @@ import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { CdeForm } from 'shared/form/form.model';
 import { CbError1, User } from 'shared/models.model';
 
-export type CdeFormDocument = Document & CdeForm;
+export type CdeFormDocument = Document<ObjectId, {}, CdeForm> & CdeForm;
 export type CdeFormDraft = CdeForm;
-export type CdeFormDraftDocument = Document & CdeFormDraft;
+export type CdeFormDraftDocument = Document<ObjectId, {}, CdeFormDraft> & CdeFormDraft;
 export type CdeFormSource = CdeForm;
-export type CdeFormSourceDocument = Document & CdeFormSource;
+export type CdeFormSourceDocument = Document<ObjectId, {}, CdeFormSource> & CdeFormSource;
 
 const ajvElt = new Ajv({allErrors: true});
 readdirSync(resolve(global.assetDir('shared/de/assets/'))).forEach(file => {

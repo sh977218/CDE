@@ -9,6 +9,7 @@ sed -i -e "s/ run('npm run buildNode')//g" buildNode/gulpfile.js
 sed -i "s/version = 'x'/version='$(git rev-parse --short HEAD)'/" buildNode/server/version.js # must use " because of $(
 
 cp -R config buildNode
+cp -R server/bot buildNode/server
 sed -i -e 's/"buildDir": "\.\.\/build"/"buildDir": "\.\.\/\.\.\/build"/g' buildNode/config/default.json
 
 cp server/package.json buildNode/server

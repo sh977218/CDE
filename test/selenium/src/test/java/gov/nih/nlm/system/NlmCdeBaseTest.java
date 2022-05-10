@@ -225,9 +225,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 findElement(By.xpath("//*[@id='" + id + "' and contains(@class, 'treeChild')]"));
         } else {
             if (state)
-                findElement(By.xpath("//*[@id='" + id + "']/*[. = 'check_box']"));
+                findElement(By.cssSelector("#" + id + ":checked"));
             else
-                Assert.assertTrue(driver.findElements(By.xpath("//*[@id='" + id + "']/*[. = 'treeItemIconSelected']")).size() == 0);
+                findElement(By.cssSelector("#" + id + ":not(:checked)"));
         }
     }
 
@@ -578,12 +578,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         String tinyId = EltIdMaps.eltMap.get(name);
         if (tinyId != null) {
             driver.get(baseUrl + "/" + ("cde".equals(type) ? "deView" : "formView") + "/?tinyId=" + tinyId);
+            isView();
             textPresent(name);
         } else {
             try {
                 searchElt(name, type);
                 hangon(1);
                 clickElement(By.id("linkToElt_0"));
+                isView();
                 textPresent(name);
                 textNotPresent("is archived");
             } catch (Exception e) {
@@ -591,11 +593,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 hangon(1);
                 searchElt(name, type);
                 clickElement(By.id("linkToElt_0"));
+                isView();
                 textPresent(name);
                 textNotPresent("is archived");
             }
         }
-        isView();
     }
 
     protected void isView() {
@@ -625,13 +627,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         try {
-            textPresent("results for");
+            textPresent(("cde".equals(type) ? "data element" : "form") + " results");
         } catch (Exception e) {
             System.out.println("Failing to find, trying again: " + name);
             findElement(By.id("ftsearch-input")).clear();
             findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
             clickElement(By.id("search.submit"));
-            textPresent("results for");
+            textPresent(("cde".equals(type) ? "data element" : "form") + " results");
         }
     }
 
@@ -644,13 +646,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         hangon(0.5);
         clickElement(By.id("search.submit"));
         try {
-            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
+            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results");
         } catch (Exception e) {
             System.out.println("Failing to find, trying tinyId: " + name);
             findElement(By.id("ftsearch-input")).clear();
             findElement(By.id("ftsearch-input")).sendKeys("\"" + EltIdMaps.eltMap.get(name) + "\"");
             clickElement(By.id("search.submit"));
-            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results for");
+            textPresent("1 " + ("cde".equals(type) ? "data element" : "form") + " results");
         }
 
         // counteract save summary/table view
@@ -661,6 +663,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 clickElement(By.id("list_summaryView"));
             textPresent(name, By.id("searchResult_0"));
         }
+    }
+
+    protected void searchNoActiveFilter(String text) {
+        searchNoActiveFilter(text, "");
+    }
+
+    protected void searchNoActiveFilter(String text, String parent) {
+        assertNoElt(By.xpath(parent + "//*[contains(@class,'pill')]/*[@class='text'][text()='" + text + "']"));
     }
 
     protected void openEltInList(String name, String type) {
@@ -674,7 +684,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("\"" + name + "\"");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
-        textPresent("1 form results for");
+        textPresent("1 form results");
         textPresent(name, By.id("searchResult_0"));
     }
 
@@ -1699,12 +1709,28 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent(origin, By.id("origin"));
     }
 
-    protected void checkSearchResultInfo(String term, String classif, String classifAlt, String status, String datatype) {
+    protected void checkSearchResultInfo(String term, String[] classif, String[] classifAlt, String[] status, String[] datatype) {
         if (term != null) textPresent(term, By.id("term_crumb"));
-        if (classif != null) textPresent(classif, By.id("classif_crumb"));
-        if (classifAlt != null) textPresent(classifAlt, By.id("classifAlt_filter"));
-        if (status != null) textPresent(status, By.id("status_crumb"));
-        if (datatype != null) textPresent(datatype, By.id("datatype_crumb"));
+        if (classif != null) {
+            for (int i = 0; i < classif.length; i++) {
+                findElement(By.xpath("//*[contains(@class,'classif_crumb')]/span[@class='text'][text()='" + classif[i] + "']"));
+            }
+        }
+        if (classifAlt != null) {
+            for (int i = 0; i < classifAlt.length; i++) {
+                findElement(By.xpath("//*[contains(@class,'classifAlt_filter')]/span[@class='text'][text()='" + classifAlt[i] + "']"));
+            }
+        }
+        if (status != null) {
+            for (int i = 0; i < status.length; i++) {
+                findElement(By.xpath("//*[contains(@class,'status_crumb')][contains(.,'" + status[i] + "')]"));
+            }
+        }
+        if (datatype != null) {
+            for (int i = 0; i < datatype.length; i++) {
+                findElement(By.xpath("//*[contains(@class,'datatype_crumb')][contains(.,'" + datatype[i] + "')]"));
+            }
+        }
     }
 
     protected void deleteDraft() {

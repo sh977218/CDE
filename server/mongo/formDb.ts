@@ -101,7 +101,7 @@ class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
             query.$or = [{version: null}, {version: ''}];
         }
         return this.model.findOne(query).sort({updated: -1}).limit(1)
-            .then(doc => doc && doc.toObject())
+            .then(doc => doc && doc.toObject<CdeForm>())
             .then(item => this.hooks.read.post(item));
     }
 
@@ -120,7 +120,7 @@ class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
                 tinyIdList
                     .map(t => docs.filter(item => item.tinyId === t)[0])
                     .filter(isNotNull)
-                    .map<CdeForm>(doc => doc.toObject())
+                    .map(doc => doc.toObject<CdeForm>())
                     .map(item => (this.hooks.read.post as (f: CdeForm) => PromiseOrValue<CdeForm>)(item))
             ));
     }
@@ -133,7 +133,7 @@ class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
                 tinyIdList
                     .map(t => docs.filter(item => item.tinyId === t)[0])
                     .filter(isNotNull)
-                    .map<CdeForm>(doc => doc.toObject())
+                    .map(doc => doc.toObject<CdeForm>())
                     .map(item => (this.hooks.read.post as (f: CdeForm) => PromiseOrValue<CdeForm>)(item))
             ))
             .then(items => items

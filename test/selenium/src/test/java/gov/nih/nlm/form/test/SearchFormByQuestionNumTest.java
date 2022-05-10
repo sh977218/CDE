@@ -15,7 +15,7 @@ public class SearchFormByQuestionNumTest extends NlmCdeBaseTest {
         textPresent("Food Frequency Questionnaire (FFQ)");
         textPresent("Mitochondrial and Gastrointestinal Diseases Assessment");
         textPresent("Risk Factor Questionnaire (RFQ-U) - Pesticides (Work)");
-        textPresent("3 form results for");
+        textPresent("3 form results");
     }
 
 }

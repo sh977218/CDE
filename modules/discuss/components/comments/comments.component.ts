@@ -27,33 +27,6 @@ type CommentWithShowReplies = Comment & {
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
     styles: [`
-        .outer-arrow {
-            border-top: none;
-            border-bottom: 24px solid transparent;
-            border-left: none;
-            border-right: 24px solid #ddd;
-            left: -21px;
-            top: 0px;
-            z-index: -1;
-            height: 0;
-            position: absolute;
-            width: 0;
-        }
-
-        .inner-arrow {
-            cursor: default;
-            border-top: none;
-            border-bottom: 26px solid transparent;
-            border-left: none;
-            border-right: 26px solid #fff;
-            left: -18px;
-            z-index: 501;
-            top: 1px;
-            height: 0;
-            position: absolute;
-            width: 0;
-        }
-
         .strike {
             text-decoration: line-through;
         }

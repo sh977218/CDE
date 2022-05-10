@@ -196,7 +196,7 @@ export function byUsername(username: string, callback?: CbError1<UserDocument>):
     return userModel.findOne({username}, userProject).exec(callback as any) as any;
 }
 
-export function save(user: Partial<UserFull>, callback?: CbError1<UserDocument>) {
+export function save(user: Partial<UserFull>, callback: CbError1<UserDocument> = () => {}) {
     return new userModel(user).save(callback);
 }
 

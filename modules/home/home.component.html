@@ -92,7 +92,7 @@
                 <img src="/assets/homepage/ExploreIcon.png">
                 Explore
             </button>
-            <img *ngIf="featureSelected === 'explore'" class="arrow" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'explore'" class="pointer-icon" src="/assets/homepage/Arrow.png">
         </div>
         <div id="learnButton">
             <button class="button menuButton1"
@@ -101,7 +101,7 @@
                 <img src="/assets/homepage/LearnIcon.png">
                 Learn
             </button>
-            <img *ngIf="featureSelected === 'learn'" class="arrow" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'learn'" class="pointer-icon" src="/assets/homepage/Arrow.png">
         </div>
         <div id="submitButton">
             <button class="button menuButton1"
@@ -110,7 +110,7 @@
                 <img src="/assets/homepage/SubmitIcon.png">
                 Submit
             </button>
-            <img *ngIf="featureSelected === 'submit'" class="arrow" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'submit'" class="pointer-icon" src="/assets/homepage/Arrow.png">
         </div>
         <div *ngIf="featureSelected === 'explore'" class="featureCard" style="order: 4">
             <h2>Explore CDEs and Forms</h2>
@@ -128,7 +128,7 @@
                 NIH has endorsed collections of CDEs that meet established criteria.
                 <strong>NIH-endorsed CDEs</strong> are designated with a gold ribbon.
             </p>
-            <button class="button light" routerLink="/cde/search" [queryParams]="{q: 'nihEndorsed:true'}">Browse NIH-Endorsed CDEs</button>
+            <button class="button light" routerLink="/cde/search" [queryParams]="{nihEndorsed: true}">Browse NIH-Endorsed CDEs</button>
             <button class="button light" routerLink="/cde/search">Browse All CDEs</button>
             <button class="button light" routerLink="/form/search">Browse Forms</button>
         </div>

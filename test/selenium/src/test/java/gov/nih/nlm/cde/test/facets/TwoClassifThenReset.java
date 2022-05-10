@@ -8,6 +8,7 @@ public class TwoClassifThenReset extends NlmCdeBaseTest {
 
     @Test
     public void twoClassifsThenReset() {
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
         clickElement(By.id("classif-CATEGORY"));

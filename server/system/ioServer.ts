@@ -1,5 +1,5 @@
-import { config } from 'server';
 import { authorize } from 'passport.socketio';
+import { config } from 'server';
 
 const {createAdapter} = require('@socket.io/mongo-adapter');
 

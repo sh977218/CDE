@@ -56,7 +56,7 @@ class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleD
             {$set: {body: article.body, updated: new Date()}},
             {upsert: true, new: true}
         )
-            .then(newArticle => newArticle.toObject())
+            .then(newArticle => newArticle.toObject<Article>())
             .then(article => (this.hooks.save.post as (a: Article) => PromiseOrValue<Article>)(article)); // TODO: TypeScript/issues/37181
     }
 }

@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { findQuestionByTinyId, getFormQuestions } from 'core/form/fe';
 import { UcumService } from 'form/public/ucum.service';
 import 'form/public/components/displayProfile/displayProfile.global.scss';
+import { interruptEvent } from 'non-core/browser';
+import { removeFromArray } from 'shared/array';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem, DateType } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
-import { interruptEvent } from 'non-core/browser';
 
 interface DisplayProfileVM {
     aliases: {
@@ -138,10 +138,7 @@ export class DisplayProfileComponent {
     }
 
     saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
-        const match = a.indexOf(v.code);
-        if (match > -1) {
-            a.splice(match, 1);
-        }
+        removeFromArray(a, v.code)
         a.unshift(v.code);
 
         const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
