@@ -12,6 +12,7 @@ import {
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { noop } from 'shared/util';
+import { NotificationService } from '_app/notifications/notification.service';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,7 @@ export class UserService {
 
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
+        @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
         @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog,
     ) {
@@ -73,6 +75,9 @@ export class UserService {
             this._user.searchSettings.defaultSearchView = 'summary';
         }
         this.canViewComment = canViewComment(this.user);
+        if (this.isSiteAdmin()) {
+            this.notificationService.updateErrorNumber();
+        }
         return Promise.resolve(user);
     }
 

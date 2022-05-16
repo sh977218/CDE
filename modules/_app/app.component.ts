@@ -58,11 +58,6 @@ export class CdeAppComponent {
                     r.data.subscribe((data: Data) =>
                         this.title.setTitle(data.title || 'NIH Common Data Elements (CDE) Repository'));
                 }
-
-                if (this.userService.loggedIn()) {
-                    this.notificationService.reload();
-                    this.notificationService.drawerClose();
-                }
             }
         });
 

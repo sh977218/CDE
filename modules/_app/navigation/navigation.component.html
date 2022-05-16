@@ -28,21 +28,25 @@
         </mat-toolbar-row>
         <mat-toolbar-row #minorBar class="cde-nav-minor">
             <a routerLink="/" title="Common Data Elements" href="javascript:void(0);">
-                <img src="/cde/public/assets/img/min/NIHCDELogo_Light.svg" alt="NIH Common Data Elements (CDE) logo" style="height: 60px">
+                <img src="/cde/public/assets/img/min/NIHCDELogo_Light.svg" alt="NIH Common Data Elements (CDE) logo"
+                     style="height: 60px">
             </a>
             <span class="spacer"></span>
             <div class="" style="height: 100%;">
                 <ng-container *ngFor="let menuItem of menuList">
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
-                        <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
-                            <button class="navBarButton" mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                        <ng-container
+                                *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
+                            <button class="navBarButton" mat-button [id]="menuItem.id"
+                                    [class.active]="sectionActive === menuItem.section"
                                     [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null">
                                 {{menuItem.label || menuItem.labelFn()}}
                             </button>
                         </ng-container>
                     </ng-container>
                     <ng-template #dropdownWithChildren>
-                        <button class="navBarButton" #button mat-button [id]="menuItem.id" [class.active]="sectionActive === menuItem.section"
+                        <button class="navBarButton" #button mat-button [id]="menuItem.id"
+                                [class.active]="sectionActive === menuItem.section"
                                 [matMenuTriggerFor]="levelOne" #levelOneTrigger="matMenuTrigger"
                                 (click)="menuClickCleanup(minorBar, levelOneTrigger, button, levelOne)"
                                 (mouseenter)="menuEnter(minorBar, levelOneTrigger, levelOne)"
@@ -51,7 +55,8 @@
                             <mat-icon>expand_more</mat-icon>
                         </button>
                         <mat-menu #levelOne="matMenu" direction="down" yPosition="below">
-                            <div (mouseenter)="menu1Enter(minorBar)" (mouseleave)="menu1Leave(minorBar, levelOneTrigger, button)">
+                            <div (mouseenter)="menu1Enter(minorBar)"
+                                 (mouseleave)="menu1Leave(minorBar, levelOneTrigger, button)">
                                 <ng-container *ngFor="let childL1 of menuItem.children">
                                     <ng-container *ngIf="childL1.label === 'Contact Us'; else menuItemStandard">
                                         <a mat-menu-item [id]="childL1.id" [href]="childL1.link"
@@ -61,9 +66,11 @@
                                         </a>
                                     </ng-container>
                                     <ng-template #menuItemStandard>
-                                        <ng-container *ngIf="!childL1.children || !childL1.children.length; else menuItemWithChildren">
+                                        <ng-container
+                                                *ngIf="!childL1.children || !childL1.children.length; else menuItemWithChildren">
                                             <button mat-menu-item [id]="childL1.id"
-                                                    [routerLink]="childL1.link"  [queryParams]="childL1.queryParams || null">
+                                                    [routerLink]="childL1.link"
+                                                    [queryParams]="childL1.queryParams || null">
                                                 {{childL1.label || childL1.labelFn()}}
                                             </button>
                                         </ng-container>
@@ -76,7 +83,8 @@
                                               (mouseleave)="menu2Leave(minorBar, levelOneTrigger,levelTwoTrigger, button)">
                                             <ng-container *ngFor="let childL2 of childL1.children">
                                                 <li class="p-0" mat-menu-item>
-                                                    <a class="nav-link" href="javascript:void(0);">{{childL2.label || childL2.labelFn()}}</a>
+                                                    <a class="nav-link"
+                                                       href="javascript:void(0);">{{childL2.label || childL2.labelFn()}}</a>
                                                 </li>
                                             </ng-container>
                                         </span>
@@ -87,13 +95,15 @@
                         </mat-menu>
                     </ng-template>
                 </ng-container>
-                <button *ngIf="userService.user" mat-icon-button id="notificationLink" title="Banner Notifications"
-                        (click)="notificationService.drawerToggle(); interruptEvent($event)">
-                    <mat-icon [matBadge]="notificationService.getBadge()" matBadgeColor="warn" matBadgeSize="small"
-                              [matBadgeHidden]="notificationService.getBadge() === '0'"
-                              style="margin-right: 0">{{notificationService.getIcon()}}</mat-icon>
+                <button *ngIf="userService.loggedIn()" mat-icon-button id="notificationLink"
+                        title="Banner Notifications" (click)="notificationService.toggle();">
+                    <mat-icon [matBadge]="notificationService.numberOfNotifications"
+                              [matBadgeHidden]="!notificationService.numberOfNotifications"
+                              matBadgeColor="warn" matBadgeSize="small">
+                        notifications_active
+                    </mat-icon>
                 </button>
-                <button *ngIf="userService.user" mat-icon-button [class.active]="isActiveSearchSettings()"
+                <button *ngIf="userService.loggedIn()" mat-icon-button [class.active]="isActiveSearchSettings()"
                         routerLink="/searchPreferences" id="searchPreferences" title="Search Preferences">
                     <mat-icon>settings</mat-icon>
                 </button>
@@ -103,7 +113,7 @@
                     <span>Sign In</span>
                 </button>
                 <ng-template #loggedInButton>
-                    <button #userButton mat-button  id="username_link"
+                    <button #userButton mat-button id="username_link"
                             [class.active]="isActiveUserMenu()"
                             [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
                             (mouseenter)="menuEnter(minorBar, userMenuTrigger, loginMenu)"
@@ -112,10 +122,16 @@
                         <mat-icon>expand_more</mat-icon>
                     </button>
                     <mat-menu #loginMenu="matMenu">
-                        <div (mouseenter)="menu1Enter(minorBar)" (mouseleave)="menu1Leave(minorBar, userMenuTrigger, userButton)">
-                            <button mat-menu-item routerLink="/settings/profile" id="user_settings">{{isSiteAdmin(userService.user) ? 'Settings' : 'Profile'}}</button>
-                            <button mat-menu-item *ngIf="canClassify(userService.user)" routerLink="/classificationManagement">Classifications</button>
-                            <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit" id="user_audit">Audit</button>
+                        <div (mouseenter)="menu1Enter(minorBar)"
+                             (mouseleave)="menu1Leave(minorBar, userMenuTrigger, userButton)">
+                            <button mat-menu-item routerLink="/settings/profile"
+                                    id="user_settings">{{isSiteAdmin(userService.user) ? 'Settings' : 'Profile'}}</button>
+                            <button mat-menu-item *ngIf="canClassify(userService.user)"
+                                    routerLink="/classificationManagement">Classifications
+                            </button>
+                            <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit"
+                                    id="user_audit">Audit
+                            </button>
                             <button mat-menu-item (click)="logout()">Log Out</button>
                         </div>
                     </mat-menu>
@@ -128,7 +144,8 @@
     </mat-toolbar>
 </header>
 <mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1" hasBackdrop="false">
-    <mat-sidenav style="width: 192px" #sidenav mode="over" position="end" fixedInViewport="true" [fixedTopGap]="isMobile ? 30 : 52.4" [fixedBottomGap]="0">
+    <mat-sidenav style="width: 192px" #sidenav mode="over" position="end" fixedInViewport="true"
+                 [fixedTopGap]="isMobile ? 30 : 52.4" [fixedBottomGap]="0">
         <div class="menuTitle">
             <span>MENU
             </span>
@@ -142,7 +159,7 @@
                     <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else mobileMenuWithChildren">
                         <a mat-list-item (click)="sidenav.close()" href="javascript:void(0);"
                            [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null"
-                           [class.active]="sectionActive === menuItem.section" >
+                           [class.active]="sectionActive === menuItem.section">
                             {{menuItem.label || menuItem.labelFn()}}
                         </a>
                     </ng-container>
@@ -163,8 +180,10 @@
                                         </a>
                                     </ng-container>
                                     <ng-template #mobileMenuItemStandard>
-                                        <ng-container *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
-                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link" [queryParams]="child.queryParams || null"
+                                        <ng-container
+                                                *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
+                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link"
+                                                    [queryParams]="child.queryParams || null"
                                                     (click)="sidenav.close()">
                                                 {{child.label || child.labelFn()}}
                                             </button>
@@ -172,14 +191,17 @@
                                     </ng-template>
                                 </ng-container>
                             </ng-container>
-                            <button *ngIf="menuItem.id === 'usernameLink'" mat-menu-item style="margin-left: 16px;" (click)="sidenav.close(); logout()">Log Out</button>
+                            <button *ngIf="menuItem.id === 'usernameLink'" mat-menu-item style="margin-left: 16px;"
+                                    (click)="sidenav.close(); logout()">Log Out
+                            </button>
                         </ng-container>
                     </ng-template>
                 </ng-container>
             </ng-container>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content (scroll)="onScroll($event)" id="scrollRoot" style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
+    <mat-sidenav-content (scroll)="onScroll($event)" id="scrollRoot"
+                         style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
         <router-outlet></router-outlet>
         <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
         <div style="display: flex"></div>
@@ -201,17 +223,20 @@
                             <ul class="social_media">
                                 <li>
                                     <a href="https://www.facebook.com/nationallibraryofmedicine">
-                                        <img src="/cde/public/assets/img/min/Facebook.png" style="height: 2em" alt="Facebook"/>
+                                        <img src="/cde/public/assets/img/min/Facebook.png" style="height: 2em"
+                                             alt="Facebook"/>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="https://twitter.com/NLM_NIH">
-                                        <img src="/cde/public/assets/img/min/Twitter.png" style="height: 2em" alt="Twitter"/>
+                                        <img src="/cde/public/assets/img/min/Twitter.png" style="height: 2em"
+                                             alt="Twitter"/>
                                     </a>
                                 </li>
                                 <li>
                                     <a href="https://www.youtube.com/user/NLMNIH">
-                                        <img src="/cde/public/assets/img/min/YouTube.png" style="height: 2em" alt="YouTube">
+                                        <img src="/cde/public/assets/img/min/YouTube.png" style="height: 2em"
+                                             alt="YouTube">
                                     </a>
                                 </li>
                             </ul>
@@ -267,3 +292,4 @@
         <uswds-banner *ngIf="isMobile"></uswds-banner>
     </footer>
 </ng-template>
+<notification-dialog></notification-dialog>

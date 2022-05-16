@@ -2,7 +2,6 @@ import { RequestHandler, Router } from 'express';
 import { authenticate } from 'passport';
 import { config } from 'server';
 import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
-import { taskAggregator } from 'server/user/taskAggregatorSvc';
 import {
     byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
@@ -44,19 +43,6 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
     router.get('/searchUsers/:username?', roleConfig.search, async (req, res) => {
         const users = await usersByUsername(req.params.username);
         res.send(users);
-    });
-
-
-    if (!config.proxy) {
-        router.post('/site-version', (req, res) => {
-            (version as any) = version + '.';
-            res.send();
-        });
-    }
-
-    router.get('/tasks/:clientVersion', nocacheMiddleware, async (req, res) => {
-        const tasks = await taskAggregator(req.user, req.params.clientVersion);
-        res.send(tasks);
     });
 
     router.post('/addUser', roleConfig.manage, async (req, res) => {

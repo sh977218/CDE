@@ -18,9 +18,7 @@ import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
-import { ApprovalService } from '_app/notifications/approval.service';
 import { NotificationService } from '_app/notifications/notification.service';
-import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
 import { CommonAppModule } from '_commonApp/commonApp.module';
@@ -32,6 +30,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FormResolve } from 'form/public/components/formDescription/form.resolve';
+import { NotificationDialogComponent } from "_app/notifications/notification-dialog/notification-dialog.component";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
     imports: [
@@ -45,28 +45,28 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
         MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatListModule,
         ScrollingModule,
         // internal
         CdeAppRoutingModule,
         CommonAppModule,
         AlertModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatListModule
+        RouterModule,
     ],
     declarations: [
         CdeAppComponent,
+        NotificationDialogComponent,
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
-        NotificationDrawerPaneComponent,
         TruncateLongNamePipe,
         UswdsBannerComponent,
     ],
     providers: [
         FormResolve,
         LocalStorageService,
-        ApprovalService,
         BackForwardService,
         ElasticService,
         LoginService,
@@ -75,7 +75,7 @@ import { FormResolve } from 'form/public/components/formDescription/form.resolve
         OrgHelperService
     ],
     exports: [],
-    entryComponents: [NotificationDrawerPaneComponent],
+    entryComponents: [],
     bootstrap: [CdeAppComponent]
 })
 

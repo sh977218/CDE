@@ -4,7 +4,6 @@ import {
     Component,
     ComponentFactoryResolver,
     ElementRef,
-    EmbeddedViewRef,
     forwardRef,
     HostListener,
     Inject,
@@ -14,22 +13,18 @@ import {
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu'
 import { NavigationEnd, Params, Router } from '@angular/router';
+import { MatDialog } from "@angular/material/dialog";
 import { CdeAppComponent } from '_app/app.component';
 import { LoginService } from '_app/login.service';
 import '_app/navigation/navigation.global.scss';
 import { NotificationService } from '_app/notifications/notification.service';
-import { NotificationDrawerPaneComponent } from '_app/notifications/notificationDrawerPane.component';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
-import {
-    canClassify,
-    hasPrivilege,
-    isOrgAuthority,
-    isSiteAdmin
-} from 'shared/security/authorizationShared';
+import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
+import { NotificationDialogComponent } from "_app/notifications/notification-dialog/notification-dialog.component";
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -269,15 +264,6 @@ export class NavigationComponent {
         @Inject(forwardRef(() => UserService)) public userService: UserService,
         @Inject(forwardRef(() => Renderer2)) private ren: Renderer2,
     ) {
-        // create drawer
-        const componentRef = this.componentFactoryResolver
-            .resolveComponentFactory(NotificationDrawerPaneComponent)
-            .create(this.injector);
-        this.appRef.attachView(componentRef.hostView);
-        const domElem = (componentRef.hostView as EmbeddedViewRef<any>)
-            .rootNodes[0] as HTMLElement;
-        document.body.appendChild(domElem);
-
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
                 this.sectionActive = getWebsiteSection(window.location.pathname, sections, sectionIndexes, sectionLabels);
@@ -292,12 +278,6 @@ export class NavigationComponent {
 
     onScroll(e: Event) {
         this.showHeader = !((e.srcElement as HTMLInputElement).scrollTop > 100 && this.sectionActive !== SECTIONS.home);
-    }
-
-    checkNotificationDrawer() {
-        if (this.notificationService.drawer() && !this.notificationService.drawerMouseOver) {
-            this.notificationService.drawerClose();
-        }
     }
 
     getBarState(bar: HTMLElement) {

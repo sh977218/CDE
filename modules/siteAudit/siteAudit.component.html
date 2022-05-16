@@ -1,53 +1,53 @@
 <mat-tab-group [selectedIndex]="selectedTab.value">
-    <mat-tab label="Logs" *ngIf="isAdmin">
+    <mat-tab label="Logs" index="1" *ngIf="isAdmin">
         <ng-template matTabContent>
             <cde-log-audit id="auditTab"></cde-log-audit>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="App Logs" *ngIf="isAdmin">
+    <mat-tab label="App Logs" index="2" *ngIf="isAdmin">
         <ng-template matTabContent>
             <cde-app-log></cde-app-log>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Usage" *ngIf="isAdmin">
+    <mat-tab label="Usage" index="3" *ngIf="isAdmin">
         <ng-template matTabContent>
             <cde-daily-usage></cde-daily-usage>
         </ng-template>
     </mat-tab>
 
     <mat-tab label="CDE Audit Log">
-        <ng-template matTabContent>
+        <ng-template matTabContent index="4">
             <cde-de-log></cde-de-log>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Form Audit Log">
+    <mat-tab label="Form Audit Log" index="5">
         <ng-template matTabContent>
             <cde-form-log></cde-form-log>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Classification Audit Log">
+    <mat-tab label="Classification Audit Log" index="6">
         <ng-template matTabContent>
             <cde-classification-audit-log></cde-classification-audit-log>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Active Bans" *ngIf="isAdmin">
+    <mat-tab label="Active Bans" *ngIf="isAdmin" index="7">
         <ng-template matTabContent>
             <cde-active-bans></cde-active-bans>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab>
+    <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab index="8">
         <ng-template matTabContent>
             <cde-server-errors></cde-server-errors>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab>
+    <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab index="9">
         <ng-template matTabContent>
             <cde-client-errors></cde-client-errors>
         </ng-template>

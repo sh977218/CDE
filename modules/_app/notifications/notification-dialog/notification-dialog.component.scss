@@ -22,12 +22,12 @@ $width: 800px;
   right: $cornerOffset;
   top: $navigationHeight + $cornerOffset;
   width: $width + 2 * $borderSize;
-  z-index: 1000; /* 1000 to beat hover menu when not hovered */ /* 5 to beat material mobile navigation */
+  z-index: 1000; /* 1000 to beat hover menu when not hovered */
 
   .notificationDrawerBox {
     border: $borderSize solid $borderColor;
     border-radius: $padding;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -72,24 +72,7 @@ $width: 800px;
     }
   }
 
-  //.notificationDrawerPointer { // not usable in this theme with variable length login to right
-  //  height: $pointerSize;
-  //  margin: 0;
-  //  padding: 0;
-  //  position: absolute;
-  //  right: 150px;
-  //  top: -$pointerSize;
-  //  width: 1px;
-  //
-  //  &::before {
-  //    @extend %pointer;
-  //    top: 0;
-  //  }
-  //
-  //  &::after {
-  //    @extend %pointer;
-  //    border-bottom-color: #fff;
-  //    top: 1px;
-  //  }
-  //}
+  .notificationDrawerPointer {
+    width: 100%
+  }
 }

@@ -1,0 +1,16 @@
+<div class="notificationDrawer" [style.display]="notificationSvc.show? 'flex':'none'">
+    <div class="largeLayout notificationDrawerPointer">
+        <div class="notificationDrawerBox">
+            <div class="taskItem">
+                <button class="button" (click)="goToServerError()">
+                    {{notificationSvc.clientErrorNumber}} Server Errors
+                </button>
+            </div>
+            <div class="taskItem">
+                <button class="button" (click)="goToClientError()">
+                    {{notificationSvc.serverErrorNumber}} Client Errors
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

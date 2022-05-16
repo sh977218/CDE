@@ -105,7 +105,6 @@
     "fstream": "^1.0.12",
     "helmet": "^4.6.0",
     "hsts": "^2.2.0",
-    "indexeddbshim": "^6.6.0",
     "ingester": "file:./ingester",
     "js2xmlparser": "1.0.0",
     "json2csv": "^4.3.2",

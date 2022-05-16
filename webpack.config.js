@@ -11,12 +11,6 @@ module.exports = {
         rules: [
             {test: /\.ts$/, enforce: 'pre', exclude: /node_modules/, use: ['tslint-loader']},
             {
-                // dev only, does not fail build, AOT compiler does not generate html resources
-                test: /\.html$/,
-                enforce: 'pre',
-                use: [{loader: path.resolve('scripts/htmlValidateLoader.js')}],
-            },
-            {
                 test: /\.js$/,
                 exclude: [/node_modules/, /\.module\.ngfactory\.js$/],
                 use: {

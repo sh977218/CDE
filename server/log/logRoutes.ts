@@ -1,11 +1,18 @@
 import { RequestHandler, Router } from 'express';
 import { handleError, handleNotFound } from 'server/errorHandler';
 import {
-    appLogs, getClientErrors, getServerErrors, httpLogs, logClientError, usageByDay
+    appLogs,
+    getClientErrors,
+    getClientErrorsNumber,
+    getServerErrors,
+    getServerErrorsNumber,
+    httpLogs,
+    logClientError,
+    usageByDay
 } from 'server/log/dbLogger';
 import { is, parse } from 'useragent';
 
-export function module(roleConfig: {feedbackLog: RequestHandler, superLog: RequestHandler}) {
+export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
     const router = Router();
 
     router.post('/httpLogs', roleConfig.superLog, (req, res) => {
@@ -21,10 +28,15 @@ export function module(roleConfig: {feedbackLog: RequestHandler, superLog: Reque
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        getServerErrors(req.body, handleError({req, res}, result => {
-            res.send(result);
-        }));
+        getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
     });
+
+    router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
+        getServerErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
+    })
+    router.get('/clientErrorsNumber', roleConfig.superLog, (req, res) => {
+        getClientErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
+    })
 
     router.post('/clientErrors', roleConfig.superLog, (req, res) => {
         getClientErrors(req.body, handleNotFound({req, res}, result => {

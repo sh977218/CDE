@@ -1,16 +1,16 @@
-import { Request } from 'express';
-import { Document, Model } from 'mongoose';
-import { config } from 'server';
-import { handleConsoleError, respondError } from 'server/errorHandler';
+import {Request} from 'express';
+import {Document, Model} from 'mongoose';
+import {config} from 'server';
+import {handleConsoleError, respondError} from 'server/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';
-import { pushRegistrationsFor, triggerPushMsg } from 'server/notification/pushNotificationSvc';
-import { establishConnection } from 'server/system/connections';
-import { noDbLogger } from 'server/system/noDbLogger';
-import { siteAdmins, UserFull } from 'server/user/userDb';
-import { Cb, CbError, CbError1 } from 'shared/models.model';
-import { AuditLog, AuditLogResponse, LogMessage } from 'shared/log/audit';
+import {pushRegistrationsFor, triggerPushMsg} from 'server/notification/pushNotificationSvc';
+import {establishConnection} from 'server/system/connections';
+import {noDbLogger} from 'server/system/noDbLogger';
+import {siteAdmins, UserFull} from 'server/user/userDb';
+import {Cb, CbError, CbError1} from 'shared/models.model';
+import {AuditLog, AuditLogResponse, LogMessage} from 'shared/log/audit';
 
 export interface ClientError {
     message: string;
@@ -251,12 +251,11 @@ export function getClientErrors(params: { limit: number, skip: number }, callbac
     clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
 }
 
-export function getClientErrorsNumber(user: UserFull): Promise<number> {
-    return clientErrorModel.countDocuments(
-        user.notificationDate && user.notificationDate.clientLogDate
-            ? {date: {$gt: user.notificationDate.clientLogDate}}
-            : {}
-    ).exec();
+export function getClientErrorsNumber(user: UserFull, callback) {
+    const condition = user.notificationDate && user.notificationDate.clientLogDate
+        ? {date: {$gt: user.notificationDate.clientLogDate}}
+        : {};
+    clientErrorModel.countDocuments(condition).exec(callback);
 }
 
 export function getServerErrors(params: { limit: number, skip: number, badInput: boolean, excludeOrigin: string[] },
@@ -289,12 +288,11 @@ export function getServerErrors(params: { limit: number, skip: number, badInput:
         .exec(callback);
 }
 
-export function getServerErrorsNumber(user: UserFull): Promise<number> {
-    return logErrorModel.countDocuments(
-        user.notificationDate && user.notificationDate.serverLogDate
-            ? {date: {$gt: user.notificationDate.serverLogDate}} as any
-            : {}
-    ).exec();
+export function getServerErrorsNumber(user: UserFull, callback) {
+    const condition = user.notificationDate && user.notificationDate.serverLogDate
+        ? {date: {$gt: user.notificationDate.serverLogDate}} as any
+        : {};
+    logErrorModel.countDocuments(condition).exec(callback);
 }
 
 interface LogAggregate {
