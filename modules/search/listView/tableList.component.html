@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>
-            <img aria-label="nihEndorsed" height="40" width="40" src="/cde/public/assets/img/min/Gold-Ribbon.png"
+            <img aria-label="nihEndorsed" height="38" width="30" src="/cde/public/assets/img/Ribbon-Outline.svg"
                  matTooltipClass="cdeTooltip"
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
         </th>
@@ -19,10 +19,10 @@
             <ng-container [ngSwitch]="prop.css">
                 <ng-container *ngSwitchCase="'nihEndorsed'">
                     <div matTooltip="NIH has endorsed collections of CDEs that meet <a href=''>established criteria</a>. They are designated with a gold ribbon.">
-                        <img *ngIf="prop.elt.nihEndorsed" aria-label="nihEndorsed" height="40" width="40"
+                        <img *ngIf="prop.elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
                              matTooltipClass="cdeTooltip"
                              matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon."
-                             src="/cde/public/assets/img/min/Gold-Ribbon.png">
+                             src="/cde/public/assets/img/Ribbon-Outline.svg">
                     </div>
                 </ng-container>
                 <ng-container *ngSwitchCase="'name'">
