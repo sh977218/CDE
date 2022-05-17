@@ -2,7 +2,7 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" title="Expand Page Navigation"
+<button class="noPrint forNotLgScreen slide-pane-button-right" title="Expand Page Navigation"
         (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
@@ -116,7 +116,7 @@
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
                         </button>
-                        <button *ngIf="userService.canViewComment"
+                        <button *ngIf="userService.canViewComment" tourAnchor="discussBtn"
                                 id="discussBtn" class="button" title="Discuss CDE"
                                 (click)="commentDrawer.toggle()">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">

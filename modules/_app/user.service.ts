@@ -5,13 +5,14 @@ import { signInOut } from '_app/pushNotificationSubscriptionService';
 import { AlertService } from 'alert/alert.service';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
-import { Cb1, CbErrorObj, Comment, User } from 'shared/models.model';
+import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege, isSiteAdmin, canViewComment
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { noop } from 'shared/util';
+import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
 
 @Injectable()
@@ -149,7 +150,7 @@ export class UserService {
         };
     }
 
-    then<T>(cb: (user: User) => T | Promise<T>, errorCb?: (err?: string) => T): Promise<T> {
+    then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
         return this.promise.then(cb, errorCb);
     }
 

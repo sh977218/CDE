@@ -122,7 +122,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
                 this.title.setTitle('Board: ' + this.board.name);
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
             }
-        }, err => this.alert.httpErrorMessageAlert(err, 'Board'));
+        }, err => this.alert.httpErrorMessageAlert(err, 'Board'))
     }
 
     setPage(newPage: PageEvent) {
@@ -132,5 +132,4 @@ export class BoardViewComponent implements OnInit, OnDestroy {
             this.reload();
         }
     }
-
 }

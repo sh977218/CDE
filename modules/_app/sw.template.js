@@ -1,7 +1,38 @@
 var CACHE_NAME = 'cde-cache-{#}';
 var CACHE_WHITELIST = ['cde-cache-{#}'];
 var urlsToCache = ["###"];
-var htmlServedUri = ["{htmlServedUri}"];
+var htmlServedUri = [
+    '/',
+    '/404',
+    '/api',
+    '/board/:id',
+    '/boardList',
+    '/cde/search',
+    '/cdeStatusReport',
+    '/classificationManagement',
+    '/contactUs',
+    '/createCde',
+    '/createForm',
+    '/deView',
+    '/form/search',
+    '/formEdit',
+    '/formView',
+    '/help/:title',
+    '/home',
+    '/login',
+    '/myBoards',
+    '/orgAccountManagement',
+    '/orgAuthority',
+    '/orgComments',
+    '/profile',
+    '/quickBoard',
+    '/sdcview',
+    '/searchPreferences',
+    '/siteAudit',
+    '/siteAccountManagement',
+    '/whatsNew'
+];
+
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

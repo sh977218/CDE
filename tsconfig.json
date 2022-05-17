@@ -6,19 +6,19 @@
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "target": "es2017",
+    "module": "es2020",
     "lib": [
-      "ESNext",
-      "DOM"
+      "es2020",
+      "dom"
     ],
-    "module": "ESNext",
     "moduleResolution": "Node",
     "outDir": "./buildWebStorm",
     "pretty": true,
     "resolveJsonModule": true,
     "rootDir": ".",
     "sourceMap": true,
-    "strict": true,
-    "target": "ESNext",
+    "strict": false,
     "typeRoots": [
       "node_modules/@types"
     ]

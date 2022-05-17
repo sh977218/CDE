@@ -53,6 +53,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TocModule } from 'angular-aio-toc/toc.module';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -107,6 +108,7 @@ const appRoutes: Routes = [
         MatToolbarModule,
         TooltipModule,
         TocModule,
+        TourMatMenuModule,
     ],
     declarations: [
         ArrayListPipe,

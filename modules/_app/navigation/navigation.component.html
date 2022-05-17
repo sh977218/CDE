@@ -33,7 +33,7 @@
             </a>
             <span class="spacer"></span>
             <div class="" style="height: 100%;">
-                <ng-container *ngFor="let menuItem of menuList">
+                <span *ngFor="let menuItem of menuList" [tourAnchor]="menuItem.id">
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                         <ng-container
                                 *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
@@ -94,7 +94,7 @@
                             </div>
                         </mat-menu>
                     </ng-template>
-                </ng-container>
+                </span>
                 <button *ngIf="userService.loggedIn()" mat-icon-button id="notificationLink"
                         title="Banner Notifications" (click)="notificationService.toggle();">
                     <mat-icon [matBadge]="notificationService.numberOfNotifications"
@@ -173,7 +173,7 @@
                             <ng-container *ngFor="let child of menuItem.children">
                                 <ng-container *ngIf="!child.condition || child.condition()">
                                     <ng-container *ngIf="child.label === 'Contact Us'; else mobileMenuItemStandard">
-                                        <a mat-menu-item style="margin-left: 16px;" [id]="child.id" [href]="child.link"
+                                        <a mat-menu-item style="margin-left: 16px;" [id]="'mobile_' + child.id" [href]="child.link"
                                            target="_blank" rel="noopener noreferrer"
                                         >
                                             Contact Us

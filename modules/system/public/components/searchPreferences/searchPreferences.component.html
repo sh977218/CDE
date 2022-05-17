@@ -3,8 +3,8 @@
         <mat-icon>search</mat-icon>
         Search Results
     </h1>
-    <label *ngIf="isOrgAuthority(userService.user)">
-        <input type="checkbox" [(ngModel)]="esService.includeRetired" id="includeRetired">
+    <label *ngIf="isOrgAuthority(userService.user)"  id="includeRetired">
+        <input type="checkbox" [(ngModel)]="esService.includeRetired">
         Include Retired Content (this session only)
     </label>
     <h2>

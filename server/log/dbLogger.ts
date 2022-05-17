@@ -116,9 +116,9 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
         message.date = new Date();
     }
     if (typeof message.stack === 'string') {
-        message.stack = message.stack.substr(0, 1000);
+        message.stack = message.stack.substr(0, 1500);
     }
-    const description = ((message.message || message.publicMessage) + '').substr(0, 30);
+    const description = ((message.message || message.publicMessage) + '').substr(0, 100);
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---');
         console.log(message);

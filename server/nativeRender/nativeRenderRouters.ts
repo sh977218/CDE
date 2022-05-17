@@ -1,28 +1,24 @@
-import { renderFile } from 'ejs';
-import { Request, Router } from 'express';
-import { is } from 'useragent';
+import { Router } from 'express';
 import {version } from '../version';
-
-/* for IE Opera Safari, emit polyfill.js */
-function isModernBrowser(req: Request) {
-    const ua = is(req.headers['user-agent']);
-    return ua.chrome || ua.firefox || (ua as any).edge;
-}
+import * as path from 'path';
+import * as fs from 'fs';
 
 export function module() {
     const router = Router();
 
-    let nativeRenderHtml = '';
-    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: false, version}, (err, str) => {
-        nativeRenderHtml = str;
-    });
+    let indexHtml = '';
+    try {
+        indexHtml = fs.readFileSync(path.join(process.cwd(), '/dist/nativeRender/index.html'), 'UTF-8');
+    } catch (e) {
+        console.error("Missing file index.html. Run 'ng build nativeRender' and retry");
+        process.exit(1);
+    }
+    // replace version
+    indexHtml = indexHtml.replace('="version"', `="${version}"`);
 
-    let nativeRenderLegacyHtml = '';
-    renderFile('frontEnd/_nativeRenderApp/nativeRenderApp.ejs', {isLegacy: true, version}, (err, str) => {
-        nativeRenderLegacyHtml = str;
-    });
+
     router.get('/', (req, res) => {
-        res.send(isModernBrowser(req) ? nativeRenderHtml : nativeRenderLegacyHtml);
+        res.send(indexHtml);
     });
 
     return router;

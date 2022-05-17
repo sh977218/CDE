@@ -28,6 +28,7 @@ import { NotificationDialogComponent } from "_app/notifications/notification-dia
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
+
 const enum SECTIONS {
     home,
     de,
@@ -39,7 +40,8 @@ const enum SECTIONS {
     searchSettings,
     user,
 }
-const SECTIONS_MAP: {[key in keyof typeof SECTIONS]: string[]} = {
+
+const SECTIONS_MAP: { [key in keyof typeof SECTIONS]: string[] } = {
     home: [
         '/home',
         '/404',
@@ -302,7 +304,8 @@ export class NavigationComponent {
             this.userService.reload();
             this.router.navigate(['/login']);
         };
-        this.app.ssoLogout(() => {});
+        this.app.ssoLogout(() => {
+        });
         this.http.post('/server/system/logout', {}, {responseType: 'text'}).subscribe(
             refreshAndLogin,
             refreshAndLogin // ignore error in favor of already being logged out
@@ -311,7 +314,7 @@ export class NavigationComponent {
 
     menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {
         if ((trigger as any).menuOpen) {
-            ((menu._allItems.first as any) as {_elementRef: ElementRef<HTMLElement>})._elementRef.nativeElement.blur();
+            ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
         } else {
             this.unfocusButton(button);
         }
@@ -325,7 +328,7 @@ export class NavigationComponent {
                 barState.prevButtonTrigger = trigger;
                 bar.style.zIndex = NAV_Z_INDEX_ACTIVE;
                 trigger.openMenu();
-                ((menu._allItems.first as any) as {_elementRef: ElementRef<HTMLElement>})._elementRef.nativeElement.blur();
+                ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
                 barState.isMatMenuOpen = true;
                 setTimeout(() => {
                     barState.isMatMenuOpen = false;
@@ -335,7 +338,7 @@ export class NavigationComponent {
                 barState.prevButtonTrigger = trigger;
                 bar.style.zIndex = NAV_Z_INDEX_ACTIVE;
                 trigger.openMenu();
-                ((menu._allItems.first as any) as {_elementRef: ElementRef<HTMLElement>})._elementRef.nativeElement.blur();
+                ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
             } else {
                 barState.enteredButton = true;
                 barState.prevButtonTrigger = trigger;

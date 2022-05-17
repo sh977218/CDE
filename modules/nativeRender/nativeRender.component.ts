@@ -4,6 +4,7 @@ import 'nativeRender/nativeRender.global.scss';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile, DisplayType } from 'shared/form/form.model';
 import { ScoreService } from 'nativeRender/score.service';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'cde-native-render',
@@ -29,14 +30,13 @@ export class NativeRenderComponent {
     }
 
     @Input() showTitle = true;
-    endpointUrl: string;
+    endpointUrl: string = environment.endpointUrl;
     formUrl: string;
     readonly NRS = NativeRenderService;
 
     constructor(private sanitizer: DomSanitizer,
                 public nrs: NativeRenderService) {
         this.formUrl = window.location.href;
-        this.endpointUrl = window.endpointUrl;
     }
 
     getEndpointUrl() {

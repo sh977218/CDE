@@ -1,0 +1,15 @@
+{
+  "name": "NIH CDE Repository",
+  "short_name": "NIH-CDE",
+  "start_url": "/home",
+  "description": "NIH Repository of Forms and Common Data Elements.",
+  "theme_color": "#004496",
+  "background_color": "white",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/cde/public/assets/img/min/NIH-CDE-manifest.png",
+      "sizes": "512x512"
+    }
+  ]
+}

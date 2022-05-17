@@ -4,9 +4,10 @@ import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser'
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
-import { onLoad } from '_app/pushNotificationSubscriptionService';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
+import { CdeTourService } from '_app/cdeTour.service';
+import { onLoad } from '_app/pushNotificationSubscriptionService';
 
 @Component({
     selector: 'nih-cde',
@@ -28,7 +29,14 @@ export class CdeAppComponent {
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => Title)) private title: Title,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
+        public cdeTourService: CdeTourService
     ) {
+        this.route.queryParams.subscribe(params => {
+            if (params.tour) {
+                this.cdeTourService.takeTour();
+            }
+        });
+
         this.userService.then(user => {
         }, () => {
             const userService = this.userService;

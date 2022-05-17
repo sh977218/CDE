@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { cloneDeep } from 'lodash';
+import { environment } from 'environments/environment';
 import 'inlineAreaEdit/inlineAreaEdit.global.scss';
 
 @Component({
@@ -56,7 +58,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
     }
 
     static isInvalidHtml(html: string) {
-        const allowUrls = [window.publicUrl, window.urlProd];
+        const allowUrls = [environment.publicUrl, (window as any).urlProd];
         const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
         if (srcs) {
             for (const src of srcs) {

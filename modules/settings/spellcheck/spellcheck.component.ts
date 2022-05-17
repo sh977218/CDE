@@ -240,7 +240,7 @@ export class SpellCheckComponent {
 
     getErrorDisplayText(text: string, term: string, row: number, field: string): string {
         const regEx = new RegExp(term, 'ig');
-        text = text.replaceAll(regEx, '<strong>$&</strong>');
+        text = text.replace(regEx, '<strong>$&</strong>');
         return `Row ${row} - ${field}: ${text}`;
     }
 

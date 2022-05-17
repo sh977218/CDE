@@ -67,9 +67,9 @@
                         <mat-list-item id="editors" [routerLinkActive]="['isActive']" routerLink="orgEditor">
                             Editors
                         </mat-list-item>
-                        <mat-list-item id="organizations" *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="manageOrganizations" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="orgsEdit">
-                            Manage
+                            Manage Organizations
                         </mat-list-item>
                         <mat-list-item id="tagsManagement" *ngIf="userSvc.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="tagsManagement">

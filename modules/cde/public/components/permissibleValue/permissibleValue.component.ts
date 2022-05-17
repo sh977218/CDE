@@ -44,11 +44,11 @@ const SOURCES: Record<PermissibleValueCodeSystem, Source> = {
     selector: 'cde-permissible-value',
     templateUrl: 'permissibleValue.component.html',
     styles: [`
-        #pvTable {
-            overflow: auto;
-            width: 100%;
-            max-height: 500px;
-        }
+      #pvTable {
+        overflow: auto;
+        width: 100%;
+        max-height: 500px;
+      }
     `]
 })
 export class PermissibleValueComponent {
@@ -457,7 +457,7 @@ export class PermissibleValueComponent {
         this.eltChange.emit();
     }
 
-    async validatePVAgainstUMLS(){
+    async validatePVAgainstUMLS() {
         const pvs: PermissibleValue[] = (this.elt.valueDomain as ValueDomainValueList).permissibleValues;
         this.umlsValidationLoading = true;
         this.umlsValidationResults = await this.http.post(

@@ -1,38 +1,34 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
-    "allowJs": false,
-    "allowUnreachableCode": true,
     "baseUrl": "./modules",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "pretty": false,
-    "rootDir": ".",
-    "sourceMap": true,
-    "strict": true,
-    "strictPropertyInitialization": false,
-    "target": "ES5",
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "types": []
   },
+  "files": [
+    "modules/_app/src/main.ts",
+    "modules/_app/src/polyfills.ts"
+  ],
+  "include": [
+    "cde.d.ts",
+    "modules/_app/src/main.ts",
+    "modules/index.d.ts",
+    "modules/**/*.d.ts",
+    "shared",
+    "shared/de/*.ts",
+    "shared/form/*.ts",
+    "shared/mapping/fhir/fhirResource.model.ts",
+    "shared/search/search.model.ts",
+    "shared/**/*.ts"
+  ],
   "angularCompilerOptions": {
   },
   "awesomeTypescriptLoaderOptions": {
     "useWebpackText": true
   },
-  "include": [
-    "cde.d.ts",
-    "modules/_app/main.ts",
-    "modules/index.d.ts",
-    "shared"
-  ],
   "exclude": [
     "app.ts",
     "build",
@@ -42,8 +38,6 @@
     "dist",
     "gulpfile.ts",
     "ingester",
-    "frontEnd/_embedApp",
-    "frontEnd/_nativeRenderApp",
     "modules/form/public/assets",
     "node_modules",
     "protractor",
@@ -51,6 +45,29 @@
     "server",
     "shared/node",
     "test",
-    "webpack*"
+    "webpack*",
+    "shared/builtIn.ts",
+    "shared/elt.ts",
+    "shared/exportShared.ts",
+    "shared/fetch.ts",
+    "shared/form/formAndFe.ts",
+    "shared/loader/utilities/utility.ts",
+    "shared/mapping/fhir/datatype/fhirCodeableConcept.ts",
+    "shared/mapping/fhir/datatype/fhirCoding.ts",
+    "shared/mapping/fhir/datatype/fhirPeriod.ts",
+    "shared/mapping/fhir/datatype/fhirReference.ts",
+    "shared/mapping/fhir/fhirDatatypes.ts",
+    "shared/mapping/fhir/from/datatypeFromItemType.ts",
+    "shared/mapping/fhir/index.ts",
+    "shared/mapping/fhir/resource/fhirDevice.ts",
+    "shared/mapping/fhir/resource/fhirEncounter.ts",
+    "shared/mapping/fhir/resource/fhirObservation.ts",
+    "shared/mapping/fhir/resource/fhirPatient.ts",
+    "shared/mapping/fhir/resource/fhirProcedure.ts",
+    "shared/mapping/fhir/resource/fhirQuestionnaireResponse.ts",
+    "shared/mapping/fhir/to/datatypeToItemType.ts",
+    "shared/mapping/fhir/to/enumToValueSet.ts",
+    "shared/mapping/fhir/to/toFhir.ts",
+    "shared/mapping/fhir/to/toQuestionnaire.ts"
   ]
 }

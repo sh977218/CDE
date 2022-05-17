@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import '@angular/localize/init';
@@ -21,7 +22,7 @@ import { NavigationComponent } from '_app/navigation/navigation.component';
 import { NotificationService } from '_app/notifications/notification.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
-import { CommonAppModule } from '_commonApp/commonApp.module';
+import { CommonAppModule } from 'common/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -30,13 +31,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FormResolve } from 'form/public/components/formDescription/form.resolve';
-import { NotificationDialogComponent } from "_app/notifications/notification-dialog/notification-dialog.component";
-import {RouterModule} from "@angular/router";
+import { LoginFederatedComponent } from '_app/loginFederated.component';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { CdeTourService } from '_app/cdeTour.service';
+import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 
 @NgModule({
     imports: [
         BrowserAnimationsModule,
         BrowserModule,
+        RouterModule,
         HttpClientModule,
         MatBadgeModule,
         MatButtonModule,
@@ -53,11 +57,12 @@ import {RouterModule} from "@angular/router";
         CdeAppRoutingModule,
         CommonAppModule,
         AlertModule,
-        RouterModule,
+        TourMatMenuModule.forRoot(),
     ],
     declarations: [
         CdeAppComponent,
         NotificationDialogComponent,
+        LoginFederatedComponent,
         IEBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
@@ -72,7 +77,8 @@ import {RouterModule} from "@angular/router";
         LoginService,
         NotificationService,
         UserService,
-        OrgHelperService
+        OrgHelperService,
+        CdeTourService
     ],
     exports: [],
     entryComponents: [],

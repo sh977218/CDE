@@ -27,7 +27,7 @@ export class AlertService {
     constructor(
         @Inject(forwardRef(() => MatSnackBar)) private snackBar: MatSnackBar,
     ) {
-        this.alertTime = window.userAlertTime;
+        this.alertTime = 5000;
         if (this.alertTime === 1) { this.alertTime = 90000; }
     }
 

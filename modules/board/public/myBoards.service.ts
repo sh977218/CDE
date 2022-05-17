@@ -48,7 +48,9 @@ export class MyBoardsService {
                 this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
             }
             this.reloading = false;
-            if (type && this.boards) { this.boards = this.boards.filter(b => b.type === type); }
+            if (type && this.boards) {
+                this.boards = this.boards.filter(b => b.type === type);
+            }
             this.sortBoardList(type);
             cb();
         }, cb);

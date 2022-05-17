@@ -14,14 +14,13 @@ dump/
 migration/
 nbproject
 node_modules
-modules/_app/index.html
 modules/cde/public/assets/fonts/
 modules/cde/public/assets/img/robot.png
-modules/system/views/version.html
 modules/system/public/html/version.html
 prodDump/
 temp/
 ssl/
+package-lock.json
 
 ## Ingest
 
@@ -39,6 +38,7 @@ mongo.pem.txt
 mongo-rootca.pem.txt
 
 ## Logs
+gulp.txt
 cde.log
 cdeError.log
 debug.log

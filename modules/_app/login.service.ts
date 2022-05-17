@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable, NgZone } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { environment } from 'environments/environment';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 
@@ -76,13 +77,13 @@ export class LoginService {
     }
 
     openLogin() {
-        this.federatedUrl = `${window.federatedLogin}?service=${window.location.origin}/loginFederated`;
-        this.loginWindow = window.open(this.federatedUrl, '_blank');
+        this.federatedUrl = `${environment.federatedLogin}?service=${window.location.origin}/loginFederated`;
+        this.loginWindow = window.open(this.federatedUrl);
         if (this.loginWindow) {
             window.loggedIn = () => {
                 this.ngZone.run(() => {
                     this.loggedIn();
-                });
+                })
             }
         } else {
             if (this.lastRoute) {

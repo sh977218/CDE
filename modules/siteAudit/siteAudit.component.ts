@@ -17,9 +17,7 @@ export class SiteAuditComponent implements AfterViewInit {
 
     constructor(public userService: UserService,
                 private route: ActivatedRoute) {
-        this.userService.then(user => {
-            this.isAdmin = isSiteAdmin(user);
-        }, noop);
+        this.userService.then(user => this.isAdmin = isSiteAdmin(user), noop);
     }
 
     ngAfterViewInit(): void {

@@ -38,6 +38,7 @@ import { FormSearchModule } from 'form/public/formSearch.module';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -74,7 +75,8 @@ const appRoutes: Routes = [
         CompareModule,
         DiscussModule,
         FormSearchModule,
-        TocModule
+        TocModule,
+        TourMatMenuModule
     ],
     declarations: [
         CdeClassificationComponent,

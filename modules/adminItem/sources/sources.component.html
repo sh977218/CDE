@@ -1,5 +1,6 @@
-<fieldset *ngFor="let eltSource of elt.sources; let $index = index" class="cdeFieldset" id="sources_{{$index}}">
-    <legend>Source: {{eltSource.sourceName}}</legend>
+<fieldset *ngFor="let eltSource of elt.sources; let $index = index" class="cdeFieldset" tourAnchor="sources_{{$index}}"
+          id="sources_{{$index}}">
+<legend>Source: {{eltSource.sourceName}}</legend>
     <dl class="cde-property">
         <ng-container *ngIf="sourceUrls[eltSource.sourceName]">
             <dt matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>

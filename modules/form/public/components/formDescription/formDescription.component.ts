@@ -37,8 +37,6 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
     @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
-    navHeight = NAVIGATION_HEIGHT + 'px';
-    navHeightMobile = NAVIGATION_HEIGHT_MOBILE + 'px';
     addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};

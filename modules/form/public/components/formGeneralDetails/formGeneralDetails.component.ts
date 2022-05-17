@@ -12,9 +12,11 @@ export class FormGeneralDetailsComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
     }
+
     get elt() {
         return this._elt;
     }
+
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter();
     private _elt!: CdeForm;

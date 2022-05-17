@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { CdeSearchComponent } from 'cde/public/components/search/cdeSearch.component';
 import { CdeSearchModule } from 'cde/public/cdeSearch.module';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
 const appRoutes: Routes = [
     {path: '', component: CdeSearchComponent},
@@ -12,7 +13,8 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forChild(appRoutes),
         // internal
-        CdeSearchModule
+        CdeSearchModule,
+        TourMatMenuModule
     ],
     declarations: [
     ],

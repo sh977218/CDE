@@ -8,7 +8,11 @@ const COLLECTION = 'socket.io-adapter-events';
 export let ioServer: any;
 
 export async function startSocketIoServer(server: any, expressSettings: any, mongoClient: any) {
-    ioServer = require('socket.io')(server);
+    ioServer = require('socket.io')(server, {
+        cors: {
+            origins: ['http://localhost:4200', 'http://localhost:3001']
+        }
+    });
     ioServer.use(authorize(expressSettings));
     try {
         await mongoClient.db(DB).createCollection(COLLECTION, {

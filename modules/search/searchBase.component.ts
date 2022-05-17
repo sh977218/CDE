@@ -838,7 +838,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     static focusClassification() {
         document.getElementById('classificationListHolder')?.focus();
     }
-
+    
     static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
         return orderedList.indexOf(rg.key as any);
     }

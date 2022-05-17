@@ -14,7 +14,7 @@
         </ng-template>
         <div style="min-width: 155px"></div>
     </mat-sidenav>
-    <button *ngIf="!navDrawer.opened" class="noPrint slide-pane-button-right" title="Expand Page Navigation"
+    <button class="noPrint forNotLgScreen slide-pane-button-right" title="Expand Page Navigation"
             (click)="navDrawer.open()"></button>
     <mat-sidenav-content>
         <mat-sidenav-container [hasBackdrop]="false">
@@ -74,7 +74,7 @@
                         </div>
                     </header>
                     <nav>
-                        <button id="export" class="button" title="Export"
+                        <button tourAnchor="export" id="export" class="button" title="Export"
                                 #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu">
                             <mat-icon>play_for_work</mat-icon>
                             <span class="button-label"> Export </span>

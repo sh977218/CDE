@@ -8,6 +8,7 @@ import { EMPTY, Subject, timer } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
 import { Comment, CommentReply } from 'shared/models.model';
 import { io } from 'socket.io-client';
+import { environment } from 'environments/environment';
 
 interface ReplyDraft {
     text?: string;
@@ -99,7 +100,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // join channel "comment"
-        this.socket = io(window.publicUrl + '/comment');
+        this.socket = io(environment.socketIoUrl + '/comment');
         // join sub channel "$eltId"
         this.socket.emit('room', this.eltId);
         this.loadComments();

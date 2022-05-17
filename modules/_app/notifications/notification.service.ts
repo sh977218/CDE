@@ -15,7 +15,7 @@ export class NotificationService {
         this.show = !this.show;
     }
 
-    updateErrorNumber(){
+    updateErrorNumber() {
         this.http.get('/server/log/serverErrorsNumber').subscribe((res: any) => {
             this.serverErrorNumber = res.count;
             if (res.count) {

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Attachment, Item } from 'shared/models.model';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'cde-attachments[elt]',
@@ -17,7 +18,7 @@ export class AttachmentsComponent {
     }
 
     copyUrl(attachment: Attachment) {
-        let url = window.publicUrl + '/server/system/data/' + attachment.fileid;
+        let url = window.location.origin + '/server/system/data/' + attachment.fileid;
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
         }

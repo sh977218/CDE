@@ -27,6 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
 @NgModule({
     imports: [
@@ -56,6 +57,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         CdeModule,
         SearchModule,
         TagModule,
+        TourMatMenuModule
     ],
     declarations: [
         BoardCdeSummaryListComponent,

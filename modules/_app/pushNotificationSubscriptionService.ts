@@ -1,4 +1,4 @@
-import { DELETE, POST } from '_commonApp/fetch';
+import { DELETE, POST } from 'common/fetch';
 import {
     PushRegistrationCreateRequest,
     PushRegistrationCreateResponse,
@@ -147,7 +147,7 @@ export function subscribe(userId: string): Promise<PushSubscription | null> {
                     subscription: pushSubscription as unknown as PushSubscriptionJson | null,
                 },
             )
-                .then(res => {
+                .then((res: any) => {
                     if (res.subscribed) {
                         return pushSubscription;
                     }

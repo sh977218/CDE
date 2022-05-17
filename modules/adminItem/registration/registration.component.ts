@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef 
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { AdministrativeStatus, administrativeStatuses, Comment, CurationStatus, Item, RegistrationState } from 'shared/models.model';
+import { AdministrativeStatus, administrativeStatuses, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/regStatusShared';
 import { noop } from 'shared/util';
 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/">
+    <title>NIH Common Data Elements (CDE) Repository</title>
+    <meta name="site-version" content="66c99310c">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description"
+          content="Repository of Common Data Elements (CDE) and Protocol Forms. Search CDEs. Search Protocol Forms.">
+    <meta name="keywords"
+          content="cde, common data element, form, protocol, protocol form, crf, case report form, promis, neuro-qol, phenx, ahrq, ninds, value set, repository, nih, nlm, national institutes of health, national library of medicine">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
+    <meta name="theme-color" content="#004496">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript">
+        if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {}, function(err) {});
+            });
+        }
+    </script>
+</head>
+
+<body role="main" id="top">
+
+<div itemscope>
+    <nih-cde></nih-cde>
+    <div class="loading" id="spinner"></div>
+</div>
+
+<style>
+    #spinner {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: transparent;
+        margin: 20% auto;
+        border: 8px solid transparent;
+        border-top: 8px solid rgb(0, 27, 192);
+        border-left: 8px solid rgba(238, 238, 238, 0.4);
+        border-bottom: 8px solid rgb(0, 27, 192);
+        border-right: 8px solid rgba(238, 238, 238, 0.4);
+        animation: shadowspin .6s linear infinite;
+        -webkit-animation: shadowspin .6s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @-moz-keyframes spin {
+        from {
+            -moz-transform: rotate(0deg);
+        }
+        to {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes spin {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes shadowspin {
+        0% {
+            transform: rotate(0deg);
+            box-shadow: inset 0 0 15px rgb(0, 27, 192);
+        }
+        55% {
+            box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+        }
+
+        100% {
+            transform: rotate(360deg);
+            box-shadow: inset 0 0 15px rgb(0, 27, 192);
+        }
+    }
+
+    @-moz-keyframes shadowspin {
+        0% {
+            -moz-transform: rotate(0deg);
+            box-shadow: inset 0 0 15px rgb(0, 27, 192);
+        }
+
+        55% {
+            box-shadow: inset 0 0 35px rgba(238, 238, 238, 0.4);
+        }
+
+        100% {
+            -moz-transform: rotate(360deg);
+            box-shadow: inset 0 0 15px rgb(0, 27, 192);
+        }
+    }
+
+    @-webkit-keyframes shadowspin {
+        0% {
+            -webkit-transform: rotate(0deg);
+            box-shadow: inset 0 0 25px rgb(0, 27, 192);
+        }
+
+        55% {
+            box-shadow: inset 0 0 5px rgba(238, 238, 238, 0.4);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+            box-shadow: inset 0 0 25px rgb(0, 27, 192);
+        }
+    }
+</style>
+
+<script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "GovernmentOrganization",
+        "name":"U.S. National Library of Medicine",
+        "address":{
+            "@type":"PostalAddress",
+            "addressCountry":"US",
+            "addressLocality":"Bethesda",
+            "addressRegion":"MD",
+            "postalCode":"20894",
+            "streetAddress":"8600 Rockville Pike",
+        },
+        "description" : "NIH Common Data Elements Repository",
+        "url": "https://cde.nlm.nih.gov",
+        "logo": "https://cde.nlm.nih.gov/cde/public/assets/img/min/NIH-CDE.svg"
+    }
+</script>
+
+<script type="application/ld+json">
+    {
+        "@context" : "http://schema.org",
+        "@type" : "WebSite",
+        "name" : "NIH CDE Repository",
+        "description" : "NIH Common Data Elements Repository",
+        "url" : "https://cde.nlm.nih.gov"
+    }
+</script>
+
+</body>
+</html>

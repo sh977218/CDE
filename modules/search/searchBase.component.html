@@ -65,7 +65,7 @@
                 </h1>
             </div>
             <div class="responsiveGrid" style="gap: 10px 30px;">
-                <div *ngFor="let org of orgs"
+                <div *ngFor="let org of orgs" tourAnchor="search_by_classification_{{org.name}}"
                      id="search_by_classification_{{org.name}}">
                     <fieldset class="cdeFieldset welcomeSearchFieldset"
                               (click)="browseOrg(org.name)">
@@ -178,7 +178,7 @@
                 </div>
 
                 <!-- CLASSIFICATION AGGREGATIONS -->
-                <div *ngIf="aggregations.orgs.buckets" id="classificationListHolder">
+                <div *ngIf="aggregations.orgs.buckets" tourAnchor="classificationListHolder" id="classificationListHolder">
                     <div>
                         <span class="treeTitle">Classification</span>
                         <a *ngIf="!altClassificationFilterMode && !embedded && !excludeOrgFilterMode"
@@ -190,6 +190,7 @@
                             <mat-icon>add_box</mat-icon>
                         </a>
                         <a *ngIf="!excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
+                           tourAnchor="excludeFilterModeToggle"
                            id="excludeFilterModeToggle" class="classification-filter" style="line-height: 12px"
                            (click)="setExcludeOrgFilterMode()" href="javascript:void(0);"
                            aria-label="Add a second classification filter as a NOT condition"
@@ -254,7 +255,8 @@
                     </div>
                 </div>
                 <!-- REGISTRATION STATUS AGGREGATION -->
-                <div *ngIf="aggregations.statuses.statuses.buckets" id="registrationStatusListHolder"
+                <div *ngIf="aggregations.statuses.statuses.buckets" tourAnchor="registrationStatusListHolder"
+                     id="registrationStatusListHolder"
                      style="margin-bottom: .75rem; margin-top: .75rem">
                     <span class="treeTitle">Registration Status</span>
                     <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
@@ -275,7 +277,7 @@
                 </div>
                 <!--DATA TYPE AGGREGATION-->
                 <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length"
-                     id="datatypeListHolder" style="margin: .75rem 0">
+                     tourAnchor="datatypeListHolder" id="datatypeListHolder" style="margin: .75rem 0">
                     <span class="treeTitle">Data Types</span>
                     <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
                         <div *ngIf="t.doc_count > 0" id="datatype-{{t.key}}" class="treeItem hand-cursor"
@@ -309,7 +311,7 @@
                           (click)="searchSettings.q = ''; doSearch()">
                         {{searchedTerm}}
                     </span>
-                    <span *ngIf="hasSelectedClassifications()" id="classif_crumb"
+                    <span *ngIf="hasSelectedClassifications()" tourAnchor="classif_crumb" id="classif_crumb"
                           class="badge badge-light remove-filter dark-icon fake-button" role="button" tabindex="0"
                           style="margin-left: .25rem; margin-right: .25rem"
                           aria-label="Remove this classification filter" matTooltip="Remove this classification filter"
@@ -362,7 +364,7 @@
                 </div>
                 <!-- SEARCH RESULTS -->
                 <div id="resultList">
-                    <div id="resultListTour"></div>
+                    <div tourAnchor="resultListTour" id="resultListTour"></div>
                     <h1 [hidden]="elts.length >= 0">
                         <mat-icon class="spin">auto_renew</mat-icon>Searching...</h1>
                     <ng-container *ngIf="elts.length === 0">

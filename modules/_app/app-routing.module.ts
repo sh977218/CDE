@@ -11,8 +11,13 @@ import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { FormResolve } from 'form/public/components/formDescription/form.resolve';
+import { LoginFederatedComponent } from '_app/loginFederated.component';
 
 const appRoutes: Routes = [
+    {
+        path: 'loginFederated',
+        component:LoginFederatedComponent
+    },
     {
         path: 'api',
         loadChildren: () => import('system/public/documentApi.module').then(m => m.DocumentApiModule),
@@ -152,7 +157,7 @@ const appRoutes: Routes = [
     ],
     declarations: [
         OfflineComponent,
-        PageNotFoundComponent,
+        PageNotFoundComponent
     ],
     providers: [
         ClassifyGuard,

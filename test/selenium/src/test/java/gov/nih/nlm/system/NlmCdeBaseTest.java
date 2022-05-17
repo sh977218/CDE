@@ -376,7 +376,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void goToOrganizations() {
         goToSettings();
-        clickElement(By.id("organizations"));
+        clickElement(By.id("manageOrganizations"));
     }
 
     protected void goToUsers() {
@@ -1134,12 +1134,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         goToSearchPreferences();
         clickElement(By.xpath("//label[contains(.,'File')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
+        closeAlert();
     }
 
     protected void downloadAsTab() {
         goToSearchPreferences();
         clickElement(By.xpath("//label[contains(.,'New Tab')]"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
+        closeAlert();
     }
 
     protected void includeRetiredSetting() {

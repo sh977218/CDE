@@ -1,4 +1,4 @@
-import { GET, POST } from '_commonApp/fetch';
+import { GET, POST } from 'common/fetch';
 import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
 import {
     mergeArrayByAttachments,

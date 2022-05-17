@@ -15,7 +15,6 @@ declare global {
         ssoServerOrigin: string;
         ssoServerReceiver: string;
         urlProd: string;
-        userAlertTime: number;
         version: string;
     }
 }

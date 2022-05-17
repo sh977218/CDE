@@ -14,8 +14,6 @@ import * as methodOverride from 'method-override';
 import { MongoClient } from 'mongodb';
 import * as morganLogger from 'morgan';
 import { MulterError } from 'multer';
-import * as path from 'path';
-import * as favicon from 'serve-favicon';
 import { config, dbPlugins } from 'server';
 import { module as articleModule } from 'server/article/articleRoutes';
 import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
@@ -123,8 +121,6 @@ app.set('view engine', 'ejs');
 app.set('trust proxy', true);
 app.set('views', __dirname);
 
-app.use(favicon(global.assetDir('./modules/cde/public/assets/img/min/favicon.ico')));
-
 app.use(blockBannedIps);
 app.use(banHackers);
 
@@ -189,41 +185,39 @@ const expressSettings = {
     proxy: config.proxy,
     resave: false,
     saveUninitialized: false,
-    cookie: {httpOnly: true, secure: config.proxy, maxAge: config.inactivityTimeout}
+    cookie: {httpOnly: true, secure: config.proxy, maxAge: 60 * 60 * 1000}
 };
 app.use(session(expressSettings));
 
-app.use('/cde/public', express.static(global.assetDir('modules/cde/public')));
-app.use('/system/public', express.static(global.assetDir('modules/system/public')));
-app.use('/swagger/public', express.static(global.assetDir('modules/swagger/public')));
-app.use('/form/public', express.static(global.assetDir('modules/form/public')));
-
-function getS3Link(subpath: string): httpProxy.ProxyOptions {
+/*
+function getS3Link(subPath: string): httpProxy.ProxyOptions {
     return {
         https: true,
+        skipToNextHandlerFilter: proxyRes => {
+          console.log(proxyRes.statusCode);
+          console.log(proxyRes);
+          return proxyRes.statusCode === 404;
+        }
+        ,
         proxyReqOptDecorator: proxyReqOpts => {
             (proxyReqOpts as any).rejectUnauthorized = false;
             return proxyReqOpts;
         },
-        proxyReqPathResolver: req => '/' + config.s3.path + '/' + subpath + req.url
+        proxyReqPathResolver: req => `/${config.s3.path}/${subPath + req.url}`
     };
 }
 
 if (config.s3) {
-    app.use('/app', httpProxy(config.s3.host, getS3Link('app')));
-    app.use('/common', httpProxy(config.s3.host, getS3Link('common')));
-    app.use('/embed', httpProxy(config.s3.host, getS3Link('embed')));
-    app.use('/launch', httpProxy(config.s3.host, getS3Link('launch')));
-    app.use('/native', httpProxy(config.s3.host, getS3Link('native')));
+    app.use('/', httpProxy(config.s3.host, getS3Link('cde-cli')));
+    app.use('/native', httpProxy(config.s3.host, getS3Link('nativeRender')));
 } else {
-    app.use('/app', express.static(global.assetDir('dist/app'), {
-        setHeaders: res => res.header('Access-Control-Allow-Origin', '*')
-    }));
-    app.use('/common', express.static(global.assetDir('dist/common')));
-    app.use('/embed', express.static(global.assetDir('dist/embed')));
-    app.use('/launch', express.static(global.assetDir('dist/launch')));
-    app.use('/native', express.static(global.assetDir('dist/native')));
+    app.use('/', express.static(global.assetDir('dist/cde-cli/')));
+    app.use('/native', express.static(global.assetDir('dist/nativeRender/')));
 }
+*/
+
+app.use('/', express.static(global.assetDir('dist/cde-cli/')));
+app.use('/native', express.static(global.assetDir('dist/nativeRender/')));
 
 app.use(flash());
 authInit(app);
@@ -326,8 +320,6 @@ try {
     console.error(e.stack);
     process.exit();
 }
-
-app.use('/robots.txt', express.static(path.join(global.assetDir('modules/system/public/robots.txt'))));
 
 // final route -> 404
 app.use((req, res, next) => {

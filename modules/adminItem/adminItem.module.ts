@@ -37,6 +37,7 @@ import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { MatCardModule } from '@angular/material/card';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
 @NgModule({
     imports: [
@@ -62,7 +63,8 @@ import { MatCardModule } from '@angular/material/card';
         MatDialogModule,
         MatIconModule,
         MatTabsModule,
-        MatCardModule
+        MatCardModule,
+        TourMatMenuModule
     ],
     declarations: [
         AttachmentsComponent,

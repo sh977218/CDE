@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TourService } from 'home/tour.service';
 import { assertUnreachable } from 'shared/models.model';
 import { hasRole } from 'shared/security/authorizationShared';
 import { UserService } from '_app/user.service';
@@ -16,7 +15,7 @@ const mobileWidth = 699;
 @Component({
     selector: 'cde-home',
     templateUrl: 'home.component.html',
-    styleUrls: ['./home.component.scss'],
+    styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
     @Input() updates?: UpdateCard[];
@@ -32,12 +31,6 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.route.queryParams.subscribe(params => {
-            if (params.tour) {
-                this.takeATour();
-            }
-        });
-
         if (this.route.snapshot.queryParams.tour) {
             this.router.navigate(['/home']);
         } else if (this.route.snapshot.queryParams.notifications !== undefined) {
@@ -83,10 +76,6 @@ export class HomeComponent implements OnInit {
             query.q = 'nihEndorsed:true' + (this.cdeSearchTerm ? ' ' + this.cdeSearchTerm : '');
         }
         this.router.navigate([getSearchUrl(this.searchType)], {queryParams: query});
-    }
-
-    takeATour() {
-        TourService.takeATour();
     }
 }
 

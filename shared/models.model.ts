@@ -5,22 +5,13 @@ export type ObjectId = any; // string(client and transport) mongoose.Types.Objec
 export type ArrayToType<U extends readonly string[]> = U[number];
 
 export function assertThrow(): void {
-    if (notInProduction()) { // TODO: else need to log(NODE) or send client error(BROWSER)
-        throw new Error('Please submit a bug report.');
-    }
+    throw new Error('Please submit a bug report.');
 }
 
 export function assertTrue(x: boolean): void {
-    if (notInProduction()) {
-        if (!x) {
-            throw new Error('Assertion Failed.');
-        }
+    if (!x) {
+        throw new Error('Assertion Failed.');
     }
-}
-
-export function notInProduction(): boolean {
-    return typeof PRODUCTION !== 'undefined' && !PRODUCTION
-        || typeof process !== 'undefined' && !process.env.PRODUCTION;
 }
 
 export function assertUnreachable(x: never): never {
