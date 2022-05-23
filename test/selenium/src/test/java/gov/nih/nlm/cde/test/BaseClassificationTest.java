@@ -14,6 +14,8 @@ import java.util.List;
 public class BaseClassificationTest extends NlmCdeBaseTest {
     public void addClassificationMethod(String[] categories) {
         clickElement(By.id("openClassificationModalBtn"));
+        textPresent("By Classification tree");
+        textPresent("By recently added");
         addClassificationMethodDo(categories);
     }
 

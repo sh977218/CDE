@@ -20,7 +20,6 @@ modules/system/public/html/version.html
 prodDump/
 temp/
 ssl/
-package-lock.json
 
 ## Ingest
 
