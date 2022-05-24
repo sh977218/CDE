@@ -16,7 +16,7 @@ export class ClientErrorsComponent {
     records: ClientErrorRecord[] = [];
     filteredRecords: ClientErrorRecord[] = [];
     error?: ClientErrorRecord;
-    browserInclude: {[browser: string]: boolean} = {
+    browserInclude: { [browser: string]: boolean } = {
         chrome: true,
         firefox: true,
         ie: false,
@@ -34,22 +34,19 @@ export class ClientErrorsComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post('/server/notification/updateNotificationDate', {clientLogDate: new Date()})
-            .subscribe(() => {
-                this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
-                    skip: this.currentPage * 50,
-                    limit: 50
-                }).subscribe(response => {
-                    this.records = response;
-                    this.records.forEach(r => {
-                        if (r.url) {
-                            r.url = r.url.substr(8);
-                            r.url = r.url.substr(r.url.indexOf('/'));
-                        }
-                    });
-                    this.filter();
-                }, err => this.alert.httpErrorMessageAlert(err));
-            }, err => this.alert.httpErrorMessageAlert(err));
+        this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
+            skip: this.currentPage * 50,
+            limit: 50
+        }).subscribe(response => {
+            this.records = response;
+            this.records.forEach(r => {
+                if (r.url) {
+                    r.url = r.url.substr(8);
+                    r.url = r.url.substr(r.url.indexOf('/'));
+                }
+            });
+            this.filter();
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     openErrorDetail(error: ClientErrorRecord) {

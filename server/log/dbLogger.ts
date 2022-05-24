@@ -1,16 +1,15 @@
-import {Request} from 'express';
-import {Document, Model} from 'mongoose';
-import {config} from 'server';
-import {handleConsoleError, respondError} from 'server/errorHandler';
+import { Request } from 'express';
+import { Document, Model } from 'mongoose';
+import { config } from 'server';
+import { handleConsoleError } from 'server/errorHandler';
 import {
     clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
 } from 'server/log/schemas';
-import {pushRegistrationsFor, triggerPushMsg} from 'server/notification/pushNotificationSvc';
-import {establishConnection} from 'server/system/connections';
-import {noDbLogger} from 'server/system/noDbLogger';
-import {siteAdmins, UserFull} from 'server/user/userDb';
-import {Cb, CbError, CbError1} from 'shared/models.model';
-import {AuditLog, AuditLogResponse, LogMessage} from 'shared/log/audit';
+import { establishConnection } from 'server/system/connections';
+import { noDbLogger } from 'server/system/noDbLogger';
+import { UserFull } from 'server/user/userDb';
+import { Cb, CbError, CbError1 } from 'shared/models.model';
+import { AuditLog, AuditLogResponse, LogMessage } from 'shared/log/audit';
 
 export interface ClientError {
     message: string;
@@ -142,9 +141,6 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
                     ]
                 }
             });
-            pushRegistrationsFor(siteAdmins).then(registrations => {
-                registrations.forEach(r => triggerPushMsg(r, msg));
-            }, respondError());
         }
         if (callback) {
             callback();
@@ -180,11 +176,7 @@ export function logClientError(req: Request, done: Cb) {
                     ]
                 }
             });
-            pushRegistrationsFor(siteAdmins).then(registrations => {
-                registrations.forEach(r => triggerPushMsg(r, msg));
-            }, respondError());
         }
-
         done();
     }));
 }

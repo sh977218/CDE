@@ -1,7 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { signInOut } from '_app/pushNotificationSubscriptionService';
 import { AlertService } from 'alert/alert.service';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
@@ -89,7 +88,6 @@ export class UserService {
         this.promise.finally(() => {
             this.listeners.forEach(listener => listener(this._user || null));
         });
-        this.promise.then(user => signInOut(user && user._id)).catch(noop);
         this.promise.then(cb, cb);
     }
 

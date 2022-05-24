@@ -59,8 +59,7 @@
       "**/server/form/aws*",
       "**/server/siteAdmin/status*",
       "**/server/form/syncLinkedForms*",
-      "**/server/notification/notificationDb*",
-      "**/server/notification/pushNotificationSvc*"
+      "**/server/notification/notificationDb*"
     ],
     "lines": "90",
     "branches": "80",
@@ -136,7 +135,6 @@
     "tough-cookie": "^4.0.0",
     "trim": "^1.0.1",
     "useragent": "^2.3.0",
-    "web-push": "^3.4.0",
     "winston": "2.4.5",
     "xlsx": "^0.18.5",
     "xml2js": "^0.4.23",
@@ -208,7 +206,6 @@
     "@types/serve-favicon": "^2.5.0",
     "@types/shortid": "0.0.29",
     "@types/useragent": "^2.3.0",
-    "@types/web-push": "^3.3.0",
     "@types/xml2js": "^0.4.8",
     "adm-zip": "^0.4.16",
     "angular-router-loader": "^0.8.5",

@@ -1101,8 +1101,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     private void openAudit(String type, String name) {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToUserMenu();
-        clickElement(By.id("user_audit"));
+        goToAudit();
+
         clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
         for (Integer i = 0; i < 10; i++) {
             hangon(1);

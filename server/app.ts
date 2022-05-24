@@ -26,7 +26,6 @@ import { module as loaderModule } from 'server/loader/loaderRoutes'
 import { module as logModule } from 'server/log/logRoutes';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
-import { module as notificationModule } from 'server/notification/notificationRouters';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
@@ -309,9 +308,6 @@ try {
     }));
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
     app.use('/server/orgManagement', orgManagementModule());
-    app.use('/server/notification', notificationModule({
-        notificationDate: isSiteAdminMiddleware
-    }));
     app.use('/server/article', articleModule());
 
     app.use('/server/loader', isOrgAuthorityMiddleware, loaderModule());

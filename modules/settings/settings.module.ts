@@ -64,7 +64,6 @@ import { EditSiteAdminsComponent } from 'settings/editSiteAdmins/editSiteAdmins.
 import { IdSourcesComponent } from 'settings/idSources/idSources.component';
 import { OneListMgtComponent } from 'settings/listManagement/oneListMgt.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
-import { NotificationComponent } from 'settings/notification/notification.component';
 import { OrgAdminComponent } from 'settings/orgAdmin/orgAdmin.component';
 import { OrgCuratorComponent } from 'settings/orgCurator/orgCurator.component';
 import { OrgEditorComponent } from 'settings/orgEditor/orgEditor.component';
@@ -98,12 +97,6 @@ const appRoutes: Routes = [
                 component: SearchSettingsComponent,
                 canActivate: [LoggedInGuard],
                 data: {title: 'Search Settings'},
-            },
-            {
-                path: 'notification',
-                component: NotificationComponent,
-                canActivate: [LoggedInGuard],
-                data: {title: 'Notification'}
             },
             {
                 path: 'viewingHistory',
@@ -308,7 +301,6 @@ const appRoutes: Routes = [
         IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,
-        NotificationComponent,
         OneListMgtComponent,
         OrgsEditComponent,
         OrgAdminComponent,

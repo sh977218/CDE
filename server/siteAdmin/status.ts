@@ -2,12 +2,9 @@ import { series } from 'async';
 import { find } from 'lodash';
 import { Request, Response } from 'express';
 import { config, dbPlugins } from 'server';
-import { respondError } from 'server/errorHandler';
 import { logError } from 'server/log/dbLogger';
-import { pushRegistrationsFor, triggerPushMsg } from 'server/notification/pushNotificationSvc';
 import { esClient } from 'server/system/elastic';
 import { indices } from 'server/system/elasticSearchInit';
-import { orgAuthorities, siteAdmins } from 'server/user/userDb';
 import { Cb, Cb1 } from 'shared/models.model';
 
 interface IndexStatus {
@@ -170,9 +167,6 @@ setInterval(() => {
                             ]
                         }
                     });
-                    pushRegistrationsFor(siteAdmins).then(registrations => {
-                        registrations.forEach(r => triggerPushMsg(r, msg));
-                    }, respondError());
 
                     logError({
                         message: 'Elastic Search Status',
@@ -197,9 +191,6 @@ setInterval(() => {
                                 ]
                             }
                         });
-                        pushRegistrationsFor(orgAuthorities).then(registrations => {
-                            registrations.forEach(r => triggerPushMsg(r, reindexMsg));
-                        }, respondError());
                     }
                 }, config.status.timeouts.notificationTimeout);
             }

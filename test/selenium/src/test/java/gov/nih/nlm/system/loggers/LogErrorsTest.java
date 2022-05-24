@@ -12,20 +12,9 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
         textPresent("received");
 
-        driver.get(baseUrl);
-        goToUserMenu();
-        clickElement(By.id("user_audit"));
-
-        // In a smaller browser screen, mat tab header pagination will not be there
-        try {
-            // try to put tab within display
-            clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-            clickElement(By.cssSelector(".mat-tab-header-pagination-after"));
-        } catch (Exception e) {
-            System.out.println("No `.mat-tab-header-pagination-after` found. Continuing...");
-        }
-        clickElement(By.xpath("//div[. = 'Server Errors']"));
-
+        goHome();
+        goToAudit();
+        goToServerLog();
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
     }

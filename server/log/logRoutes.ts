@@ -1,13 +1,7 @@
 import { RequestHandler, Router } from 'express';
 import { handleError, handleNotFound } from 'server/errorHandler';
 import {
-    appLogs,
-    getClientErrors,
-    getClientErrorsNumber,
-    getServerErrors,
-    getServerErrorsNumber,
-    httpLogs,
-    logClientError,
+    appLogs, getClientErrors, getClientErrorsNumber, getServerErrors, getServerErrorsNumber, httpLogs, logClientError,
     usageByDay
 } from 'server/log/dbLogger';
 import { is, parse } from 'useragent';
@@ -28,7 +22,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        getServerErrors(req.body, handleError({req, res}, result => res.send(result)));
+        getServerErrors(req.body, handleError({req, res}, result => {
+            res.send(result);
+            req.user.update({'notificationDate.serverLogDate': new Date()});
+        }));
     });
 
     router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
@@ -46,6 +43,7 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
                 l.ua = is(r.userAgent);
                 return l;
             }));
+            req.user.update({'notificationDate.clientLogDate': new Date()});
         }));
     });
 

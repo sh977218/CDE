@@ -13,11 +13,6 @@ public class CdeLiveComment extends NlmCdeBaseTest {
         clickElement(By.xpath("//a[text()='Sign Up']"));
         switchTab(0);
 
-        mustBeLoggedInAs(nindsCurator_username, password);
-        goToNotification();
-        textPresent("Enabled", By.xpath("//tbody/tr//mat-slide-toggle"));
-        logout();
-
         String cdeName = "Sensory system abnormality stocking glove present text";
         String existingComment = "new comment from nlm";
         String newComment = "This comment just added.";

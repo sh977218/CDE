@@ -95,7 +95,7 @@
                         </mat-menu>
                     </ng-template>
                 </span>
-                <button *ngIf="userService.loggedIn()" mat-icon-button id="notificationLink"
+                <button *ngIf="userService.isSiteAdmin()" mat-icon-button id="notificationLink"
                         title="Banner Notifications" (click)="notificationService.toggle();">
                     <mat-icon [matBadge]="notificationService.numberOfNotifications"
                               [matBadgeHidden]="!notificationService.numberOfNotifications"

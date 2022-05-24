@@ -1,4 +1,4 @@
-<mat-tab-group [selectedIndex]="selectedTab.value">
+<mat-tab-group [selectedIndex]="tabIndex">
     <mat-tab label="Logs" index="1" *ngIf="isAdmin">
         <ng-template matTabContent>
             <cde-log-audit id="auditTab"></cde-log-audit>
@@ -41,13 +41,13 @@
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Server Errors" *ngIf="isAdmin" #serverErrorTab index="8">
+    <mat-tab label="Server Errors" *ngIf="isAdmin" index="8">
         <ng-template matTabContent>
             <cde-server-errors></cde-server-errors>
         </ng-template>
     </mat-tab>
 
-    <mat-tab label="Client Errors" *ngIf="isAdmin" #clientErrorTab index="9">
+    <mat-tab label="Client Errors" *ngIf="isAdmin" index="9">
         <ng-template matTabContent>
             <cde-client-errors></cde-client-errors>
         </ng-template>

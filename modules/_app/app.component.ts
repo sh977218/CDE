@@ -7,7 +7,6 @@ import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { CdeTourService } from '_app/cdeTour.service';
-import { onLoad } from '_app/pushNotificationSubscriptionService';
 
 @Component({
     selector: 'nih-cde',
@@ -68,8 +67,6 @@ export class CdeAppComponent {
                 }
             }
         });
-
-        window.addEventListener('load', onLoad);
 
         iconReg.addSvgIconLiteral('thumb_tack', sanitizer.bypassSecurityTrustHtml(
             /* tslint:disable */

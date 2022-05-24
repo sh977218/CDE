@@ -42,12 +42,8 @@ export class ServerErrorsComponent {
     }
 
     loadErrorByPagination(pagination: any) {
-        this.http.post('/server/notification/updateNotificationDate', {serverLogDate: new Date()})
-            .subscribe(() => {
-                this.http.post<any[]>('/server/log/serverErrors', pagination).subscribe(response => {
-                    this.records = response;
-                }, err => this.alert.httpErrorMessageAlert(err));
-            }, err => this.alert.httpErrorMessageAlert(err));
-
+        this.http.post<any[]>('/server/log/serverErrors', pagination).subscribe(response => {
+            this.records = response;
+        }, err => this.alert.httpErrorMessageAlert(err));
     }
 }

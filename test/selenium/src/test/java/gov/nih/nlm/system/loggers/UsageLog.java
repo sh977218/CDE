@@ -9,8 +9,8 @@ public class UsageLog extends NlmCdeBaseTest {
     @Test
     public void usageLogs() {
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToUserMenu();
-        clickElement(By.id("user_audit"));
+        goToAudit();
+
         clickElement(By.xpath("//div[. = 'Usage']"));
         clickElement(By.id("search.submit"));
         textPresent("Days Ago");

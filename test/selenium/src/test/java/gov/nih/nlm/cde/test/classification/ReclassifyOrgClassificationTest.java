@@ -27,8 +27,8 @@ public class ReclassifyOrgClassificationTest extends BaseClassificationTest {
         textPresent(newClassification);
         textPresent(oldClassification);
 
-        goToUserMenu();
-        clickElement(By.id("user_audit"));
+        goToAudit();
+
         clickElement(By.xpath("//div[. = 'Classification Audit Log']"));
         textPresent("Gastrointestinal therapy water flush status");
         textPresent("org / or Org > OldFormClassification");
