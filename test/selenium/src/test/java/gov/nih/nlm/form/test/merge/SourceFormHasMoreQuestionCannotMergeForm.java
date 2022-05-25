@@ -18,12 +18,12 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BoardTest {
         goToFormByName(form1);
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToFormByName(form2);
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToBoard(boardName);
 

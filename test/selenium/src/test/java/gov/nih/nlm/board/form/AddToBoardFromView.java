@@ -16,7 +16,7 @@ public class AddToBoardFromView extends BoardTest{
 
         clickElement(By.id("addToBoard"));
         clickElement(By.cssSelector("#AddFormBoard mat-card-title"));
-        checkAlert("Added to Board");
+        checkAlert("Pinned to AddFormBoard");
 
         gotoMyBoards();
         textPresent("1 Form", By.id("AddFormBoard"));

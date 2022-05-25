@@ -849,7 +849,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         int i = 0;
         while (i < 7) {
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-simple-snackbar"), text));
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-snack-bar-container"), text));
                 closeAlert();
                 i = 10;
             } catch (TimeoutException e) {

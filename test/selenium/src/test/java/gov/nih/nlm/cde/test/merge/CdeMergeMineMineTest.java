@@ -17,11 +17,11 @@ public class CdeMergeMineMineTest extends BoardTest {
 
         goToCdeByName(cdeName1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
 
@@ -64,12 +64,12 @@ public class CdeMergeMineMineTest extends BoardTest {
         goToCdeByName("Person Birth Date");
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToCdeByName("Patient Ethnic Group Category");
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToBoard(boardName);
 

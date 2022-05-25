@@ -20,11 +20,11 @@ public class NotOwnFormCannotMergeForm extends BoardTest {
 
         goToFormByName(form1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToFormByName(form2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("qb_compare"));
@@ -43,11 +43,11 @@ public class NotOwnFormCannotMergeForm extends BoardTest {
 
         goToFormByName(form1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToFormByName(form2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("qb_compare"));

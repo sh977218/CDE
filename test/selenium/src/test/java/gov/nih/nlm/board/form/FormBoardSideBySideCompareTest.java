@@ -32,11 +32,11 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
 
         goToFormByName(formName1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToFormByName(formName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
 
         goToBoard(boardName);
@@ -66,11 +66,11 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
 
         goToFormByName(formName3);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToFormByName(formName4);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
 
@@ -110,7 +110,7 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
 
         goToFormByName(formName);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
         goToBoard(boardName);
 
         clickElement(By.id("elt_compare_0"));
@@ -130,11 +130,11 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
     private void formBoardSideBySideIds(String boardName) {
         driver.get(baseUrl + "/form/search?q=7JUBzySHFg");
         clickElement(By.id("pinToBoard_0"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         driver.get(baseUrl + "/form/search?q=my7rGyrBYx");
         clickElement(By.id("pinToBoard_0"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("elt_compare_5"));

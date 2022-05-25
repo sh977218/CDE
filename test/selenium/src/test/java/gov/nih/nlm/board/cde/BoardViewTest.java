@@ -63,7 +63,7 @@ public class BoardViewTest extends BoardTest {
         searchElt(cdeName, "cde");
         clickElement(By.id("pinToBoard_0"));
         clickBoardHeaderByName(boardName);
-        textPresent("Added to Board");
+        textPresent("Pinned to " + boardName);
     }
 
     @Test

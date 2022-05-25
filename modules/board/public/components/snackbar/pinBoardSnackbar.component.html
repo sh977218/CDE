@@ -1,0 +1,4 @@
+<div style="display: flex; justify-content: space-between; align-items: center; height: 20px;">
+    <span>{{data.message}}<a [routerLink]="'/board/' + data.boardId">{{data.boardName}}</a></span>
+    <button (click)="snackBar.dismiss()">Dismiss</button>
+</div>

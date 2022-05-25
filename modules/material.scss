@@ -158,6 +158,25 @@ table {
         //}
 }
 
+.mat-snack-bar-container {
+        background-color: white;
+        border-radius: 40px !important;
+        border: 2px #707070 solid;
+        color: $nlmDarkGray;
+        font-size: 14px;
+
+        button {
+                border-radius: 40px;
+                border: 2px $nlmDarkGray solid;
+                background-color: white;
+                font-weight: bold;
+                font-size: 14px;
+                padding: 5px 10px;
+                color: $nlmDarkGray;
+                line-height: unset;
+        }
+}
+
 div.mat-tab-body-content {
         overflow: hidden;
 }

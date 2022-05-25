@@ -26,7 +26,7 @@ public class PinAllLessThan20 extends BoardTest {
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
         clickBoardHeaderByName(boardName);
-        checkAlert("All elements pinned.");
+        checkAlert("All elements pinned");
         waitForESUpdate();
         gotoMyBoards();
 

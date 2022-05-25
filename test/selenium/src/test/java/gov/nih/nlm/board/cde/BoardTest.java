@@ -46,7 +46,7 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("pinToBoard_0"));
         textPresent(boardName);
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
         modalGone();
     }
 

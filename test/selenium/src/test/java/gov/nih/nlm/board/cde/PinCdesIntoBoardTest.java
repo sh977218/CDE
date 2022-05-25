@@ -30,7 +30,7 @@ public class PinCdesIntoBoardTest extends BoardTest {
         clickElement(By.id("addToBoard"));
         textPresent("Choose a Board to pin this CDE to");
         clickBoardHeaderByName(boardName2);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName2);
 
         goToBoard(boardName2);
         textPresent("School special accommodation indicator");

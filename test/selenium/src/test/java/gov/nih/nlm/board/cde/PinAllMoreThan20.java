@@ -23,7 +23,7 @@ public class PinAllMoreThan20 extends BoardTest {
         clickElement(By.id("pinAll"));
         textPresent("Choose a Board to pin");
         clickBoardHeaderByName(boardName);
-        textPresent("All elements pinned.");
+        textPresent("All elements pinned");
         gotoMyBoards();
         int num_cde_after_pinAll_int = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);

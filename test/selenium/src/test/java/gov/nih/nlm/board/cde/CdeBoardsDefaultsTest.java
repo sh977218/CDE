@@ -13,12 +13,12 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         String defaultBoardName = "CDE Board 1";
         goToCdeByName(cdeName);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to new board: " + defaultBoardName);
+        textPresent("Pinned to New Board");
 
         String cdeName2 = "Biomarker Outcome Characteristics java.lang.String";
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + defaultBoardName);
+        textPresent("Pinned to " + defaultBoardName);
 
         goToBoard(defaultBoardName);
         textPresent(cdeName);

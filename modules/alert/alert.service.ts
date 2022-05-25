@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { httpErrorMessage } from 'non-core/angularHelper';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ComponentType } from '@angular/cdk/overlay';
 
 export class Alert {
     id: number;
@@ -35,6 +36,15 @@ export class AlertService {
         let config = {duration: this.alertTime};
         if (type === 'danger') { config = {duration: 0}; }
         this.snackBar.open(message, 'Dismiss', config);
+    }
+
+    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any){
+        let config = {duration: this.alertTime};
+        if (type === 'danger') { config = {duration: 0}; }
+        this.snackBar.openFromComponent(component, {
+            ...config,
+            data
+        });
     }
 
     httpErrorMessageAlert(err: HttpErrorResponse, info = '') {

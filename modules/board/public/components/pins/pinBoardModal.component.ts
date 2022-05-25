@@ -5,6 +5,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { Board, Cb1, ModuleItem } from 'shared/models.model';
+import { PinBoardSnackbarComponent } from 'board/public/components/snackbar/pinBoardSnackbar.component';
 
 
 @Component({
@@ -45,9 +46,17 @@ export class PinBoardModalComponent {
                             type: this.module
                         }).subscribe(() => {
                             if (elts.length === 1) {
-                                this.alert.addAlert('success', 'Added to new board: ' + newBoardName);
+                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                    message: 'Pinned to ',
+                                    boardId: board._id,
+                                    boardName: 'New Board'
+                                });
                             } else {
-                                this.alert.addAlert('success', 'All elements pinned to new board: ' + newBoardName);
+                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                    message: 'All elements pinned to ',
+                                    boardId: board._id,
+                                    boardName: 'New Board'
+                                });
                             }
                         }, err => this.alert.httpErrorMessageAlert(err));
                     }, err => this.alert.httpErrorMessageAlert(err));
@@ -60,8 +69,18 @@ export class PinBoardModalComponent {
                         type: this.module
                     }).subscribe(() => {
                         if (elts.length === 1) {
-                            this.alert.addAlert('success', 'Added to ' + board.name);
-                        } else { this.alert.addAlert('success', 'All elements pinned to ' + board.name); }
+                            this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                message: 'Pinned to ',
+                                boardId: board._id,
+                                boardName: board.name
+                            });
+                        } else {
+                            this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                message: 'All elements pinned to ',
+                                boardId: board._id,
+                                boardName: board.name
+                            });
+                        }
                     }, err => this.alert.httpErrorMessageAlert(err));
                 }
                 else{
@@ -76,8 +95,18 @@ export class PinBoardModalComponent {
                                 this.http.post('/server/user/', body).subscribe(() => this.userService.reload());
                             }
                             if (elts.length === 1) {
-                                this.alert.addAlert('success', 'Added to Board');
-                            } else { this.alert.addAlert('success', 'All elements pinned.'); }
+                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                    message: 'Pinned to ',
+                                    boardId: board._id,
+                                    boardName: board.name
+                                });
+                            } else {
+                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                    message: 'All elements pinned to ',
+                                    boardId: board._id,
+                                    boardName: board.name
+                                });
+                            }
                             this.dialogRef.close();
                         }, err => this.alert.httpErrorMessageAlert(err));
                     }, err => {

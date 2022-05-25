@@ -20,6 +20,7 @@ import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { PinBoardSnackbarComponent } from 'board/public/components/snackbar/pinBoardSnackbar.component';
 import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHelper';
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
@@ -532,7 +533,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             };
             data.query.resultPerPage = MAX_PINS;
             this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
-                this.alert.addAlert('success', 'All elements pinned.');
+                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                    message: 'All elements pinned to ',
+                    boardId: selectedBoard._id,
+                    boardName: selectedBoard.name
+                });
                 this.http.post('/server/board/myBoards', filter).subscribe();
             }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
         }, () => {
@@ -838,7 +843,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     static focusClassification() {
         document.getElementById('classificationListHolder')?.focus();
     }
-    
+
     static getRegStatusIndex(rg: ElasticQueryResponseAggregationBucket) {
         return orderedList.indexOf(rg.key as any);
     }

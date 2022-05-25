@@ -15,7 +15,7 @@ public class NoDoublePinTest extends BoardTest {
 
         goToCdeByName(cdeName);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToCdeSearch();
         openCdeInList(cdeName);

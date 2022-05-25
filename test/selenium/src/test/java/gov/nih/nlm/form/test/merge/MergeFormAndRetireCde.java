@@ -18,12 +18,12 @@ public class MergeFormAndRetireCde extends BoardTest {
         goToFormByName(formName1);
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToFormByName(formName2);
         clickElement(By.id("addToBoard"));
         clickBoardHeaderByName(boardName);
-        checkAlert("Added to Board");
+        checkAlert("Pinned to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("qb_compare"));

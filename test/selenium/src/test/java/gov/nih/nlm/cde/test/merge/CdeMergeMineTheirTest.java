@@ -16,11 +16,11 @@ public class CdeMergeMineTheirTest extends BoardTest {
 
         goToCdeByName(cdeName1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
         textNotPresent("Merge Data Element");

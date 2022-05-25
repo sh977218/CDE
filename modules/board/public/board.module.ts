@@ -17,6 +17,7 @@ import { UnpinBoardComponent } from 'board/public/components/listView/unpinBoard
 import { MyBoardsService } from 'board/public/myBoards.service';
 import { PinBoardComponent } from 'board/public/components/pins/pinBoard.component';
 import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { PinBoardSnackbarComponent } from 'board/public/components/snackbar/pinBoardSnackbar.component';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
@@ -48,6 +49,7 @@ import { TagModule } from 'tag/tag.module';
         ListSortComponent,
         PinBoardComponent,
         PinBoardModalComponent,
+        PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
     providers: [
@@ -60,6 +62,7 @@ import { TagModule } from 'tag/tag.module';
         ListSortComponent,
         PinBoardComponent,
         PinBoardModalComponent,
+        PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [

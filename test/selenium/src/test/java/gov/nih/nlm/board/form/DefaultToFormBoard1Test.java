@@ -14,11 +14,11 @@ public class DefaultToFormBoard1Test extends BoardTest {
         String defaultBoardName = "Form Board 1";
         goToFormByName(formName1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to new board: " + defaultBoardName);
+        textPresent("Pinned to New Board");
 
         goToFormByName(formName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + defaultBoardName);
+        textPresent("Pinned to " + defaultBoardName);
 
         goToBoard(defaultBoardName);
         textPresent(formName1);

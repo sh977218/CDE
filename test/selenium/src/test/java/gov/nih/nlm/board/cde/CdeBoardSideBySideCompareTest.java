@@ -14,11 +14,11 @@ public class CdeBoardSideBySideCompareTest extends BoardTest{
 
         goToCdeByName(cdeName1);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToCdeByName(cdeName2);
         clickElement(By.id("addToBoard"));
-        textPresent("Added to " + boardName);
+        textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
         clickElement(By.id("elt_compare_0"));
