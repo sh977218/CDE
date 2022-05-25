@@ -89,28 +89,28 @@
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'explore'"
                     (click)="featureSelected = 'explore'">
-                <img src="/cde/public/assets/img/min/homepage/ExploreIcon.png">
+                <img src="/assets/homepage/ExploreIcon.png">
                 Explore
             </button>
-            <img *ngIf="featureSelected === 'explore'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'explore'" class="arrow" src="/assets/homepage/Arrow.png">
         </div>
         <div id="learnButton">
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'learn'"
                     (click)="featureSelected = 'learn'">
-                <img src="/cde/public/assets/img/min/homepage/LearnIcon.png">
+                <img src="/assets/homepage/LearnIcon.png">
                 Learn
             </button>
-            <img *ngIf="featureSelected === 'learn'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'learn'" class="arrow" src="/assets/homepage/Arrow.png">
         </div>
         <div id="submitButton">
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'submit'"
                     (click)="featureSelected = 'submit'">
-                <img src="/cde/public/assets/img/min/homepage/SubmitIcon.png">
+                <img src="/assets/homepage/SubmitIcon.png">
                 Submit
             </button>
-            <img *ngIf="featureSelected === 'submit'" class="arrow" src="/cde/public/assets/img/min/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'submit'" class="arrow" src="/assets/homepage/Arrow.png">
         </div>
         <div *ngIf="featureSelected === 'explore'" class="featureCard" style="order: 4">
             <h2>Explore CDEs and Forms</h2>

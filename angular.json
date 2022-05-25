@@ -45,21 +45,15 @@
               },
               {
                 "glob": "**/*",
-                "input": "modules/home/slides",
-                "output": "slides"
-              },
-              {
-                "glob": "**/*",
                 "input": "modules/_app/assets/",
-                "output": "app"
+                "output": "assets"
               },
               {
                 "glob": "**/*",
                 "input": "modules/_app/sw/",
                 "output": "/"
               },
-              "modules/favicon.ico",
-              "modules/assets"
+              "modules/favicon.ico"
             ],
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
