@@ -134,6 +134,9 @@ definitions:
       _id:
         type: "string"
         example: "57112ebf3245ae3033584c5a"
+      nihEndorsed:
+        type: "boolean"
+        example: "true"
       tinyId:
         type: "string"
         example: "QF7dUNkbNEv"
@@ -327,6 +330,9 @@ definitions:
       _id:
         type: "string"
         example: "57112ebf3245ae3033584c5a"
+      nihEndorsed:
+        type: "boolean"
+        example: "true"
       tinyId:
         type: "string"
         example: "QF7dUNkbNEv"
@@ -899,6 +905,9 @@ definitions:
   SearchApiOptions:
     type: object
     properties:
+      nihEndorsed:
+        description: "Endorsed by NIH"
+        type: boolean
       excludeAllOrgs:
         description: "Exclude documents with more than 1 organization"
         type: boolean
