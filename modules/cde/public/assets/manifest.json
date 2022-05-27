@@ -8,7 +8,7 @@
   "display": "fullscreen",
   "icons": [
     {
-      "src": "/cde/public/assets/img/min/NIH-CDE-manifest.png",
+      "src": "/assets/img/NIH-CDE-manifest.png",
       "sizes": "512x512"
     }
   ]

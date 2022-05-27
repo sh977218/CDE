@@ -3,7 +3,7 @@
         <div class="comment">
             <div class="commentHeader" style="padding: .5rem">
                 <img style="vertical-align: text-bottom; margin-right: .25rem" width="32" height="32" alt="portrait"
-                     [src]="comment.avatarUrl ? comment.avatarUrl : '/cde/public/assets/img/min/portrait.png'"/>
+                     [src]="comment.avatarUrl ? comment.avatarUrl : '/assets/img/portrait.png'"/>
                 <mat-icon *ngIf="canReopenComment(comment)" id="reopenComment_{{i}}" title="Reopen"
                           class="iconButton" style="float: right"
                           role="button" tabindex="0" (click)="reopenComment(comment._id)">undo
@@ -28,7 +28,7 @@
                 <div *ngIf="showReply(comment,j)" class="commentBox" style="padding: .5rem">
                     <div class="replyHeader">
                         <img style="vertical-align: text-bottom; margin-right: .25rem" width="32" height="32" alt="portrait"
-                             [src]="reply.avatarUrl ? comment.avatarUrl : '/cde/public/assets/img/min/portrait.png'"/>
+                             [src]="reply.avatarUrl ? comment.avatarUrl : '/assets/img/portrait.png'"/>
                         <mat-icon *ngIf="canReopenComment(reply)" id="reopenReply_{{i}}_{{j}}"
                                   class="iconButton" style="float: right"
                                   role="button" tabindex="0" (click)="reopenReply(reply._id)">undo

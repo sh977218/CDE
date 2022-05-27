@@ -4,7 +4,7 @@
     <div class="container">
         <div *ngIf="!addMode" class="forLgScreen jumbotron">
             <img [hidden]="embedded" width="364" height="118"
-                 alt="NIH Common Data Elements (CDE) log" src="/cde/public/assets/img/min/NIH-CDE.svg"/>
+                 alt="NIH Common Data Elements (CDE) log" src="/assets/img/NIH-CDE.svg"/>
         </div>
         <form #quickSearchForm="ngForm" id="quickSearchForm" novalidate>
             <mat-form-field style="width: 100%; font-size: 25px;">
@@ -38,7 +38,7 @@
             <mat-card class="cde-bg-grey">
                 <mat-card-header>
                     <img mat-card-avatar aria-label="nihEndorsed" style="object-fit: unset" height="38" width="30"
-                         src="/cde/public/assets/img/Ribbon-Outline.svg">
+                         src="/assets/img/Ribbon-Outline.svg">
                     <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
                     <mat-card-subtitle style="max-width: 75%">
                         <div> NIH has endorsed collections of CDEs that
@@ -371,7 +371,7 @@
                         <h1>No results were found.</h1>
                         <p>Try expanding your search or removing active filters.</p>
                         <div>
-                            <img style="width:100%; height: auto; max-width: 532px" alt="No Results" src="/cde/public/assets/img/min/NoResults.png"/>
+                            <img style="width:100%; height: auto; max-width: 532px" alt="No Results" src="/assets/img/NoResults.png"/>
                         </div>
                         <span>Not sure where to start? <a style="text-decoration: underline" href="/tour">Take a tour</a> or review the <a style="text-decoration: underline" href="/guides">Guides</a>.</span>
                     </ng-container>

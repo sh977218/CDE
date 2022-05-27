@@ -155,14 +155,14 @@ setInterval(() => {
                         title: 'Elastic Search Index Issue',
                         options: {
                             body: 'Status reports not normal',
-                            icon: '/cde/public/assets/img/min/NIH-CDE.png',
-                            badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                            icon: '/assets/img/NIH-CDE.png',
+                            badge: '/assets/img/NIH-CDE-Logo-simple.png',
                             tag: 'cde-es-issue',
                             actions: [
                                 {
                                     action: 'site-mgt-action',
                                     title: 'View',
-                                    icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                                    icon: '/assets/img/NIH-CDE-Logo-simple.png'
                                 }
                             ]
                         }
@@ -179,14 +179,14 @@ setInterval(() => {
                             title: 'Elastic Search Index Issue',
                             options: {
                                 body: 'Document count does not match for index: ' + mismatched.join(', '),
-                                icon: '/cde/public/assets/img/min/NIH-CDE.png',
-                                badge: '/cde/public/assets/img/min/nih-cde-logo-simple.png',
+                                icon: '/assets/img/NIH-CDE.png',
+                                badge: '/assets/img/NIH-CDE-Logo-simple.png',
                                 tag: 'cde-es-issue',
                                 actions: [
                                     {
                                         action: 'site-mgt-action',
                                         title: 'View and Reindex',
-                                        icon: '/cde/public/assets/img/min/nih-cde-logo-simple.png'
+                                        icon: '/assets/img/NIH-CDE-Logo-simple.png'
                                     }
                                 ]
                             }

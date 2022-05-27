@@ -52,8 +52,7 @@
                 "glob": "**/*",
                 "input": "modules/_app/sw/",
                 "output": "/"
-              },
-              "modules/favicon.ico"
+              }
             ],
             "styles": [
               "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
@@ -85,7 +84,13 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "modules/environments/environment.ts",
+                  "with": "modules/environments/environment.dev.ts"
+                }
+              ]
             },
             "ci1": {
               "fileReplacements": [
