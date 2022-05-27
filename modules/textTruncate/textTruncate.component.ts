@@ -24,6 +24,7 @@ export class TextTruncateComponent {
     @Input() threshold: number = 500;
     @Input() customMoreLabel!: string;
     @Input() customLessLabel!: string;
+    @Input() bypassSanitize = false;
     _class: string = 'collapseText';
     open: boolean = false;
 

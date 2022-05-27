@@ -4,7 +4,7 @@
         </mat-icon>
         <cde-text-truncate *ngIf="localFormat === 'html'; else showText"
                            [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"
-                           [textType]="'html'">
+                           [textType]="'html'" [bypassSanitize]="bypassSanitize">
         </cde-text-truncate>
         <ng-template #showText>
             <cde-text-truncate [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate">

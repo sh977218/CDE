@@ -1,15 +1,18 @@
 <ng-container *ngIf="!enableTextTruncate">
-    <span *ngIf="textType === 'html'" [innerHtml]="text"></span>
+    <span *ngIf="textType === 'html' && !bypassSanitize" [innerHtml]="text"></span>
+    <span *ngIf="textType === 'html' && bypassSanitize" [innerHtml]="text | cdeSafeHtml"></span>
     <span *ngIf="textType === 'plainText'">{{text}}</span>
 </ng-container>
 <ng-container *ngIf="enableTextTruncate">
     <ng-container *ngIf="text && text.length < threshold">
-        <span *ngIf="textType === 'html'" [innerHtml]="text"></span>
+        <span *ngIf="textType === 'html' && !bypassSanitize" [innerHtml]="text"></span>
+        <span *ngIf="textType === 'html' && bypassSanitize" [innerHtml]="text | cdeSafeHtml"></span>
         <span *ngIf="textType === 'plainText'">{{text}}</span>
     </ng-container>
     <ng-container *ngIf="text && text.length >= threshold">
     <span *ngIf="textType === 'html'">
-        <span [ngClass]="_class" [innerHtml]="text"></span>
+        <span *ngIf="!bypassSanitize" [ngClass]="_class" [innerHtml]="text"></span>
+        <span *ngIf="bypassSanitize" [ngClass]="_class" [innerHtml]="text | cdeSafeHtml"></span>
         <span *ngIf="!open" class="fake-button" role="button" tabindex="0" (click)="toggleShow()">
             <span *ngIf="customMoreLabel">{{customMoreLabel}}</span>
             <span *ngIf="!customMoreLabel">More</span>

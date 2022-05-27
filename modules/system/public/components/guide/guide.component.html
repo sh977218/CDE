@@ -5,7 +5,7 @@
                 <mat-icon>edit</mat-icon>
                 Edit
             </button>
-            <div [innerHTML]="article.body"></div>
+            <div [innerHTML]="article.body | cdeSafeHtml"></div>
         </div>
     </main>
     <div class="toc-container">

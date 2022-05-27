@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { cloneDeep } from 'lodash';
 import { environment } from 'environments/environment';
 import 'inlineAreaEdit/inlineAreaEdit.global.scss';
@@ -7,9 +7,10 @@ import 'inlineAreaEdit/inlineAreaEdit.global.scss';
     selector: 'cde-inline-area-edit',
     templateUrl: './inlineAreaEdit.component.html',
 })
-export class InlineAreaEditComponent implements OnInit, AfterViewInit {
+export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() model!: string;
     @Input() isAllowed = false;
+    @Input() bypassSanitize = false
     @Input() enableTextTruncate = true;
     @Output() modelChange = new EventEmitter<string>();
     @Input() defFormat: 'html' | '' = '';
@@ -31,6 +32,10 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit {
         s.type = 'text/javascript';
         s.src = 'https://cdn.ckeditor.com/4.14.1/standard-all/ckeditor.js';
         this.elementRef.nativeElement.appendChild(s);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.model) { this.value = this.model; }
     }
 
     confirmSave() {
