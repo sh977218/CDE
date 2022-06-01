@@ -44,14 +44,19 @@
                 "output": "form/public/assets/"
               },
               {
-                "glob": "**/*",
+                "glob": "sw.js",
                 "input": "modules/_app/assets/",
-                "output": "assets"
+                "output": ""
+              },
+              {
+                "glob": "robots.txt",
+                "input": "modules/_app/assets/",
+                "output": ""
               },
               {
                 "glob": "**/*",
-                "input": "modules/_app/sw/",
-                "output": "/"
+                "input": "modules/_app/assets/",
+                "output": "assets"
               }
             ],
             "styles": [

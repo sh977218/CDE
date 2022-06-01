@@ -1,6 +1,6 @@
-var CACHE_NAME = 'cde-cache-v8f00';
-var CACHE_WHITELIST = ['cde-cache-v8f00'];
-var urlsToCache = [];
+var CACHE_NAME = 'cde-cache-v8f001';
+var CACHE_WHITELIST = ['cde-cache-v8f001'];
+var urlsToCache = ["/assets/favicon.ico", "/assets/manifest.webmanifest", "/assets/offline/offline.html", "/assets/offline/offline.png", "/assets/img/NIH-CDE.svg", "/assets/img/NIH-CDE-Manifest.png"];
 var htmlServedUri = ["/", "/404", "/api", "/board/:id", "/boardList", "/cde/search", "/cdeStatusReport", "/classificationManagement", "/contactUs", "/createCde", "/createForm", "/deView", "/form/search", "/formView", "/help/:title", "/home", "/login", "/myBoards", "/orgAccountManagement", "/orgAuthority", "/orgComments", "/profile", "/quickBoard", "/sdcview", "/searchPreferences", "/siteAudit", "/siteAccountManagement", "/whatsNew"];
 
 self.addEventListener('install', function (event) {
@@ -11,11 +11,11 @@ self.addEventListener('install', function (event) {
     );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
     event.waitUntil(
-        caches.keys().then(function(cacheNames) {
+        caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.map(function(cacheName) {
+                cacheNames.map(function (cacheName) {
                     if (CACHE_WHITELIST.indexOf(cacheName) === -1) {
                         return caches.delete(cacheName);
                     }
@@ -42,38 +42,8 @@ self.addEventListener('fetch', function (event) {
                 path = path.substr(0, index);
             }
             return htmlServedUri.indexOf(path) > -1
-                ? caches.match('/app/offline/offline.html')
+                ? caches.match('/assets/offline/offline.html')
                 : caches.match(event.request);
         })
     );
 });
-
-
-self.addEventListener('push', function(event) {
-    try {
-        let obj = JSON.parse(event.data.text());
-        event.waitUntil(self.registration.showNotification(obj.title, obj.options));
-    } catch (e) {}
-});
-
-self.addEventListener('notificationclick', function(event) {
-    event.notification.close();
-
-    switch (event.action) {
-        case 'audit-action':
-            clients.openWindow('/siteAudit');
-            break;
-        case 'open-app-action':
-            clients.openWindow('/home');
-            break;
-        case 'open-url':
-            clients.openWindow(event.notification.data.url);
-            break;
-        case 'profile-action':
-            clients.openWindow('/profile');
-            break;
-        case 'site-mgt-action':
-            clients.openWindow('/status/cde');
-            break;
-    }
-}, false);

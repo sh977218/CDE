@@ -13,15 +13,17 @@
     <meta name="google-site-verification" content="hgnYTGxY1q6mEcYD8VptKKAQCnwoWzfySPSGQWRgdyk">
     <meta name="theme-color" content="#004496">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="manifest" href="assets/manifest.webmanifest">
 
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script type="text/javascript">
-        if ((window.location.protocol === 'https:' || window.location.hostname === 'localhost') && 'serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {}, function(err) {});
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(function (registration) {
+            }, function (error) {
             });
+        } else {
         }
     </script>
 </head>
@@ -128,16 +130,16 @@
     {
         "@context": "http://schema.org",
         "@type": "GovernmentOrganization",
-        "name":"U.S. National Library of Medicine",
-        "address":{
-            "@type":"PostalAddress",
-            "addressCountry":"US",
-            "addressLocality":"Bethesda",
-            "addressRegion":"MD",
-            "postalCode":"20894",
-            "streetAddress":"8600 Rockville Pike",
+        "name": "U.S. National Library of Medicine",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "US",
+            "addressLocality": "Bethesda",
+            "addressRegion": "MD",
+            "postalCode": "20894",
+            "streetAddress": "8600 Rockville Pike"
         },
-        "description" : "NIH Common Data Elements Repository",
+        "description": "NIH Common Data Elements Repository",
         "url": "https://cde.nlm.nih.gov",
         "logo": "https://cde.nlm.nih.gov/assets/img/NIH-CDE.svg"
     }
@@ -145,11 +147,11 @@
 
 <script type="application/ld+json">
     {
-        "@context" : "http://schema.org",
-        "@type" : "WebSite",
-        "name" : "NIH CDE Repository",
-        "description" : "NIH Common Data Elements Repository",
-        "url" : "https://cde.nlm.nih.gov"
+        "@context": "http://schema.org",
+        "@type": "WebSite",
+        "name": "NIH CDE Repository",
+        "description": "NIH Common Data Elements Repository",
+        "url": "https://cde.nlm.nih.gov"
     }
 </script>
 

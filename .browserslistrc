@@ -1,3 +1,4 @@
-### Supported Browsers
-> 1%
-last 2 versions
+# Browsers that we support
+defaults
+not IE 11
+maintained node versions
