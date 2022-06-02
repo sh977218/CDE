@@ -38,7 +38,7 @@
             <mat-card class="cde-bg-grey">
                 <mat-card-header>
                     <img mat-card-avatar aria-label="nihEndorsed" style="object-fit: unset" height="38" width="30"
-                         src="/assets/img/Ribbon-Outline.svg">
+                         src="/assets/img/endorsedRibbon.svg">
                     <mat-card-title>NIH-Endorsed CDEs</mat-card-title>
                     <mat-card-subtitle style="max-width: 75%">
                         <div> NIH has endorsed collections of CDEs that
@@ -167,7 +167,7 @@
     </section>
     <!--FILTERS-->
     <section *ngIf="elts && aggregations" [class.searchFilterLayout]="filterMode">
-        <aside *ngIf="filterMode">
+        <div *ngIf="filterMode">
             <!-- BREADCRUMBS / Active Filters -->
             <div>
                 <div class="searchFilterTitle">ACTIVE {{module === 'cde' ? 'CDE' : 'FORM'}} FILTERS</div>
@@ -280,7 +280,7 @@
                                [(ngModel)]="searchSettings.nihEndorsed"
                                (ngModelChange)="addNihEndorsedFilter($event)"/>
                         NIH-Endorsed
-                        <img src="/cde/public/assets/img/min/endorsedRibbonIcon.png"
+                        <img src="/assets/img/endorsedRibbonIcon.png"
                              style="height: 19px; vertical-align: text-top">
                     </label>
                 </div>
@@ -415,7 +415,7 @@
                     </ng-container>
                 </div>
             </div>
-        </aside>
+        </div>
         <div style="padding: 30px 0 0 30px"
              [style.display]="searching ? 'none' : 'block'">
             <div *ngIf="elts?.length > 0 && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">

@@ -43,7 +43,7 @@
             <div class="formHomeSmallScreen">
                 <div class="note text-center" style="margin: 1rem 0">within</div>
                 <button class="button" style="width: 100%" [matMenuTriggerFor]="searchMenu">
-                    <img src="/assets/img/endorsedRibbonIcon.png"
+                    <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top">
                     {{getSearchLabel(searchType)}}
                     <mat-icon style="float: right">arrow_drop_down</mat-icon>
@@ -51,6 +51,7 @@
                 <mat-menu #searchMenu="matMenu">
                     <button mat-menu-item [class.active]="searchType === 'endorsedCde'"
                             (click)="searchType = 'endorsedCde'">
+                        <img src="/assets/img/endorsedRibbonIcon.png" style="height: 20px">
                         <span>Search NIH-Endorsed CDEs</span>
                     </button>
                     <button mat-menu-item [class.active]="searchType === 'cde'" (click)="searchType = 'cde'">

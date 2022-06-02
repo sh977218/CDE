@@ -108,6 +108,7 @@ let ignoreErrors = [
     "Cannot read property 'nativeElement' of undefined",
     "WebSocket is closed before the connection is established",
     "TypeError: Failed to fetch",
+    `Cannot read properties of null (reading `,
     `Cannot read properties of undefined (reading `,
     `because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.`
 ];
