@@ -5,6 +5,7 @@ import {
     usageByDay
 } from 'server/log/dbLogger';
 import { is, parse } from 'useragent';
+import { userModel } from 'server/user/userDb';
 
 export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
     const router = Router();
@@ -24,7 +25,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
         getServerErrors(req.body, handleError({req, res}, result => {
             res.send(result);
-            req.user.update({'notificationDate.serverLogDate': new Date()});
+            userModel.findOneAndUpdate(
+                {username: req.user.username},
+                {$set: {'notificationDate.serverLogDate': new Date()}},
+                {}).exec();
         }));
     });
 
@@ -35,7 +39,7 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
         getClientErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
     })
 
-    router.post('/clientErrors', roleConfig.superLog, (req, res) => {
+    router.post('/clientErrors', roleConfig.superLog, async (req, res) => {
         getClientErrors(req.body, handleNotFound({req, res}, result => {
             res.send(result.map(r => {
                 const l: any = r.toObject();
@@ -43,7 +47,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
                 l.ua = is(r.userAgent);
                 return l;
             }));
-            req.user.update({'notificationDate.clientLogDate': new Date()});
+            userModel.findOneAndUpdate(
+                {username: req.user.username},
+                {$set: {'notificationDate.clientLogDate': new Date()}},
+                {}).exec();
         }));
     });
 

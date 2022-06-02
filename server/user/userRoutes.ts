@@ -5,7 +5,6 @@ import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 
 import {
     byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
-import { version } from 'server/version';
 
 require('express-async-errors');
 

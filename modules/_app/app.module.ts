@@ -1,7 +1,8 @@
+import '@angular/localize/init';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import '@angular/localize/init';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,8 +10,15 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { environment } from 'environments/environment';
+
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { BackForwardService } from '_app/backForward.service';
@@ -22,19 +30,14 @@ import { NavigationComponent } from '_app/navigation/navigation.component';
 import { NotificationService } from '_app/notifications/notification.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
-import { CommonAppModule } from 'common/commonApp.module';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { FormResolve } from 'form/public/components/formDescription/form.resolve';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { CdeTourService } from '_app/cdeTour.service';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
+import { GlobalErrorHandler } from '_app/global-error-handler';
 
 @NgModule({
     imports: [
@@ -55,9 +58,13 @@ import { NotificationDialogComponent } from '_app/notifications/notification-dia
         ScrollingModule,
         // internal
         CdeAppRoutingModule,
-        CommonAppModule,
         AlertModule,
         TourMatMenuModule.forRoot(),
+        LoggerModule.forRoot({
+            level: environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
+            serverLogLevel: NgxLoggerLevel.ERROR,
+            serverLoggingUrl: '/server/log/clientExceptionLogs'
+        }),
     ],
     declarations: [
         CdeAppComponent,
@@ -78,7 +85,8 @@ import { NotificationDialogComponent } from '_app/notifications/notification-dia
         NotificationService,
         UserService,
         OrgHelperService,
-        CdeTourService
+        CdeTourService,
+        {provide: ErrorHandler, useClass: GlobalErrorHandler},
     ],
     exports: [],
     entryComponents: [],

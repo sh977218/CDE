@@ -240,7 +240,12 @@ export function appLogs(body: { currentPage: string, fromDate: number, toDate: n
 }
 
 export function getClientErrors(params: { limit: number, skip: number }, callback: CbError1<ClientErrorDocument[]>) {
-    clientErrorModel.find().sort('-date').skip(params.skip).limit(params.limit).exec(callback);
+    clientErrorModel
+        .find()
+        .sort('-date')
+        .skip(params.skip)
+        .limit(params.limit)
+        .exec(callback);
 }
 
 export function getClientErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {

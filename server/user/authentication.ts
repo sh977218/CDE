@@ -1,4 +1,4 @@
-import { Express, Request, RequestHandler, Response } from 'express'
+import { Express, Request, RequestHandler } from 'express'
 import fetch from 'node-fetch';
 import {
     deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse

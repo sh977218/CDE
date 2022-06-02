@@ -1,6 +1,6 @@
-import {Component, forwardRef, Inject} from "@angular/core";
-import {NotificationService} from "../notification.service";
-import {Router} from "@angular/router";
+import { Component, forwardRef, Inject } from '@angular/core';
+import { NotificationService } from '../notification.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'notification-dialog',
