@@ -1,6 +1,6 @@
 import { Component, DoCheck, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { BoardFormSummaryListContentComponent } from 'form/public/components/listView/boardFormSummaryListContent.component';
-import { BoardListService } from 'board/public/components/listView/boardList.service';
+import { BoardListService } from 'board/listView/boardList.service';
 import { CdeForm } from 'shared/form/form.model';
 
 @Component({

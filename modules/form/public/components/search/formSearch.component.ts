@@ -6,7 +6,7 @@ import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
-import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent } from 'search/searchBase.component';

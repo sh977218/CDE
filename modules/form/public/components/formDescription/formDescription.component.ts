@@ -9,7 +9,7 @@ import { AlertService } from 'alert/alert.service';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
-import { DeCompletionService } from 'cde/public/components/completion/deCompletion.service';
+import { DeCompletionService } from 'cde/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/public/components/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/public/components/formView.component';
 import { isEmpty } from 'lodash';

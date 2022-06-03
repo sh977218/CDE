@@ -5,7 +5,7 @@
 <body role="application">
 <%- include navigation.ejs %>
 
-<div class="container" itemscope="http://schema.org/MedicalCode">
+<div class="container" itemscope="https://schema.org/MedicalCode">
     <% if (elt) { %>
     <h1><%= elt.designations[0].designation %></h1>
     <%- include generalDetail.ejs %>
@@ -21,7 +21,7 @@
 
 <script type="application/ld+json">
         {
-          "@context": "http://schema.org",
+          "@context": "https://schema.org",
           "@type": "GovernmentOrganization",
           "name":"U.S. National Library of Medicine",
           "address":{
@@ -30,7 +30,7 @@
             "addressLocality":"Bethesda",
             "addressRegion":"MD",
             "postalCode":"20894",
-            "streetAddress":"8600 Rockville Pike",
+            "streetAddress":"8600 Rockville Pike"
             },
           "description" : "NIH Common Data Elements Repository",
           "url": "https://form.nlm.nih.gov",
@@ -39,7 +39,7 @@
 </script>
 <script type="application/ld+json">
         {
-          "@context" : "http://schema.org",
+          "@context" : "https://schema.org",
           "@type" : "WebSite",
           "name" : "NIH form Repository",
           "description" : "NIH Common Data Elements Repository",

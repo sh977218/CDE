@@ -1,4 +1,4 @@
-import { DataElementService } from 'cde/public/dataElement.service';
+import { DataElementService } from 'cde/dataElement.service';
 import { CodeAndSystem, ObjectId, PermissibleValue } from 'shared/models.model';
 import { DataElement, ValueDomainValueList } from 'shared/de/dataElement.model';
 import {

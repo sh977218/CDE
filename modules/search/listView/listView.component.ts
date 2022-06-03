@@ -2,12 +2,12 @@ import {
     Component, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
     ViewChild, ViewContainerRef
 } from '@angular/core';
-import { BoardCdeSummaryListComponent } from 'cde/public/components/listView/boardCdeSummaryList.component';
+import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.component';
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
-import { CdeAccordionListComponent } from 'cde/public/components/listView/cdeAccordionList.component';
+import { CdeAccordionListComponent } from 'cde/listView/cdeAccordionList.component';
 import { ElasticService } from '_app/elastic.service';
 import { Elt, Item, ListTypes } from 'shared/models.model';
-import { CdeSummaryListContentComponent } from 'cde/public/components/listView/cdeSummaryListContent.component';
+import { CdeSummaryListContentComponent } from 'cde/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';

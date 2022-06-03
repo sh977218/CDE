@@ -26,7 +26,7 @@
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
-                <main *ngIf="elt" class="container-fluid" itemscope="http://schema.org/MedicalCode">
+                <main *ngIf="elt" class="container-fluid" itemscope="https://schema.org/MedicalCode">
                     <h1 id="top-of-page" style="display: inline">
                         <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
                                           (isDraftChange)="$event?loadElt():loadPublished()"

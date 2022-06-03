@@ -30,17 +30,17 @@ const appRoutes: Routes = [
     },
     {
         path: 'board/:boardId',
-        loadChildren: () => import('board/public/boardView.module').then(m => m.BoardViewModule),
+        loadChildren: () => import('board/boardView.module').then(m => m.BoardViewModule),
         data: {title: 'Board View', preload: false}
     },
     {path: 'home', loadChildren: () => import('home/home.module').then(m => m.HomeModule), data: {preload: false}},
     {
         path: 'cde/search',
-        loadChildren: () => import('cde/public/cdeSearchEntry.module').then(m => m.CdeSearchEntryModule),
+        loadChildren: () => import('cde/cdeSearchEntry.module').then(m => m.CdeSearchEntryModule),
         data: {title: 'Data Element Search', preload: false}
     },
     {
-        path: 'cdeStatusReport', loadChildren: () => import('cde/public/cdeStatusReport.module').then(m => m.CdeStatusReportModule),
+        path: 'cdeStatusReport', loadChildren: () => import('cde/cdeStatusReport.module').then(m => m.CdeStatusReportModule),
         data: {title: 'Data Element Status Report', preload: false}
     },
     {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
@@ -52,7 +52,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'createCde',
-        loadChildren: () => import('cde/public/cdeCreate.module').then(m => m.CdeCreateModule),
+        loadChildren: () => import('cde/cdeCreate.module').then(m => m.CdeCreateModule),
         data: {title: 'Create Data Element', preload: false}
     },
     {
@@ -62,7 +62,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'deView',
-        loadChildren: () => import('cde/public/cdeView.module').then(m => m.CdeViewModule),
+        loadChildren: () => import('cde/cdeView.module').then(m => m.CdeViewModule),
         data: {title: 'Data Element View', preload: false},
     },
     {
@@ -98,7 +98,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'myBoards',
-        loadChildren: () => import('board/public/myBoards.module').then(m => m.MyBoardsModule),
+        loadChildren: () => import('board/myBoards.module').then(m => m.MyBoardsModule),
         data: {title: 'My Boards', preload: false},
     },
     {path: 'offline', component: OfflineComponent, data: {title: 'Offline', preload: false}},

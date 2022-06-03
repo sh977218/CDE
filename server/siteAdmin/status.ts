@@ -156,13 +156,13 @@ setInterval(() => {
                         options: {
                             body: 'Status reports not normal',
                             icon: '/assets/img/NIH-CDE.png',
-                            badge: '/assets/img/NIH-CDE-Logo-simple.png',
+                            badge: '/assets/img/NIH-CDE-Logo-Simple.png',
                             tag: 'cde-es-issue',
                             actions: [
                                 {
                                     action: 'site-mgt-action',
                                     title: 'View',
-                                    icon: '/assets/img/NIH-CDE-Logo-simple.png'
+                                    icon: '/assets/img/NIH-CDE-Logo-Simple.png'
                                 }
                             ]
                         }
@@ -180,13 +180,13 @@ setInterval(() => {
                             options: {
                                 body: 'Document count does not match for index: ' + mismatched.join(', '),
                                 icon: '/assets/img/NIH-CDE.png',
-                                badge: '/assets/img/NIH-CDE-Logo-simple.png',
+                                badge: '/assets/img/NIH-CDE-Logo-Simple.png',
                                 tag: 'cde-es-issue',
                                 actions: [
                                     {
                                         action: 'site-mgt-action',
                                         title: 'View and Reindex',
-                                        icon: '/assets/img/NIH-CDE-Logo-simple.png'
+                                        icon: '/assets/img/NIH-CDE-Logo-Simple.png'
                                     }
                                 ]
                             }

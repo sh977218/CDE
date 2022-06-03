@@ -130,13 +130,13 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
                 options: {
                     body: description,
                     icon: '/assets/img/NIH-CDE.png',
-                    badge: '/assets/img/NIH-CDE-Logo-simple.png',
+                    badge: '/assets/img/NIH-CDE-Logo-Simple.png',
                     tag: 'cde-server-side',
                     actions: [
                         {
                             action: 'audit-action',
                             title: 'View',
-                            icon: '/assets/img/NIH-CDE-Logo-simple.png'
+                            icon: '/assets/img/NIH-CDE-Logo-Simple.png'
                         }
                     ]
                 }
@@ -165,13 +165,13 @@ export function logClientError(req: Request, done: Cb) {
                 options: {
                     body: (exc.message || '').substr(0, 30),
                     icon: '/assets/img/NIH-CDE.png',
-                    badge: '/assets/img/NIH-CDE-Logo-simple.png',
+                    badge: '/assets/img/NIH-CDE-Logo-Simple.png',
                     tag: 'cde-client-side',
                     actions: [
                         {
                             action: 'audit-action',
                             title: 'View',
-                            icon: '/assets/img/NIH-CDE-Logo-simple.png'
+                            icon: '/assets/img/NIH-CDE-Logo-Simple.png'
                         }
                     ]
                 }

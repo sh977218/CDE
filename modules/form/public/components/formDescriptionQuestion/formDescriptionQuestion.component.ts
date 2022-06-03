@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from '@circlon/angular-tree-component';
-import { DataElementService } from 'cde/public/dataElement.service';
+import { DataElementService } from 'cde/dataElement.service';
 import { FormDescriptionComponent } from 'form/public/components/formDescription/formDescription.component';
 import { isEqual, toString } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';

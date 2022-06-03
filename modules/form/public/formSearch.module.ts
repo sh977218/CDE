@@ -16,7 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BoardModule } from 'board/public/board.module';
+import { BoardModule } from 'board/board.module';
 import { BoardFormSummaryListComponent } from 'form/public/components/listView/boardFormSummaryList.component';
 import { BoardFormSummaryListContentComponent } from 'form/public/components/listView/boardFormSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/public/components/listView/formAccordionList.component';

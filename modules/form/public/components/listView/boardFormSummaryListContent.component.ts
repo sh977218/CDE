@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BoardListService } from 'board/public/components/listView/boardList.service';
+import { BoardListService } from 'board/listView/boardList.service';
 import { SummaryComponent } from 'search/listView/summaryListItem.component';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { isDefault } from 'shared/models.model';

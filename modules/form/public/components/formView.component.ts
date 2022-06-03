@@ -9,7 +9,7 @@ import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
-import { PinBoardModalComponent } from 'board/public/components/pins/pinBoardModal.component';
+import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -49,7 +49,7 @@ export class LocatableError {
     selector: 'cde-form-view',
     templateUrl: 'formView.component.html',
     styleUrls: [
-        '../../../cde/public/components/dataElementView/view.style.scss'
+        '../../../cde/dataElementView/view.style.scss'
     ],
     providers: [TocService]
 })
