@@ -13,9 +13,9 @@ import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { FormViewService } from 'form/public/components/formView.service';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { UcumService } from 'form/public/ucum.service';
+import { FormViewService } from 'form/formView/formView.service';
+import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
+import { UcumService } from 'form/ucum.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -49,7 +49,7 @@ export class LocatableError {
     selector: 'cde-form-view',
     templateUrl: 'formView.component.html',
     styleUrls: [
-        '../../../cde/dataElementView/view.style.scss'
+        '../../cde/dataElementView/view.style.scss'
     ],
     providers: [TocService]
 })

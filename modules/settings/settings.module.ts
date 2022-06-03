@@ -44,7 +44,7 @@ import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
-import { FormSearchModule } from 'form/public/formSearch.module';
+import { FormSearchModule } from 'form/formSearch.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';

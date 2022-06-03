@@ -1,4 +1,4 @@
-import './formDescription.global.scss';
+import 'form/formDescription/formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -10,8 +10,8 @@ import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
 import { DeCompletionService } from 'cde/completion/deCompletion.service';
-import { copySectionAnimation } from 'form/public/components/formDescription/copySectionAnimation';
-import { LocatableError } from 'form/public/components/formView.component';
+import { copySectionAnimation } from 'form/formDescription/copySectionAnimation';
+import { LocatableError } from 'form/formView/formView.component';
 import { isEmpty } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';

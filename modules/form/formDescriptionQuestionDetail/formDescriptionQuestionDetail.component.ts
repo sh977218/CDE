@@ -9,14 +9,14 @@ import { AlertService } from 'alert/alert.service';
 import { TreeNode } from '@circlon/angular-tree-component';
 import { pvGetLabel } from 'core/de/deShared';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
-import { UcumService, UcumSynonyms } from 'form/public/ucum.service';
+import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
+import { UcumService, UcumSynonyms } from 'form/ucum.service';
 import {
     QuestionAnswerEditContentComponent, QuestionAnswerEditContentData, QuestionAnswerEditContentOutput
-} from 'form/public/components/questionAnswerEditContent/questionAnswerEditContent.component';
+} from 'form/questionAnswerEditContent/questionAnswerEditContent.component';
 import {
     SelectQuestionLabelComponent, SelectQuestionLabelData, SelectQuestionLabelOutput
-} from 'form/public/components/selectQuestionLabel/selectQuestionLabel.component';
+} from 'form/selectQuestionLabel/selectQuestionLabel.component';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';

@@ -10,7 +10,7 @@ import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
-import { FormResolve } from 'form/public/components/formDescription/form.resolve';
+import { FormResolve } from 'form/formDescription/form.resolve';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
 
 const appRoutes: Routes = [
@@ -57,7 +57,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'createForm',
-        loadChildren: () => import('form/public/formCreate.module').then(m => m.FormCreateModule),
+        loadChildren: () => import('form/formCreate.module').then(m => m.FormCreateModule),
         data: {title: 'Create Form', preload: false}
     },
     {
@@ -67,12 +67,12 @@ const appRoutes: Routes = [
     },
     {
         path: 'form/search',
-        loadChildren: () => import('form/public/formSearchEntry.module').then(m => m.FormSearchEntryModule),
+        loadChildren: () => import('form/formSearchEntry.module').then(m => m.FormSearchEntryModule),
         data: {title: 'Form Search', preload: false}
     },
     {
         path: 'formEdit',
-        loadChildren: () => import('form/public/formEdit.module').then(m => m.FormEditModule),
+        loadChildren: () => import('form/formEdit.module').then(m => m.FormEditModule),
         resolve: {
             form: FormResolve
         },
@@ -81,7 +81,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'formView',
-        loadChildren: () => import('form/public/formView.module').then(m => m.FormViewModule),
+        loadChildren: () => import('form/formView.module').then(m => m.FormViewModule),
         data: {title: 'Form View', preload: false},
     },
     {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},

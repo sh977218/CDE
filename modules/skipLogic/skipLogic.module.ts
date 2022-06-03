@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NonCoreModule } from 'non-core/noncore.module';
-import { SkipLogicValidateService } from 'form/public/skipLogicValidate.service';
+import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
 import { SkipLogicAutocompleteComponent } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 import { MatIconModule } from '@angular/material/icon';

@@ -34,7 +34,7 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
-import { FormSearchModule } from 'form/public/formSearch.module';
+import { FormSearchModule } from 'form/formSearch.module';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';

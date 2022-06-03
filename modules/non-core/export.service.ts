@@ -6,7 +6,7 @@ import { AlertService } from 'alert/alert.service';
 import { getFormQuestionsAsQuestionCde } from 'core/form/fe';
 import { getFormOdm } from 'core/form/form';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
-import { RedcapExport } from 'form/public/redcapExport';
+import { RedcapExport } from 'form/redcapExport';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import JXON from 'jxon';

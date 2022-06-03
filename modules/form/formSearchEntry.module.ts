@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { FormSearchComponent } from './components/search/formSearch.component';
-import { FormSearchModule } from 'form/public/formSearch.module';
+import { FormSearchComponent } from 'form/search/formSearch.component';
+import { FormSearchModule } from 'form/formSearch.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormSearchComponent},

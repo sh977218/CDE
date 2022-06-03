@@ -14,8 +14,8 @@ import { CdeForm } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-form-search',
-    styleUrls: ['../../../../search/searchBase.component.scss'],
-    templateUrl: '../../../../search/searchBase.component.html'
+    styleUrls: ['../../search/searchBase.component.scss'],
+    templateUrl: '../../search/searchBase.component.html'
 })
 export class FormSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<CdeForm>();

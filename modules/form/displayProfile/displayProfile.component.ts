@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UcumService } from 'form/public/ucum.service';
-import 'form/public/components/displayProfile/displayProfile.global.scss';
+import { UcumService } from 'form/ucum.service';
+import 'form/displayProfile/displayProfile.global.scss';
 import { interruptEvent } from 'non-core/browser';
 import { removeFromArray } from 'shared/array';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';

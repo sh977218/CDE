@@ -1,6 +1,6 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
-import { FormSummaryListContentComponent } from 'form/public/components/listView/formSummaryListContent.component';
+import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';

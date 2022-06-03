@@ -10,7 +10,7 @@ import { BoardViewComponent } from 'board/boardView/boardView.component';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
 import { CompareModule } from 'compare/compare.module';
 import { DiscussModule } from 'discuss/discuss.module';
-import { FormSearchModule } from 'form/public/formSearch.module';
+import { FormSearchModule } from 'form/formSearch.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 import { SearchModule } from 'search/search.module';
 import { MatButtonModule } from '@angular/material/button';
