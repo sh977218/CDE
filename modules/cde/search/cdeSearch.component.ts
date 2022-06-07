@@ -19,8 +19,6 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class CdeSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<DataElement>();
-    module: 'cde'|'form' = 'cde';
-    pinComponent = PinBoardModalComponent;
 
     constructor(
         protected _componentFactoryResolver: ComponentFactoryResolver,
@@ -38,6 +36,9 @@ export class CdeSearchComponent extends SearchBaseComponent {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
 
+        this.module = 'cde';
+        this._searchType = this.module;
         this.exporters.csv = {id: 'csvExport', display: 'CSV'};
+        this.pinComponent = PinBoardModalComponent;
     }
 }

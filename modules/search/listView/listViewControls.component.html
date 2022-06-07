@@ -1,8 +1,10 @@
-<button *ngIf="listView !== 'table'" id="list_gridView" class="button" (click)="listViewChange.emit('table')">
+<button *ngIf="listView !== 'table'" id="list_gridView" class="button" style="margin-bottom: 0"
+        (click)="listViewChange.emit('table')">
     <mat-icon>table_chart</mat-icon>
     Table View
 </button>
-<button *ngIf="listView !== 'summary'" id="list_summaryView" class="button" (click)="listViewChange.emit('summary')">
+<button *ngIf="listView !== 'summary'" id="list_summaryView" class="button" style="margin-bottom: 0"
+        (click)="listViewChange.emit('summary')">
     <mat-icon>storage</mat-icon>
     Summary View
 </button>

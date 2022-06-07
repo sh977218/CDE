@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ComponentFactoryResolver, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertService } from 'alert/alert.service';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -35,8 +35,10 @@ export class FormSearchComponent extends SearchBaseComponent {
     ) {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
-        this.exporters.odm = {id: 'odmExport', display: 'ODM'};
+
         this.module = 'form';
+        this._searchType = this.module;
+        this.exporters.odm = {id: 'odmExport', display: 'ODM'};
         this.pinComponent = PinBoardModalComponent;
     }
 }

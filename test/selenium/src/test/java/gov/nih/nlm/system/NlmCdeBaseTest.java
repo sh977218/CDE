@@ -608,6 +608,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         openEltInList(name, "cde");
     }
 
+    protected void searchActiveFilter(String text) {
+        findElement(By.xpath("//*[contains(@class,'pill')]/*[@class='text'][text()='" + text + "']"));
+    }
+
+    protected void searchActiveFilter(String text, String parent) {
+        findElement(By.xpath(parent + "//*[contains(@class,'pill')]/*[@class='text'][text()='" + text + "']"));
+    }
+
     public void searchForm(String formName) {
         searchElt(formName, "form");
     }

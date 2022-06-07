@@ -32,6 +32,7 @@ import { MAX_PINS } from 'shared/constants';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
+    assertUnreachable,
     Cb1,
     CurationStatus, ElasticQueryResponseAggregation, ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseHit, ItemElastic, ModuleItem,
@@ -44,7 +45,9 @@ import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
 
 type NamedCounts = {name: string, count: number}[];
+type SearchType = 'cde' | 'endorsedCde' | 'form';
 
+const searchDesktopWidth = 772;
 const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)']);
 const orderedFirstOrgIcons = Object.freeze(['/assets/img/endorsedRibbonIcon.png']);
 
@@ -62,6 +65,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         static: true
     }) autoCompleteInput!: MatAutocompleteTrigger;
     @ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+    _searchType: SearchType = 'cde';
     add!: EventEmitter<any>;
     aggregations?: ElasticQueryResponseAggregation;
     aggregationsFlatClassifications?: NamedCounts;
@@ -79,6 +83,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     };
     filterMode = true;
     goToPage = 1;
+    isSearchDesktop: boolean = (window.innerWidth >= searchDesktopWidth);
     lastQueryTimeStamp?: number;
     private lastTypeahead: {[term: string]: string} = {};
     module!: ModuleItem;
@@ -184,12 +189,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.altClassificationFilterMode = !!params.selectedOrgAlt;
             this.excludeOrgFilterMode = !!params.excludeAllOrgs || !!params.excludeOrgs;
             this.searchSettings.nihEndorsed = !!params.nihEndorsed;
+            if (this.searchSettings.nihEndorsed) {
+                this._searchType = 'endorsedCde';
+            }
             this.reload();
         });
     }
 
     addNihEndorsedFilter(nihEndorsed: boolean) {
         this.searchSettings.nihEndorsed = nihEndorsed;
+        this._searchType = nihEndorsed ? 'endorsedCde' : 'cde';
         this.doSearch();
     }
 
@@ -417,6 +426,19 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return result;
     }
 
+    getSearchLabel(searchType: SearchType): string {
+        switch (searchType) {
+            case 'endorsedCde':
+                return 'NIH-Endorsed CDEs';
+            case 'cde':
+                return 'All CDEs';
+            case 'form':
+                return 'Forms';
+            default:
+                throw assertUnreachable(searchType);
+        }
+    }
+
     // Create string representation of what filters are selected. Use the hasSelected...() first.
     getSelectedClassifications(): string[] {
         if (!this.searchSettings.selectedOrg) {
@@ -442,6 +464,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         } else {
             return '(Select Orgs)';
         }
+    }
+
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isSearchDesktop = window.innerWidth >= searchDesktopWidth;
     }
 
     searchExcludeAllOrgs() {
@@ -738,6 +765,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
+    get searchType(): SearchType {
+        return this._searchType;
+    }
+
     selectElement(e: string, element: 'parent' | 'child', index: number) {
         let classifToSelect = this.getCurrentSelectedClassification();
         if (!classifToSelect) {
@@ -773,6 +804,39 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
         if (!this.embedded) {
             SearchBaseComponent.focusClassification();
+        }
+    }
+
+    setSearchType(searchType: SearchType) {
+        if (this.searchType === searchType) {
+            return;
+        }
+        this._searchType = searchType;
+        switch (searchType) {
+            case 'cde':
+                if (this.module === 'form' || this.searchSettings.nihEndorsed) {
+                    this.searchSettings.nihEndorsed = false;
+                    this.module = 'cde';
+                    this.doSearch();
+                }
+                return;
+            case 'endorsedCde':
+                if (this.module === 'form' || !this.searchSettings.nihEndorsed) {
+                    this.searchSettings.nihEndorsed = true;
+                    this.module = 'cde';
+                    this.doSearch();
+                }
+                return;
+            case 'form':
+                this.searchSettings.datatypes.length = 0;
+                this.searchSettings.nihEndorsed = false;
+                if (this.module === 'cde') {
+                    this.module = 'form';
+                    this.doSearch();
+                }
+                return;
+            default:
+                throw assertUnreachable(searchType);
         }
     }
 
