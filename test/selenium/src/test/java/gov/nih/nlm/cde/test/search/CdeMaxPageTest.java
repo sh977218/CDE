@@ -11,7 +11,7 @@ public class CdeMaxPageTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("search_by_classification_NHLBI"));
         int result = getNumberOfResults();
-        textPresent(result + " data element results");
+        textPresent(result + " results. Sorted by relevance.");
         findElement(By.xpath("//*[@id='goToPage']//input")).clear();
         hangon(1);
         findElement(By.xpath("//*[@id='goToPage']//input")).sendKeys("5");

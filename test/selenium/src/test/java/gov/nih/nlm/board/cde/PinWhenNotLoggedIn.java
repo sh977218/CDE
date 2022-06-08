@@ -10,7 +10,7 @@ public class PinWhenNotLoggedIn extends NlmCdeBaseTest {
     public void pinWhenNotLoggedIn() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("data element results");
+        textPresent("results. Sorted by relevance.");
         clickElement(By.id("pinAll"));
         textPresent("Create Boards and attach CDEs to them");
         clickElement(By.xpath("//a[text()='Sign up or Sign in']"));

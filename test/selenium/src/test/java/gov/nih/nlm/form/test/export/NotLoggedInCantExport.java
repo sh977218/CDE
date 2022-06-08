@@ -16,7 +16,7 @@ public class NotLoggedInCantExport extends NlmCdeBaseTest {
 
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         findElement(By.id("ftsearch-input")).sendKeys(Keys.RETURN);
-        textPresent("form results");
+        textPresent("results. Sorted by relevance.");
         clickElement(By.id("export"));
         textPresent("Please login to export forms");
 

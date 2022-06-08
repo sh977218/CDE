@@ -11,7 +11,7 @@ public class SearchByConcept extends NlmCdeBaseTest{
         goToConcepts();
         clickElement(By.xpath("//*[@id='concept_cde_name_0' and . = 'Database']"));
         textPresent("Organism External Database Accession Number java.lang.String");
-        textPresent("3 data element results");
+        textPresent("3 results. Sorted by relevance.");
         textPresent("property.concepts.name:\"Database\"", By.id("term_crumb"));
     }
 }

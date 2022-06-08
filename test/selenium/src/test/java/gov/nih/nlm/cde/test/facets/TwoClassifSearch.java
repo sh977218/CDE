@@ -29,7 +29,7 @@ public class TwoClassifSearch extends BoardTest {
 
         clickElement(By.id("classif-Imaging Diagnostics"));
         checkSearchResultInfo(null, null, new String[]{"NINDS", "Domain", "Assessments and Examinations", "Imaging Diagnostics"}, null, null);
-        textPresent(numbOfImages + " data element results");
+        textPresent(numbOfImages + " results. Sorted by relevance.");
         hangon(1);
 
         goHome();

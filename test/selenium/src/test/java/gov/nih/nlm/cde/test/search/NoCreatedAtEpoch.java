@@ -10,7 +10,7 @@ public class NoCreatedAtEpoch extends NlmCdeBaseTest {
         search("cde", "created:<1971");
         textPresent("No results were found.");
         search("form", "created:<1971");
-        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'4 form results')]"));
+        findElement(By.xpath("//*[@id='searchResultInfoBar'][contains(.,'4 results. Sorted by relevance.')]"));
         textPresent("created:<1971", By.id("term_crumb"));
     }
 
@@ -19,10 +19,10 @@ public class NoCreatedAtEpoch extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys(searchString);
 
-        // Wait for ng-model of ftsearch to update. Otherwise angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
+        // Wait for ng-model of ftsearch to update. Otherwise, angular sometime sends incomplete search:  ' "Fluoresc ' instead of ' "Fluorescent sample CDE" '
         hangon(0.5);
         clickElement(By.id("search.submit"));
 
-        textPresent("results ");
+        textPresent("results");
     }
 }

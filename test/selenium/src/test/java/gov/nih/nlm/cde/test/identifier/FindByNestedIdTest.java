@@ -21,18 +21,18 @@ public class FindByNestedIdTest extends NlmCdeBaseTest {
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
 
         try {
-            textPresent("2 data element results");
+            textPresent("2 results. Sorted by relevance.");
         } catch (Exception e) {
             goToCdeSearch();
             findElement(By.id("ftsearch-input")).sendKeys("ids.id:C18059");
             clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
         }
-        textPresent("2 data element results");
+        textPresent("2 results. Sorted by relevance.");
 
         findElement(By.id("ftsearch-input")).clear();
         findElement(By.id("ftsearch-input")).sendKeys("flatIds:\"caDSR C18059\"");
         clickElement(By.xpath("//mat-icon[normalize-space() = 'search']"));
-        textPresent("1 data element results");
+        textPresent("1 results. Sorted by relevance.");
 
     }
 

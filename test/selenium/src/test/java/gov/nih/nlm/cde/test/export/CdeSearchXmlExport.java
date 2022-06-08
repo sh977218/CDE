@@ -17,7 +17,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
     public void cdeSearchXmlExport() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
-        textPresent("data element results");
+        textPresent("results. Sorted by relevance.");
         clickElement(By.id("export"));
         clickElement(By.id("xmlExport"));
         textPresent("Search results downloaded as XML.");

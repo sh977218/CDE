@@ -17,7 +17,7 @@ public class CdeSearchJsonExport extends NlmCdeBaseTest {
     public void cdeSearchJsonExport() {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
-        textPresent("data element results");
+        textPresent("results. Sorted by relevance.");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));

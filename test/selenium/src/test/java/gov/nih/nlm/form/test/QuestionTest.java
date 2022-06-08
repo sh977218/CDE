@@ -98,7 +98,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + cdeName + "\"");
         hangon(1);
         clickElement(By.id("search.submit"));
-        textPresent("1 data element results");
+        textPresent("1 results. Sorted by relevance.");
         clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectQ"));
     }
@@ -128,7 +128,7 @@ public class QuestionTest extends BaseFormTest {
         findElement(By.id("ftsearch-input")).sendKeys("\"" + formName + "\"");
         hangon(1);
         clickElement(By.id("search.submit"));
-        textPresent("1 form results");
+        textPresent("1 results. Sorted by relevance.");
         clickElement(By.xpath("//*[@id='acc_link_0']/preceding-sibling::button"));
         clickElement(By.id("cancelSelectF"));
     }

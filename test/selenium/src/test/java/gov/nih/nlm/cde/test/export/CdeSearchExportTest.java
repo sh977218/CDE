@@ -20,7 +20,7 @@ public class CdeSearchExportTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         loadDefaultTableViewSettings();
-        textPresent("data element results");
+        textPresent("results. Sorted by relevance.");
         findElement(By.id("ftsearch-input")).sendKeys("\"Unified Parkinson's\"");
         clickElement(By.id("search.submit"));
         clickElement(By.id("export"));

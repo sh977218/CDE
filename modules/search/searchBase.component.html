@@ -419,9 +419,7 @@
         <div style="padding: 30px 0 0 30px"
              [style.display]="searching ? 'none' : 'block'">
             <div *ngIf="elts?.length > 0 && aggregations" style="margin-bottom: 1rem" id="searchResultInfoBar">
-                <strong id="searchResultNum">{{totalItems}}</strong>
-                <ng-container> {{module === 'cde' ? 'data element' : 'form'}} results</ng-container>
-                <small> ({{took / 1000}} secs)</small>
+                <strong id="searchResultNum">{{totalItems}}</strong> results. Sorted by relevance.
             </div>
 
             <!-- SEARCH RESULTS -->

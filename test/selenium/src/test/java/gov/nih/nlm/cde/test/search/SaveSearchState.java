@@ -11,13 +11,13 @@ public class SaveSearchState extends NlmCdeBaseTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-CTEP"));
-        textPresent("data element results");
+        textPresent("results. Sorted by relevance.");
         int numRes = getNumberOfResults();
         clickElement(By.id("classif-CATEGORY"));
-        textNotPresent(numRes + " data element results");
+        textNotPresent(numRes + " results. Sorted by relevance.");
         numRes = getNumberOfResults();
         clickElement(By.id("regstatus-Standard"));
-        textNotPresent(numRes + " data element results");
+        textNotPresent(numRes + " results. Sorted by relevance.");
         clickElement(By.id("regstatus-Qualified"));
         scrollToTop();
         checkSearchResultInfo(null, new String[]{"CTEP", "CATEGORY"}, null, new String[]{"Standard", "Qualified"}, null);

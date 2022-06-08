@@ -18,7 +18,7 @@ public class FormSearch extends BaseFormTest {
         textPresent(formName);
         clickElement(By.xpath("//button[contains(.,'See all linked forms')]"));
         switchTab(1);
-        textPresent("1 form results");
+        textPresent("1 results. Sorted by relevance.");
         textPresent("qz_W3XYk7jF", By.id("term_crumb"));
         textPresent(formName);
         switchTabAndClose(0);

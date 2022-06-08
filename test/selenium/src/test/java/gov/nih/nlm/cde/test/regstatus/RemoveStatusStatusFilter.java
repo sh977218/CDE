@@ -13,7 +13,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         clickElement(By.id("browseOrg-PBTC"));
-        textPresent("4 data element results");
+        textPresent("4 results. Sorted by relevance.");
         String viewing = findElement(By.id("linkToElt_0")).getText();
         clickElement(By.id("linkToElt_0"));
 
@@ -34,7 +34,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
             showSearchFilters();
             clickElement(By.id("regstatus-Preferred Standard"));
         }
-        textPresent("1 data element results");
+        textPresent("1 results. Sorted by relevance.");
         clickElement(By.id("linkToElt_0"));
 
         textPresent("More Like This");
@@ -45,7 +45,7 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         waitForESUpdate();
         goToCdeSearch();
         clickElement(By.id("browseOrg-PBTC"));
-        textPresent("4 data element results");
+        textPresent("4 results. Sorted by relevance.");
     }
 
 }
