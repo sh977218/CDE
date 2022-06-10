@@ -48,7 +48,7 @@ public class SdcExport extends NlmCdeBaseTest {
         mustBeLoggedInAs(reguser_username, password);
         goToFormByName("SDC Adrenal");
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'XML File, SDC Schema with XSL Transform')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'SDC Schema with XSL Transform XML file')]"));
         switchTab(1);
         textPresent("Hormone production");
         textPresent("Additional dimensions (repeat");

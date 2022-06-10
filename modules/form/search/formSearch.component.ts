@@ -38,7 +38,7 @@ export class FormSearchComponent extends SearchBaseComponent {
 
         this.module = 'form';
         this._searchType = this.module;
-        this.exporters.odm = {id: 'odmExport', display: 'ODM'};
+        this.exporters.odm = {id: 'odmExport', display: 'ODM archive'};
         this.pinComponent = PinBoardModalComponent;
     }
 }

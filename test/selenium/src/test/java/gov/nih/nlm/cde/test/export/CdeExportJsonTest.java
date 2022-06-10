@@ -14,12 +14,12 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
     @Test
     public void cdeExportJson() {
         String cdeName = "Spinal column injury number";
-        loginAs(reguser_username,password);
+        loginAs(nlm_username, nlm_password); // TODO: download as tab, reguser_username
         goToCdeByName(cdeName);
 
         downloadAsFile();
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema JSON file')]"));
         checkAlert("Export downloaded.");
         String fileName = downloadFolder + "/7cDvUXR6SQe.json";
         waitForDownload(fileName);
@@ -34,7 +34,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
 
         downloadAsTab();
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema JSON preview')]"));
         switchTab(1);
         String response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"designations\":[{\"tags\":[\"Health\"],\"designation\":\"Spinal column injury number\""));
@@ -42,7 +42,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
         switchTabAndClose(0);
 
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]//a[mat-icon[contains(.,'help_outline')]]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema JSON preview')]//a[mat-icon[contains(.,'help_outline')]]"));
         switchTab(1);
         response = findElement(By.cssSelector("HTML")).getAttribute("innerHTML");
         Assert.assertTrue(response.contains("\"source\":{\"type\":\"string\",\"description\":\"This field is replaced with sources\"},"));

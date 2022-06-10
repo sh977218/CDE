@@ -4,11 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { HomepageGetResponse } from 'shared/boundaryInterfaces/API/system';
 import { assertUnreachable } from 'shared/models.model';
-import { SearchSettings } from 'shared/search/search.model';
+import { SearchSettings, SearchType } from 'shared/search/search.model';
 import { hasRole } from 'shared/security/authorizationShared';
 import { UpdateCard } from 'shared/singleton.model';
-
-type SearchType = 'cde' | 'endorsedCde' | 'form';
 
 const mobileWidth = 699;
 

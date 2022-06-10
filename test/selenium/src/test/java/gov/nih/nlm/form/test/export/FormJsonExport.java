@@ -24,7 +24,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "\"designations\":[{\"tags\":[],\"designation\":\"Adverse Event Tracking Log\""
         };
 
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password); // TODO: download as tab, reguser_username
         String form = "Adverse Event Tracking Log";
         goToFormByName(form);
         hangon(1);
@@ -32,7 +32,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
         downloadAsFile();
         clickElement(By.id("export"));
         hangon(1);
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema JSON file')]"));
         checkAlert("Export downloaded.");
         String fileName = downloadFolder + "/m1_5_1HBYl.json";
         waitForDownload(fileName);
@@ -57,7 +57,7 @@ public class FormJsonExport extends NlmCdeBaseTest {
         downloadAsTab();
         clickElement(By.id("export"));
         hangon(1);
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'JSON File, NIH/CDE Schema')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema JSON preview')]"));
         switchTab(1);
 
         String response = findElement(By.cssSelector("HTML body pre")).getAttribute("innerHTML");

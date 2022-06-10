@@ -18,7 +18,7 @@ public class FormCdeWithLinkedFormExportLong extends NlmCdeBaseTest {
         mustBeLoggedInAs("formLinkedForms", password);
         goToFormByName("Stroke Types and Subtypes");
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary CSV file')]"));
         checkAlert("Export downloaded.");
         String fileName = downloadFolder + "/FormCdes-QkX81HrFx.csv";
         waitForDownload(fileName);

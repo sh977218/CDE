@@ -15,15 +15,15 @@ export class SearchExportButtonComponent implements OnInit {
     ngOnInit() {
         if (this.module === 'cde') {
             this.exportOptions = [
-                {id: 'csv', label: 'CSV File'},
-                {id: 'json', label: 'JSON File'},
-                {id: 'xml', label: 'XML File'}
+                {id: 'csv', label: 'CSV file'},
+                {id: 'json', label: 'JSON file'},
+                {id: 'xml', label: 'XML archive'}
             ];
         } else if (this.module === 'form') {
             if (this.userService.user) {
                 this.exportOptions = [
-                    {id: 'json', label: 'JSON File'},
-                    {id: 'xml', label: 'XML File'}
+                    {id: 'json', label: 'JSON file'},
+                    {id: 'xml', label: 'XML archive'}
                 ];
             } else {
                 this.exportOptions = [{id: 'noLogin', label: 'Please login to export forms.'}];

@@ -2,6 +2,9 @@
 @use "sass:selector";
 @import './theme';
 
+$buttonHeight: $nlmRem * $nlmLineHeight + (.5 + .5) * $nlmRem; // 36px
+$formControlHeight: 36px;
+
 @mixin unify-parent($child) {
   @at-root #{selector.unify(&, $child)} {
     @content;
@@ -75,6 +78,10 @@ input[type=checkbox], input[type=radio] {
 label {
   display: inline-block;
   margin-bottom: 0.5rem;
+}
+
+section {
+  margin-bottom: 1rem;
 }
 
 small {
@@ -280,11 +287,112 @@ h3, h4, h5, h6 {
   font-style: italic;
 }
 
+.actions, .mat-dialog-actions {
+  margin-left: auto;
+  width: fit-content;
+}
+
+.alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+
+  &.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  &.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+
+  &.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+}
+
+.badge {
+  border-radius: .25rem;
+  display: inline-block;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 .25rem;
+  padding: .25em .4em;
+  text-align: center;
+  vertical-align: text-bottom;
+  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  white-space: nowrap;
+
+  &.badge-danger {
+    color: #fff;
+    background-color: #dc3545;
+  }
+
+  &.badge-info {
+    color: #fff;
+    background-color: #17a2b8;
+  }
+
+  &.badge-secondary {
+    color: #fff;
+    background-color: #6c757d;
+  }
+
+  &.badge-success {
+    color: #fff;
+    background-color: #28a745;
+  }
+
+  &.badge-warning {
+    color: #212529;
+    background-color: #ffc107;
+  }
+
+  @include unify-parent("a") {
+    &:focus, &:hover {
+      text-decoration: none;
+    }
+
+    &.badge-danger:focus, &.badge-danger:hover {
+      color: #fff;
+      background-color: #bd2130;
+    }
+
+    &.badge-info:focus, &.badge-info:hover {
+      color: #fff;
+      background-color: #117a8b;
+    }
+
+    &.badge-secondary:focus, &.badge-secondary:hover {
+      color: #fff;
+      background-color: #545b62;
+    }
+
+    &.badge-success:focus, &.badge-success:hover {
+      color: #fff;
+      background-color: #1e7e34;
+    }
+
+    &.badge-warning:focus, &.badge-warning:hover {
+      color: #212529;
+      background-color: #d39e00;
+    }
+  }
+}
+
 .button {
   @extend body;
   background-color: $nlmColorPrimary;
   border: 0;
-  border-radius: 3px;
+  border-radius: $formInputBorderRadius;
   color: $nlmColorLightest;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .15));
   margin-bottom: .5rem;
@@ -332,6 +440,11 @@ h3, h4, h5, h6 {
 
   &:disabled {
     background-color: $nlmColorDisabled;
+  }
+
+  &.icon {
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
   }
 
   &.success {
@@ -469,148 +582,6 @@ h3, h4, h5, h6 {
       margin: 0;
       width: 1.2em;
       vertical-align: sub;
-    }
-  }
-}
-
-section {
-  margin-bottom: 1rem;
-}
-
-.actions, .mat-dialog-actions {
-  margin-left: auto;
-  width: fit-content;
-}
-
-.alert {
-  position: relative;
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-
-  &.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-  }
-
-  &.alert-info {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-  }
-
-  &.alert-warning {
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
-  }
-}
-
-.keyboard-arrow {
-  border: solid black;
-  border-width: 0 1px 1px 0;
-  display: inline-block;
-  padding: 3px;
-
-  margin-left: -2px;
-  margin-right: 8px;
-  transform: rotate(-45deg);
-
-  &.down {
-    margin-bottom: 4px;
-    margin-left: 3px;
-    margin-right: 8px;
-    transform: rotate(45deg);
-  }
-
-  &.left {
-    margin-bottom: 2px;
-    margin-left: 3px;
-    margin-right: 3px;
-    transform: rotate(135deg);
-  }
-
-  &.right {
-    margin-left: -2px;
-    margin-right: 8px;
-    transform: rotate(-45deg);
-  }
-
-  &.up {
-    margin-left: 3px;
-    margin-right: 8px;
-    transform: rotate(-135deg);
-  }
-}
-
-.badge {
-  border-radius: .25rem;
-  display: inline-block;
-  font-size: 75%;
-  font-weight: 700;
-  line-height: 1;
-  margin: 0 .25rem;
-  padding: .25em .4em;
-  text-align: center;
-  vertical-align: text-bottom;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-  white-space: nowrap;
-
-  &.badge-danger {
-    color: #fff;
-    background-color: #dc3545;
-  }
-
-  &.badge-info {
-    color: #fff;
-    background-color: #17a2b8;
-  }
-
-  &.badge-secondary {
-    color: #fff;
-    background-color: #6c757d;
-  }
-
-  &.badge-success {
-    color: #fff;
-    background-color: #28a745;
-  }
-
-  &.badge-warning {
-    color: #212529;
-    background-color: #ffc107;
-  }
-
-  @include unify-parent("a") {
-    &:focus, &:hover {
-      text-decoration: none;
-    }
-
-    &.badge-danger:focus, &.badge-danger:hover {
-      color: #fff;
-      background-color: #bd2130;
-    }
-
-    &.badge-info:focus, &.badge-info:hover {
-      color: #fff;
-      background-color: #117a8b;
-    }
-
-    &.badge-secondary:focus, &.badge-secondary:hover {
-      color: #fff;
-      background-color: #545b62;
-    }
-
-    &.badge-success:focus, &.badge-success:hover {
-      color: #fff;
-      background-color: #1e7e34;
-    }
-
-    &.badge-warning:focus, &.badge-warning:hover {
-      color: #212529;
-      background-color: #d39e00;
     }
   }
 }
@@ -778,6 +749,61 @@ section {
   }
 }
 
+.inline-group {
+  margin-right: .5rem;
+  width: 100%;
+
+  .form-control {
+    border-color: $nlmBackgroundColor;
+  }
+
+  > button,
+  > div,
+  > input,
+  > label > input {
+    border-radius: 0;
+    height: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  > *:first-child {
+    border-bottom-left-radius: $formInputBorderRadius;
+    border-top-left-radius: $formInputBorderRadius;
+
+    & > input {
+      border-bottom-left-radius: $formInputBorderRadius;
+      border-top-left-radius: $formInputBorderRadius;
+    }
+  }
+
+  > *:last-child {
+    border-bottom-right-radius: $formInputBorderRadius;
+    border-top-right-radius: $formInputBorderRadius;
+
+    & > input {
+      border-bottom-left-radius: $formInputBorderRadius;
+      border-top-left-radius: $formInputBorderRadius;
+    }
+  }
+
+  .button {
+    $buttonPadding: math.div($formControlHeight - $nlmRem * $nlmLineHeight, 2);
+    padding: $buttonPadding 1rem;
+  }
+}
+
+.input-topside {
+  .button {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  & + * {
+    border-top-left-radius: 0 !important;
+  }
+}
+
 .input-group {
   position: relative;
   display: flex;
@@ -858,6 +884,43 @@ section {
   text-align: center;
   @media (min-width: 576px) {
     padding: 2rem;
+  }
+}
+
+.keyboard-arrow {
+  border: solid black;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  padding: 3px;
+
+  margin-left: -2px;
+  margin-right: 8px;
+  transform: rotate(-45deg);
+
+  &.down {
+    margin-bottom: 4px;
+    margin-left: 3px;
+    margin-right: 8px;
+    transform: rotate(45deg);
+  }
+
+  &.left {
+    margin-bottom: 2px;
+    margin-left: 3px;
+    margin-right: 3px;
+    transform: rotate(135deg);
+  }
+
+  &.right {
+    margin-left: -2px;
+    margin-right: 8px;
+    transform: rotate(-45deg);
+  }
+
+  &.up {
+    margin-left: 3px;
+    margin-right: 8px;
+    transform: rotate(-135deg);
   }
 }
 
@@ -988,9 +1051,6 @@ section {
   }
 }
 
-$buttonHeight: $nlmRem * $nlmLineHeight + (.5 + .5) * $nlmRem;
-$formControlHeight: 38px;
-
 .stack {
   $nonMaterialTextAlign: 26px;
   align-items: center;
@@ -1016,6 +1076,7 @@ $formControlHeight: 38px;
 .stretchBar {
   display: flex !important;
   gap: 0 2px;
+  margin: 0;
 
   > * {
     flex-shrink: 0;
@@ -1133,6 +1194,43 @@ $formControlHeight: 38px;
 @include generate-cde-property('-lg', ($screenMd: 4, $screenLg: 3, $screenXl: 2));
 @include generate-cde-property('-xl', ($screenLg: 4, $screenXl: 3));
 
+input.checkbox[type='checkbox'] {
+  margin-right: 3px;
+
+  &:before {
+    background-color: $nlmColorLightest;
+    border: 1px $nlmColorSecondaryDark solid;
+    content: "";
+    display: block;
+    height: 16px;
+    position: relative;
+    top: -1px;
+    width: 16px;
+  }
+
+  &:checked:after {
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    content: "";
+    display: block;
+    height: 10px;
+    left: 5px;
+    position: relative;
+    top: -15px;
+    transform: rotate(45deg);
+    width: 5px;
+  }
+
+  &:checked:before {
+    background-color: $nlmColorPrimary;
+    border-color: $nlmColorPrimary;
+  }
+
+  &:not(:checked):hover:before {
+    border-width: 2px;
+  }
+}
+
 table.table {
   width: 100%;
   margin-bottom: 1rem;
@@ -1177,18 +1275,20 @@ table.table-striped tbody tr:nth-of-type(odd) {
 }
 
 .form-control {
+  $lineHeight: 1.5;
+  $formControlPadding: math.div($formControlHeight - $lineHeight * $nlmRem, 2);
   display: block;
   width: 100%;
-  height: calc(1.5em + 0.75rem + 2px);
-  padding: .375rem .75rem;
+  height: $formControlHeight;
+  padding: $formControlPadding .75rem;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: $lineHeight;
   color: $formInputTextColor;
   background-color: $nlmBackgroundColor;
   background-clip: padding-box;
   border: 1px solid $formInputBorderColor;
-  border-radius: 0.25rem;
+  border-radius: $formInputBorderRadius;
   transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 
   &:focus {

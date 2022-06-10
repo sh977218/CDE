@@ -2,18 +2,20 @@
 
 <form #newDefinitionForm="ngForm">
     <mat-dialog-content>
-        <div class="form-group">
-            <div id="newDefinition">
-                <button class="button light" (click)="newDefinition.definitionFormat = undefined">Plain Text</button>
-                <button class="button light" (click)="newDefinition.definitionFormat = 'html'">Rich Text</button>
-                <textarea name="definition" *ngIf="newDefinition.definitionFormat !== 'html'"
-                          [(ngModel)]="newDefinition.definition" required
-                          class="form-control" Placeholder="Definition"></textarea>
-                <ckeditor name="definition" *ngIf="newDefinition.definitionFormat === 'html'"
-                          [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newDefinition.definition"
-                          Placeholder="Definition">
-                </ckeditor>
+        <div id="newDefinition" class="form-group">
+            <div class="inline-group input-topside">
+                <button class="button small light" [class.active]="newDefinition.definitionFormat !== 'html'"
+                        (click)="newDefinition.definitionFormat = undefined">Plain Text</button>
+                <button class="button small light" [class.active]="newDefinition.definitionFormat === 'html'"
+                        (click)="newDefinition.definitionFormat = 'html'">Rich Text</button>
             </div>
+            <textarea name="definition" *ngIf="newDefinition.definitionFormat !== 'html'"
+                      [(ngModel)]="newDefinition.definition" required
+                      class="form-control" Placeholder="Definition"></textarea>
+            <ckeditor name="definition" *ngIf="newDefinition.definitionFormat === 'html'"
+                      [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newDefinition.definition"
+                      Placeholder="Definition">
+            </ckeditor>
         </div>
         <div class="form-group">
             <label for="newDefinitionTags">Tags</label>

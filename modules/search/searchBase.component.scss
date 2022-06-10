@@ -9,43 +9,6 @@ $searchDesktop: 772px;
   vertical-align: middle;
 }
 
-input.checkbox[type='checkbox'] {
-  margin-right: 3px;
-
-  &:before {
-    background-color: $nlmColorLightest;
-    border: 1px $nlmColorSecondaryDark solid;
-    content: "";
-    display: block;
-    height: 16px;
-    position: relative;
-    top: -1px;
-    width: 16px;
-  }
-
-  &:checked:after {
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    content: "";
-    display: block;
-    height: 10px;
-    left: 5px;
-    position: relative;
-    top: -15px;
-    transform: rotate(45deg);
-    width: 5px;
-  }
-
-  &:checked:before {
-    background-color: $nlmColorPrimary;
-    border-color: $nlmColorPrimary;
-  }
-
-  &:not(:checked):hover:before {
-    border-width: 2px;
-  }
-}
-
 .cde-bg-grey {
   background-color: #f2f2f2;
 }
@@ -101,6 +64,28 @@ input.checkbox[type='checkbox'] {
   }
 }
 
+.inline-group {
+  label {
+    border-bottom-left-radius: $formInputBorderRadius;
+    border-top-left-radius: $formInputBorderRadius;
+
+    input {
+      border-bottom-left-radius: $formInputBorderRadius;
+      border-top-left-radius: $formInputBorderRadius;
+    }
+
+    @media (min-width: $searchDesktop) {
+      border-bottom-left-radius: unset;
+      border-top-left-radius: unset;
+
+      input {
+        border-bottom-left-radius: unset;
+        border-top-left-radius: unset;
+      }
+    }
+  }
+}
+
 .input-hover {
   cursor: pointer;
   display: block;
@@ -119,11 +104,7 @@ label.input-hover {
   display: flex;
   flex-flow: column;
   margin-bottom: 0;
-  padding: 1rem;
-
-  @media (min-width: $searchDesktop) {
-    padding: 30px;
-  }
+  padding: 0;
 
   &.cde {
     background-color: unquote($nlmColorPrimary + '33');
@@ -137,13 +118,11 @@ label.input-hover {
     margin-bottom: 0;
   }
 
-  .input-group {
-    input.form-control {
-      border-radius: 4px 0 0 4px;
+  .container {
+    margin: 1rem auto;
 
-      @media (min-width: $searchDesktop) {
-        border-radius: 0 0 0 0;
-      }
+    @media (min-width: $searchDesktop) {
+      margin: 30px auto;
     }
   }
 

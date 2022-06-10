@@ -28,17 +28,15 @@
                     Search Forms
                 </button>
             </div>
-            <div class="stretchBar input-group" style="gap: 0; margin-bottom: 10px">
-                <label class="shrink grow d-block mN">
+            <div class="stretchBar inline-group" style="gap: 0; margin-bottom: 10px">
+                <label class="shrink grow d-block">
                     <input name="search" class="form-control"
                            [placeholder]="isMobile ? 'Search by topic, keyword, or org...' : 'Search by topic, keyword, or organization'"
                            [(ngModel)]="cdeSearchTerm" required/>
                 </label>
-                <div class="input-group-append">
-                    <button class="button" style="margin: 0; padding: .5rem" (click)="search()">
-                        <mat-icon id="search.submit">search</mat-icon>
-                    </button>
-                </div>
+                <button class="button icon" (click)="search()">
+                    <mat-icon id="search.submit">search</mat-icon>
+                </button>
             </div>
             <div class="formHomeSmallScreen">
                 <div class="note text-center" style="margin: 1rem 0">within</div>

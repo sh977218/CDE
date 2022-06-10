@@ -11,18 +11,18 @@ public class CdeExportXmlTest extends NlmCdeBaseTest {
     @Test
     public void cdeExportXml() {
         String cdeName = "Patient Gender Code";
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password); // TODO: download as tab, reguser_username
         goToCdeByName(cdeName);
         downloadAsTab();
         clickElement(By.id("export"));
-        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).getAttribute("href");
+        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'NIH/CDE Schema XML preview')]")).getAttribute("href");
         String response = get(url).asString();
         Assert.assertTrue(response.contains("<designation>Patient Gender Code</designation>"));
         Assert.assertTrue(response.contains("<definition>" +
                 "the coded CDUS values for classification of the sex or gender role of the patient/participant.(CDUS Exchange)" +
                 "</definition>"));
         Assert.assertTrue(response.contains("<tinyId>bzGjaFPtQCs</tinyId>"));
-        findElement(By.xpath("//*[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).click();
+        findElement(By.xpath("//*[@mat-menu-item][contains(.,'NIH/CDE Schema XML preview')]")).click();
         switchTab(1);
         switchTabAndClose(0);
     }

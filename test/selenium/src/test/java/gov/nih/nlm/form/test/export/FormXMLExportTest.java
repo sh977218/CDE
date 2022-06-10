@@ -12,12 +12,12 @@ public class FormXMLExportTest extends NlmCdeBaseTest {
     @Test
     public void formXmlExport() {
         String form = "Parenchymal Imaging";
-        mustBeLoggedInAs(reguser_username, password);
+        mustBeLoggedInAs(nlm_username, nlm_password); // TODO: download as tab, reguser_username
         goToFormByName(form);
         downloadAsTab();
         hangon(1);
         clickElement(By.id("export"));
-        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'XML File, NIH/CDE Schema')]")).getAttribute("href");
+        String url = findElement(By.xpath("//a[@mat-menu-item][contains(.,'NIH/CDE Schema XML preview')]")).getAttribute("href");
         String response = get(url).asString().replaceAll("\\s+", "");
 
         String shouldContain = ("<designations>\n" +

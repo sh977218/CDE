@@ -78,8 +78,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     cutoffIndex?: number;
     elts?: ItemElastic[];
     exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: {id: string, display: string} } = {
-        json: {id: 'jsonExport', display: 'JSON'},
-        xml: {id: 'xmlExport', display: 'XML'}
+        json: {id: 'jsonExport', display: 'JSON file'},
+        xml: {id: 'xmlExport', display: 'XML archive'}
     };
     filterMode = true;
     goToPage = 1;

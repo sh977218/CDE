@@ -3,23 +3,25 @@
     <div class="actions">
         <div class="dropdown" style="display: inline-block">
             <button *ngIf="board.type === 'cde' && elts.length > 0" (click)="openMenu($event, dropdownMenu)"
-                    id="export" class="button"
+                    id="export" class="button light"
                     data-toggle="dropdown" aria-haspopup="true">
                 <mat-icon>play_for_work</mat-icon>
                 Export Board
+                <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <div #dropdownMenu class="dropdown-menu" aria-labelledby="export">
                 <a id="csvExport" class="dropdown-item" href="javascript:void(0);" (click)="exportBoard()">
-                    CSV File, NIH/CDE</a>
+                    NIH/CDE Schema CSV file</a>
                 <a id='jsonExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=json"
                    target="_blank">
-                    JSON File, NIH/CDE Schema</a>
+                    NIH/CDE Schema JSON file</a>
                 <a id='xmlExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=xml"
                    target="_blank">
-                    XML File, NIH/CDE Schema</a>
+                    NIH/CDE Schema XML file</a>
             </div>
         </div>
-        <cde-list-view-controls *ngIf="elts.length > 0" [(listView)]="listViews"></cde-list-view-controls>
+        <cde-list-view-controls *ngIf="elts.length > 0" style="display: inline-block"
+                                [(listView)]="listViews"></cde-list-view-controls>
         <cde-compare-side-by-side [elements]="elts"></cde-compare-side-by-side>
 
         <button *ngIf="userService.userOrgs?.length > 0 && elts.length > 0"

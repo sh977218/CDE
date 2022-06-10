@@ -1,3 +1,4 @@
+@use 'sass:math';
 @import '../theme';
 
 $homeMobileWidth: 699px;
@@ -26,10 +27,6 @@ $homeMobileWidth: 699px;
 
 .mat-menu-panel {
   width: 100%;
-}
-
-button {
-  border-radius: .25rem;
 }
 
 .displayBox {
@@ -142,37 +139,50 @@ button {
     }
   }
 
-  .input-group {
+  .inline-group {
+    $radius: $formInputBorderRadius;
+    $height: 40px;
     box-shadow: 0 3px 3px 0 rgb(0 0 0 / 15%);
-    border-radius: 0 4px 4px 4px;
+    border-radius: 0 $radius $radius $radius;
 
-    input.form-control {
-      border: none !important;
-      border-radius: 0 0 0 4px;
-      height: 40px;
-      padding-left: 1rem;
-      width: 100%;
+    > * {
+      margin-bottom: 0;
+    }
 
-      &::placeholder {
-        color: rgb(42 42 42 / 40%);
+    label {
+      border-radius: 0 0 0 $radius;
+      z-index: 1;
+
+      input.form-control {
+        border: none !important;
+        border-radius: 0 0 0 $radius;
+        height: $height;
+        padding-left: 1rem;
+        width: 100%;
+
+        &::placeholder {
+          color: rgb(42 42 42 / 40%);
+        }
       }
+    }
+
+    .button {
+      $buttonPadding: math.div($height - $nlmRem * $nlmLineHeight, 2);
+      padding: $buttonPadding 1rem;
     }
 
     @media (max-width: $homeMobileWidth) {
-      border-top-left-radius: .25rem;
+      border-top-left-radius: $radius;
 
-      input.form-control {
-        border-radius: 4px 0 0 4px;
+      label {
+        border-radius: $radius 0 0 $radius;
+
+        input.form-control {
+          border-radius: $radius 0 0 $radius;
+        }
       }
     }
   }
-
-  .input-topside {
-    button {
-      border-radius: .25rem .25rem 0 0;
-    }
-  }
-
 
   .hero {
     //max-width: 520px; // required but does not align words as pictured

@@ -26,9 +26,10 @@
                 <dd>
                     <ng-container *ngIf="attachment.filesize <= 512*1024; else defaultLimit">
                         <label id="defaultCbLabel">
-                            <input type="checkbox" [(ngModel)]="attachment.isDefault"
+                            <input type="checkbox" class="checkbox" [(ngModel)]="attachment.isDefault"
                                    (change)="setDefault.emit(i)" [disabled]="!canEdit"/>
-                            Should this image be displayed in search results?</label>
+                            Should this image be displayed in search results?
+                        </label>
                     </ng-container>
                     <ng-template #defaultLimit>
                         Attachments smaller than 500k can be marked as default

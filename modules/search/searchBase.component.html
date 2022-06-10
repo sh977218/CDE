@@ -1,26 +1,22 @@
 <section class="searchBar" [class.cde]="searchType === 'cde' || searchType === 'endorsedCde'" [class.form]="searchType === 'form'">
-    <form class="input-group" #quickSearchForm="ngForm" id="quickSearchForm" novalidate>
+    <form #quickSearchForm="ngForm" id="quickSearchForm" class="container" novalidate>
         <button style="display: none" type="submit" (click)="termSearch()"></button>
-        <div class="stretchBar input-group" style="gap: 0">
-            <div class="input-group-prepend forSearchDesktop">
-                <button class="searchDropdown button" [matMenuTriggerFor]="searchMenu">
-                    <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
-                         style="height: 20px; vertical-align: text-top">
-                    {{getSearchLabel(searchType)}}
-                    <mat-icon style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
-                </button>
-            </div>
+        <div class="stretchBar inline-group" style="gap: 0">
+            <button class="forSearchDesktop searchDropdown button" [matMenuTriggerFor]="searchMenu">
+                <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
+                     style="height: 20px; vertical-align: text-top">
+                {{getSearchLabel(searchType)}}
+                <mat-icon style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
+            </button>
             <label class="shrink grow d-block mN">
                 <input #autoCompleteInput id="ftsearch-input" name="q" class="form-control"
                        [placeholder]="isSearchDesktop ? 'Search by topic, keyword, or organization' : 'Search by topic, keyword, or org...'"
                        maxlength="500" [matAutocomplete]="auto"
                        [(ngModel)]="searchSettings.q" (ngModelChange)="searchTermAutoComplete.emit($event)"/>
             </label>
-            <div class="input-group-append">
-                <button id="search.submit" class="button" style="margin: 0; padding: .5rem" (click)="termSearch()">
-                    <mat-icon>search</mat-icon>
-                </button>
-            </div>
+            <button id="search.submit" class="button icon" (click)="termSearch()">
+                <mat-icon>search</mat-icon>
+            </button>
         </div>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
             <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
@@ -392,25 +388,26 @@
                 <div #searchResultOptions>
                     <ng-container *ngIf="totalItems > 0">
                         <div class="searchBarTopRow">
-                            <button id="showHideFilters" class="button" (click)="hideShowFilter()">
+                            <button id="showHideFilters" class="button light" (click)="hideShowFilter()">
                                 <mat-icon>filter_list</mat-icon>
                                 {{filterMode ? 'Hide' : 'Show'}} Filters
                             </button>
-                            <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button"
+                            <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button light"
                                     (click)="resetFilters()">
                                 <mat-icon>delete_outline</mat-icon>
                                 Reset
                             </button>
                             <ng-template #notEmbedButtons>
-                                <cde-list-view-controls [(listView)]="resultsView"></cde-list-view-controls>
+                                <cde-list-view-controls style="display: inline-block"
+                                                        [(listView)]="resultsView"></cde-list-view-controls>
                             </ng-template>
                         </div>
                         <ng-container *ngIf="!embedded">
-                            <button id="pinAll" class="button" [hidden]="module === 'form'" (click)="openPinModal()">
+                            <button id="pinAll" class="button light" [hidden]="module === 'form'" (click)="openPinModal()">
                                 <mat-icon svgIcon="thumb_tack"></mat-icon>
                                 Pin All
                             </button>
-                            <button id="export" class="button" style="margin-right: 0" [matMenuTriggerFor]="exportMenu">
+                            <button id="export" class="button light" style="margin-right: 0" [matMenuTriggerFor]="exportMenu">
                                 <mat-icon>play_for_work</mat-icon>
                                 Export All
                                 <mat-icon>arrow_drop_down</mat-icon>

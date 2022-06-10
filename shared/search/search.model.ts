@@ -1,5 +1,5 @@
 import { DataType } from 'shared/de/dataElement.model';
-import { CurationStatus } from 'shared/models.model';
+import { ArrayToType, CurationStatus } from 'shared/models.model';
 
 export class SearchSettings {
     classification: string[] = [];
@@ -48,3 +48,5 @@ export class SearchSettingsElastic {
     }
 }
 
+export const searchTypes = ['cde', 'endorsedCde', 'form'] as const;
+export type SearchType = ArrayToType<typeof searchTypes>;

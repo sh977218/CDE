@@ -38,7 +38,7 @@ export class CdeSearchComponent extends SearchBaseComponent {
 
         this.module = 'cde';
         this._searchType = this.module;
-        this.exporters.csv = {id: 'csvExport', display: 'CSV'};
+        this.exporters.csv = {id: 'csvExport', display: 'CSV file'};
         this.pinComponent = PinBoardModalComponent;
     }
 }

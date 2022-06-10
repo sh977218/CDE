@@ -14,7 +14,7 @@ public class RedCapExportTest extends BaseFormTest {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName("Frontal Behavioral Inventory (FBI)");
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'REDCap')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'REDCap CSV archive')]"));
         // I think jszip doesn't actually compress, just packages. It's OK.
         long expectedZipSize = 9285;
         long zipSize = 0;

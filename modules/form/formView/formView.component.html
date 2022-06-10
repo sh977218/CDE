@@ -85,12 +85,12 @@
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileJson" class="no-link"
                                    href="/server/form/byId/{{elt._id}}" target="_blank"
                                    rel="noopener noreferrer">
-                                    JSON File, NIH/CDE Schema
+                                    NIH/CDE Schema JSON preview
                                     <ng-container *ngTemplateOutlet="exportJsonActions"></ng-container>
                                 </a>
                                 <ng-template #exportFileJson>
                                     <button mat-menu-item (click)="exportService.exportForm(elt, '', 'json')">
-                                        JSON File, NIH/CDE Schema
+                                        NIH/CDE Schema JSON file
                                         <ng-container *ngTemplateOutlet="exportJsonActions"></ng-container>
                                     </button>
                                 </ng-template>
@@ -104,13 +104,13 @@
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileOdm" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml&subtype=odm" target="_blank"
                                    rel="noopener noreferrer">
-                                    XML File, CDISC / ODM
+                                    CDISC / ODM XML preview
                                     <ng-container *ngTemplateOutlet="exportOdmActions"></ng-container>
                                 </a>
                                 <ng-template #exportFileOdm>
                                     <button mat-menu-item
                                        (click)="exportService.exportForm(elt, '?type=xml&subtype=odm', 'xml')">
-                                        XML File, CDISC / ODM
+                                        CDISC / ODM XML file
                                         <ng-container *ngTemplateOutlet="exportOdmActions"></ng-container>
                                     </button>
                                 </ng-template>
@@ -125,13 +125,13 @@
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileSdc" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
                                    rel="noopener noreferrer">
-                                    XML File, SDC Schema
+                                    SDC Schema XML preview
                                     <ng-container *ngTemplateOutlet="exportSdcActions"></ng-container>
                                 </a>
                                 <ng-template #exportFileSdc>
                                     <button mat-menu-item
                                        (click)="exportService.exportForm(elt, '?type=xml&subtype=sdc', 'xml')">
-                                        XML File, SDC Schema
+                                        SDC Schema XML file
                                         <ng-container *ngTemplateOutlet="exportSdcActions"></ng-container>
                                     </button>
                                 </ng-template>
@@ -152,20 +152,20 @@
                                 <a mat-menu-item *ngIf="!isIe()" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
                                    target="_blank" rel="noopener noreferrer">
-                                    XML File, SDC Schema with XSL Transform
+                                    SDC Schema with XSL Transform XML file
                                 </a>
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileXml" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml" target="_blank"
                                    rel="noopener noreferrer">
-                                    XML File, NIH/CDE Schema
+                                    NIH/CDE Schema XML preview
                                 </a>
                                 <ng-template #exportFileXml>
                                     <button mat-menu-item (click)="exportService.exportForm(elt, '?type=xml', 'xml')">
-                                        XML File, NIH/CDE Schema
+                                        NIH/CDE Schema XML file
                                     </button>
                                 </ng-template>
                                 <button mat-menu-item (click)="exportService.redcapExport(elt)">
-                                    REDCap
+                                    REDCap CSV archive
                                     <a class="darken" title="Information"
                                        href="https://projectredcap.org/" target="_blank" rel="noopener noreferrer"
                                        (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
@@ -173,19 +173,19 @@
                                     </a>
                                 </button>
                                 <button mat-menu-item (click)="exportService.formCdeExport(elt)">
-                                    CDE Dictionary (CSV)
+                                    CDE Dictionary CSV file
                                 </button>
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileQuestionnaire"
                                    class="no-link"
                                    href="/server/form/byId/{{elt._id}}?subtype=fhirQuestionnaire"
                                    target="_blank" rel="noopener noreferrer">
-                                    FHIR Questionnaire
+                                    FHIR Questionnaire JSON preview
                                     <ng-container *ngTemplateOutlet="exportFhirActions"></ng-container>
                                 </a>
                                 <ng-template #exportFileQuestionnaire>
                                     <button mat-menu-item
                                        (click)="exportService.exportForm(elt, '?subtype=fhirQuestionnaire', 'json')">
-                                        FHIR Questionnaire
+                                        FHIR Questionnaire JSON file
                                         <ng-container *ngTemplateOutlet="exportFhirActions"></ng-container>
                                     </button>
                                 </ng-template>

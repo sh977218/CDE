@@ -12,8 +12,10 @@
         </ng-template>
     </div>
     <div *ngIf="editMode">
-        <button class="button small light" [class.active]="localFormat !== 'html'" (click)="setHtml(false)">Plain Text</button>
-        <button class="button small light" [class.active]="localFormat === 'html'" (click)="setHtml(true)">Rich Text</button>
+        <div class="inline-group input-topside">
+            <button class="button small light" [class.active]="localFormat !== 'html'" (click)="setHtml(false)">Plain Text</button>
+            <button class="button small light" [class.active]="localFormat === 'html'" (click)="setHtml(true)">Rich Text</button>
+        </div>
 
         <ckeditor *ngIf="localFormat === 'html'; else editText" [config]="{extraPlugins: 'divarea'}"
                   [(ngModel)]="value">

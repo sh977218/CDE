@@ -19,7 +19,7 @@ public class FormCdeExport extends NlmCdeBaseTest {
         goToFormByName("Form In Form Num Questions");
         hangon(2);
         clickElement(By.id("export"));
-        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary (CSV)')]"));
+        clickElement(By.xpath("//*[@mat-menu-item][contains(.,'CDE Dictionary CSV file')]"));
         checkAlert("Export downloaded");
         String fileName = downloadFolder + "/FormCdes-Xy910Dz6f.csv";
         waitForDownload(fileName);

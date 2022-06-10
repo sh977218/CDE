@@ -103,7 +103,7 @@
                         notifications_active
                     </mat-icon>
                 </button>
-                <button *ngIf="userService.loggedIn()" mat-icon-button [class.active]="isActiveSearchSettings()"
+                <button *ngIf="userService.isSiteAdmin()" mat-icon-button [class.active]="isActiveSearchSettings()"
                         routerLink="/searchPreferences" id="searchPreferences" title="Search Preferences">
                     <mat-icon>settings</mat-icon>
                 </button>
