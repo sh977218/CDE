@@ -200,8 +200,8 @@
             </ng-container>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content (scroll)="onScroll($event)" id="scrollRoot"
-                         style="display: flex; flex-direction: column; flex-grow: 1; height: 108px">
+    <mat-sidenav-content id="scrollRoot" [class.scrollContent]="scrollContent()"
+                         style="display: flex; flex-direction: column; flex-grow: 1">
         <router-outlet></router-outlet>
         <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
         <div style="display: flex"></div>

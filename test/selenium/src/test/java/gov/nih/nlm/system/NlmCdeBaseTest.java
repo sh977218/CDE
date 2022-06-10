@@ -1035,6 +1035,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.id(id));
     }
 
+    protected int scrollY() {
+        String scrollLocation = (((JavascriptExecutor) driver).executeScript("return window.scrollY", "")).toString();
+        return Double.valueOf(scrollLocation).intValue();
+    }
+
+    protected int scrollYContent() {
+        String scrollLocation = (((JavascriptExecutor) driver).executeScript("return document.getElementById('scrollRoot').scrollTop", "")).toString();
+        return Double.valueOf(scrollLocation).intValue();
+    }
+
     protected int getCurrentYOffset() {
         String scrollLocation = (((JavascriptExecutor) driver)
                 .executeScript("return window.pageYOffset", "")).toString();

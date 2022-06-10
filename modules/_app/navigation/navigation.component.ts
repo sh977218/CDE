@@ -13,7 +13,6 @@ import {
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu'
 import { NavigationEnd, Params, Router } from '@angular/router';
-import { MatDialog } from "@angular/material/dialog";
 import { CdeAppComponent } from '_app/app.component';
 import { LoginService } from '_app/login.service';
 import '_app/navigation/navigation.global.scss';
@@ -24,7 +23,6 @@ import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
 import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
-import { NotificationDialogComponent } from "_app/notifications/notification-dialog/notification-dialog.component";
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -278,10 +276,6 @@ export class NavigationComponent {
         this.isMobile = window.innerWidth < 768;
     }
 
-    onScroll(e: Event) {
-        this.showHeader = !((e.srcElement as HTMLInputElement).scrollTop > 100 && this.sectionActive !== SECTIONS.home);
-    }
-
     getBarState(bar: HTMLElement) {
         let barState = this.barStates.filter(b => b.bar === bar)[0];
         if (!barState) {
@@ -408,6 +402,10 @@ export class NavigationComponent {
                 trigger2.closeMenu();
             }
         }, 100);
+    }
+
+    scrollContent(): boolean {
+        return this.sectionActive === SECTIONS.home;
     }
 
     toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();

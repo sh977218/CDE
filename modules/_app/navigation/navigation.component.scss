@@ -496,6 +496,10 @@ router-outlet ::ng-deep + *:not(nav) {
   }
 }
 
+.scrollContent {
+  height: 108px;
+}
+
 .spacer {
   flex: 1 1 auto;
 }

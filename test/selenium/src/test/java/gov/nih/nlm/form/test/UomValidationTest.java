@@ -65,8 +65,7 @@ public class UomValidationTest extends BaseFormTest {
         textPresent("errors need to be corrected");
         clickElement(By.partialLinkText("If Yes, what are the number of CAG repeats on the larger allele"));
         hangon(5);
-        String scrollLocation = (((JavascriptExecutor) driver).executeScript("return document.getElementById('scrollRoot').scrollTop", "")).toString();
-        Assert.assertTrue(Double.valueOf(scrollLocation).intValue() > 100);
+        Assert.assertTrue(scrollY() > 100);
     }
 
     @Test
