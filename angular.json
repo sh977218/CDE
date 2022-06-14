@@ -30,11 +30,6 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "modules/cde/public/assets/",
-                "output": "cde/public/assets/"
-              },
-              {
-                "glob": "**/*",
                 "input": "modules/form/public/html/",
                 "output": "form/public/html/"
               },
@@ -197,8 +192,7 @@
             "polyfills": "modules/_nativeRenderApp/src/polyfills.ts",
             "tsConfig": "modules/_nativeRenderApp/tsconfig.nativeRender.json",
             "aot": true,
-            "assets": [
-            ],
+            "assets": [],
             "styles": [
               "modules/nativeRender/nativeRender.global.scss",
               "modules/common.scss"

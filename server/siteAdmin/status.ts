@@ -147,7 +147,7 @@ setInterval(() => {
         if (!!lastReport && newReport !== lastReport) {
             // different report
             if (!notificationTimeout) {
-                // delay sending notif if report stays different for 1 minute
+                // delay sending notify if report stays different for 1 minute
                 notificationTimeout = setTimeout(() => {
                     // send notification now
                     lastReport = newReport;

@@ -14,8 +14,6 @@ dump/
 migration/
 nbproject
 node_modules
-modules/cde/public/assets/fonts/
-modules/cde/public/assets/img/robot.png
 modules/system/public/html/version.html
 prodDump/
 temp/

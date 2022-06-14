@@ -73,9 +73,7 @@ gulp.task('buildNode', function buildNode() {
 
 gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
     const assetFolders: string[] = [
-        'modules/cde/public/assets/img/min',
         'modules/form/public/assets',
-        'modules/form/public/html',
         'modules/processManager',
         'modules/swagger/public',
         'server/swagger/api',
