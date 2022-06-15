@@ -10,7 +10,6 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardViewTemplateComponent } from 'board/boardViewTemplate/boardViewTemplate.component';
-import { CreateBoardComponent } from 'board/createBoard/createBoard.component';
 import { CreateFormFromBoardComponent } from 'board/createFormFromBoard/createFormFromBoard.component';
 import { ListSortComponent } from 'board/listView/listSort.component';
 import { UnpinBoardComponent } from 'board/listView/unpinBoard.component';
@@ -21,6 +20,7 @@ import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.compo
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
+import { CreateBoardModule } from 'board/create-board.module';
 
 
 @NgModule({
@@ -40,11 +40,11 @@ import { TagModule } from 'tag/tag.module';
         // internal
         SearchModule,
         AdminItemModule,
+        CreateBoardModule,
         TagModule
     ],
     declarations: [
         BoardViewTemplateComponent,
-        CreateBoardComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
         PinBoardComponent,
@@ -57,7 +57,6 @@ import { TagModule } from 'tag/tag.module';
     ],
     exports: [
         BoardViewTemplateComponent,
-        CreateBoardComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
         PinBoardComponent,

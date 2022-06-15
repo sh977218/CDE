@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BoardModule } from 'board/board.module';
 import { MyBoardsComponent } from 'board/myBoards/myBoards.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CreateBoardModule } from 'board/create-board.module';
 
 
 const boardRoutes: Routes = [
@@ -17,11 +18,12 @@ const boardRoutes: Routes = [
         CommonModule,
         FormsModule,
         RouterModule.forChild(boardRoutes),
+        MatIconModule,
         // non-core
 
         // internal
         BoardModule,
-        MatIconModule,
+        CreateBoardModule
     ],
     declarations: [
         MyBoardsComponent,

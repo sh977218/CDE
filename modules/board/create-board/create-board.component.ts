@@ -8,7 +8,7 @@ import { Item, ModuleItem } from 'shared/models.model';
 
 @Component({
     selector: 'cde-create-board',
-    templateUrl: './createBoard.component.html',
+    templateUrl: './create-board.component.html',
 })
 export class CreateBoardComponent {
     @Input() buttonName?: string = 'Add Board';
