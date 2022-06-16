@@ -3,8 +3,8 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { DataElement } from 'shared/de/dataElement.model';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
 
 
 @Component({
@@ -15,7 +15,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
     @ViewChild('mltModal', {static: true}) mltModal!: TemplateRef<any>;
-    @ViewChild('mltPinModal', {static: true}) mltPinModal!: PinBoardModalComponent;
+    @ViewChild('mltPinModal', {static: true}) mltPinModal!: PinToBoardModalComponent;
     cdes!: DataElement[];
 
     constructor(

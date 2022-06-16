@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Elt, ModuleItem, User } from 'shared/models.model';
 import { noop } from 'shared/util';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
 
 @Component({
     templateUrl: './cdeAccordionList.component.html',
@@ -14,7 +14,7 @@ export class CdeAccordionListComponent {
     @Input() elts!: DataElement[];
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<DataElement>();
-    @ViewChild('pinModalCde', {static: true}) pinModalCde!: PinBoardModalComponent;
+    @ViewChild('pinModalCde', {static: true}) pinModalCde!: PinToBoardModalComponent;
     module: ModuleItem = 'cde';
     pinModal: any;
     user!: User;

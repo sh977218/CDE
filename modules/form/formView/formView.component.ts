@@ -9,7 +9,6 @@ import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
@@ -34,6 +33,7 @@ import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIte
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { copyDeep, noop } from 'shared/util';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
 
 export class LocatableError {
     id?: string;
@@ -57,7 +57,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
-    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinBoardModalComponent;
+    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinToBoardModalComponent;
     @ViewChild('saveModal') saveModal!: SaveModalComponent;
     _elt?: CdeFormDraft;
     commentMode?: boolean;

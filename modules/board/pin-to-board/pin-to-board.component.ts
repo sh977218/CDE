@@ -13,7 +13,7 @@ import { interruptEvent } from 'non-core/browser';
         <cde-pin-board-modal #mltPinModal [module]="module"></cde-pin-board-modal>
     `
 })
-export class PinBoardComponent {
+export class PinToBoardComponent {
     @Input() elt!: Elt;
     @Input() eltIndex!: number;
     @Input() module: any;

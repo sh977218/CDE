@@ -19,7 +19,6 @@ import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHelper';
 import { scrollTo } from 'non-core/browser';
@@ -43,6 +42,7 @@ import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
 
 type NamedCounts = {name: string, count: number}[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
@@ -91,8 +91,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     orgs?: (Organization & {featureIcon?: string})[];
     orgHtmlOverview?: string;
     ownKeys = ownKeys;
-    pinComponent!: Type<PinBoardModalComponent>;
-    pinModalComponent?: ComponentRef<PinBoardModalComponent>;
+    pinComponent!: Type<PinToBoardModalComponent>;
+    pinModalComponent?: ComponentRef<PinToBoardModalComponent>;
     previousUrl?: string;
     resultsView = '';
     routerSubscription: Subscription;

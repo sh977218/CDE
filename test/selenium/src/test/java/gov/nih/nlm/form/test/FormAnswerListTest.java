@@ -29,7 +29,7 @@ public class FormAnswerListTest extends NlmCdeBaseTest {
         // edit answer list
         clickElement(By.xpath("//*[@id='question_0-0']//*[contains(@class,'answerListLabel')]//mat-icon"));
         reorderBySection("edit-answer","up",1);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         hangon(1);
 
         List<WebElement> listAfterReorder = findElements(By.xpath(question_xpath));

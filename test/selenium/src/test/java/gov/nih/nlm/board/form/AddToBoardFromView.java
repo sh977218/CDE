@@ -12,7 +12,7 @@ public class AddToBoardFromView extends BoardTest{
         goToFormByName("Vessel Imaging Angiography");
         clickElement(By.id("addToBoard"));
         textPresent("TestQuickboard");
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
 
         clickElement(By.id("addToBoard"));
         clickElement(By.cssSelector("#AddFormBoard mat-card-title"));

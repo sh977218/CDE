@@ -15,7 +15,7 @@ public class FormCancelRegStatusTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         startEditRegistrationStatus();
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Recorded");
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
         modalGone();
         goToFormByName(formName);
         goToGeneralDetail();

@@ -85,7 +85,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
             ).getAttribute("id"), boardName1
         );
 
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
 
         gotoMyBoards();
 

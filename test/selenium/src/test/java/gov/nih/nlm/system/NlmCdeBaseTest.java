@@ -1252,7 +1252,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 textPresent(tag);
             }
         }
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         if (tags != null) {
             for (String tag : tags) {
                 textPresent(tag);
@@ -1275,7 +1275,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 textPresent(tag);
             }
         }
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         if (tags != null) {
             for (String tag : tags) {
                 textPresent(tag);
@@ -1292,7 +1292,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             clickElement(By.id("conceptType"));
             clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
         }
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         modalGone();
     }
 
@@ -1305,7 +1305,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         if (isHtml) clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Rich Text')]"));
         else clickElement(By.xpath("//*[@id='newValue']/button[contains(text(),'Plain Text')]"));
         hangon(1);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         modalGone();
     }
 
@@ -1328,7 +1328,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.name("newLanguageCode")).sendKeys(languageCode);
         findElement(By.name("newDocument")).sendKeys(document);
         hangon(2);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         modalGone();
     }
 
@@ -1343,7 +1343,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.name("id")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         modalGone();
     }
 
@@ -1465,7 +1465,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             findElement(By.name("newAdministrativeNote")).sendKeys(administrativeNote);
         if (unresolvedIssue != null && unresolvedIssue.length() > 0)
             findElement(By.name("newUnresolvedIssue")).sendKeys(unresolvedIssue);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         modalGone();
     }
 
@@ -1985,4 +1985,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return "//cde-admin-item-sources//dl/dt";
     }
 
+    protected void clickSaveButton(){
+        clickElement(By.xpath("//button[normalize-space(text())='Save']"));
+    }
+
+    protected void clickCancelButton(){
+        clickElement(By.xpath("//button[normalize-space(text())='Cancel']"));
+    }
 }

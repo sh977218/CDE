@@ -24,7 +24,7 @@ public class BoardTest extends NlmCdeBaseTest {
         findElement(By.id("new-board-name")).sendKeys(name);
         findElement(By.id("new-board-description")).sendKeys(description);
         hangon(2);
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         checkAlert(response);
     }
 
@@ -83,7 +83,7 @@ public class BoardTest extends NlmCdeBaseTest {
                 findElement(By.xpath("//*[@id='boardTag']//input")).sendKeys(tag + ",");
             }
         }
-        clickElement(By.xpath("//button[text()='Save']"));
+        clickSaveButton();
         checkAlert(response);
     }
 }

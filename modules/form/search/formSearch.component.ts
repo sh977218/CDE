@@ -6,11 +6,11 @@ import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
 
 @Component({
     selector: 'cde-form-search',
@@ -39,6 +39,6 @@ export class FormSearchComponent extends SearchBaseComponent {
         this.module = 'form';
         this._searchType = this.module;
         this.exporters.odm = {id: 'odmExport', display: 'ODM archive'};
-        this.pinComponent = PinBoardModalComponent;
+        this.pinComponent = PinToBoardModalComponent;
     }
 }

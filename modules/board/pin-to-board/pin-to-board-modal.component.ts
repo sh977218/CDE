@@ -10,9 +10,9 @@ import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.compo
 
 @Component({
     selector: 'cde-pin-board-modal',
-    templateUrl: './pinBoardModal.component.html',
+    templateUrl: './pin-to-board-modal.component.html',
 })
-export class PinBoardModalComponent {
+export class PinToBoardModalComponent {
     @Input() module!: ModuleItem;
     @ViewChild('pinModal', {static: true}) pinModal!: TemplateRef<any>;
     @ViewChild('ifYouLoginModal', {static: true}) ifYouLoginModal!: TemplateRef<any>;

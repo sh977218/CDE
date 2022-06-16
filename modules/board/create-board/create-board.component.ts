@@ -1,57 +1,36 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
-import { AlertService } from 'alert/alert.service';
-import { MyBoardsService } from 'board/myBoards.service';
-import { Item, ModuleItem } from 'shared/models.model';
+import { Item } from 'shared/models.model';
+import { CreateBoardModalComponent } from 'board/create-board/create-board-modal.component';
 
 @Component({
     selector: 'cde-create-board',
-    templateUrl: './create-board.component.html',
+    templateUrl: './create-board.component.html'
 })
 export class CreateBoardComponent {
-    @Input() buttonName?: string = 'Add Board';
     @Input() elts: Item[] = [];
-    @Input() set module(module: ModuleItem) {
-        this._module = module;
-        if (this.newBoard) {
-            this.newBoard.type = module;
-        }
-    }
-    @ViewChild('createBoardModal', {static: true}) createBoardModal!: TemplateRef<any>;
-    _module!: ModuleItem;
-    dialogRef!: MatDialogRef<TemplateRef<any>>;
+
+    @Input() module;
     newBoard: any;
 
-    constructor(private http: HttpClient,
-                public dialog: MatDialog,
-                public userSvc: UserService,
-                private alert: AlertService,
-                private myBoardsSvc: MyBoardsService) {
-    }
-
-    doCreateBoard() {
-        this.newBoard.shareStatus = 'Private';
-        this.http.post('/server/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
-            this.dialogRef.close();
-            this.myBoardsSvc.waitAndReload(() => {
-                this.alert.addAlert('success', 'Board created.');
-            });
-        }, err => this.alert.httpErrorMessageAlert(err));
+    constructor(public dialog: MatDialog,
+                public userSvc: UserService) {
     }
 
     openNewBoard() {
         this.newBoard = {
-            type: this._module || 'cde',
-            pins: this.elts.map(e => {
-                return {
-                    tinyId: e.tinyId,
-                    name: e.designations[0].designation,
-                    type: this._module
-                };
-            })
+            type: this.module,
+            pins: this.elts.map(e => ({
+                tinyId: e.tinyId,
+                name: e.designations[0].designation,
+                type: this.module
+            }))
         };
-        this.dialogRef = this.dialog.open(this.createBoardModal, {width: '800px'});
+
+        this.dialog.open(CreateBoardModalComponent, {
+            width: '800px',
+            data: this.newBoard,
+        });
     }
 }

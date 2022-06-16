@@ -42,7 +42,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         clickElement(By.name("newKey"));
         new Select(findElement(By.name("newKey"))).selectByVisibleText(propertyKey);
 
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
 
         modalGone();
         goToPropertyKeysManagement();
@@ -88,7 +88,7 @@ public class AdminAddRemoveKeyAndTag extends NlmCdeBaseTest {
         textPresent("Tags are managed in Org Management > List Management");
         clickElement(By.xpath("//*[@id='newDesignationTags']//input"));
         selectMatDropdownByText("canYouSeeThis");
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
 
         modalGone();
         goToTagsManagement();

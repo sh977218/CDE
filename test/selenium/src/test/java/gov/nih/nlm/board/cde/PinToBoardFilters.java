@@ -32,7 +32,7 @@ public class PinToBoardFilters extends NlmCdeBaseTest {
 
         textPresent("Device (1)");
 
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
     }
 
 }

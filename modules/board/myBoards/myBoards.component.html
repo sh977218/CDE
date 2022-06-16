@@ -22,41 +22,44 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-2 col-4 noLeftRightPadding">
-            <div id="sidebar-wrapper">
-                <div *ngIf="myBoardsSvc.filter.types?.length > 0">
-                    <h4>Type</h4>
-                    <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="d-block">
-                        <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
-                               (change)="selectAggregation('types', $index)" style="vertical-align: middle">
-                        <span style="vertical-align: middle">{{type.key}} ({{type.doc_count}})</span>
-                    </label>
+        <mat-drawer-container class="example-container" autosize>
+            <mat-drawer mode="side" opened>
+                <div style="padding:30px;">
+                    <div *ngIf="myBoardsSvc.filter.types?.length > 0">
+                        <h4>Type</h4>
+                        <label *ngFor="let type of myBoardsSvc.filter.types; let $index = index" class="d-block">
+                            <input type="checkbox" data-id="type-{{type.key}}" [checked]="type.checked"
+                                   (change)="selectAggregation('types', $index)" style="vertical-align: middle">
+                            <span style="vertical-align: middle">{{type.key}} ({{type.doc_count}})</span>
+                        </label>
+                    </div>
+                    <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
+                        <h4>Tags</h4>
+                        <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="d-block">
+                            <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
+                                   (change)="selectAggregation('tags', $index)" style="vertical-align: middle">
+                            <span style="vertical-align: middle">{{tag.key}} ({{tag.doc_count}})</span>
+                        </label>
+                    </div>
+                    <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
+                        <h4>Share Status</h4>
+                        <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="d-block">
+                            <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
+                                   (change)="selectAggregation('shareStatus', $index)">
+                            {{ss.key}} ({{ss.doc_count}})
+                        </label>
+                    </div>
                 </div>
-                <div *ngIf="myBoardsSvc.filter.tags?.length > 0">
-                    <h4>Tags</h4>
-                    <label *ngFor="let tag of myBoardsSvc.filter.tags; let $index = index" class="d-block">
-                        <input type="checkbox" data-id="tag-{{tag.key}}" [checked]="tag.checked"
-                               (change)="selectAggregation('tags', $index)" style="vertical-align: middle">
-                        <span style="vertical-align: middle">{{tag.key}} ({{tag.doc_count}})</span>
-                    </label>
-                </div>
-                <div *ngIf="myBoardsSvc.filter.shareStatus?.length">
-                    <h4>Share Status</h4>
-                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus; let $index = index" class="d-block">
-                        <input type="checkbox" data-id="ss-{{ss.key}}" [checked]="ss.checked"
-                               (change)="selectAggregation('shareStatus', $index)">
-                        {{ss.key}} ({{ss.doc_count}})
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-10 col-8 dragDiv" id="my-board-container">
-
+            </mat-drawer>
+            <mat-drawer-content>
                 <div class="responsiveGrid">
                     <cde-board-view-template *ngFor="let board of myBoardsSvc.boards"
                                              [board]="board" [canEdit]="true" (saved)="saveBoard($event)"
                                              (deleted)="deleteBoard($event);"></cde-board-view-template>
                 </div>
+            </mat-drawer-content>
+        </mat-drawer-container>
+        <div class="dragDiv" id="my-board-container">
         </div>
     </div>
 </div>

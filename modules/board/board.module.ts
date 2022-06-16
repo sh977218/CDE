@@ -14,13 +14,13 @@ import { CreateFormFromBoardComponent } from 'board/createFormFromBoard/createFo
 import { ListSortComponent } from 'board/listView/listSort.component';
 import { UnpinBoardComponent } from 'board/listView/unpinBoard.component';
 import { MyBoardsService } from 'board/myBoards.service';
-import { PinBoardComponent } from 'board/pins/pinBoard.component';
-import { PinBoardModalComponent } from 'board/pins/pinBoardModal.component';
 import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 import { CreateBoardModule } from 'board/create-board.module';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
+import { PinToBoardComponent } from 'board/pin-to-board/pin-to-board.component';
 
 
 @NgModule({
@@ -47,8 +47,8 @@ import { CreateBoardModule } from 'board/create-board.module';
         BoardViewTemplateComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
-        PinBoardComponent,
-        PinBoardModalComponent,
+        PinToBoardComponent,
+        PinToBoardModalComponent,
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
@@ -59,13 +59,13 @@ import { CreateBoardModule } from 'board/create-board.module';
         BoardViewTemplateComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
-        PinBoardComponent,
-        PinBoardModalComponent,
+        PinToBoardComponent,
+        PinToBoardModalComponent,
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
     entryComponents: [
-        PinBoardModalComponent,
+        PinToBoardModalComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

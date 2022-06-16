@@ -14,7 +14,7 @@ public class CdeCancelRegStatusTest extends NlmCdeBaseTest {
         textPresent("Qualified");
         startEditRegistrationStatus();
         new Select(driver.findElement(By.name("newRegistrationStatus"))).selectByVisibleText("Recorded");
-        clickElement(By.xpath("//button[text()='Cancel']"));
+        clickCancelButton();
         modalGone();
         goToCdeByName(cdeName);
         textPresent("Qualified", By.cssSelector("[itemprop='registrationStatus']"));
