@@ -57,10 +57,10 @@
     <div style="margin: 25px" [innerHtml]="orgHtmlOverview"></div>
 </ng-template>
 
-<section *ngIf="elts && aggregations else searchingLoader" class="container" [class.searchFilterLayout]="filterMode"
-         style="margin-top: 0">
+<section *ngIf="elts && aggregations else searchingLoader" class="container searchSection" [class.searchFilterLayout]="filterMode"
+         style="margin-top: 0" [style.max-width]="resultsView === 'table' ? 'none' : ''">
     <!--FILTERS-->
-    <div *ngIf="filterMode">
+    <div *ngIf="filterMode" class="filterPanel">
         <!-- BREADCRUMBS / Active Filters -->
         <div *ngIf="isSearched()">
             <div class="searchFilterTitle">ACTIVE {{module === 'cde' ? 'CDE' : 'FORM'}} FILTERS</div>
@@ -308,7 +308,7 @@
         </div>
     </div>
     <!-- CONTENT -->
-    <div style="padding: 30px 0 0 30px">
+    <div class="searchResultsView">
         <ng-container *ngIf="elts.length > 0 && aggregations; else noResults">
             <ng-container *ngIf="isSearched(); else welcomePage">
                 <div class="searchResultBar" style="margin-bottom: 1rem">

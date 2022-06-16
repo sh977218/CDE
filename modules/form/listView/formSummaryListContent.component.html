@@ -1,32 +1,54 @@
 <h4 style="margin-top: 8px">
-    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView" (select)="select.emit($event)">
+    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView" (select)="select.emit($event)"
+                        class="summaryHeading">
         <span class="summary-list-before">
             <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
                  src="/assets/img/endorsedRibbon.svg"
                  matTooltipClass="cdeTooltip"
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
         </span>
-        <span class="summary-list-after">
+        <span class="summary-list-after" style="margin-left:5px; float:right;">
             <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
+            <mat-icon
+                    id="pinToBoard_{{eltIndex}}"
+                    class="fake-link" svgIcon="pin"
+                    pinToBoard [eltsToPin]="[elt]"
+                    [module]="elt.elementType"
+                    style="border: solid 2px #32629599;
+               border-radius: 3px;
+               padding: 0 5px 5px 5px;
+               height: 30px;
+               width: 30px;">
+            </mat-icon>
         </span>
     </cde-summary-heading>
 </h4>
 
 <div class="contentLayout">
     <div>
-        <b>{{elt.numQuestions}} Questions </b> <span *ngIf="elt.primaryDefinitionCopy"> - </span>
-        <span [innerHtml]="elt.primaryDefinitionCopy"></span>
-        <dl class="cde-property-xl">
-            <dt>Steward:</dt>
-            <dd>{{elt.stewardOrg.name}}</dd>
-            <ng-container *ngIf="elt.classification?.length > 0">
-                <dt>Used By:</dt>
-                <dd id="usedBy_{{eltIndex}}">
-                    <span *ngIf="!(elt.classification.length > 0)">None</span>
-                    <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
-                </dd>
-            </ng-container>
-        </dl>
+        <b>{{elt.numQuestions}} Questions </b>
+        <div style="margin-top:10px; margin-bottom: 15px">
+                <span [class]="elt.registrationState.registrationStatus === 'Qualified' ? 'regStatusQualified' : 'regStatusStandard'"
+                        id="registrationStatus_{{eltIndex}}"> {{elt.registrationState.registrationStatus}} </span>
+        </div>
+        <div class="formDetails">
+            <div>
+                <span [innerHtml]="elt.primaryDefinitionCopy"></span>
+            </div>
+            <div>
+                <dl class="summary-dl">
+                    <dt>Steward:</dt>
+                    <dd>{{elt.stewardOrg.name}}</dd>
+                    <ng-container *ngIf="elt.classification?.length > 0">
+                        <dt>Used By:</dt>
+                        <dd id="usedBy_{{eltIndex}}">
+                            <span *ngIf="!(elt.classification.length > 0)">None</span>
+                            <span *ngIf="elt.classification.length > 0">{{getStewards()}}</span>
+                        </dd>
+                    </ng-container>
+                </dl>
+            </div>
+        </div>
     </div>
     <div>
         <img *ngFor="let attachment of elt.attachments.filter(defaultAttachmentsFilter)"

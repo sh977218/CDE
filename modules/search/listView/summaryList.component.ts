@@ -6,10 +6,8 @@ import { ItemElastic } from 'shared/models.model';
     templateUrl: './summaryList.component.html',
     styles: [`
         .singleSearchResult {
-            padding-left: 10px;
             margin-bottom: 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            border-left: 3px solid rgba(0, 0, 0, 0.1);
+            border-top: 3px solid #F1F1F1;
         }
     `]
 })

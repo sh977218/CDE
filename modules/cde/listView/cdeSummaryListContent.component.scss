@@ -2,42 +2,25 @@
 
 .contentLayout {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column;
   width: 100%;
 
   dl {
     margin-bottom: 0;
   }
+}
 
-  > :nth-child(1) {
-    flex: 0 0 100%;
+.cdeDetails {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 
-    @media (min-width: $screenMd) {
-      flex: 0 0 33.33%;
+  @media (max-width: 590px) {
+    flex-direction: column;
+
+    div {
+      margin-bottom: 5px;
     }
   }
 
-  > :nth-child(2) {
-    flex: 0 0 100%;
-
-    @media (min-width: $screenSm) {
-      flex: 0 0 66.67%;
-    }
-
-    @media (min-width: $screenMd) {
-      flex: 0 0 41.67%;
-    }
-  }
-
-  > :nth-child(3) {
-    flex: 0 0 100%;
-
-    @media (min-width: $screenSm) {
-      flex: 0 0 33.33%;
-    }
-
-    @media (min-width: $screenMd) {
-      flex: 0 0 25%;
-    }
-  }
 }

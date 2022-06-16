@@ -88,6 +88,8 @@ export class CdeAppComponent {
             + `</svg>`
             /* tslint:enable */
         ));
+
+        iconReg.addSvgIcon('pin', sanitizer.bypassSecurityTrustResourceUrl('/assets/img/Pin.svg'));
     }
 
     frameReady() {

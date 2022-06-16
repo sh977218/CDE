@@ -3,10 +3,5 @@
     <a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
        [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
        (click)="select.emit(elt.tinyId)"></a>
-    <small class="text-muted" id="registrationStatus_{{eltIndex}}"> {{elt.registrationState.registrationStatus}} </small>
-    <mat-icon id="pinToBoard_{{eltIndex}}" class="fake-link" svgIcon="thumb_tack" pinToBoard [eltsToPin]="[elt]" [module]="elt.elementType"></mat-icon>
-    <ng-content select=".summary-list-after"></ng-content>
-    <span *ngIf="elt.highlight?.matchedBy" class="pull-right hidden-sm-down small">
-        <small class="text-muted small">Matched by: <strong [innerHtml]="elt.highlight.matchedBy"></strong></small>
-    </span>
 </h2>
+<ng-content select=".summary-list-after"></ng-content>

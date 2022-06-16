@@ -1,11 +1,11 @@
 <div *ngIf="elt.valueDomain.datatype === 'Value List'">
     <div *ngIf="elt.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
-    <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="table cdeTable"
+    <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="summaryTable cdeTable"
            summary="List of permissible values">
         <tr>
-            <th id="value_{{eltIndex}}" class="col-5">Value</th>
-            <th id="codeName_{{eltIndex}}" class="col-5">Code Name</th>
-            <th id="code_{{eltIndex}}" class="col-2">Code</th>
+            <th id="value_{{eltIndex}}" class="col-5 summaryLabel">Value</th>
+            <th id="codeName_{{eltIndex}}" class="col-5 summaryLabel">Code Name</th>
+            <th id="code_{{eltIndex}}" class="col-2 summaryLabel">Code</th>
         </tr>
         <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
             <td headers="value_{{eltIndex}}" class="col-5 text-truncate">{{pv.permissibleValue}}</td>
@@ -13,7 +13,9 @@
             <td headers="code_{{eltIndex}}" class="col-2 text-truncate">{{pv.valueMeaningCode}}</td>
         </tr>
         <tr *ngIf="elt.valueDomain.permissibleValues.length > 5">
-            <td colspan="3"> ({{elt.valueDomain.nbOfPVs}} total) See full list in Detailed View</td>
+            <td colspan="3" style="font-style: italic"> ({{elt.valueDomain.nbOfPVs}} total) See full table in <a style="text-decoration: underline"
+                    [routerLink]="['/deView']" [queryParams]="{tinyId: elt.tinyId}"
+            >Detail View</a></td>
         </tr>
     </table>
 </div>

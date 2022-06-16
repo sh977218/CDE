@@ -27,31 +27,6 @@ public class HighlightTest extends NlmCdeBaseTest {
         textPresent(":The enzymatic processing of a polypeptide chain");
         findElement(By.xpath("//*[@id='searchResult_0']//strong[.='enzymatic']"));
 
-        // no highlights
-        goToCdeSearch();
-        clickElement(By.id("browseOrg-caCORE"));
-        clickElement(By.id("classif-Mage-OM"));
-        textPresent("A note acknowledging a source of information or quoting a passage._A person who edits material for publication; a person having managerial and sometimes policy-making responsibility for the editorial ...");
-        textPresent("Matched by: Classification");
-
-        goToCdeSearch();
-        findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("Kroenke");
-        clickElement(By.id("search.submit"));
-        textPresent("Matched by: Properties");
-
-        goToCdeSearch();
-        findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("prepubertal");
-        clickElement(By.id("search.submit"));
-        textPresent("Matched by: Permissible Values");
-
-        goToCdeSearch();
-        findElement(By.id("ftsearch-input")).clear();
-        findElement(By.id("ftsearch-input")).sendKeys("BPIPainGenrlActIntfrrnScale");
-        clickElement(By.id("search.submit"));
-        textPresent("Matched by: Identifiers");
-
     }
 
 

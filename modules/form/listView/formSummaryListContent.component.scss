@@ -2,26 +2,35 @@
 
 .contentLayout {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column wrap;
   width: 100%;
 
   dl {
     margin-bottom: 0;
   }
+}
+
+.formDetails {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  justify-content: space-between;
 
   > :nth-child(1) {
-    flex: 0 0 100%;
+    margin-right: 20px;
 
-    @media (min-width: $screenLg) {
-      flex: 0 0 41.67%;
+    @media (max-width: 500px) {
+      margin-right: 0;
     }
   }
 
-  > :nth-child(2) {
-    flex: 0 0 100%;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    justify-content: unset;
 
-    @media (min-width: $screenLg) {
-      flex: 0 0 16.67%;
+    div {
+      margin-bottom: 5px;
     }
   }
+
 }
