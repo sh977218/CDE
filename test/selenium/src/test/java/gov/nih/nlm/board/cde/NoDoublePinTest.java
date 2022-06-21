@@ -13,9 +13,7 @@ public class NoDoublePinTest extends BoardTest {
         String cdeName = "Specimen Inflammation Change Type";
         String boardName = "Double Pin Board";
 
-        goToCdeByName(cdeName);
-        clickElement(By.id("addToBoard"));
-        textPresent("Pinned to " + boardName);
+        pinCdeToBoardWithoutModal(cdeName, boardName);
 
         goToCdeSearch();
         openCdeInList(cdeName);

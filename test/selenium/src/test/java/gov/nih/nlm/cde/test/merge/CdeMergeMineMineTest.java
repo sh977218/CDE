@@ -16,12 +16,9 @@ public class CdeMergeMineMineTest extends BoardTest {
         createBoard(boardName, "Merge Test", "cde");
 
         goToCdeByName(cdeName1);
-        clickElement(By.id("addToBoard"));
-        textPresent("Pinned to " + boardName);
-
+        pinToBoardFromViewPageWithoutModal(boardName);
         goToCdeByName(cdeName2);
-        clickElement(By.id("addToBoard"));
-        textPresent("Pinned to " + boardName);
+        pinToBoardFromViewPageWithoutModal(boardName);
 
         goToBoard(boardName);
 
@@ -54,22 +51,19 @@ public class CdeMergeMineMineTest extends BoardTest {
         sourcesPropertyValueContains("Name:", "NCI");
     }
 
-    @Test(dependsOnMethods={"cdeMergeMineMine"})
+    @Test(dependsOnMethods = {"cdeMergeMineMine"})
     public void cantEditInCompare() {
         mustBeLoggedInAs(ctepEditor_username, password);
-
+        String cdeName1 = "Person Birth Date";
+        String cdeName2 = "Patient Ethnic Group Category";
         String boardName = "CantEditInCompare";
         createBoard(boardName, "Merge Test", "cde");
 
-        goToCdeByName("Person Birth Date");
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        goToCdeByName(cdeName1);
+        pinToBoardFromViewPageWithModal(boardName);
 
-        goToCdeByName("Patient Ethnic Group Category");
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        goToCdeByName(cdeName2);
+        pinToBoardFromViewPageWithModal(boardName);
 
         goToBoard(boardName);
 

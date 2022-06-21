@@ -12,7 +12,7 @@ public class CdeNumberIncrementTest extends BoardTest {
         gotoMyBoards();
         int numBefore = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(numBefore, 0);
-        pinCdeToBoard("Lymph Node Procedure", boardName);
+        pinCdeToBoardWithModal("Lymph Node Procedure", boardName);
         gotoMyBoards();
         int numAfter = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(numAfter, 1);

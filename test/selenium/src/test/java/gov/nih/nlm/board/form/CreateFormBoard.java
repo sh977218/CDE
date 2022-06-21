@@ -17,9 +17,9 @@ public class CreateFormBoard extends BoardTest {
         String formName3 = "ER/Admission Therapeutic Procedures";
         createBoard(boardName, boardDefinition, "form");
 
-        pinFormToBoard(formName1, boardName);
-        pinFormToBoard(formName2, boardName);
-        pinFormToBoard(formName3, boardName);
+        pinFormToBoardWithModal(formName1, boardName);
+        pinFormToBoardWithModal(formName2, boardName);
+        pinFormToBoardWithModal(formName3, boardName);
 
         goToBoard(boardName);
 

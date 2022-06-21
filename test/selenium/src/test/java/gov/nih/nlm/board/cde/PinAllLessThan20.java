@@ -1,12 +1,9 @@
 package gov.nih.nlm.board.cde;
 
-import io.restassured.http.ContentType;
-import io.restassured.http.Cookie;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
 
 public class PinAllLessThan20 extends BoardTest {
 
@@ -23,11 +20,7 @@ public class PinAllLessThan20 extends BoardTest {
         clickElement(By.id("classif-Exploratory"));
         textPresent("9 results. Sorted by relevance.");
         int searchResultNum_int = getNumberOfResults();
-        clickElement(By.id("pinAll"));
-        textPresent("Choose a Board to pin");
-        clickBoardHeaderByName(boardName);
-        checkAlert("All elements pinned");
-        waitForESUpdate();
+        pinAllToBoardFromSearchPage(boardName);
         gotoMyBoards();
 
         // find nb of cdes for the boards.

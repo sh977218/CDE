@@ -11,19 +11,14 @@ public class MergeFormAndRetireCde extends BoardTest {
     public void mergeFormAndRetireCde() {
         String formName1 = "PHQ-9 quick depression assessment panel [Reported.PHQ]";
         String formName2 = "Patient Health Questionnaire - 9 (PHQ-9) Depression Scale";
-        mustBeLoggedInAs(nlm_username, nlm_password);
-
         String boardName = "MergeFormRetire";
 
+        mustBeLoggedInAs(nlm_username, nlm_password);
         goToFormByName(formName1);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        pinToBoardFromViewPageWithModal(boardName);
 
         goToFormByName(formName2);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        pinToBoardFromViewPageWithModal(boardName);
 
         goToBoard(boardName);
         clickElement(By.id("qb_compare"));

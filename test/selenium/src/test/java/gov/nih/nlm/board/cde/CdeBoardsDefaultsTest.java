@@ -43,7 +43,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         String cdeName2 = "Biomarker Outcome Characteristics java.lang.String";
         String cdeName3 = "Specimen Inflammation Change Type";
 
-        pinCdeToBoard(cdeName1,boardName1);
+        pinCdeToBoardWithModal(cdeName1,boardName1);
         hangon(1);
 
         goToCdeByName(cdeName2);

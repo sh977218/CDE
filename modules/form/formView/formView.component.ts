@@ -33,7 +33,7 @@ import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIte
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { copyDeep, noop } from 'shared/util';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 export class LocatableError {
     id?: string;

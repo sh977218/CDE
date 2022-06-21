@@ -28,26 +28,40 @@ public class BoardTest extends NlmCdeBaseTest {
         checkAlert(response);
     }
 
-    protected void pinCdeToBoard(String cdeName, String cdeBoardName) {
-        pinTo(cdeName, cdeBoardName, "cde");
+    protected void pinCdeToBoardWithModal(String cdeName, String boardName) {
+        pinTo(cdeName, "cde");
+        textPresent(boardName);
+        clickBoardHeaderByName(boardName);
+        checkAlert("Pinned to " + boardName);
+        modalGone();
     }
 
-    protected void pinFormToBoard(String formName, String formBoardName) {
-        pinTo(formName, formBoardName, "form");
+    protected void pinCdeToBoardWithoutModal(String cdeName, String boardName) {
+        pinTo(cdeName, "cde");
+        checkAlert("Pinned to " + boardName);
+    }
+
+    protected void pinFormToBoardWithModal(String formName, String boardName) {
+        pinTo(formName, "form");
+        textPresent(boardName);
+        clickBoardHeaderByName(boardName);
+        checkAlert("Pinned to " + boardName);
+        modalGone();
+    }
+
+    protected void pinFormToBoarWithoutModal(String formName, String boardName) {
+        pinTo(formName, "form");
+        checkAlert("Pinned to " + boardName);
     }
 
     protected void clickBoardHeaderByName(String boardName) {
         clickElement(By.xpath("//*[@id='" + boardName + "']//mat-card-title"));
     }
 
-    private void pinTo(String eltName, String boardName, String type) {
+    private void pinTo(String eltName, String type) {
         if (type.equals("cde")) openCdeInList(eltName);
         if (type.equals("form")) openFormInList(eltName);
         clickElement(By.id("pinToBoard_0"));
-        textPresent(boardName);
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
-        modalGone();
     }
 
     public void goToBoard(String boardName) {
@@ -85,5 +99,31 @@ public class BoardTest extends NlmCdeBaseTest {
         }
         clickSaveButton();
         checkAlert(response);
+    }
+
+    protected void pinAllToBoardFromSearchPage(String boardName) {
+        clickElement(By.id("pinAll"));
+        textPresent("Choose a Board to pin");
+        clickBoardHeaderByName(boardName);
+        checkAlert("All elements pinned");
+    }
+
+    protected void pinToBoardFromViewPageWithModalAndGoToBoard(String boardName) {
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        clickElement(By.linkText(boardName));
+    }
+
+    protected void pinToBoardFromViewPageWithModal(String boardName) {
+        clickElement(By.id("addToBoard"));
+        clickBoardHeaderByName(boardName);
+        checkAlert("Pinned to " + boardName);
+        modalGone();
+    }
+
+    protected void pinToBoardFromViewPageWithoutModal(String boardName) {
+        clickElement(By.id("addToBoard"));
+        textPresent("Pinned to " + boardName);
+        closeAlert();
     }
 }

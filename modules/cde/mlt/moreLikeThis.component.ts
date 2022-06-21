@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 
 @Component({

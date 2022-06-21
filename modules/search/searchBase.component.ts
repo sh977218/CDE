@@ -42,7 +42,7 @@ import { SearchSettings } from 'shared/search/search.model';
 import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 type NamedCounts = {name: string, count: number}[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';

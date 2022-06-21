@@ -15,15 +15,8 @@ public class NotAlignFormCannotMerge extends BoardTest {
 
         String boardName = "NotAlignForm";
 
-        goToFormByName(form1);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
-
-        goToFormByName(form2);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        pinFormToBoardWithModal(form1, boardName);
+        pinFormToBoardWithModal(form2, boardName);
 
         goToBoard(boardName);
 

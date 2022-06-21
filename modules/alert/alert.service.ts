@@ -16,31 +16,28 @@ export class Alert {
         this.id = new Date().getTime();
     }
 
-    setMessage(msg: string) {
-        this.message = msg;
-    }
 }
 
 @Injectable()
 export class AlertService {
-    alertTime: number;
+    alertTime = 90000;
 
-    constructor(
-        @Inject(forwardRef(() => MatSnackBar)) private snackBar: MatSnackBar,
-    ) {
-        this.alertTime = 5000;
-        if (this.alertTime === 1) { this.alertTime = 90000; }
+    constructor(private snackBar: MatSnackBar) {
     }
 
     addAlert(type: string, message: string) {
         let config = {duration: this.alertTime};
-        if (type === 'danger') { config = {duration: 0}; }
+        if (type === 'danger') {
+            config = {duration: 0};
+        }
         this.snackBar.open(message, 'Dismiss', config);
     }
 
-    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any){
+    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any) {
         let config = {duration: this.alertTime};
-        if (type === 'danger') { config = {duration: 0}; }
+        if (type === 'danger') {
+            config = {duration: 0};
+        }
         this.snackBar.openFromComponent(component, {
             ...config,
             data

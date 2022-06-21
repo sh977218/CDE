@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Dictionary } from 'async';
 import { BoardFilter } from 'shared/board/board.model';
-import { ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem } from 'shared/models.model';
+import {
+    ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem
+} from 'shared/models.model';
 import { noop } from 'shared/util';
 
 @Injectable()
@@ -56,11 +58,11 @@ export class MyBoardsService {
         }, cb);
     }
 
-    sortBoardList(type?: ModuleItem){
+    sortBoardList(type?: ModuleItem) {
         const defaultBoardId = type === 'form' ? this.userService.user?.formDefaultBoard : this.userService.user?.cdeDefaultBoard;
-        if(type && defaultBoardId && this.boards){
+        if (type && defaultBoardId && this.boards) {
             const boardIdx = this.boards.findIndex(b => b._id === defaultBoardId);
-            if(boardIdx > 0){
+            if (boardIdx > 0) {
                 this.boards.splice(0, 0, this.boards.splice(boardIdx, 1)[0]);
             }
         }

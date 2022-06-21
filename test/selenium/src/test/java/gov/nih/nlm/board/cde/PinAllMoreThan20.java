@@ -19,11 +19,7 @@ public class PinAllMoreThan20 extends BoardTest {
         hangon(3);
         int searchResultNum_int = getNumberOfResults();
         Assert.assertTrue(searchResultNum_int > 20);
-        scrollToTop();
-        clickElement(By.id("pinAll"));
-        textPresent("Choose a Board to pin");
-        clickBoardHeaderByName(boardName);
-        textPresent("All elements pinned");
+        pinAllToBoardFromSearchPage(boardName);
         gotoMyBoards();
         int num_cde_after_pinAll_int = getNumberElementsByBoardName(boardName);
         Assert.assertEquals(searchResultNum_int, num_cde_after_pinAll_int);

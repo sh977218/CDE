@@ -10,7 +10,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal.component';
+import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 @Component({
     selector: 'cde-form-search',

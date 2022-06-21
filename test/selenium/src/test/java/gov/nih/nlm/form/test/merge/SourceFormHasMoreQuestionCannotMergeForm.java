@@ -1,7 +1,6 @@
 package gov.nih.nlm.form.test.merge;
 
 import gov.nih.nlm.board.cde.BoardTest;
-import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
@@ -16,14 +15,10 @@ public class SourceFormHasMoreQuestionCannotMergeForm extends BoardTest {
         String boardName = "SourceFormMoreQuestions";
 
         goToFormByName(form1);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        pinToBoardFromViewPageWithModal(boardName);
 
         goToFormByName(form2);
-        clickElement(By.id("addToBoard"));
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
+        pinToBoardFromViewPageWithModal(boardName);
 
         goToBoard(boardName);
 

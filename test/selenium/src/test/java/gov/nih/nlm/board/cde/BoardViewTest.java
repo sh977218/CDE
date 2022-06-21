@@ -34,11 +34,11 @@ public class BoardViewTest extends BoardTest {
         mustBeLoggedInAs(boardUser, password);
         String boardName = "Test Board";
 
-        attachToBoard("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
-        attachToBoard("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
-        attachToBoard("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count", boardName);
-        attachToBoard("Prior BMSCT Administered Indicator", boardName);
-        attachToBoard("Generalized Activities of Daily Living Pain Restricted Scale", boardName);
+        pinCdeToBoardWithModal("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage", boardName);
+        pinCdeToBoardWithModal("Fluorescence in situ Hybridization Anaplastic Lymphoma Kinase Calculation Standard Deviation Value", boardName);
+        pinCdeToBoardWithModal("Recurrent Malignant Neoplasm Patient No Cisplatin Interval Month Count", boardName);
+        pinCdeToBoardWithModal("Prior BMSCT Administered Indicator", boardName);
+        pinCdeToBoardWithModal("Generalized Activities of Daily Living Pain Restricted Scale", boardName);
         closeAlert();
         hangon(1);
         goToBoard(boardName);
@@ -57,13 +57,6 @@ public class BoardViewTest extends BoardTest {
         textPresent("Generalized Activities of Daily Living Pain");
         textPresent("Platinum free");
         textPresent("3535434");
-    }
-
-    private void attachToBoard(String cdeName, String boardName) {
-        searchElt(cdeName, "cde");
-        clickElement(By.id("pinToBoard_0"));
-        clickBoardHeaderByName(boardName);
-        textPresent("Pinned to " + boardName);
     }
 
     @Test

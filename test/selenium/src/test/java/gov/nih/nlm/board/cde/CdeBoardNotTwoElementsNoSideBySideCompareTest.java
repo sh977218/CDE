@@ -12,9 +12,9 @@ public class CdeBoardNotTwoElementsNoSideBySideCompareTest extends BoardTest {
         String boardName = "CDE Compare Board";
         mustBeLoggedInAs(boarduser1_username, password);
         createBoard(boardName, "Test Compare", "cde");
-        pinCdeToBoard(cdeName1, boardName);
-        pinCdeToBoard(cdeName2, boardName);
-        pinCdeToBoard(cdeName3, boardName);
+        pinCdeToBoardWithModal(cdeName1, boardName);
+        pinCdeToBoardWithModal(cdeName2, boardName);
+        pinCdeToBoardWithModal(cdeName3, boardName);
         goToBoard(boardName);
         clickElement(By.id("elt_compare_0"));
         clickElement(By.id("qb_compare"));
