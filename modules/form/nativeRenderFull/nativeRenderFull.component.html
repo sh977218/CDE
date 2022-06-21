@@ -17,13 +17,6 @@
                 (Provided by <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" rel="noopener noreferrer"
                                 (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">LHNCBC</a>)
             </button>
-            <span mat-menu-item id="button_sdc"
-                    attr.data-url="/form/{{elt.tinyId}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                    onclick="window.open(this.getAttribute('data-url'),'_blank')">
-                SDC
-                (Provided by <a href="https://www.healthit.gov/techlab/" target="_blank" rel="noopener noreferrer"
-                                (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">ONC</a>)
-            </span>
             <button mat-menu-item id="printableLogicCb" (click)="overridePrintable = !overridePrintable">
                 Print View:
                 <mat-icon>{{overridePrintable ? 'check_box' : 'check_box_outline_blank'}}</mat-icon>

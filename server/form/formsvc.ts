@@ -13,7 +13,6 @@ import {
 import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { getFormNih } from 'server/form/nihForm';
 import { getFormOdm } from 'server/form/odmForm';
-import { formToSDC } from 'server/form/sdcForm';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
@@ -118,12 +117,6 @@ export function byId(req: Request, res: Response) {
                         res.setHeader('Content-Type', 'text/xml');
                         return res.send(xmlForm);
                     }));
-                } else if (req.query.subtype === 'sdc') {
-                    formToSDC({
-                        form: wholeForm,
-                        renderer: req.query.renderer as 'defaultHtml' | undefined,
-                        validate: req.query.validate as string
-                    }, handleError({req, res}, sdcForm => res.send(sdcForm)));
                 } else {
                     getFormNih(wholeForm, handleError({req, res}, xmlForm => res.send(xmlForm)));
                 }
@@ -180,15 +173,6 @@ export function byTinyId(req: Request, res: Response) {
                         getFormOdm(wholeForm, handleError(handlerOptions, xmlForm => {
                             res.setHeader('Content-Type', 'text/xml');
                             return res.send(xmlForm);
-                        }));
-                        break;
-                    case 'sdc':
-                        formToSDC({
-                            form: wholeForm,
-                            renderer: req.query.renderer as 'defaultHtml' | undefined,
-                            validate: req.query.validate as string,
-                        }, handleError({req, res}, sdcForm => {
-                            res.send(sdcForm);
                         }));
                         break;
                     default:

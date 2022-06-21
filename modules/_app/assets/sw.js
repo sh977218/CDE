@@ -1,7 +1,7 @@
 var CACHE_NAME = 'cde-cache-v8f001';
 var CACHE_WHITELIST = ['cde-cache-v8f001'];
 var urlsToCache = ["/assets/favicon.ico", "/assets/manifest.webmanifest", "/assets/offline/offline.html", "/assets/offline/offline.png", "/assets/img/NIH-CDE.svg", "/assets/img/NIH-CDE-Manifest.png"];
-var htmlServedUri = ["/", "/404", "/api", "/board/:id", "/boardList", "/cde/search", "/cdeStatusReport", "/classificationManagement", "/contactUs", "/createCde", "/createForm", "/deView", "/form/search", "/formView", "/help/:title", "/home", "/login", "/myBoards", "/orgAccountManagement", "/orgAuthority", "/orgComments", "/profile", "/quickBoard", "/sdcview", "/searchPreferences", "/siteAudit", "/siteAccountManagement", "/whatsNew"];
+var htmlServedUri = ["/", "/404", "/api", "/board/:id", "/boardList", "/cde/search", "/cdeStatusReport", "/classificationManagement", "/contactUs", "/createCde", "/createForm", "/deView", "/form/search", "/formView", "/help/:title", "/home", "/login", "/myBoards", "/orgAccountManagement", "/orgAuthority", "/orgComments", "/profile", "/quickBoard", "/searchPreferences", "/siteAudit", "/siteAccountManagement", "/whatsNew"];
 
 self.addEventListener('install', function (event) {
     event.waitUntil(

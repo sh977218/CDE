@@ -213,7 +213,7 @@ const formSteps = [
     {
         title: 'Export',
         anchorId: 'export',
-        content: 'Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, SDC and RedCAP.'
+        content: 'Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, and RedCAP.'
     }
 ];
 

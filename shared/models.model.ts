@@ -436,7 +436,6 @@ export interface EmbedItem {
         show?: boolean,
         label?: string
     };
-    sdcLink?: boolean; // form only
 }
 
 export class FormattedValue {

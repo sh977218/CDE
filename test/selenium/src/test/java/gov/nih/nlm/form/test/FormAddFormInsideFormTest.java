@@ -44,9 +44,6 @@ public class FormAddFormInsideFormTest extends QuestionTest {
         String odmResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=odm").asString();
         Assert.assertTrue(odmResponse.contains("Symptomology"), "Actual: " + odmResponse);
 
-        String sdcResponse = get(baseUrl + "/form/71zmIkrBtl?type=xml&subtype=sdc").asString();
-        Assert.assertTrue(sdcResponse.contains(newFormLabel), "Actual: " + sdcResponse);
-        Assert.assertTrue(sdcResponse.contains("Symptomology"), "Actual: " + sdcResponse);
     }
 
 }

@@ -25,7 +25,6 @@ export const htmlServedUri: string[] = [
     '/orgComments',
     '/profile',
     '/quickBoard',
-    '/sdcview',
     '/searchPreferences',
     '/siteAudit',
     '/siteAccountManagement',

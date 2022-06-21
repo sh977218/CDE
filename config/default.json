@@ -1,13 +1,6 @@
 {
   "name": "Sample Localhost Configuration",
   "hostname": "localhost",
-  "cloudFunction": {
-    "formSdcValidate": {
-      "name": "cde-fn-sdcValidate",
-      "artifact": "serverless-aws-java/build/distributions/cde-fn-sdcValidate.zip",
-      "handler": "gov.nih.nlm.cde.sdcValidate.Handler::handleRequest"
-    }
-  },
   "provider": {
     "faas": "AWS"
   },

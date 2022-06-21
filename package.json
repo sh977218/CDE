@@ -10,7 +10,6 @@
   "scripts": {
     "build": "npm run buildNode && bash paral 'npx ng b --configuration=development' 'npx ng b nativeRender --configuration=development'",
     "buildApp": "npx ng b --configuration=development",
-    "buildFnAwsJava": "npx cross-env cp -R modules/form/public/assets/sdc serverless-aws-java/src/main/resources/ && cd serverless-aws-java && chmod u+x gradlew && bash gradlew build && cd ..",
     "buildNative": "npx ng b nativeRender --configuration=development",
     "buildNode": "npx cross-env bash ./buildNode.sh",
     "buildIngester": "npx cross-env bash ./_buildIngester.sh",

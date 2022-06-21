@@ -68,8 +68,7 @@ const embedJson = {
     form: {
         ...commonEmbedSchema,
         cdes: {type: Boolean, default: false},
-        nbOfQuestions: {type: Boolean, default: false},
-        sdcLink: {type: Boolean, default: false}
+        nbOfQuestions: {type: Boolean, default: false}
     }
 };
 

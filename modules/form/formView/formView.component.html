@@ -122,38 +122,6 @@
                                         <mat-icon style="color: #326295">help_outline</mat-icon>
                                     </a>
                                 </ng-template>
-                                <a mat-menu-item *ngIf="exportToTab; else exportFileSdc" class="no-link"
-                                   href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc" target="_blank"
-                                   rel="noopener noreferrer">
-                                    SDC Schema XML preview
-                                    <ng-container *ngTemplateOutlet="exportSdcActions"></ng-container>
-                                </a>
-                                <ng-template #exportFileSdc>
-                                    <button mat-menu-item
-                                       (click)="exportService.exportForm(elt, '?type=xml&subtype=sdc', 'xml')">
-                                        SDC Schema XML file
-                                        <ng-container *ngTemplateOutlet="exportSdcActions"></ng-container>
-                                    </button>
-                                </ng-template>
-                                <ng-template #exportSdcActions>
-                                    <a class="darken" title="Information"
-                                       href="https://github.com/esacinc/sdc-schema-package" target="_blank"
-                                       rel="noopener noreferrer"
-                                       (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
-                                        <mat-icon style="color: #326295; margin-right: 4px">help_outline</mat-icon>
-                                    </a>
-                                    <a class="darken" title="Validate"
-                                       href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc&validate=true"
-                                       target="_blank" rel="noopener noreferrer"
-                                       (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
-                                        <mat-icon style="color: green">check</mat-icon>
-                                    </a>
-                                </ng-template>
-                                <a mat-menu-item *ngIf="!isIe()" class="no-link"
-                                   href="/server/form/byId/{{elt._id}}?type=xml&subtype=sdc&renderer=defaultHtml"
-                                   target="_blank" rel="noopener noreferrer">
-                                    SDC Schema with XSL Transform XML file
-                                </a>
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileXml" class="no-link"
                                    href="/server/form/byId/{{elt._id}}?type=xml" target="_blank"
                                    rel="noopener noreferrer">
