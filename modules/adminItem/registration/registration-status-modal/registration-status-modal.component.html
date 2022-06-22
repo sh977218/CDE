@@ -1,0 +1,48 @@
+<h1 mat-dialog-title>Update Registration Status</h1>
+<form #regForm="ngForm">
+    <mat-dialog-content>
+        <div>
+            <div class="alert-warning">{{helpMessage}}</div>
+            <label class="form-group d-block">
+                Registration Status
+                <select class="form-control" name="newRegistrationStatus"
+                        [(ngModel)]="registrationState.registrationStatus" (ngModelChange)="setHelpMessage($event)">
+                    <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
+                </select>
+            </label>
+            <label class="form-group d-block">
+                Effective Date
+                <input type="date" class="form-control" name="newEffectiveDate"
+                       [(ngModel)]="registrationState.effectiveDate">
+            </label>
+            <label class="form-group d-block">
+                Until Date
+                <input type="date" class="form-control" name="newUntilDate" [(ngModel)]="registrationState.untilDate">
+            </label>
+            <label class="form-group d-block">
+                Administrative Status
+                <select class="form-control" name="newAdministrativeStatus"
+                        [(ngModel)]="registrationState.administrativeStatus">
+                    <option *ngFor="let adminStatus of validAdminStatus"
+                            value="{{adminStatus}}">{{adminStatus}}</option>
+                </select>
+            </label>
+            <label class="form-group d-block">
+                Administrative Note
+                <textarea class="form-control" name="newAdministrativeNote" placeholder="Optional Administrative Note"
+                          [(ngModel)]="registrationState.administrativeNote"></textarea>
+            </label>
+            <label class="form-group d-block">
+                Unresolved Issue
+                <textarea class="form-control" name="newUnresolvedIssue" placeholder="Optional Unresolved Issue Note"
+                          [(ngModel)]="registrationState.unresolvedIssue"></textarea>
+            </label>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button fail" [mat-dialog-close]>Cancel</button>
+        <button type="submit" class="button" [mat-dialog-close]="registrationState" [disabled]="!regForm.form.valid">
+            Save
+        </button>
+    </mat-dialog-actions>
+</form>

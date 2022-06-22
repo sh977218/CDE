@@ -38,6 +38,9 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { MatCardModule } from '@angular/material/card';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import {
+    RegistrationStatusModalComponent
+} from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 
 @NgModule({
     imports: [
@@ -82,6 +85,7 @@ import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
         PropertiesComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
+        RegistrationStatusModalComponent,
         SaveModalComponent,
         DeleteModalComponent,
         SourcesComponent,
