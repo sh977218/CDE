@@ -16,7 +16,9 @@
     "coverage": "npx cross-env node ./node_modules/nyc/bin/nyc.js npm start",
     "dev": "npm run devApp",
     "devApp": "npx ng serve",
+    "devAppNr": "npx ng serve --no-live-reload",
     "devNative": "npx ng serve nativeRender",
+    "devNativeNr": "npx ng serve nativeRender --no-live-reload",
     "gulp": "npm run buildNode && npm run gulpJs",
     "gulpIngester": "npm run buildNode && npm run gulpJs -- --full",
     "gulpTs": "npx ts-node -P tsconfigNode.json ./node_modules/gulp/bin/gulp.js --gulpfile gulpfile.ts",
@@ -30,8 +32,8 @@
     "buildNodeIngester": "cross-env bash ./buildNodeIngester.sh"
   },
   "engines": {
-    "node": "12.x",
-    "npm": "6.x"
+    "node": "14.x",
+    "npm": "8.x"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
@@ -110,11 +112,11 @@
     "material-design-icons": "^3.0.1",
     "md5": "2.2.1",
     "method-override": "^3.0.0",
-    "morgan": "^1.10.0",
     "moment": "^2.29.2",
     "mongodb": "4.5.*",
     "mongoose": "^6.3.4",
     "mongoose-schema-jsonschema": "^2.0.1",
+    "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "node-fetch": "^2.6.7",
     "nyc": "^14.1.1",

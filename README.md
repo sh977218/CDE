@@ -1,3 +1,4 @@
+
 # NLM CDE
 ## Install
 ### Prerequisites
@@ -148,6 +149,21 @@ Run in Bamboo and override variable "browser" with value "coverage"
 ### Colors
 Update theme.scss.
 For custom angular colors extract the colors in common.scss by variable to theme.scss
+
+## Client
+### CDER CSS Components (commons.scss)
+* Arrows
+  * <span class="keyboard-arrow left"></span>
+* Checkbox
+  * <input type="checkbox" class="checkbox"
+* Button
+  * <button class="button"
+* Pill box
+  * <span class="pill"
+* USWDS implementations:
+  * Card
+    * <div class="uswdsCard"
+* Included styles h1-h6, .hero, .note, .subtitle
 
 # CDE Ingesters
 For bulk loading new CDEs/Forms into the system a custom program called a loader must be written. To 
