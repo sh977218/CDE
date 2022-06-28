@@ -40,4 +40,8 @@ export class DataElementViewService {
                 : ITEM_MAP.cde.api + queryParams.tinyId + (queryParams.version ? '/version/' + queryParams.version : '')
         ).toPromise();
     }
+
+    removeDraft(elt: DataElement) {
+        return this.http.delete('/server/de/draft/' + elt.tinyId, {responseType: 'text'});
+    }
 }

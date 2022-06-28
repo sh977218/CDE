@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, CdeFormDraft } from 'shared/form/form.model';
 import { ITEM_MAP } from 'shared/item';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
@@ -47,5 +47,9 @@ export class FormViewService {
                 ? ITEM_MAP.form.apiById + queryParams.formId
                 : ITEM_MAP.form.api + queryParams.tinyId + (queryParams.version ? '/version/' + queryParams.version : '')
         ).toPromise();
+    }
+
+    removeDraft(elt: CdeFormDraft) {
+        return this.http.delete('/server/form/draft/' + elt.tinyId, {responseType: 'text'});
     }
 }

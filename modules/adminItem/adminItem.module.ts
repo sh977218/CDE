@@ -23,7 +23,6 @@ import { LinkedFormsComponent } from 'adminItem/linkedForms/linkedForms.componen
 import { ClassificationViewComponent } from 'adminItem/classification/classificationView.component';
 import { CreateFormComponent } from 'adminItem/createForm/createForm.component';
 import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
-import { DeleteModalComponent } from 'adminItem/deleteModal/deleteModal.component';
 import { NewDesignationComponent } from 'adminItem/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/naming/definition/newDefinition.component';
 import { CompareModule } from 'compare/compare.module';
@@ -41,6 +40,7 @@ import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import {
     RegistrationStatusModalComponent
 } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
+import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 
 @NgModule({
     imports: [
@@ -87,8 +87,8 @@ import {
         RegistrationComponent,
         RegistrationStatusModalComponent,
         SaveModalComponent,
-        DeleteModalComponent,
         SourcesComponent,
+        DeleteDraftModalComponent
     ],
     exports: [
         AttachmentsComponent,
@@ -104,7 +104,6 @@ import {
         ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
-        DeleteModalComponent,
         SourcesComponent,
     ],
     entryComponents: [

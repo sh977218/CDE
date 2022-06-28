@@ -126,7 +126,7 @@
                         </button>
                         <ng-container *ngIf="elt.isDraft">
                             <button id="deleteDraftBtn" class="button fail" title="Delete Draft"
-                                    (click)="deleteModal.openDeleteModal()">
+                                    (click)="openDeleteDraftModal()">
                                 <mat-icon>delete</mat-icon>
                                 <span class="button-label"> Delete Draft</span>
                             </button>
@@ -198,7 +198,6 @@
                     </article>
                     <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid(elt)"
                                     (save)="saveDataElement(elt)"></cde-save-modal>
-                    <cde-delete-modal #deleteModal (confirm)="removeDraft(elt)"></cde-delete-modal>
                 </main>
             </mat-sidenav-content>
         </mat-sidenav-container>

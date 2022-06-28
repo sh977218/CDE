@@ -23,6 +23,7 @@ import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { copyDeep, noop } from 'shared/util';
 import { WINDOW } from 'window.service';
+import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -281,11 +282,15 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    removeDraft(elt: DataElement) {
-        this.http.delete('/server/de/draft/' + elt.tinyId, {responseType: 'text'}).subscribe(
-            () => this.loadElt(() => this.hasDrafts = false),
-            err => this.alert.httpErrorMessageAlert(err)
-        );
+    openDeleteDraftModal() {
+        this.dialog.open(DeleteDraftModalComponent, {width: '500'}).afterClosed().subscribe(result => {
+            if (result) {
+                this.deViewService.removeDraft(this.elt).subscribe(
+                    () => this.loadElt(() => this.hasDrafts = false),
+                    err => this.alert.httpErrorMessageAlert(err)
+                )
+            }
+        })
     }
 
     saveDraft(elt: DataElement): Promise<void> {

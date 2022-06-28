@@ -34,6 +34,7 @@ import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authoriz
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { copyDeep, noop } from 'shared/util';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
+import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 
 export class LocatableError {
     id?: string;
@@ -344,11 +345,15 @@ export class FormViewComponent implements OnInit, OnDestroy {
         });
     }
 
-    removeDraft(elt: CdeFormDraft) {
-        this.http.delete('/server/form/draft/' + elt.tinyId, {responseType: 'text'}).subscribe(
-            () => this.loadElt(() => this.hasDrafts = false),
-            err => this.alert.httpErrorMessageAlert(err)
-        );
+    openDeleteDraftModal() {
+        this.dialog.open(DeleteDraftModalComponent, {width: '500'}).afterClosed().subscribe(result => {
+            if (result) {
+                this.formViewService.removeDraft(this.elt).subscribe(
+                    () => this.loadElt(() => this.hasDrafts = false),
+                    err => this.alert.httpErrorMessageAlert(err)
+                )
+            }
+        })
     }
 
     saveDraft(elt: CdeFormDraft): Promise<void> {
