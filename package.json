@@ -223,7 +223,7 @@
     "cache-loader": "^4.1.0",
     "capitalize": "^2.0.3",
     "cheerio": "^1.0.0-rc.3",
-    "chromedriver": "^96.0.0",
+    "chromedriver": "^103.0.0",
     "classlist.js": "1.1.20150312",
     "codelyzer": "^6.0.1",
     "core-js": "^2.6.11",

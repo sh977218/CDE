@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
@@ -324,12 +324,18 @@ export class FormViewComponent implements OnInit, OnDestroy {
         this.mltPinModalCde.pinMultiple(cdes);
     }
 
-    publish(elt: CdeFormDraft) {
-        this.validate(elt,() => {
+    openSaveModal() {
+        this.validate(this.elt, () => {
             if (this.validationErrors.length) {
                 this.alert.addAlert('danger', 'Please fix all errors before publishing');
             } else {
-                this.saveModal.openSaveModal();
+                const data = this.elt;
+                this.dialog.open(SaveModalComponent, {width: '500', data}).afterClosed().subscribe(result => {
+                    if (result) {
+                        this.saveDraft(this.elt).then(() => this.saveForm(this.elt));
+                    }
+                })
+
             }
         });
     }

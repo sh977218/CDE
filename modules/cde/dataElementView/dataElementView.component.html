@@ -131,7 +131,7 @@
                                 <span class="button-label"> Delete Draft</span>
                             </button>
                             <button id="openSave" class="button success" title="Publish"
-                                    (click)="publish()">
+                                    (click)="openSaveModal()">
                                 <mat-icon>publish</mat-icon>
                                 <span class="button-label"> Publish</span>
                             </button>
@@ -196,8 +196,6 @@
                                                   (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
                         </section>
                     </article>
-                    <cde-save-modal #saveModal [elt]="elt" (eltChange)="saveDraftVoid(elt)"
-                                    (save)="saveDataElement(elt)"></cde-save-modal>
                 </main>
             </mat-sidenav-content>
         </mat-sidenav-container>

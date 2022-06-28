@@ -18,7 +18,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToNaming();
         Assert.assertEquals(driver.getTitle(), "Data Element: " + cdeName);
-        editDesignationByIndex(0, cdeDesignationChange,null);
+        editDesignationByIndex(0, cdeDesignationChange, null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
         goToPermissibleValues();
@@ -33,7 +33,7 @@ public class CdeEditTest extends NlmCdeBaseTest {
         textPresent("myUom");
 
         goToIdentifiers();
-        Assert.assertEquals("1.1", findElement(By.cssSelector("[itemprop='version']")).getText());
+        Assert.assertEquals(findElement(By.cssSelector("[itemprop='version']")).getText(), "1.1");
 
         // Test history
         goToHistory();

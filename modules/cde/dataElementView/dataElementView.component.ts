@@ -7,7 +7,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
@@ -189,11 +189,16 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.isMobile = window.innerWidth < 768;
     }
 
-    publish() {
+    openSaveModal() {
         if (this.validationErrors.length) {
             this.alert.addAlert('danger', 'Please fix all errors before publishing');
         } else {
-            this.saveModal.openSaveModal();
+            const data = this.elt;
+            this.dialog.open(SaveModalComponent, {width: '500', data}).afterClosed().subscribe(result => {
+                if (result) {
+                    this.saveDraft(this.elt).then(() => this.saveDataElement(this.elt))
+                }
+            })
         }
     }
 

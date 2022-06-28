@@ -22,7 +22,6 @@ import { RegistrationComponent } from 'adminItem/registration/registration.compo
 import { LinkedFormsComponent } from 'adminItem/linkedForms/linkedForms.component';
 import { ClassificationViewComponent } from 'adminItem/classification/classificationView.component';
 import { CreateFormComponent } from 'adminItem/createForm/createForm.component';
-import { SaveModalComponent } from 'adminItem/saveModal/saveModal.component';
 import { NewDesignationComponent } from 'adminItem/naming/designation/newDesignation.component';
 import { NewDefinitionComponent } from 'adminItem/naming/definition/newDefinition.component';
 import { CompareModule } from 'compare/compare.module';
@@ -41,6 +40,7 @@ import {
     RegistrationStatusModalComponent
 } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 
 @NgModule({
     imports: [
