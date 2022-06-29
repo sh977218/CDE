@@ -8,7 +8,6 @@ import { UserSearchSettings } from 'shared/models.model';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 @Component({
-    selector: 'cde-search-preferences',
     templateUrl: 'searchPreferences.component.html'
 })
 export class SearchPreferencesComponent implements OnInit {

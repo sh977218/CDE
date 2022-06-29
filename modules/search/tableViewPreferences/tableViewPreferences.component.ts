@@ -27,7 +27,7 @@ export abstract class TableViewPreferencesComponent {
 
     loadDefault() {
         this.searchSettings = this.esService.searchSettings = ElasticService.getDefault();
-        this.alert.addAlert('info', 'Default settings loaded. Press Save to persist them.');
+        this.alert.addAlert('info', 'Default settings loaded. Click Close to save your settings.');
         this.changed.emit();
     }
 }
