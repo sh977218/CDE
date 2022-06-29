@@ -15,6 +15,7 @@ let expectedContent = {
         'Board Not Found',
         'Failed to load resource: the server responded with a status of 404 (Not Found)'
     ],
+    cannotCreateDuplicateUser: 'the server responded with a status of 409 (Conflict)',
     cdeAddClassification: 'addCdeClassification/ - Failed to load resource: the server responded with a status of 409 (Conflict)',
     cdeChangeDefinitionFormat: '*', // ckeditor
     cdeLiveCommentTest: '*',

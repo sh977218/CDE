@@ -79,6 +79,7 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 
 const appRoutes: Routes = [
     {
@@ -314,6 +315,7 @@ const appRoutes: Routes = [
         StewardOrgTransferComponent,
         TagsManagementComponent,
         UsersMgtComponent,
+        CreateUserModalComponent,
         ViewingHistoryComponent
     ],
     exports: [],

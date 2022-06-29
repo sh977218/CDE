@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { rolesEnum, User } from 'shared/models.model';
+import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 
 type FullUser = User & {
     lastLogin: string;
@@ -15,10 +16,8 @@ type FullUser = User & {
     templateUrl: './usersMgt.component.html'
 })
 export class UsersMgtComponent {
-    @ViewChild('newUserContent', {static: true}) newUserContent!: TemplateRef<any>;
     foundUsers: FullUser[] = [];
-    newUsername = '';
-    search: {username: User | string} = {username: ''};
+    search: { username: User | string } = {username: ''};
     rolesEnum = rolesEnum;
 
     constructor(private alert: AlertService,
@@ -28,9 +27,9 @@ export class UsersMgtComponent {
     }
 
     openNewUserModal() {
-        this.dialog.open(this.newUserContent, {width: '800px'}).afterClosed().subscribe(res => {
-            if (res) {
-                this.http.post('/server/user/addUser', {username: this.newUsername}, {responseType: 'text'}).subscribe(
+        this.dialog.open(CreateUserModalComponent, {width: '800px'}).afterClosed().subscribe(username => {
+            if (username) {
+                this.http.post('/server/user/addUser', {username}, {responseType: 'text'}).subscribe(
                     () => this.alert.addAlert('success', 'User created'),
                     () => this.alert.addAlert('danger', 'Cannot create user. Does it already exist?')
                 );
@@ -40,7 +39,7 @@ export class UsersMgtComponent {
 
     searchUsers() {
         this.http.get<FullUser[]>('/server/user/searchUsers/'
-            + (typeof(this.search.username) === 'object' && this.search.username.username || this.search.username)
+            + (typeof (this.search.username) === 'object' && this.search.username.username || this.search.username)
         ).subscribe(users => this.foundUsers = users);
     }
 
