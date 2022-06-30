@@ -1,37 +1,28 @@
-import { Component, Input, ViewChild, OnInit, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'non-core/orgHelper.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { Property } from 'shared/models.model';
+import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
 import { noop } from 'shared/util';
+import { OrgHelperService } from 'non-core/orgHelper.service';
 
 @Component({
     selector: 'cde-properties',
     templateUrl: './properties.component.html',
 })
-export class PropertiesComponent implements OnInit {
+export class PropertiesComponent {
     @Input() canEdit = false;
     @Input() elt!: DataElement & { properties: { edit?: boolean }[] };
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPropertyContent', {static: true}) newPropertyContent!: TemplateRef<any>;
-    newProperty: Property = new Property();
-    onInitDone = false;
     orgPropertyKeys: string[] = [];
 
-    constructor(
-        private alert: AlertService,
-        public dialog: MatDialog,
-        private orgHelperService: OrgHelperService,
-    ) {
-    }
-
-    ngOnInit() {
+    constructor(public dialog: MatDialog,
+                private alert: AlertService,
+                private orgHelperService: OrgHelperService) {
         this.orgHelperService.then(orgsDetailedInfo => {
             if (this.elt.stewardOrg.name) {
                 this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name]?.propertyKeys || [];
             }
-            this.onInitDone = true;
         }, noop);
     }
 
@@ -40,13 +31,15 @@ export class PropertiesComponent implements OnInit {
             this.alert.addAlert('danger',
                 'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
         } else {
-            this.dialog.open(this.newPropertyContent).afterClosed().subscribe(res => {
-                if (res) {
-                    this.elt.properties.push(this.newProperty);
-                    this.eltChange.emit();
-                }
-                this.newProperty = new Property();
-            });
+            const data = this.orgPropertyKeys;
+            this.dialog.open(AddPropertyModalComponent, {width: '800px', data})
+                .afterClosed()
+                .subscribe(newProperty => {
+                    if (newProperty) {
+                        this.elt.properties.push(newProperty);
+                        this.eltChange.emit();
+                    }
+                });
         }
     }
 

@@ -41,6 +41,7 @@ import {
 } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
+import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
 
 @NgModule({
     imports: [
@@ -83,6 +84,7 @@ import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,
+        AddPropertyModalComponent,
         ReferenceDocumentComponent,
         RegistrationComponent,
         RegistrationStatusModalComponent,
