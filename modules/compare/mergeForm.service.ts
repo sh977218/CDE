@@ -8,7 +8,8 @@ import {
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { transferClassifications } from 'shared/classification/classificationShared';
 import { CbErr1 } from 'shared/models.model';
-import { CompareForm, CompareQuestion } from 'compare/compareSideBySide/compareSideBySide.component';
+import { CompareForm } from './compareSideBySide/compare-form';
+import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 
 @Injectable()
 export class MergeFormService {
@@ -16,13 +17,11 @@ export class MergeFormService {
     maxNumberQuestions!: number;
     numMergedQuestions!: number;
 
-    constructor(
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService
-    ) {
+    constructor(private http: HttpClient,
+        public isAllowedModel: IsAllowedService) {
     }
 
-    saveForm(form: CompareForm, cb: CbErr1<CompareForm | void>) {
+    saveForm({form, cb}: { form: CompareForm, cb: CbErr1<CompareForm | void> }) {
         this.http.post<CompareForm>('/server/form/publishExternal', form).subscribe(
             data => {
                 cb(undefined, data);

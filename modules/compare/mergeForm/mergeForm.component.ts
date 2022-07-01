@@ -2,9 +2,9 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { CompareForm } from 'compare/compareSideBySide/compareSideBySide.component';
 import { MergeFormService } from 'compare/mergeForm.service';
 import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
+import { CompareForm } from 'compare/compareSideBySide/compare-form';
 
 @Component({
     selector: 'cde-merge-form',
@@ -102,38 +102,44 @@ export class MergeFormComponent {
                 if (this.isAllowedModel.isAllowed(this.source)) {
                     this.source.registrationState.registrationStatus = 'Retired';
                 }
-                this.mergeFormService.saveForm(this.source, (err: any) => {
-                    if (err) {
-                        this.alert.addAlert('danger', 'Can not save source form.');
-                    } else {
-                        this.destination.changeNote = 'Merge from tinyId ' + this.source.tinyId;
-                        this.mergeFormService.saveForm(this.destination, (err: any) => {
-                            if (err) {
-                                this.alert.addAlert('danger', 'Can not save target form.');
-                            } else {
-                                this.finishMerge = true;
-                                this.alert.addAlert('success', 'Form merged');
-                                setTimeout(() => {
-                                    this.showProgressBar = false;
-                                    return;
-                                }, 3000);
-                            }
-                        });
+                this.mergeFormService.saveForm({
+                    form: this.source, cb: (err: any) => {
+                        if (err) {
+                            this.alert.addAlert('danger', 'Can not save source form.');
+                        } else {
+                            this.destination.changeNote = 'Merge from tinyId ' + this.source.tinyId;
+                            this.mergeFormService.saveForm({
+                                form: this.destination, cb: (err: any) => {
+                                    if (err) {
+                                        this.alert.addAlert('danger', 'Can not save target form.');
+                                    } else {
+                                        this.finishMerge = true;
+                                        this.alert.addAlert('success', 'Form merged');
+                                        setTimeout(() => {
+                                            this.showProgressBar = false;
+                                            return;
+                                        }, 3000);
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
             } else {
                 this.destination.changeNote = 'Merge from tinyId ' + this.source.tinyId;
-                this.mergeFormService.saveForm(this.destination, (err: any) => {
-                    if (err) {
-                        this.alert.addAlert('danger', 'Cannot save target form.');
-                    } else {
-                        this.finishMerge = true;
-                        this.alert.addAlert('success', 'Form merged');
-                        setTimeout(() => {
-                            this.showProgressBar = false;
-                            this.doneMerge.emit({left: this.source, right: this.destination});
-                            return;
-                        }, 3000);
+                this.mergeFormService.saveForm({
+                    form: this.destination, cb: (err: any) => {
+                        if (err) {
+                            this.alert.addAlert('danger', 'Cannot save target form.');
+                        } else {
+                            this.finishMerge = true;
+                            this.alert.addAlert('success', 'Form merged');
+                            setTimeout(() => {
+                                this.showProgressBar = false;
+                                this.doneMerge.emit({left: this.source, right: this.destination});
+                                return;
+                            }, 3000);
+                        }
                     }
                 });
             }
