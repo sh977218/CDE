@@ -193,12 +193,12 @@ export class NavigationComponent {
                     id: 'guidesLink',
                     link: '/guides',
                 },
-                {
-                    label: 'Take a Tour',
-                    id: 'takeATourLink',
-                    link: '/home',
-                    queryParams: {tour: 'yes'}
-                },
+                // {
+                //     label: 'Take a Tour',
+                //     id: 'takeATourLink',
+                //     link: '/home',
+                //     queryParams: {tour: 'yes'}
+                // },
                 {
                     label: 'New Features',
                     id: 'whatsNewLink',
