@@ -1,7 +1,7 @@
 <table *ngIf="rows.length" id="gridList" class="gridListView table table-condensed table-striped table-bordered table-responsive">
     <thead>
     <tr>
-        <th>
+        <th *ngIf="module === 'cde'">
             <img aria-label="nihEndorsed" height="38" width="30" src="/assets/img/endorsedRibbon.svg"
                  matTooltipClass="cdeTooltip"
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">

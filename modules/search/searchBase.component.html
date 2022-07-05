@@ -445,8 +445,9 @@
                         <img style="width:100%; height: auto; max-width: 532px" alt="No Results"
                              src="/assets/img/NoResults.png"/>
                     </div>
-                    <span>Not sure where to start? <a style="text-decoration: underline" href="/tour">Take a tour</a> or review the <a
-                            style="text-decoration: underline" href="/guides">Guides</a>.</span>
+                    <span>Not sure where to start?
+                        <!-- <a style="text-decoration: underline" href="/tour">Take a tour</a> or -->
+                        Review the <a style="text-decoration: underline" href="/guides">Guides</a>.</span>
                 </ng-container>
                 <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
                                (add)="add.emit($event)"></cde-list-view>
