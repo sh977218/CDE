@@ -8,13 +8,15 @@ public class UpdateInFormTest extends NlmCdeBaseTest {
 
     @Test
     public void updateInForm() {
+        String cdeName = "Illicit/non-prescription drug use indicator";
+        String formName = "Form Form Update Test";
+
         mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeByName("Illicit/non-prescription drug use indicator");
+        goToCdeByName(cdeName);
         clickElement(By.cssSelector("[itemprop='steward'] mat-icon"));
         clickElement(By.xpath("//*[@itemprop='steward']//button[contains(.,'Confirm')]"));
         newCdeVersion();
 
-        String formName = "Form Form Update Test";
         goToFormByName(formName);
         textPresent("Some referenced items in this form have newer versions.");
         goToFormDescription();

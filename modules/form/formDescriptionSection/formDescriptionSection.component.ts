@@ -21,8 +21,7 @@ import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-description-section',
-    templateUrl: 'formDescriptionSection.component.html',
-    styleUrls: ['../formDescription/formDescription.style.scss'],
+    templateUrl: 'formDescriptionSection.component.html'
 })
 export class FormDescriptionSectionComponent implements OnInit {
     @Input() elt!: CdeForm;

@@ -20,19 +20,17 @@ import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/
 export class FormSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<CdeForm>();
 
-    constructor(
-        protected _componentFactoryResolver: ComponentFactoryResolver,
-        protected alert: AlertService,
-        protected backForwardService: BackForwardService,
-        protected exportService: ExportService,
-        protected http: HttpClient,
-        protected elasticService: ElasticService,
-        protected orgHelperService: OrgHelperService,
-        protected route: ActivatedRoute,
-        protected router: Router,
-        protected userService: UserService,
-        protected dialog: MatDialog
-    ) {
+    constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
+                protected alert: AlertService,
+                protected backForwardService: BackForwardService,
+                protected exportService: ExportService,
+                protected http: HttpClient,
+                protected elasticService: ElasticService,
+                protected orgHelperService: OrgHelperService,
+                protected route: ActivatedRoute,
+                protected router: Router,
+                protected userService: UserService,
+                protected dialog: MatDialog) {
         super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
 

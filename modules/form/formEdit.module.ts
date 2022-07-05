@@ -41,6 +41,9 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { TagModule } from 'tag/tag.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import {
+    FormUpdateCdeVersionModalComponent
+} from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormDescriptionComponent},
@@ -90,6 +93,7 @@ const appRoutes: Routes = [
     declarations: [
         FormDescriptionComponent,
         FormDescriptionQuestionComponent,
+        FormUpdateCdeVersionModalComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         QuestionAnswerEditContentComponent,

@@ -1,0 +1,138 @@
+<h1 mat-dialog-title>Confirm Changes:</h1>
+<mat-dialog-content>
+    <div class="propertyTable" *ngIf="updateCdeVersion.newQuestion.question && updateCdeVersion.currentQuestion.question">
+        <div>Label:</div>
+        <div>
+            <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
+            <span *ngIf="updateCdeVersion.bLabel"
+                  class="text-danger">( was {{ updateCdeVersion.currentQuestion.label }} )</span>
+        </div>
+        <div>Datatype:</div>
+        <div>
+            <span [ngClass]="{mark: updateCdeVersion.bDatatype}">{{updateCdeVersion.newQuestion.question.datatype | cdePlaceholder }}</span>
+            <span *ngIf="updateCdeVersion.bDatatype"
+                  class="text-danger">( was {{updateCdeVersion.currentQuestion.question.datatype}} )</span>
+        </div>
+        <ng-container *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Date'">
+            <div>Precision:</div>
+            <div>
+                    <span [ngClass]="{mark: updateCdeVersion.bDatePrecision}">
+                        {{updateCdeVersion.newQuestion.question?.datatypeDate?.precision | cdePlaceholder }}</span>
+                <span *ngIf="updateCdeVersion.bDatePrecision" class="text-danger">
+                        ( was {{ updateCdeVersion.currentQuestion.question?.datatypeDate?.precision }} )</span>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Number'">
+            <div>Min Value:</div>
+            <div>
+                    <span [ngClass]="{mark: updateCdeVersion.bNumberMin}">
+                        {{updateCdeVersion.newQuestion.question?.datatypeNumber?.minValue | cdePlaceholder }}</span>
+                <span *ngIf="updateCdeVersion.bNumberMin" class="text-danger">
+                        ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.minValue }} )</span>
+            </div>
+            <div>Max Value:</div>
+            <div>
+                    <span [ngClass]="{mark: updateCdeVersion.bNumberMax}">
+                        {{updateCdeVersion.newQuestion.question?.datatypeNumber?.maxValue | cdePlaceholder }}</span>
+                <span *ngIf="updateCdeVersion.bNumberMax" class="text-danger">
+                        ( was {{ updateCdeVersion.currentQuestion.question?.datatypeNumber?.maxValue }} )</span>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+            <div>Multiple Selections:</div>
+            <div>
+                <input type="checkbox" [ngModel]="updateCdeVersion.newQuestion.question.multiselect"
+                       title="Multiple Selection" disabled/>
+            </div>
+        </ng-container>
+        <div>Units of Measures:</div>
+        <div>
+                <span [ngClass]="{mark: updateCdeVersion.bUom}"
+                      *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length > 0">
+                    <span *ngFor="let u of updateCdeVersion.newQuestion.question.unitsOfMeasure; let i = index"
+                          id="mq_uom_list_{{i}}">
+                        <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                        {{u.code}}
+                    </span>
+                </span>
+            <span [ngClass]="{mark: updateCdeVersion.bUom}"
+                  *ngIf="updateCdeVersion.newQuestion.question.unitsOfMeasure.length <= 0">N/A</span>
+            <span *ngIf="updateCdeVersion.bUom" class="text-danger">
+                    ( was
+                    <ng-container *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length > 0">
+                        <span *ngFor="let u of updateCdeVersion.currentQuestion.question.unitsOfMeasure; let i = index"
+                              id="mq_old_uom_list_{{i}}">
+                            <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
+                            {{u.code}}
+                        </span>
+                    </ng-container>
+                    <ng-container
+                            *ngIf="updateCdeVersion.currentQuestion.question.unitsOfMeasure.length <= 0">N/A</ng-container>
+                    )
+                </span>
+        </div>
+        <div>Default Answer:</div>
+        <div>
+                <span [ngClass]="{mark: updateCdeVersion.bDefault}"
+                      *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+                    <select [ngModel]="updateCdeVersion.newQuestion.question.defaultAnswer"
+                            title="Default Value" id="mq_default_answer" disabled>
+                        <option *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"
+                                [value]="pv.valueMeaningName"
+                                [textContent]="pv.permissibleValue"></option>
+                    </select>
+                </span>
+            <span [ngClass]="{mark: updateCdeVersion.bDefault}"
+                  *ngIf="updateCdeVersion.newQuestion.question.datatype !== 'Value List'">
+                    <label id="mq_defaultAnswer_text"
+                           [textContent]="updateCdeVersion.newQuestion.question.defaultAnswer"></label>
+                </span>
+            <span *ngIf="updateCdeVersion.bDefault" class="text-danger">
+                    ( was
+                    <span *ngIf="updateCdeVersion.currentQuestion.question.datatype === 'Value List'">
+                        <select [ngModel]="updateCdeVersion.currentQuestion.question.defaultAnswer"
+                                title="Old Default Value" id="mq_old_default_answer" disabled>
+                            <option *ngFor="let pv of updateCdeVersion.currentQuestion.question.answers"
+                                    [value]="pv.valueMeaningName" [textContent]="pv.permissibleValue"></option>
+                        </select>
+                    </span>
+                    <span *ngIf="updateCdeVersion.currentQuestion.question.datatype !== 'Value List'"
+                          id="mq_old_defaultAnswer_text"
+                          [textContent]="updateCdeVersion.currentQuestion.question.defaultAnswer"></span>
+                    )
+
+                </span>
+        </div>
+        <div>CDE:</div>
+        <div>
+            <a [ngClass]="{mark: updateCdeVersion.bCde}"
+               href="/deView?tinyId={{updateCdeVersion.newQuestion.question.cde.tinyId}}&version={{updateCdeVersion.newQuestion.question.cde.version}}"
+               target="_blank">
+                <mat-icon>visibility</mat-icon>
+                <span id="mdd_question_cde_name">{{updateCdeVersion.newQuestion.question.cde.name}}</span>
+            </a>
+            <span *ngIf="updateCdeVersion.bCde" class="text-danger">( was
+                        <a href="/deView?tinyId={{updateCdeVersion.currentQuestion.question.cde.tinyId}}&version={{updateCdeVersion.currentQuestion.question.cde.version}}"
+                           target="_blank"><mat-icon>visibility</mat-icon>
+                            <span id="mdd_old_question_cde_name">{{updateCdeVersion.currentQuestion.question.cde.name}}</span>
+                        </a> )
+                    </span>
+        </div>
+        <ng-container *ngIf="updateCdeVersion.newQuestion.question.datatype === 'Value List'">
+            <div>Answer List:</div>
+            <div class="answerList">
+                <div [ngClass]="{mark: updateCdeVersion.bValuelist}"
+                     *ngFor="let pv of updateCdeVersion.newQuestion.question.answers"
+                     [textContent]="pv.valueMeaningName"></div>
+                <span *ngIf="updateCdeVersion.bValuelist" class="text-danger">( was
+                        <span class="mark" *ngFor="let pv of updateCdeVersion.currentQuestion.question.answers"
+                              [textContent]="pv.valueMeaningName"></span> )
+                    </span>
+            </div>
+        </ng-container>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="button secondary" [mat-dialog-close]="false">Cancel</button>
+    <button class="button" [mat-dialog-close]="true">OK</button>
+</mat-dialog-actions>
