@@ -8,7 +8,6 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
-import { convertFormToSection } from 'core/form/form';
 import { DeCompletionService } from 'cde/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/formView/formView.component';
@@ -18,10 +17,10 @@ import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
-import { CdeForm, FormElement, FormInForm, FormOrElement, FormSection } from 'shared/form/form.model';
-import { Cb1 } from 'shared/models.model';
+import { CdeForm, FormElement, FormOrElement, FormSection } from 'shared/form/form.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
+import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
+import { convertFormToSection } from 'core/form/form';
 
 @Component({
     selector: 'cde-form-description',
@@ -33,7 +32,6 @@ import { noop } from 'shared/util';
 export class FormDescriptionComponent implements OnInit {
     elt: any;
     @ViewChild(TreeComponent) tree!: TreeComponent;
-    @ViewChild('formSearchTmpl', {static: true}) formSearchTmpl!: TemplateRef<any>;
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
     @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
@@ -101,17 +99,15 @@ export class FormDescriptionComponent implements OnInit {
     validationErrors: LocatableError[] = [];
     topSpacing: number = 132;
 
-    constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        public deCompletionService: DeCompletionService,
-        private _hotkeysService: HotkeysService,
-        private http: HttpClient,
-        private localStorageService: LocalStorageService,
-        public userService: UserService,
-        private alert: AlertService,
-        public matDialog: MatDialog,
-    ) {
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                public deCompletionService: DeCompletionService,
+                private _hotkeysService: HotkeysService,
+                private http: HttpClient,
+                private localStorageService: LocalStorageService,
+                public userService: UserService,
+                private alert: AlertService,
+                public matDialog: MatDialog) {
         this.elt = this.route.snapshot.data.form;
         this.addExpanded(this.elt);
         addFormIds(this.elt);
@@ -120,10 +116,9 @@ export class FormDescriptionComponent implements OnInit {
         this.onResize();
         this.topSpacing = this.isMobile ? 110 : 132;
         window.document.getElementById('scrollRoot')?.addEventListener('scroll', (e) => {
-            if(((e.srcElement as HTMLInputElement).scrollTop > 100)){
+            if (((e.srcElement as HTMLInputElement).scrollTop > 100)) {
                 this.topSpacing = this.isMobile ? 0 : 22;
-            }
-            else{
+            } else {
                 this.topSpacing = this.isMobile ? 110 : 132;
             }
         })
@@ -174,21 +169,6 @@ export class FormDescriptionComponent implements OnInit {
         // this.onEltChange.emit(); treeEvent will handle
     }
 
-    addFormFromSearch(form: CdeForm, cb: Cb1<FormInForm> = noop) {
-        this.http.get<CdeForm>('/api/form/' + form.tinyId).subscribe(form => {
-            const inForm = convertFormToSection(form);
-            if (!inForm) {
-                return;
-            }
-            this.addExpanded(inForm);
-            this.formElementEditing.formElement = inForm;
-            this.addFormElement(inForm);
-            this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
-            this.isModalOpen = false;
-            cb(inForm);
-        });
-    }
-
     addQuestionFromSearch(de: DataElement) {
         convertCdeToQuestion(de, question => {
             if (!question) {
@@ -221,9 +201,17 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     openFormSearch() {
-        this.isModalOpen = true;
-        this.matDialog.open(this.formSearchTmpl, {width: '1200px'})
-            .afterClosed().subscribe(() => this.isModalOpen = false);
+        const diaRef = this.matDialog.open(FormSearchModalComponent, {width: '1200px'});
+        const sub = diaRef.componentInstance.selectedForm
+            .subscribe(form => {
+                const inForm = convertFormToSection(form);
+                this.addExpanded(inForm);
+                this.formElementEditing.formElement = inForm;
+                this.addFormElement(inForm);
+                this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
+            })
+        diaRef.afterClosed()
+            .subscribe(res => sub.unsubscribe());
     }
 
     openQuestionSearch() {

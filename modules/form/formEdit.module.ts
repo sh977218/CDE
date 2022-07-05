@@ -44,6 +44,7 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import {
     FormUpdateCdeVersionModalComponent
 } from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
+import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormDescriptionComponent},
@@ -92,6 +93,7 @@ const appRoutes: Routes = [
     ],
     declarations: [
         FormDescriptionComponent,
+        FormSearchModalComponent,
         FormDescriptionQuestionComponent,
         FormUpdateCdeVersionModalComponent,
         FormDescriptionQuestionDetailComponent,

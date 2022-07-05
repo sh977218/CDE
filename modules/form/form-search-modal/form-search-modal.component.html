@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Search Forms</h1>
+<mat-dialog-content>
+    <cde-form-search class="panel-group" id="accordion_form" addMode="True" [embedded]="true"
+                     (add)="addFormFromSearch($event)">
+    </cde-form-search>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button id="cancelSelectF" class="button secondary" [mat-dialog-close]>
+        Close
+    </button>
+</mat-dialog-actions>
