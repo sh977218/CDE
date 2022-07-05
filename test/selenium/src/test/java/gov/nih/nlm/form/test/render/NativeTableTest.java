@@ -3,7 +3,6 @@ package gov.nih.nlm.form.test.render;
 import gov.nih.nlm.form.test.BaseFormTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -57,7 +56,7 @@ public class NativeTableTest extends BaseFormTest {
         startEditSectionById("form_0-2");
         clickElement(By.xpath("//*[@id='form_0-2']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         setRepeat("form_0-2", "=");
-        nonNativeSelect("//*[@id='form_0-2']", "Question Label", "Family history relative age at onset value");
+        selectMatSelect("//*[@id='form_0-2']", "Question Label", "Family history relative age at onset value");
         saveEditSectionById("form_0-2");
         textPresent("Repeats: over Question Answer \"Family history relative age at onset value\"", By.cssSelector("#form_0-2 > .card > .card-header"));
 

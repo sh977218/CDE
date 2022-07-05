@@ -220,35 +220,26 @@ function checkValue(row: Record<string, string>, header: string, dictionary: any
 }
 
 export async function getValidationWhitelists() {
-    return validationWhitelistModel.find();
+    return validationWhitelistModel.find({}).lean();
 }
 
 export async function deleteValidationWhitelist(name: string) {
     return validationWhitelistModel.deleteOne({collectionName: name});
 }
 
-export async function addValidationWhitelist(name: string, newTerms: string[]) {
-    const newWhiteList = new validationWhitelistModel({collectionName: name, terms: newTerms});
-
-    await newWhiteList.save();
+export async function addValidationWhitelist(whiteList) {
+    new validationWhitelistModel(whiteList).save();
 }
 
-export async function updateValidationWhitelist(name: string, newTerms: string [], removeTerms: string []) {
-    if (newTerms && newTerms.length > 0) {
-        const addStmt = {
-            terms: {
-                $each: [...new Set(newTerms)],
+export async function updateValidationWhitelist(whiteList) {
+    return validationWhitelistModel.findOneAndUpdate(
+        {collectionName: whiteList.collectionName},
+        {
+            $set: {
+                terms: whiteList.terms
             }
-        };
-        await validationWhitelistModel.updateOne({collectionName: name}, {$push: addStmt});
-    }
-    if (removeTerms && removeTerms.length > 0) {
-        const removeStmt = {
-            terms: {
-                $in: [...new Set(removeTerms)]
-            }
-        }
-        await validationWhitelistModel.updateOne({collectionName: name}, {$pull: removeStmt});
-    }
-    return validationWhitelistModel.findOne({collectionName: name});
+        },
+        {
+            new: true
+        });
 }

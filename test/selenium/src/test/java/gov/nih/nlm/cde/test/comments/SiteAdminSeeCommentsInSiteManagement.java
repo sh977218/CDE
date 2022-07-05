@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.comments;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class SiteAdminSeeCommentsInSiteManagement extends NlmCdeBaseTest {
@@ -14,10 +13,10 @@ public class SiteAdminSeeCommentsInSiteManagement extends NlmCdeBaseTest {
         goToAllComments();
         textPresent(nindsComment);
         textPresent(caBIGComment);
-        nonNativeSelect("", "Filter by Organization", "NINDS");
+        selectMatSelect("", "Filter by Organization", "NINDS");
         textPresent(nindsComment);
         textNotPresent(caBIGComment);
-        nonNativeSelect("", "Filter by Organization", "caBIG");
+        selectMatSelect("", "Filter by Organization", "caBIG");
         textNotPresent(nindsComment);
         textPresent(caBIGComment);
     }

@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Add new Whitelist</h1>
+<form role="form" #newWhiteListForm="ngForm">
+    <div mat-dialog-content>
+        <div class="form-group">
+            <label for="newWhitelistname">Name</label>
+            <input class="form-control" id="newWhitelistname" name="whitelistname" Placeholder="New Whitelist"
+                   [(ngModel)]="newWhiteList.collectionName" required/>
+        </div>
+
+        <label for="newWhitelistname">Terms</label>
+        <mat-form-field class="example-chip-list" appearance="fill">
+            <mat-chip-list #chipList aria-label="Term selection">
+                <mat-chip *ngFor="let term of newWhiteList.terms" (removed)="remove(term)">
+                    {{term}}
+                    <button matChipRemove>
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </mat-chip>
+                <input placeholder="New term..."
+                       [matChipInputFor]="chipList"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       [matChipInputAddOnBlur]="addOnBlur"
+                       (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+        </mat-form-field>
+
+    </div>
+    <div mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close]>
+            Cancel
+        </button>
+        <button class="button" [mat-dialog-close]="newWhiteList" id="createNewWhitelistBtn" type="submit"
+                [disabled]="newWhiteListForm.invalid">
+            Save
+        </button>
+    </div>
+</form>

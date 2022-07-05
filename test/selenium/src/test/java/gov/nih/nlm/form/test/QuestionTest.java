@@ -3,7 +3,6 @@ package gov.nih.nlm.form.test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 public class QuestionTest extends BaseFormTest {
@@ -70,7 +69,7 @@ public class QuestionTest extends BaseFormTest {
 
     public void editCdeDataTypeById(String questionId, String dataType) {
         openQuestionEdit(questionId);
-        nonNativeSelect("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]", "CDE Data Type", dataType);
+        selectMatSelect("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]", "CDE Data Type", dataType);
     }
 
     public void openQuestionEdit(String questionId) {

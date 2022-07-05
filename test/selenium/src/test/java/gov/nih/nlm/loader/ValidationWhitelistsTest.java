@@ -12,104 +12,91 @@ import static io.restassured.RestAssured.given;
 
 public class ValidationWhitelistsTest extends NlmCdeBaseTest {
 
+    private void typeWhitelistname(String collectionName) {
+        findElement(By.id("newWhitelistname")).sendKeys(collectionName);
+    }
+
     @Test
-    public void addRemoveWhitelist(){
+    public void addRemoveWhitelist() {
+        String collectionName = "new_whitelist";
+        String[] terms = new String[]{"hello", "world"};
+
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToSpellCheck();
 
         clickElement(By.id("openNewWhitelistModalBtn"));
-        findElement(By.id("newWhitelistname")).sendKeys("new_whitelist");
-        findElement(By.id("newWhitelistterms")).sendKeys("hello|world");
+        typeWhitelistname(collectionName);
+        addMatChipByTextArray(terms);
         clickElement(By.id("createNewWhitelistBtn"));
-
-        hangon(2);
-
-        nonNativeSelect("", "Whitelist", "new_whitelist");
+        modalGone();
 
         clickElement(By.id("openEditWhitelistModalBtn"));
-
         textPresent("hello");
-        findElement(By.id("removeWhiteListTerm-hello"));
         textPresent("world");
-        findElement(By.id("removeWhiteListTerm-world"));
-
         clickElement(By.id("cancelEditWhitelistBtn"));
-
-        hangon(2);
+        modalGone();
 
         clickElement(By.id("openDeleteWhitelistModalBtn"));
-
         clickElement(By.id("deleteWhitelistBtn"));
-        hangon(2);
-
-        String xPath = "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')]/label[contains(.,'Whitelist')]]";
-        clickElement(By.xpath(xPath));
-
+        modalGone();
+        clickMatSelect();
         textNotPresent("new_whitelist");
         textPresent("test_whitelist");
     }
 
     @Test
-    public void copyWhitelist(){
+    public void copyWhitelist() {
+        String collectionName = "copy_test";
+        String collectionNameCopy = "Copy of copy_test";
+        String[] terms = new String[]{"copy", "terms"};
+
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToSpellCheck();
 
         clickElement(By.id("openNewWhitelistModalBtn"));
-        findElement(By.id("newWhitelistname")).sendKeys("copy_test");
-        findElement(By.id("newWhitelistterms")).sendKeys("copy|terms");
+        typeWhitelistname(collectionName);
+        addMatChipByTextArray(terms);
         clickElement(By.id("createNewWhitelistBtn"));
-
-        hangon(2);
-
-        nonNativeSelect("", "Whitelist", "copy_test");
+        modalGone();
 
         clickElement(By.id("copyWhitelistBtn"));
-
         clickElement(By.id("createNewWhitelistBtn"));
+        modalGone();
 
-        hangon(2);
-
-        nonNativeSelect("", "Whitelist", "Copy of copy_test");
-
+        selectMatSelect("", "Whitelist", collectionNameCopy);
         clickElement(By.id("openEditWhitelistModalBtn"));
-
         textPresent("copy");
-        findElement(By.id("removeWhiteListTerm-copy"));
         textPresent("terms");
-        findElement(By.id("removeWhiteListTerm-terms"));
-
         clickElement(By.id("cancelEditWhitelistBtn"));
     }
 
     @Test
-    public void addRemoveWhitelistTerms(){
+    public void editWhitelistTerms() {
+        String collectionName = "empty_whitelist";
+        String term = "new_term";
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToSpellCheck();
 
-        nonNativeSelect("", "Whitelist", "empty_whitelist");
+        selectMatSelect("", "Whitelist", collectionName);
 
         clickElement(By.id("openEditWhitelistModalBtn"));
-        findElement(By.id("addNewWhitelistTerm")).sendKeys("new_term");
-        clickElement(By.id("addNewWhitelistTermBtn"));
+        addMatChipByText(term);
         clickElement(By.id("editWhitelistBtn"));
-
-        hangon(2);
+        modalGone();
 
         clickElement(By.id("openEditWhitelistModalBtn"));
-        textPresent("new_term");
-        clickElement(By.id("removeWhiteListTerm-new_term"));
+        textPresent(term);
+        removeMatChipByText(term);
         clickElement(By.id("editWhitelistBtn"));
-
-        hangon(2);
+        modalGone();
 
         clickElement(By.id("openEditWhitelistModalBtn"));
-        textNotPresent("new_term");
+        textNotPresent(term);
     }
 
     @Test
-    public void whitelistBadRequests(){
+    public void whitelistAPI1() {
         mustBeLoggedInAs(theOrgAuth_username, password);
-
         Cookie currentCookie = getCurrentCookie();
         Response resp = given().cookie(currentCookie)
                 .contentType(ContentType.JSON)
@@ -117,15 +104,29 @@ public class ValidationWhitelistsTest extends NlmCdeBaseTest {
         Assert.assertEquals(resp.getStatusCode(), 400);
         Assert.assertTrue(resp.getBody().print().contains("No name for new whitelist provided"));
 
-        resp = given().cookie(currentCookie)
+
+    }
+
+    @Test
+    public void whitelistAPI2() {
+        mustBeLoggedInAs(theOrgAuth_username, password);
+        Cookie currentCookie = getCurrentCookie();
+
+        Response resp = given().cookie(currentCookie)
                 .contentType(ContentType.JSON)
                 .post(baseUrl + "/server/loader/updatewhitelist");
         Assert.assertEquals(resp.getStatusCode(), 400);
         Assert.assertTrue(resp.getBody().print().contains("No whitelist specified"));
+    }
 
-        resp = given().cookie(currentCookie)
+    @Test
+    public void whitelistAPI3() {
+        mustBeLoggedInAs(theOrgAuth_username, password);
+        Cookie currentCookie = getCurrentCookie();
+
+        Response resp = given().cookie(currentCookie)
                 .contentType(ContentType.JSON)
-                .body("{\"whitelistName\" : \"this_whitelist_is_not_real\"}")
+                .body("{\"collectionName\" : \"this_whitelist_is_not_real\"}")
                 .post(baseUrl + "/server/loader/updatewhitelist");
         Assert.assertEquals(resp.getStatusCode(), 400);
         Assert.assertTrue(resp.getBody().print().contains("Whitelist not valid"));

@@ -79,6 +79,11 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
+import {
+    DeleteWhiteListModalComponent
+} from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
+import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 
 const appRoutes: Routes = [
@@ -302,6 +307,9 @@ const appRoutes: Routes = [
         IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,
+        EditWhiteListModalComponent,
+        DeleteWhiteListModalComponent,
+        AddWhiteListModalComponent,
         OneListMgtComponent,
         OrgsEditComponent,
         OrgAdminComponent,

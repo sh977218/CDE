@@ -3,7 +3,6 @@ package gov.nih.nlm.form.test;
 import gov.nih.nlm.form.test.displayProfile.DisplayProfile;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
@@ -142,13 +141,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void setRepeat(String sectionId, String repeat) {
         if (repeat == null || "".equals(repeat)) {
-            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "");
+            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "");
         } else if (repeat.charAt(0) == 'F') {
-            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over first question");
+            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over first question");
         } else if (repeat.charAt(0) == '=') {
-            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
+            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
         } else {
-            nonNativeSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
+            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
             findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat + Keys.ENTER);
         }
         checkAlert("Saved");

@@ -14,7 +14,7 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
         goToCdeByName(cdeName);
         goToPermissibleValues();
         changeDatatype(datatype);
-        nonNativeSelect("","Select system name", "VSAC");
+        selectMatSelect("","Select system name", "VSAC");
         findElement(By.id("dynamicListCode")).sendKeys("some OID");
         hangon(1);
 

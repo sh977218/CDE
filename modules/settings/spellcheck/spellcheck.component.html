@@ -4,20 +4,17 @@
     <mat-form-field>
         <mat-select placeholder="Whitelist" [(ngModel)]="selectedWhiteList"
                     [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
-            <mat-option *ngFor="let s of currentWhiteLists" [value]="s">{{s.collectionName}}</mat-option>
+            <mat-option *ngFor="let s of whiteList" [value]="s">{{s.collectionName}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <ng-container *ngIf="retrievingWhitelists || updatingWhitelists">
-        <span><mat-icon style="vertical-align: middle" class="spin">autorenew</mat-icon></span>
-    </ng-container>
     <div class="form-group">
-        <button class="button" (click)="openNewWhitelistModal()" id="openNewWhitelistModalBtn"
+        <button class="button" (click)="openAddWhitelistModal()" id="openNewWhitelistModalBtn"
                 [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
             <mat-icon>add</mat-icon>
             Add a Whitelist
         </button>
 
-        <button *ngIf="selectedWhiteList" class="button" (click)="copyWhitelist()" id="copyWhitelistBtn"
+        <button *ngIf="selectedWhiteList" class="button" (click)="openCopyWhitelistModal()" id="copyWhitelistBtn"
                 [disabled]="checkingFile || retrievingWhitelists || updatingWhitelists">
             <mat-icon>content_copy</mat-icon>
             Copy Whitelist
@@ -104,101 +101,3 @@
         </mat-paginator>
     </div>
 </div>
-
-<ng-template #newWhitelistModal>
-    <h1 mat-dialog-title>Add new Whitelist</h1>
-    <form role="form">
-        <div mat-dialog-content>
-            <div class="form-group">
-                <label for="newWhitelistname">Name</label>
-                <input class="form-control" id="newWhitelistname" name="whitelistname" Placeholder="New Whitelist"
-                       [(ngModel)]="newWhiteList" required/>
-            </div>
-
-            <div class="form-group">
-                <label for="newWhitelistterms">Terms</label>
-                <mat-icon style="height: 30px" (click)="openTermHelp()">help_outline</mat-icon>
-                <input class="form-control" id="newWhitelistterms" name="whitelistterms" Placeholder="Terms to whitelist (optional)"
-                       [(ngModel)]="newWhiteListTerms"/>
-            </div>
-        </div>
-        <div mat-dialog-actions>
-            <button class="button secondary" [mat-dialog-close]>
-                Cancel
-            </button>
-            <button class="button" [mat-dialog-close]="true" [disabled]="!this.newWhiteList.trim()"
-                    id="createNewWhitelistBtn" type="submit">
-                Save
-            </button>
-        </div>
-    </form>
-</ng-template>
-
-<ng-template #editWhitelistModal>
-    <h1 mat-dialog-title>Edit Whitelist "{{this.selectedWhiteList.collectionName}}"?</h1>
-    <div mat-dialog-content>
-        <p>Current Terms</p>
-        <div *ngFor="let t of this.selectedWhiteList.terms">
-            <div>
-                <mat-icon (click)="removeWhiteListTerm(t)"
-                          id="removeWhiteListTerm-{{t}}">delete_outline
-                </mat-icon>
-                <span>{{t}}</span>
-            </div>
-        </div>
-        <hr>
-        <p>New terms</p>
-        <ul>
-            <li *ngFor="let t of this.whiteListNewTerms">
-                {{t}}
-            </li>
-        </ul>
-        <div>
-            <input #newTerm class="form-control" id="addNewWhitelistTerm" name="whitelistterm" Placeholder="Add New Term"/>
-            <button class="button" (click)="addNewTerm(newTerm.value); newTerm.value = '';" id="addNewWhitelistTermBtn">
-                <mat-icon>add</mat-icon>
-                Add Term
-            </button>
-        </div>
-    </div>
-    <div mat-dialog-actions>
-        <button id="cancelEditWhitelistBtn" class="button secondary" [mat-dialog-close]>
-            Cancel
-        </button>
-        <button id="editWhitelistBtn" type="submit" class="button" [mat-dialog-close]="true"
-                [disabled]="!this.selectedWhiteList || (this.whiteListNewTerms.length === 0 && this.whiteListRemoveTerms.length === 0)">
-            Save Changes
-        </button>
-    </div>
-</ng-template>
-
-
-<ng-template #deleteWhitelistModal>
-    <h1 mat-dialog-title>Delete Selected Whitelist "{{this.selectedWhiteList.collectionName}}"?</h1>
-    <div mat-dialog-actions>
-        <button id="cancelDeleteWhitelistBtn" type="button" class="button secondary" [mat-dialog-close]>
-            Cancel
-        </button>
-        <button id="deleteWhitelistBtn" type="submit" class="button fail"
-                [mat-dialog-close]="true" [disabled]="!this.selectedWhiteList">
-            Delete
-        </button>
-    </div>
-</ng-template>
-
-<ng-template #newListHelpModal>
-    <h1 mat-dialog-title>Help</h1>
-    <mat-dialog-content>
-        <h2>Adding Terms</h2>
-        <p>
-            To add more than one term, separate terms with the "|" character
-        </p>
-        <p>
-            For example:<br>
-            format|like|this
-        </p>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button class="button light" [mat-dialog-close]="true">Close</button>
-    </mat-dialog-actions>
-</ng-template>

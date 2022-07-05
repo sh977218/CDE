@@ -1,53 +1,54 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { ValidationWhitelist } from 'shared/models.model';
 import { PageEvent } from '@angular/material/paginator';
+import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
+import {
+    DeleteWhiteListModalComponent
+} from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
+import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
+import { remove as _remove } from 'lodash';
+
+type SpellingErrors = Record<string, {
+    row: number,
+    name: string,
+    error: string,
+    field: string
+}[]>
 
 @Component({
     selector: 'cde-spellcheck',
     templateUrl: './spellcheck.component.html',
     styles: [`
-        .checkBoxCell {
-            cursor: pointer;
-            text-align: center;
-            vertical-align: middle;
-        }
+      .checkBoxCell {
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+      }
     `]
 })
 export class SpellCheckComponent {
-    @ViewChild('newWhitelistModal', {static: true}) newWhitelistModal!: TemplateRef<any>;
-    @ViewChild('deleteWhitelistModal', {static: true}) deleteWhitelistModal!: TemplateRef<any>;
-    @ViewChild('editWhitelistModal', {static: true}) editWhitelistModal!: TemplateRef<any>;
-    @ViewChild('newListHelpModal', {static: true}) newListHelpModal!: TemplateRef<any>;
-    checkingFile: boolean = false;
-    retrievingWhitelists: boolean = false;
-    updatingWhitelists: boolean = false;
+
+    whiteList: ValidationWhitelist[] = [];
+    checkingFile = false;
+    retrievingWhitelists = false;
+    updatingWhitelists = false;
     fileErrors: string[] = [];
     selectedErrors: Set<string> = new Set();
-    spellingErrors: Record<string, {
-        row: number,
-        name: string,
-        error: string,
-        field: string
-    }[]> = {}
+    spellingErrors: SpellingErrors = {}
     showAllTermErrors: Record<string, boolean> = {}
-    errorLimit: number = 5;
+    errorLimit = 5;
     currentErrorPage: string [] = [];
-    pageIndex: number = 0;
-    pageSize: number = 10;
+    pageIndex = 0;
+    pageSize = 10;
 
-    currentWhiteLists: ValidationWhitelist[] = [];
-    selectedWhiteList: ValidationWhitelist | null = null;
+    selectedWhiteList: ValidationWhitelist;
 
-    whiteListNewTerms: string[] = [];
-    whiteListRemoveTerms: string[] = [];
-
-    newWhiteList: string = '';
-    newWhiteListTerms: string = '';
-
-    constructor(private alert: AlertService, private http: HttpClient, public dialog: MatDialog) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public dialog: MatDialog) {
         this.getWhiteLists();
     }
 
@@ -60,53 +61,34 @@ export class SpellCheckComponent {
     }
 
     getWhiteLists() {
-        this.retrievingWhitelists = true;
-        this.http.get<ValidationWhitelist[]>('/server/loader/whitelists').subscribe(res => {
-            this.currentWhiteLists = res;
-            if (this.selectedWhiteList) {
-                const idx = this.currentWhiteLists.findIndex(list => list.collectionName === this.selectedWhiteList?.collectionName);
-                if (idx > -1) {
-                    this.selectedWhiteList = this.currentWhiteLists[idx];
-                }
-            }
-            this.retrievingWhitelists = false;
-        }, error => {
-            this.retrievingWhitelists = false;
-            this.alert.httpErrorMessageAlert(error);
-        });
+        this.http.get<ValidationWhitelist[]>('/server/loader/whitelists')
+            .subscribe(res => this.whiteList = res,
+                error => this.alert.httpErrorMessageAlert(error));
     }
 
     whiteListSelectedErrors() {
         if (this.selectedErrors.size > 0) {
-            this.updateWhiteList(Array.from(this.selectedErrors), []);
-        }
-    }
-
-    updateWhiteList(newTerms: string[], removeTerms: string[]) {
-        if (this.selectedWhiteList) {
-            this.updatingWhitelists = true;
-            this.http.post<any>('/server/loader/updatewhitelist', {
-                whitelistName: this.selectedWhiteList.collectionName,
-                newTerms,
-                removeTerms
-            }).subscribe((res) => {
-                if (this.selectedErrors.size > 0) {
-                    this.selectedErrors.clear();
-                }
+            this.selectedWhiteList.terms = this.selectedWhiteList.terms.concat(Array.from(this.selectedErrors))
+            this.updateWhiteList(this.selectedWhiteList, res => {
+                this.selectedErrors.clear();
                 if (this.getMisspelledTerms().length > 0) {
                     for (const t of res.terms) {
                         delete this.spellingErrors[t];
                     }
                     this.setCurrentErrorPage();
                 }
-                this.getWhiteLists();
-                this.updatingWhitelists = false;
-                this.alert.addAlert('success', 'Whitelist updated');
-            }, err => {
-                this.updatingWhitelists = false;
-                this.alert.httpErrorMessageAlert(err);
             });
         }
+    }
+
+    updateWhiteList(whiteList, cb?) {
+        this.http.post<any>('/server/loader/updatewhitelist', whiteList)
+            .subscribe(res => {
+                if (res) {
+                    this.alert.addAlert('success', 'Whitelist updated');
+                }
+                if (cb) cb(res);
+            }, err => this.alert.httpErrorMessageAlert(err));
     }
 
     spellcheckCSV(event: Event) {
@@ -144,80 +126,63 @@ export class SpellCheckComponent {
         }
     }
 
-    openNewWhitelistModal() {
-        this.dialog.open(this.newWhitelistModal, {width: '800px'}).afterClosed().subscribe(res => {
-            if (res) {
-                this.updatingWhitelists = true;
-                this.http.post('/server/loader/addNewWhitelist',
-                    {
-                        newWhitelist: this.newWhiteList, newWhitelistTerms: this.newWhiteListTerms
-                    }, {responseType: 'text'}).subscribe(
-                    () => {
-                        this.updatingWhitelists = false;
-                        this.getWhiteLists();
-                        this.alert.addAlert('success', 'New Whitelist added');
-                    },
-                    () => {
-                        this.updatingWhitelists = false;
-                        this.alert.addAlert('danger', 'Cannot create new whitelist. Does it already exist?');
-                    }
-                );
-            }
-            this.newWhiteList = '';
-        });
+    openAddWhitelistModal() {
+        this.dialog.open(AddWhiteListModalComponent, {width: '800px'})
+            .afterClosed()
+            .subscribe(newWhiteList => {
+                if (newWhiteList) {
+                    this.addNewWhiteList(newWhiteList);
+                    this.whiteList.push(newWhiteList);
+                    this.selectedWhiteList = newWhiteList;
+                }
+            });
     }
 
-    copyWhitelist() {
-        if (!!this.selectedWhiteList) {
-            this.newWhiteList = `Copy of ${this.selectedWhiteList.collectionName}`;
-            this.newWhiteListTerms = this.selectedWhiteList.terms.join('|');
-            this.openNewWhitelistModal();
-        }
+    openCopyWhitelistModal() {
+        const data = this.selectedWhiteList;
+        this.dialog.open(AddWhiteListModalComponent, {width: '800px', data})
+            .afterClosed()
+            .subscribe(newWhiteList => {
+                if (newWhiteList) {
+                    this.addNewWhiteList(newWhiteList);
+                    this.whiteList.push(newWhiteList);
+                }
+            });
+    }
+
+    addNewWhiteList(newWhiteList) {
+        this.http.post('/server/loader/addNewWhitelist', newWhiteList, {responseType: 'text'})
+            .subscribe(() => this.alert.addAlert('success', 'New Whitelist added'),
+                () => this.alert.addAlert('danger', 'Cannot create new whitelist. Does it already exist?'));
+
     }
 
     openEditWhitelistModal() {
-        this.dialog.open(this.editWhitelistModal, {width: '800px'}).afterClosed().subscribe(res => {
-            if (res) {
-                this.updateWhiteList(this.whiteListNewTerms, this.whiteListRemoveTerms);
-            } else {
-                this.getWhiteLists();
-            }
-            this.whiteListNewTerms = [];
-            this.whiteListRemoveTerms = [];
-        });
-    }
-
-    addNewTerm(term: string) {
-        if (this.selectedWhiteList && !!term.trim()) {
-            this.whiteListNewTerms.push(term.trim());
-        }
-    }
-
-    removeWhiteListTerm(term: string) {
-        if (this.selectedWhiteList) {
-            this.selectedWhiteList.terms.splice(this.selectedWhiteList.terms.indexOf(term), 1);
-            this.whiteListRemoveTerms.push(term);
-        }
+        this.dialog.open(EditWhiteListModalComponent, {width: '800px', data: this.selectedWhiteList})
+            .afterClosed()
+            .subscribe(res => {
+                if (res) {
+                    this.updateWhiteList(res);
+                }
+            });
     }
 
     openDeleteWhitelistModal() {
-        this.dialog.open(this.deleteWhitelistModal).afterClosed().subscribe(res => {
-            if (res) {
-                if (this.selectedWhiteList) {
-                    this.updatingWhitelists = true;
-                    this.http.delete('/server/loader/deletewhitelist/' + this.selectedWhiteList.collectionName).subscribe(() => {
-                            this.getWhiteLists();
-                            this.selectedWhiteList = null;
-                            this.updatingWhitelists = false;
-                            this.alert.addAlert('success', 'Whitelist deleted');
-                        },
-                        err => {
-                            this.updatingWhitelists = false;
-                            this.alert.addAlert('danger', 'Could not remove whitelist.');
-                        });
+        this.dialog.open(DeleteWhiteListModalComponent, {data: this.selectedWhiteList})
+            .afterClosed()
+            .subscribe(res => {
+                if (res) {
+                    this.deleteWhiteList(this.selectedWhiteList.collectionName);
+                    _remove(this.whiteList, o => o.collectionName === this.selectedWhiteList.collectionName);
+                    this.selectedWhiteList = null;
                 }
-            }
-        });
+            });
+    }
+
+    deleteWhiteList(collectionName) {
+        this.http.delete(`/server/loader/deletewhitelist/${collectionName}`)
+            .subscribe(() => this.alert.addAlert('success', 'Whitelist deleted'),
+                err => this.alert.addAlert('danger', `Could not remove whitelist. ${err} `))
     }
 
     getMisspelledTerms(): string [] {
@@ -242,9 +207,5 @@ export class SpellCheckComponent {
         const regEx = new RegExp(term, 'ig');
         text = text.replace(regEx, '<strong>$&</strong>');
         return `Row ${row} - ${field}: ${text}`;
-    }
-
-    openTermHelp() {
-        this.dialog.open(this.newListHelpModal, {width: '550px'});
     }
 }

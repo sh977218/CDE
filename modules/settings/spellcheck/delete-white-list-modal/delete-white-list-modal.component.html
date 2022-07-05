@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Delete Selected Whitelist "{{this.selectedWhiteList.collectionName}}"?</h1>
+<div mat-dialog-actions>
+    <button id="cancelDeleteWhitelistBtn" type="button" class="button secondary" [mat-dialog-close]>
+        Cancel
+    </button>
+    <button id="deleteWhitelistBtn" type="submit" class="button fail"
+            [mat-dialog-close]="true" [disabled]="!this.selectedWhiteList">
+        Delete
+    </button>
+</div>

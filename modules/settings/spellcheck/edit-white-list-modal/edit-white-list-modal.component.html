@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Edit Whitelist "{{selectedWhiteList.collectionName}}"?</h1>
+<div mat-dialog-content>
+    <mat-form-field class="example-chip-list" appearance="fill">
+        <mat-chip-list #chipList aria-label="Term selection">
+            <mat-chip *ngFor="let term of selectedWhiteList.terms" (removed)="remove(term)">
+                {{term}}
+                <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip>
+            <input placeholder="New term..."
+                   [matChipInputFor]="chipList"
+                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                   [matChipInputAddOnBlur]="addOnBlur"
+                   (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button id="cancelEditWhitelistBtn" class="button secondary" [mat-dialog-close]="cancelChanges()">
+        Cancel
+    </button>
+    <button id="editWhitelistBtn" type="submit" class="button" [mat-dialog-close]="selectedWhiteList">
+        Save Changes
+    </button>
+</div>

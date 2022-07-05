@@ -1,7 +1,6 @@
 package gov.nih.nlm.cde.test.datatype;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import org.openqa.selenium.By;
 import org.testng.annotations.Test;
 
 public class DateDatatypeTest extends NlmCdeBaseTest {
@@ -11,11 +10,11 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToPermissibleValues();
-        nonNativeSelect("", "Select Precision", "Year");
-        nonNativeSelect("", "Select Precision", "Month");
-        nonNativeSelect("", "Select Precision", "Day");
-        nonNativeSelect("", "Select Precision", "Hour");
-        nonNativeSelect("", "Select Precision", "Minute");
-        nonNativeSelect("", "Select Precision", "Second");
+        selectMatSelect("", "Select Precision", "Year");
+        selectMatSelect("", "Select Precision", "Month");
+        selectMatSelect("", "Select Precision", "Day");
+        selectMatSelect("", "Select Precision", "Hour");
+        selectMatSelect("", "Select Precision", "Minute");
+        selectMatSelect("", "Select Precision", "Second");
     }
 }

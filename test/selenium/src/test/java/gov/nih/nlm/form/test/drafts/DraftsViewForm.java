@@ -28,13 +28,13 @@ public class DraftsViewForm extends NlmCdeBaseTest {
         textPresent(nindsDraftName, By.id("settingsContent"));
         textPresent(ctepDraftName, By.id("settingsContent"));
 
-        nonNativeSelect("", "Filter by Organization", "CTEP");
+        selectMatSelect("", "Filter by Organization", "CTEP");
         textNotPresent(nindsDraftName, By.id("settingsContent"));
 
-        nonNativeSelect("", "Filter by Organization", "NINDS");
+        selectMatSelect("", "Filter by Organization", "NINDS");
         textNotPresent(ctepDraftName, By.id("settingsContent"));
 
-        nonNativeSelect("", "Filter by Organization", "All Organizations");
+        selectMatSelect("", "Filter by Organization", "All Organizations");
         textPresent(ctepDraftName, By.id("settingsContent"));
         textPresent(nindsDraftName, By.id("settingsContent"));
     }

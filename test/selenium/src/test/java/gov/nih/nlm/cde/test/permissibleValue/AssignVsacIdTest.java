@@ -34,10 +34,9 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         textPresent("Latest");
         textPresent("2135-2");
         textPresent("CDCREC");
-        WebElement tbody = driver.findElement(By.id("vsacTableBody"));
-        List<WebElement> vsacLines = tbody.findElements(By.tagName("tr"));
-        Assert.assertEquals(vsacLines.size(), 3);
-        textPresent("Match");
+        textPresent("Hispanic or Latino", By.id("vsacTableBody"));
+        textPresent("Not Hispanic or Latino", By.id("vsacTableBody"));
+        textPresent("Match", By.id("vsacTableBody"));
     }
 
 }

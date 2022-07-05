@@ -14,7 +14,10 @@ import * as multer from 'multer';
 export function module() {
     const router = Router();
 
-    router.post('/validateCSVLoad', multer({...config.multer, storage: multer.memoryStorage()}).any(), async (req, res) => {
+    router.post('/validateCSVLoad', multer({
+        ...config.multer,
+        storage: multer.memoryStorage()
+    }).any(), async (req, res) => {
         if (!req.files) {
             res.status(400).send('No file uploaded for validation');
             return;
@@ -38,36 +41,30 @@ export function module() {
         }
     );
 
-    router.get('/whitelists', async (req, res) => {
-        const whitelists = await getValidationWhitelists();
-        res.send(whitelists);
-    });
+    router.get('/whitelists', async (req, res) => res.send(await getValidationWhitelists()));
 
     router.post('/addNewWhitelist', async (req, res) => {
-        if (!req.body.newWhitelist || !req.body.newWhitelist.trim()) {
+        if (!req.body.collectionName) {
             return res.status(400).send('No name for new whitelist provided');
         }
-        const newTermsList: string = req.body.newWhitelistTerms;
-        const newTerms = newTermsList.split('|').filter(t => t.trim()).map(t => t.trim());
-
-        await addValidationWhitelist(req.body.newWhitelist.trim(), newTerms);
+        await addValidationWhitelist(req.body);
         return res.status(200).send('Whitelist created');
     });
 
     router.post('/updatewhitelist', async (req, res) => {
-        if (!req.body.whitelistName) {
+        if (!req.body.collectionName) {
             return res.status(400).send('No whitelist specified');
         }
-        const updatedWhitelist = await updateValidationWhitelist(req.body.whitelistName, req.body.newTerms, req.body.removeTerms);
+        const updatedWhitelist = await updateValidationWhitelist(req.body);
         if (!!updatedWhitelist) {
-            return res.status(200).send({terms: updatedWhitelist.terms});
+            return res.status(200).send(updatedWhitelist);
         } else {
             return res.status(400).send('Whitelist not valid');
         }
     });
 
-    router.delete('/deletewhitelist/:name', async (req, res) => {
-        await deleteValidationWhitelist(req.params.name);
+    router.delete('/deletewhitelist/:collectionName', async (req, res) => {
+        await deleteValidationWhitelist(req.params.collectionName);
         res.send();
     });
 

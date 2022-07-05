@@ -231,7 +231,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
-    protected void cdeFormTitleExists(){
+    protected void cdeFormTitleExists() {
         findElement(By.cssSelector("h1"));
     }
 
@@ -758,7 +758,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             findElement(by).click();
         } catch (ElementClickInterceptedException e) {
             hangon(.5);
-            if(!e.getMessage().contains("Other element would receive the click")){
+            if (!e.getMessage().contains("Other element would receive the click")) {
                 scrollDownBy(500);
             } else if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0) {
                 clickElement(By.id("username_link"));
@@ -800,7 +800,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
      * modal to be gone reliably.
      */
     public void modalGone() {
-        hangon(1.5);
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container")));
     }
 
     public void closeAlert() {
@@ -1005,7 +1005,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         hangon(2);
     }
 
-    public void scrollToTop(){
+    public void scrollToTop() {
         String jsScroll = "document.getElementById('scrollRoot')?.scrollTo(0,0);";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
@@ -1349,7 +1349,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            nonNativeSelect("//*[@itemprop='datatype']", "Select data type", newDatatype);
+            selectMatSelect("//*[@itemprop='datatype']", "Select data type", newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);
         }
@@ -1883,7 +1883,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         else textNotPresent(commentText, By.xpath("//cde-comments"));
     }
 
-    protected void selectArticleByKey(String key){
+    protected void selectArticleByKey(String key) {
         clickElement(By.xpath("//*[@id='selectArticleKey']//mat-select"));
         selectMatDropdownByText(key);
     }
@@ -1949,7 +1949,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent(optionText, bySelect);
     }
 
-    protected void nonNativeSelect(String xpathParent, String selectLabel, String optionText) {
+    protected void selectMatSelect(String xpathParent, String selectLabel, String optionText) {
         String xpathSelect = xpathParent + (selectLabel.length() > 0
                 ? "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')]/label[contains(.,'" + selectLabel + "')]]"
                 : "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')][not(label)]]"
@@ -1957,6 +1957,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpathSelect));
         selectMatDropdownByText(optionText);
         findElement(By.xpath(xpathSelect + "//*[contains(@class,'mat-select-value')][contains(.,'" + optionText + "')]"));
+    }
+
+    protected void clickMatSelect() {
+        clickElement(By.xpath("//mat-select"));
     }
 
     protected void propertyEditText(String property, String text) {
@@ -1969,6 +1973,20 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void selectMatDropdownByText(String text) {
         clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
+    }
+
+    protected void removeMatChipByText(String text) {
+        clickElement(By.xpath("//mat-chip[normalize-space(div/following-sibling::text()) ='" + text + "']//mat-icon"));
+    }
+
+    protected void addMatChipByTextArray(String[] chips) {
+        for (String chip : chips) {
+            addMatChipByText(chip);
+        }
+    }
+
+    protected void addMatChipByText(String chip) {
+        findElement(By.xpath("//mat-chip-list//input")).sendKeys(chip + Keys.ENTER);
     }
 
     protected void reorderBySection(String section, String direction, int index) {
@@ -1985,11 +2003,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return "//cde-admin-item-sources//dl/dt";
     }
 
-    protected void clickSaveButton(){
+    protected void clickSaveButton() {
         clickElement(By.xpath("//button[normalize-space(text())='Save']"));
     }
 
-    protected void clickCancelButton(){
+    protected void clickCancelButton() {
         clickElement(By.xpath("//button[normalize-space(text())='Cancel']"));
     }
 }
