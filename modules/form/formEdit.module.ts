@@ -46,6 +46,7 @@ import {
 } from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
 import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
 import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
+import { FormUpdateFormVersionModalComponent } from 'form/form-update-form-version-modal/form-update-form-version-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormDescriptionComponent},
@@ -98,6 +99,7 @@ const appRoutes: Routes = [
         QuestionSearchModalComponent,
         FormDescriptionQuestionComponent,
         FormUpdateCdeVersionModalComponent,
+        FormUpdateFormVersionModalComponent,
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         QuestionAnswerEditContentComponent,

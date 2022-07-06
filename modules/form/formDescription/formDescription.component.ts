@@ -1,7 +1,7 @@
 import 'form/formDescription/formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
@@ -30,9 +30,6 @@ import { QuestionSearchModalComponent } from 'form/question-search-modal/questio
 export class FormDescriptionComponent implements OnInit {
     elt: any;
     @ViewChild(TreeComponent) tree!: TreeComponent;
-    @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
-    @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
-    @ViewChild('descToolbox') descToolbox!: ElementRef;
     dragActive = false;
     formElementEditing: any = {};
     isMobile = false;

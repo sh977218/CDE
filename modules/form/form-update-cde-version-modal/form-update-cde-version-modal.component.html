@@ -1,6 +1,7 @@
 <h1 mat-dialog-title>Confirm Changes:</h1>
 <mat-dialog-content>
-    <div class="propertyTable" *ngIf="updateCdeVersion.newQuestion.question && updateCdeVersion.currentQuestion.question">
+    <div class="propertyTable"
+         *ngIf="updateCdeVersion.newQuestion.question && updateCdeVersion.currentQuestion.question">
         <div>Label:</div>
         <div>
             <span [ngClass]="{mark: updateCdeVersion.bLabel}">{{updateCdeVersion.newQuestion.label | cdePlaceholder}}</span>
@@ -133,6 +134,6 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button class="button secondary" [mat-dialog-close]="false">Cancel</button>
-    <button class="button" [mat-dialog-close]="true">OK</button>
+    <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    <button class="button" [mat-dialog-close]="updateCdeVersion.newQuestion">OK</button>
 </mat-dialog-actions>

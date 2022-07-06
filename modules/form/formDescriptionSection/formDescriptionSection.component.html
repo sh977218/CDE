@@ -27,7 +27,7 @@
             <span *ngIf="formSection?.inForm?.form?.outdated" style="margin: 0 .25rem">(Outdated)</span>
         </div>
         <ng-container *ngIf="canEdit && formSection?.inForm?.form?.outdated">
-            <button class="button light small updateQuestionBtn" (click)="openUpdateFormVersion(section);">Update</button>
+            <button class="button light small updateQuestionBtn" (click)="openUpdateFormVersionModal(section);">Update</button>
         </ng-container>
         <div>
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
@@ -172,41 +172,6 @@
             </div>
         </div>
     </div>
-</ng-template>
-
-<ng-template #updateFormVersionTmpl>
-    <h1 mat-dialog-title>Confirm Changes:</h1>
-    <mat-dialog-content>
-        <mat-icon *ngIf="reloading" class="spin">autorenew</mat-icon>
-        <div class="propertyTable">
-            <div>Label:</div>
-            <div id="mdd_section_title">
-                <span [ngClass]="{mark: updateFormVersion.bLabel}">{{updateFormVersion.newSection.label | cdePlaceholder}}</span>
-                <span *ngIf="updateFormVersion.bLabel"
-                      class="text-danger">( was {{ updateFormVersion.currentSection.label }} )</span>
-            </div>
-
-            <div>Form:</div>
-            <div id="mdd_d_form">
-                <a [ngClass]="{mark: updateFormVersion.bForm}"
-                   href="/deView?tinyId={{updateFormVersion.newSection.inForm.form.tinyId}}&version={{updateFormVersion.newSection.inForm.form.version}}"
-                   target="_blank">
-                    <mat-icon>visibility</mat-icon>
-                    <span id="mdd_question_cde_name">{{updateFormVersion.newSection.inForm.form.name}}</span>
-                </a>
-                <span *ngIf="updateFormVersion.bForm" class="text-danger">( was
-                        <a href="/deView?tinyId={{updateFormVersion.currentSection.inForm.form.tinyId}}&version={{updateFormVersion.currentSection.inForm.form.version}}"
-                           target="_blank"><mat-icon>visibility</mat-icon>
-                            <span id="mdd_old_question_cde_name">{{updateFormVersion.currentSection.inForm.form.name}}</span>
-                        </a> )
-                    </span>
-            </div>
-        </div>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button class="button secondary" [mat-dialog-close]="false">Cancel</button>
-        <button class="button" [mat-dialog-close]="true">OK</button>
-    </mat-dialog-actions>
 </ng-template>
 
 <ng-template #instructionsHtml>

@@ -25,7 +25,7 @@
     </button>
     <div>
         <div>
-            <div #descToolbox *ngIf="canEdit()" class="descriptionToolbox"
+            <div *ngIf="canEdit()" class="descriptionToolbox"
                  [style.top]="topSpacing+'px'" [style.right]="isMobile ? 0 : '17px'">
                 <button role="button" id="addSectionTop" class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
@@ -140,11 +140,3 @@
         </div>
     </div>
 </div>
-
-<ng-template #confirmCancelTmpl>
-    <h1 mat-dialog-title>You have unsaved changes.</h1>
-    <mat-dialog-actions>
-        <button class="button fail" [mat-dialog-close]="false">Cancel</button>
-        <button class="button" [mat-dialog-close]="true">Save</button>
-    </mat-dialog-actions>
-</ng-template>

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, View
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode } from '@circlon/angular-tree-component';
 import { FormDescriptionComponent } from 'form/formDescription/formDescription.component';
-import {  DataType } from 'shared/de/dataElement.model';
+import { DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
 import {
@@ -24,10 +24,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
     parent!: FormElement;
     question!: FormQuestion;
 
-    constructor(
-        @Host() public formDescriptionComponent: FormDescriptionComponent,
-        public dialog: MatDialog
-    ) {
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
+                public dialog: MatDialog) {
     }
 
     ngOnInit() {

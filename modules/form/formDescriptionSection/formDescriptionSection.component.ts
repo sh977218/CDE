@@ -18,6 +18,9 @@ import { getLabel } from 'shared/form/fe';
 import { CdeForm, FormElement, FormInForm, FormSectionOrForm, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
+import {
+    FormUpdateFormVersionModalComponent
+} from 'form/form-update-form-version-modal/form-update-form-version-modal.component';
 
 @Component({
     selector: 'cde-form-description-section',
@@ -32,7 +35,6 @@ export class FormDescriptionSectionComponent implements OnInit {
     @ViewChild('formDescriptionSectionTmpl', {static: true}) formDescriptionSectionTmpl!: TemplateRef<any>;
     @ViewChild('formDescriptionFormTmpl', {static: true}) formDescriptionFormTmpl!: TemplateRef<any>;
     @ViewChild('slInput', {static: true}) slInput!: ElementRef;
-    @ViewChild('updateFormVersionTmpl', {static: true}) updateFormVersionTmpl!: TemplateRef<any>;
     isSubForm = false;
     formSection?: FormInForm;
     parent!: FormElement;
@@ -127,42 +129,6 @@ export class FormDescriptionSectionComponent implements OnInit {
         }
     }
 
-    openUpdateFormVersion(formSection: FormInForm) {
-        fetchForm(formSection.inForm.form.tinyId).then(newForm => {
-            const oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
-            fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
-                this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
-            });
-        });
-    }
-
-    openUpdateFormVersionMerge(newSection: FormInForm, currentSection: FormInForm, newForm: CdeForm, oldForm: CdeForm) {
-        newSection.instructions = currentSection.instructions;
-        newSection.repeat = currentSection.repeat;
-        newSection.skipLogic = currentSection.skipLogic;
-        if (newForm.designations.some(n => n.designation === currentSection.label)) {
-            newSection.label = currentSection.label;
-        }
-
-        const modal: any = {
-            currentSection,
-            newSection
-        };
-        modal.bForm = true;
-        modal.bLabel = !isEqual(newForm.designations, oldForm.designations);
-
-        this.updateFormVersion = modal;
-        this.dialog.open<boolean>(this.updateFormVersionTmpl, {width: '1000px'}).afterClosed().subscribe(res => {
-            if (res) {
-                currentSection.inForm = newSection.inForm;
-                currentSection.formElements = newSection.formElements;
-                currentSection.label = newSection.label;
-                this.formDescriptionComponent.updateTree();
-                this.eltChange.emit();
-            }
-        }, noop);
-    }
-
     removeNode(node: TreeNode) {
         node.parent.data.formElements.splice(node.parent.data.formElements.indexOf(node.data), 1);
         node.treeModel.update();
@@ -182,5 +148,21 @@ export class FormDescriptionSectionComponent implements OnInit {
 
         this.checkRepeatOptions();
         this.eltChange.emit();
+    }
+
+
+    openUpdateFormVersionModal(formSection: FormInForm) {
+        const data = formSection;
+        this.dialog.open(FormUpdateFormVersionModalComponent, {width: '1000px', data})
+            .afterClosed()
+            .subscribe(newSection => {
+                if (newSection) {
+                    formSection.inForm = newSection.inForm;
+                    formSection.formElements = newSection.formElements;
+                    formSection.label = newSection.label;
+                    this.formDescriptionComponent.updateTree();
+                    this.eltChange.emit();
+                }
+            });
     }
 }
