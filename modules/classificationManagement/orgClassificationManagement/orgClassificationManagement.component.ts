@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TreeNode } from '@circlon/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { map } from 'rxjs/operators';
@@ -12,9 +11,12 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cb } from 'shared/models.model';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
-import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
-import { RemoveClassificationDialogComponent } from 'classificationManagement/remove-classification-dialog/remove-classification-dialog.component';
-import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
+import {
+    AddChildClassificationDialogComponent
+} from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
+import {
+    RenameClassificationDialogComponent
+} from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { DialogData } from 'classificationManagement/dialog-data';
@@ -23,6 +25,9 @@ import { ClassificationNode } from 'classificationManagement/classification-node
 import { SearchQueryParameter } from 'classificationManagement/search-query-parameter';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
 import { UserService } from '_app/user.service';
+import {
+    RemoveOrgClassificationDialogComponent
+} from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
@@ -30,25 +35,9 @@ import { UserService } from '_app/user.service';
 })
 export class OrgClassificationManagementComponent {
     @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemComponent;
-    childClassificationNode?: TreeNode;
-    descriptorID!: string;
-    descriptorName!: string;
-    descToName: { [descId: string]: string } = {};
     dialogRef!: MatDialogRef<TemplateRef<any>>;
-    newClassificationName!: string;
-    oldReclassificationArray!: string[];
-    renameClassificationNode?: TreeNode;
-    selectedClassificationArray = '';
-    selectedClassificationString = '';
-    userTyped = '';
     selectedOrg: FormControl;
     orgs: Organization[];
-
-    /** Map from flat node to nested node. This helps us finding the nested node to be modified */
-    flatNodeMap = new Map<FlatClassificationNode, ClassificationNode>();
-
-    /** Map from nested node to flattened node. This helps us to keep the same object for selection */
-    nestedNodeMap = new Map<ClassificationNode, FlatClassificationNode>();
 
     treeControl = new FlatTreeControl<FlatClassificationNode>(node => node.level, node => node.expandable);
     treeFlattener = new MatTreeFlattener(this.transformer, node => node.level, node => node.expandable, node => node.elements);
@@ -91,8 +80,6 @@ export class OrgClassificationManagementComponent {
     getChildren = (node: ClassificationNode): ClassificationNode[] => node.elements;
 
     hasChild = (_: number, _nodeData: FlatClassificationNode) => _nodeData.expandable;
-
-    hasNoContent = (_: number, _nodeData: FlatClassificationNode) => _nodeData.name === '';
 
     getSearchParam(node: FlatClassificationNode): SearchQueryParameter {
         const path = this.getClassificationPath(node);
@@ -198,7 +185,7 @@ export class OrgClassificationManagementComponent {
 
     openDeleteClassificationModal(node: FlatClassificationNode) {
         const data = this.getClassificationPath(node);
-        this.dialog.open(RemoveClassificationDialogComponent, {
+        this.dialog.open(RemoveOrgClassificationDialogComponent, {
             width: '500px',
             data
         }).afterClosed().subscribe(confirm => {

@@ -17,9 +17,11 @@ import { MatTreeModule } from '@angular/material/tree';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
-import { RemoveClassificationDialogComponent } from 'classificationManagement/remove-classification-dialog/remove-classification-dialog.component';
 import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
+import {
+    RemoveOrgClassificationDialogComponent
+} from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
 
 const appRoutes: Routes = [
     {
@@ -53,7 +55,7 @@ const appRoutes: Routes = [
     declarations: [
         OrgClassificationManagementComponent,
         AddChildClassificationDialogComponent,
-        RemoveClassificationDialogComponent,
+        RemoveOrgClassificationDialogComponent,
         RenameClassificationDialogComponent,
     ],
     exports: [],

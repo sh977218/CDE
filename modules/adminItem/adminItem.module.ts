@@ -42,6 +42,9 @@ import {
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
+import {
+    DeleteClassificationModalComponent
+} from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 
 @NgModule({
     imports: [
@@ -73,6 +76,7 @@ import { AddPropertyModalComponent } from 'adminItem/properties/add-property-mod
     declarations: [
         AttachmentsComponent,
         ClassificationViewComponent,
+        DeleteClassificationModalComponent,
         ClassifyItemComponent,
         ClassifyItemDialogComponent,
         CreateFormComponent,

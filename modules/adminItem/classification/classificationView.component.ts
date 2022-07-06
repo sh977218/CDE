@@ -1,4 +1,4 @@
-import { Component, ViewChild, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TreeNode, IActionMapping } from '@circlon/angular-tree-component';
 import { UserService } from '_app/user.service';
@@ -7,6 +7,9 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Classification, Item } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
+import {
+    DeleteClassificationModalComponent
+} from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 
 export interface DeletedNodeEvent {
     deleteClassificationArray: string[];
@@ -29,8 +32,6 @@ const actionMapping: IActionMapping = {
 export class ClassificationViewComponent {
     @Input() elt!: Item;
     @Output() confirmDelete = new EventEmitter<DeletedNodeEvent>();
-    @ViewChild('deleteClassificationContent', {static: true}) deleteClassificationContent!: TemplateRef<any>;
-    deleteClassificationString?: string;
     orgHelperLoaded = false;
 
     public options = {
@@ -54,21 +55,26 @@ export class ClassificationViewComponent {
     }
 
     openDeleteClassificationModal(node: TreeNode, deleteOrgName: string) {
-        this.deleteClassificationString = node.data.name;
         const deleteClassificationArray = [node.data.name];
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) { deleteClassificationArray.unshift(_treeNode.data.name); }
-        }
-        this.dialog.open(this.deleteClassificationContent).afterClosed().subscribe(result => {
-            if (result === 'confirm') {
-                this.confirmDelete.emit({
-                    deleteClassificationArray,
-                    deleteOrgName
-                });
+            if (!_treeNode.data.virtual) {
+                deleteClassificationArray.unshift(_treeNode.data.name);
             }
-        }, () => {});
+        }
+        this.dialog.open(DeleteClassificationModalComponent, {
+            data: node.data.name
+        })
+            .afterClosed()
+            .subscribe(result => {
+                if (result) {
+                    this.confirmDelete.emit({
+                        deleteClassificationArray,
+                        deleteOrgName
+                    });
+                }
+            });
     }
 
     searchByClassificationParams(node: TreeNode, orgName: string) {
@@ -76,7 +82,9 @@ export class ClassificationViewComponent {
         let _treeNode = node;
         while (_treeNode.parent) {
             _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) { classificationArray.unshift(_treeNode.data.name); }
+            if (!_treeNode.data.virtual) {
+                classificationArray.unshift(_treeNode.data.name);
+            }
         }
         return {
             selectedOrg: orgName,

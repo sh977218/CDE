@@ -9,7 +9,6 @@ import { DialogData } from 'classificationManagement/dialog-data';
 export class AddChildClassificationDialogComponent {
     newClassificationName = new FormControl('', [Validators.required]);
     fullClassificationArray: string[] = [];
-    fullClassificationPath: string = '';
 
     constructor(public dialogRef: MatDialogRef<AddChildClassificationDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: DialogData) {

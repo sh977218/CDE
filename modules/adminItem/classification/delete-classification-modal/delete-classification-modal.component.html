@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Remove Classification</h1>
+<div mat-dialog-content>
+    You are about to delete <b>{{deleteClassification}}</b> classification. Are you sure?
+</div>
+<div mat-dialog-actions>
+    <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    <button id="confirmDeleteClassificationBtn" class="button fail" [mat-dialog-close]="'confirm'">Delete</button>
+</div>

@@ -4,16 +4,15 @@ import { AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
-    selector: 'remove-classification-dialog',
-    templateUrl: './remove-classification-dialog.component.html',
+    selector: 'remove-org-classification-dialog',
+    templateUrl: './remove-org-classification-dialog.component.html',
 })
-export class RemoveClassificationDialogComponent {
+export class RemoveOrgClassificationDialogComponent {
     userTyped = new FormControl('');
     fullClassificationArray: string[] = [];
-    fullClassificationPath: string = '';
 
 
-    constructor(public dialogRef: MatDialogRef<RemoveClassificationDialogComponent>,
+    constructor(public dialogRef: MatDialogRef<RemoveOrgClassificationDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: DialogData) {
         this.fullClassificationArray = [data.orgName].concat(data.categories);
         const confirmClassificationName = this.fullClassificationArray[this.fullClassificationArray.length - 1];

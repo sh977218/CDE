@@ -10,7 +10,6 @@ import { DialogData } from 'classificationManagement/dialog-data';
 export class RenameClassificationDialogComponent {
     newClassificationName = new FormControl('', [Validators.required]);
     fullClassificationArray: string[] = [];
-    fullClassificationPath: string = '';
 
     constructor(public dialogRef: MatDialogRef<RenameClassificationDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: DialogData) {
