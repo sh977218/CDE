@@ -805,7 +805,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     public void closeAlert() {
         try {
-            driver.findElement(By.xpath("//span[. = 'Dismiss']")).click();
+            clickElement(By.xpath("//span[. = 'Dismiss']"));
         } catch (Exception e) {
             System.out.println("Could not close alert - " + e.getMessage());
         }

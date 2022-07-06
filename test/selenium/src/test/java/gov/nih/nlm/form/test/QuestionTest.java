@@ -33,9 +33,7 @@ public class QuestionTest extends BaseFormTest {
         By targetBy = By.xpath(dropXpath);
         dragAndDrop(sourceBy, targetBy);
 
-        if (driver.findElements(By.id("addNewCdeBtn")).size() > 0) {
-            clickElement(By.id("addNewCdeBtn"));
-        }
+        clickElement(By.id("addNewCdeBtn"));
         // test autofocus in create mode
         hangon(1);
         new Actions(driver).sendKeys(cdeName).build().perform();

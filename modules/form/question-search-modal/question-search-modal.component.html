@@ -1,0 +1,41 @@
+<ng-container *ngIf="questionModelMode === 'search'">
+    <h1 mat-dialog-title>
+        Search Data Elements
+        <button id="addNewCdeBtn" class="button" (click)="questionModelMode = 'add'">
+            Create Data Element
+        </button>
+    </h1>
+    <mat-dialog-content>
+        <cde-cde-search addMode="True" [embedded]="true" (add)="addQuestionFromSearch($event)">
+        </cde-cde-search>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close] id="cancelSelectQ">
+            Close
+        </button>
+    </mat-dialog-actions>
+</ng-container>
+<ng-container *ngIf="questionModelMode === 'add'">
+    <h1 mat-dialog-title>
+        Create Data Element
+        <button class="button" (click)="questionModelMode = 'search'" tabindex="-1">
+            Search Data Elements
+        </button>
+    </h1>
+    <form #newDataElementForm="ngForm">
+        <mat-dialog-content>
+            <label for="newDEName"></label>
+            <input #searchElement [(ngModel)]="newDataElement.designations[0].designation" class="form-control" id="newDEName"
+                   name="newDEName" placeholder="New Data Element Name" autocomplete="off"
+                   (ngModelChange)="deCompletionService.next($event);"
+                   required/>
+            <cde-de-completion (add)="createNewDataElement($event)"></cde-de-completion>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button id="createNewDataElement" class="button success"
+                    (click)="createNewDataElement()" [disabled]="!newDataElementForm.valid">
+                Create
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-container>

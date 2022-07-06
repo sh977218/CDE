@@ -8,25 +8,23 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
-import { DeCompletionService } from 'cde/completion/deCompletion.service';
 import { copySectionAnimation } from 'form/formDescription/copySectionAnimation';
 import { LocatableError } from 'form/formView/formView.component';
 import { isEmpty } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import { DataElement } from 'shared/de/dataElement.model';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormOrElement, FormSection } from 'shared/form/form.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
 import { convertFormToSection } from 'core/form/form';
+import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
 
 @Component({
     selector: 'cde-form-description',
     templateUrl: './formDescription.component.html',
     animations: [copySectionAnimation],
-    providers: [DeCompletionService],
     styleUrls: ['./formDescription.component.scss'],
 })
 export class FormDescriptionComponent implements OnInit {
@@ -35,13 +33,10 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild('questionSearchTmpl', {static: true}) questionSearchTmpl!: TemplateRef<any>;
     @ViewChild('confirmCancelTmpl', {static: true}) confirmCancelTmpl!: TemplateRef<any>;
     @ViewChild('descToolbox') descToolbox!: ElementRef;
-    addQuestionDialogRef?: MatDialogRef<any, any>;
     dragActive = false;
     formElementEditing: any = {};
     isMobile = false;
     isModalOpen = false;
-    newDataElement: DataElement = this.initNewDataElement();
-    questionModelMode = 'search';
     treeOptions = {
         allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element)
             || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
@@ -101,7 +96,6 @@ export class FormDescriptionComponent implements OnInit {
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
-                public deCompletionService: DeCompletionService,
                 private _hotkeysService: HotkeysService,
                 private http: HttpClient,
                 private localStorageService: LocalStorageService,
@@ -130,7 +124,7 @@ export class FormDescriptionComponent implements OnInit {
                 if (!this.isModalOpen && !isEmpty(this.formElementEditing) &&
                     this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
                     this.formElementEditing.index++;
-                    this.openQuestionSearch();
+                    this.openQuestionSearch('add');
                 }
                 return false;
             })
@@ -169,35 +163,8 @@ export class FormDescriptionComponent implements OnInit {
         // this.onEltChange.emit(); treeEvent will handle
     }
 
-    addQuestionFromSearch(de: DataElement) {
-        convertCdeToQuestion(de, question => {
-            if (!question) {
-                return;
-            }
-            question.formElements = [];
-            question.expanded = true;
-            question.edit = true;
-            this.addFormElement(question);
-            this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-            waitRendered(
-                () => !!document.getElementById('question_' + question.feId),
-                () => scrollTo('question_' + question.feId)
-            );
-            this.isModalOpen = false;
-        });
-    }
-
     hasCopiedSection() {
         return this.localStorageService.getItem('sectionCopied');
-    }
-
-    initNewDataElement(): DataElement {
-        this.deCompletionService.suggestedCdes = [];
-
-        const de = new DataElement();
-        de.designations.push({designation: '', tags: ['Question Text']});
-        de.valueDomain.datatype = 'Text';
-        return de;
     }
 
     openFormSearch() {
@@ -214,27 +181,30 @@ export class FormDescriptionComponent implements OnInit {
             .subscribe(res => sub.unsubscribe());
     }
 
-    openQuestionSearch() {
-        this.isModalOpen = true;
-        this.newDataElement = this.initNewDataElement();
-        this.addQuestionDialogRef = this.matDialog.open(this.questionSearchTmpl, {width: '1200px'});
-        this.addQuestionDialogRef.afterClosed().subscribe(() => this.isModalOpen = false);
-
-        setTimeout(() => {
-            if (this.questionModelMode === 'add') {
-                const newDeElement = document.getElementById('newDEName');
-                if (newDeElement) {
-                    newDeElement.focus();
-                }
-            }
-        }, 0);
-    }
-
-    createNewDataElement(newCde: DataElement = this.newDataElement) {
-        this.addQuestionFromSearch(newCde);
-        if (this.addQuestionDialogRef) {
-            this.addQuestionDialogRef.close();
-        }
+    openQuestionSearch(questionModelMode = 'search') {
+        const diaRef = this.matDialog.open(QuestionSearchModalComponent, {
+            width: '1200px', height: '800',
+            data: {questionModelMode}
+        });
+        const sub = diaRef.componentInstance.selectedQuestion
+            .subscribe(de => {
+                convertCdeToQuestion(de, question => {
+                    if (!question) {
+                        return;
+                    }
+                    question.formElements = [];
+                    question.expanded = true;
+                    question.edit = true;
+                    this.addFormElement(question);
+                    this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
+                    waitRendered(
+                        () => !!document.getElementById('question_' + question.feId),
+                        () => scrollTo('question_' + question.feId)
+                    );
+                });
+            })
+        diaRef.afterClosed()
+            .subscribe(res => sub.unsubscribe());
     }
 
     @HostListener('window:resize', [])

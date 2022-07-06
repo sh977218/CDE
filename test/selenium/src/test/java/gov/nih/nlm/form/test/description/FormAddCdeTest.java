@@ -120,12 +120,15 @@ public class FormAddCdeTest extends QuestionTest {
 
     private void addCdesByNames(String[] cdeNames) {
         for (String cdeName : cdeNames) {
-            new Actions(driver).sendKeys("q").build().perform();
-            textPresent("Create Data Element");
-            // wait for modal animation
             hangon(2);
+            new Actions(driver).sendKeys("q").build().perform();
+            // wait for modal animation
+            hangon(5);
+            textPresent("Create Data Element");
             new Actions(driver).sendKeys(cdeName).build().perform();
             clickElement(By.id("createNewDataElement"));
+            modalGone();
+            closeAlert();
         }
     }
 

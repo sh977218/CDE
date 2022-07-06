@@ -1,7 +1,11 @@
 <h1 mat-dialog-title [innerHtml]="data.title"></h1>
 <div mat-dialog-content>
     <mat-tab-group>
-        <mat-tab id="treeViewTab" label="By Classification tree">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span id="treeViewTab">By Classification tree</span>
+            </ng-template>
+
             <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
                     (change)="onChangeOrg($event.target.value)" [ngModel]="selectedOrg" required>
                 <option value="">Start by selecting an organization...</option>
@@ -25,16 +29,22 @@
                              [class.tree-node-leaf]="node.isLeaf"
                              [class.tree-node-active]="node.isActive"
                              [class.tree-node-focused]="node.isFocused">
-                            <tree-node-wrapper [node]="node" [index]="index" [templates]="templates"></tree-node-wrapper>
+                            <tree-node-wrapper [node]="node" [index]="index"
+                                               [templates]="templates"></tree-node-wrapper>
                             <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
                         </div>
                     </ng-template>
                 </tree-root>
             </div>
         </mat-tab>
-        <mat-tab id="recentlyAddViewTab" label="By recently added">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span id="recentlyAddViewTab">By recently added</span>
+            </ng-template>
+
             <p>Select from recently used classifications...</p>
-            <ng-container *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; index as i">
+            <ng-container
+                    *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; index as i">
                 <div class="breadcrumb" id="recentlyClassification_{{i}}">
                     {{orgClassificationRecentlyAddView.orgName}} /
                     {{orgClassificationRecentlyAddView.categories.join(" / ")}}
