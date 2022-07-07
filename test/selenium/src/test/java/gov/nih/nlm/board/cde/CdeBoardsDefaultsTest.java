@@ -53,7 +53,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         Assert.assertEquals(
             driver.findElement(
-                    By.cssSelector("cde-board-view-template:nth-of-type(1) > *")
+                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
             ).getAttribute("id"), boardName1
         );
 
@@ -67,7 +67,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         Assert.assertEquals(
             driver.findElement(
-                    By.cssSelector("cde-board-view-template:nth-of-type(1) > *")
+                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
             ).getAttribute("id"), boardName2
         );
 
@@ -81,7 +81,7 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         Assert.assertEquals(
             driver.findElement(
-                    By.cssSelector("cde-board-view-template:nth-of-type(1) > *")
+                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
             ).getAttribute("id"), boardName1
         );
 

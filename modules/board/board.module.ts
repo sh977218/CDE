@@ -9,7 +9,6 @@ import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AdminItemModule } from 'adminItem/adminItem.module';
-import { BoardViewTemplateComponent } from 'board/boardViewTemplate/boardViewTemplate.component';
 import { CreateFormFromBoardComponent } from 'board/createFormFromBoard/createFormFromBoard.component';
 import { ListSortComponent } from 'board/listView/listSort.component';
 import { UnpinBoardComponent } from 'board/listView/unpinBoard.component';
@@ -21,6 +20,7 @@ import { TagModule } from 'tag/tag.module';
 import { CreateBoardModule } from 'board/create-board.module';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 import { PinToBoardComponent } from 'board/pin-to-board/pin-to-board.component';
+import { BoardOverviewModule } from 'board/board-overview.module';
 
 
 @NgModule({
@@ -41,10 +41,10 @@ import { PinToBoardComponent } from 'board/pin-to-board/pin-to-board.component';
         SearchModule,
         AdminItemModule,
         CreateBoardModule,
+        BoardOverviewModule,
         TagModule
     ],
     declarations: [
-        BoardViewTemplateComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
         PinToBoardComponent,
@@ -56,7 +56,6 @@ import { PinToBoardComponent } from 'board/pin-to-board/pin-to-board.component';
         MyBoardsService,
     ],
     exports: [
-        BoardViewTemplateComponent,
         CreateFormFromBoardComponent,
         ListSortComponent,
         PinToBoardComponent,

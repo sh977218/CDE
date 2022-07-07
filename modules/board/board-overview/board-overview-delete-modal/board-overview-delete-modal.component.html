@@ -1,0 +1,9 @@
+<div mat-dialog-title>
+    Delete {{board.name}}?
+</div>
+<mat-dialog-actions>
+    <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    <button type="submit" id="saveDeleteBoardBtn" class="button fail"
+            [mat-dialog-close]="board">Save
+    </button>
+</mat-dialog-actions>

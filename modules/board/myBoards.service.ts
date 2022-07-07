@@ -4,9 +4,11 @@ import { UserService } from '_app/user.service';
 import { Dictionary } from 'async';
 import { BoardFilter } from 'shared/board/board.model';
 import {
+    Board,
     ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem
 } from 'shared/models.model';
 import { noop } from 'shared/util';
+import { AlertService } from 'alert/alert.service';
 
 @Injectable()
 export class MyBoardsService {
@@ -28,7 +30,9 @@ export class MyBoardsService {
     };
     reloading = false;
 
-    constructor(private http: HttpClient, private userService: UserService) {
+    constructor(private http: HttpClient,
+                private alert: AlertService,
+                private userService: UserService) {
     }
 
     loadMyBoards(type?: ModuleItem, cb = noop) {
@@ -69,7 +73,19 @@ export class MyBoardsService {
     }
 
     waitAndReload(cb = noop) {
-        this.reloading = true;
         setTimeout(() => this.loadMyBoards(undefined, cb), 2000);
     }
+
+    saveBoard(board: Board) {
+        this.http.post('/server/board/', board, {responseType: 'text'}).subscribe(() => {
+            this.waitAndReload(() => this.alert.addAlert('success', 'Saved.'));
+        }, err => this.alert.httpErrorMessageAlert(err));
+    }
+
+    deleteBoard(board: Board) {
+        this.http.delete('/server/board/' + board._id, {responseType: 'text'}).subscribe(() => {
+            this.waitAndReload(() => this.alert.addAlert('success', 'Deleted.'))
+        }, err => this.alert.httpErrorMessageAlert(err));
+    }
+
 }

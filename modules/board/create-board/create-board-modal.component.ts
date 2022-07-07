@@ -21,13 +21,12 @@ export class CreateBoardModalComponent {
         this.newBoard = data;
         this.module = data.type;
     }
+
     doCreateBoard() {
         this.newBoard.shareStatus = 'Private';
         this.http.post('/server/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
             this.dialogRef.close();
-            this.myBoardsSvc.waitAndReload(() => {
-                this.alert.addAlert('success', 'Board created.');
-            });
+            this.myBoardsSvc.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 }

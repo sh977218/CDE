@@ -127,7 +127,7 @@ export class PinToBoardModalComponent {
 
             if (this.userService.user) {
                 this.myBoardsSvc.loadMyBoards(this.module);
-                this.dialogRef = this.dialog.open(this.pinModal, {width: '800px'});
+                this.dialogRef = this.dialog.open(this.pinModal, {width: '1500px'});
             } else {
                 this.dialog.open(this.ifYouLoginModal);
                 this.reject('');

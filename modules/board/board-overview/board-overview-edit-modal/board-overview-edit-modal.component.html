@@ -1,0 +1,31 @@
+<form role="form" #editBoardForm="ngForm">
+    <div mat-dialog-title>
+        <mat-form-field class="w-100">
+            <input name="boardName" id="boardName" matInput placeholder="Board Name" [(ngModel)]="board.name">
+        </mat-form-field>
+    </div>
+    <div mat-dialog-content>
+        <mat-form-field class="w-100">
+                <textarea name="boardDescription" matInput placeholder="Board Description"
+                          [(ngModel)]="board.description"></textarea>
+        </mat-form-field>
+        <mat-button-toggle-group [value]="board.shareStatus" (change)="onBoardShareStatusChange($event)">
+            <mat-button-toggle value="Public" id="makePublicBtn">
+                <mat-icon>public</mat-icon>
+                Public
+            </mat-button-toggle>
+            <mat-button-toggle value="Private" id="makePrivateBtn">
+                <mat-icon>lock</mat-icon>
+                Private
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <cde-tag id="boardTag" [tags]="board.tags" [allTags]="board.tags"
+                 [canEdit]="true" [allowFreeType]="true"></cde-tag>
+    </div>
+    <div mat-dialog-actions>
+        <button class="button secondary" [mat-dialog-close] id="cancelEditBoardBtn">Cancel</button>
+        <button type="submit" class="button success" [disabled]="!editBoardForm.form.valid" [mat-dialog-close]="board">
+            Save
+        </button>
+    </div>
+</form>

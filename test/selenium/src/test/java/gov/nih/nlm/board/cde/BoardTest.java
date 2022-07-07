@@ -72,7 +72,7 @@ public class BoardTest extends NlmCdeBaseTest {
         } else {
             gotoMyBoards();
             textPresent(boardName);
-            clickElement(By.xpath("//*[@id='" + boardName + "']//a"));
+            clickElement(By.xpath("//*[@id='" + boardName + "']//span"));
             textPresent(boardName, By.xpath("//*[@id='board_name_" + boardName + "']"));
         }
     }

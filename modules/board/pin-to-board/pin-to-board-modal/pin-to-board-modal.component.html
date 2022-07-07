@@ -4,7 +4,8 @@
     </h1>
     <mat-dialog-content>
         <mat-icon *ngIf="myBoardsSvc.reloading || !myBoardsSvc.boards" class="spin">autorenew</mat-icon>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" style="margin-left: 2.5rem"> You don't have any boards
+        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" style="margin-left: 2.5rem"> You don't have
+            any boards
         </div>
         <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
             <div *ngIf="myBoardsSvc.filter" style="padding-left: 2.5rem">
@@ -26,10 +27,10 @@
                 </section>
             </div>
             <div class="responsiveGrid">
-                <cde-board-view-template *ngFor="let board of myBoardsSvc.boards"
-                                         [board]="board" [headerLink]="false"
-                                         (headerClicked)="selectBoard(board); ">
-                </cde-board-view-template>
+                <ng-container *ngFor="let board of myBoardsSvc.boards">
+                    <cde-board-overview [board]="board" (headerClicked)="selectBoard(board);">
+                    </cde-board-overview>
+                </ng-container>
             </div>
         </div>
     </mat-dialog-content>

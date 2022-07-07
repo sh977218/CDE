@@ -8,6 +8,7 @@ import { MyBoardsComponent } from 'board/myBoards/myBoards.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CreateBoardModule } from 'board/create-board.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { BoardOverviewModule } from 'board/board-overview.module';
 
 
 const boardRoutes: Routes = [
@@ -25,6 +26,7 @@ const boardRoutes: Routes = [
         // internal
         BoardModule,
         CreateBoardModule,
+        BoardOverviewModule,
         MatSidenavModule
     ],
     declarations: [

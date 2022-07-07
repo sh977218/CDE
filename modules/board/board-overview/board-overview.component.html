@@ -1,0 +1,42 @@
+<ng-container *ngIf="board">
+    <mat-card [id]="board.name">
+        <mat-card-title class="stretchBar fake-button" role="button" tabindex="0" (click)="clickHeader(board);">
+            <span class="fake-link shrink grow" [id]="'viewBoard_'+board.name"> {{board.name}}</span>
+        </mat-card-title>
+        <mat-card-content>
+            <span class="numElement">{{board.pins.length + ' '}}</span>{{boardTitle}}
+            <p style="height: 3rem">{{board.description}}</p>
+            <p>
+                <small class="text-muted">
+                    Modified {{board.updatedDate | date: 'MM/dd/yyyy'}}
+                </small>
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <div class="actions">
+                <mat-icon *ngIf="board.shareStatus ==='Public'" class="publicBoard fake-button" role="button"
+                          tabindex="0">
+                    public
+                </mat-icon>
+                <mat-icon *ngIf="board.shareStatus ==='Private'" class="privateBoard fake-button" role="button"
+                          tabindex="0">
+                    lock
+                </mat-icon>
+                <ng-container *ngIf="canEdit">
+                    <mat-icon class="editBoard fake-button" role="button" tabindex="0" (click)="openEditBoardModal();">
+                        edit
+                    </mat-icon>
+                    <mat-icon class="deleteBoard fake-button" role="button" tabindex="0"
+                              (click)="openDeleteBoardModal();">
+                        delete
+                    </mat-icon>
+                </ng-container>
+            </div>
+        </mat-card-actions>
+        <mat-card-footer *ngIf="board.tags.length > 0">
+            <ng-container *ngFor="let tag of board.tags">
+                <span class="badge badge-secondary"><i># </i>{{tag}}</span>
+            </ng-container>
+        </mat-card-footer>
+    </mat-card>
+</ng-container>
