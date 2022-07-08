@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { Board } from 'shared/models.model';
 import {
@@ -11,6 +10,7 @@ import {
 import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/myBoards.service';
 import { Router } from '@angular/router';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-board-overview',
@@ -24,12 +24,13 @@ export class BoardOverviewComponent implements OnInit {
 
     constructor(public dialog: MatDialog,
                 public router: Router,
+                public alert: AlertService,
                 public userService: UserService,
                 public myBoardService: MyBoardsService) {
     }
 
     ngOnInit(): void {
-        if(this.board){
+        if (this.board) {
             this.boardTitle = this.board.type === 'form' ? 'Form(s)' : 'CDE(s)';
             this.canEdit = this.board.owner.username === this.userService.user.username;
         }
@@ -40,7 +41,10 @@ export class BoardOverviewComponent implements OnInit {
             .afterClosed()
             .subscribe(board => {
                 if (board) {
-                    this.myBoardService.saveBoard(board);
+                    this.myBoardService.saveBoard(board)
+                        .subscribe(() => {
+                            this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Saved.'));
+                        }, err => this.alert.httpErrorMessageAlert(err));
                 }
             });
     }
@@ -50,7 +54,9 @@ export class BoardOverviewComponent implements OnInit {
             .afterClosed()
             .subscribe(board => {
                 if (board) {
-                    this.myBoardService.deleteBoard(board)
+                    this.myBoardService.deleteBoard(board).subscribe(() => {
+                        this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Deleted.'))
+                    }, err => this.alert.httpErrorMessageAlert(err));
                 }
             });
     }

@@ -18,7 +18,7 @@ export class CreateBoardComponent {
                 public userSvc: UserService) {
     }
 
-    openNewBoard() {
+    openCreateNewBoardModal() {
         this.newBoard = {
             type: this.module,
             pins: this.elts.map(e => ({

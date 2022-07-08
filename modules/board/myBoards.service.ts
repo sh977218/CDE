@@ -77,15 +77,11 @@ export class MyBoardsService {
     }
 
     saveBoard(board: Board) {
-        this.http.post('/server/board/', board, {responseType: 'text'}).subscribe(() => {
-            this.waitAndReload(() => this.alert.addAlert('success', 'Saved.'));
-        }, err => this.alert.httpErrorMessageAlert(err));
+        return this.http.post('/server/board/', board, {responseType: 'text'})
     }
 
     deleteBoard(board: Board) {
-        this.http.delete('/server/board/' + board._id, {responseType: 'text'}).subscribe(() => {
-            this.waitAndReload(() => this.alert.addAlert('success', 'Deleted.'))
-        }, err => this.alert.httpErrorMessageAlert(err));
+        return this.http.delete('/server/board/' + board._id, {responseType: 'text'})
     }
 
 }

@@ -236,7 +236,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "400kb"
+                  "maximumError": "420kb"
                 }
               ],
               "outputHashing": "all"
@@ -253,7 +253,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "400kb"
+                  "maximumError": "420kb"
                 }
               ],
               "outputHashing": "all"

@@ -805,7 +805,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     public void closeAlert() {
         try {
-            clickElement(By.xpath("//span[. = 'Dismiss']"));
+            driver.findElement(By.xpath("//button[. = 'Dismiss']")).click();
         } catch (Exception e) {
             System.out.println("Could not close alert - " + e.getMessage());
         }
@@ -875,7 +875,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 i++;
             }
         }
-        if (i != 10) Assert.fail("Failed to find text: " + text + " in alert");
+        if (i != 10) Assert.fail("Tried " + i + " times. Failed to find text: " + text + " in alert");
     }
 
     public void textPresent(String text, By by) {
