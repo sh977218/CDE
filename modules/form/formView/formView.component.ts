@@ -59,7 +59,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinToBoardModalComponent;
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     _elt?: CdeFormDraft;
     commentMode?: boolean;
     currentTab = 'preview_tab';

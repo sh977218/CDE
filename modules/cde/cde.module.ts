@@ -22,15 +22,15 @@ import { SearchModule } from 'search/search.module';
         FormsModule,
         NgbModule,
         RouterModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDialogModule,
         // non-core
         // internal
         AdminItemModule,
         BoardModule,
         DiscussModule,
         SearchModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDialogModule,
     ],
     declarations: [
         CdeAccordionListComponent,

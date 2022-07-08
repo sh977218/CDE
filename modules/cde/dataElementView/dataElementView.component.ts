@@ -34,7 +34,6 @@ import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-d
 export class DataElementViewComponent implements OnDestroy, OnInit {
     @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
-    @ViewChild('saveModal') saveModal!: SaveModalComponent;
     _elt?: DataElement;
     commentMode?: boolean;
     currentTab = 'general_tab';

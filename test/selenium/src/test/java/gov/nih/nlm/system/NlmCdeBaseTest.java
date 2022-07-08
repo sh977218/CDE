@@ -867,7 +867,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         int i = 0;
         while (i < 7) {
             try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".mat-snack-bar-container"), text));
+                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(@class,'mat-snack-bar-container')]//span"), text));
                 closeAlert();
                 i = 10;
             } catch (TimeoutException e) {

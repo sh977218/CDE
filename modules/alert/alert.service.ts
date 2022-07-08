@@ -1,8 +1,8 @@
+import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { forwardRef, Inject, Injectable } from '@angular/core';
-import { httpErrorMessage } from 'non-core/angularHelper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ComponentType } from '@angular/cdk/overlay';
+import { httpErrorMessage } from 'non-core/angularHelper';
 
 export class Alert {
     id: number;
@@ -47,6 +47,5 @@ export class AlertService {
     httpErrorMessageAlert(err: HttpErrorResponse, info = '') {
         const message = (info ? info + ' ' : '') + httpErrorMessage(err);
         this.snackBar.open(message, 'Dismiss', {duration: this.alertTime});
-        console.error(message);
     }
 }

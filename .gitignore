@@ -63,6 +63,9 @@ test/selenium/.nb-gradle/profiles/private/
 test/selenium/*.log
 test/selenium/*.png
 test/selenium/build/
+test/selenium/gradle/
+test/selenium/gradlew
+test/selenium/gradlew.bat
 test/selenium/dependency/
 test/selenium/nlm-cde-test.iml
 test/selenium/out/
