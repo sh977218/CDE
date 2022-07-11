@@ -31,11 +31,10 @@ public class CdeBoardsDefaultsTest extends BoardTest {
         textNotPresent(defaultBoardName);
     }
 
-    @Test(dependsOnMethods={"createDefaultCDEBoard"})
     public void defaultToMostRecentBoard(){
         String boardName1 = "Test Board 1";
         String boardName2 = "Test Board 2";
-        mustBeLoggedInAs(boarduser2_username, password);
+        mustBeLoggedInAs(boarduser3_username, password);
         createBoard(boardName1, "Test Order 1", "cde");
         createBoard(boardName2, "Test Order 2", "cde");
 
@@ -51,11 +50,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         hangon(2);
 
-        Assert.assertEquals(
-            driver.findElement(
-                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
-            ).getAttribute("id"), boardName1
-        );
+        String boardName1Id = driver.findElement(By.cssSelector("cde-board-overview:nth-of-type(1) > *")).getAttribute("id");
+        Assert.assertEquals(boardName1Id, boardName1);
 
         clickBoardHeaderByName(boardName2);
         hangon(1);
@@ -65,11 +61,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         hangon(2);
 
-        Assert.assertEquals(
-            driver.findElement(
-                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
-            ).getAttribute("id"), boardName2
-        );
+        String boardName2Id = driver.findElement(By.cssSelector("cde-board-overview:nth-of-type(1) > *")).getAttribute("id");
+        Assert.assertEquals(boardName2Id, boardName2);
 
         clickBoardHeaderByName(boardName1);
         hangon(1);
@@ -79,11 +72,8 @@ public class CdeBoardsDefaultsTest extends BoardTest {
 
         hangon(2);
 
-        Assert.assertEquals(
-            driver.findElement(
-                    By.cssSelector("cde-board-overview:nth-of-type(1) > *")
-            ).getAttribute("id"), boardName1
-        );
+        boardName1Id = driver.findElement(By.cssSelector("cde-board-overview:nth-of-type(1) > *")).getAttribute("id");
+        Assert.assertEquals(boardName1Id, boardName1);
 
         clickCancelButton();
 

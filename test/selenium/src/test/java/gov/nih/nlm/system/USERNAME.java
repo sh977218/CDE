@@ -28,8 +28,10 @@ public interface USERNAME {
     String wguser_username = "wguser";
     String reguser_username = "reguser";
     String boarduser1_username = "boarduser1";
-    String boardSearchUser_username = "boardsearchuser";
     String boarduser2_username = "boarduser2";
+
+    String boarduser3_username = "boarduser3";
+
     String boarduserEdit_username = "boarduserEdit";
     String boardUser = "boarduser";
     String boardUser_username = "boarduser";

@@ -137,6 +137,7 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
         textPresent("Pinned to " + boardName);
 
         goToBoard(boardName);
+        textPresent("Demographics");
         clickElement(By.id("elt_compare_5"));
         clickElement(By.id("elt_compare_6"));
         clickElement(By.id("qb_compare"));
