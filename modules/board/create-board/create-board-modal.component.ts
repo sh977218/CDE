@@ -12,21 +12,11 @@ export class CreateBoardModalComponent {
     newBoard;
     module = 'cde';
 
-    constructor(private http: HttpClient,
-                public dialog: MatDialog,
-                private alert: AlertService,
+    constructor(public dialog: MatDialog,
                 public dialogRef: MatDialogRef<CreateBoardModalComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any,
-                private myBoardsSvc: MyBoardsService) {
+                @Inject(MAT_DIALOG_DATA) public data: any) {
         this.newBoard = data;
-        this.module = data.type;
-    }
-
-    doCreateBoard() {
         this.newBoard.shareStatus = 'Private';
-        this.http.post('/server/board', this.newBoard, {responseType: 'text'}).subscribe(() => {
-            this.dialogRef.close();
-            this.myBoardsSvc.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.module = data.type;
     }
 }

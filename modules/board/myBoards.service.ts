@@ -84,4 +84,15 @@ export class MyBoardsService {
         return this.http.delete('/server/board/' + board._id, {responseType: 'text'})
     }
 
+    addToBoard(board, module, eltsToPin) {
+        return this.http.put('/server/board/pinToBoard/', {
+            boardId: board._id,
+            tinyIdList: eltsToPin.map(e => e.tinyId),
+            type: module
+        })
+    }
+    createBoard(board) {
+        return this.http.post('/server/board', board, {responseType: 'text'});
+    }
+
 }

@@ -29,7 +29,7 @@
     </div>
     <div mat-dialog-actions>
         <button class="button secondary" [mat-dialog-close]>Cancel</button>
-        <button class="button" type="submit" (click)="doCreateBoard()" [disabled]="!createNewBoardForm.form.valid">
+        <button class="button" type="submit" [mat-dialog-close]="newBoard" [disabled]="!createNewBoardForm.form.valid">
             Save
         </button>
     </div>

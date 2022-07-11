@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { Item } from 'shared/models.model';
 import { CreateBoardModalComponent } from 'board/create-board/create-board-modal.component';
+import { MyBoardsService } from 'board/myBoards.service';
+import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-create-board',
@@ -15,7 +17,9 @@ export class CreateBoardComponent {
     newBoard: any;
 
     constructor(public dialog: MatDialog,
-                public userSvc: UserService) {
+                private alert: AlertService,
+                public userSvc: UserService,
+                public myBoardService: MyBoardsService) {
     }
 
     openCreateNewBoardModal() {
@@ -31,6 +35,13 @@ export class CreateBoardComponent {
         this.dialog.open(CreateBoardModalComponent, {
             width: '800px',
             data: this.newBoard,
-        });
+        }).afterClosed()
+            .subscribe(newBoard => {
+                if (newBoard) {
+                    this.myBoardService.createBoard(newBoard).subscribe(() => {
+                        this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
+                    }, err => this.alert.httpErrorMessageAlert(err))
+                }
+            });
     }
 }

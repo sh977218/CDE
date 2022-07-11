@@ -27,90 +27,57 @@ export class PinToBoardModalComponent {
                 private userService: UserService) {
     }
 
-    pinMultiple(elts: {tinyId: string}[]){
+    pinMultiple(elts: { tinyId: string }[]) {
         if (this.userService.user) {
-            this.myBoardsSvc.loadMyBoards(this.module, ()=> {
-                if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 0){
+            this.myBoardsSvc.loadMyBoards(this.module, () => {
+                if (this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 0) {
                     const newBoardName = `${this.module === 'cde' ? 'CDE' : 'Form'} Board 1`;
                     const newBoard = {
-                        type:this.module,
-                        pins:[],
-                        name:newBoardName,
-                        description:'',
-                        shareStatus:'Private'
+                        type: this.module,
+                        pins: [],
+                        name: newBoardName,
+                        description: '',
+                        shareStatus: 'Private'
                     };
                     this.http.post<Board>('/server/board', newBoard).subscribe((board) => {
-                        this.http.put('/server/board/pinToBoard/', {
-                            boardId: board._id,
-                            tinyIdList: elts.map(e => e.tinyId),
-                            type: this.module
-                        }).subscribe(() => {
-                            if (elts.length === 1) {
+                        this.myBoardsSvc.addToBoard(board, this.module, elts)
+                            .subscribe(() => {
                                 this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                    message: 'Pinned to ',
+                                    message: elts.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                     boardId: board._id,
                                     boardName: 'New Board'
                                 });
-                            } else {
-                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                    message: 'All elements pinned to ',
-                                    boardId: board._id,
-                                    boardName: 'New Board'
-                                });
-                            }
-                        }, err => this.alert.httpErrorMessageAlert(err));
+                            }, err => this.alert.httpErrorMessageAlert(err));
                     }, err => this.alert.httpErrorMessageAlert(err));
-                }
-                else if(this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 1){
+                } else if (this.myBoardsSvc.boards && this.myBoardsSvc.boards.length === 1) {
                     const board = this.myBoardsSvc.boards[0];
-                    this.http.put('/server/board/pinToBoard/', {
-                        boardId: board._id,
-                        tinyIdList: elts.map(e => e.tinyId),
-                        type: this.module
-                    }).subscribe(() => {
-                        if (elts.length === 1) {
+                    this.myBoardsSvc.addToBoard(board, this.module, elts)
+                        .subscribe(() => {
                             this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                message: 'Pinned to ',
+                                message: elts.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                 boardId: board._id,
                                 boardName: board.name
                             });
-                        } else {
-                            this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                message: 'All elements pinned to ',
-                                boardId: board._id,
-                                boardName: board.name
-                            });
-                        }
-                    }, err => this.alert.httpErrorMessageAlert(err));
-                }
-                else{
-                    this.open().then((board: any) => {
-                        this.http.put('/server/board/pinToBoard/', {
-                            boardId: board._id,
-                            tinyIdList: elts.map(e => e.tinyId),
-                            type: this.module
-                        }).subscribe(() => {
-                            if (this.userService.user) {
-                                const body = this.module === 'cde' ? {cdeDefaultBoard: board._id} : {formDefaultBoard: board._id}
-                                this.http.post('/server/user/', body).subscribe(() => this.userService.reload());
-                            }
-                            if (elts.length === 1) {
-                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                    message: 'Pinned to ',
-                                    boardId: board._id,
-                                    boardName: board.name
-                                });
-                            } else {
-                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                    message: 'All elements pinned to ',
-                                    boardId: board._id,
-                                    boardName: board.name
-                                });
-                            }
-                            this.dialogRef.close();
                         }, err => this.alert.httpErrorMessageAlert(err));
+                } else {
+                    this.open().then((board: any) => {
+                        this.myBoardsSvc.addToBoard(board, this.module, elts)
+                            .subscribe(() => {
+                                if (this.userService.user) {
+                                    const body = this.module === 'cde' ? {cdeDefaultBoard: board._id} : {formDefaultBoard: board._id}
+                                    this.http.post('/server/user/', body).subscribe(() => this.userService.reload());
+                                }
+                                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                                    message: elts.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
+                                    boardId: board._id,
+                                    boardName: board.name
+                                });
+                                this.dialogRef.close();
+                            }, err => this.alert.httpErrorMessageAlert(err));
                     }, err => {
-                        if (err) { this.alert.httpErrorMessageAlert(err); }
+                        if (err) {
+                            this.alert.httpErrorMessageAlert(err);
+                        }
                     });
                 }
             });
