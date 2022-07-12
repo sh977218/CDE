@@ -11,7 +11,7 @@ public class ContactUs extends NlmCdeBaseTest {
         goToContactUs();
         switchTab(1);
         String curUrl = driver.getCurrentUrl();
-        Assert.assertEquals(curUrl, "https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/");
+        Assert.assertTrue(curUrl.contains("https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/"));
     }
 
 }
