@@ -3,14 +3,16 @@
     <div class="card mB" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
         <div class="card-header">
             <button *ngIf="adding" class="button success" (click)="add.emit(de)">
-                <mat-icon>add</mat-icon> Add
+                <mat-icon>add</mat-icon>
+                Add
             </button>
             <span class="hand-cursor" (click)="de.isCollapsed = !de.isCollapsed">
                 {{de.designations[0].designation}}
             </span>
             <a title="View" href="/deView?tinyId={{de.tinyId}}" target="_blank">
-                <mat-icon>visibility</mat-icon></a>
-            <cde-pin-board [elt]="de" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+                <mat-icon>visibility</mat-icon>
+            </a>
+            <mat-icon class="fake-link" svgIcon="thumb_tack" pinToBoard [eltsToPin]="[de]" module="cde"></mat-icon>
         </div>
         <div class="card-body" [ngbCollapse]="!de.isCollapsed">
             <div *ngIf="de.definitions[0]">

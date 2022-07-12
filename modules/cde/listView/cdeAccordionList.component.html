@@ -9,7 +9,7 @@
             <a id="acc_link_{{i}}" title="View" href="/deView?tinyId={{elt.tinyId}}" target="_blank">
                 <mat-icon>visibility</mat-icon>
             </a>
-            <cde-pin-board [elt]="elt" [eltIndex]="i" [module]="'cde'"></cde-pin-board>
+            <mat-icon class="fake-link" svgIcon="thumb_tack" pinToBoard [eltsToPin]="[elt]" [module]="module"></mat-icon>
             <small class="matched-by hidden-sm-down pull-right">
                 Matched by: <strong>Classification</strong>
             </small>
@@ -71,5 +71,3 @@
         </div>
     </div>
 </div>
-
-<cde-pin-board-modal #pinModalCde module="cde"></cde-pin-board-modal>

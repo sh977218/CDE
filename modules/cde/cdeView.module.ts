@@ -39,6 +39,7 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -70,6 +71,7 @@ const appRoutes: Routes = [
         SortableArrayModule,
         AdminItemModule,
         BoardModule,
+        PinToBoardModule,
         CdeModule,
         CdeSearchModule,
         CompareModule,

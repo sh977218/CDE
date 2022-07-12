@@ -15,6 +15,7 @@ import { CdeGeneralDetailsComponent } from 'cde/summary/cdeGeneralDetails.compon
 import { ValueDomainSummaryComponent } from 'cde/summary/valueDomainSummary.component';
 import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import { SearchModule } from 'search/search.module';
         // internal
         AdminItemModule,
         BoardModule,
+        PinToBoardModule,
         DiscussModule,
         SearchModule,
     ],

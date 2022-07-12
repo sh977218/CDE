@@ -8,6 +8,13 @@ export function formQuestions(elt: FormElementsContainer): any[] {
     });
     return formElements;
 }
+export function formCdes(elt: FormElementsContainer): any[] {
+    const cdes: any[] = [];
+    iterateFeSync(elt, undefined, undefined, fe => {
+        cdes.push(fe.question.cde);
+    });
+    return cdes;
+}
 
 export function areDerivationRulesSatisfied(elt: FormElementsContainer): string[] {
     const missingCdeTinyIds: string[] = [];

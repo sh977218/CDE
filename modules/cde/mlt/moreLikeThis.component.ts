@@ -4,8 +4,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
-
 
 @Component({
     selector: 'cde-mlt',
@@ -15,7 +13,6 @@ import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
     @ViewChild('mltModal', {static: true}) mltModal!: TemplateRef<any>;
-    @ViewChild('mltPinModal', {static: true}) mltPinModal!: PinToBoardModalComponent;
     cdes!: DataElement[];
 
     constructor(

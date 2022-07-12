@@ -28,6 +28,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
         // internal
         BoardModule,
+        PinToBoardModule,
         CdeModule,
         SearchModule,
         TagModule,

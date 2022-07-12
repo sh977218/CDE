@@ -41,9 +41,11 @@
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is archived. You can
                             <a id="viewCurrentEltLink" href="javascript:void(0);"
-                               routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
+                               routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version
+                                here</a>.
                         </div>
-                        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning" role="alert">
+                        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning"
+                             role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is retired.
                             <a *ngIf="elt.registrationState.replacedBy" href="javascript:void(0);"
@@ -109,7 +111,7 @@
                                 </a>
                                 <ng-template #exportFileOdm>
                                     <button mat-menu-item
-                                       (click)="exportService.exportForm(elt, '?type=xml&subtype=odm', 'xml')">
+                                            (click)="exportService.exportForm(elt, '?type=xml&subtype=odm', 'xml')">
                                         CDISC / ODM XML file
                                         <ng-container *ngTemplateOutlet="exportOdmActions"></ng-container>
                                     </button>
@@ -152,7 +154,7 @@
                                 </a>
                                 <ng-template #exportFileQuestionnaire>
                                     <button mat-menu-item
-                                       (click)="exportService.exportForm(elt, '?subtype=fhirQuestionnaire', 'json')">
+                                            (click)="exportService.exportForm(elt, '?subtype=fhirQuestionnaire', 'json')">
                                         FHIR Questionnaire JSON file
                                         <ng-container *ngTemplateOutlet="exportFhirActions"></ng-container>
                                     </button>
@@ -179,12 +181,13 @@
                                 </a>
                             </ng-template>
                         </mat-menu>
-                        <button id="addToBoard" class="button" title="Add to Board" (click)="mltPinModal.pinMultiple([elt])">
+                        <button id="addToBoard" class="button" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
+                                module="form">
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="button-label">Add to Board</span>
                         </button>
                         <button *ngIf="userService.loggedIn()" id="pinAllCdes" class="button" title="Pin CDEs"
-                                (click)="pinAllCdesIntoBoard(elt)">
+                                pinToBoard [eltsToPin]="getFormCdes(elt)">
                             <mat-icon>add_shopping_cart</mat-icon>
                             <span class="button-label">Pin CDEs</span>
                         </button>
@@ -201,7 +204,9 @@
                         </button>
                         <button *ngIf="userService.canViewComment" id="discussBtn" class="button" title="Discuss Form"
                                 (click)="commentDrawer.toggle();">
-                            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">comment</mat-icon>
+                            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
+                                comment
+                            </mat-icon>
                             <span class="button-label">Discuss</span>
                         </button>
                         <ng-container *ngIf="elt.isDraft">
@@ -211,8 +216,7 @@
                                 <span class="button-label">Delete Draft</span>
                             </button>
                             <button id="openSave" class="button success" title="Publish"
-                                    (click)="openSaveModal()"
-                                    [disabled]="savingText === 'Saving...'">
+                                    (click)="openSaveModal()" [disabled]="savingText === 'Saving...'">
                                 <mat-icon>publish</mat-icon>
                                 <span class="button-label">Publish</span>
                             </button>
@@ -237,7 +241,8 @@
                             <cde-linked-forms [elt]="elt"></cde-linked-forms>
                             <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                         </section>
-                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)"></cde-naming>
+                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()"
+                                    (eltChange)="saveDraftVoid(elt)"></cde-naming>
                         <section id="classification-div">
                             <cde-form-classification [elt]="elt"
                                                      (eltChange)="eltLoaded($event)"></cde-form-classification>
@@ -288,5 +293,3 @@
         <question-according-list [formElements]="questions"></question-according-list>
     </div>
 </ng-template>
-<cde-pin-board-modal #mltPinModal module="form"></cde-pin-board-modal>
-<cde-pin-board-modal #mltPinModalCde module="cde"></cde-pin-board-modal>

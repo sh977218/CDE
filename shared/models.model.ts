@@ -143,7 +143,8 @@ export class CommentSingle {
     };
 }
 
-export class CommentReply extends CommentSingle {}
+export class CommentReply extends CommentSingle {
+}
 
 export class Comment extends CommentSingle {
     currentComment: boolean = false; // calculated, used by CommentsComponent
@@ -156,14 +157,17 @@ export class Comment extends CommentSingle {
     replies: CommentReply[] = [];
 }
 
-export type CurationStatus =
-    'Incomplete' |
-    'Recorded' |
-    'Candidate' |
-    'Qualified' |
-    'Standard' |
-    'Preferred Standard' |
-    'Retired';
+export type CurationStatus = ArrayToType<typeof curationStatus>;
+export const curationStatus = [
+    'Incomplete',
+    'Recorded',
+    'Candidate',
+    'Qualified',
+    'Standard',
+    'Preferred Standard',
+    'Retired'
+] as const;
+
 
 export class DataSource {
     copyright?: FormattedValue;
@@ -301,7 +305,7 @@ export abstract class Elt {
     registrationState: RegistrationState = new RegistrationState();
     stewardOrg: {
         name: string,
-    } = { name: ''};
+    } = {name: ''};
     source?: string; // obsolete
     sources: DataSource[] = [];
     tinyId!: string; // server generated
@@ -575,6 +579,7 @@ export type NotificationSettings = {
 
 export const permissibleValueCodeSystems = ['LOINC', 'NCI Thesaurus', 'SNOMEDCT US', 'UMLS'] as const;
 export type PermissibleValueCodeSystem = ArrayToType<typeof permissibleValueCodeSystems>;
+
 export class PermissibleValue {
     [key: string]: any;
 

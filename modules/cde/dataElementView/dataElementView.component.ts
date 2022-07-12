@@ -7,7 +7,6 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
@@ -24,6 +23,7 @@ import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/s
 import { copyDeep, noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 
 @Component({
     selector: 'cde-data-element-view',

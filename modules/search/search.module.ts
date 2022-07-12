@@ -17,6 +17,7 @@ import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/li
 import { TableListComponent } from 'search/listView/tableList.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
         MatTabsModule,
         MatTooltipModule,
         TourMatMenuModule,
+        PinToBoardModule,
     ],
     declarations: [
         AccordionListHeadingComponent,

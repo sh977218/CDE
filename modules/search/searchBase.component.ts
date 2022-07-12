@@ -19,7 +19,6 @@ import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHelper';
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
@@ -27,7 +26,6 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { addOrRemoveFromArray, partition, removeFromArray } from 'shared/array';
-import { MAX_PINS } from 'shared/constants';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -39,12 +37,12 @@ import {
 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
-import { hasRole, isSiteAdmin } from 'shared/security/authorizationShared';
+import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
-type NamedCounts = {name: string, count: number}[];
+type NamedCounts = { name: string, count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
 
 const searchDesktopWidth = 772;
@@ -77,7 +75,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     autocompleteSuggestions?: string[];
     cutoffIndex?: number;
     elts?: ItemElastic[];
-    exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: {id: string, display: string} } = {
+    exporters: { [format in 'csv' | 'json' | 'odm' | 'validationRules' | 'xml']?: { id: string, display: string } } = {
         json: {id: 'jsonExport', display: 'JSON file'},
         xml: {id: 'xmlExport', display: 'XML archive'}
     };
@@ -85,10 +83,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     goToPage = 1;
     isSearchDesktop: boolean = (window.innerWidth >= searchDesktopWidth);
     lastQueryTimeStamp?: number;
-    private lastTypeahead: {[term: string]: string} = {};
+    private lastTypeahead: { [term: string]: string } = {};
     module!: ModuleItem;
     numPages?: number;
-    orgs?: (Organization & {featureIcon?: string})[];
+    orgs?: (Organization & { featureIcon?: string })[];
     orgHtmlOverview?: string;
     ownKeys = ownKeys;
     pinComponent!: Type<PinToBoardModalComponent>;
@@ -101,7 +99,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     searchedTerm?: string;
     searchTermAutoComplete = new EventEmitter<string>();
     took?: number;
-    topics?: {[topic: string]: NamedCounts};
+    topics?: { [topic: string]: NamedCounts };
     topicsKeys: string[] = [];
     totalItems?: number;
     totalItemsLimited?: number;
@@ -517,12 +515,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.dialog.open(this.orgDetailsModal, {width: '600px'});
     }
 
-    openPinModal() {
-        if (this.pinModalComponent) {
-            this.pinAll(this.pinModalComponent.instance.open());
-        }
-    }
-
     pageChange(newPage: PageEvent) {
         this.goToPage = newPage.pageIndex + 1;
         if (this.goToPage !== 0) {
@@ -533,36 +525,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.doSearchWithPage();
             }
         }
-    }
-
-    pinAll(promise: Promise<any>) {
-        promise.then(selectedBoard => {
-            const filter = {
-                reset() {
-                    this.tags = [];
-                    this.sortBy = 'updatedDate';
-                    this.sortDirection = 'desc';
-                },
-                sortBy: '',
-                sortDirection: '',
-                tags: []
-            };
-            const data = {
-                query: this.elasticService.buildElasticQuerySettings(this.searchSettings),
-                boardId: selectedBoard._id,
-                itemType: this.module
-            };
-            data.query.resultPerPage = MAX_PINS;
-            this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'}).subscribe(() => {
-                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                    message: 'All elements pinned to ',
-                    boardId: selectedBoard._id,
-                    boardName: selectedBoard.name
-                });
-                this.http.post('/server/board/myBoards', filter).subscribe();
-            }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
-        }, () => {
-        });
     }
 
     redirect(params: Params) {
@@ -890,7 +852,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    static compareObjName(a: {name: string}, b: {name: string}): number {
+    elasticsearchPinQuery() {
+        return this.elasticService.buildElasticQuerySettings(this.searchSettings);
+    }
+
+    static compareObjName(a: { name: string }, b: { name: string }): number {
         return SearchBaseComponent.compareString(a.name, b.name);
     }
 

@@ -2,14 +2,16 @@
     <div class="card" *ngFor="let elt of elts; trackBy: Elt.trackByElt; let i = index">
         <div class="card-header">
             <button class="button success" (click)="add.emit(elt);">
-                <mat-icon>add</mat-icon> Add
+                <mat-icon>add</mat-icon>
+                Add
             </button>
             <span class="fake-button" role="button" tabindex="0"
                   (click)="elt.isCollapsed = !elt.isCollapsed"> {{elt.designations[0].designation}} </span>
             <a href="/formView?tinyId={{elt.tinyId}}" target="_blank" id="acc_link_{{i}}">
                 <mat-icon>visibility</mat-icon>
             </a>
-            <cde-pin-board [elt]="elt" [eltIndex]="index" [module]="'form'"></cde-pin-board>
+            <mat-icon class="fake-link" svgIcon="thumb_tack" pinToBoard [eltsToPin]="[elt]"
+                      [module]="module"></mat-icon>
             <small id="nQuestion-{{i}}" class="pull-right">{{elt.numQuestions}} questions</small>
 
         </div>
@@ -43,5 +45,3 @@
         </div>
     </div>
 </div>
-
-<cde-pin-board-modal #pinModalCde module="form"></cde-pin-board-modal>

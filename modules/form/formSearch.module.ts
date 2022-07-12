@@ -26,6 +26,7 @@ import { SearchModule } from 'search/search.module';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 import { TagModule } from 'tag/tag.module';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
     imports: [
@@ -50,6 +51,7 @@ import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 
         // internal
         BoardModule,
+        PinToBoardModule,
         SearchModule,
         TagModule,
         TourMatMenuModule

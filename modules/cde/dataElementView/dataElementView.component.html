@@ -44,7 +44,8 @@
                                href="javascript:void(0);">view the current version
                                 here</a>.
                         </div>
-                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning" role="alert">
+                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
+                             role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is retired.
                             <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView" href="javascript:void(0);"
@@ -90,7 +91,8 @@
                                 </button>
                             </ng-template>
                             <ng-template #exportJsonActions>
-                                <a class="darken" href="/schema/de" target="_blank" rel="noopener noreferrer" title="Schema"
+                                <a class="darken" href="/schema/de" target="_blank" rel="noopener noreferrer"
+                                   title="Schema"
                                    (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">
                                     <mat-icon style="color: #326295">help_outline</mat-icon>
                                 </a>
@@ -105,8 +107,8 @@
                                 </button>
                             </ng-template>
                         </mat-menu>
-                        <button id="addToBoard" class="button" title="Add to Board"
-                                (click)="mltPinModal.pinMultiple([elt])">
+                        <button id="addToBoard" class="button" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
+                                module="cde">
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="button-label">Add to Board</span>
                         </button>
@@ -159,7 +161,8 @@
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
                                                    (eltChange)="saveDraftVoid(elt)"></cde-permissible-value>
                         </section>
-                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)"></cde-naming>
+                        <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()"
+                                    (eltChange)="saveDraftVoid(elt)"></cde-naming>
                         <section id="classification-div">
                             <cde-cde-classification [elt]="elt"
                                                     (eltChange)="eltLoaded($event)"></cde-cde-classification>
@@ -211,4 +214,3 @@
                                  (dismiss)="modalRef.close()"></cde-create-data-element>
     </mat-dialog-content>
 </ng-template>
-<cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>

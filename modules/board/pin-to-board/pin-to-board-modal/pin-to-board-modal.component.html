@@ -1,60 +1,35 @@
-<ng-template #pinModal>
-    <h1 mat-dialog-title>Choose a Board to pin this {{module | uppercase}} to
-        <cde-create-board [module]="module"></cde-create-board>
-    </h1>
-    <mat-dialog-content>
-        <mat-icon *ngIf="myBoardsSvc.reloading || !myBoardsSvc.boards" class="spin">autorenew</mat-icon>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" style="margin-left: 2.5rem"> You don't have
-            any boards
-        </div>
-        <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length > 0">
-            <div *ngIf="myBoardsSvc.filter" style="padding-left: 2.5rem">
-                <section *ngIf="myBoardsSvc.filter.tags.length > 0">
-                    <h2>Tags</h2>
-                    <label *ngFor="let tag of myBoardsSvc.filter.tags" class="d-block">
-                        <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="tag-{{tag.key}}">
-                        {{tag.key}} ({{tag.doc_count}})
-                    </label>
-                </section>
-                <section *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
-                    <h2>Share Status</h2>
-                    <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="d-block">
-                        <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
-                               attr.data-id="status-{{ss.key}}">
-                        {{ss.key}} ({{ss.doc_count}})
-                    </label>
-                </section>
-            </div>
-            <div class="responsiveGrid">
-                <ng-container *ngFor="let board of myBoardsSvc.boards">
-                    <cde-board-overview [board]="board" (headerClicked)="selectBoard(board);">
-                    </cde-board-overview>
-                </ng-container>
-            </div>
-        </div>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button class="button secondary" [mat-dialog-close]>Cancel</button>
-    </mat-dialog-actions>
-</ng-template>
-
-<ng-template #ifYouLoginModal>
-    <h1 mat-dialog-title>Sign up for an account</h1>
-    <mat-dialog-content>
-        With an account, you will be able to:
-        <ul>
-            <li>Create Boards and attach CDEs to them</li>
-            <li>Remember your preferences on all your devices</li>
-            <li>Comment on CDEs and Forms</li>
-            <li>Become a curator and create your own CDEs and Forms</li>
-        </ul>
-        <br>
-        <div style="text-align: center">
-            <a class="button" [mat-dialog-close] routerLink="/login" href="javascript:void(0);">Sign up or Sign in</a>
-        </div>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button class="button secondary" [mat-dialog-close]>Cancel</button>
-    </mat-dialog-actions>
-</ng-template>
+<h1 mat-dialog-title>Choose a Board to pin this {{module | uppercase}} to
+    <cde-create-board [module]="module"></cde-create-board>
+</h1>
+<mat-dialog-content>
+    <div *ngIf="myBoardsSvc.boards && myBoardsSvc.boards.length === 0" style="margin-left: 2.5rem"> You don't have any
+        boards
+    </div>
+    <div *ngIf="myBoardsSvc.filter" style="padding-left: 2.5rem">
+        <section *ngIf="myBoardsSvc.filter.tags.length > 0">
+            <h2>Tags</h2>
+            <label *ngFor="let tag of myBoardsSvc.filter.tags" class="d-block">
+                <input type="checkbox" [(ngModel)]="tag.checked" (change)="myBoardsSvc.loadMyBoards()"
+                       attr.data-id="tag-{{tag.key}}">
+                {{tag.key}} ({{tag.doc_count}})
+            </label>
+        </section>
+        <section *ngIf="myBoardsSvc.filter.shareStatus.length > 0">
+            <h2>Share Status</h2>
+            <label *ngFor="let ss of myBoardsSvc.filter.shareStatus" class="d-block">
+                <input type="checkbox" [(ngModel)]="ss.checked" (change)="myBoardsSvc.loadMyBoards()"
+                       attr.data-id="status-{{ss.key}}">
+                {{ss.key}} ({{ss.doc_count}})
+            </label>
+        </section>
+    </div>
+    <div class="responsiveGrid">
+        <ng-container *ngFor="let board of myBoardsSvc.boards">
+            <cde-board-overview [board]="board" (headerClicked)="selectBoard(board);">
+            </cde-board-overview>
+        </ng-container>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="button secondary" [mat-dialog-close]>Cancel</button>
+</mat-dialog-actions>

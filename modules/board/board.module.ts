@@ -18,10 +18,7 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 import { CreateBoardModule } from 'board/create-board.module';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
-import { PinToBoardComponent } from 'board/pin-to-board/pin-to-board.component';
 import { BoardOverviewModule } from 'board/board-overview.module';
-
 
 @NgModule({
     imports: [
@@ -47,8 +44,6 @@ import { BoardOverviewModule } from 'board/board-overview.module';
     declarations: [
         CreateFormFromBoardComponent,
         ListSortComponent,
-        PinToBoardComponent,
-        PinToBoardModalComponent,
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
@@ -58,14 +53,10 @@ import { BoardOverviewModule } from 'board/board-overview.module';
     exports: [
         CreateFormFromBoardComponent,
         ListSortComponent,
-        PinToBoardComponent,
-        PinToBoardModalComponent,
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
-    entryComponents: [
-        PinToBoardModalComponent,
-    ],
+    entryComponents: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 

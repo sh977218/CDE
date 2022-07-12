@@ -54,6 +54,7 @@ import { WINDOW_PROVIDERS } from 'window.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -95,6 +96,7 @@ const appRoutes: Routes = [
         InlineSelectEditModule,
         SortableArrayModule,
         BoardModule,
+        PinToBoardModule,
         CdeModule,
         CdeSearchModule,
         CompareModule,

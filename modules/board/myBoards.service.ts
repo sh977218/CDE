@@ -4,11 +4,12 @@ import { UserService } from '_app/user.service';
 import { Dictionary } from 'async';
 import { BoardFilter } from 'shared/board/board.model';
 import {
-    Board,
-    ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem
+    Board, ElasticQueryResponseAggregationBucket, ElasticQueryResponseAggregations, ItemElastic, ModuleItem
 } from 'shared/models.model';
 import { noop } from 'shared/util';
+import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { AlertService } from 'alert/alert.service';
+import { MAX_PINS } from 'shared/constants';
 
 @Injectable()
 export class MyBoardsService {
@@ -33,6 +34,9 @@ export class MyBoardsService {
     constructor(private http: HttpClient,
                 private alert: AlertService,
                 private userService: UserService) {
+        if (userService.user) {
+            this.loadMyBoards();
+        }
     }
 
     loadMyBoards(type?: ModuleItem, cb = noop) {
@@ -74,6 +78,39 @@ export class MyBoardsService {
 
     waitAndReload(cb = noop) {
         setTimeout(() => this.loadMyBoards(undefined, cb), 2000);
+    }
+
+    createDefaultBoard(module) {
+        const name = `${module === 'cde' ? 'CDE' : 'Form'} Board 1`;
+        const defaultBoard = {
+            type: module,
+            pins: [],
+            name,
+            description: '',
+            shareStatus: 'Private'
+        };
+        return this.http.post<Board>('/server/board', defaultBoard);
+    }
+
+    addToDefaultBoard(module, eltsToPin) {
+        this.addToBoard(this.boards[0], module, eltsToPin)
+    }
+
+    addAllToBoard(board, module, elasticsearchPinQuery) {
+        const data = {
+            query: elasticsearchPinQuery,
+            boardId: board._id,
+            itemType: module
+        }
+        data.query.resultPerPage = MAX_PINS;
+        this.http.post('/server/board/pinEntireSearchToBoard', data, {responseType: 'text'})
+            .subscribe(() => {
+                this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                    message: 'All elements pinned to ',
+                    boardId: board._id,
+                    boardName: board.name
+                });
+            }, () => this.alert.addAlert('danger', 'Not all elements were not pinned!'));
     }
 
     saveBoard(board: Board) {

@@ -1,4 +1,5 @@
-<section class="searchBar" [class.cde]="searchType === 'cde' || searchType === 'endorsedCde'" [class.form]="searchType === 'form'">
+<section class="searchBar" [class.cde]="searchType === 'cde' || searchType === 'endorsedCde'"
+         [class.form]="searchType === 'form'">
     <form #quickSearchForm="ngForm" id="quickSearchForm" class="container" novalidate>
         <button style="display: none" type="submit" (click)="termSearch()"></button>
         <div class="stretchBar inline-group" style="gap: 0">
@@ -403,23 +404,29 @@
                             </ng-template>
                         </div>
                         <ng-container *ngIf="!embedded">
-                            <button id="pinAll" class="button light" [hidden]="module === 'form'" (click)="openPinModal()">
+                            <button id="pinAll" class="button light" [hidden]="module === 'form'" pinToBoard
+                                    width="1500px" [elasticsearchPinQuery]="elasticsearchPinQuery()">
                                 <mat-icon svgIcon="thumb_tack"></mat-icon>
                                 Pin All
                             </button>
-                            <button id="export" class="button light" style="margin-right: 0" [matMenuTriggerFor]="exportMenu">
+                            <button id="export" class="button light" style="margin-right: 0"
+                                    [matMenuTriggerFor]="exportMenu">
                                 <mat-icon>play_for_work</mat-icon>
                                 Export All
                                 <mat-icon>arrow_drop_down</mat-icon>
                             </button>
                             <mat-menu #exportMenu>
-                                <ng-container *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
-                                    <button *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}" mat-menu-item
-                                            (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})"
-                                    >{{exporters[key].display}}</button>
+                                <ng-container
+                                        *ngIf="userService.user || module === 'cde'; else exportFormNotAuthorized">
+                                    <button *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}"
+                                            mat-menu-item
+                                            (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})">
+                                        {{exporters[key].display}}
+                                    </button>
                                 </ng-container>
                                 <ng-template #exportFormNotAuthorized>
-                                    <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to export
+                                    <a mat-menu-item routerLink="/login" href="javascript:void(0);">Please login to
+                                        export
                                         forms.</a>
                                 </ng-template>
                             </mat-menu>
@@ -469,5 +476,4 @@
             </div>
         </div>
     </section>
-    <ng-container #pinModal></ng-container>
 </ng-template>

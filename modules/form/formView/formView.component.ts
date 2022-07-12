@@ -5,12 +5,11 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
-import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { areDerivationRulesSatisfied, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
+import { areDerivationRulesSatisfied, formCdes, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { FormViewService } from 'form/formView/formView.service';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
@@ -35,6 +34,7 @@ import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { copyDeep, noop } from 'shared/util';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 
 export class LocatableError {
     id?: string;
@@ -306,21 +306,8 @@ export class FormViewComponent implements OnInit, OnDestroy {
         this.dialogRef = this.dialog.open(this.formCdesContent, {width: '800px'});
     }
 
-    pinAllCdesIntoBoard(elt: CdeFormDraft) {
-        const cdes: QuestionCde[] = [];
-
-        function doFormElement(formElt: FormElement) {
-            if (formElt.elementType === 'question') {
-                cdes.push(formElt.question.cde);
-            } else {
-                if (formElt.elementType === 'section' || formElt.elementType === 'form') {
-                    formElt.formElements.forEach(doFormElement);
-                }
-            }
-        }
-
-        elt.formElements.forEach(doFormElement);
-        this.mltPinModalCde.pinMultiple(cdes);
+    getFormCdes(elt: CdeFormDraft) {
+        return formCdes(elt);
     }
 
     openSaveModal() {

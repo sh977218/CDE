@@ -11,14 +11,13 @@
             </div>
             <div *ngIf="cdes">
                 <div *ngIf="cdes.length === 0"><h4>No similar elements to show.</h4></div>
-                <cde-pin-board-modal #mltPinModal module="cde"></cde-pin-board-modal>
                 <div id="mltAccordion">
                     <div class="card" *ngFor="let cde of cdes;let index = index;">
                         <div class="card-header">
                             <span class="hand-cursor" (click)="cde.isCollapsed = !cde.isCollapsed"> {{cde.designations[0].designation}} </span>
                             <a href="/deView?tinyId={{cde.tinyId}}" target="_blank">
                                 <mat-icon>visibility</mat-icon></a>
-                            <cde-pin-board [elt]="cde" [eltIndex]="index" [module]="'cde'"></cde-pin-board>
+                            <mat-icon class="fake-link" svgIcon="thumb_tack" pinToBoard [eltsToPin]="[elt]" [module]="elt.elementType"></mat-icon>
                         </div>
                         <div class="card-body" [ngbCollapse]="!cde.isCollapsed">
                             <div class="deCardLayout">
