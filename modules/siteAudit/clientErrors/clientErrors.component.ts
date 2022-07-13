@@ -1,21 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-
-type ClientErrorRecord = any;
+import {
+    ClientErrorDetailModalComponent
+} from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
 
 @Component({
     selector: 'cde-client-errors',
     templateUrl: './clientErrors.component.html',
 })
 export class ClientErrorsComponent {
-    @ViewChild('errorDetailModal', {static: true}) errorDetailModal!: TemplateRef<any>;
     currentPage: number = 0;
-    records: ClientErrorRecord[] = [];
-    filteredRecords: ClientErrorRecord[] = [];
-    error?: ClientErrorRecord;
+    records: any = [];
+    filteredRecords = [];
+    error;
     browserInclude: { [browser: string]: boolean } = {
         chrome: true,
         firefox: true,
@@ -34,7 +34,7 @@ export class ClientErrorsComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<ClientErrorRecord[]>('/server/log/clientErrors', {
+        this.http.post('/server/log/clientErrors', {
             skip: this.currentPage * 50,
             limit: 50
         }).subscribe(response => {
@@ -49,9 +49,9 @@ export class ClientErrorsComponent {
         }, err => this.alert.httpErrorMessageAlert(err));
     }
 
-    openErrorDetail(error: ClientErrorRecord) {
-        this.error = error;
-        this.dialog.open(this.errorDetailModal, {width: '800px'});
+    openErrorDetailModal(error) {
+        const data = error;
+        this.dialog.open(ClientErrorDetailModalComponent, {width: '800px', data});
     }
 
     filter() {

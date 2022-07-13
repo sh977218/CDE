@@ -41,32 +41,3 @@
 <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="button" (click)="openNewIdentifierModal()">
     <mat-icon>add</mat-icon> Add Identifier
 </button>
-
-<ng-template #newIdentifierContent>
-    <h1 mat-dialog-title>Add Identifier</h1>
-    <form role="form" #newIdentifierForm="ngForm">
-        <mat-dialog-content>
-            <div class="form-group">
-                <label for="newSource">Source</label>
-                <select id="newSource" class="form-control" name="source" required [(ngModel)]="newIdentifier.source">
-                    <option *ngIf="!newIdentifier.source"></option>
-                    <option *ngFor="let s of getIdSources() | async">{{s._id}}</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="newId">Identifier</label>
-                <input class="form-control" name="id" id="newId" Placeholder="Identifier"
-                       required [(ngModel)]="newIdentifier.id"/>
-            </div>
-            <div class="form-group">
-                <label for="newVersion">Version</label>
-                <input class="form-control" name="version"
-                       Placeholder="Version" id="newVersion" [(ngModel)]="newIdentifier.version"/>
-            </div>
-        </mat-dialog-content>
-        <mat-dialog-actions>
-            <button class="button secondary" [mat-dialog-close]>Cancel</button>
-            <button class="button" (click)="addNewIdentifier()" [disabled]="!newIdentifierForm.form.valid">Save</button>
-        </mat-dialog-actions>
-    </form>
-</ng-template>

@@ -45,6 +45,9 @@ import { AddPropertyModalComponent } from 'adminItem/properties/add-property-mod
 import {
     DeleteClassificationModalComponent
 } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
+import {
+    AddIdentifierModalComponent
+} from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
 
 @NgModule({
     imports: [
@@ -84,6 +87,7 @@ import {
         NewDesignationComponent,
         DraftSliderComponent,
         IdentifiersComponent,
+        AddIdentifierModalComponent,
         LinkedFormsComponent,
         HistoryComponent,
         NamingComponent,
@@ -94,7 +98,7 @@ import {
         RegistrationStatusModalComponent,
         SaveModalComponent,
         SourcesComponent,
-        DeleteDraftModalComponent
+        DeleteDraftModalComponent,
     ],
     exports: [
         AttachmentsComponent,

@@ -22,6 +22,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
+import {
+    ClientErrorDetailModalComponent
+} from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const appRoutes: Routes = [
     {path: '', component: SiteAuditComponent},
@@ -42,7 +46,8 @@ const appRoutes: Routes = [
         NgxTextDiffModule,
         // non-core
         // internal
-        CompareModule
+        CompareModule,
+        MatDialogModule
     ],
     declarations: [
         ActiveBansComponent,
@@ -50,6 +55,7 @@ const appRoutes: Routes = [
         CamelCaseToHumanPipe,
         ClassificationAuditLogComponent,
         ClientErrorsComponent,
+        ClientErrorDetailModalComponent,
         DailyUsageComponent,
         DataElementLogComponent,
         FormLogComponent,

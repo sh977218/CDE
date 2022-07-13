@@ -29,7 +29,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let err of filteredRecords; let errIndex = index">
-        <td class="fake-link" (click)="openErrorDetail(err);" id="{{errorType}}Error_{{errIndex}}">
+        <td class="fake-link" (click)="openErrorDetailModal(err);" id="Error_{{errIndex}}">
             {{err.date | date:'MM/dd/yyyy @h:mma'}}
         </td>
         <td> {{err.agent}}</td>
@@ -44,45 +44,3 @@
                [pageIndex]="currentPage"
                [pageSize]="10" [hidePageSize]="true" style="font-size: 1.4em">
 </mat-paginator>
-
-<ng-template #errorDetailModal>
-    <h1 mat-dialog-title="">Error Details</h1>
-    <mat-dialog-content>
-        <section>
-            <strong>Date: </strong>
-            {{error.date | date:'MM/dd/yyyy @h:mma'}}
-        </section>
-        <section>
-            <strong>Name: </strong>
-            {{error.name}}
-        </section>
-        <section>
-            <strong>Message: </strong>
-            {{error.message}}
-        </section>
-        <section>
-            <strong>User: </strong>
-            {{error.user}}
-        </section>
-        <section>
-            <strong>IP: </strong>
-            {{error.ip}}
-        </section>
-        <section>
-            <strong>Browser: </strong>
-            {{error.agent}}
-        </section>
-        <section>
-            <strong>User Agent: </strong>
-            {{error.userAgent}}
-        </section>
-        <section>
-            <strong>URL: </strong>
-            {{error.url}}
-        </section>
-        <section>
-            <strong>Stack: </strong>
-            {{error.stack}}
-        </section>
-    </mat-dialog-content>
-</ng-template>

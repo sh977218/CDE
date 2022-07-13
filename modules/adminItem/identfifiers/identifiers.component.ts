@@ -5,6 +5,9 @@ import { AlertService } from 'alert/alert.service';
 import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { isCdeForm } from 'shared/item';
 import { CdeId, IdSource, Item } from 'shared/models.model';
+import {
+    AddIdentifierModalComponent
+} from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
 
 @Component({
     selector: 'cde-identifiers',
@@ -20,9 +23,11 @@ export class IdentifiersComponent {
             });
         }
     }
+
     get elt() {
         return this._elt;
     }
+
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter();
     @ViewChild('newIdentifierContent', {static: true}) newIdentifierContent!: TemplateRef<any>;
@@ -30,18 +35,10 @@ export class IdentifiersComponent {
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     idsLinks: string[] = [];
     idSourcesPromise!: Promise<IdSource[]>;
-    newIdentifier!: CdeId;
 
     constructor(private alert: AlertService,
                 public dialog: MatDialog,
                 private http: HttpClient) {
-    }
-
-    addNewIdentifier() {
-        this.elt.ids.push(this.newIdentifier);
-        this.getIdSource(this.newIdentifier).then(source => this.addLink(source, this.newIdentifier));
-        this.eltChange.emit();
-        this.dialogRef.close();
     }
 
     addLink(source: IdSource, id: CdeId) {
@@ -66,20 +63,30 @@ export class IdentifiersComponent {
         }
     }
 
-    openNewIdentifierModal() {
-        this.newIdentifier = new CdeId();
-        this.dialogRef = this.dialog.open(this.newIdentifierContent, {width: '800px'});
-    }
-
     removeIdentifierByIndex(index: number) {
         this.elt.ids.splice(index, 1);
         this.idsLinks.splice(index, 1);
         this.eltChange.emit();
     }
 
+    openNewIdentifierModal() {
+        const data = this.getIdSources();
+        this.dialog.open(AddIdentifierModalComponent, {width: '800px', data})
+            .afterClosed()
+            .subscribe(newIdentifier => {
+                if (newIdentifier) {
+                    this.getIdSource(newIdentifier).then(source => this.addLink(source, newIdentifier));
+                    this.elt.ids.push(newIdentifier);
+                    this.eltChange.emit();
+                }
+            });
+    }
+
+
     static linkWithId(link = '', id: CdeId) {
         return link
             .replace('{{id}}', id.id || '')
             .replace('{{version}}', id.version || '');
     }
+
 }

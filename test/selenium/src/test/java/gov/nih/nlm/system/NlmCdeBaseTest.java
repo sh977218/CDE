@@ -1339,8 +1339,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void addNewIdentifier(String source, String id, String version) {
         clickElement(By.id("openNewIdentifierModalBtn"));
         hangon(1);
-        new Select(findElement(By.name("source"))).selectByVisibleText(source);
-        findElement(By.name("id")).sendKeys(id);
+        new Select(findElement(By.id("newSource"))).selectByVisibleText(source);
+        findElement(By.id("newId")).sendKeys(id);
         if (version != null)
             findElement(By.name("version")).sendKeys(version);
         clickSaveButton();

@@ -1,0 +1,39 @@
+<h1 mat-dialog-title="">Error Details</h1>
+<mat-dialog-content>
+    <section>
+        <strong>Date: </strong>
+        {{error.date | date:'MM/dd/yyyy @h:mma'}}
+    </section>
+    <section>
+        <strong>Name: </strong>
+        {{error.name}}
+    </section>
+    <section>
+        <strong>Message: </strong>
+        {{error.message}}
+    </section>
+    <section>
+        <strong>User: </strong>
+        {{error.user}}
+    </section>
+    <section>
+        <strong>IP: </strong>
+        {{error.ip}}
+    </section>
+    <section>
+        <strong>Browser: </strong>
+        {{error.agent}}
+    </section>
+    <section>
+        <strong>User Agent: </strong>
+        {{error.userAgent}}
+    </section>
+    <section>
+        <strong>URL: </strong>
+        {{error.url}}
+    </section>
+    <section>
+        <strong>Stack: </strong>
+        {{error.stack}}
+    </section>
+</mat-dialog-content>
