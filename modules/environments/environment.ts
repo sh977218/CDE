@@ -9,7 +9,7 @@ export const environment = {
     federatedLogin: 'http://localhost:3002',
     publicUrl: 'http://localhost:4200',
     socketIoUrl: 'http://localhost:3001',
-    endpointUrl: ''
+    ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger'
 
 };
 

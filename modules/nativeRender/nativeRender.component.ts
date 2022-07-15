@@ -30,7 +30,7 @@ export class NativeRenderComponent {
     }
 
     @Input() showTitle = true;
-    endpointUrl: string = environment.endpointUrl;
+    endpointUrl: string = '';
     formUrl: string;
     readonly NRS = NativeRenderService;
 

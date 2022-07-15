@@ -7,6 +7,7 @@ import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { CdeTourService } from '_app/cdeTour.service';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'nih-cde',
@@ -106,7 +107,7 @@ export class CdeAppComponent {
 
     utsSendMessage(message: string, cb: () => void) {
         if (!this.iframeReady) {
-            this.ssoServerReceiver = this.sanitizer.bypassSecurityTrustResourceUrl(window.ssoServerReceiver);
+            this.ssoServerReceiver = this.sanitizer.bypassSecurityTrustResourceUrl(environment.ssoServerReceiver);
             this.iframeReady = new Promise<void>(resolve => {
                 this.iframeReadyTwice = false;
                 this.iframePromiseResolve = resolve;

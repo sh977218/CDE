@@ -9,7 +9,7 @@ export const environment = {
     federatedLogin: 'https://uts.nlm.nih.gov/uts/login',
     publicUrl: 'https://cde-qa.nlm.nih.gov',
     socketIoUrl: 'https://cde-qa.nlm.nih.gov:3001',
-    endpointUrl: ''
+    ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger'
 };
 
 /*
