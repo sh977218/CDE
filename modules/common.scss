@@ -433,7 +433,7 @@ h3, h4, h5, h6 {
     transition: all .1s ease-in-out;
   }
 
-  &:active, &.active {
+  &:active:not(:disabled), &.active:not(:disabled) {
     background-color: $nlmColorLightest;
     color: $nlmColorPrimary;
   }
@@ -454,7 +454,7 @@ h3, h4, h5, h6 {
       background-color: $nlmColorSuccessLight;
     }
 
-    &:active, &.active {
+    &:active:not(:disabled), &.active:not(:disabled) {
       background-color: $nlmColorLightest;
       color: $nlmColorSuccess;
     }
@@ -471,7 +471,7 @@ h3, h4, h5, h6 {
       background-color: $nlmColorFailLight;
     }
 
-    &:active, &.active {
+    &:active:not(:disabled), &.active:not(:disabled) {
       background-color: $nlmColorLightest;
       color: $nlmColorFail;
     }
@@ -488,7 +488,7 @@ h3, h4, h5, h6 {
       background-color: $nlmColorSecondaryLight;
     }
 
-    &:active, &.active {
+    &:active:not(:disabled), &.active:not(:disabled) {
       background-color: $nlmColorLightest;
       color: $nlmColorSecondary;
     }
@@ -509,7 +509,7 @@ h3, h4, h5, h6 {
       border: $nlmColorPrimaryLightest solid 1px;
     }
 
-    &:active, &.active {
+    &:active:not(:disabled), &.active:not(:disabled) {
       background-color: $nlmColorPrimaryLight;
       border: $nlmColorPrimaryLight solid 1px;
       color: $nlmColorLightest;
@@ -530,7 +530,7 @@ h3, h4, h5, h6 {
         border: $nlmColorSuccessLightest solid 1px;
       }
 
-      &:active, &.active {
+      &:active:not(:disabled), &.active:not(:disabled) {
         background-color: $nlmColorSuccessLight;
         border: $nlmColorSuccessLight solid 1px;
         color: $nlmColorLightest;
@@ -546,7 +546,7 @@ h3, h4, h5, h6 {
         border: $nlmColorFailLightest solid 1px;
       }
 
-      &:active, &.active {
+      &:active:not(:disabled), &.active:not(:disabled) {
         background-color: $nlmColorFailLight;
         border: $nlmColorFailLight solid 1px;
         color: $nlmColorLightest;
@@ -562,7 +562,7 @@ h3, h4, h5, h6 {
         border: $nlmColorSecondaryLightest solid 1px;
       }
 
-      &:active, &.active {
+      &:active:not(:disabled), &.active:not(:disabled) {
         background-color: $nlmColorSecondaryLight;
         border: $nlmColorSecondaryLight solid 1px;
         color: $nlmColorLightest;

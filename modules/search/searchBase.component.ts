@@ -1,15 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import {
     Component,
-    ComponentFactoryResolver, ComponentRef,
     EventEmitter,
     HostListener,
     Input,
     OnDestroy,
     OnInit, TemplateRef,
-    Type,
     ViewChild,
-    ViewContainerRef
 } from '@angular/core';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
@@ -40,7 +37,6 @@ import { SearchSettings } from 'shared/search/search.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 type NamedCounts = { name: string, count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
@@ -57,7 +53,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() embedded: boolean = false;
     @Input() searchSettingsInput?: SearchSettings;
     @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
-    @ViewChild('pinModal', {read: ViewContainerRef, static: false}) pinContainer!: ViewContainerRef;
     @ViewChild('autoCompleteInput', {
         read: MatAutocompleteTrigger,
         static: true
@@ -89,14 +84,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     orgs?: (Organization & { featureIcon?: string })[];
     orgHtmlOverview?: string;
     ownKeys = ownKeys;
-    pinComponent!: Type<PinToBoardModalComponent>;
-    pinModalComponent?: ComponentRef<PinToBoardModalComponent>;
     previousUrl?: string;
     resultsView = '';
     routerSubscription: Subscription;
     searching = false;
     searchSettings: SearchSettings = new SearchSettings();
     searchedTerm?: string;
+    searchTerm: string = '';
     searchTermAutoComplete = new EventEmitter<string>();
     took?: number;
     topics?: { [topic: string]: NamedCounts };
@@ -105,9 +99,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     totalItemsLimited?: number;
     trackByKey = trackByKey;
     trackByName = trackByName;
-    view: 'welcome' | 'results' = this.isSearched() ? 'results' : 'welcome';
 
-    constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
+    protected constructor(
                 protected alert: AlertService,
                 protected backForwardService: BackForwardService,
                 protected elasticService: ElasticService,
@@ -180,7 +173,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.excludeOrgs = params.excludeOrgs ? params.excludeOrgs.split(';') : [];
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
             this.searchSettings.page = parseInt(params.page, 10) || 1;
-            this.searchSettings.q = params.q;
+            this.searchSettings.q = this.searchTerm = params.q;
             this.searchSettings.regStatuses = params.regStatuses ? params.regStatuses.split(';') as CurationStatus[] : [];
             this.searchSettings.selectedOrg = params.selectedOrg;
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
@@ -650,8 +643,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                         SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b));
                 this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
 
-                this.switchView(this.isSearched() ? 'results' : 'welcome');
-                if (this.view === 'welcome') {
+                if (!this.isSearched()) {
                     this.orgs = [];
                     const orgs = this.orgs;
 
@@ -682,7 +674,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
 
                     this.topics = {};
-                    const topics = this.topics;
                     this.topicsKeys.length = 0;
                     for (const prop in this.topics) {
                         if (this.topics.hasOwnProperty(prop)) {
@@ -802,28 +793,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    switchView(view: 'welcome' | 'results') {
-        if (this.view === view || view !== 'welcome' && view !== 'results') {
+    termSearch(reset?: boolean) {
+        if (!this.searchTerm) {
             return;
         }
-
-        this.view = view;
-        if (this.view === 'results') {
-            // ngAfterViewInit
-            setTimeout(() => {
-                const pinFactory = this._componentFactoryResolver.resolveComponentFactory(this.pinComponent);
-                const intPin = setInterval(() => {
-                    if (this.pinContainer) {
-                        this.pinContainer.clear();
-                        this.pinModalComponent = this.pinContainer.createComponent(pinFactory);
-                        clearInterval(intPin);
-                    }
-                }, 0);
-            }, 0);
-        }
-    }
-
-    termSearch(reset?: boolean) {
+        this.searchSettings.q = this.searchTerm;
         if (reset) {
             this.searchSettings.page = 1;
             this.searchSettings.regStatuses.length = 0;
@@ -845,6 +819,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     typeaheadSelect(item: MatAutocompleteSelectedEvent) {
         if (this.embedded) {
+            this.searchSettings.q = item.option.value;
             this.reload();
         } else {
             this.router.navigate([uriViewBase(this.module)],

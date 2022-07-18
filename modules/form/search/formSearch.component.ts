@@ -10,7 +10,6 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { CdeForm } from 'shared/form/form.model';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 
 @Component({
     selector: 'cde-form-search',
@@ -20,23 +19,22 @@ import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/
 export class FormSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<CdeForm>();
 
-    constructor(protected _componentFactoryResolver: ComponentFactoryResolver,
+    constructor(
                 protected alert: AlertService,
                 protected backForwardService: BackForwardService,
-                protected exportService: ExportService,
+                public exportService: ExportService,
                 protected http: HttpClient,
                 protected elasticService: ElasticService,
                 protected orgHelperService: OrgHelperService,
                 protected route: ActivatedRoute,
                 protected router: Router,
-                protected userService: UserService,
+                public userService: UserService,
                 protected dialog: MatDialog) {
-        super(_componentFactoryResolver, alert, backForwardService, elasticService, exportService, http,
+        super(alert, backForwardService, elasticService, exportService, http,
             orgHelperService, route, router, userService, dialog);
 
         this.module = 'form';
         this._searchType = this.module;
         this.exporters.odm = {id: 'odmExport', display: 'ODM archive'};
-        this.pinComponent = PinToBoardModalComponent;
     }
 }

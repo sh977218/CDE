@@ -928,7 +928,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void isSearchWelcome() {
         findElement(By.id("ftsearch-input"));
-        textPresent("elements across all classifications");
+        textPresent("Enter a phrase/text or explore");
+        textPresent("REFINE");
+        textPresent("RESULTS");
     }
 
     protected void isLoggedOut() {
