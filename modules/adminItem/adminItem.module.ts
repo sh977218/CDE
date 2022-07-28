@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { TreeModule } from '@circlon/angular-tree-component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AttachmentsComponent } from 'adminItem/attachments/attachments.component';
 import { DraftSliderComponent } from 'adminItem/draftSlider/draftSlider.component';
 import { HistoryComponent } from 'adminItem/history/history.component';
@@ -54,7 +54,7 @@ import {
         CommonModule,
         CKEditorModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule,
         TreeModule,
         // non-core

@@ -8,7 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
 import { BannerComponent } from '_app/banner/banner.component';
 import { HomeRoutingModule } from 'home/home-routing.module';
 import { HomeComponent } from 'home/home.component';
@@ -27,7 +26,6 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
         MatInputModule,
         MatFormFieldModule,
         MatMenuModule,
-        NgbCarouselModule,
         // non-core
         // internal
         HomeRoutingModule,

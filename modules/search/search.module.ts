@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AccordionListHeadingComponent } from 'search/listView/accordionListHeading.component';
 import { ListViewComponent } from 'search/listView/listView.component';
 import { ListViewControlsComponent } from 'search/listView/listViewControls.component';
@@ -22,7 +22,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule.forChild([]),
         // non-core
         MatIconModule,

@@ -36,7 +36,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
@@ -247,7 +247,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule.forChild(appRoutes),
         ReactiveFormsModule,
         MatAutocompleteModule,

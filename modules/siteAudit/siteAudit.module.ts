@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
@@ -35,7 +35,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule.forChild(appRoutes),
         MatButtonModule,
         MatCheckboxModule,

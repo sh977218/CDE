@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { BoardModule } from 'board/board.module';
 import { CdeModule } from 'cde/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.component';
@@ -49,7 +49,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-        NgbModule,
+        
         RouterModule,
         // non-core
 

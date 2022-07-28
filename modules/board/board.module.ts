@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { CreateFormFromBoardComponent } from 'board/createFormFromBoard/createFormFromBoard.component';
 import { ListSortComponent } from 'board/listView/listSort.component';
@@ -24,7 +24,7 @@ import { BoardOverviewModule } from 'board/board-overview.module';
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule,
         MatButtonToggleModule,
         MatCardModule,

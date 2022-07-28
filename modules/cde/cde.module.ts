@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { RouterModule } from '@angular/router';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
@@ -21,7 +21,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule,
         MatIconModule,
         MatButtonModule,

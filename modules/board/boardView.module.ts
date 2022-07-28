@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
@@ -27,7 +27,7 @@ const boardRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
+        
         RouterModule.forChild(boardRoutes),
         // non-core
 

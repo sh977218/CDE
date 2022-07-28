@@ -17,7 +17,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { TreeModule } from '@circlon/angular-tree-component';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { HotkeyModule } from 'angular2-hotkeys';
@@ -81,7 +81,7 @@ const appRoutes: Routes = [
         MatTabsModule,
         MatAutocompleteModule,
         MatTooltipModule,
-        NgbModule,
+        
         RouterModule.forChild(appRoutes),
         TreeModule,
         // non-core

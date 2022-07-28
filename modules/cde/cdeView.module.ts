@@ -13,7 +13,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { BoardModule } from 'board/board.module';
@@ -59,7 +59,7 @@ const appRoutes: Routes = [
         MatSidenavModule,
         MatToolbarModule,
         MatTooltipModule,
-        NgbModule,
+        
         ScrollingModule,
         RouterModule.forChild(appRoutes),
         // non-core

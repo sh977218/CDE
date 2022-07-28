@@ -7,7 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
@@ -26,7 +26,6 @@ import {
     imports: [
         CommonModule,
         FormsModule,
-        NgbModule,
         SortableModule.forRoot(),
         MatButtonModule,
         MatCheckboxModule,

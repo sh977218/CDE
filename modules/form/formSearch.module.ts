@@ -15,7 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { BoardModule } from 'board/board.module';
 import { BoardFormSummaryListComponent } from 'form/listView/boardFormSummaryList.component';
 import { BoardFormSummaryListContentComponent } from 'form/listView/boardFormSummaryListContent.component';
@@ -46,7 +46,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-        NgbModule,
+        
         // non-core
 
         // internal
