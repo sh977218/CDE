@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MergeFormService } from 'compare/mergeForm.service';
@@ -16,6 +16,7 @@ export class MergeFormComponent {
     @Input() destination!: CompareForm;
     @Output() doneMerge = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
     @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>
     finishMerge = false;
     mergeFields: FormMergeFields = {
         designations: true,
@@ -148,6 +149,6 @@ export class MergeFormComponent {
 
     openMergeFormModal() {
         this.mergeFormService.validateQuestions(this.source, this.destination, this.mergeFields);
-        this.dialog.open(this.mergeFormContent, {width: '1000px'});
+        this.dialogRef = this.dialog.open(this.mergeFormContent, {width: '1000px'});
     }
 }

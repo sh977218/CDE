@@ -65,6 +65,6 @@
         </div>
     </div>
     <div mat-dialog-actions>
-        <button id="closeMoreLikeThisBtn" class="button" [mat-dialog-close]>Close</button>
+        <button id="closeMoreLikeThisBtn" class="button" (click)="dialogRef.close()">Close</button>
     </div>
 </ng-template>

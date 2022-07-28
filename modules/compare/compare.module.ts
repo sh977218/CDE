@@ -20,7 +20,7 @@ import { MergeFormService } from 'compare/mergeForm.service';
 import { SortableModule } from 'ngx-bootstrap/sortable';
 import {
     CompareSideBySideModalComponent
-} from 'compare/compareSideBySide/ompare-side-by-side-modal/compare-side-by-side-modal.component';
+} from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
 
 @NgModule({
     imports: [

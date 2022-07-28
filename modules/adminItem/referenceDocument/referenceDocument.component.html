@@ -83,7 +83,7 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button class="button fail" (click)="dialogRef.close()">Cancel</button>
             <button type="submit" class="button">Save</button>
         </div>
     </form>

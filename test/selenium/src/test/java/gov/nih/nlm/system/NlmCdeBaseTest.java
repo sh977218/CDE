@@ -811,6 +811,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
+    public void closeAlert(String containing) {
+        try {
+            driver.findElement(By.xpath("//simple-snack-bar[contains(.,'" + containing + "')]//button[. = 'Dismiss']")).click();
+        } catch (Exception e) {
+            System.out.println("Could not close alert - " + e.getMessage());
+        }
+    }
+
     protected void newCdeVersion(String changeNote) {
         newVersion(changeNote);
         checkAlert("Data Element saved.");

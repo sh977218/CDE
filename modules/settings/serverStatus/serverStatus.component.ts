@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-server-status',
@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ServerStatusComponent {
     @ViewChild('confirmReindex', {static: true}) confirmReindex!: TemplateRef<any>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>
     esIndices: any;
     indexToReindex!: number;
     isDone: boolean = false;
@@ -62,7 +63,7 @@ export class ServerStatusComponent {
         this.esIndices[i].count = 0;
 
         this.indexToReindex = i;
-        this.dialog.open(this.confirmReindex);
+        this.dialogRef = this.dialog.open(this.confirmReindex);
     }
 
     syncLinkedForms() {

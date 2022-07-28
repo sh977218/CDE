@@ -11,7 +11,6 @@ import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -32,11 +31,11 @@ import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
     providers: [TocService]
 })
 export class DataElementViewComponent implements OnDestroy, OnInit {
-    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
     _elt?: DataElement;
     commentMode?: boolean;
     currentTab = 'general_tab';
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     displayStatusWarning?: boolean;
     draftSaving?: Promise<void>;
     eltCopy?: DataElement;
@@ -45,7 +44,6 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     hasPrivilegeForOrg = hasPrivilegeForOrg;
     highlightedTabs: string[] = [];
     isMobile = false;
-    modalRef?: MatDialogRef<TemplateRef<any>>;
     comments: Comment[] = [];
     savingText = '';
     unsaved = false;
@@ -227,7 +225,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             registrationStatus: 'Incomplete',
             administrativeNote: 'Copy of: ' + elt.tinyId
         };
-        this.modalRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
+        this.dialogRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
     }
 
     setCurrentTab(currentTab: string) {

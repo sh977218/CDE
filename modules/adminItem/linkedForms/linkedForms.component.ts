@@ -2,7 +2,7 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { ElasticService } from '_app/elastic.service';
 import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';
 import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -15,8 +15,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 export class LinkedFormsComponent {
     @Input() elt!: DataElement;
     @ViewChild('linkedFormsContent', {static: true}) linkedFormsContent!: TemplateRef<any>;
-    dialogRef!: MatDialogRef<TemplateRef<any>>;
-    forms!: CdeForm[];
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
+    forms!: CdeFormElastic[];
     formSummaryContentComponent = FormSummaryListContentComponent;
 
     constructor(private elasticService: ElasticService,

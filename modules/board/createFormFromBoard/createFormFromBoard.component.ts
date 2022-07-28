@@ -14,8 +14,8 @@ import { DataElement } from 'shared/de/dataElement.model';
 export class CreateFormFromBoardComponent {
     @Input() board!: Board;
     @ViewChild('createFormContent', {static: true}) createFormContent!: TemplateRef<any>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     elt!: CdeForm;
-    modalRef!: MatDialogRef<TemplateRef<any>>;
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
@@ -37,7 +37,7 @@ export class CreateFormFromBoardComponent {
                             }
                         });
                     });
-                    this.modalRef = this.dialog.open(this.createFormContent, {width: '1200px'});
+                    this.dialogRef = this.dialog.open(this.createFormContent, {width: '1200px'});
                 } else {
                     this.alert.addAlert('danger', 'No elements in board.');
                 }

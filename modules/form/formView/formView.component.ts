@@ -10,7 +10,6 @@ import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formCdes, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
-import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
 import { FormViewService } from 'form/formView/formView.service';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
 import { UcumService } from 'form/ucum.service';
@@ -55,14 +54,13 @@ export class LocatableError {
     providers: [TocService]
 })
 export class FormViewComponent implements OnInit, OnDestroy {
-    @ViewChild('commentAreaComponent', {static: true}) commentAreaComponent!: DiscussAreaComponent;
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
     @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinToBoardModalComponent;
     _elt?: CdeFormDraft;
     commentMode?: boolean;
     currentTab = 'preview_tab';
-    dialogRef!: MatDialogRef<any>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     draftSaving?: Promise<void>;
     eltCopy?: CdeForm;
     questions: any[] = [];
@@ -210,22 +208,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     eltLoadedFromOwnUpdate(elt: CdeFormDraft) {
         this._elt = elt;
         this.cdr.detectChanges();
-    }
-
-    exportPublishForm(elt: CdeFormDraft) {
-        this.http.post('/server/form/publish/' + elt._id, {
-            publishedFormName: this.formInput.publishedFormName,
-            endpointUrl: this.formInput.endpointUrl
-        }).subscribe(
-            () => {
-                this.userService.reload();
-                this.alert.addAlert('info', 'Done. Go to your profile to see all your published forms');
-                this.dialogRef.close();
-            }, err => {
-                this.alert.httpErrorMessageAlert(err, 'Error when publishing form.');
-                this.dialogRef.close();
-            }
-        );
     }
 
     gotoTop() {
@@ -570,7 +552,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     viewChanges() {
         const draft = this.elt;
         this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
-            this.dialogRef = this.dialog.open(CompareHistoryContentComponent,
+            this.dialog.open(CompareHistoryContentComponent,
                 {width: '800px', data: {newer: draft, older: published}});
         }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
     }

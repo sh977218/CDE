@@ -415,7 +415,7 @@
                                 <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener noreferrer">Source</a>
                                 </div>
                                 <mat-icon class="welcomeDetailIcon" *ngIf="org.htmlOverview"
-                                          id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org)">
+                                          id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org); $event.stopImmediatePropagation()">
                                     help_outline
                                 </mat-icon>
                             </fieldset>

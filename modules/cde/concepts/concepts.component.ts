@@ -36,7 +36,7 @@ export class ConceptsComponent {
             type: 'property',
             details: {display: 'Property', path: 'property.concepts.name'}
         }];
-    modalRef!: MatDialogRef<TemplateRef<any>>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: 'LOINC', type: 'dec'};
 
     constructor(public dialog: MatDialog,
@@ -55,12 +55,12 @@ export class ConceptsComponent {
             this.elt.objectClass.concepts.push(this.newConcept);
         }
         this.eltChange.emit();
-        this.modalRef.close();
+        this.dialogRef.close();
     }
 
     openNewConceptModal() {
         this.newConcept = {origin: 'LOINC', type: 'dec'};
-        this.modalRef = this.dialog.open(this.newConceptContent);
+        this.dialogRef = this.dialog.open(this.newConceptContent);
     }
 
     dataElementConceptRemoveConcept(index: number) {

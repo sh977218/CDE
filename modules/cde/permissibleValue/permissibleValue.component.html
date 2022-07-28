@@ -369,7 +369,7 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button class="button fail" (click)="dialogRef.close()">Cancel</button>
             <button type="submit" id="createNewPermissibleValueBtn" class="button"
                     [disabled]="!newPermissibleValueForm.form.valid">Save</button>
         </div>
@@ -384,6 +384,6 @@
         </cde-cde-search>
     </div>
     <div mat-dialog-actions>
-        <button class="button" [mat-dialog-close]>Close</button>
+        <button class="button" (click)="dialogRef.close()">Close</button>
     </div>
 </ng-template>

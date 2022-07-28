@@ -62,7 +62,7 @@
             </mat-form-field>
         </div>
         <div mat-dialog-actions>
-            <button class="button fail" [mat-dialog-close]>Cancel</button>
+            <button class="button fail" (click)="dialogRef.close()">Cancel</button>
             <button class="button" type="submit" [disabled]="!newConceptForm.form.valid">Save</button>
         </div>
     </form>

@@ -96,11 +96,11 @@ export class PermissibleValueComponent {
     @ViewChild('importPermissibleValueContent', {static: true}) public importPermissibleValueContent!: TemplateRef<any>;
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     editMode = false;
     umlsValidationResults: any;
     umlsValidationLoading: boolean = false;
     newPermissibleValue: any = {};
-    modalRef!: MatDialogRef<TemplateRef<any>>;
     oid$: Subject<string> = new Subject<string>();
     searchSettings: SearchSettings = {
         classification: [],
@@ -144,7 +144,7 @@ export class PermissibleValueComponent {
     addNewPermissibleValue() {
         this.removeSourceSelection();
         (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push(this.newPermissibleValue);
-        this.modalRef.close();
+        this.dialogRef.close();
         this.runManualValidation();
         this.initSrcOptions();
         this.eltChange.emit();
@@ -238,7 +238,7 @@ export class PermissibleValueComponent {
                     this.runManualValidation();
                     this.initSrcOptions();
                     this.eltChange.emit();
-                    this.modalRef.close();
+                    this.dialogRef.close();
                 } else {
                     this.alert.addAlert('danger', 'No PV found in this element.');
                 }
@@ -374,12 +374,12 @@ export class PermissibleValueComponent {
     }
 
     openImportPermissibleValueModal() {
-        this.modalRef = this.dialog.open(this.importPermissibleValueContent, {width: '1000px'});
+        this.dialogRef = this.dialog.open(this.importPermissibleValueContent, {width: '1000px'});
     }
 
     openNewPermissibleValueModal() {
-        this.modalRef = this.dialog.open(this.newPermissibleValueContent, {width: '800px'});
-        this.modalRef.afterClosed().subscribe(() => this.newPermissibleValue = {}, () => {
+        this.dialogRef = this.dialog.open(this.newPermissibleValueContent, {width: '800px'});
+        this.dialogRef.afterClosed().subscribe(() => this.newPermissibleValue = {}, () => {
         });
     }
 

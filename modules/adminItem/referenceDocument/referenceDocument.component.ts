@@ -17,7 +17,7 @@ export class ReferenceDocumentComponent {
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
     @ViewChild('newReferenceDocumentContent', {static: true}) newReferenceDocumentContent!: TemplateRef<any>;
-    modalRef!: MatDialogRef<TemplateRef<any>>;
+    dialogRef?: MatDialogRef<TemplateRef<any>>;
     newReferenceDocument: ReferenceDocument = new ReferenceDocument();
 
     constructor(private dialog: MatDialog) {}
@@ -25,12 +25,12 @@ export class ReferenceDocumentComponent {
     addNewReferenceDocument() {
         this.elt.referenceDocuments.push(this.newReferenceDocument);
         this.eltChange.emit();
-        this.modalRef.close();
+        this.dialogRef.close();
     }
 
     openNewReferenceDocumentModal() {
-        this.modalRef = this.dialog.open(this.newReferenceDocumentContent, {width: '800px'});
-        this.modalRef.afterClosed().subscribe(() => this.newReferenceDocument = new ReferenceDocument(), () => {});
+        this.dialogRef = this.dialog.open(this.newReferenceDocumentContent, {width: '800px'});
+        this.dialogRef.afterClosed().subscribe(() => this.newReferenceDocument = new ReferenceDocument(), () => {});
     }
 
     removeReferenceDocumentByIndex(index: number) {

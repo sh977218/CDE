@@ -3,5 +3,5 @@
     <a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
        [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
        (click)="select.emit(elt.tinyId)"></a>
+    <ng-content select=".summary-list-after"></ng-content>
 </h2>
-<ng-content select=".summary-list-after"></ng-content>

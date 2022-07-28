@@ -25,7 +25,7 @@
         <h4>Re-indexing: {{esIndices[indexToReindex].indexName}}</h4>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button class="button secondary" [mat-dialog-close]>Cancel</button>
-        <button class="button" (click)="okReIndex()" [mat-dialog-close]>OK</button>
+        <button class="button secondary" (click)="dialogRef.close()">Cancel</button>
+        <button class="button" (click)="okReIndex(); dialogRef.close()">OK</button>
     </mat-dialog-actions>
 </ng-template>

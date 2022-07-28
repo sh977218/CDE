@@ -35,6 +35,6 @@
         </div>
     </div>
     <div mat-dialog-actions>
-        <button class="button" [mat-dialog-close]>Close</button>
+        <button class="button" (click)="dialogRef.close()">Close</button>
     </div>
 </ng-template>

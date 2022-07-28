@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import {
     CompareSideBySideModalComponent
-} from 'compare/compareSideBySide/ompare-side-by-side-modal/compare-side-by-side-modal.component';
+} from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
 import { CompareItem } from 'compare/compareSideBySide/compare-item';
 
 

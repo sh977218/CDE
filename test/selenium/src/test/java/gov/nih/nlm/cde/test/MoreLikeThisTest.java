@@ -24,6 +24,10 @@ public class MoreLikeThisTest extends NlmCdeBaseTest {
         for (String tCde : cdeTargets) {
             textPresent(tCde);
         }
+        clickElement(By.xpath("//button[text()='Close']"));
+        for (String tCde : cdeTargets) {
+            textNotPresent(tCde);
+        }
     }
 
 }

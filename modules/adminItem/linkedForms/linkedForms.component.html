@@ -17,7 +17,7 @@
             </div>
         </div>
         <div mat-dialog-actions>
-            <button [mat-dialog-close] id="closeLinkedFormsModalBtn" class="button">Close</button>
+            <button id="closeLinkedFormsModalBtn" class="button" (click)="dialogRef.close()">Close</button>
         </div>
     </form>
 </ng-template>

@@ -1,5 +1,5 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-datasets',
@@ -9,9 +9,11 @@ import { MatDialog } from '@angular/material/dialog';
 export class DatasetsComponent {
     @ViewChild('datasetsContent', {static: true}) datasetsContent!: TemplateRef<any>;
     @Input() public elt: any;
+    dialogRef?: MatDialogRef<TemplateRef<any>>
+
     constructor(public dialog: MatDialog) {}
 
     openDatasetsModal() {
-        this.dialog.open(this.datasetsContent, {width: '800px'});
+        this.dialogRef = this.dialog.open(this.datasetsContent, {width: '800px'});
     }
 }

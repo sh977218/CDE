@@ -27,7 +27,8 @@ public class MergeFormAndRetireCde extends BoardTest {
         clickElement(By.id("retireCde"));
         scrollToViewById("mergeFormBtn");
         clickElement(By.id("mergeFormBtn"));
-        closeAlert();
+        closeAlert("Form merged");
+        mergeFormBySide("left");
 
         // we retire all CDEs even if they are used on a form.
         textPresent("Retired", By.id("leftQuestion_0"));
