@@ -19,7 +19,7 @@
     <mat-sidenav-content>
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="end" style="max-width: 25%">
-                <div *ngIf="elt">
+                <div *ngIf="userService.canViewComment">
                     <cde-discuss-area #commentAreaComponent [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"
                                       [eltName]="elt.designations[0].designation"></cde-discuss-area>
