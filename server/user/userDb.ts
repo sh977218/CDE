@@ -147,7 +147,7 @@ export function find(crit: any, cb: CbError1<UserDocument[]>) {
 }
 
 // cb(err, {nMatched, nUpserted, nModified})
-export async function updateUser(user: User, fields: Partial<UserFull>, callback?: CbError) {
+export function updateUser(user: User, fields: Partial<UserFull>): Promise<void> {
     const update: Partial<UserFull> = {};
     if (fields.commentNotifications) {
         update.commentNotifications = fields.commentNotifications;
@@ -177,7 +177,7 @@ export async function updateUser(user: User, fields: Partial<UserFull>, callback
     if(fields.formDefaultBoard){
         update.formDefaultBoard = fields.formDefaultBoard;
     }
-    return userModel.updateOne({_id: user._id}, {$set: update}).exec(callback);
+    return userModel.updateOne({_id: user._id}, {$set: update}).then();
 }
 
 export function usersByName(name: string, callback: CbError1<UserDocument[]>) {
@@ -192,8 +192,8 @@ export function userByUsername(username: string, callback: CbError1<UserDocument
     userModel.findOne({username: new RegExp(username, 'i')}, userProject, callback);
 }
 
-export function byUsername(username: string, callback?: CbError1<UserDocument>): Promise<UserDocument | null> {
-    return userModel.findOne({username}, userProject).exec(callback as any) as any;
+export function byUsername(username: string): Promise<UserDocument | null> {
+    return userModel.findOne({username}, userProject).then();
 }
 
 export function save(user: Partial<UserFull>, callback: CbError1<UserDocument> = () => {}) {

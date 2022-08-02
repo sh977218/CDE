@@ -80,7 +80,9 @@ export const getAuditLog = auditGetLog(cdeAuditModel);
 export function byTinyId(tinyId: string): Promise<DataElementDocument | null>;
 export function byTinyId(tinyId: string, cb: CbError1<DataElementDocument | null>): void;
 export function byTinyId(tinyId: string, cb?: CbError1<DataElementDocument | null>): Promise<DataElementDocument | null> | void {
-    return dataElementModel.findOne({tinyId, archived: false}).exec(cb);
+    return cb
+        ? dataElementModel.findOne({tinyId, archived: false}).exec(cb)
+        : dataElementModel.findOne({tinyId, archived: false}).then();
 }
 
 export function draftById(_id: ObjectId): Promise<DataElementDraftDocument> {

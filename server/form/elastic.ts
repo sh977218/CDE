@@ -1,10 +1,13 @@
 import { config } from 'server';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
-import { esClient } from 'server/system/elastic';
+import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { elasticsearchPromise, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { CdeForm } from 'shared/form/form.model';
 import { copyShallow } from 'shared/util';
+import { SearchResponseAggregationForm, User } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 export function updateOrInsert(elt: CdeForm): CdeForm {
     updateOrInsertImpl(copyShallow(elt));
@@ -53,4 +56,21 @@ export function updateOrInsertImpl(elt: CdeForm): void {
             });
         }
     });
+}
+
+export function elasticsearchForm(settings: SearchSettingsElastic, user?: User): Promise<SearchResponseAggregationForm> {
+    if (!Array.isArray(settings.selectedElements)) {
+        settings.selectedElements = [];
+    }
+    if (!Array.isArray(settings.selectedElementsAlt)) {
+        settings.selectedElementsAlt = [];
+    }
+    const query = buildElasticSearchQuery(user, settings);
+    if ((query.from + query.size) > 10000) {
+        return Promise.reject('Exceeded pagination limit (10,000)');
+    }
+    if (!settings.fullRecord) {
+        query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
+    }
+    return elasticsearchPromise('form', query, settings);
 }

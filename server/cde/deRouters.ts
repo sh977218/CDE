@@ -113,18 +113,6 @@ export function module() {
     router.post('/api/de/search', (req, res) => {
         const settings: SearchSettingsElastic = req.body;
         settings.includeAggregations = false;
-        if (!settings.resultPerPage) {
-            settings.resultPerPage = 20;
-        }
-        if (settings.resultPerPage > 100) {
-            settings.resultPerPage = 100;
-        }
-        if (!Array.isArray(settings.selectedElements)) {
-            settings.selectedElements = [];
-        }
-        if (!Array.isArray(settings.selectedElementsAlt)) {
-            settings.selectedElementsAlt = [];
-        }
         if (!Array.isArray(settings.selectedStatuses)) {
             settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
         }

@@ -41,7 +41,7 @@ export class LinkedFormsComponent {
             (err?: string, result?: ElasticQueryResponseForm) => {
             if (err || !result) { return; }
             this.forms = result.forms.filter(f => f.tinyId !== this.elt.tinyId);
-            this.dialogRef = this.dialog.open(this.linkedFormsContent);
+            this.dialogRef = this.dialog.open(this.linkedFormsContent, {width: '800px'});
         });
     }
 

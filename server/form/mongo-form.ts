@@ -76,7 +76,9 @@ export const getAuditLog = auditGetLog(formAuditModel);
 export function byTinyId(tinyId: string): Promise<CdeFormDocument | null>;
 export function byTinyId(tinyId: string, cb: CbError1<CdeFormDocument | null>): void;
 export function byTinyId(tinyId: string, cb?: CbError1<CdeFormDocument | null>): Promise<CdeFormDocument | null> | void {
-    return formModel.findOne({archived: false, tinyId}).exec(cb);
+    return cb
+        ? formModel.findOne({archived: false, tinyId}).exec(cb)
+        : formModel.findOne({archived: false, tinyId}).then();
 }
 
 export function draftById(_id: ObjectId): Promise<CdeFormDocument> {
@@ -98,9 +100,7 @@ export function draftDelete(tinyId: string): Promise<void> {
     return formDraftModel.deleteMany({tinyId}).then();
 }
 
-export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]>;
-export function draftsList(criteria: any, cb: CbError1<CdeFormDraftDocument[]>): void;
-export function draftsList(criteria: any, cb?: CbError1<CdeFormDraftDocument[]>): void | Promise<CdeFormDraftDocument[]> {
+export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]> {
     return formDraftModel
         .find(criteria, {
             'designations.designation': 1,
@@ -110,7 +110,7 @@ export function draftsList(criteria: any, cb?: CbError1<CdeFormDraftDocument[]>)
             'updatedBy.username': 1
         })
         .sort({updated: -1})
-        .exec(cb);
+        .then();
 }
 
 export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument | void>) {

@@ -4,6 +4,7 @@ import { check, checkSchema } from 'express-validator';
 import { toInteger, round } from 'lodash';
 import { config, dbPlugins } from 'server';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler';
+import { elasticsearchForm } from 'server/form/elastic';
 import {
     viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
     priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
@@ -17,7 +18,7 @@ import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinked
 import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
-    completionSuggest, elasticsearchPromise, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
+    completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
@@ -30,9 +31,10 @@ import {
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
-import { getEnvironmentHost } from 'shared/node/env';
-import { CbErr1 } from 'shared/models.model';
 import { stripBsonIdsElt } from 'shared/exportShared';
+import { CbErr1 } from 'shared/models.model';
+import { getEnvironmentHost } from 'shared/node/env';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 const canEditMiddlewareForm = canEditMiddleware(dbPlugins.form);
 const canEditByTinyIdMiddlewareForm = canEditByTinyIdMiddleware(dbPlugins.form);
@@ -108,6 +110,42 @@ export function module() {
         [allowXOrigin, nocacheMiddleware], byTinyIdAndVersion);
 
     router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
+    router.post('/api/form/search', allowXOrigin, nocacheMiddleware, (req, res) => {
+        const settings: SearchSettingsElastic = req.body;
+        settings.includeAggregations = false;
+        if (!Array.isArray(settings.selectedStatuses)) {
+            settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
+        }
+        elasticsearchForm(settings, req.user)
+            .then(
+                result => {
+                    if (!result) {
+                        return res.status(400).send('invalid query');
+                    }
+                    dbPlugins.form.byTinyIdList(result.forms.map(item => item.tinyId))
+                        .then(data => {
+                            if (!data) {
+                                res.status(404).send();
+                                return;
+                            }
+                            const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                            res.send({
+                                resultsTotal: result.totalNumber,
+                                resultsRetrieved: data.length,
+                                from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                                docs: data,
+                            });
+                        }, respondError({req, res}));
+                },
+                errorMessage => {
+                    if (errorMessage instanceof Error) {
+                        return respondError({res});
+                    }
+                    return res.status(422).send(errorMessage);
+                }
+            );
+    });
+
     router.post('/server/form', canCreateMiddleware, create);
     router.post('/server/form/publish', canEditMiddlewareForm, publishFromDraft);
     router.post('/server/form/publishExternal', canEditMiddlewareForm, publishExternal);
@@ -162,17 +200,16 @@ export function module() {
     /* ---------- PUT NEW REST API above ---------- */
 
     router.post('/server/form/search', (req, res) => {
-        const query = buildElasticSearchQuery(req.user, req.body);
-        if ((query.from + query.size) > 10000) {
-            return res.status(422).send('Exceeded pagination limit (10,000)');
-        }
-        if (!req.body.fullRecord) {
-            query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
-        }
-        elasticsearchPromise('form', query, req.body)
-            .then(result => {
-                res.send(result);
-            }, respondError({res, statusCode: 422}));
+        elasticsearchForm(req.body, req.user)
+            .then(
+                result => res.send(result),
+                errorMessage => {
+                    if (errorMessage instanceof Error) {
+                        return respondError({res});
+                    }
+                    return res.status(422).send(errorMessage);
+                }
+            );
     });
     router.post('/server/form/searchExport', (req, res) => {
         const query = buildElasticSearchQuery(req.user, req.body);

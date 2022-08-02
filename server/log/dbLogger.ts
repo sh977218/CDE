@@ -8,8 +8,8 @@ import {
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { UserFull } from 'server/user/userDb';
+import { AuditLog, AuditLogResponse, LogMessage, SortOrder } from 'shared/log/audit';
 import { Cb, CbError, CbError1 } from 'shared/models.model';
-import { AuditLog, AuditLogResponse, LogMessage } from 'shared/log/audit';
 
 export interface ClientError {
     message: string;
@@ -182,7 +182,7 @@ export function logClientError(req: Request, done: Cb) {
 }
 
 export function httpLogs(body: AuditLog, callback: CbError1<AuditLogResponse>) {
-    let sort = {date: 'desc'};
+    let sort: {date: SortOrder} = {date: 'desc'};
     if (body.sort) {
         sort = body.sort;
     }
@@ -298,7 +298,7 @@ interface LogAggregate {
     latest: number;
 }
 
-export function usageByDay(callback: CbError1<LogAggregate>) {
+export function usageByDay(callback: CbError1<LogAggregate[]>) {
     const d = new Date();
     d.setDate(d.getDate() - 3);
     //noinspection JSDuplicatedDeclaration

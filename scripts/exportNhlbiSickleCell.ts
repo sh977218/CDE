@@ -6,9 +6,9 @@ process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-function formatPermissibleValues(modelObj){
-    const pvs = modelObj.valueDomain.permissibleValues;
-    if(modelObj.valueDomain.datatype === 'Value List') {
+function formatPermissibleValues(modelObj: any) {
+    const pvs: any[] = modelObj.valueDomain.permissibleValues;
+    if (modelObj.valueDomain.datatype === 'Value List') {
         return {
             'Permissible Value (PV) Values': pvs.map(pv => pv.permissibleValue).filter(v => v).join('|'),
             'Permissible Value (PV) Labels': pvs.map(pv => pv.valueMeaningName).filter(v => v).join('|'),
@@ -19,32 +19,25 @@ function formatPermissibleValues(modelObj){
     }
 }
 
-function formatNumber(modelObj){
-    if(modelObj.valueDomain.datatype === 'Number'){
+function formatNumber(modelObj: any) {
+    if (modelObj.valueDomain.datatype === 'Number') {
         return {
             'Unit of Measure': modelObj.valueDomain.uom,
-            'Minimum': modelObj.valueDomain.datatypeNumber?.minValue,
-            'Maximum': modelObj.valueDomain.datatypeNumber?.maxValue,
+            Minimum: modelObj.valueDomain.datatypeNumber?.minValue,
+            Maximum: modelObj.valueDomain.datatypeNumber?.maxValue,
         }
     }
     return {};
 }
 
-function parseQuestionText(designations){
-    const prefQuestionText = designations.find(d => d.tags.indexOf('Preferred Question Text') > -1)?.designation;
-    const questionText = designations.find(d => d.tags.indexOf('Question Text') > -1)?.designation;
-
-    if(prefQuestionText){
-        return prefQuestionText;
-    }
-    else {
-        return questionText;
-    }
+function parseQuestionText(designations: any[]) {
+    return designations.find(d => d.tags.indexOf('Preferred Question Text') > -1)?.designation
+        || designations.find(d => d.tags.indexOf('Question Text') > -1)?.designation;
 }
 
-function parseReferences(references){
-    const allRefs = [];
-    let currentRefs = []
+function parseReferences(references: any[]) {
+    const allRefs: string[] = [];
+    let currentRefs: string[] = []
 
     references.forEach(ref => {
         for (const [key, value] of Object.entries(ref)) {
@@ -56,8 +49,8 @@ function parseReferences(references){
     return allRefs.join('|');
 }
 
-function formatProperties(props){
-    const propObject = {};
+function formatProperties(props: any[]) {
+    const propObject: any = {};
 
     props.forEach(p => {
         propObject[p.key] = p.value;
@@ -67,28 +60,28 @@ function formatProperties(props){
 }
 
 function eltToRow(modelObj: any) {
-    const row = {
+    return {
         'CDE Name': modelObj.designations[0]?.designation,
         'CDE Data Type': modelObj.valueDomain.datatype,
         'CDE Definition': modelObj.definitions[0]?.definition,
         'Preferred Question Text ': parseQuestionText(modelObj.designations),
         'CDE Source': modelObj.sources.map((s: any) => s.sourceName).join('|'),
-        'Data Element Concept (DEC) Identifier': modelObj.dataElementConcept.concepts.map(d => `${d.name} (${d.originId})`).join('|'),
-        'DEC Concept Terminology Source': modelObj.dataElementConcept.concepts.map(d => d.origin).join('|'),
+        'Data Element Concept (DEC) Identifier': modelObj.dataElementConcept.concepts
+            .map((d: any) => `${d.name} (${d.originId})`).join('|'),
+        'DEC Concept Terminology Source': modelObj.dataElementConcept.concepts.map((d: any) => d.origin).join('|'),
         'NLM Identifier for NIH CDE Repository': modelObj.tinyId,
         ...formatPermissibleValues(modelObj),
         ...formatNumber(modelObj),
         'Submitting Body': modelObj.stewardOrg.name,
         ...formatProperties(modelObj.properties),
-        'References': parseReferences(modelObj.referenceDocuments),
-    }
-    return row;
+        References: parseReferences(modelObj.referenceDocuments),
+    };
 }
 
-async function run(){
+async function run() {
     const cond = {
         'classification.stewardOrg.name': 'NHLBI',
-        'classification.elements.name' : 'Sickle Cell Disease',
+        'classification.elements.name': 'Sickle Cell Disease',
         'registrationState.registrationStatus': {$ne: 'Retired'},
         archived: false
     };
@@ -96,7 +89,7 @@ async function run(){
     const cursor = await dataElementModel.find(cond).cursor();
     const csvData: any[] = [];
 
-    return cursor.eachAsync( async model => {
+    return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
         const row = eltToRow(modelObj);
         csvData.push(row);

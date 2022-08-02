@@ -15,7 +15,7 @@ export function boardRefresh() {
     return esClient.indices.refresh({index: config.elastic.boardIndex.name});
 }
 
-export function updateOrInsertBoardById(id: string, board: Board): Promise<void> {
+export function updateOrInsertBoardById(id: string, board: Omit<Board, '_id'>): Promise<void> {
     return esClient.index({
         index: config.elastic.boardIndex.name,
         type: '_doc',

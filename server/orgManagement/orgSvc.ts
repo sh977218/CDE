@@ -9,7 +9,7 @@ import { User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
 
-export function myOrgs(user: User): string[] {
+export function myOrgs(user?: User): string[] {
     if (!user) {
         return [];
     }

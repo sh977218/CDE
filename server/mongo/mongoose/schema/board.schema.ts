@@ -3,6 +3,7 @@ import { Schema } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { respondError } from 'server/errorHandler';
 import { addStringtype } from 'server/system/mongoose-stringtype';
+import { Board } from 'shared/models.model';
 
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;
@@ -42,7 +43,7 @@ export const boardSchema = new Schema({
 
 boardSchema.pre('save', function (next) {
     const id = this._id.toString();
-    const board = this.toObject();
+    const board = this.toObject<Board>();
     delete board._id;
     updateOrInsertBoardById(id, board).then(() => next(), respondError({
         publicMessage: 'Unable to index board: ' + id

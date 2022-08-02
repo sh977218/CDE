@@ -77,7 +77,7 @@ paths:
         200:
           description: "OK"
           schema:
-            $ref: "#/definitions/SearchDocumentResponse"
+            $ref: "#/definitions/SearchDocumentResponseDe"
   /api/form/{tinyId}:
     get:
       tags:
@@ -127,6 +127,24 @@ paths:
           schema:
             $ref: "#/definitions/Error"
       x-swagger-router-controller: "CDE"
+  /api/form/search:
+    post:
+      tags:
+        - "Form"
+      summary: "Form document search"
+      description: "Full-text search for Form documents"
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: "Search Options"
+          schema:
+            $ref: "#/definitions/SearchApiOptions"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/SearchDocumentResponseForm"
 definitions:
   De:
     type: "object"
@@ -885,7 +903,7 @@ definitions:
       untilDate:
         type: "string"
         format: "date-time"
-  SearchDocumentResponse:
+  SearchDocumentResponseDe:
     type: object
     properties:
       resultsTotal:
@@ -901,6 +919,23 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/De"
+    required: [ "resultsTotal", "resultsRetrieved", "from", "docs" ]
+  SearchDocumentResponseForm:
+    type: object
+    properties:
+      resultsTotal:
+        type: integer
+        format: int32
+      resultsRetrieved:
+        type: integer
+        format: int32
+      from:
+        type: integer
+        format: int32
+      docs:
+        type: "array"
+        items:
+          $ref: "#/definitions/Form"
     required: [ "resultsTotal", "resultsRetrieved", "from", "docs" ]
   SearchApiOptions:
     type: object

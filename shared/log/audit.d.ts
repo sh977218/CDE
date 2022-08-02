@@ -1,15 +1,17 @@
+export type SortOrder = -1 | 1 | 'asc' | 'ascending' | 'desc' | 'descending';
+
 export interface AuditLog {
     currentPage: number;
     ipAddress: string;
     totalItems: number;
     fromDate: number;
     toDate: number;
-    sort: {date: string};
+    sort: {date: SortOrder};
 }
 
 export interface AuditLogResponse {
     logs: LogMessage[];
-    sort: {date: string};
+    sort: {date: SortOrder};
     totalItems?: number;
 }
 

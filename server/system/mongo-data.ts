@@ -108,8 +108,10 @@ export function jobStatus(type: string, callback: CbError1<Document & JobStatus>
     jobQueueModel.findOne({type}, callback);
 }
 
-export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> {
-    return jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback) as any;
+export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> | void {
+    return callback
+        ? jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback)
+        : jobQueueModel.updateOne({type}, {status}, {upsert: true}).then();
 }
 
 export function removeJobStatus(type: string, callback: CbError) {

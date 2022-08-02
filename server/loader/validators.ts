@@ -10,7 +10,12 @@ import {
     CSV_HEADER_MAP
 } from 'shared/loader/utilities/utility';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
-import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
+import {
+    PermissibleValue,
+    PermissibleValueCodeSystem,
+    permissibleValueCodeSystems,
+    ValidationWhitelist
+} from 'shared/models.model';
 import { validatePvs } from 'server/cde/utsValidate';
 import * as XLSX from 'xlsx';
 import * as spellChecker from 'simple-spellchecker';
@@ -227,11 +232,11 @@ export async function deleteValidationWhitelist(name: string) {
     return validationWhitelistModel.deleteOne({collectionName: name});
 }
 
-export async function addValidationWhitelist(whiteList) {
+export async function addValidationWhitelist(whiteList: ValidationWhitelist) {
     new validationWhitelistModel(whiteList).save();
 }
 
-export async function updateValidationWhitelist(whiteList) {
+export async function updateValidationWhitelist(whiteList: ValidationWhitelist) {
     return validationWhitelistModel.findOneAndUpdate(
         {collectionName: whiteList.collectionName},
         {

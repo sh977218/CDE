@@ -347,7 +347,7 @@ export function termRegStatus(regStatus: CurationStatus) {
     return {term: {'registrationState.registrationStatus': regStatus}};
 }
 
-export function getAllowedStatuses(user: User, settings: SearchSettingsElastic): CurationStatus[] {
+export function getAllowedStatuses(user: User | undefined, settings: SearchSettingsElastic): CurationStatus[] {
     return concat(
         ['Preferred Standard', 'Standard', 'Qualified'],
         user && user.viewDrafts ? ['Recorded', 'Candidate'] : [],
@@ -355,7 +355,8 @@ export function getAllowedStatuses(user: User, settings: SearchSettingsElastic):
     )
 }
 
-export function regStatusFilter(user: User, settings: SearchSettingsElastic, allowedStatuses: CurationStatus[]): { term: any }[] {
+export function regStatusFilter(user: User | undefined, settings: SearchSettingsElastic,
+                                allowedStatuses: CurationStatus[]): { term: any }[] {
     if (hasRolePrivilege(user, 'universalSearch')) {
         return ((settings.includeRetired
                 ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']

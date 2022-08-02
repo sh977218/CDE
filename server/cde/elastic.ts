@@ -59,6 +59,12 @@ export function updateOrInsertImpl(elt: DataElement): void {
 }
 
 export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<SearchResponseAggregationDe | void>) {
+    if (!Array.isArray(settings.selectedElements)) {
+        settings.selectedElements = [];
+    }
+    if (!Array.isArray(settings.selectedElementsAlt)) {
+        settings.selectedElementsAlt = [];
+    }
     const query = buildElasticSearchQuery(user, settings);
     if ((query.from + query.size) > 10000) {
         return cb(new Error('page size exceeded'));
