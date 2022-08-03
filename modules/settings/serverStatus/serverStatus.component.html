@@ -4,7 +4,7 @@
     <h4>Elastic Search</h4>
     <hr/>
     <div *ngFor="let i of esIndices; let $index = index">
-        <button class="button" (click)="reIndex($index)">
+        <button class="button" (click)="openConfirmReindexModal($index)">
             <mat-icon>refresh</mat-icon>
             Re-index: <b>{{i.name}}</b> / {{i.indexName}}
         </button>
@@ -18,14 +18,3 @@
                       [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
     </mat-progress-bar>
 </div>
-
-<ng-template #confirmReindex>
-    <h1 mat-dialog-title>Are you sure you want to re-index?</h1>
-    <mat-dialog-content>
-        <h4>Re-indexing: {{esIndices[indexToReindex].indexName}}</h4>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-        <button class="button secondary" (click)="dialogRef.close()">Cancel</button>
-        <button class="button" (click)="okReIndex(); dialogRef.close()">OK</button>
-    </mat-dialog-actions>
-</ng-template>

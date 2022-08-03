@@ -85,6 +85,9 @@ import {
 } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
+import {
+    ConfirmReindexModalComponent
+} from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 
 const appRoutes: Routes = [
     {
@@ -247,7 +250,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         FormsModule,
-        
+
         RouterModule.forChild(appRoutes),
         ReactiveFormsModule,
         MatAutocompleteModule,
@@ -319,6 +322,7 @@ const appRoutes: Routes = [
         PropertiesManagementComponent,
         SearchSettingsComponent,
         ServerStatusComponent,
+        ConfirmReindexModalComponent,
         SettingsComponent,
         StewardOrgTransferComponent,
         TagsManagementComponent,

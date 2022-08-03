@@ -1,35 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    ConfirmReindexModalComponent
+} from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 
 @Component({
     selector: 'cde-server-status',
     templateUrl: './serverStatus.component.html',
     styles: [
         `button {
-            margin-top: 10px;
+          margin-top: 10px;
         }`
     ]
 })
 export class ServerStatusComponent {
-    @ViewChild('confirmReindex', {static: true}) confirmReindex!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>
     esIndices: any;
     indexToReindex!: number;
     isDone: boolean = false;
     linkedForms: { total: number, done: number } = {total: 0, done: 0};
     statuses: any[] = [];
 
-    constructor(
-        private alert: AlertService,
-        private http: HttpClient,
-        public dialog: MatDialog,
-    ) {
+    constructor(private alert: AlertService,
+                private http: HttpClient,
+                public dialog: MatDialog,) {
         this.refreshStatus();
     }
 
-    okReIndex() {
+    reIndex() {
         this.http.post('/server/system/reindex/' + this.indexToReindex, {}).subscribe(() => this.isDone = true);
         const indexFn = setInterval(() => {
             this.http.get<any>('/server/system/indexCurrentNumDoc/' + this.indexToReindex).subscribe(response => {
@@ -59,11 +58,20 @@ export class ServerStatusComponent {
         });
     }
 
-    reIndex(i: number) {
-        this.esIndices[i].count = 0;
-
-        this.indexToReindex = i;
-        this.dialogRef = this.dialog.open(this.confirmReindex);
+    openConfirmReindexModal(index) {
+        this.esIndices[index].count = 0;
+        const data = {
+            index,
+            indexName: this.esIndices[index].indexName
+        };
+        this.dialog.open(ConfirmReindexModalComponent, {width: '800px', data})
+            .afterClosed()
+            .subscribe(result => {
+                if (result) {
+                    this.indexToReindex = index;
+                    this.reIndex();
+                }
+            });
     }
 
     syncLinkedForms() {
@@ -79,7 +87,4 @@ export class ServerStatusComponent {
         }, 1000);
     }
 
-    deleteNonUsedIndex() {
-        this.http.delete('/server/siteAdmin/deleteEsIndex').subscribe();
-    }
 }
