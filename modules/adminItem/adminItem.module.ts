@@ -48,13 +48,16 @@ import {
 import {
     AddIdentifierModalComponent
 } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
+import {
+    AddReferenceDocumentModalComponent
+} from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 
 @NgModule({
     imports: [
         CommonModule,
         CKEditorModule,
         FormsModule,
-        
+
         RouterModule,
         TreeModule,
         // non-core
@@ -94,6 +97,7 @@ import {
         PropertiesComponent,
         AddPropertyModalComponent,
         ReferenceDocumentComponent,
+        AddReferenceDocumentModalComponent,
         RegistrationComponent,
         RegistrationStatusModalComponent,
         SaveModalComponent,

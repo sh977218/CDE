@@ -1,36 +1,37 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { DataElement } from 'shared/de/dataElement.model';
-import { ReferenceDocument } from 'shared/models.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import {
+    AddReferenceDocumentModalComponent
+} from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 
 @Component({
     selector: 'cde-reference-document',
     templateUrl: './referenceDocument.component.html',
     styles: [`
-        dd {
-            min-height: 20px;
-        }`]
+      dd {
+        min-height: 20px;
+      }`
+    ]
 })
 export class ReferenceDocumentComponent {
     @Input() canEdit = false;
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newReferenceDocumentContent', {static: true}) newReferenceDocumentContent!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
-    newReferenceDocument: ReferenceDocument = new ReferenceDocument();
 
-    constructor(private dialog: MatDialog) {}
-
-    addNewReferenceDocument() {
-        this.elt.referenceDocuments.push(this.newReferenceDocument);
-        this.eltChange.emit();
-        this.dialogRef.close();
+    constructor(private dialog: MatDialog) {
     }
 
     openNewReferenceDocumentModal() {
-        this.dialogRef = this.dialog.open(this.newReferenceDocumentContent, {width: '800px'});
-        this.dialogRef.afterClosed().subscribe(() => this.newReferenceDocument = new ReferenceDocument(), () => {});
+        this.dialog.open(AddReferenceDocumentModalComponent, {width: '800px'})
+            .afterClosed()
+            .subscribe(newReferenceDocument => {
+                if (newReferenceDocument) {
+                    this.elt.referenceDocuments.push(newReferenceDocument);
+                    this.eltChange.emit();
+                }
+            });
     }
 
     removeReferenceDocumentByIndex(index: number) {
