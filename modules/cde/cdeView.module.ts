@@ -40,6 +40,8 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
+import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -59,7 +61,7 @@ const appRoutes: Routes = [
         MatSidenavModule,
         MatToolbarModule,
         MatTooltipModule,
-        
+
         ScrollingModule,
         RouterModule.forChild(appRoutes),
         // non-core
@@ -78,7 +80,8 @@ const appRoutes: Routes = [
         DiscussModule,
         FormSearchModule,
         TocModule,
-        TourMatMenuModule
+        TourMatMenuModule,
+        MatExpansionModule
     ],
     declarations: [
         CdeClassificationComponent,
@@ -88,6 +91,7 @@ const appRoutes: Routes = [
         DatasetsComponent,
         DeGeneralDetailsComponent,
         MoreLikeThisComponent,
+        MoreLikeThisModalComponent,
         PermissibleValueComponent,
         ValidRulesComponent,
     ],

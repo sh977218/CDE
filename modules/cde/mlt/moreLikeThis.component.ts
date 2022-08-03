@@ -1,32 +1,22 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
+import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
 
 @Component({
     selector: 'cde-mlt',
-    templateUrl: './moreLikeThis.component.html',
-    styleUrls: ['./moreLikeThis.component.scss'],
+    templateUrl: './moreLikeThis.component.html'
 })
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
-    @ViewChild('mltModal', {static: true}) mltModal!: TemplateRef<any>;
-    cdes!: DataElement[];
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
 
-    constructor(
-        private http: HttpClient,
-        private router: Router,
-        private alert: AlertService,
-        private dialog: MatDialog,
-    ) {}
+    constructor(private router: Router,
+                private dialog: MatDialog) {
+    }
 
-    open() {
-        this.http.get<{cdes: DataElement[]}>('/server/de/moreLike/' + this.elt.tinyId).subscribe(response => {
-            this.cdes = response.cdes;
-        }, () => this.alert.addAlert('error', 'Unable to retrieve MLT'));
-        this.dialogRef = this.dialog.open(this.mltModal, {width: '1000px'});
+    openMoreLikeThisModal() {
+        const data = this.elt;
+        this.dialog.open(MoreLikeThisModalComponent, {width: '1000px', data});
     }
 }
