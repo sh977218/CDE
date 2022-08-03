@@ -1,27 +1,24 @@
-<bs-sortable #sortableComponent [(ngModel)]="left.questions"
-             [itemTemplate]="questionTemplate" itemClass="sortable-item"
-             itemActiveClass="sortable-item-active" placeholderItem="Drag here"
-             placeholderClass="sortable-item" wrapperClass="sortable-wrapper">
-</bs-sortable>
+<div cdkDropList (cdkDropListDropped)="drop($event)">
+    <ng-container *ngFor="let question of left.questions; let i = index">
+        <div cdkDrag id="leftQuestion_{{i}}" class="questionToken boxed-div"
+             title="{{question.isRetired?'CDE is Retired':''}}"
+             [ngClass]="{'bgGreen': question.question.info && question.question.info.match, 'bgRed': question.question.info && question.question.info.error}">
+            <mat-icon id="removeLeftQuestion_{{i}}" class="right fake-button" role="button"
+                      (click)="removeItem(i)">delete_outline
+            </mat-icon>
+            <span class="Label">
+            CDE Name:
+            <ng-container *ngIf="question.isRetired">(Retired)</ng-container>
+            <ng-container *ngIf="question.question.info && question.question.info.error">error</ng-container>
+            <a target="_blank" href="/deView?tinyId={{question.question.cde.tinyId}}">{{question.question.cde.name}}</a>
+        </span>
+        </div>
+    </ng-container>
+
+</div>
 
 <button class="button" (click)="addItem()">
     <mat-icon>add</mat-icon>
     Add Placeholder
 </button>
 
-<ng-template #questionTemplate let-item="item" let-index="index">
-    <div class="questionToken boxed-div" title="{{item.value.isRetired?'CDE is Retired':''}}"
-         [ngClass]="{'bgGreen': item.value.info && item.value.info.match, 'bgRed': item.value.info && item.value.info.error}"
-         id="leftQuestion_{{index}}">
-        <mat-icon id="removeLeftQuestion_{{index}}" class="right fake-button" role="button" tabindex="0"
-                  (click)="removeItem(index)" title="Remove Question">delete_outline</mat-icon>
-        <span class="Label" matTooltip="{{item.value.question.cde.name}}">
-            CDE Name:
-            <ng-container *ngIf="item.value.isRetired">(Retired)</ng-container>
-            <ng-container *ngIf="item.value.info && item.value.info.error">{{item.value.info.error}}</ng-container>
-        </span>
-        <a target="_blank" href="/deView?tinyId={{item.value.question.cde.tinyId}}">
-            {{item.value.question.cde.name}}
-        </a>
-    </div>
-</ng-template>

@@ -51,7 +51,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { WINDOW_PROVIDERS } from 'window.service';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
@@ -108,7 +107,6 @@ const appRoutes: Routes = [
         MatSidenavModule,
         MatListModule,
         MatToolbarModule,
-        TooltipModule,
         TocModule,
         TourMatMenuModule,
     ],

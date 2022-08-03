@@ -17,22 +17,22 @@ import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSid
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { MergeFormService } from 'compare/mergeForm.service';
-import { SortableModule } from 'ngx-bootstrap/sortable';
 import {
     CompareSideBySideModalComponent
 } from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        SortableModule.forRoot(),
         MatButtonModule,
         MatCheckboxModule,
         MatTooltipModule,
         MatDialogModule,
         MatIconModule,
         MatProgressBarModule,
+        DragDropModule,
         NgxTextDiffModule,
     ],
     declarations: [
