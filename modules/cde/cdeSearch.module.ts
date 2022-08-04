@@ -49,7 +49,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-        
+
         RouterModule,
         // non-core
 

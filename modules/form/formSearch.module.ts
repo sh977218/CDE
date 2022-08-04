@@ -46,7 +46,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-        
+
         // non-core
 
         // internal

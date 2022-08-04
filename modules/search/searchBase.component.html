@@ -53,10 +53,6 @@
     </form>
 </section>
 
-<ng-template #orgDetailsModal>
-    <div style="margin: 25px" [innerHtml]="orgHtmlOverview"></div>
-</ng-template>
-
 <section *ngIf="elts && aggregations else searchingLoader" class="container searchSection" [class.searchFilterLayout]="filterMode"
          style="margin-top: 0" [style.max-width]="resultsView === 'table' ? 'none' : ''">
     <!--FILTERS-->

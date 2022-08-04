@@ -1,13 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnDestroy,
-    OnInit, TemplateRef,
-    ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -37,6 +29,7 @@ import { SearchSettings } from 'shared/search/search.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
+import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
 type NamedCounts = { name: string, count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
@@ -52,7 +45,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @Input() addMode?: string;
     @Input() embedded: boolean = false;
     @Input() searchSettingsInput?: SearchSettings;
-    @ViewChild('orgDetailsModal', {static: true}) orgDetailsModal!: TemplateRef<any>;
     @ViewChild('autoCompleteInput', {
         read: MatAutocompleteTrigger,
         static: true
@@ -82,7 +74,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     module!: ModuleItem;
     numPages?: number;
     orgs?: (Organization & { featureIcon?: string })[];
-    orgHtmlOverview?: string;
     ownKeys = ownKeys;
     previousUrl?: string;
     resultsView = '';
@@ -101,16 +92,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     trackByName = trackByName;
 
     protected constructor(
-                protected alert: AlertService,
-                protected backForwardService: BackForwardService,
-                protected elasticService: ElasticService,
-                protected exportService: ExportService,
-                protected http: HttpClient,
-                protected orgHelperService: OrgHelperService,
-                protected route: ActivatedRoute,
-                protected router: Router,
-                protected userService: UserService,
-                protected dialog: MatDialog) {
+        protected alert: AlertService,
+        protected backForwardService: BackForwardService,
+        protected elasticService: ElasticService,
+        protected exportService: ExportService,
+        protected http: HttpClient,
+        protected orgHelperService: OrgHelperService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        protected userService: UserService,
+        protected dialog: MatDialog) {
         this.filterMode = window.innerWidth >= 768;
         this.searchSettings.page = 1;
         this.routerSubscription = this.router.events.subscribe((e: Event) => {
@@ -310,10 +301,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    clearSelectedTopics() {
-        this.doSearch();
-    }
-
     doSearch() {
         if (this.embedded) {
             this.reload();
@@ -504,8 +491,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     openOrgDetails(org: Organization) {
-        this.orgHtmlOverview = org.htmlOverview;
-        this.dialog.open(this.orgDetailsModal, {width: '600px'});
+        const data = org.htmlOverview;
+        this.dialog.open(OrgDetailModalComponent, {width: '600px', data});
     }
 
     pageChange(newPage: PageEvent) {
@@ -664,7 +651,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                 }
                             });
                             let orgIndex = 0;
-                            orderedFirstOrgNames.forEach((name, i, names) => {
+                            orderedFirstOrgNames.forEach((name, i) => {
                                 if (orgs[orgIndex].name === name) {
                                     orgs[orgIndex].featureIcon = orderedFirstOrgIcons[i];
                                     orgIndex++;

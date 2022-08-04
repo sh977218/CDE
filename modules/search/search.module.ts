@@ -17,12 +17,13 @@ import { TableListComponent } from 'search/listView/tableList.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
+import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        
+
         RouterModule.forChild([]),
         // non-core
         MatIconModule,
@@ -42,7 +43,8 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         SummaryListComponent,
         SummaryListItemComponent,
         SummaryPlaceholderDirective,
-        TableListComponent
+        TableListComponent,
+        OrgDetailModalComponent
     ],
     exports: [
         AccordionListHeadingComponent,
