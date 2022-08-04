@@ -34,6 +34,7 @@ import { copyDeep, noop } from 'shared/util';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
+import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 
 export class LocatableError {
     id?: string;
@@ -55,7 +56,6 @@ export class LocatableError {
 })
 export class FormViewComponent implements OnInit, OnDestroy {
     @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
-    @ViewChild('formCdesContent', {static: true}) formCdesContent!: TemplateRef<any>;
     @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinToBoardModalComponent;
     _elt?: CdeFormDraft;
     commentMode?: boolean;
@@ -63,7 +63,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     draftSaving?: Promise<void>;
     eltCopy?: CdeForm;
-    questions: any[] = [];
     exportToTab: boolean = false;
     formInput!: Dictionary<string>;
     hasComments = false;
@@ -284,8 +283,8 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     openFormCdesModal(elt: CdeFormDraft) {
-        this.questions = formQuestions(elt);
-        this.dialogRef = this.dialog.open(this.formCdesContent, {width: '800px'});
+        const data = formQuestions(elt);
+        this.dialog.open(FormCdesModalComponent, {width: '800px', data});
     }
 
     getFormCdes(elt: CdeFormDraft) {

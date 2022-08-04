@@ -54,6 +54,7 @@ import { WINDOW_PROVIDERS } from 'window.service';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
+import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: FormViewComponent},
@@ -80,7 +81,7 @@ const appRoutes: Routes = [
         MatTabsModule,
         MatAutocompleteModule,
         MatTooltipModule,
-        
+
         RouterModule.forChild(appRoutes),
         TreeModule,
         // non-core
@@ -114,6 +115,7 @@ const appRoutes: Routes = [
         ArrayListPipe,
         DisplayProfileComponent,
         FormViewComponent,
+        FormCdesModalComponent,
         FormClassificationComponent,
         FormGeneralDetailsComponent,
         NativeRenderFullComponent,
