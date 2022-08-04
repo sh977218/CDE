@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '
 import { Router } from '@angular/router';
 import { assertUnreachable } from 'shared/models.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 
@@ -22,7 +23,6 @@ export class ConceptsComponent {
     @Input() public elt: any;
     @Input() public canEdit = false;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newConceptContent', {static: true}) newConceptContent!: TemplateRef<any>;
     conceptConfigurations: Config[] = [
         {
             type: 'dataElementConcept',
@@ -36,31 +36,33 @@ export class ConceptsComponent {
             type: 'property',
             details: {display: 'Property', path: 'property.concepts.name'}
         }];
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
-    newConcept: { name?: string, originId?: string, origin: string, type: string } = {origin: 'LOINC', type: 'dec'};
 
     constructor(public dialog: MatDialog,
                 private router: Router) {}
 
-    addNewConcept() {
+    addNewConcept(newConcept) {
         if (!this.elt.dataElementConcept) { this.elt.dataElementConcept = {}; }
-        if (this.newConcept.type === 'dec') {
+        if (newConcept.type === 'dec') {
             if (!this.elt.dataElementConcept.concepts) { this.elt.dataElementConcept.concepts = []; }
-            this.elt.dataElementConcept.concepts.push(this.newConcept);
-        } else if (this.newConcept.type === 'prop') {
+            this.elt.dataElementConcept.concepts.push(newConcept);
+        } else if (newConcept.type === 'prop') {
             if (!this.elt.property.concepts) { this.elt.property.concepts = []; }
-            this.elt.property.concepts.push(this.newConcept);
-        } else if (this.newConcept.type === 'oc') {
+            this.elt.property.concepts.push(newConcept);
+        } else if (newConcept.type === 'oc') {
             if (!this.elt.objectClass.concepts) { this.elt.objectClass.concepts = []; }
-            this.elt.objectClass.concepts.push(this.newConcept);
+            this.elt.objectClass.concepts.push(newConcept);
         }
         this.eltChange.emit();
-        this.dialogRef.close();
     }
 
     openNewConceptModal() {
-        this.newConcept = {origin: 'LOINC', type: 'dec'};
-        this.dialogRef = this.dialog.open(this.newConceptContent);
+       this.dialog.open(AddConceptModalComponent,{width: '800px'})
+            .afterClosed()
+            .subscribe(newConcept=>{
+                if(newConcept){
+                    this.addNewConcept(newConcept);
+                }
+            });
     }
 
     dataElementConceptRemoveConcept(index: number) {

@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>Add Concept</h1>
+<form role="form" #newConceptForm="ngForm">
+    <div mat-dialog-content>
+        <mat-form-field style="width: 100%">
+            <input matInput id="name" name="name" placeholder="Concept Code Name"
+                   [(ngModel)]="newConcept.name" required/>
+        </mat-form-field>
+        <mat-form-field style="width: 100%">
+            <input matInput id="codeId" name="codeId" [(ngModel)]="newConcept.originId"
+                   placeholder="Concept Code Identifier" required/>
+        </mat-form-field>
+        <mat-form-field style="width: 100%">
+            <input matInput id="codeSystem" value="LOINC" name="codeSystem" placeholder="Code System"
+                   [(ngModel)]="newConcept.origin" required/>
+        </mat-form-field>
+        <mat-form-field style="width: 100%">
+            <mat-select placeholder="Concept Type" name="conceptType" [(ngModel)]="newConcept.type" id="conceptType"
+                        required>
+                <mat-option value="dec">Data Element</mat-option>
+                <mat-option value="oc">Class</mat-option>
+                <mat-option value="prop">Property</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button class="button fail" [mat-dialog-close]>Cancel</button>
+        <button class="button" type="submit" [mat-dialog-close]="newConcept" [disabled]="!newConceptForm.form.valid">
+            Save
+        </button>
+    </div>
+</form>

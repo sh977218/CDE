@@ -2,6 +2,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule, Routes } from '@angular/router';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { TocModule } from 'angular-aio-toc/toc.module';
@@ -41,7 +42,7 @@ import { WINDOW_PROVIDERS } from 'window.service';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -86,6 +87,7 @@ const appRoutes: Routes = [
     declarations: [
         CdeClassificationComponent,
         ConceptsComponent,
+        AddConceptModalComponent,
         DataElementViewComponent,
         DerivationRulesComponent,
         DatasetsComponent,
