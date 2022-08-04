@@ -1,5 +1,6 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DatasetsContentModalComponent } from 'cde/datasets/datasets-content-modal/datasets-content-modal.component';
 
 @Component({
     selector: 'cde-datasets',
@@ -7,13 +8,13 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 
 export class DatasetsComponent {
-    @ViewChild('datasetsContent', {static: true}) datasetsContent!: TemplateRef<any>;
     @Input() public elt: any;
-    dialogRef?: MatDialogRef<TemplateRef<any>>
 
-    constructor(public dialog: MatDialog) {}
+    constructor(public dialog: MatDialog) {
+    }
 
     openDatasetsModal() {
-        this.dialogRef = this.dialog.open(this.datasetsContent, {width: '800px'});
+        const data = this.elt.dataSets;
+        this.dialog.open(DatasetsContentModalComponent, {width: '800px', data});
     }
 }

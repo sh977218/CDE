@@ -41,6 +41,7 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
+import { DatasetsContentModalComponent } from 'cde/datasets/datasets-content-modal/datasets-content-modal.component';
 import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
 
@@ -91,6 +92,7 @@ const appRoutes: Routes = [
         DataElementViewComponent,
         DerivationRulesComponent,
         DatasetsComponent,
+        DatasetsContentModalComponent,
         DeGeneralDetailsComponent,
         MoreLikeThisComponent,
         MoreLikeThisModalComponent,
