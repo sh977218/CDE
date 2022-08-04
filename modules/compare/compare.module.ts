@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
@@ -20,7 +21,9 @@ import { MergeFormService } from 'compare/mergeForm.service';
 import {
     CompareSideBySideModalComponent
 } from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import {
+    MergeDataElementModalComponent
+} from 'compare/mergeDataElement/merge-data-element-modal/merge-data-element-modal.component';
 
 @NgModule({
     imports: [
@@ -43,6 +46,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         CompareHistoryContentComponent,
         CompareItemComponent,
         MergeDataElementComponent,
+        MergeDataElementModalComponent,
         MergeFormComponent,
     ],
     providers: [MergeFormService],
