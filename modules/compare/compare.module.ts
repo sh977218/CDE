@@ -8,8 +8,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-
 import { NgxTextDiffModule } from 'ngx-text-diff';
+
 import { CdeSortableComponent } from 'compare/cdeSortable/cdeSortable.component';
 import { CompareItemArrayComponent } from 'compare/compareItem/compareItemArray.component';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
@@ -24,6 +24,7 @@ import {
 import {
     MergeDataElementModalComponent
 } from 'compare/mergeDataElement/merge-data-element-modal/merge-data-element-modal.component';
+import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merge-form-modal.component';
 
 @NgModule({
     imports: [
@@ -48,6 +49,7 @@ import {
         MergeDataElementComponent,
         MergeDataElementModalComponent,
         MergeFormComponent,
+        MergeFormModalComponent,
     ],
     providers: [MergeFormService],
     exports: [

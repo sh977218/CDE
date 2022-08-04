@@ -1,154 +1,30 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AlertService } from 'alert/alert.service';
-import { IsAllowedService } from 'non-core/isAllowed.service';
-import { MergeFormService } from 'compare/mergeForm.service';
-import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { CompareForm } from 'compare/compareSideBySide/compare-form';
+import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merge-form-modal.component';
 
 @Component({
     selector: 'cde-merge-form',
-    templateUrl: './mergeForm.component.html',
-    styleUrls: ['./mergeForm.component.scss'],
+    templateUrl: './mergeForm.component.html'
 })
 export class MergeFormComponent {
     @Input() source!: CompareForm;
     @Input() destination!: CompareForm;
-    @Output() doneMerge = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
-    @ViewChild('mergeFormContent', {static: true}) mergeFormContent!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>
-    finishMerge = false;
-    mergeFields: FormMergeFields = {
-        designations: true,
-        definitions: true,
-        referenceDocuments: true,
-        properties: true,
-        ids: true,
-        classifications: true,
-        questions: true,
-        cde: {
-            designations: true,
-            definitions: true,
-            referenceDocuments: true,
-            properties: true,
-            attachments: true,
-            dataSets: true,
-            derivationRules: true,
-            sources: true,
-            ids: true,
-            classifications: true,
-            retireCde: false
-        }
-    };
+    @Output() doneMergeForm = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
 
-    showProgressBar = false;
-
-    constructor(public dialog: MatDialog,
-                private alert: AlertService,
-                public isAllowedModel: IsAllowedService,
-                public mergeFormService: MergeFormService) {
+    constructor(public dialog: MatDialog) {
     }
 
-    unselectAllCdeMergerFields() {
-        this.mergeFields.cde.designations = false;
-        this.mergeFields.cde.definitions = false;
-        this.mergeFields.cde.referenceDocuments = false;
-        this.mergeFields.cde.properties = false;
-        this.mergeFields.cde.ids = false;
-        this.mergeFields.cde.classifications = false;
-    }
-
-    unselectAllFormMergerFields() {
-        this.mergeFields.designations = false;
-        this.mergeFields.definitions = false;
-        this.mergeFields.referenceDocuments = false;
-        this.mergeFields.properties = false;
-        this.mergeFields.ids = false;
-        this.mergeFields.cde.attachments = false;
-        this.mergeFields.cde.dataSets = false;
-        this.mergeFields.cde.derivationRules = false;
-        this.mergeFields.cde.sources = false;
-        this.mergeFields.classifications = false;
-        this.mergeFields.questions = false;
-    }
-
-    selectAllCdeMergerFields() {
-        this.mergeFields.cde.designations = true;
-        this.mergeFields.cde.definitions = true;
-        this.mergeFields.cde.referenceDocuments = true;
-        this.mergeFields.cde.properties = true;
-        this.mergeFields.cde.ids = true;
-        this.mergeFields.cde.attachments = true;
-        this.mergeFields.cde.dataSets = true;
-        this.mergeFields.cde.derivationRules = true;
-        this.mergeFields.cde.sources = true;
-        this.mergeFields.cde.classifications = true;
-    }
-
-    selectAllFormMergerFields() {
-        this.mergeFields.designations = true;
-        this.mergeFields.definitions = true;
-        this.mergeFields.referenceDocuments = true;
-        this.mergeFields.properties = true;
-        this.mergeFields.ids = true;
-        this.mergeFields.classifications = true;
-        this.mergeFields.questions = true;
-    }
-
-    doMerge() {
-        this.showProgressBar = true;
-        this.mergeFormService.doMerge(this.source, this.destination, this.mergeFields).then(res => {
-            if (this.mergeFormService.error.ownSourceForm) {
-                this.source.changeNote = 'Merge to tinyId ' + this.destination.tinyId;
-                if (this.isAllowedModel.isAllowed(this.source)) {
-                    this.source.registrationState.registrationStatus = 'Retired';
-                }
-                this.mergeFormService.saveForm({
-                    form: this.source, cb: (err: any) => {
-                        if (err) {
-                            this.alert.addAlert('danger', 'Can not save source form.');
-                        } else {
-                            this.destination.changeNote = 'Merge from tinyId ' + this.source.tinyId;
-                            this.mergeFormService.saveForm({
-                                form: this.destination, cb: (err: any) => {
-                                    if (err) {
-                                        this.alert.addAlert('danger', 'Can not save target form.');
-                                    } else {
-                                        this.finishMerge = true;
-                                        this.alert.addAlert('success', 'Form merged');
-                                        setTimeout(() => {
-                                            this.showProgressBar = false;
-                                            return;
-                                        }, 3000);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-            } else {
-                this.destination.changeNote = 'Merge from tinyId ' + this.source.tinyId;
-                this.mergeFormService.saveForm({
-                    form: this.destination, cb: (err: any) => {
-                        if (err) {
-                            this.alert.addAlert('danger', 'Cannot save target form.');
-                        } else {
-                            this.finishMerge = true;
-                            this.alert.addAlert('success', 'Form merged');
-                            setTimeout(() => {
-                                this.showProgressBar = false;
-                                this.doneMerge.emit({left: this.source, right: this.destination});
-                                return;
-                            }, 3000);
-                        }
-                    }
-                });
-            }
-        }, err => this.alert.addAlert('danger', 'Unexpected error merging forms: ' + err));
-    }
 
     openMergeFormModal() {
-        this.mergeFormService.validateQuestions(this.source, this.destination, this.mergeFields);
-        this.dialogRef = this.dialog.open(this.mergeFormContent, {width: '1000px'});
+        const data = {
+            source: this.source,
+            destination: this.destination
+        }
+        const diaRef = this.dialog.open(MergeFormModalComponent, {width: '1000px', data});
+
+        const sub = diaRef.componentInstance.doneMerge
+            .subscribe(result => this.doneMergeForm.emit(result))
+        diaRef.afterClosed().subscribe(res => sub.unsubscribe());
     }
 }
