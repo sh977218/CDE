@@ -54,6 +54,7 @@ import { WINDOW_PROVIDERS } from 'window.service';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
+import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 
 const appRoutes: Routes = [
@@ -120,6 +121,7 @@ const appRoutes: Routes = [
         FormGeneralDetailsComponent,
         NativeRenderFullComponent,
         QuestionAccordionListComponent,
+        CopyFormModalComponent,
     ],
     exports: [],
     providers: [

@@ -30,10 +30,11 @@ import {
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { copyDeep, noop } from 'shared/util';
+import { deepCopyElt, filterClassificationPerUser, noop } from 'shared/util';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
+import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 
 export class LocatableError {
@@ -55,8 +56,6 @@ export class LocatableError {
     providers: [TocService]
 })
 export class FormViewComponent implements OnInit, OnDestroy {
-    @ViewChild('copyFormContent', {static: true}) copyFormContent!: TemplateRef<any>;
-    @ViewChild('mltPinModalCde', {static: true}) mltPinModalCde!: PinToBoardModalComponent;
     _elt?: CdeFormDraft;
     commentMode?: boolean;
     currentTab = 'preview_tab';
@@ -256,30 +255,10 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     openCopyElementModal(elt: CdeFormDraft) {
-        const eltCopy = this.eltCopy = copyDeep(elt);
-        eltCopy.classification = elt.classification
-            && elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
-        eltCopy.registrationState.administrativeNote = 'Copy of: ' + elt.tinyId;
-        delete (eltCopy as any).tinyId;
-        delete eltCopy._id;
-        delete eltCopy.origin;
-        delete eltCopy.created;
-        delete eltCopy.updated;
-        delete eltCopy.imported;
-        delete eltCopy.updatedBy;
-        delete eltCopy.createdBy;
-        delete eltCopy.version;
-        delete (eltCopy as any).history;
-        delete eltCopy.changeNote;
-        delete (eltCopy as any).comments;
-        eltCopy.ids = [];
-        eltCopy.sources = [];
-        eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
-        eltCopy.registrationState = {
-            administrativeNote: 'Copy of: ' + elt.tinyId,
-            registrationStatus: 'Incomplete',
-        };
-        this.dialogRef = this.dialog.open(this.copyFormContent, {width: '1200px'});
+        const eltCopy = deepCopyElt(elt);
+        filterClassificationPerUser(eltCopy, this.userService.userOrgs);
+        const data = eltCopy;
+        this.dialog.open(CopyFormModalComponent, {width: '1200px', data});
     }
 
     openFormCdesModal(elt: CdeFormDraft) {
