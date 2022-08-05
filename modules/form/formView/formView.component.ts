@@ -24,14 +24,12 @@ import {
     DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime
 } from 'shared/de/dataElement.model';
 import {
-    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCde,
-    QuestionCdeValueList
+    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCdeValueList
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { deepCopyElt, filterClassificationPerUser, noop } from 'shared/util';
-import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';

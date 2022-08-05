@@ -19,10 +19,13 @@ import { Cb1, Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
-import { copyDeep, noop } from 'shared/util';
+import { copyDeep, deepCopyElt, filterClassificationPerUser, noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
+import {
+    CopyDataElementModalComponent
+} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -31,7 +34,6 @@ import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
     providers: [TocService]
 })
 export class DataElementViewComponent implements OnDestroy, OnInit {
-    @ViewChild('copyDataElementContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
     _elt?: DataElement;
     commentMode?: boolean;
     currentTab = 'general_tab';
@@ -200,32 +202,10 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     openCopyElementModal(elt: DataElement) {
-        const eltCopy = this.eltCopy = copyDeep(elt);
-        eltCopy.classification = elt.classification
-            && elt.classification.filter(c => this.userService.userOrgs.indexOf(c.stewardOrg.name) !== -1);
-        eltCopy.registrationState.administrativeNote = 'Copy of: ' + elt.tinyId;
-        delete (eltCopy as any).tinyId;
-        delete eltCopy._id;
-        delete eltCopy.origin;
-        delete eltCopy.created;
-        delete eltCopy.updated;
-        delete eltCopy.imported;
-        delete eltCopy.updatedBy;
-        delete eltCopy.createdBy;
-        delete eltCopy.version;
-        delete (eltCopy as any).history;
-        delete eltCopy.changeNote;
-        delete (eltCopy as any).comments;
-        delete eltCopy.forkOf;
-        delete eltCopy.views;
-        eltCopy.ids = [];
-        eltCopy.sources = [];
-        eltCopy.designations[0].designation = 'Copy of: ' + eltCopy.designations[0].designation;
-        eltCopy.registrationState = {
-            registrationStatus: 'Incomplete',
-            administrativeNote: 'Copy of: ' + elt.tinyId
-        };
-        this.dialogRef = this.dialog.open(this.copyDataElementContent, {width: '1200px'});
+        const eltCopy = deepCopyElt(elt);
+        filterClassificationPerUser(eltCopy, this.userService.userOrgs);
+        const data = eltCopy;
+        this.dialog.open(CopyDataElementModalComponent, {width: '1200px', data});
     }
 
     setCurrentTab(currentTab: string) {

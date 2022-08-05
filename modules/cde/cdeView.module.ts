@@ -50,6 +50,9 @@ import {
 import {
     ImportPermissibleValueModalComponent
 } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
+import {
+    CopyDataElementModalComponent
+} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -96,6 +99,7 @@ const appRoutes: Routes = [
         ConceptsComponent,
         AddConceptModalComponent,
         DataElementViewComponent,
+        CopyDataElementModalComponent,
         DerivationRulesComponent,
         DatasetsComponent,
         DatasetsContentModalComponent,
