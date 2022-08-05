@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Linked Forms</h1>
+<div mat-dialog-content>
+    <p>{{getFormText()}}</p>
+
+    <a *ngIf="forms && forms.length > 0" class="button" href="/form/search?q={{elt.tinyId}}" target="_blank">
+        <mat-icon>visibility</mat-icon>
+        See all linked forms
+    </a>
+
+    <div *ngIf="forms && forms.length > 0">
+        <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
+                          [elts]="forms" (select)="dialogRef.close()"></cde-summary-list>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button id="closeLinkedFormsModalBtn" class="button" [mat-dialog-close]>Close</button>
+</div>

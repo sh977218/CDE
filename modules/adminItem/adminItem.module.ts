@@ -51,6 +51,7 @@ import {
 import {
     AddReferenceDocumentModalComponent
 } from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
+import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 
 @NgModule({
     imports: [
@@ -92,6 +93,7 @@ import {
         IdentifiersComponent,
         AddIdentifierModalComponent,
         LinkedFormsComponent,
+        LinkedFormModalComponent,
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,

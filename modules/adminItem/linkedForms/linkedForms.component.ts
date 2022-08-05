@@ -1,11 +1,7 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { ElasticService } from '_app/elastic.service';
-import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeFormElastic } from 'shared/form/form.model';
-import { ElasticQueryResponseForm } from 'shared/models.model';
-import { SearchSettings } from 'shared/search/search.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
+import { Elt } from 'shared/models.model';
 
 @Component({
     selector: 'cde-linked-forms',
@@ -13,39 +9,14 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 
 export class LinkedFormsComponent {
-    @Input() elt!: DataElement;
-    @ViewChild('linkedFormsContent', {static: true}) linkedFormsContent!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
-    forms!: CdeFormElastic[];
-    formSummaryContentComponent = FormSummaryListContentComponent;
+    @Input() elt!: Elt;
 
-    constructor(private elasticService: ElasticService,
-                public dialog: MatDialog) {}
-
-    getFormText() {
-        if (!this.forms || this.forms.length === 0) {
-            return 'There are no forms that use this ' + this.elt.elementType;
-        } else if (this.forms.length === 1) {
-            return 'There is 1 form that uses this ' + this.elt.elementType;
-        } else if (this.forms.length >= 20) {
-            return 'There are more than 20 forms that use this ' + this.elt.elementType;
-        } else {
-            return 'There are ' + this.forms.length + ' forms that use this ' + this.elt.elementType;
-        }
+    constructor(public dialog: MatDialog) {
     }
+
 
     openLinkedFormsModal() {
-        const searchSettings = new SearchSettings();
-        searchSettings.q = '"' + this.elt.tinyId + '"';
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form',
-            (err?: string, result?: ElasticQueryResponseForm) => {
-            if (err || !result) { return; }
-            this.forms = result.forms.filter(f => f.tinyId !== this.elt.tinyId);
-            this.dialogRef = this.dialog.open(this.linkedFormsContent, {width: '800px'});
-        });
-    }
-
-    viewLinkedForms() {
-        window.open('/form/search?q=' + this.elt.tinyId, '_blank');
+        const data = this.elt;
+        this.dialog.open(LinkedFormModalComponent, {width: '800px', data});
     }
 }
