@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Import Permissible Values from CDE</h1>
+<div mat-dialog-content>
+    <cde-cde-search addMode="true" [embedded]="true" (add)="dialogRef.close($event)"
+                    [searchSettingsInput]="searchSettings">
+    </cde-cde-search>
+</div>
+<div mat-dialog-actions>
+    <button class="button" [mat-dialog-close]>Close</button>
+</div>

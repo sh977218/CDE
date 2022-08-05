@@ -1,16 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Dictionary } from 'async';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { Dictionary } from 'async';
-import { EMPTY, Subject } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList, ValueDomain } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
 import { mapSeries, withRetry } from 'shared/promise';
-import { SearchSettings } from 'shared/search/search.model';
+import {
+    NewPermissibleValueModalComponent
+} from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
+import {
+    ImportPermissibleValueModalComponent
+} from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
 
 interface Source {
     source: string;
@@ -20,10 +25,6 @@ interface Source {
     disabled: boolean;
 }
 
-interface UmlsTerm {
-    name?: string;
-    ui?: string;
-}
 
 interface VsacValue {
     code: string;
@@ -68,22 +69,7 @@ export class PermissibleValueComponent {
             this.elt.dataElementConcept.conceptualDomain = {vsac: {}};
         }
 
-        this.searchTerms.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => term
-                ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
-                    catchError(() => EMPTY)
-                )
-                : EMPTY
-            )
-        ).subscribe((res: any) => {
-            if (res?.result?.results) {
-                this.umlsTerms = res.result.results;
-            } else {
-                this.umlsTerms = [];
-            }
-        });
+
     }
 
     get elt(): DataElement {
@@ -92,31 +78,16 @@ export class PermissibleValueComponent {
 
     _elt!: DataElement;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newPermissibleValueContent', {static: true}) public newPermissibleValueContent!: TemplateRef<any>;
-    @ViewChild('importPermissibleValueContent', {static: true}) public importPermissibleValueContent!: TemplateRef<any>;
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     editMode = false;
     umlsValidationResults: any;
     umlsValidationLoading: boolean = false;
-    newPermissibleValue: any = {};
     oid$: Subject<string> = new Subject<string>();
-    searchSettings: SearchSettings = {
-        classification: [],
-        classificationAlt: [],
-        datatypes: ['Value List'],
-        nihEndorsed: false,
-        excludeOrgs: [],
-        excludeAllOrgs: false,
-        regStatuses: [],
-        resultPerPage: 20
-    };
-    private searchTerms = new Subject<string>();
     readonly SOURCES: Record<PermissibleValueCodeSystem, Source> = SOURCES;
     readonly SOURCES_KEYS = permissibleValueCodeSystems;
     vsacValueSet: VsacValue[] = [];
-    umlsTerms: UmlsTerm[] = [];
 
     constructor(public http: HttpClient,
                 private dialog: MatDialog,
@@ -138,15 +109,6 @@ export class PermissibleValueComponent {
     addAllVsac() {
         this.removeSourceSelection();
         this.vsacValueSet.forEach(v => this.addVsacValue(v, false));
-        this.eltChange.emit();
-    }
-
-    addNewPermissibleValue() {
-        this.removeSourceSelection();
-        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push(this.newPermissibleValue);
-        this.dialogRef.close();
-        this.runManualValidation();
-        this.initSrcOptions();
         this.eltChange.emit();
     }
 
@@ -226,28 +188,6 @@ export class PermissibleValueComponent {
             pv.codeSystemName === vs.codeSystemName &&
             pv.valueMeaningName === vs.displayName
         ).length > 0;
-    }
-
-    importPv(de: DataElement) {
-        const vd: ValueDomain = de.valueDomain;
-        if (vd && vd.datatype) {
-            if (vd.datatype === 'Value List') {
-                if (vd.permissibleValues.length > 0) {
-                    (this.elt.valueDomain as ValueDomainValueList).permissibleValues
-                        = (this.elt.valueDomain as ValueDomainValueList).permissibleValues.concat(vd.permissibleValues);
-                    this.runManualValidation();
-                    this.initSrcOptions();
-                    this.eltChange.emit();
-                    this.dialogRef.close();
-                } else {
-                    this.alert.addAlert('danger', 'No PV found in this element.');
-                }
-            } else {
-                this.alert.addAlert('danger', 'Only Value Lists can be imported.');
-            }
-        } else {
-            this.alert.addAlert('danger', 'No Datatype found.');
-        }
     }
 
     loadValueSet() {
@@ -369,20 +309,6 @@ export class PermissibleValueComponent {
         });
     }
 
-    lookupUmls() {
-        this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
-    }
-
-    openImportPermissibleValueModal() {
-        this.dialogRef = this.dialog.open(this.importPermissibleValueContent, {width: '1000px'});
-    }
-
-    openNewPermissibleValueModal() {
-        this.dialogRef = this.dialog.open(this.newPermissibleValueContent, {width: '800px'});
-        this.dialogRef.afterClosed().subscribe(() => this.newPermissibleValue = {}, () => {
-        });
-    }
-
     removeAllPermissibleValues() {
         (this.elt.valueDomain as ValueDomainValueList).permissibleValues = [];
         this.runManualValidation();
@@ -415,17 +341,6 @@ export class PermissibleValueComponent {
     runManualValidation() {
         this.validatePvWithVsac();
         this.validateVsacWithPv();
-        // this.checkPvUnicity();
-    }
-
-
-    selectFromUmls(term: UmlsTerm) {
-        this.newPermissibleValue.valueMeaningName = term.name;
-        this.newPermissibleValue.valueMeaningCode = term.ui;
-        this.newPermissibleValue.codeSystemName = 'UMLS';
-        if (!this.newPermissibleValue.permissibleValue) {
-            this.newPermissibleValue.permissibleValue = term.name;
-        }
     }
 
     validatePvWithVsac() {
@@ -465,5 +380,54 @@ export class PermissibleValueComponent {
             pvs,
             {responseType: 'text'}).toPromise();
         this.umlsValidationLoading = false;
+    }
+
+    openNewPermissibleValueModal() {
+        this.dialog.open(NewPermissibleValueModalComponent, {width: '800px'})
+            .afterClosed()
+            .subscribe(newPermissibleValue => {
+                if (newPermissibleValue) {
+                    this.addNewPermissibleValue(newPermissibleValue);
+                }
+            });
+    }
+
+    addNewPermissibleValue(newPermissibleValue) {
+        this.removeSourceSelection();
+        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push(newPermissibleValue);
+        this.runManualValidation();
+        this.initSrcOptions();
+        this.eltChange.emit();
+    }
+
+    openImportPermissibleValueModal() {
+        this.dialog.open(ImportPermissibleValueModalComponent, {width: '1000px'})
+            .afterClosed()
+            .subscribe(de => {
+                if (de) {
+                    this.importPv(de);
+                }
+            })
+    }
+
+    importPv(de: DataElement) {
+        const vd: ValueDomain = de.valueDomain;
+        if (vd && vd.datatype) {
+            if (vd.datatype === 'Value List') {
+                if (vd.permissibleValues.length > 0) {
+                    (this.elt.valueDomain as ValueDomainValueList).permissibleValues
+                        = (this.elt.valueDomain as ValueDomainValueList).permissibleValues.concat(vd.permissibleValues);
+                    this.runManualValidation();
+                    this.initSrcOptions();
+                    this.eltChange.emit();
+                } else {
+                    this.alert.addAlert('danger', 'No PV found in this element.');
+                }
+            } else {
+                this.alert.addAlert('danger', 'Only Value Lists can be imported.');
+            }
+        } else {
+            this.alert.addAlert('danger', 'No Datatype found.');
+        }
     }
 }

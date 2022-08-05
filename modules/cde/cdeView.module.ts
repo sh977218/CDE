@@ -44,6 +44,12 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
 import { DatasetsContentModalComponent } from 'cde/datasets/datasets-content-modal/datasets-content-modal.component';
 import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
+import {
+    NewPermissibleValueModalComponent
+} from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
+import {
+    ImportPermissibleValueModalComponent
+} from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
 
 const appRoutes: Routes = [
     {path: '', component: DataElementViewComponent},
@@ -97,6 +103,8 @@ const appRoutes: Routes = [
         MoreLikeThisComponent,
         MoreLikeThisModalComponent,
         PermissibleValueComponent,
+        NewPermissibleValueModalComponent,
+        ImportPermissibleValueModalComponent,
         ValidRulesComponent,
     ],
     exports: [
