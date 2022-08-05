@@ -19,12 +19,15 @@ import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 import { CreateBoardModule } from 'board/create-board.module';
 import { BoardOverviewModule } from 'board/board-overview.module';
+import {
+    CreateFormFromBoardModalComponent
+} from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        
+
         RouterModule,
         MatButtonToggleModule,
         MatCardModule,
@@ -43,6 +46,7 @@ import { BoardOverviewModule } from 'board/board-overview.module';
     ],
     declarations: [
         CreateFormFromBoardComponent,
+        CreateFormFromBoardModalComponent,
         ListSortComponent,
         PinBoardSnackbarComponent,
         UnpinBoardComponent,

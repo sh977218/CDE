@@ -1,11 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AlertService } from 'alert/alert.service';
-import { convertCdeToQuestion } from 'nativeRender/form.service';
-import { CdeForm, FormSection } from 'shared/form/form.model';
-import { Board, BoardDe, Definition, Designation } from 'shared/models.model';
-import { DataElement } from 'shared/de/dataElement.model';
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Board } from 'shared/models.model';
+import {
+    CreateFormFromBoardModalComponent
+} from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
 
 @Component({
     selector: 'cde-create-form-from-board',
@@ -13,36 +11,13 @@ import { DataElement } from 'shared/de/dataElement.model';
 })
 export class CreateFormFromBoardComponent {
     @Input() board!: Board;
-    @ViewChild('createFormContent', {static: true}) createFormContent!: TemplateRef<any>;
-    dialogRef?: MatDialogRef<TemplateRef<any>>;
-    elt!: CdeForm;
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public dialog: MatDialog) {}
+    constructor(public dialog: MatDialog) {
+    }
 
     openCreateFormModal() {
-        this.http.get<BoardDe>('/server/board/' + this.board.id + '/0/500').subscribe(
-            res => {
-                if (res.elts.length > 0) {
-                    this.elt = new CdeForm();
-                    this.elt.classification = [];
-                    this.elt.designations.push(new Designation(this.board.name));
-                    this.elt.definitions.push(new Definition());
-                    this.elt.formElements.push(new FormSection());
-                    res.elts.forEach((p: DataElement) => {
-                        convertCdeToQuestion(p, q => {
-                            if (q) {
-                                this.elt.formElements[0].formElements.push(q);
-                            }
-                        });
-                    });
-                    this.dialogRef = this.dialog.open(this.createFormContent, {width: '1200px'});
-                } else {
-                    this.alert.addAlert('danger', 'No elements in board.');
-                }
-            }, err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
-        );
+        const data = this.board;
+        this.dialog.open(CreateFormFromBoardModalComponent, {width: '1200px', data})
     }
 
 }
