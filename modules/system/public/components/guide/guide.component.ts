@@ -13,7 +13,7 @@ import { Article } from 'shared/article/article.model';
     encapsulation: ViewEncapsulation.None,
     providers: [TocService]
 })
-export class GuideComponent implements AfterViewChecked, AfterViewInit {
+export class GuideComponent implements AfterViewInit {
     article?: Article;
 
     constructor(private http: HttpClient,
@@ -25,9 +25,6 @@ export class GuideComponent implements AfterViewChecked, AfterViewInit {
     ) {
         this.http.get<Article>(`/server/article/guides`)
             .subscribe(a => this.article = a);
-    }
-
-    ngAfterViewChecked() {
     }
 
     ngAfterViewInit(): void {

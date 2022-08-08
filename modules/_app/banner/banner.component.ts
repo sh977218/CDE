@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, forwardRef, Inject, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, forwardRef, Inject, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -7,27 +7,10 @@ import { MatDialog } from '@angular/material/dialog';
     styleUrls: ['./banner.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class BannerComponent implements AfterViewInit {
+export class BannerComponent {
     @ViewChild('covidBannerContent', {static: true}) copyDataElementContent!: TemplateRef<any>;
 
     constructor(@Inject(forwardRef(() => MatDialog)) public dialog: MatDialog) {
-    }
-
-/*
-    openCovidBannerDialog(): void {
-        this.dialog.open(this.copyDataElementContent, {
-            panelClass: 'covid-banner-dialog-container',
-            width: '1000px',
-        });
-    }
-*/
-
-    ngAfterViewInit(): void {
-/*
-        if (window.showCovidBanner) {
-            this.openCovidBannerDialog();
-        }
-*/
     }
 
 }
