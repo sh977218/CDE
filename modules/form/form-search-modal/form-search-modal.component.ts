@@ -3,7 +3,6 @@ import { CdeForm } from 'shared/form/form.model';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-    selector: 'cde-form-search-modal',
     templateUrl: './form-search-modal.component.html',
 })
 export class FormSearchModalComponent {

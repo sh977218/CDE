@@ -5,10 +5,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { DataElement } from 'shared/de/dataElement.model';
 import { DeCompletionService } from 'cde/completion/deCompletion.service';
-import { Definition, Designation } from 'shared/models.model';
+import { Designation } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-question-search-modal',
     templateUrl: './question-search-modal.component.html',
     providers: [DeCompletionService]
 })

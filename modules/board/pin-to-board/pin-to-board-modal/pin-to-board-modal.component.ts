@@ -5,7 +5,6 @@ import { UserService } from '_app/user.service';
 import { ModuleItem } from 'shared/models.model';
 
 @Component({
-    selector: 'pin-to-board-modal',
     templateUrl: './pin-to-board-modal.component.html',
 })
 export class PinToBoardModalComponent {

@@ -3,7 +3,6 @@ import { CdeId } from 'shared/models.model';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-    selector: 'cde-add-identifier-modal',
     templateUrl: './add-identifier-modal.component.html'
 })
 export class AddIdentifierModalComponent {

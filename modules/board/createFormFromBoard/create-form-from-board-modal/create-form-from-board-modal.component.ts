@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    selector: 'cde-create-form-from-board-modal',
     templateUrl: './create-form-from-board-modal.component.html'
 })
 export class CreateFormFromBoardModalComponent {

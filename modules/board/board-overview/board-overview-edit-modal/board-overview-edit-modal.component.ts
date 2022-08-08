@@ -3,7 +3,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 @Component({
-    selector: 'cde-board-overview-edit-modal',
     templateUrl: './board-overview-edit-modal.component.html',
 })
 export class BoardOverviewEditModalComponent {

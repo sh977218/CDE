@@ -6,7 +6,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { isEqual } from 'lodash';
 
 @Component({
-    selector: 'cde-form-update-form-version-modal',
     templateUrl: './form-update-form-version-modal.component.html'
 })
 export class FormUpdateFormVersionModalComponent {

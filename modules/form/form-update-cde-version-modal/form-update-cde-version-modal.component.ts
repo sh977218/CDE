@@ -7,7 +7,6 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { isEqual, toString } from 'lodash';
 
 @Component({
-    selector: 'cde-form-update-cde-version-modal',
     templateUrl: './form-update-cde-version-modal.component.html'
 })
 export class FormUpdateCdeVersionModalComponent {

@@ -18,7 +18,6 @@ type NewQuestion = FormQuestionDraft['question'] & {
 }
 
 @Component({
-    selector: 'cde-save-modal',
     templateUrl: './saveModal.component.html'
 })
 export class SaveModalComponent {

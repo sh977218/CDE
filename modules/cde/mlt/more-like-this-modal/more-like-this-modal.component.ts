@@ -7,7 +7,6 @@ import { AlertService } from 'alert/alert.service';
 type MoreLikeThisDataElement = DataElement & { isCollapsed: boolean };
 
 @Component({
-    selector: 'cde-more-like-this-modal',
     templateUrl: './more-like-this-modal.component.html'
 })
 export class MoreLikeThisModalComponent {

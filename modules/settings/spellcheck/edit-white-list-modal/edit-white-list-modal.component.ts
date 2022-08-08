@@ -6,7 +6,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { cloneDeep } from 'lodash';
 
 @Component({
-    selector: 'cde-edit-white-list-modal',
     templateUrl: './edit-white-list-modal.component.html',
     styles: [`
       .example-chip-list {

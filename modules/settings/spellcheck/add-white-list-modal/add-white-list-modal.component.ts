@@ -6,7 +6,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { cloneDeep } from 'lodash';
 
 @Component({
-    selector: 'cde-add-white-list-modal',
     templateUrl: './add-white-list-modal.component.html',
     styles: [`
       .example-chip-list {

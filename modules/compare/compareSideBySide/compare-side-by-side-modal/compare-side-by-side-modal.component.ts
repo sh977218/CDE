@@ -45,7 +45,6 @@ interface Data {
 }
 
 @Component({
-    selector: 'cde-compare-side-by-side-modal',
     templateUrl: './compare-side-by-side-modal.component.html',
     styles: [`
       .fullMatch {

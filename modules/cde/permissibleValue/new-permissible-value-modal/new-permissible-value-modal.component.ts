@@ -6,7 +6,6 @@ import { PermissibleValue } from 'shared/models.model';
 import { UmlsTerm } from 'cde/permissibleValue/umls-term';
 
 @Component({
-    selector: 'cde-new-permissible-value-modal',
     templateUrl: './new-permissible-value-modal.component.html',
 })
 export class NewPermissibleValueModalComponent {
