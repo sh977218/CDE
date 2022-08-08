@@ -44,14 +44,14 @@
                                routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version
                                 here</a>.
                         </div>
-                        <div *ngIf="elt.registrationState.registrationStatus=='Retired'" class="alert alert-warning"
+                        <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
                              role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is retired.
                             <a *ngIf="elt.registrationState.replacedBy" href="javascript:void(0);"
                                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
                         </div>
-                        <div *ngIf="elt.registrationState.administrativeStatus=='Retire Candidate'"
+                        <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"
                              class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is about to be retired.

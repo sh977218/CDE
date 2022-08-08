@@ -1,5 +1,5 @@
 <div *ngIf="elt.valueDomain.datatype === 'Value List'">
-    <div *ngIf="elt.valueDomain.permissibleValues.length == 0">No Permissible Values</div>
+    <div *ngIf="elt.valueDomain.permissibleValues.length === 0">No Permissible Values</div>
     <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="summaryTable cdeTable"
            summary="List of permissible values">
         <tr>
