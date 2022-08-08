@@ -14,7 +14,7 @@ import { ItemElastic } from 'shared/models.model';
 export class SummaryListComponent {
     @Input() contentComponent: any;
     @Input() elts!: ItemElastic[];
-    @Output() select = new EventEmitter<string>();
+    @Output() selectChange = new EventEmitter<string>();
 
     constructor() {}
 

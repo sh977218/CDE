@@ -23,8 +23,8 @@ import { copyDeep } from 'shared/util';
 })
 export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;
-    @Output() close = new EventEmitter<void>();
-    @Output() dismiss = new EventEmitter<void>();
+    @Output() closeOutput = new EventEmitter<void>();
+    @Output() dismissOutput = new EventEmitter<void>();
     @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
 
     constructor(private alert: AlertService,
@@ -55,8 +55,8 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     cancelCreateDataElement() {
-        if (this.dismiss.observers.length) {
-            this.dismiss.emit();
+        if (this.dismissOutput.observers.length) {
+            this.dismissOutput.emit();
         } else {
             this.router.navigate(['/']);
         }
@@ -87,7 +87,7 @@ export class CreateDataElementComponent implements OnInit {
     createDataElement() {
         this.http.post<DataElement>('/server/de', this.elt)
             .subscribe(res => {
-                this.close.emit();
+                this.closeOutput.emit();
                 this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
             }, () => this.alert.addAlert('danger', 'Unexpected error creating CDE'));
     }

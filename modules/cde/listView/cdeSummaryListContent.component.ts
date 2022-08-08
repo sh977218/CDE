@@ -11,7 +11,7 @@ import { DataElementElastic } from 'shared/de/dataElement.model';
 export class CdeSummaryListContentComponent implements SummaryComponent {
     @Input() elt!: DataElementElastic;
     @Input() eltIndex!: number;
-    @Output() select = new EventEmitter<string>();
+    @Output() selectChange = new EventEmitter<string>();
 
     defaultAttachmentsFilter = isDefault;
     module = 'cde';

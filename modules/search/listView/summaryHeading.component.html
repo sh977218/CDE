@@ -2,6 +2,6 @@
     <ng-content select=".summary-list-before"></ng-content>
     <a [routerLink]="[urlPrefix]" [queryParams]="{tinyId: elt.tinyId}"
        [innerHtml]="elt.primaryNameCopy" id="linkToElt_{{eltIndex}}"
-       (click)="select.emit(elt.tinyId)"></a>
+       (click)="selectChange.emit(elt.tinyId)"></a>
     <ng-content select=".summary-list-after"></ng-content>
 </h2>

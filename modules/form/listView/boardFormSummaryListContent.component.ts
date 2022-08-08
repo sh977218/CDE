@@ -11,7 +11,7 @@ import { isDefault } from 'shared/models.model';
 export class BoardFormSummaryListContentComponent implements SummaryComponent {
     @Input() elt!: CdeFormElastic;
     @Input() eltIndex!: number;
-    @Output() select = new EventEmitter<string>();
+    @Output() selectChange = new EventEmitter<string>();
 
     defaultAttachmentsFilter = isDefault;
     module = 'form';

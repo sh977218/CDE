@@ -1,5 +1,5 @@
 <h4 style="margin-top: 8px">
-    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView" (select)="select.emit($event)"
+    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/formView" (selectChange)="selectChange.emit($event)"
                         class="summaryHeading">
         <span class="summary-list-before">
             <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"

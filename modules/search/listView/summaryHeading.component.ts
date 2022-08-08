@@ -10,5 +10,5 @@ export class SummaryHeadingComponent {
     @Input() elt!: ItemElastic;
     @Input() eltIndex!: number;
     @Input() urlPrefix!: string;
-    @Output() select = new EventEmitter<string>();
+    @Output() selectChange = new EventEmitter<string>();
 }

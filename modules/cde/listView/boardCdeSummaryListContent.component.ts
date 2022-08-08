@@ -12,7 +12,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 export class BoardCdeSummaryListContentComponent implements SummaryComponent {
     @Input() elt!: DataElement;
     @Input() eltIndex!: number;
-    @Output() select = new EventEmitter<string>();
+    @Output() selectChange = new EventEmitter<string>();
 
     defaultAttachmentsFilter = isDefault;
     module = 'cde';

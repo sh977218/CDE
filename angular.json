@@ -289,7 +289,6 @@
       }
     }
   },
-  "defaultProject": "cde-cli",
   "cli": {
     "analytics": "aa758161-e974-4821-991b-8c05d12abb67"
   }

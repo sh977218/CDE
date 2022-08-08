@@ -9,7 +9,7 @@
 
     <div *ngIf="forms && forms.length > 0">
         <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
-                          [elts]="forms" (select)="dialogRef.close()"></cde-summary-list>
+                          [elts]="forms" (selectChange)="dialogRef.close()"></cde-summary-list>
     </div>
 </div>
 <div mat-dialog-actions>
