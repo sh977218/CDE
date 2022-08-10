@@ -170,7 +170,7 @@ definitions:
         type: "integer"
         format: "int32"
       sources:
-        $ref: "#/definitions/Source"
+        $ref: "#/definitions/Sources"
       origin:
         type: "string"
         example: "NCISTD: NCI CRF Harmonization and Standards Initiative"
@@ -397,7 +397,7 @@ definitions:
       registrationState:
         $ref: "#/definitions/RegistrationState"
       sources:
-        $ref: "#/definitions/Source"
+        $ref: "#/definitions/Sources"
       stewardOrg:
         type: "object"
         properties:
@@ -987,33 +987,35 @@ definitions:
         items:
           $ref: "#/definitions/CurationStatus"
         uniqueItems: true
-  Source:
-    type: "object"
-    properties:
-      sourceName:
-        type: "string"
-        example: "caDSR"
-      created:
-        type: "string"
-        format: "date"
-      updated:
-        type: "string"
-        format: "date"
-      registrationStatus:
-        type: "string"
-        example: "Qualified"
-      datatype:
-        type: "string"
-        example: "Number"
-      copyright:
-        type: "object"
-        properties:
-          value:
-            type: "string"
-            example: "MIT license"
-          valueFormat:
-            type: "string"
-            example: "html"
+  Sources:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        sourceName:
+          type: "string"
+          example: "caDSR"
+        created:
+          type: "string"
+          format: "date"
+        updated:
+          type: "string"
+          format: "date"
+        registrationStatus:
+          type: "string"
+          example: "Qualified"
+        datatype:
+          type: "string"
+          example: "Number"
+        copyright:
+          type: "object"
+          properties:
+            value:
+              type: "string"
+              example: "MIT license"
+            valueFormat:
+              type: "string"
+              example: "html"
   UserRef:
     type: "object"
     properties:
