@@ -34,7 +34,7 @@
                 *ngIf="userService.userOrgs?.length > 0 && elts.length > 0 && board.type === 'cde'"
                 [board]="board"></cde-create-form-from-board>
     </div>
-    <div id="border-cdes-div">
+    <div id="board-cdes-div">
         <div *ngIf="elts.length === 0">The board is empty.</div>
         <cde-list-view [board]="board" [currentPage]="currentPage" location="board" [elts]="elts"
                        [(listView)]="listViews" [module]="board.type" [totalItems]="totalItems"

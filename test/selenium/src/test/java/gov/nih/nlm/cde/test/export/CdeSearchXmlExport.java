@@ -1,7 +1,7 @@
 package gov.nih.nlm.cde.test.export;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
-import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.ZipFile;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;

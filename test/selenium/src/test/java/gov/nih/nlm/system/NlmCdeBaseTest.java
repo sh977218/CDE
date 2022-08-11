@@ -30,6 +30,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -121,11 +122,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
 
         System.out.println("baseUrl: " + baseUrl);
-//        driver.get(baseUrl);
-        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(defaultTimeout));
 
-        wait = new WebDriverWait(driver, defaultTimeout, 600);
-        shortWait = new WebDriverWait(driver, 5);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(defaultTimeout));
+        shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
         System.out.println("downloadFolder: " + downloadFolder);
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
@@ -1108,13 +1108,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
-    protected void deleteClassification(String classificationId) {
-        clickElement(By.xpath("//*[@id='" + classificationId + "-unclassifyBtn']"));
-        clickElement(By.id("confirmDeleteClassificationBtn"));
-        modalGone();
-        closeAlert();
-    }
-
     protected void inlineEdit(String path, String string) {
         clickElement(By.xpath(path + "//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath(path + "//input")).clear();
@@ -1949,9 +1942,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 System.out.println("connect.sid: " + connectSid.toString());
             }
         }
-        Cookie myCookie = new Cookie.Builder("connect.sid", connectSid).build();
-        return myCookie;
-
+        return new Cookie.Builder("connect.sid", connectSid).build();
     }
 
     protected void nativeSelect(By bySelect, String optionText) {
