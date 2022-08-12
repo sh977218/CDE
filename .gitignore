@@ -18,7 +18,7 @@ modules/system/public/html/version.html
 prodDump/
 temp/
 ssl/
-.angular/
+
 ## Ingest
 
 ## Local Files
@@ -76,6 +76,7 @@ test-console.out
 test-console.o
 
 ## WebStorm - TODO: temporary until settings are moved here
+.angular
 .idea
 
 # OS generated files #

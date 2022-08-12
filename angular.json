@@ -169,6 +169,15 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "modules/**/*.ts",
+              "modules/**/*.html"
+            ]
+          }
         }
       }
     },

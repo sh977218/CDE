@@ -15,8 +15,8 @@
     "buildIngester": "npx cross-env bash ./_buildIngester.sh",
     "coverage": "npx cross-env node ./node_modules/nyc/bin/nyc.js npm start",
     "dev": "npm run devApp",
-    "devApp": "npx ng serve cde-cli ",
-    "devAppNr": "npx ng serve cde-cli  --no-live-reload",
+    "devApp": "npx ng serve cde-cli",
+    "devAppNr": "npx ng serve cde-cli --no-live-reload",
     "devNative": "npx ng serve nativeRender",
     "devNativeNr": "npx ng serve nativeRender --no-live-reload",
     "gulp": "npm run buildNode && npm run gulpJs",
@@ -29,7 +29,8 @@
     "startTs": "npx ts-node -P tsconfigNode.json server/app.ts",
     "testServer": "node ./test/testLoginServer.js",
     "ts": "npx ts-node -P tsconfigNode.json",
-    "buildNodeIngester": "cross-env bash ./buildNodeIngester.sh"
+    "buildNodeIngester": "cross-env bash ./buildNodeIngester.sh",
+    "lint": "npx ng lint cde-cli"
   },
   "engines": {
     "node": "14.x",
@@ -145,6 +146,11 @@
     "yesno": "^0.3.1"
   },
   "devDependencies": {
+    "@angular-eslint/builder": "12.7.0",
+    "@angular-eslint/eslint-plugin": "12.7.0",
+    "@angular-eslint/eslint-plugin-template": "12.7.0",
+    "@angular-eslint/schematics": "12.7.0",
+    "@angular-eslint/template-parser": "12.7.0",
     "@angular/animations": "^12.2.2",
     "@angular/cdk": "^12.2.2",
     "@angular/cli": "^12.2.14",
@@ -209,6 +215,8 @@
     "@types/shortid": "0.0.29",
     "@types/useragent": "^2.3.0",
     "@types/xml2js": "^0.4.8",
+    "@typescript-eslint/eslint-plugin": "4.28.2",
+    "@typescript-eslint/parser": "4.28.2",
     "adm-zip": "^0.4.16",
     "angular-router-loader": "^0.8.5",
     "angular2-hotkeys": "^2.2.0",
@@ -230,6 +238,7 @@
     "diff-match-patch": "^1.0.5",
     "entities": "1.1.1",
     "es6-promise": "^4.2.8",
+    "eslint": "^7.26.0",
     "expose-loader": "^3.0.0",
     "extract-loader": "^5.1.0",
     "file-list-plugin": "^2.0.5",
