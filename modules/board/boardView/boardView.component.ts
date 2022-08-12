@@ -11,6 +11,7 @@ import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system
 import { saveAs } from 'file-saver';
 import { handleDropdown } from 'non-core/dropdown';
 import { Board, ClassificationClassified, ItemElastic, ListTypes } from 'shared/models.model';
+import { BoardListService } from 'board/listView/boardList.service';
 
 export interface BoardQuery {
     board: Board;
@@ -40,7 +41,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
                 private title: Title,
                 private alert: AlertService,
                 public esService: ElasticService,
-                public userService: UserService) {
+                public userService: UserService,
+                private boardListService: BoardListService) {
         if (!this.dropdownUnregister) {
             [this.dropdownHandler, this.dropdownUnregister] = handleDropdown(this.dropdownMenus);
         }
@@ -50,6 +52,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         this.boardId = this.route.snapshot.params.boardId;
         this.reload();
         this.url = location.href;
+
     }
 
     ngOnDestroy() {
@@ -121,6 +124,9 @@ export class BoardViewComponent implements OnInit, OnDestroy {
                 this.totalItems = response.totalItems;
                 this.title.setTitle('Board: ' + this.board.name);
                 this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
+                this.boardListService.board = this.board;
+                this.boardListService.currentPage = this.currentPage;
+                this.boardListService.totalItems = this.totalItems;
             }
         }, err => this.alert.httpErrorMessageAlert(err, 'Board'))
     }

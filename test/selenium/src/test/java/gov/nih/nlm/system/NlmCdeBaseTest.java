@@ -1996,6 +1996,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpath));
     }
 
+    protected void reorderBySectionAndHeader(String section, String direction, String text) {
+        String capDirection = direction.substring(0, 1).toUpperCase() + direction.substring(1);
+        String xpath = "//*[@id='" + section + "-div']//cde-summary-heading[//a[contains(text(),'" + text + "')]]//*[contains(@class,'move" + capDirection + "')]";
+        clickElement(By.xpath(xpath));
+    }
+
     protected String xpathGeneralDetailsProperty() {
         return "//dl[@id='general-details']/dt";
     }

@@ -1,27 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, DoCheck, Input, ViewChild, OnChanges, Output, EventEmitter, TemplateRef, } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 
 import { DerivationRule } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-derivation-rules',
     templateUrl: './derivationRules.component.html'
 })
-export class DerivationRulesComponent implements DoCheck, OnChanges {
+export class DerivationRulesComponent implements OnChanges {
     @Input() canEdit!: boolean;
     @Input() elt!: DataElement & { derivationOutputs: { ruleName: string, cde: DataElement }[] };
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newScoreContent', {static: true}) newScoreContent!: TemplateRef<any>;
-    invalidCdeMessage = '';
-    modalRef!: MatDialogRef<TemplateRef<any>>;
-    newDerivationRule: DerivationRule = {
-        ruleType: 'score',
-        formula: 'sumAll',
-        inputs: [],
-        name: ''
-    };
+
     previousCdeId!: string;
 
     constructor(
@@ -30,29 +22,15 @@ export class DerivationRulesComponent implements DoCheck, OnChanges {
     ) {
     }
 
-    ngDoCheck() {
+    ngOnChanges() {
         if (this.elt._id !== this.previousCdeId) {
             this.previousCdeId = this.elt._id;
             this.updateRules();
             this.findDerivationOutputs();
         }
-    }
-
-    ngOnChanges() {
         this.previousCdeId = this.elt._id;
         this.updateRules();
         this.findDerivationOutputs();
-    }
-
-    canAddScore() {
-        if (!this.canEdit) {
-            return false;
-        }
-        if (this.elt.derivationRules) {
-            return this.elt.derivationRules.filter(derRule => derRule.ruleType === 'score').length < 1;
-        } else {
-            return true;
-        }
     }
 
     findDerivationOutputs() {

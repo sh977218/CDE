@@ -10,8 +10,8 @@
                 <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <div #dropdownMenu class="dropdown-menu" aria-labelledby="export">
-                <a id="csvExport" class="dropdown-item" href="javascript:void(0);" (click)="exportBoard()">
-                    NIH/CDE Schema CSV file</a>
+                <button id="csvExport" class="dropdown-item fake-link" (click)="exportBoard()">
+                    NIH/CDE Schema CSV file</button>
                 <a id='jsonExport' class="dropdown-item" href="/server/board/{{board.id}}/0/500/?type=json"
                    target="_blank">
                     NIH/CDE Schema JSON file</a>
