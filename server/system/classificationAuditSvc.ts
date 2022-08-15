@@ -1,7 +1,7 @@
 import { dbPlugins } from 'server';
 import { classificationAuditPagination, saveClassificationAudit } from 'server/system/classificationAuditDb';
 import { ClassificationAudit } from 'shared/audit/classificationAudit';
-import { getModule, getName } from 'shared/elt';
+import { getModule, getName } from 'shared/elt/elt';
 import { Item } from 'shared/models.model';
 
 export async function getClassificationAuditLog(params: {limit: number, skip: number}) {

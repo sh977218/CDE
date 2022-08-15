@@ -8,6 +8,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
@@ -132,7 +134,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
-        driver.manage().window().maximize();
+        driver.manage().window().setSize(new Dimension(1024,612)); // CI size
         ngdriver = new NgWebDriver(js);
 
     }
@@ -604,6 +606,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.id("addToBoard"));
     }
 
+    public void moveMouseToCoordinate(Integer x, Integer y) {
+        PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
+        Sequence actions = new Sequence(mouse, 0)
+            .addAction(mouse.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), x, y));
+        ((RemoteWebDriver) driver).perform(Collections.singletonList(actions));
+    }
+
     protected void openCdeInList(String name) {
         openEltInList(name, "cde");
     }
@@ -760,12 +769,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             hangon(.5);
             if (!e.getMessage().contains("Other element would receive the click")) {
                 scrollDownBy(500);
-            } else if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0) {
-                clickElement(By.id("username_link"));
-            } else if (driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0) {
-                clickElement(By.id("helpLink"));
-            } else if (driver.findElements(By.xpath("//button[normalize-space()='Form']")).size() > 0) {
-                clickElement(By.id("createEltLink"));
+            } else if (driver.findElements(By.xpath("//button[normalize-space()='Log Out']")).size() > 0
+                    || driver.findElements(By.xpath("//button[normalize-space()='Guides']")).size() > 0
+                    || driver.findElements(By.xpath("//button[normalize-space()='Form']")).size() > 0) {
+                // clear navigation hover menu
+                moveMouseToCoordinate(0, 0);
             }
             findElement(by).click();
         } catch (WebDriverException e) {
@@ -1016,6 +1024,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     public void scrollToTop() {
+        scrollTo(0);
+    }
+
+    public void scrollToTopContent() {
         String jsScroll = "document.getElementById('scrollRoot')?.scrollTo(0,0);";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }
@@ -1030,6 +1042,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void scrollDownBy(Integer y) {
+        String jsScroll = "scrollBy(0," + Integer.toString(y) + ");";
+        ((JavascriptExecutor) driver).executeScript(jsScroll, "");
+    }
+
+    protected void scrollDownByContent(Integer y) {
         String jsScroll = "document.getElementById('scrollRoot')?.scrollBy(0," + Integer.toString(y) + ");";
         ((JavascriptExecutor) driver).executeScript(jsScroll, "");
     }

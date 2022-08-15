@@ -5,11 +5,15 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { areDerivationRulesSatisfied, formCdes, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
+import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
+import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 import { FormViewService } from 'form/formView/formView.service';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
 import { UcumService } from 'form/ucum.service';
@@ -23,17 +27,14 @@ import { assertUnreachable, Cb, Cb1, Comment, Elt } from 'shared/models.model';
 import {
     DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime
 } from 'shared/de/dataElement.model';
+import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import {
     CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCdeValueList
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
-import { deepCopyElt, filterClassificationPerUser, noop } from 'shared/util';
-import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
-import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
-import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
-import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
+import { noop } from 'shared/util';
 
 export class LocatableError {
     id?: string;
@@ -59,7 +60,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
     currentTab = 'preview_tab';
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     draftSaving?: Promise<void>;
-    eltCopy?: CdeForm;
     exportToTab: boolean = false;
     formInput!: Dictionary<string>;
     hasComments = false;
@@ -249,7 +249,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 768;
+        this.isMobile = window.innerWidth < 992; // size lg
     }
 
     openCopyElementModal(elt: CdeFormDraft) {

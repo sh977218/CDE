@@ -4,11 +4,15 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TREE_ACTIONS, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
+import { ITreeOptions } from '@circlon/angular-tree-component/lib/defs/api';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
+import { convertFormToSection } from 'core/form/form';
+import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
 import { copySectionAnimation } from 'form/formDescription/copySectionAnimation';
+import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
 import { LocatableError } from 'form/formView/formView.component';
 import { isEmpty } from 'lodash';
 import { convertCdeToQuestion } from 'nativeRender/form.service';
@@ -17,9 +21,6 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { addFormIds, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormOrElement, FormSection } from 'shared/form/form.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
-import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
-import { convertFormToSection } from 'core/form/form';
-import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
 
 @Component({
     selector: 'cde-form-description',
@@ -28,16 +29,18 @@ import { QuestionSearchModalComponent } from 'form/question-search-modal/questio
     styleUrls: ['./formDescription.component.scss'],
 })
 export class FormDescriptionComponent implements OnInit {
-    elt: any;
     @ViewChild(TreeComponent) tree!: TreeComponent;
-    dragActive = false;
-    formElementEditing: any = {};
-    isMobile = false;
-    isModalOpen = false;
-    treeOptions = {
+    dragActive: boolean = false;
+    elt: CdeForm;
+    formElementEditing: {formElement?: FormElement, formElements?: FormElement[], index?: number} = {};
+    isMobile: boolean = false;
+    isModalOpen: boolean = false;
+    missingCdes: string[] = [];
+    topSpacing: number;
+    treeOptions: ITreeOptions = {
         allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element)
             || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
-        allowDrop: (element: any, {parent, index}: any) => {
+        allowDrop: (element, {parent, index}) => {
             return element !== parent && parent.data.elementType !== 'question' && (!element
                 || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
                 || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
@@ -86,10 +89,8 @@ export class FormDescriptionComponent implements OnInit {
         displayField: 'label',
         isExpandedField: 'expanded'
     };
-    updateDataCredit = 0;
-    missingCdes: string[] = [];
+    updateDataCredit: number = 0;
     validationErrors: LocatableError[] = [];
-    topSpacing: number = 132;
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
@@ -105,14 +106,6 @@ export class FormDescriptionComponent implements OnInit {
         this.missingCdes = areDerivationRulesSatisfied(this.elt);
         CdeForm.validate(this.elt);
         this.onResize();
-        this.topSpacing = this.isMobile ? 110 : 132;
-        window.document.getElementById('scrollRoot')?.addEventListener('scroll', (e) => {
-            if (((e.srcElement as HTMLInputElement).scrollTop > 100)) {
-                this.topSpacing = this.isMobile ? 0 : 22;
-            } else {
-                this.topSpacing = this.isMobile ? 110 : 132;
-            }
-        })
     }
 
     ngOnInit(): void {
@@ -132,11 +125,6 @@ export class FormDescriptionComponent implements OnInit {
             this.scrollToDescriptionId(fragment);
         }
 
-    }
-
-
-    scrollToDescriptionId(id: string) {
-        setTimeout(scrollTo, 0, id);
     }
 
     canEdit() {
@@ -162,6 +150,16 @@ export class FormDescriptionComponent implements OnInit {
 
     hasCopiedSection() {
         return this.localStorageService.getItem('sectionCopied');
+    }
+
+    navHeight() {
+        return this.isMobile ? 110 : 132;
+    }
+
+    @HostListener('window:resize')
+    onResize() {
+        this.isMobile = window.innerWidth < 768;
+        this.scrollToolbar();
     }
 
     openFormSearch() {
@@ -204,9 +202,31 @@ export class FormDescriptionComponent implements OnInit {
             .subscribe(res => sub.unsubscribe());
     }
 
-    @HostListener('window:resize', [])
-    onResize() {
-        this.isMobile = window.innerWidth < 768;
+    saveEdit() {
+        this.http.put('/server/form/draft/' + this.elt.tinyId, this.elt)
+            .subscribe((elt: any) => {
+                this.missingCdes = areDerivationRulesSatisfied(this.elt);
+                CdeForm.validate(this.elt);
+                this.alert.addAlert('success', 'Saved');
+                this.elt.__v = elt.__v;
+            }, error => {
+                this.alert.httpErrorMessageAlert(error);
+                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.')
+            });
+    }
+
+    @HostListener('window:scroll')
+    scrollEvent() {
+        this.scrollToolbar();
+    }
+
+    scrollToolbar() {
+        const nav = this.navHeight();
+        this.topSpacing = (window.pageYOffset > nav ? 0 : (nav - window.pageYOffset));
+    }
+
+    scrollToDescriptionId(id: string) {
+        setTimeout(scrollTo, 0, id);
     }
 
     setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
@@ -244,19 +264,6 @@ export class FormDescriptionComponent implements OnInit {
         this.tree.treeModel.update();
         // @TODO: if node passed in, expand all node only, else no expand
         this.tree.treeModel.expandAll();
-    }
-
-    saveEdit() {
-        this.http.put('/server/form/draft/' + this.elt.tinyId, this.elt)
-            .subscribe((elt: any) => {
-                this.missingCdes = areDerivationRulesSatisfied(this.elt);
-                CdeForm.validate(this.elt);
-                this.alert.addAlert('success', 'Saved');
-                this.elt.__v = elt.__v;
-            }, error => {
-                this.alert.httpErrorMessageAlert(error);
-                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.')
-            });
     }
 
     static isSubForm(node: TreeNode): boolean {

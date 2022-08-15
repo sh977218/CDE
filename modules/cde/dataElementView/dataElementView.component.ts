@@ -7,25 +7,26 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
+import {
+    CopyDataElementModalComponent
+} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
-import { Cb1, Comment, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
+import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
+import { Cb1, Comment, Elt } from 'shared/models.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
-import { copyDeep, deepCopyElt, filterClassificationPerUser, noop } from 'shared/util';
+import { noop } from 'shared/util';
 import { WINDOW } from 'window.service';
-import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
-import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
-import {
-    CopyDataElementModalComponent
-} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 
 @Component({
     selector: 'cde-data-element-view',
@@ -40,7 +41,6 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     displayStatusWarning?: boolean;
     draftSaving?: Promise<void>;
-    eltCopy?: DataElement;
     exportToTab: boolean = false;
     hasDrafts = false;
     hasPrivilegeForOrg = hasPrivilegeForOrg;
@@ -185,7 +185,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 768;
+        this.isMobile = window.innerWidth < 992; // size lg
     }
 
     openSaveModal() {
