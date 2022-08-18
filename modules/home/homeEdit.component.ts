@@ -5,10 +5,13 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import {
     HomepageAttachResponse,
-    HomepageDetachRequest, HomepageDraftGetResponse, HomepageDraftPutRequest, HomepageDraftPutResponse,
+    HomepageDetachRequest,
+    HomepageDraftGetResponse,
+    HomepageDraftPutRequest,
+    HomepageDraftPutResponse,
     HomepageGetResponse,
     HomepagePutRequest,
-    HomepagePutResponse
+    HomepagePutResponse,
 } from 'shared/boundaryInterfaces/API/system';
 import { HomePageDraft, UpdateCard } from 'shared/singleton.model';
 
@@ -34,10 +37,18 @@ export class HomeEditComponent {
     }
 
     attachmentDelete(fileId: string): Promise<void> {
-        return this.http.post<void>('/server/homeDetach', {fileId} as HomepageDetachRequest).toPromise();
+        return this.http
+            .post<void>('/server/homeDetach', {
+                fileId,
+            } as HomepageDetachRequest)
+            .toPromise();
     }
 
-    attachmentUpload(homepage: HomePageDraft, updateCard: UpdateCard, event: Event) {
+    attachmentUpload(
+        homepage: HomePageDraft,
+        updateCard: UpdateCard,
+        event: Event
+    ) {
         if (event.srcElement) {
             const files = (event.srcElement as HTMLInputElement).files;
             if (files && files.length > 0) {
@@ -47,10 +58,18 @@ export class HomeEditComponent {
                     formData.append('uploadedFiles', files[i]);
                 }
                 /* tslint:enable */
-                this.http.post<HomepageAttachResponse>('/server/homeAttach', formData).subscribe(r => {
-                    updateCard.image = {fileId: r.fileId, uploadedBy: this.userService.user?._id};
-                    this.autoSave(homepage);
-                });
+                this.http
+                    .post<HomepageAttachResponse>(
+                        '/server/homeAttach',
+                        formData
+                    )
+                    .subscribe(r => {
+                        updateCard.image = {
+                            fileId: r.fileId,
+                            uploadedBy: this.userService.user?._id,
+                        };
+                        this.autoSave(homepage);
+                    });
             }
         }
     }
@@ -61,45 +80,57 @@ export class HomeEditComponent {
             return;
         }
         this.autoSaveLock = true;
-        this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
-            updated: homepage.updated,
-            updateInProgress: true,
-            body: {
-                updates: homepage.body.updates
-            }
-        } as HomepageDraftPutRequest).toPromise().then(newHomepage => {
-            homepage.updated = newHomepage.updated;
-            homepage.updatedBy = newHomepage.updatedBy;
-            this.autoSaveLock = false;
-            if (this.autoSaveWait) {
-                this.autoSave(this.autoSaveWait);
-                this.autoSaveWait = null;
-            }
-        }, err => {
-            this.autoSaveLock = false;
-            this.alert.httpErrorMessageAlert(err);
-        });
+        this.http
+            .put<HomepageDraftPutResponse>('/server/homeEdit', {
+                updated: homepage.updated,
+                updateInProgress: true,
+                body: {
+                    updates: homepage.body.updates,
+                },
+            } as HomepageDraftPutRequest)
+            .toPromise()
+            .then(
+                newHomepage => {
+                    homepage.updated = newHomepage.updated;
+                    homepage.updatedBy = newHomepage.updatedBy;
+                    this.autoSaveLock = false;
+                    if (this.autoSaveWait) {
+                        this.autoSave(this.autoSaveWait);
+                        this.autoSaveWait = null;
+                    }
+                },
+                err => {
+                    this.autoSaveLock = false;
+                    this.alert.httpErrorMessageAlert(err);
+                }
+            );
     }
 
     deleteDraft() {
         Promise.all([
-            this.http.get<HomepageDraftGetResponse>('/server/homeEdit').toPromise(),
-            this.http.get<HomepageGetResponse>('/server/home').toPromise()
+            this.http
+                .get<HomepageDraftGetResponse>('/server/homeEdit')
+                .toPromise(),
+            this.http.get<HomepageGetResponse>('/server/home').toPromise(),
         ])
             .then(drafts => {
                 const [draft, original] = drafts;
                 if (draft) {
-                    const keepIds = (original ? original.body.updates : []).map(u => u.image?.fileId).filter(isString);
-                    return Promise.all(draft.body.updates.map(u => {
-                        if (u.image && !keepIds.includes(u.image.fileId)) {
-                            return this.attachmentDelete(u.image.fileId);
-                        }
-                    }));
+                    const keepIds = (original ? original.body.updates : [])
+                        .map(u => u.image?.fileId)
+                        .filter(isString);
+                    return Promise.all(
+                        draft.body.updates.map(u => {
+                            if (u.image && !keepIds.includes(u.image.fileId)) {
+                                return this.attachmentDelete(u.image.fileId);
+                            }
+                        })
+                    );
                 }
             })
             .then(() => this.http.delete('/server/homeEdit').toPromise())
             .then(() => this.router.navigate(['/home']))
-            .catch(err => this.alert.httpErrorMessageAlert(err))
+            .catch(err => this.alert.httpErrorMessageAlert(err));
     }
 
     deleteImage(update: UpdateCard): Promise<void> {
@@ -107,11 +138,18 @@ export class HomeEditComponent {
             .then(() => {
                 const fileId = update.image?.fileId;
                 if (fileId) {
-                    this.http.get<HomepageGetResponse>('/server/home').toPromise().then(original => {
-                        if ((original ? original.body.updates : []).every(u => u.image?.fileId !== fileId)) {
-                            return this.attachmentDelete(fileId);
-                        }
-                    })
+                    this.http
+                        .get<HomepageGetResponse>('/server/home')
+                        .toPromise()
+                        .then(original => {
+                            if (
+                                (original ? original.body.updates : []).every(
+                                    u => u.image?.fileId !== fileId
+                                )
+                            ) {
+                                return this.attachmentDelete(fileId);
+                            }
+                        });
                 }
             })
             .then(() => {
@@ -120,30 +158,44 @@ export class HomeEditComponent {
     }
 
     deleteUpdate(homepage: HomePageDraft, update: UpdateCard) {
-        this.deleteImage(update)
-            .then(() => {
-                homepage.body.updates.splice(homepage.body.updates.indexOf(update), 1);
-                this.autoSave(homepage);
-            });
+        this.deleteImage(update).then(() => {
+            homepage.body.updates.splice(
+                homepage.body.updates.indexOf(update),
+                1
+            );
+            this.autoSave(homepage);
+        });
     }
 
     editable() {
-        return !this.homepage?.updateInProgress && this.homepage?.updatedBy === this.userService.user;
+        return (
+            !this.homepage?.updateInProgress &&
+            this.homepage?.updatedBy === this.userService.user
+        );
     }
 
     editLockAvailable() {
-        return this.homepage?.updatedBy === this.userService.user?._id || this.timestampExpire && this.timestampExpire < Date.now();
+        return (
+            this.homepage?.updatedBy === this.userService.user?._id ||
+            (this.timestampExpire && this.timestampExpire < Date.now())
+        );
     }
 
     getEditLock(homepage: HomePageDraft) {
-        this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
-            updated: homepage.updated,
-            updateInProgress: true,
-        } as HomepageDraftPutRequest).toPromise().then(newHomepage => {
-            homepage.updated = newHomepage.updated;
-            homepage.updatedBy = newHomepage.updatedBy;
-            this.editing = true;
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.http
+            .put<HomepageDraftPutResponse>('/server/homeEdit', {
+                updated: homepage.updated,
+                updateInProgress: true,
+            } as HomepageDraftPutRequest)
+            .toPromise()
+            .then(
+                newHomepage => {
+                    homepage.updated = newHomepage.updated;
+                    homepage.updatedBy = newHomepage.updatedBy;
+                    this.editing = true;
+                },
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     lockedByMe() {
@@ -152,7 +204,10 @@ export class HomeEditComponent {
 
     postLoad(homepage: HomePageDraft) {
         this.timestampExpire = homepage.updated + 1800000; // add 30 minutes
-        this.editing = this.noDraft || !homepage.updateInProgress && homepage.updatedBy === this.userService.user?._id;
+        this.editing =
+            this.noDraft ||
+            (!homepage.updateInProgress &&
+                homepage.updatedBy === this.userService.user?._id);
         if (!Array.isArray(homepage.body.updates)) {
             homepage.body.updates = [];
         }
@@ -160,60 +215,102 @@ export class HomeEditComponent {
     }
 
     publish(homepage: HomePageDraft) {
-        this.http.get<HomepageGetResponse>('/server/home').toPromise().then(original => {
-            return this.http.put<HomepageDraftPutResponse>('/server/homeEdit', homepage as HomepageDraftPutRequest).toPromise()
-                .then(newHomepage => {
-                    homepage.updated = newHomepage.updated;
-                    homepage.updatedBy = newHomepage.updatedBy;
-                    // homepage.updateInProgress = undefined;
-                })
-                .then(() => this.http.put<HomepagePutResponse>('/server/home', homepage as HomepagePutRequest).toPromise())
-                .then(() => this.http.delete('/server/homeEdit').toPromise())
-                .then(() => Promise.all((original ? original.body.updates : [])
-                    .map(u => u.image?.fileId)
-                    .filter(isString)
-                    .filter(fileId => homepage.body.updates.every(u => u.image?.fileId !== fileId))
-                    .map(fileId => this.attachmentDelete(fileId))
-                ))
-                .then(() => this.router.navigate(['/home']))
-                .catch(err => this.alert.httpErrorMessageAlert(err));
-        });
+        this.http
+            .get<HomepageGetResponse>('/server/home')
+            .toPromise()
+            .then(original => {
+                return this.http
+                    .put<HomepageDraftPutResponse>(
+                        '/server/homeEdit',
+                        homepage as HomepageDraftPutRequest
+                    )
+                    .toPromise()
+                    .then(newHomepage => {
+                        homepage.updated = newHomepage.updated;
+                        homepage.updatedBy = newHomepage.updatedBy;
+                        // homepage.updateInProgress = undefined;
+                    })
+                    .then(() =>
+                        this.http
+                            .put<HomepagePutResponse>(
+                                '/server/home',
+                                homepage as HomepagePutRequest
+                            )
+                            .toPromise()
+                    )
+                    .then(() =>
+                        this.http.delete('/server/homeEdit').toPromise()
+                    )
+                    .then(() =>
+                        Promise.all(
+                            (original ? original.body.updates : [])
+                                .map(u => u.image?.fileId)
+                                .filter(isString)
+                                .filter(fileId =>
+                                    homepage.body.updates.every(
+                                        u => u.image?.fileId !== fileId
+                                    )
+                                )
+                                .map(fileId => this.attachmentDelete(fileId))
+                        )
+                    )
+                    .then(() => this.router.navigate(['/home']))
+                    .catch(err => this.alert.httpErrorMessageAlert(err));
+            });
     }
 
     refresh() {
-        this.http.get<HomepageDraftGetResponse>('/server/homeEdit').toPromise().then(homepage => {
-            if (homepage) {
-                this.noDraft = false;
-                this.postLoad(homepage);
-                return;
-            }
-            this.http.get<HomepageGetResponse>('/server/home').toPromise().then(homepage => {
-                this.noDraft = true;
-                if (!homepage) {
-                    homepage = {
-                        updated: Date.now(),
-                        updatedBy: this.userService.user?._id,
-                        body: {
-                            updates: []
-                        }
-                    };
-                }
-                this.postLoad(homepage);
-            }, err => this.alert.httpErrorMessageAlert(err));
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.http
+            .get<HomepageDraftGetResponse>('/server/homeEdit')
+            .toPromise()
+            .then(
+                homepage => {
+                    if (homepage) {
+                        this.noDraft = false;
+                        this.postLoad(homepage);
+                        return;
+                    }
+                    this.http
+                        .get<HomepageGetResponse>('/server/home')
+                        .toPromise()
+                        .then(
+                            homepage => {
+                                this.noDraft = true;
+                                if (!homepage) {
+                                    homepage = {
+                                        updated: Date.now(),
+                                        updatedBy: this.userService.user?._id,
+                                        body: {
+                                            updates: [],
+                                        },
+                                    };
+                                }
+                                this.postLoad(homepage);
+                            },
+                            err => this.alert.httpErrorMessageAlert(err)
+                        );
+                },
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     stopEditing(homepage: HomePageDraft) {
-        this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
-            updated: homepage.updated,
-            updateInProgress: false,
-        } as HomepageDraftPutRequest).toPromise().then(newHomepage => {
-            if (newHomepage) {
-                homepage.updated = newHomepage.updated;
-                homepage.updatedBy = newHomepage.updatedBy;
-            }
-            this.router.navigate(['/home']);
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.http
+            .put<HomepageDraftPutResponse>('/server/homeEdit', {
+                updated: homepage.updated,
+                updateInProgress: false,
+            } as HomepageDraftPutRequest)
+            .toPromise()
+            .then(
+                newHomepage => {
+                    if (newHomepage) {
+                        homepage.updated = newHomepage.updated;
+                        homepage.updatedBy = newHomepage.updatedBy;
+                    }
+                    this.router.navigate(['/home']);
+                },
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     waitTimeInMinutes(timestampExpire: number) {

@@ -18,12 +18,8 @@ import { CompareSideBySideComponent } from 'compare/compareSideBySide/compareSid
 import { MergeDataElementComponent } from 'compare/mergeDataElement/mergeDataElement.component';
 import { MergeFormComponent } from 'compare/mergeForm/mergeForm.component';
 import { MergeFormService } from 'compare/mergeForm.service';
-import {
-    CompareSideBySideModalComponent
-} from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
-import {
-    MergeDataElementModalComponent
-} from 'compare/mergeDataElement/merge-data-element-modal/merge-data-element-modal.component';
+import { CompareSideBySideModalComponent } from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
+import { MergeDataElementModalComponent } from 'compare/mergeDataElement/merge-data-element-modal/merge-data-element-modal.component';
 import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merge-form-modal.component';
 
 @NgModule({
@@ -58,7 +54,6 @@ import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merg
         CompareHistoryContentComponent,
         CompareItemComponent,
     ],
-    schemas: []
+    schemas: [],
 })
-export class CompareModule {
-}
+export class CompareModule {}

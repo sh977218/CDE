@@ -12,7 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 const appRoutes: Routes = [
-    {path: '', component: CreateDataElementComponent, canLoad: [LoggedInGuard]},
+    {
+        path: '',
+        component: CreateDataElementComponent,
+        canLoad: [LoggedInGuard],
+    },
 ];
 
 @NgModule({
@@ -26,12 +30,11 @@ const appRoutes: Routes = [
         AdminItemModule,
         CdeModule,
         MatButtonModule,
-        MatIconModule
+        MatIconModule,
     ],
     declarations: [],
     exports: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CdeCreateModule {
-}
+export class CdeCreateModule {}

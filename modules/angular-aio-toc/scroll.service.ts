@@ -1,12 +1,18 @@
-import {DOCUMENT, Location, PlatformLocation, PopStateEvent, ViewportScroller} from '@angular/common';
-import {Inject, Injectable, OnDestroy} from '@angular/core';
-import {fromEvent, Subject} from 'rxjs';
-import {debounceTime, takeUntil} from 'rxjs/operators';
+import {
+    DOCUMENT,
+    Location,
+    PlatformLocation,
+    PopStateEvent,
+    ViewportScroller,
+} from '@angular/common';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 type ScrollPosition = [number, number];
 interface ScrollPositionPopStateEvent extends PopStateEvent {
     // If there is history state, it should always include `scrollPosition`.
-    state?: {scrollPosition: ScrollPosition};
+    state?: { scrollPosition: ScrollPosition };
 }
 
 export const topMargin = 16;
@@ -15,39 +21,50 @@ export const topMargin = 16;
  */
 @Injectable()
 export class ScrollService implements OnDestroy {
-    private _topOffset!: number|null;
+    private _topOffset!: number | null;
     private _topOfPageElement!: Element;
     private onDestroy = new Subject<void>();
     scrollElement: Element | Window = window; // CDE implemented
     private storage: Storage;
 
     // The scroll position which has to be restored, after a `popstate` event.
-    poppedStateScrollPosition: ScrollPosition|null = null;
+    poppedStateScrollPosition: ScrollPosition | null = null;
     // Whether the browser supports the necessary features for manual scroll restoration.
-    supportManualScrollRestoration: boolean = !!window && ('scrollTo' in window) &&
-        ('scrollX' in window) && ('scrollY' in window) && isScrollRestorationWritable();
+    supportManualScrollRestoration: boolean =
+        !!window &&
+        'scrollTo' in window &&
+        'scrollX' in window &&
+        'scrollY' in window &&
+        isScrollRestorationWritable();
 
     // Offset from the top of the document to bottom of any static elements
     // at the top (e.g. toolbar) + some margin
     get topOffset() {
         if (!this._topOffset) {
             const toolbar = this.document.querySelector('.app-toolbar');
-            this._topOffset = (toolbar && toolbar.clientHeight || 0) + topMargin;
+            this._topOffset =
+                ((toolbar && toolbar.clientHeight) || 0) + topMargin;
         }
         return this._topOffset;
     }
 
     get topOfPageElement() {
         if (!this._topOfPageElement) {
-            this._topOfPageElement = this.document.getElementById('top-of-page') || this.document.body;
+            this._topOfPageElement =
+                this.document.getElementById('top-of-page') ||
+                this.document.body;
         }
         return this._topOfPageElement;
     }
 
     constructor(
-        @Inject(DOCUMENT) private document: any, private platformLocation: PlatformLocation,
-        private viewportScroller: ViewportScroller, private location: Location) {
-        this.scrollElement = window.document.getElementById('scrollRoot') || window;
+        @Inject(DOCUMENT) private document: any,
+        private platformLocation: PlatformLocation,
+        private viewportScroller: ViewportScroller,
+        private location: Location
+    ) {
+        this.scrollElement =
+            window.document.getElementById('scrollRoot') || window;
 
         try {
             this.storage = window.sessionStorage;
@@ -60,14 +77,14 @@ export class ScrollService implements OnDestroy {
                 getItem: () => null,
                 key: () => null,
                 removeItem: () => undefined,
-                setItem: () => undefined
+                setItem: () => undefined,
             };
         }
 
         // On resize, the toolbar might change height, so "invalidate" the top offset.
         fromEvent(window, 'resize')
             .pipe(takeUntil(this.onDestroy))
-            .subscribe(() => this._topOffset = null);
+            .subscribe(() => (this._topOffset = null));
 
         fromEvent(this.scrollElement, 'scroll')
             .pipe(debounceTime(250), takeUntil(this.onDestroy))
@@ -82,20 +99,24 @@ export class ScrollService implements OnDestroy {
             history.scrollRestoration = 'manual';
 
             // We have to detect forward and back navigation thanks to popState event.
-            const locationSubscription = this.location.subscribe((event: ScrollPositionPopStateEvent) => {
-                // The type is `hashchange` when the fragment identifier of the URL has changed. It allows
-                // us to go to position just before a click on an anchor.
-                if (event.type === 'hashchange') {
-                    this.scrollToPosition();
-                } else {
-                    // Navigating with the forward/back button, we have to remove the position from the
-                    // session storage in order to avoid a race-condition.
-                    this.removeStoredScrollInfo();
-                    // The `popstate` event is always triggered by a browser action such as clicking the
-                    // forward/back button. It can be followed by a `hashchange` event.
-                    this.poppedStateScrollPosition = event.state ? event.state.scrollPosition : null;
+            const locationSubscription = this.location.subscribe(
+                (event: ScrollPositionPopStateEvent) => {
+                    // The type is `hashchange` when the fragment identifier of the URL has changed. It allows
+                    // us to go to position just before a click on an anchor.
+                    if (event.type === 'hashchange') {
+                        this.scrollToPosition();
+                    } else {
+                        // Navigating with the forward/back button, we have to remove the position from the
+                        // session storage in order to avoid a race-condition.
+                        this.removeStoredScrollInfo();
+                        // The `popstate` event is always triggered by a browser action such as clicking the
+                        // forward/back button. It can be followed by a `hashchange` event.
+                        this.poppedStateScrollPosition = event.state
+                            ? event.state.scrollPosition
+                            : null;
+                    }
                 }
-            });
+            );
 
             this.onDestroy.subscribe(() => locationSubscription.unsubscribe());
         }
@@ -112,7 +133,9 @@ export class ScrollService implements OnDestroy {
 
     getScrollTop(): number {
         return this.scrollElement
-            ? (this.scrollElement === window ? window.pageYOffset : (this.scrollElement as Element).scrollTop)
+            ? this.scrollElement === window
+                ? window.pageYOffset
+                : (this.scrollElement as Element).scrollTop
             : 0;
     }
 
@@ -123,7 +146,9 @@ export class ScrollService implements OnDestroy {
      */
     scroll() {
         const hash = this.getCurrentHash();
-        const element: HTMLElement = hash ? this.document.getElementById(hash) : this.topOfPageElement;
+        const element: HTMLElement = hash
+            ? this.document.getElementById(hash)
+            : this.topOfPageElement;
         this.scrollToElement(element);
     }
 
@@ -169,7 +194,7 @@ export class ScrollService implements OnDestroy {
      * Scroll to the element.
      * Don't scroll if no element.
      */
-    scrollToElement(element: Element|null) {
+    scrollToElement(element: Element | null) {
         if (element) {
             element.scrollIntoView();
 
@@ -178,7 +203,10 @@ export class ScrollService implements OnDestroy {
                 // (Usually, `.top` will be 0, except for cases where the element cannot be scrolled all the
                 //  way to the top, because the viewport is larger than the height of the content after the
                 //  element.)
-                this.scrollElement.scrollBy(0, element.getBoundingClientRect().top - (this.topOffset || 0));
+                this.scrollElement.scrollBy(
+                    0,
+                    element.getBoundingClientRect().top - (this.topOffset || 0)
+                );
 
                 // If we are very close to the top (<20px), then scroll all the way up.
                 // (This can happen if `element` is at the top of the page, but has a small top-margin.)
@@ -187,7 +215,8 @@ export class ScrollService implements OnDestroy {
                         window.scrollBy(0, -window.pageYOffset);
                     }
                 } else {
-                    const scrollElement: Element = this.scrollElement as Element;
+                    const scrollElement: Element = this
+                        .scrollElement as Element;
                     if (scrollElement.scrollTop < 20) {
                         scrollElement.scrollBy(0, -scrollElement.scrollTop);
                     }
@@ -203,7 +232,9 @@ export class ScrollService implements OnDestroy {
 
     scrollToPosition() {
         if (this.poppedStateScrollPosition) {
-            this.viewportScroller.scrollToPosition(this.poppedStateScrollPosition);
+            this.viewportScroller.scrollToPosition(
+                this.poppedStateScrollPosition
+            );
             this.poppedStateScrollPosition = null;
         }
     }
@@ -217,19 +248,24 @@ export class ScrollService implements OnDestroy {
      */
     updateScrollPositionInHistory() {
         if (this.supportManualScrollRestoration) {
-            const currentScrollPosition = this.viewportScroller.getScrollPosition();
-            this.location.replaceState(
-                this.location.path(true), undefined, {scrollPosition: currentScrollPosition});
-            this.storage.setItem('scrollPosition', currentScrollPosition.join(','));
+            const currentScrollPosition =
+                this.viewportScroller.getScrollPosition();
+            this.location.replaceState(this.location.path(true), undefined, {
+                scrollPosition: currentScrollPosition,
+            });
+            this.storage.setItem(
+                'scrollPosition',
+                currentScrollPosition.join(',')
+            );
         }
     }
 
-    getStoredScrollLocationHref(): string|null {
+    getStoredScrollLocationHref(): string | null {
         const href = this.storage.getItem('scrollLocationHref');
         return href || null;
     }
 
-    getStoredScrollPosition(): ScrollPosition|null {
+    getStoredScrollPosition(): ScrollPosition | null {
         const position = this.storage.getItem('scrollPosition');
         if (!position) {
             return null;
@@ -248,7 +284,10 @@ export class ScrollService implements OnDestroy {
      * Check if the scroll position need to be manually fixed after popState event
      */
     needToFixScrollPosition(): boolean {
-        return this.supportManualScrollRestoration && !!this.poppedStateScrollPosition;
+        return (
+            this.supportManualScrollRestoration &&
+            !!this.poppedStateScrollPosition
+        );
     }
 
     /**
@@ -271,7 +310,15 @@ export class ScrollService implements OnDestroy {
 function isScrollRestorationWritable() {
     const scrollRestorationDescriptor =
         Object.getOwnPropertyDescriptor(history, 'scrollRestoration') ||
-        Object.getOwnPropertyDescriptor(Object.getPrototypeOf(history), 'scrollRestoration');
-    return scrollRestorationDescriptor !== undefined &&
-        !!(scrollRestorationDescriptor.writable || scrollRestorationDescriptor.set);
+        Object.getOwnPropertyDescriptor(
+            Object.getPrototypeOf(history),
+            'scrollRestoration'
+        );
+    return (
+        scrollRestorationDescriptor !== undefined &&
+        !!(
+            scrollRestorationDescriptor.writable ||
+            scrollRestorationDescriptor.set
+        )
+    );
 }

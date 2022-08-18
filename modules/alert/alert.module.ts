@@ -3,16 +3,10 @@ import { AlertService } from 'alert/alert.service';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
-    imports: [
-        MatSnackBarModule
-    ],
+    imports: [MatSnackBarModule],
     declarations: [],
-    providers: [
-        AlertService
-    ],
+    providers: [AlertService],
     exports: [],
-    schemas: []
+    schemas: [],
 })
-
-export class AlertModule {
-}
+export class AlertModule {}

@@ -11,7 +11,9 @@ export class InlineEditComponent {
     private _model!: string;
     @Input() set model(v: string) {
         this._model = v;
-        if (!this.inputType) { this.inputType = 'text'; }
+        if (!this.inputType) {
+            this.inputType = 'text';
+        }
         this.value = v;
     }
     get model() {

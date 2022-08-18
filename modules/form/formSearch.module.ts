@@ -54,7 +54,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         PinToBoardModule,
         SearchModule,
         TagModule,
-        TourMatMenuModule
+        TourMatMenuModule,
     ],
     declarations: [
         BoardFormSummaryListComponent,
@@ -64,14 +64,9 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         FormSummaryListContentComponent,
         FormTableViewPreferencesComponent,
     ],
-    exports: [
-        FormSearchComponent,
-    ],
-    entryComponents: [
-        FormSummaryListContentComponent,
-    ],
+    exports: [FormSearchComponent],
+    entryComponents: [FormSummaryListContentComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class FormSearchModule {
-}
+export class FormSearchModule {}

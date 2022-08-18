@@ -34,8 +34,10 @@ export class NativeRenderComponent {
     formUrl: string;
     readonly NRS = NativeRenderService;
 
-    constructor(private sanitizer: DomSanitizer,
-                public nrs: NativeRenderService) {
+    constructor(
+        private sanitizer: DomSanitizer,
+        public nrs: NativeRenderService
+    ) {
         this.formUrl = window.location.href;
     }
 

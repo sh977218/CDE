@@ -1,4 +1,4 @@
 export interface SearchQueryParameter {
-    selectedOrg: string,
-    classification: string[] | null
+    selectedOrg: string;
+    classification: string[] | null;
 }

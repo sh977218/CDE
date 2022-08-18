@@ -17,15 +17,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         MatTooltipModule,
         TextTruncateModule,
     ],
-    declarations: [
-        InlineSelectEditComponent,
-    ],
-    exports: [
-        InlineSelectEditComponent,
-    ],
+    declarations: [InlineSelectEditComponent],
+    exports: [InlineSelectEditComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class InlineSelectEditModule {
-}
+export class InlineSelectEditModule {}

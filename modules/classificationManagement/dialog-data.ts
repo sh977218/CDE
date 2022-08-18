@@ -1,4 +1,4 @@
 export interface DialogData {
-    orgName: string,
-    categories: string[]
+    orgName: string;
+    categories: string[];
 }

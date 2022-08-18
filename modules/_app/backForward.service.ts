@@ -9,7 +9,8 @@ export class BackForwardService {
     hasNavigated = false;
 
     constructor(
-        @Inject(forwardRef(() => PlatformLocation)) private location: PlatformLocation,
+        @Inject(forwardRef(() => PlatformLocation))
+        private location: PlatformLocation,
         @Inject(forwardRef(() => Router)) private router: Router
     ) {
         location.onPopState(() => {

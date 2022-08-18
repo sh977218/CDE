@@ -41,16 +41,12 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { TagModule } from 'tag/tag.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
-import {
-    FormUpdateCdeVersionModalComponent
-} from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
+import { FormUpdateCdeVersionModalComponent } from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
 import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
 import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
 import { FormUpdateFormVersionModalComponent } from 'form/form-update-form-version-modal/form-update-form-version-modal.component';
 
-const appRoutes: Routes = [
-    {path: '', component: FormDescriptionComponent},
-];
+const appRoutes: Routes = [{ path: '', component: FormDescriptionComponent }];
 
 @NgModule({
     imports: [
@@ -73,7 +69,7 @@ const appRoutes: Routes = [
         MatTabsModule,
         MatAutocompleteModule,
         MatTooltipModule,
-        
+
         RouterModule.forChild(appRoutes),
         TreeModule,
         // non-core
@@ -103,15 +99,10 @@ const appRoutes: Routes = [
         FormDescriptionQuestionDetailComponent,
         FormDescriptionSectionComponent,
         QuestionAnswerEditContentComponent,
-        SelectQuestionLabelComponent
+        SelectQuestionLabelComponent,
     ],
     exports: [],
-    providers: [
-        SkipLogicValidateService,
-        UcumService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    providers: [SkipLogicValidateService, UcumService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class FormEditModule {
-}
+export class FormEditModule {}

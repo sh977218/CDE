@@ -7,22 +7,14 @@ import { SafeHtmlPipe } from 'non-core/pipes/safeHtml.pipe';
 import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
 
 @NgModule({
-    imports: [
-    ],
-    declarations: [
-        PlaceHoldEmptyPipe,
-        SafeHtmlPipe
-    ],
-    exports: [
-        PlaceHoldEmptyPipe,
-        SafeHtmlPipe
-    ],
+    imports: [],
+    declarations: [PlaceHoldEmptyPipe, SafeHtmlPipe],
+    exports: [PlaceHoldEmptyPipe, SafeHtmlPipe],
     providers: [
         ClassificationService,
         ExportService,
         IsAllowedService,
-        RegistrationValidatorService
+        RegistrationValidatorService,
     ],
 })
-export class NonCoreModule {
-}
+export class NonCoreModule {}

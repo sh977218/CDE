@@ -15,37 +15,39 @@ export class Alert {
         this.message = _message;
         this.id = new Date().getTime();
     }
-
 }
 
 @Injectable()
 export class AlertService {
     alertTime = 90000;
 
-    constructor(private snackBar: MatSnackBar) {
-    }
+    constructor(private snackBar: MatSnackBar) {}
 
     addAlert(type: string, message: string) {
-        let config = {duration: this.alertTime};
+        let config = { duration: this.alertTime };
         if (type === 'danger') {
-            config = {duration: 0};
+            config = { duration: 0 };
         }
         this.snackBar.open(message, 'Dismiss', config);
     }
 
-    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any) {
-        let config = {duration: this.alertTime};
+    addAlertFromComponent<T>(
+        type: string,
+        component: ComponentType<T>,
+        data: any
+    ) {
+        let config = { duration: this.alertTime };
         if (type === 'danger') {
-            config = {duration: 0};
+            config = { duration: 0 };
         }
         this.snackBar.openFromComponent(component, {
             ...config,
-            data
+            data,
         });
     }
 
     httpErrorMessageAlert(err: HttpErrorResponse, info = '') {
         const message = (info ? info + ' ' : '') + httpErrorMessage(err);
-        this.snackBar.open(message, 'Dismiss', {duration: this.alertTime});
+        this.snackBar.open(message, 'Dismiss', { duration: this.alertTime });
     }
 }

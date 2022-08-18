@@ -44,19 +44,11 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
 import { DatasetsContentModalComponent } from 'cde/datasets/datasets-content-modal/datasets-content-modal.component';
 import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
-import {
-    NewPermissibleValueModalComponent
-} from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
-import {
-    ImportPermissibleValueModalComponent
-} from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
-import {
-    CopyDataElementModalComponent
-} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
+import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
+import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
+import { CopyDataElementModalComponent } from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 
-const appRoutes: Routes = [
-    {path: '', component: DataElementViewComponent},
-];
+const appRoutes: Routes = [{ path: '', component: DataElementViewComponent }];
 
 @NgModule({
     imports: [
@@ -92,7 +84,7 @@ const appRoutes: Routes = [
         FormSearchModule,
         TocModule,
         TourMatMenuModule,
-        MatExpansionModule
+        MatExpansionModule,
     ],
     declarations: [
         CdeClassificationComponent,
@@ -111,13 +103,8 @@ const appRoutes: Routes = [
         ImportPermissibleValueModalComponent,
         ValidRulesComponent,
     ],
-    exports: [
-    ],
-    providers: [
-        DataElementViewService,
-        WINDOW_PROVIDERS
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [],
+    providers: [DataElementViewService, WINDOW_PROVIDERS],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CdeViewModule {
-}
+export class CdeViewModule {}

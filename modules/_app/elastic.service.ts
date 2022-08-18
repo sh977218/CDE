@@ -9,9 +9,15 @@ import {
     UserSearchSettings,
     SearchResponseAggregationItem,
     SearchResponseAggregationForm,
-    SearchResponseAggregationDe, CbErr2, Cb2, CbErr1
+    SearchResponseAggregationDe,
+    CbErr2,
+    Cb2,
+    CbErr1,
 } from 'shared/models.model';
-import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
+import {
+    SearchSettings,
+    SearchSettingsElastic,
+} from 'shared/search/search.model';
 
 const includeRetiredSessionKey = 'nlmcde.includeRetired';
 
@@ -24,8 +30,9 @@ export class ElasticService implements OnDestroy {
 
     constructor(
         @Inject(forwardRef(() => HttpClient)) public http: HttpClient,
-        @Inject(forwardRef(() => LocalStorageService)) private localStorageService: LocalStorageService,
-        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => LocalStorageService))
+        private localStorageService: LocalStorageService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService
     ) {
         this.loadSearchSettings();
     }
@@ -37,7 +44,9 @@ export class ElasticService implements OnDestroy {
         }
     }
 
-    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
+    buildElasticQuerySettings(
+        queryParams: SearchSettings
+    ): SearchSettingsElastic {
         return {
             resultPerPage: queryParams.resultPerPage,
             searchTerm: queryParams.q,
@@ -58,24 +67,47 @@ export class ElasticService implements OnDestroy {
         };
     }
 
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde',
-                       cb: CbErr2<SearchResponseAggregationDe, boolean>): void;
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'form',
-                       cb: CbErr2<SearchResponseAggregationForm, boolean>): void;
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
-                       cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>): void;
-    generalSearchQuery(settings: SearchSettingsElastic, type: 'cde' | 'form',
-                       cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>): void {
-        const search = (good: Cb2<SearchResponseAggregationItem, boolean | void>,
-                        bad: CbErr2<SearchResponseAggregationItem, boolean | void>) => {
+    generalSearchQuery(
+        settings: SearchSettingsElastic,
+        type: 'cde',
+        cb: CbErr2<SearchResponseAggregationDe, boolean>
+    ): void;
+    generalSearchQuery(
+        settings: SearchSettingsElastic,
+        type: 'form',
+        cb: CbErr2<SearchResponseAggregationForm, boolean>
+    ): void;
+    generalSearchQuery(
+        settings: SearchSettingsElastic,
+        type: 'cde' | 'form',
+        cb:
+            | CbErr2<SearchResponseAggregationDe, boolean>
+            | CbErr2<SearchResponseAggregationForm, boolean>
+    ): void;
+    generalSearchQuery(
+        settings: SearchSettingsElastic,
+        type: 'cde' | 'form',
+        cb:
+            | CbErr2<SearchResponseAggregationDe, boolean>
+            | CbErr2<SearchResponseAggregationForm, boolean>
+    ): void {
+        const search = (
+            good: Cb2<SearchResponseAggregationItem, boolean | void>,
+            bad: CbErr2<SearchResponseAggregationItem, boolean | void>
+        ) => {
             let url = '/server/de/search';
             if (type === 'form') {
                 url = '/server/form/search';
             }
-            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good as any, bad as any);
+            this.http
+                .post<SearchResponseAggregationItem>(url, settings)
+                .subscribe(good as any, bad as any);
         };
 
-        const success: Cb2<SearchResponseAggregationItem, boolean | void> = (response: SearchResponseAggregationItem, isRetry = false) => {
+        const success: Cb2<SearchResponseAggregationItem, boolean | void> = (
+            response: SearchResponseAggregationItem,
+            isRetry = false
+        ) => {
             if (type === 'cde') {
                 const responseDe = response as SearchResponseAggregationDe;
                 ElasticService.highlightResults(responseDe.cdes);
@@ -85,14 +117,24 @@ export class ElasticService implements OnDestroy {
                 ElasticService.highlightResults(responseForm.forms);
                 responseForm.forms.forEach(CdeForm.validate);
             }
-            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(undefined, response, isRetry);
-        }
+            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(
+                undefined,
+                response,
+                isRetry
+            );
+        };
 
         search(success, () => {
             if (settings.searchTerm) {
-                settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
+                settings.searchTerm = settings.searchTerm.replace(
+                    /[^\w\s]/gi,
+                    ''
+                );
             }
-            search(response => success(response, true), cb as CbErr2<SearchResponseAggregationItem, boolean | void>);
+            search(
+                response => success(response, true),
+                cb as CbErr2<SearchResponseAggregationItem, boolean | void>
+            );
         });
     }
 
@@ -100,7 +142,11 @@ export class ElasticService implements OnDestroy {
         return this.searchSettings.defaultSearchView;
     }
 
-    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr1<ItemElastic[] | void>) {
+    getExport(
+        query: SearchSettingsElastic,
+        type: 'cde' | 'form',
+        cb: CbErr1<ItemElastic[] | void>
+    ) {
         let url = '/server/de/searchExport/';
         if (type === 'form') {
             url = '/server/form/searchExport/';
@@ -109,7 +155,9 @@ export class ElasticService implements OnDestroy {
             response => cb(undefined, response),
             (err: HttpErrorResponse) => {
                 if (err.status === 503) {
-                    cb('The server is busy processing similar request, please try again in a minute.');
+                    cb(
+                        'The server is busy processing similar request, please try again in a minute.'
+                    );
                 } else {
                     cb('An error occurred. This issue has been reported.');
                 }
@@ -118,21 +166,28 @@ export class ElasticService implements OnDestroy {
     }
 
     loadSearchSettings() {
-        this.searchSettings = this.localStorageService.getItem('SearchSettings') || ElasticService.getDefault();
+        this.searchSettings =
+            this.localStorageService.getItem('SearchSettings') ||
+            ElasticService.getDefault();
 
         if (!this.unsubscribeUser) {
-            this.unsubscribeUser = this.userService.subscribe((user) => {
-                this.searchSettings = user?.searchSettings || ElasticService.getDefault();
+            this.unsubscribeUser = this.userService.subscribe(user => {
+                this.searchSettings =
+                    user?.searchSettings || ElasticService.getDefault();
             });
         }
 
-        this.includeRetired = !!window.sessionStorage.getItem(includeRetiredSessionKey);
+        this.includeRetired = !!window.sessionStorage.getItem(
+            includeRetiredSessionKey
+        );
     }
 
     saveConfiguration() {
         this.localStorageService.setItem('SearchSettings', this.searchSettings);
         if (this.userService.user) {
-            this.http.post('/server/user/', {searchSettings: this.searchSettings}).subscribe();
+            this.http
+                .post('/server/user/', { searchSettings: this.searchSettings })
+                .subscribe();
         }
 
         if (this.includeRetired) {
@@ -162,7 +217,7 @@ export class ElasticService implements OnDestroy {
                 source: false,
                 updated: false,
                 numQuestions: true,
-                tinyId: false
+                tinyId: false,
             },
         };
     }
@@ -179,16 +234,24 @@ export class ElasticService implements OnDestroy {
         }
         if (cde.highlight[field]) {
             if (field.indexOf('.') < 0) {
-                if (cde.highlight[field][0].replace(/<strong>/g, '').replace(/<\/strong>/g, '')
-                    .substr(0, 50) === cde[field].substr(0, 50)) {
+                if (
+                    cde.highlight[field][0]
+                        .replace(/<strong>/g, '')
+                        .replace(/<\/strong>/g, '')
+                        .substr(0, 50) === cde[field].substr(0, 50)
+                ) {
                     cde[field] = cde.highlight[field][0];
                 } else {
                     if (cde[field].length > 50) {
-                        cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
+                        cde[field] =
+                            cde[field].substr(0, 50) +
+                            ' [...] ' +
+                            cde.highlight[field][0];
                     }
                 }
             } else {
-                cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] = cde.highlight[field][0];
+                cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] =
+                    cde.highlight[field][0];
             }
         } else {
             if (field.indexOf('.') < 0) {
@@ -207,10 +270,13 @@ export class ElasticService implements OnDestroy {
     static setMatchedBy(cde: ItemElastic) {
         let field = 'Full Document';
         if (!cde.highlight) {
-            cde.highlight = {matchedBy: field};
+            cde.highlight = { matchedBy: field };
             return;
         } else {
-            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) {
+            if (
+                cde.highlight.primaryNameCopy ||
+                cde.highlight.primaryDefinitionCopy
+            ) {
                 return;
             }
             const matched = Object.keys(cde.highlight)[0];

@@ -32,14 +32,8 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
         InlineAreaEditModule,
         NativeRenderModule,
     ],
-    declarations: [
-        HomeComponent,
-        HomeEditComponent,
-        BannerComponent
-    ],
-    providers: [
-    ],
-    schemas: []
+    declarations: [HomeComponent, HomeEditComponent, BannerComponent],
+    providers: [],
+    schemas: [],
 })
-export class HomeModule {
-}
+export class HomeModule {}

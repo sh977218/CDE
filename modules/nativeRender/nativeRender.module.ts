@@ -14,7 +14,7 @@ import { ScoreService } from 'nativeRender/score.service';
     imports: [
         CommonModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
         // non-core no internal
     ],
     declarations: [
@@ -25,14 +25,8 @@ import { ScoreService } from 'nativeRender/score.service';
         NativeSectionMatrixComponent,
         NativeTableComponent,
     ],
-    exports: [
-        NativeRenderComponent,
-    ],
-    providers: [
-        SkipLogicService,
-        ScoreService
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [NativeRenderComponent],
+    providers: [SkipLogicService, ScoreService],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class NativeRenderModule {
-}
+export class NativeRenderModule {}

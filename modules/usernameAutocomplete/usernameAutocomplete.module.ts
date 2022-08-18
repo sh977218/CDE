@@ -14,16 +14,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
         FormsModule,
         NonCoreModule,
         MatInputModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
     ],
-    declarations: [
-        UsernameAutocompleteComponent
-    ],
-    exports: [UsernameAutocompleteComponent
-    ],
+    declarations: [UsernameAutocompleteComponent],
+    exports: [UsernameAutocompleteComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class UsernameAutocompleteModule {
-}
+export class UsernameAutocompleteModule {}

@@ -2,11 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormElement, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
-import { SkipLogicAutocompleteComponent, Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
+import {
+    SkipLogicAutocompleteComponent,
+    Token,
+} from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-skip-logic',
-    templateUrl: './skipLogic.component.html'
+    templateUrl: './skipLogic.component.html',
 })
 export class SkipLogicComponent {
     @Input() formElement!: FormElement;
@@ -14,32 +17,36 @@ export class SkipLogicComponent {
     @Input() canEdit!: boolean;
     @Output() saved = new EventEmitter();
 
-    constructor(public dialog: MatDialog) {
-    }
+    constructor(public dialog: MatDialog) {}
 
     editSkipLogic() {
         const priorQuestions = getQuestionsPrior(this.parent, this.formElement);
         const data = {
             formElement: this.formElement,
             parent: this.parent,
-            priorQuestions
+            priorQuestions,
         };
-        this.dialog.open(SkipLogicAutocompleteComponent, {width: '800px', data}).afterClosed().subscribe(tokens => {
-            if (tokens) {
-                if (!this.formElement.skipLogic) {
-                    this.formElement.skipLogic = new SkipLogic();
+        this.dialog
+            .open(SkipLogicAutocompleteComponent, { width: '800px', data })
+            .afterClosed()
+            .subscribe(tokens => {
+                if (tokens) {
+                    if (!this.formElement.skipLogic) {
+                        this.formElement.skipLogic = new SkipLogic();
+                    }
+                    this.formElement.skipLogic.condition =
+                        this.tokensToSkipLogic(tokens);
+                    this.saved.emit();
                 }
-                this.formElement.skipLogic.condition = this.tokensToSkipLogic(tokens);
-                this.saved.emit();
-            }
-        });
+            });
     }
 
     tokensToSkipLogic(tokens: Token[]) {
         let skipLogic = '';
         tokens.forEach((t: Token, i: number) => {
             if (t.label && t.operator) {
-                skipLogic += '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
+                skipLogic +=
+                    '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
                 if (i < tokens.length - 1) {
                     skipLogic += ' ' + t.logic + ' ';
                 }

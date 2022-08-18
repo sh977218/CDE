@@ -88,7 +88,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             caps = new FirefoxOptions();
         } else if ("chrome".equals(b)) {
             ChromeOptions chromeOptions = new ChromeOptions();
-            if (u != null) chromeOptions.addArguments("--user-agent=googleBot");
+            if (u != null) {
+                chromeOptions.addArguments("--user-agent=googleBot");
+//                chromeOptions.addArguments("ignore-certificate-errors");
+                chromeOptions.addArguments("(--test-type");
+            }
             Map<String, Object> prefs = new HashMap<>();
             prefs.put("download.default_directory", chromeDownloadFolder);
             prefs.put("profile.default_content_settings.geolocation", 2);

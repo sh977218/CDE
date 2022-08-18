@@ -4,9 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { DiscussModule } from 'discuss/discuss.module';
 import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
 
-
 const appRoutes: Routes = [
-    {path: '', component: LatestCommentsComponent, data: {commentsUrl: '../../server/discuss/orgComments'}},
+    {
+        path: '',
+        component: LatestCommentsComponent,
+        data: { commentsUrl: '../../server/discuss/orgComments' },
+    },
 ];
 
 @NgModule({
@@ -17,7 +20,6 @@ const appRoutes: Routes = [
     ],
     declarations: [],
     exports: [],
-    schemas: []
+    schemas: [],
 })
-export class DiscussEntryModule {
-}
+export class DiscussEntryModule {}

@@ -4,9 +4,20 @@ import { pvGetLabel } from 'core/de/deShared';
 import { repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { range } from 'shared/array';
 import {
-    FormElement, FormElementFollow, FormQuestion, FormSectionOrFormFollow, PermissibleFormValue, QuestionValue
+    FormElement,
+    FormElementFollow,
+    FormQuestion,
+    FormSectionOrFormFollow,
+    PermissibleFormValue,
+    QuestionValue,
 } from 'shared/form/form.model';
-import { isInForm, isQuestion, isSection, iterateFeSync, questionMulti } from 'shared/form/fe';
+import {
+    isInForm,
+    isQuestion,
+    isSection,
+    iterateFeSync,
+    questionMulti,
+} from 'shared/form/fe';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { assertUnreachable } from 'shared/models.model';
 
@@ -45,7 +56,7 @@ interface RowType {
 
 @Component({
     selector: 'cde-native-table',
-    templateUrl: './nativeTable.component.html'
+    templateUrl: './nativeTable.component.html',
 })
 export class NativeTableComponent {
     @Input() set formElement(fe: FormSectionOrFormFollow) {
@@ -69,7 +80,13 @@ export class NativeTableComponent {
             }
         };
         listenOnQuestionAnswers(fe);
-        iterateFeSync(fe, listenOnQuestionAnswers, listenOnQuestionAnswers, listenOnQuestionAnswers, fe);
+        iterateFeSync(
+            fe,
+            listenOnQuestionAnswers,
+            listenOnQuestionAnswers,
+            listenOnQuestionAnswers,
+            fe
+        );
         this.render();
     }
     get formElement(): FormSectionOrFormFollow {
@@ -82,18 +99,23 @@ export class NativeTableComponent {
     questionsWithAnswersRepeated: Set<FormQuestion> = new Set();
     sectionNumber: number = 0;
     tableForm!: {
-        head: HeadType[], // heading, with index=level=row num of heading (go in between colspans from above), q is column
-        body: BodyType[], // matching q columns which are questions
-        rows: RowType[]
+        head: HeadType[]; // heading, with index=level=row num of heading (go in between colspans from above), q is column
+        body: BodyType[]; // matching q columns which are questions
+        rows: RowType[];
     };
     readonly NRS = NativeRenderService;
     datePrecisionToType = FormQuestion.datePrecisionToType;
     datePrecisionToStep = FormQuestion.datePrecisionToStep;
 
-    constructor(public nrs: NativeRenderService) {
-    }
+    constructor(public nrs: NativeRenderService) {}
 
-    radioButtonSelect(required: boolean, obj: any, property: string, value: string, q: FormQuestion) {
+    radioButtonSelect(
+        required: boolean,
+        obj: any,
+        property: string,
+        value: string,
+        q: FormQuestion
+    ) {
         if (required || obj[property] !== value) {
             obj[property] = value;
         } else {
@@ -104,9 +126,9 @@ export class NativeTableComponent {
 
     render() {
         this.tableForm = {
-            head: [{q: []}],
+            head: [{ q: [] }],
             body: [],
-            rows: []
+            rows: [],
         };
         this.sectionNumber = 0;
         if (!this.formElement.repeat) {
@@ -114,18 +136,32 @@ export class NativeTableComponent {
         }
 
         // create first column
-        const head: HeadQuestionType = this.tableForm.head[0].q[0] = {cspan: 1, style: {backgroundColor: '#ddd'}};
-        const body: BodyType = this.tableForm.body[0] = {type: 'label', style: {backgroundColor: '#f2f2f2'}};
+        const head: HeadQuestionType = (this.tableForm.head[0].q[0] = {
+            cspan: 1,
+            style: { backgroundColor: '#ddd' },
+        });
+        const body: BodyType = (this.tableForm.body[0] = {
+            type: 'label',
+            style: { backgroundColor: '#f2f2f2' },
+        });
 
-        this.tableForm.rows = this.getRows(this.formElement, head, body).map(r => ({label: r}));
+        this.tableForm.rows = this.getRows(this.formElement, head, body).map(
+            r => ({ label: r })
+        );
         if (!this.tableForm.rows.length) {
             this.canRender = false;
             return;
         }
         this.canRender = true;
 
-        const [r, c] = this.renderFormElement(this.formElement, -1, undefined, undefined,
-            NativeTableComponent.getSectionStyle(0), undefined);
+        const [r, c] = this.renderFormElement(
+            this.formElement,
+            -1,
+            undefined,
+            undefined,
+            NativeTableComponent.getSectionStyle(0),
+            undefined
+        );
         this.setDepth(r + 1);
         head.rspan = r + 1;
     }
@@ -134,14 +170,19 @@ export class NativeTableComponent {
         if (this.numberingFormat) {
             return this.numberingFormat;
         }
-        this.numberingFormat = !this.nrs.profile && '#.' || this.nrs.profile && this.nrs.profile.repeatFormat || '';
+        this.numberingFormat =
+            (!this.nrs.profile && '#.') ||
+            (this.nrs.profile && this.nrs.profile.repeatFormat) ||
+            '';
         return this.numberingFormat;
     }
 
     repeatList(f: FormElement, level: number, name: string): string[] {
         const numberList = (repeatNumber: number = 1) => {
             return repeatNumber > 1
-                ? range(repeatNumber).map(i => this.repeatFormat().replace(/#/, (i + 1).toString()))
+                ? range(repeatNumber).map(i =>
+                      this.repeatFormat().replace(/#/, (i + 1).toString())
+                  )
                 : new Array(repeatNumber || 0).fill('');
         };
 
@@ -151,7 +192,12 @@ export class NativeTableComponent {
         const repeat = repeatFe(f);
         switch (repeat) {
             case '=':
-                const refQuestion = getQuestionPriorByLabel(f, f, repeatFeQuestion(f), this.nrs.vm);
+                const refQuestion = getQuestionPriorByLabel(
+                    f,
+                    f,
+                    repeatFeQuestion(f),
+                    this.nrs.vm
+                );
                 if (!refQuestion) {
                     return ['']; // bad state, treat as no repeat
                 }
@@ -162,11 +208,20 @@ export class NativeTableComponent {
                 if (!firstQ) {
                     return ['']; // bad state, treat as no repeat
                 }
-                const answers = firstQ.question.datatype === 'Value List' && firstQ.question.answers || [];
+                const answers =
+                    (firstQ.question.datatype === 'Value List' &&
+                        firstQ.question.answers) ||
+                    [];
                 const hasIndex = answers.length > 1;
                 answers.forEach((a, i) => {
                     this.tableForm.rows.forEach((r, ri) => {
-                        this.nrs.elt.formInput[ri + name + (hasIndex ? '_' + i : '') + '_' + firstQ.feId] = a.permissibleValue;
+                        this.nrs.elt.formInput[
+                            ri +
+                                name +
+                                (hasIndex ? '_' + i : '') +
+                                '_' +
+                                firstQ.feId
+                        ] = a.permissibleValue;
                     });
                 });
                 return answers.map(pvGetLabel);
@@ -182,14 +237,21 @@ export class NativeTableComponent {
     getRows(f: FormElement, head: HeadQuestionType, body: BodyType): string[] {
         const numberList = (repeatNumber: number = 1) => {
             return repeatNumber > 1
-                ? range(repeatNumber).map(i => this.repeatFormat().replace(/#/, (i + 1).toString()))
+                ? range(repeatNumber).map(i =>
+                      this.repeatFormat().replace(/#/, (i + 1).toString())
+                  )
                 : new Array(repeatNumber).fill('');
         };
 
         const repeat = repeatFe(f);
         switch (repeat) {
             case '=':
-                const refQuestion = getQuestionPriorByLabel(f, f, repeatFeQuestion(f), this.nrs.vm);
+                const refQuestion = getQuestionPriorByLabel(
+                    f,
+                    f,
+                    repeatFeQuestion(f),
+                    this.nrs.vm
+                );
                 if (!refQuestion) {
                     return ['']; // bad state, treat as no repeat
                 }
@@ -205,8 +267,13 @@ export class NativeTableComponent {
                 body.name = '_' + this.firstQuestion.feId;
                 body.fe = this.firstQuestion;
                 const firstQuestion = this.firstQuestion;
-                return (this.firstQuestion.question.datatype === 'Value List' && this.firstQuestion.question.answers || []).map((a, i) => {
-                    this.nrs.elt.formInput[i + '_' + firstQuestion.feId] = a.permissibleValue;
+                return (
+                    (this.firstQuestion.question.datatype === 'Value List' &&
+                        this.firstQuestion.question.answers) ||
+                    []
+                ).map((a, i) => {
+                    this.nrs.elt.formInput[i + '_' + firstQuestion.feId] =
+                        a.permissibleValue;
                     return NativeRenderService.getPvLabel(a);
                 });
             case 'N':
@@ -218,116 +285,179 @@ export class NativeTableComponent {
         }
     }
 
-    renderFormElement(f: FormElementFollow, level: number, r: number = 1, c: number = 0, sectionStyle: Theme, name = '') {
+    renderFormElement(
+        f: FormElementFollow,
+        level: number,
+        r: number = 1,
+        c: number = 0,
+        sectionStyle: Theme,
+        name = ''
+    ) {
         const firstIndex = repeatFe(f) === 'F' ? 1 : 0;
         if (isSection(f) || isInForm(f)) {
             level += 1;
             const list = this.repeatList(f, level, name);
-            [r, c] = list.reduce((acc, label, iN) => {
-                let iR = 1;
-                let iC = 0;
-                // create
-                const sectionStyle = NativeTableComponent.getSectionStyle(this.sectionNumber++);
-                const section = {
-                    header: true,
-                    cspan: iC,
-                    label: label + (f.label ? ' ' + f.label : ''),
-                    style: sectionStyle.sectionStyle
-                };
-                this.getSectionLevel(level).q.push(section);
+            [r, c] = list.reduce(
+                (acc, label, iN) => {
+                    let iR = 1;
+                    let iC = 0;
+                    // create
+                    const sectionStyle = NativeTableComponent.getSectionStyle(
+                        this.sectionNumber++
+                    );
+                    const section = {
+                        header: true,
+                        cspan: iC,
+                        label: label + (f.label ? ' ' + f.label : ''),
+                        style: sectionStyle.sectionStyle,
+                    };
+                    this.getSectionLevel(level).q.push(section);
 
-                // iterate
-                iR += f.formElements && f.formElements.reduce((acc, fe: FormElementFollow, i: number) => {
-                    if (i < firstIndex) {
-                        return acc;
-                    }
-                    let secR;
-                    [secR, iC] = this.renderFormElement(fe, level, iR, iC, sectionStyle, name + (list.length > 1 ? '_' + iN : ''));
-                    return Math.max(acc, secR);
-                }, 0);
-                section.cspan = iC;
+                    // iterate
+                    iR +=
+                        f.formElements &&
+                        f.formElements.reduce(
+                            (acc, fe: FormElementFollow, i: number) => {
+                                if (i < firstIndex) {
+                                    return acc;
+                                }
+                                let secR;
+                                [secR, iC] = this.renderFormElement(
+                                    fe,
+                                    level,
+                                    iR,
+                                    iC,
+                                    sectionStyle,
+                                    name + (list.length > 1 ? '_' + iN : '')
+                                );
+                                return Math.max(acc, secR);
+                            },
+                            0
+                        );
+                    section.cspan = iC;
 
-                return [Math.max(acc[0], iR), acc[1] + iC];
-            }, [r, c]);
+                    return [Math.max(acc[0], iR), acc[1] + iC];
+                },
+                [r, c]
+            );
         } else if (isQuestion(f)) {
             c++;
             const list = this.repeatList(f, level, name);
-            [r, c] = list.reduce((acc, label, i) => {
-                const questionName = name + (list.length > 1 ? '_' + i : '') + '_' + f.feId;
+            [r, c] = list.reduce(
+                (acc, label, i) => {
+                    const questionName =
+                        name + (list.length > 1 ? '_' + i : '') + '_' + f.feId;
 
-                // create
-                this.getSectionLevel(level + 1).q.push({rspan: r, label: f.label, style: sectionStyle.questionStyle});
-                this.tableForm.body.push({
-                    type: NativeTableComponent.getQuestionType(f),
-                    name: questionName,
-                    fe: f,
-                    style: sectionStyle.answerStyle
-                });
+                    // create
+                    this.getSectionLevel(level + 1).q.push({
+                        rspan: r,
+                        label: f.label,
+                        style: sectionStyle.questionStyle,
+                    });
+                    this.tableForm.body.push({
+                        type: NativeTableComponent.getQuestionType(f),
+                        name: questionName,
+                        fe: f,
+                        style: sectionStyle.answerStyle,
+                    });
 
-                // pre-populate question values
-                if (f.question.datatype === 'Value List' && questionMulti(f.question)) {
-                    this.tableForm.rows.forEach((r, i) => {
-                        const location = i + questionName;
-                        this.nrs.elt.formInput[location] = [];
-                        this.nrs.elt.formInput[location].answer = this.nrs.elt.formInput[location];
-                    });
-                }
-                if (f.question.datatype === 'Value List' && NativeRenderService.isPreselectedRadio(f)) {
-                    const question = f.question;
-                    this.tableForm.rows.forEach((r, i) => {
-                        const location = i + questionName;
-                        this.nrs.elt.formInput[location] = question.answers[0].permissibleValue;
-                    });
-                }
-                if (f.question.defaultAnswer) {
-                    let answer: QuestionValue;
-                    switch (f.question.datatype) {
-                        case 'Geo Location':
-                            const inputs = f.question.defaultAnswer.split(',').map(value => parseFloat(value.trim()));
-                            answer = {latitude: inputs[0], longitude: inputs[1]};
-                            break;
-                        case 'Number':
-                            answer = parseFloat(f.question.defaultAnswer);
-                            break;
-                        case 'Date':
-                        case 'Dynamic Code List':
-                        case 'Externally Defined':
-                        case 'File':
-                        case 'Text':
-                        case 'Time':
-                        case 'Value List':
-                            answer = f.question.defaultAnswer;
-                            break;
-                        default:
-                            throw assertUnreachable(f.question);
-                    }
-                    this.tableForm.rows.forEach((r, i) => {
-                        const location = i + questionName;
-                        if (f.question.datatype === 'Value List' && questionMulti(f.question)) {
-                            this.nrs.elt.formInput[location].push(answer);
-                        } else {
-                            this.nrs.elt.formInput[location] = answer;
-                        }
-                    });
-                }
-                if (f.question.unitsOfMeasure && f.question.unitsOfMeasure.length === 1) {
-                    this.tableForm.rows.forEach((r, i) => {
-                        const location = i + questionName;
-                        this.nrs.elt.formInput[location + '_uom'] = f.question.unitsOfMeasure[0];
-                    });
-                }
-
-                // iterate
-                (f.question.datatype === 'Value List' && f.question.answers || []).forEach((a: PermissibleFormValue) => {
-                    if (a.formElements) {
-                        a.formElements.forEach(sf => {
-                            [r, c] = this.renderFormElement(sf, level, r, c, sectionStyle, name + (list.length > 1 ? '_' + i : ''));
+                    // pre-populate question values
+                    if (
+                        f.question.datatype === 'Value List' &&
+                        questionMulti(f.question)
+                    ) {
+                        this.tableForm.rows.forEach((r, i) => {
+                            const location = i + questionName;
+                            this.nrs.elt.formInput[location] = [];
+                            this.nrs.elt.formInput[location].answer =
+                                this.nrs.elt.formInput[location];
                         });
                     }
-                });
+                    if (
+                        f.question.datatype === 'Value List' &&
+                        NativeRenderService.isPreselectedRadio(f)
+                    ) {
+                        const question = f.question;
+                        this.tableForm.rows.forEach((r, i) => {
+                            const location = i + questionName;
+                            this.nrs.elt.formInput[location] =
+                                question.answers[0].permissibleValue;
+                        });
+                    }
+                    if (f.question.defaultAnswer) {
+                        let answer: QuestionValue;
+                        switch (f.question.datatype) {
+                            case 'Geo Location':
+                                const inputs = f.question.defaultAnswer
+                                    .split(',')
+                                    .map(value => parseFloat(value.trim()));
+                                answer = {
+                                    latitude: inputs[0],
+                                    longitude: inputs[1],
+                                };
+                                break;
+                            case 'Number':
+                                answer = parseFloat(f.question.defaultAnswer);
+                                break;
+                            case 'Date':
+                            case 'Dynamic Code List':
+                            case 'Externally Defined':
+                            case 'File':
+                            case 'Text':
+                            case 'Time':
+                            case 'Value List':
+                                answer = f.question.defaultAnswer;
+                                break;
+                            default:
+                                throw assertUnreachable(f.question);
+                        }
+                        this.tableForm.rows.forEach((r, i) => {
+                            const location = i + questionName;
+                            if (
+                                f.question.datatype === 'Value List' &&
+                                questionMulti(f.question)
+                            ) {
+                                this.nrs.elt.formInput[location].push(answer);
+                            } else {
+                                this.nrs.elt.formInput[location] = answer;
+                            }
+                        });
+                    }
+                    if (
+                        f.question.unitsOfMeasure &&
+                        f.question.unitsOfMeasure.length === 1
+                    ) {
+                        this.tableForm.rows.forEach((r, i) => {
+                            const location = i + questionName;
+                            this.nrs.elt.formInput[location + '_uom'] =
+                                f.question.unitsOfMeasure[0];
+                        });
+                    }
 
-                return [r, c];
-            }, [r, c]);
+                    // iterate
+                    (
+                        (f.question.datatype === 'Value List' &&
+                            f.question.answers) ||
+                        []
+                    ).forEach((a: PermissibleFormValue) => {
+                        if (a.formElements) {
+                            a.formElements.forEach(sf => {
+                                [r, c] = this.renderFormElement(
+                                    sf,
+                                    level,
+                                    r,
+                                    c,
+                                    sectionStyle,
+                                    name + (list.length > 1 ? '_' + i : '')
+                                );
+                            });
+                        }
+                    });
+
+                    return [r, c];
+                },
+                [r, c]
+            );
         }
         return [r, c];
     }
@@ -335,13 +465,17 @@ export class NativeTableComponent {
     setDepth(r: number) {
         this.tableForm.head.forEach((s, level: number) => {
             s.q.forEach(q => {
-                if (!q.header) { q.rspan = r - level; }
+                if (!q.header) {
+                    q.rspan = r - level;
+                }
             });
         });
     }
 
     getSectionLevel(level: number) {
-        if (this.tableForm.head.length <= level) { this.tableForm.head[level] = {q: []}; }
+        if (this.tableForm.head.length <= level) {
+            this.tableForm.head[level] = { q: [] };
+        }
         return this.tableForm.head[level];
     }
 
@@ -351,34 +485,34 @@ export class NativeTableComponent {
 
     static readonly THEME: Theme[] = [
         {
-            sectionStyle: {backgroundColor: '#d7f3da'},
-            questionStyle: {backgroundColor: '#d7f3da'},
-            answerStyle: {backgroundColor: '#f6fff9'}
+            sectionStyle: { backgroundColor: '#d7f3da' },
+            questionStyle: { backgroundColor: '#d7f3da' },
+            answerStyle: { backgroundColor: '#f6fff9' },
         },
         {
-            sectionStyle: {backgroundColor: '#dad7f3'},
-            questionStyle: {backgroundColor: '#dad7f3'},
-            answerStyle: {backgroundColor: '#f9f6ff'}
+            sectionStyle: { backgroundColor: '#dad7f3' },
+            questionStyle: { backgroundColor: '#dad7f3' },
+            answerStyle: { backgroundColor: '#f9f6ff' },
         },
         {
-            sectionStyle: {backgroundColor: '#f3dad7'},
-            questionStyle: {backgroundColor: '#f3dad7'},
-            answerStyle: {backgroundColor: '#fff9f6'}
+            sectionStyle: { backgroundColor: '#f3dad7' },
+            questionStyle: { backgroundColor: '#f3dad7' },
+            answerStyle: { backgroundColor: '#fff9f6' },
         },
         {
-            sectionStyle: {backgroundColor: '#f1f3d8'},
-            questionStyle: {backgroundColor: '#f1f3d8'},
-            answerStyle: {backgroundColor: '#fcfff5'}
+            sectionStyle: { backgroundColor: '#f1f3d8' },
+            questionStyle: { backgroundColor: '#f1f3d8' },
+            answerStyle: { backgroundColor: '#fcfff5' },
         },
         {
-            sectionStyle: {backgroundColor: '#d8f1f3'},
-            questionStyle: {backgroundColor: '#d8f1f3'},
-            answerStyle: {backgroundColor: '#f5fcff'}
+            sectionStyle: { backgroundColor: '#d8f1f3' },
+            questionStyle: { backgroundColor: '#d8f1f3' },
+            answerStyle: { backgroundColor: '#f5fcff' },
         },
         {
-            sectionStyle: {backgroundColor: '#f3d8f1'},
-            questionStyle: {backgroundColor: '#f3d8f1'},
-            answerStyle: {backgroundColor: '#fff5fc'}
+            sectionStyle: { backgroundColor: '#f3d8f1' },
+            questionStyle: { backgroundColor: '#f3d8f1' },
+            answerStyle: { backgroundColor: '#fff5fc' },
         },
     ];
 
@@ -398,6 +532,8 @@ export class NativeTableComponent {
     }
 
     static getSectionStyle(i: number) {
-        return NativeTableComponent.THEME[i % NativeTableComponent.THEME.length];
+        return NativeTableComponent.THEME[
+            i % NativeTableComponent.THEME.length
+        ];
     }
 }

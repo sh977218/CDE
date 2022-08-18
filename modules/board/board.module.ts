@@ -19,9 +19,7 @@ import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 import { CreateBoardModule } from 'board/create-board.module';
 import { BoardOverviewModule } from 'board/board-overview.module';
-import {
-    CreateFormFromBoardModalComponent
-} from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
+import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
 
 @NgModule({
     imports: [
@@ -42,7 +40,7 @@ import {
         AdminItemModule,
         CreateBoardModule,
         BoardOverviewModule,
-        TagModule
+        TagModule,
     ],
     declarations: [
         CreateFormFromBoardComponent,
@@ -51,9 +49,7 @@ import {
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
-    providers: [
-        MyBoardsService,
-    ],
+    providers: [MyBoardsService],
     exports: [
         CreateFormFromBoardComponent,
         ListSortComponent,
@@ -61,9 +57,6 @@ import {
         UnpinBoardComponent,
     ],
     entryComponents: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class BoardModule {
-
-}
+export class BoardModule {}

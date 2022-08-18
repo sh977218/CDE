@@ -1,9 +1,24 @@
-import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    ViewChild,
+    EventEmitter,
+    ElementRef,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+    MatAutocomplete,
+    MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
-import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
+import {
+    startWith,
+    distinctUntilChanged,
+    debounceTime,
+    map,
+} from 'rxjs/operators';
 import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
 
 @Component({
@@ -15,8 +30,8 @@ import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
                 color: rgba(0, 0, 0, 0.87);
                 opacity: 0.65;
             }
-        `
-    ]
+        `,
+    ],
 })
 export class TagComponent {
     @Input() tags: string[] = [];
@@ -31,13 +46,16 @@ export class TagComponent {
     filteredTags: Observable<string[]>;
 
     constructor() {
-        this.filteredTags = this.tagCtrl.valueChanges
-            .pipe(
-                startWith(''),
-                debounceTime(300),
-                distinctUntilChanged(),
-                map(value => this.allTags.filter(t => t.toLowerCase().indexOf(value.toLowerCase()) > -1))
-            );
+        this.filteredTags = this.tagCtrl.valueChanges.pipe(
+            startWith(''),
+            debounceTime(300),
+            distinctUntilChanged(),
+            map(value =>
+                this.allTags.filter(
+                    t => t.toLowerCase().indexOf(value.toLowerCase()) > -1
+                )
+            )
+        );
     }
 
     remove(tag: string): void {
@@ -73,7 +91,5 @@ export class TagComponent {
         } else {
             this.tagInput.nativeElement.value = '';
         }
-
     }
-
 }

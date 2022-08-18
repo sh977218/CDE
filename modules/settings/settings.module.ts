@@ -80,18 +80,15 @@ import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
 import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
-import {
-    DeleteWhiteListModalComponent
-} from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
+import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
-import {
-    ConfirmReindexModalComponent
-} from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
+import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 
 const appRoutes: Routes = [
     {
-        path: '', component: SettingsComponent,
+        path: '',
+        component: SettingsComponent,
         canActivate: [LoggedInGuard],
         children: [
             // All User Can Access
@@ -99,151 +96,159 @@ const appRoutes: Routes = [
                 path: 'profile',
                 component: ProfileComponent,
                 canActivate: [LoggedInGuard],
-                data: {title: 'Profile'}
+                data: { title: 'Profile' },
             },
             {
                 path: 'search',
                 component: SearchSettingsComponent,
                 canActivate: [LoggedInGuard],
-                data: {title: 'Search Settings'},
+                data: { title: 'Search Settings' },
             },
             {
                 path: 'viewingHistory',
                 component: ViewingHistoryComponent,
                 canActivate: [LoggedInGuard],
-                data: {title: 'Viewing History'}
+                data: { title: 'Viewing History' },
             },
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: MyDraftsResolve},
+                resolve: { drafts: MyDraftsResolve },
                 canActivate: [LoggedInGuard],
-                data: {title: 'My Drafts'}
+                data: { title: 'My Drafts' },
             },
             {
                 path: 'myComments',
                 component: CommentsComponent,
                 canActivate: [LoggedInGuard],
-                data: {title: 'My Comments', commentsUrl: '/server/discuss/myComments/'}
+                data: {
+                    title: 'My Comments',
+                    commentsUrl: '/server/discuss/myComments/',
+                },
             },
             // Org Authority Can Access
             {
                 path: 'orgAdmin',
                 component: OrgAdminComponent,
                 canActivate: [OrgAdminGuard],
-                data: {title: 'Org Admin'}
+                data: { title: 'Org Admin' },
             },
             {
                 path: 'orgCurator',
                 component: OrgCuratorComponent,
                 canActivate: [OrgAdminGuard],
-                data: {title: 'Org Curator'}
+                data: { title: 'Org Curator' },
             },
             {
                 path: 'orgEditor',
                 component: OrgEditorComponent,
                 canActivate: [OrgAdminGuard],
-                data: {title: 'Org Editor'}
+                data: { title: 'Org Editor' },
             },
             {
                 path: 'stewardOrgTransfer',
                 component: StewardOrgTransferComponent,
                 canActivate: [OrgAdminGuard],
-                data: {title: 'Steward Org Transfer'}
+                data: { title: 'Steward Org Transfer' },
             },
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: MyOrgDraftsResolve},
+                resolve: { drafts: MyOrgDraftsResolve },
                 canActivate: [LoggedInGuard],
-                data: {title: 'My Organizations\' Drafts'}
+                data: { title: "My Organizations' Drafts" },
             },
             {
                 path: 'myOrgComments',
                 component: CommentsComponent,
                 canActivate: [LoggedInGuard],
-                data: {title: 'My Organizations\' Comments', commentsUrl: '/server/discuss/orgComments/'}
+                data: {
+                    title: "My Organizations' Comments",
+                    commentsUrl: '/server/discuss/orgComments/',
+                },
             },
             {
                 path: 'tagsManagement',
                 component: TagsManagementComponent,
                 canActivate: [OrgAuthorityGuard],
-                resolve: {managedOrgs: ManagedOrgsResolve},
-                data: {title: 'Tags Management'}
+                resolve: { managedOrgs: ManagedOrgsResolve },
+                data: { title: 'Tags Management' },
             },
             {
                 path: 'propertiesManagement',
                 component: PropertiesManagementComponent,
                 canActivate: [OrgAuthorityGuard],
-                resolve: {managedOrgs: ManagedOrgsResolve},
-                data: {title: 'Properties Management'}
+                resolve: { managedOrgs: ManagedOrgsResolve },
+                data: { title: 'Properties Management' },
             },
             {
                 path: 'orgsEdit',
                 component: OrgsEditComponent,
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'Organizations'}
+                data: { title: 'Organizations' },
             },
-
 
             // Site Admin Can Access
             {
                 path: 'siteAdmins',
                 component: EditSiteAdminsComponent,
                 canActivate: [SiteAdminGuard],
-                data: {title: 'Site Admins'}
+                data: { title: 'Site Admins' },
             },
             {
                 path: 'users',
                 component: UsersMgtComponent,
                 canActivate: [OrgAdminGuard],
-                data: {title: 'Users'}
+                data: { title: 'Users' },
             },
             {
                 path: 'allComments',
                 component: CommentsComponent,
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'All Comments', commentsUrl: '/server/discuss/allComments/'}
+                data: {
+                    title: 'All Comments',
+                    commentsUrl: '/server/discuss/allComments/',
+                },
             },
             {
                 path: 'allDrafts',
                 component: DraftsComponent,
-                resolve: {drafts: AllDraftsResolve},
+                resolve: { drafts: AllDraftsResolve },
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'All Drafts'}
+                data: { title: 'All Drafts' },
             },
             {
                 path: 'serverStatus',
                 component: ServerStatusComponent,
                 canActivate: [SiteAdminGuard],
-                data: {title: 'Server Status'}
+                data: { title: 'Server Status' },
             },
             {
                 path: 'articles',
                 component: ArticleAdminComponent,
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'Articles'}
+                data: { title: 'Articles' },
             },
             {
                 path: 'idSources',
                 component: IdSourcesComponent,
                 canActivate: [SiteAdminGuard],
-                data: {title: 'Id Sources'}
+                data: { title: 'Id Sources' },
             },
             {
                 path: 'dataValidation',
                 component: DataValidationComponent,
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'Data Validation'}
+                data: { title: 'Data Validation' },
             },
             {
                 path: 'spellCheck',
                 component: SpellCheckComponent,
                 canActivate: [OrgAuthorityGuard],
-                data: {title: 'Spell Check'}
+                data: { title: 'Spell Check' },
             },
-        ]
-    }
+        ],
+    },
 ];
 
 @NgModule({
@@ -328,7 +333,7 @@ const appRoutes: Routes = [
         TagsManagementComponent,
         UsersMgtComponent,
         CreateUserModalComponent,
-        ViewingHistoryComponent
+        ViewingHistoryComponent,
     ],
     exports: [],
     providers: [
@@ -336,9 +341,8 @@ const appRoutes: Routes = [
         MyDraftsResolve,
         MyOrgDraftsResolve,
         AllDraftsResolve,
-        ManagedOrgsResolve
+        ManagedOrgsResolve,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class SettingsModule {
-}
+export class SettingsModule {}

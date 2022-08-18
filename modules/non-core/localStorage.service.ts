@@ -5,7 +5,10 @@ type Value = any;
 @Injectable()
 export class LocalStorageService {
     setItem(key: string, value: Value) {
-        localStorage.setItem(prefix(key), typeof value === 'object' ? JSON.stringify(value) : value);
+        localStorage.setItem(
+            prefix(key),
+            typeof value === 'object' ? JSON.stringify(value) : value
+        );
     }
 
     getItem(key: string): Value {
@@ -22,5 +25,5 @@ export class LocalStorageService {
 }
 
 function prefix(key: string): string {
-    return 'nlmcde.' +  key;
+    return 'nlmcde.' + key;
 }

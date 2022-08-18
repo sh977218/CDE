@@ -10,8 +10,8 @@ export class InlineSelectEditComponent {
     @Input() isAllowed = false;
     @Output() save = new EventEmitter<string>();
     @Input() cdeTooltip = '';
-    @Input() cdeTooltipClass =  'cdeTooltipMultiline';
-    @Input() cdeTooltipPosition = 'below'
+    @Input() cdeTooltipClass = 'cdeTooltipMultiline';
+    @Input() cdeTooltipPosition = 'below';
     _value!: string;
     editMode = false;
 

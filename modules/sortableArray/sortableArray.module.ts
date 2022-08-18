@@ -5,14 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { SortableArrayComponent } from 'sortableArray/sortableArray.component';
 
-
 @NgModule({
     imports: [CommonModule, MatIconModule],
     declarations: [SortableArrayComponent],
     exports: [SortableArrayComponent],
     providers: [],
-    schemas: []
+    schemas: [],
 })
-
-export class SortableArrayModule {
-}
+export class SortableArrayModule {}

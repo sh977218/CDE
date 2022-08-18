@@ -57,9 +57,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
 import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 
-const appRoutes: Routes = [
-    {path: '', component: FormViewComponent},
-];
+const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
 
 @NgModule({
     imports: [
@@ -128,10 +126,8 @@ const appRoutes: Routes = [
         FormViewService,
         WINDOW_PROVIDERS,
         SkipLogicValidateService,
-        UcumService
+        UcumService,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class FormViewModule {
-}
+export class FormViewModule {}

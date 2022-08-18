@@ -36,21 +36,13 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { MatCardModule } from '@angular/material/card';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
-import {
-    RegistrationStatusModalComponent
-} from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
+import { RegistrationStatusModalComponent } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
-import {
-    DeleteClassificationModalComponent
-} from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
-import {
-    AddIdentifierModalComponent
-} from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
-import {
-    AddReferenceDocumentModalComponent
-} from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
+import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
+import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
+import { AddReferenceDocumentModalComponent } from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 
 @NgModule({
@@ -78,7 +70,7 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         MatIconModule,
         MatTabsModule,
         MatCardModule,
-        TourMatMenuModule
+        TourMatMenuModule,
     ],
     declarations: [
         AttachmentsComponent,
@@ -122,10 +114,7 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         SaveModalComponent,
         SourcesComponent,
     ],
-    entryComponents: [
-        ClassifyItemDialogComponent,
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    entryComponents: [ClassifyItemDialogComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AdminItemModule {
-}
+export class AdminItemModule {}

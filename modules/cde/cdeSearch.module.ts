@@ -59,7 +59,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         CdeModule,
         SearchModule,
         TagModule,
-        TourMatMenuModule
+        TourMatMenuModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,
@@ -68,15 +68,12 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         CdeSummaryListContentComponent,
         CdeTableViewPreferencesComponent,
     ],
-    exports: [
-        CdeSearchComponent,
-    ],
+    exports: [CdeSearchComponent],
     entryComponents: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
     ],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CdeSearchModule {
-}
+export class CdeSearchModule {}

@@ -21,7 +21,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
     imports: [
         CommonModule,
         FormsModule,
-        
+
         RouterModule,
         MatIconModule,
         MatButtonModule,
@@ -48,9 +48,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         DeCompletionComponent,
         ValueDomainSummaryComponent,
     ],
-    providers: [
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class CdeModule {
-}
+export class CdeModule {}

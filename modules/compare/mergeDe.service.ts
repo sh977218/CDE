@@ -9,20 +9,26 @@ import {
     mergeArrayByIds,
     mergeArrayByProperties,
     mergeArrayByReferenceDocuments,
-    mergeArrayBySources
+    mergeArrayBySources,
 } from 'core/adminItem/classification';
 import { transferClassifications } from 'shared/classification/classificationShared';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
 
-export async function doMerge(tinyIdFrom: string, tinyIdTo: string, fields: DeMergeFields) {
+export async function doMerge(
+    tinyIdFrom: string,
+    tinyIdTo: string,
+    fields: DeMergeFields
+) {
     if (tinyIdFrom === tinyIdTo) {
         throw new Error('You cannot merge same data elements.');
     }
     const cdeFrom = await getCdeByTinyId(tinyIdFrom);
     const cdeTo = await getCdeByTinyId(tinyIdTo);
     if (cdeFrom.isDraft) {
-        throw new Error(`You cannot merge draft data element. ${cdeFrom.tinyId}`);
+        throw new Error(
+            `You cannot merge draft data element. ${cdeFrom.tinyId}`
+        );
     }
     if (cdeTo.isDraft) {
         throw new Error(`You cannot merge draft data element. ${cdeTo.tinyId}`);
@@ -63,7 +69,10 @@ export async function doMerge(tinyIdFrom: string, tinyIdTo: string, fields: DeMe
         cdeFrom.registrationState.registrationStatus = 'Retired';
     }
     cdeTo.changeNote = 'Merged from tinyId ' + cdeFrom.tinyId;
-    return {left: await putDeByTinyId(cdeFrom), right: await putDeByTinyId(cdeTo)};
+    return {
+        left: await putDeByTinyId(cdeFrom),
+        right: await putDeByTinyId(cdeTo),
+    };
 }
 
 function getCdeByTinyId(tinyId: string): Promise<DataElement> {

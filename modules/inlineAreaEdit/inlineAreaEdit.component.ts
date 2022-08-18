@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+} from '@angular/core';
 import { cloneDeep } from 'lodash';
 import { environment } from 'environments/environment';
 import 'inlineAreaEdit/inlineAreaEdit.global.scss';
@@ -7,10 +17,12 @@ import 'inlineAreaEdit/inlineAreaEdit.global.scss';
     selector: 'cde-inline-area-edit',
     templateUrl: './inlineAreaEdit.component.html',
 })
-export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges {
+export class InlineAreaEditComponent
+    implements OnInit, AfterViewInit, OnChanges
+{
     @Input() model!: string;
     @Input() isAllowed = false;
-    @Input() bypassSanitize = false
+    @Input() bypassSanitize = false;
     @Input() enableTextTruncate = true;
     @Output() modelChange = new EventEmitter<string>();
     @Input() defFormat: 'html' | '' = '';
@@ -19,8 +31,7 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
     value!: string;
     localFormat: 'html' | '' = '';
 
-    constructor(private elementRef: ElementRef) {
-    }
+    constructor(private elementRef: ElementRef) {}
 
     ngOnInit(): void {
         this.value = this.model;
@@ -35,12 +46,16 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.model) { this.value = this.model; }
+        if (changes.model) {
+            this.value = this.model;
+        }
     }
 
     confirmSave() {
         if (InlineAreaEditComponent.isInvalidHtml(this.value)) {
-            alert('Error. Img src may only be a relative url starting with /data');
+            alert(
+                'Error. Img src may only be a relative url starting with /data'
+            );
         } else {
             this.editMode = false;
             this.defFormatChange.emit(this.localFormat);
@@ -64,16 +79,18 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
 
     static isInvalidHtml(html: string) {
         const allowUrls = [environment.publicUrl, (window as any).urlProd];
-        const srcs = html.match(/src\s*=\s*["'](.+?)["']/ig);
+        const srcs = html.match(/src\s*=\s*["'](.+?)["']/gi);
         if (srcs) {
             for (const src of srcs) {
-                const urls = src.match(/\s*["'](.+?)["']/ig);
+                const urls = src.match(/\s*["'](.+?)["']/gi);
                 if (urls) {
                     for (const url of urls) {
                         let allow = false;
                         allowUrls.forEach(allowUrl => {
                             const index = url.indexOf(allowUrl);
-                            if (index > -1) { allow = true; }
+                            if (index > -1) {
+                                allow = true;
+                            }
                         });
                         return !allow;
                     }

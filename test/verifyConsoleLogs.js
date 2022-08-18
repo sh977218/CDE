@@ -104,6 +104,7 @@ let ignoreErrors = [
     'Report Only',
     'Failed to decode downloaded font',
     'https://script.crazyegg.com/pages/data-scripts',
+    'https://cdn.ckeditor.com/',
     'Slow network is detected',
     'WebSocket is already in CLOSING or CLOSED state',
     'petstore.swagger.io',

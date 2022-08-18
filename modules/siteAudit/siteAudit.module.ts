@@ -22,20 +22,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
-import {
-    ClientErrorDetailModalComponent
-} from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
+import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
-const appRoutes: Routes = [
-    {path: '', component: SiteAuditComponent},
-];
+const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
-        
+
         RouterModule.forChild(appRoutes),
         MatButtonModule,
         MatCheckboxModule,
@@ -47,7 +43,7 @@ const appRoutes: Routes = [
         // non-core
         // internal
         CompareModule,
-        MatDialogModule
+        MatDialogModule,
     ],
     declarations: [
         ActiveBansComponent,
@@ -63,12 +59,8 @@ const appRoutes: Routes = [
         ServerErrorsComponent,
         SiteAuditComponent,
     ],
-    exports: [
-        RouterModule
-    ],
-    providers: [
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [RouterModule],
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class SiteAuditModule {
-}
+export class SiteAuditModule {}

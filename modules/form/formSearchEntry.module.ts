@@ -4,9 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormSearchComponent } from 'form/search/formSearch.component';
 import { FormSearchModule } from 'form/formSearch.module';
 
-const appRoutes: Routes = [
-    {path: '', component: FormSearchComponent},
-];
+const appRoutes: Routes = [{ path: '', component: FormSearchComponent }];
 
 @NgModule({
     imports: [
@@ -14,13 +12,9 @@ const appRoutes: Routes = [
         // internal
         FormSearchModule,
     ],
-    declarations: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
-    schemas: []
+    declarations: [],
+    exports: [],
+    providers: [],
+    schemas: [],
 })
-export class FormSearchEntryModule {
-}
+export class FormSearchEntryModule {}

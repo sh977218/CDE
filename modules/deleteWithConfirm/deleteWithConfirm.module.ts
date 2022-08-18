@@ -7,17 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { DeleteWithConfirmComponent } from 'deleteWithConfirm/deleteWithConfirm.component';
 
 @NgModule({
-    imports: [
-        CKEditorModule,
-        CommonModule,
-        FormsModule,
-        MatIconModule
-    ],
+    imports: [CKEditorModule, CommonModule, FormsModule, MatIconModule],
     declarations: [DeleteWithConfirmComponent],
     exports: [DeleteWithConfirmComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class DeleteWithConfirmModule {
-}
+export class DeleteWithConfirmModule {}

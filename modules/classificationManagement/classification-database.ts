@@ -30,7 +30,7 @@ export class ClassificationDatabase {
     /** Add an item to to-do list */
     insertItem(parent: ClassificationNode, name: string) {
         if (parent.elements) {
-            parent.elements.push({name, elements: []} as ClassificationNode);
+            parent.elements.push({ name, elements: [] } as ClassificationNode);
             this.dataChange.next(this.data);
         }
     }

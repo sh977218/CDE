@@ -3,16 +3,22 @@ import { Params } from '@angular/router';
 import { ownKeys } from 'shared/util';
 
 export function httpErrorMessage(err: HttpErrorResponse): string {
-    if (typeof (err.error) === 'string') { // response body
+    if (typeof err.error === 'string') {
+        // response body
         return err.error;
     }
-    if (err.error instanceof Error) { // legacy server error objects
+    if (err.error instanceof Error) {
+        // legacy server error objects
         return err.error.message;
     }
-    if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
+    if (
+        err.message ===
+        'Http failure response for (unknown url): 0 Unknown Error'
+    ) {
         return 'Server is not available or you are offline.';
     }
-    if (err.statusText) { // general status codes
+    if (err.statusText) {
+        // general status codes
         return err.statusText;
     }
     return err.message; // fallback to full angular http description

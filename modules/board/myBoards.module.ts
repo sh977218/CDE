@@ -11,9 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BoardOverviewModule } from 'board/board-overview.module';
 
-const boardRoutes: Routes = [
-    {path: '', component: MyBoardsComponent},
-];
+const boardRoutes: Routes = [{ path: '', component: MyBoardsComponent }];
 
 @NgModule({
     imports: [
@@ -31,14 +29,9 @@ const boardRoutes: Routes = [
         CreateBoardModule,
         BoardOverviewModule,
     ],
-    declarations: [
-        MyBoardsComponent,
-    ],
+    declarations: [MyBoardsComponent],
     providers: [],
     exports: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class MyBoardsModule {
-
-}
+export class MyBoardsModule {}

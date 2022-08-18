@@ -7,9 +7,17 @@ import { uriView } from 'shared/item';
 import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
-    isOrgCurator, isOrgAdmin, isOrgAuthority, hasRolePrivilege, isSiteAdmin, canViewComment
+    isOrgCurator,
+    isOrgAdmin,
+    isOrgAuthority,
+    hasRolePrivilege,
+    isSiteAdmin,
+    canViewComment,
 } from 'shared/security/authorizationShared';
-import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
+import {
+    newNotificationSettings,
+    newNotificationSettingsMediaDrawer,
+} from 'shared/user';
 import { noop } from 'shared/util';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
@@ -27,13 +35,16 @@ export class UserService {
 
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
-        @Inject(forwardRef(() => NotificationService)) private notificationService: NotificationService,
+        @Inject(forwardRef(() => NotificationService))
+        private notificationService: NotificationService,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
-        @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog,
+        @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog
     ) {
         this.reload();
         this.resetInactivityTimeout();
-        document.body.addEventListener('click', () => this.resetInactivityTimeout());
+        document.body.addEventListener('click', () =>
+            this.resetInactivityTimeout()
+        );
     }
 
     canSeeComment = () => canViewComment(this.user);
@@ -61,7 +72,9 @@ export class UserService {
     }
 
     loginViaJwt(jwt: string): Promise<User> {
-        return this.http.post<User>('/server/user/jwt', {jwtToken: jwt}).toPromise()
+        return this.http
+            .post<User>('/server/user/jwt', { jwtToken: jwt })
+            .toPromise()
             .then(user => this.processUser(user));
     }
 
@@ -72,7 +85,12 @@ export class UserService {
         }
         this._user = UserService.validate(user);
         this.setOrganizations();
-        if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
+        if (
+            this._user.searchSettings &&
+            !['summary', 'table'].includes(
+                this._user.searchSettings.defaultSearchView
+            )
+        ) {
             this._user.searchSettings.defaultSearchView = 'summary';
         }
         this.canViewComment = canViewComment(this.user);
@@ -84,7 +102,9 @@ export class UserService {
 
     reload(cb = noop) {
         this.clear();
-        this.promise = this.http.get<User>('/server/user/').toPromise()
+        this.promise = this.http
+            .get<User>('/server/user/')
+            .toPromise()
             .then(user => this.processUser(user));
         this.promise.finally(() => {
             this.listeners.forEach(listener => listener(this._user || null));
@@ -113,7 +133,7 @@ export class UserService {
                 this.reload();
                 this.alert.addAlert('success', 'Saved');
             },
-            (err) => this.alert.httpErrorMessageAlert(err)
+            err => this.alert.httpErrorMessageAlert(err)
         );
     }
 
@@ -123,16 +143,27 @@ export class UserService {
 
     setOrganizations() {
         if (hasRolePrivilege(this.user, 'universalCreate')) {
-            this.http.get<Organization[]>('/server/orgManagement/managedOrgs')
+            this.http
+                .get<Organization[]>('/server/orgManagement/managedOrgs')
                 .subscribe(orgs => {
                     this.userOrgs = orgs.map(org => org.name);
                 });
         } else {
-            this.userOrgs = Array.from(new Set(new Array<string>().concat(
-                this.user && Array.isArray(this.user.orgAdmin) ? this.user.orgAdmin : [],
-                this.user && Array.isArray(this.user.orgCurator) ? this.user.orgCurator : [],
-                this.user && Array.isArray(this.user.orgEditor) ? this.user.orgEditor : []
-            )));
+            this.userOrgs = Array.from(
+                new Set(
+                    new Array<string>().concat(
+                        this.user && Array.isArray(this.user.orgAdmin)
+                            ? this.user.orgAdmin
+                            : [],
+                        this.user && Array.isArray(this.user.orgCurator)
+                            ? this.user.orgCurator
+                            : [],
+                        this.user && Array.isArray(this.user.orgEditor)
+                            ? this.user.orgEditor
+                            : []
+                    )
+                )
+            );
         }
     }
 
@@ -142,7 +173,7 @@ export class UserService {
         }
         this.listeners.push(cb);
         return () => {
-            removeFromArray(this.listeners, cb)
+            removeFromArray(this.listeners, cb);
         };
     }
 
@@ -168,7 +199,8 @@ export class UserService {
             user.notificationSettings = newNotificationSettings();
         }
         if (!user.notificationSettings.comment) {
-            user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
+            user.notificationSettings.comment =
+                newNotificationSettingsMediaDrawer();
         }
         return user;
     }
@@ -182,12 +214,11 @@ export class UserService {
     template: `
         <h1 mat-dialog-title>Inactivity timeout</h1>
         <mat-dialog-content>
-            <p>Your session was automatically timed out. </p>
+            <p>Your session was automatically timed out.</p>
         </mat-dialog-content>
         <mat-dialog-actions>
             <button class="button secondary" [mat-dialog-close]="">OK</button>
         </mat-dialog-actions>
     `,
 })
-export class InactivityLoggedOutComponent {
-}
+export class InactivityLoggedOutComponent {}

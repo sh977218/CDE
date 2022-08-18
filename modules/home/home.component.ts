@@ -13,32 +13,41 @@ const mobileWidth = 699;
 @Component({
     selector: 'cde-home',
     templateUrl: 'home.component.html',
-    styleUrls: ['./home.component.scss']
+    styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
     @Input() updates?: UpdateCard[];
     cdeSearchTerm!: string;
     featureSelected: 'explore' | 'learn' | 'submit' = 'explore';
-    isMobile: boolean = (window.innerWidth <= mobileWidth);
+    isMobile: boolean = window.innerWidth <= mobileWidth;
     searchType: SearchType = 'endorsedCde';
 
-    constructor(private route: ActivatedRoute,
-                private http: HttpClient,
-                private router: Router,
-                private userService: UserService) {
-    }
+    constructor(
+        private route: ActivatedRoute,
+        private http: HttpClient,
+        private router: Router,
+        private userService: UserService
+    ) {}
 
     ngOnInit() {
         if (this.route.snapshot.queryParams.tour) {
             this.router.navigate(['/home']);
-        } else if (this.route.snapshot.queryParams.notifications !== undefined) {
+        } else if (
+            this.route.snapshot.queryParams.notifications !== undefined
+        ) {
             this.router.navigate(['/home']);
         }
 
         if (!this.updates) {
-            this.http.get<HomepageGetResponse>('/server/home').toPromise().then(homeData => {
-                this.updates = homeData && Array.isArray(homeData?.body?.updates) ? homeData.body.updates : [];
-            })
+            this.http
+                .get<HomepageGetResponse>('/server/home')
+                .toPromise()
+                .then(homeData => {
+                    this.updates =
+                        homeData && Array.isArray(homeData?.body?.updates)
+                            ? homeData.body.updates
+                            : [];
+                });
         }
     }
 
@@ -69,11 +78,13 @@ export class HomeComponent implements OnInit {
     }
 
     search() {
-        const query: Partial<SearchSettings> = {q: this.cdeSearchTerm};
+        const query: Partial<SearchSettings> = { q: this.cdeSearchTerm };
         if (this.searchType === 'endorsedCde') {
             query.nihEndorsed = true;
         }
-        this.router.navigate([getSearchUrl(this.searchType)], {queryParams: query});
+        this.router.navigate([getSearchUrl(this.searchType)], {
+            queryParams: query,
+        });
     }
 }
 

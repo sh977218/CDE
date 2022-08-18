@@ -5,17 +5,16 @@ import { HomeComponent } from 'home/home.component';
 import { HomeEditComponent } from 'home/homeEdit.component';
 
 const appRoutes: Routes = [
-    {path: '', component: HomeComponent},
-    {path: 'edit', component: HomeEditComponent, canActivate: [NlmCuratorGuard]},
+    { path: '', component: HomeComponent },
+    {
+        path: 'edit',
+        component: HomeEditComponent,
+        canActivate: [NlmCuratorGuard],
+    },
 ];
 
 @NgModule({
-    imports: [
-        RouterModule.forChild(appRoutes),
-    ],
-    exports: [
-        RouterModule,
-    ],
+    imports: [RouterModule.forChild(appRoutes)],
+    exports: [RouterModule],
 })
-export class HomeRoutingModule {
-}
+export class HomeRoutingModule {}

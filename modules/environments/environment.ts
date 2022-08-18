@@ -4,13 +4,11 @@
 
 export const environment = {
     production: false,
-    loggedIn: () => {
-    },
+    loggedIn: () => {},
     federatedLogin: 'http://localhost:3002',
     publicUrl: 'http://localhost:4200',
     socketIoUrl: 'http://localhost:3001',
-    ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger'
-
+    ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger',
 };
 
 /*

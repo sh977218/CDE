@@ -61,9 +61,11 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         AlertModule,
         TourMatMenuModule.forRoot(),
         LoggerModule.forRoot({
-            level: environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
+            level: environment.production
+                ? NgxLoggerLevel.OFF
+                : NgxLoggerLevel.TRACE,
             serverLogLevel: NgxLoggerLevel.ERROR,
-            serverLoggingUrl: '/server/log/clientExceptionLogs'
+            serverLoggingUrl: '/server/log/clientExceptionLogs',
         }),
     ],
     declarations: [
@@ -86,12 +88,10 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         UserService,
         OrgHelperService,
         CdeTourService,
-        {provide: ErrorHandler, useClass: GlobalErrorHandler},
+        { provide: ErrorHandler, useClass: GlobalErrorHandler },
     ],
     exports: [],
     entryComponents: [],
-    bootstrap: [CdeAppComponent]
+    bootstrap: [CdeAppComponent],
 })
-
-export class CdeAppModule {
-}
+export class CdeAppModule {}

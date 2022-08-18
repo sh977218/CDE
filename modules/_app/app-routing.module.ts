@@ -16,149 +16,194 @@ import { LoginFederatedComponent } from '_app/loginFederated.component';
 const appRoutes: Routes = [
     {
         path: 'loginFederated',
-        component:LoginFederatedComponent
+        component: LoginFederatedComponent,
     },
     {
         path: 'api',
-        loadChildren: () => import('system/public/documentApi.module').then(m => m.DocumentApiModule),
-        data: {title: 'API Documentation', preload: false}
+        loadChildren: () =>
+            import('system/public/documentApi.module').then(
+                m => m.DocumentApiModule
+            ),
+        data: { title: 'API Documentation', preload: false },
     },
     {
         path: 'about',
-        loadChildren: () => import('system/public/about.module').then(m => m.AboutModule),
-        data: {title: 'About', preload: false}
+        loadChildren: () =>
+            import('system/public/about.module').then(m => m.AboutModule),
+        data: { title: 'About', preload: false },
     },
     {
         path: 'board/:boardId',
-        loadChildren: () => import('board/boardView.module').then(m => m.BoardViewModule),
-        data: {title: 'Board View', preload: false}
+        loadChildren: () =>
+            import('board/boardView.module').then(m => m.BoardViewModule),
+        data: { title: 'Board View', preload: false },
     },
-    {path: 'home', loadChildren: () => import('home/home.module').then(m => m.HomeModule), data: {preload: false}},
+    {
+        path: 'home',
+        loadChildren: () => import('home/home.module').then(m => m.HomeModule),
+        data: { preload: false },
+    },
     {
         path: 'cde/search',
-        loadChildren: () => import('cde/cdeSearchEntry.module').then(m => m.CdeSearchEntryModule),
-        data: {title: 'Data Element Search', preload: false}
+        loadChildren: () =>
+            import('cde/cdeSearchEntry.module').then(
+                m => m.CdeSearchEntryModule
+            ),
+        data: { title: 'Data Element Search', preload: false },
     },
     {
-        path: 'cdeStatusReport', loadChildren: () => import('cde/cdeStatusReport.module').then(m => m.CdeStatusReportModule),
-        data: {title: 'Data Element Status Report', preload: false}
+        path: 'cdeStatusReport',
+        loadChildren: () =>
+            import('cde/cdeStatusReport.module').then(
+                m => m.CdeStatusReportModule
+            ),
+        data: { title: 'Data Element Status Report', preload: false },
     },
-    {path: 'cde', redirectTo: '/cde/search', pathMatch: 'full'},
+    { path: 'cde', redirectTo: '/cde/search', pathMatch: 'full' },
     {
         path: 'classificationManagement',
-        loadChildren: () => import('classificationManagement/classificationManagement.module').then(m => m.ClassificationManagementModule),
+        loadChildren: () =>
+            import(
+                'classificationManagement/classificationManagement.module'
+            ).then(m => m.ClassificationManagementModule),
         canLoad: [ClassifyGuard],
-        data: {title: 'Manage Classification', preload: false},
+        data: { title: 'Manage Classification', preload: false },
     },
     {
         path: 'createCde',
-        loadChildren: () => import('cde/cdeCreate.module').then(m => m.CdeCreateModule),
-        data: {title: 'Create Data Element', preload: false}
+        loadChildren: () =>
+            import('cde/cdeCreate.module').then(m => m.CdeCreateModule),
+        data: { title: 'Create Data Element', preload: false },
     },
     {
         path: 'createForm',
-        loadChildren: () => import('form/formCreate.module').then(m => m.FormCreateModule),
-        data: {title: 'Create Form', preload: false}
+        loadChildren: () =>
+            import('form/formCreate.module').then(m => m.FormCreateModule),
+        data: { title: 'Create Form', preload: false },
     },
     {
         path: 'deView',
-        loadChildren: () => import('cde/cdeView.module').then(m => m.CdeViewModule),
-        data: {title: 'Data Element View', preload: false},
+        loadChildren: () =>
+            import('cde/cdeView.module').then(m => m.CdeViewModule),
+        data: { title: 'Data Element View', preload: false },
     },
     {
         path: 'form/search',
-        loadChildren: () => import('form/formSearchEntry.module').then(m => m.FormSearchEntryModule),
-        data: {title: 'Form Search', preload: false}
+        loadChildren: () =>
+            import('form/formSearchEntry.module').then(
+                m => m.FormSearchEntryModule
+            ),
+        data: { title: 'Form Search', preload: false },
     },
     {
         path: 'formEdit',
-        loadChildren: () => import('form/formEdit.module').then(m => m.FormEditModule),
+        loadChildren: () =>
+            import('form/formEdit.module').then(m => m.FormEditModule),
         resolve: {
-            form: FormResolve
+            form: FormResolve,
         },
         canLoad: [LoggedInGuard],
-        data: {title: 'Form Edit'}
+        data: { title: 'Form Edit' },
     },
     {
         path: 'formView',
-        loadChildren: () => import('form/formView.module').then(m => m.FormViewModule),
-        data: {title: 'Form View', preload: false},
+        loadChildren: () =>
+            import('form/formView.module').then(m => m.FormViewModule),
+        data: { title: 'Form View', preload: false },
     },
-    {path: 'form', redirectTo: '/form/search', pathMatch: 'full'},
+    { path: 'form', redirectTo: '/form/search', pathMatch: 'full' },
     {
         path: 'login',
-        loadChildren: () => import('system/public/login.module').then(m => m.LoginModule),
+        loadChildren: () =>
+            import('system/public/login.module').then(m => m.LoginModule),
         canLoad: [IEGuard],
-        data: {title: 'Login', preload: false}
+        data: { title: 'Login', preload: false },
     },
     {
         path: 'ieDiscontinued',
-        loadChildren: () => import('system/public/ieDiscontinued.module').then(m => m.IeDiscontinuedModule),
-        data: {title: 'Upgrade Browser', preload: false},
+        loadChildren: () =>
+            import('system/public/ieDiscontinued.module').then(
+                m => m.IeDiscontinuedModule
+            ),
+        data: { title: 'Upgrade Browser', preload: false },
     },
     {
         path: 'myBoards',
-        loadChildren: () => import('board/myBoards.module').then(m => m.MyBoardsModule),
-        data: {title: 'My Boards', preload: false},
+        loadChildren: () =>
+            import('board/myBoards.module').then(m => m.MyBoardsModule),
+        data: { title: 'My Boards', preload: false },
     },
-    {path: 'offline', component: OfflineComponent, data: {title: 'Offline', preload: false}},
+    {
+        path: 'offline',
+        component: OfflineComponent,
+        data: { title: 'Offline', preload: false },
+    },
     {
         path: 'resources',
-        loadChildren: () => import('system/public/resources.module').then(m => m.ResourcesModule),
-        data: {title: 'Resources', preload: false},
+        loadChildren: () =>
+            import('system/public/resources.module').then(
+                m => m.ResourcesModule
+            ),
+        data: { title: 'Resources', preload: false },
     },
     {
         path: 'settings',
-        loadChildren: () => import('settings/settings.module').then(m => m.SettingsModule),
+        loadChildren: () =>
+            import('settings/settings.module').then(m => m.SettingsModule),
         canLoad: [LoggedInGuard],
-        data: {title: 'Settings', preload: false},
+        data: { title: 'Settings', preload: false },
     },
     {
         path: 'whatsNew',
-        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
-        data: {title: `What's New`, article: 'whatsNew', preload: false},
+        loadChildren: () =>
+            import('system/public/article.module').then(m => m.ArticleModule),
+        data: { title: `What's New`, article: 'whatsNew', preload: false },
     },
     {
         path: 'guides',
-        loadChildren: () => import('system/public/guide.module').then(m => m.GuideModule),
-        data: {title: 'Guides', preload: false}
+        loadChildren: () =>
+            import('system/public/guide.module').then(m => m.GuideModule),
+        data: { title: 'Guides', preload: false },
     },
     {
         path: 'videos',
-        loadChildren: () => import('system/public/videos.module').then(m => m.VideosModule),
-        data: {title: 'Videos', preload: false}
+        loadChildren: () =>
+            import('system/public/videos.module').then(m => m.VideosModule),
+        data: { title: 'Videos', preload: false },
     },
     {
         path: 'searchPreferences',
-        loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
+        loadChildren: () =>
+            import('system/public/searchPreferences.module').then(
+                m => m.SearchPreferencesModule
+            ),
         canLoad: [LoggedInGuard],
-        data: {title: 'Search Preferences', preload: false},
+        data: { title: 'Search Preferences', preload: false },
     },
     {
         path: 'siteAudit',
-        loadChildren: () => import('siteAudit/siteAudit.module').then(m => m.SiteAuditModule),
+        loadChildren: () =>
+            import('siteAudit/siteAudit.module').then(m => m.SiteAuditModule),
         canLoad: [OrgAuthorityGuard],
-        data: {title: 'Audit', preload: false},
+        data: { title: 'Audit', preload: false },
     },
-    {path: '', redirectTo: '/home', pathMatch: 'full'},
-    {path: '**', component: PageNotFoundComponent, data: {title: 'Page Not Found', preload: false}}
+    { path: '', redirectTo: '/home', pathMatch: 'full' },
+    {
+        path: '**',
+        component: PageNotFoundComponent,
+        data: { title: 'Page Not Found', preload: false },
+    },
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(
-            appRoutes,
-            {
-                scrollPositionRestoration: 'enabled',
-                anchorScrolling: 'enabled',
-                enableTracing: false, // TODO: dev only
-            }
-        ),
+        RouterModule.forRoot(appRoutes, {
+            scrollPositionRestoration: 'enabled',
+            anchorScrolling: 'enabled',
+            enableTracing: false, // TODO: dev only
+        }),
     ],
-    declarations: [
-        OfflineComponent,
-        PageNotFoundComponent
-    ],
+    declarations: [OfflineComponent, PageNotFoundComponent],
     providers: [
         ClassifyGuard,
         IEGuard,
@@ -167,11 +212,8 @@ const appRoutes: Routes = [
         OrgAdminGuard,
         OrgAuthorityGuard,
         OrgCuratorGuard,
-        SiteAdminGuard
+        SiteAdminGuard,
     ],
-    exports: [
-        RouterModule
-    ]
+    exports: [RouterModule],
 })
-export class CdeAppRoutingModule {
-}
+export class CdeAppRoutingModule {}

@@ -2,14 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-
 import { CdeStatusReportComponent } from 'cde/statusReport/cdeStatusReport.component';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { MatIconModule } from '@angular/material/icon';
 
-const appRoutes: Routes = [
-    {path: '', component: CdeStatusReportComponent},
-];
+const appRoutes: Routes = [{ path: '', component: CdeStatusReportComponent }];
 
 @NgModule({
     imports: [
@@ -24,7 +21,6 @@ const appRoutes: Routes = [
     declarations: [CdeStatusReportComponent],
     exports: [],
     providers: [],
-    schemas: []
+    schemas: [],
 })
-export class CdeStatusReportModule {
-}
+export class CdeStatusReportModule {}

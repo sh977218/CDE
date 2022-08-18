@@ -15,15 +15,9 @@ import { TextTruncateModule } from 'textTruncate/textTruncate.module';
         MatIconModule,
         TextTruncateModule,
     ],
-    declarations: [
-        InlineAreaEditComponent,
-    ],
-    exports: [
-        InlineAreaEditComponent,
-    ],
+    declarations: [InlineAreaEditComponent],
+    exports: [InlineAreaEditComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class InlineAreaEditModule {
-}
+export class InlineAreaEditModule {}

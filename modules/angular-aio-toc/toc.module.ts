@@ -6,23 +6,10 @@ import { ScrollSpyService } from 'angular-aio-toc/scroll-spy.service';
 import { TocComponent } from 'angular-aio-toc/toc.component';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        MatIconModule
-    ],
-    declarations: [
-        TocComponent
-    ],
-    providers: [
-        ScrollService,
-        ScrollSpyService
-    ],
-    exports: [
-        TocComponent
-    ],
-    entryComponents: [
-        TocComponent
-    ],
+    imports: [CommonModule, MatIconModule],
+    declarations: [TocComponent],
+    providers: [ScrollService, ScrollSpyService],
+    exports: [TocComponent],
+    entryComponents: [TocComponent],
 })
-export class TocModule {
-}
+export class TocModule {}

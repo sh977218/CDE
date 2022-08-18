@@ -6,7 +6,7 @@ import { User } from 'shared/models.model';
 
 @Component({
     selector: 'cde-username-autocomplete',
-    templateUrl: './usernameAutocomplete.component.html'
+    templateUrl: './usernameAutocomplete.component.html',
 })
 export class UsernameAutocompleteComponent {
     @Input() placeHolder: string = 'Make the user';
@@ -19,9 +19,14 @@ export class UsernameAutocompleteComponent {
             .pipe(
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(value => value.length < 3 ? [] : userService.searchUsernames(value)),
-            ).subscribe(usernames => this.filteredUsernames = usernames);
+                switchMap(value =>
+                    value.length < 3 ? [] : userService.searchUsernames(value)
+                )
+            )
+            .subscribe(usernames => (this.filteredUsernames = usernames));
 
-        this.usernameControl.valueChanges.subscribe(val => this.selected.emit(val));
+        this.usernameControl.valueChanges.subscribe(val =>
+            this.selected.emit(val)
+        );
     }
 }

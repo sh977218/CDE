@@ -31,7 +31,10 @@ export class ScrollSpiedElement implements ScrollItem {
      * @param {Element} element - The element whose position relative to the viewport is tracked.
      * @param {number}  index   - The index of the element in the original list of element (group).
      */
-    constructor(public readonly element: Element, public readonly index: number) {}
+    constructor(
+        public readonly element: Element,
+        public readonly index: number
+    ) {}
 
     /*
      * @method
@@ -42,7 +45,8 @@ export class ScrollSpiedElement implements ScrollItem {
      * @param {number} topOffset - The distance from the top at which the element becomes active.
      */
     calculateTop(scrollTop: number, topOffset: number) {
-        this.top = scrollTop + this.element.getBoundingClientRect().top - topOffset;
+        this.top =
+            scrollTop + this.element.getBoundingClientRect().top - topOffset;
     }
 }
 
@@ -65,7 +69,9 @@ export class ScrollSpiedElementGroup {
      *     be tracked, in order to determine which one is "active" at any given moment.
      */
     constructor(elements: Element[]) {
-        this.spiedElements = elements.map((elem, i) => new ScrollSpiedElement(elem, i));
+        this.spiedElements = elements.map(
+            (elem, i) => new ScrollSpiedElement(elem, i)
+        );
     }
 
     /*
@@ -78,8 +84,10 @@ export class ScrollSpiedElementGroup {
      * @param {number} topOffset - The distance from the top at which the element becomes active.
      */
     calibrate(scrollTop: number, topOffset: number) {
-        this.spiedElements.forEach(spiedElem => spiedElem.calculateTop(scrollTop, topOffset));
-        this.spiedElements.sort((a, b) => b.top - a.top);   // Sort in descending `top` order.
+        this.spiedElements.forEach(spiedElem =>
+            spiedElem.calculateTop(scrollTop, topOffset)
+        );
+        this.spiedElements.sort((a, b) => b.top - a.top); // Sort in descending `top` order.
     }
 
     /*
@@ -95,7 +103,7 @@ export class ScrollSpiedElementGroup {
      * @param {number} maxScrollTop - The maximum possible `scrollTop` (based on the viewport size).
      */
     onScroll(scrollTop: number, maxScrollTop: number) {
-        let activeItem: ScrollItem|undefined;
+        let activeItem: ScrollItem | undefined;
 
         if (scrollTop + 1 >= maxScrollTop) {
             activeItem = this.spiedElements[0];
@@ -117,13 +125,22 @@ export class ScrollSpiedElementGroup {
 export class ScrollSpyService {
     private spiedElementGroups: ScrollSpiedElementGroup[] = [];
     private onStopListening = new Subject();
-    private resizeEvents = fromEvent(window, 'resize').pipe(auditTime(300), takeUntil(this.onStopListening));
+    private resizeEvents = fromEvent(window, 'resize').pipe(
+        auditTime(300),
+        takeUntil(this.onStopListening)
+    );
     private scrollEvents: Observable<Event>;
     private lastContentHeight!: number;
     private lastMaxScrollTop!: number;
 
-    constructor(@Inject(DOCUMENT) private doc: Document, private scrollService: ScrollService) {
-        this.scrollEvents = fromEvent(this.scrollService.scrollElement, 'scroll').pipe(auditTime(10), takeUntil(this.onStopListening));
+    constructor(
+        @Inject(DOCUMENT) private doc: Document,
+        private scrollService: ScrollService
+    ) {
+        this.scrollEvents = fromEvent(
+            this.scrollService.scrollElement,
+            'scroll'
+        ).pipe(auditTime(10), takeUntil(this.onStopListening));
     }
 
     /*
@@ -156,17 +173,20 @@ export class ScrollSpyService {
         this.spiedElementGroups.push(spiedGroup);
 
         return {
-            active: spiedGroup.activeScrollItem.asObservable().pipe(distinctUntilChanged()),
-            unspy: () => this.unspy(spiedGroup)
+            active: spiedGroup.activeScrollItem
+                .asObservable()
+                .pipe(distinctUntilChanged()),
+            unspy: () => this.unspy(spiedGroup),
         };
     }
 
     private getContentHeight() {
         return (
-            this.scrollService.scrollElement === window
+            (this.scrollService.scrollElement === window
                 ? this.doc.body.scrollHeight
-                : (this.scrollService.scrollElement as Element).scrollHeight
-        ) || Number.MAX_SAFE_INTEGER;
+                : (this.scrollService.scrollElement as Element).scrollHeight) ||
+            Number.MAX_SAFE_INTEGER
+        );
     }
 
     private getScrollTop() {
@@ -179,10 +199,11 @@ export class ScrollSpyService {
 
     private getViewportHeight() {
         return (
-            this.scrollService.scrollElement === window
+            (this.scrollService.scrollElement === window
                 ? this.doc.body.clientHeight
-                : (this.scrollService.scrollElement as Element).clientHeight
-        ) || 0;
+                : (this.scrollService.scrollElement as Element).clientHeight) ||
+            0
+        );
     }
 
     /*
@@ -199,7 +220,9 @@ export class ScrollSpyService {
         this.lastContentHeight = contentHeight;
         this.lastMaxScrollTop = contentHeight - viewportHeight;
 
-        this.spiedElementGroups.forEach(group => group.calibrate(scrollTop, topOffset));
+        this.spiedElementGroups.forEach(group =>
+            group.calibrate(scrollTop, topOffset)
+        );
     }
 
     /*
@@ -216,7 +239,9 @@ export class ScrollSpyService {
 
         const scrollTop = this.getScrollTop();
         const maxScrollTop = this.lastMaxScrollTop;
-        this.spiedElementGroups.forEach(group => group.onScroll(scrollTop, maxScrollTop));
+        this.spiedElementGroups.forEach(group =>
+            group.onScroll(scrollTop, maxScrollTop)
+        );
     }
 
     /*
@@ -228,7 +253,9 @@ export class ScrollSpyService {
      */
     private unspy(spiedGroup: ScrollSpiedElementGroup) {
         spiedGroup.activeScrollItem.complete();
-        this.spiedElementGroups = this.spiedElementGroups.filter(group => group !== spiedGroup);
+        this.spiedElementGroups = this.spiedElementGroups.filter(
+            group => group !== spiedGroup
+        );
 
         if (!this.spiedElementGroups.length) {
             this.onStopListening.next();

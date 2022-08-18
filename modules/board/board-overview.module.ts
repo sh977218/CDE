@@ -6,12 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BoardOverviewComponent } from 'board/board-overview/board-overview.component';
 import { CreateBoardModule } from 'board/create-board.module';
-import {
-    BoardOverviewEditModalComponent
-} from 'board/board-overview/board-overview-edit-modal/board-overview-edit-modal.component';
-import {
-    BoardOverviewDeleteModalComponent
-} from 'board/board-overview/board-overview-delete-modal/board-overview-delete-modal.component';
+import { BoardOverviewEditModalComponent } from 'board/board-overview/board-overview-edit-modal/board-overview-edit-modal.component';
+import { BoardOverviewDeleteModalComponent } from 'board/board-overview/board-overview-delete-modal/board-overview-delete-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,20 +30,15 @@ import { MatInputModule } from '@angular/material/input';
         MatFormFieldModule,
         MatButtonToggleModule,
         CreateBoardModule,
-        TagModule
+        TagModule,
     ],
     declarations: [
         BoardOverviewComponent,
         BoardOverviewEditModalComponent,
-        BoardOverviewDeleteModalComponent
+        BoardOverviewDeleteModalComponent,
     ],
     providers: [],
-    exports: [
-        BoardOverviewComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    exports: [BoardOverviewComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class BoardOverviewModule {
-
-}
+export class BoardOverviewModule {}

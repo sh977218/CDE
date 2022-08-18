@@ -6,9 +6,8 @@ import { CreateFormComponent } from 'adminItem/createForm/createForm.component';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 
 const appRoutes: Routes = [
-    {path: '', component: CreateFormComponent, canLoad: [LoggedInGuard]},
+    { path: '', component: CreateFormComponent, canLoad: [LoggedInGuard] },
 ];
-
 
 @NgModule({
     imports: [
@@ -18,13 +17,9 @@ const appRoutes: Routes = [
         // internal
         AdminItemModule,
     ],
-    declarations: [
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
-    schemas: []
+    declarations: [],
+    exports: [],
+    providers: [],
+    schemas: [],
 })
-export class FormCreateModule {
-}
+export class FormCreateModule {}

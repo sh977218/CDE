@@ -10,27 +10,24 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule, Routes } from '@angular/router';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { AdminItemModule } from 'adminItem/adminItem.module';
-import {
-    OrgClassificationManagementComponent
-} from 'classificationManagement/orgClassificationManagement/orgClassificationManagement.component';
+import { OrgClassificationManagementComponent } from 'classificationManagement/orgClassificationManagement/orgClassificationManagement.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
 import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
-import {
-    RemoveOrgClassificationDialogComponent
-} from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
+import { RemoveOrgClassificationDialogComponent } from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
 
 const appRoutes: Routes = [
     {
-        path: '', component: OrgClassificationManagementComponent,
+        path: '',
+        component: OrgClassificationManagementComponent,
         resolve: {
-            orgs: ManagedOrgsResolve
+            orgs: ManagedOrgsResolve,
         },
         canLoad: [OrgAdminGuard],
-        data: {title: 'Org Classification Management'}
+        data: { title: 'Org Classification Management' },
     },
 ];
 
@@ -50,7 +47,7 @@ const appRoutes: Routes = [
         MatSelectModule,
         MatMenuModule,
         MatTreeModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     declarations: [
         OrgClassificationManagementComponent,
@@ -59,9 +56,7 @@ const appRoutes: Routes = [
         RenameClassificationDialogComponent,
     ],
     exports: [],
-    providers: [ManagedOrgsResolve,
-        ClassificationDatabase],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    providers: [ManagedOrgsResolve, ClassificationDatabase],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ClassificationManagementModule {
-}
+export class ClassificationManagementModule {}
