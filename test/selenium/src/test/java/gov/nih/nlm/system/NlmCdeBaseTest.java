@@ -138,9 +138,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
-        driver.manage().window().setSize(new Dimension(1024,612)); // CI size
         ngdriver = new NgWebDriver(js);
-
     }
 
     @BeforeMethod
@@ -613,7 +611,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     public void moveMouseToCoordinate(Integer x, Integer y) {
         PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "default mouse");
         Sequence actions = new Sequence(mouse, 0)
-            .addAction(mouse.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), x, y));
+                .addAction(mouse.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), x, y));
         ((RemoteWebDriver) driver).perform(Collections.singletonList(actions));
     }
 

@@ -3,7 +3,7 @@
 # Location of node. For dev testing use '.'  for prod testing use 'build'
 NODE_LOC='.'
 
-db_user='cdeuser'
+db_user='siteRootAdmin'
 db_password='password'
 
 target='{"count":0,"_shards":{"total":1,"successful":1,"failed":0}}'
@@ -22,8 +22,8 @@ while [ $COUNTER -lt 2 ]; do
     fi
 done
 
-mongorestore -u $db_user -p $db_password --drop -d test test/data/test/
-mongorestore -u $db_user -p $db_password --drop -d cde-logs-test test/data/cde-logs-test/
+mongorestore -u $db_user -p $db_password --drop --nsInclude 'test.*' test/data/
+mongorestore -u $db_user -p $db_password --drop --nsInclude 'cde-logs-test.*' test/data/
 
 echo "deleting es index."
 npm run gulpJs es
