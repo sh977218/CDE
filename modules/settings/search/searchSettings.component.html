@@ -2,18 +2,20 @@
 <ng-container *ngIf="user">
     <p>I want my search to include items with these statuses:</p>
     <mat-radio-group [(ngModel)]="viewDrafts">
-        <mat-radio-button [value]="false">
+        <mat-radio-button [value]="false" id="viewPublishOnlyButton">
             <strong>Published CDEs and Forms:</strong>
             Preferred Standard, Standard, Qualified
         </mat-radio-button>
-        <mat-radio-button [value]="true">
+        <mat-radio-button [value]="true" id="viewPublishAndDraftButton">
             <strong>Published and Draft CDEs and Forms:</strong>
             Preferred Standard, Standard, Qualified, Recorded, Candidate
         </mat-radio-button>
     </mat-radio-group>
     <p>
-        <strong>Important note: Only Qualified, Standard, and Preferred Standard status CDEs and forms are considered final.</strong>
-        Candidate and Recorded status CDEs and forms are draft submissions, under review, and subject to change. They are made available
+        <strong>Important note: Only Qualified, Standard, and Preferred Standard status CDEs and forms are considered
+            final.</strong>
+        Candidate and Recorded status CDEs and forms are draft submissions, under review, and subject to change. They
+        are made available
         to NIH staff for informational purposes only.
     </p>
 </ng-container>

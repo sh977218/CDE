@@ -46,9 +46,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-
         // non-core
-
         // internal
         BoardModule,
         PinToBoardModule,
@@ -65,8 +63,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         FormTableViewPreferencesComponent,
     ],
     exports: [FormSearchComponent],
-    entryComponents: [FormSummaryListContentComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FormSearchModule {}

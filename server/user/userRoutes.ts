@@ -1,12 +1,12 @@
 import { RequestHandler, Router } from 'express';
-import { authenticate } from 'passport';
-import { config } from 'server';
 import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
     byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
 } from 'server/user/userDb';
+import { User } from 'shared/models.model';
 
 require('express-async-errors');
+const passport = require('passport'); // must use require to preserve this pointer
 
 export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
     const router = Router();
@@ -27,7 +27,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
 
     router.post('/jwt', (req, res, next) => {
         /* istanbul ignore next */
-        authenticate('utsJwt', (err, user) => {
+        passport.authenticate('utsJwt', (err: Error | null, user: User | null) => {
             req.logIn(user, () => {
                 res.status(err ? 401 : 200).send(err ? err : user);
             });

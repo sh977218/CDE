@@ -1,17 +1,15 @@
 import { Express, Request, RequestHandler } from 'express'
 import fetch from 'node-fetch';
-import {
-    deserializeUser, initialize as passportInitialize, serializeUser, session as passportSession, use as passportUse
-} from 'passport';
 import { Strategy as CustomStrategy } from 'passport-custom';
+import { Strategy as LocalStrategy } from 'passport-local';
 import { config } from 'server';
 import { errorLogger } from 'server/system/logging';
-import { CbErr1, CbError2, CbNode, User } from 'shared/models.model';
+import { CbErr1, CbError1, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
 import { isStatus, json, text } from 'shared/fetch';
 import { Parser } from 'xml2js';
 
-const localStrategy = require('passport-local').Strategy;
+const passport = require('passport'); // must use require to preserve this pointer
 
 export type AuthenticatedRequest = {
     user: User,
@@ -20,15 +18,15 @@ export type AuthenticatedRequest = {
 
 const parser = new Parser();
 
-serializeUser((user: User, done) => {
+passport.serializeUser((user: User, done: CbError1) => {
     done(null, user._id);
 });
 
-deserializeUser(userById);
+passport.deserializeUser(userById);
 
 export function init(app: Express) {
-    app.use(passportInitialize());
-    app.use(passportSession());
+    app.use(passport.initialize());
+    app.use(passport.session());
 }
 
 export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
@@ -74,7 +72,7 @@ export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<
 }
 
 export function authBeforeVsac(req: Request, username: string, password: string,
-                               done: CbError2<UserDocument | null | void, { message: string } | void>) {
+                               done: (error: Error | null, user?: UserDocument | null, options?: { message: string }) => void) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(() => {
         /* istanbul ignore if */
@@ -98,7 +96,7 @@ export function authBeforeVsac(req: Request, username: string, password: string,
                 }
                 /* istanbul ignore else */
                 if (username) {
-                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user));
+                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user || null));
                 } else {
                     done(new Error('No UMLS User'));
                 }
@@ -106,9 +104,9 @@ export function authBeforeVsac(req: Request, username: string, password: string,
     });
 }
 
-passportUse(new localStrategy({passReqToCallback: true}, authBeforeVsac));
+passport.use(new LocalStrategy({passReqToCallback: true}, authBeforeVsac));
 /* istanbul ignore next */
-passportUse('utsJwt', new CustomStrategy((req, cb) => {
+passport.use('utsJwt', new CustomStrategy((req, cb) => {
     const utsUsersServer = config.uts.federatedService;
     /* istanbul ignore if */
     if (!utsUsersServer) {

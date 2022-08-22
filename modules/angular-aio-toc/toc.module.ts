@@ -9,7 +9,6 @@ import { TocComponent } from 'angular-aio-toc/toc.component';
     imports: [CommonModule, MatIconModule],
     declarations: [TocComponent],
     providers: [ScrollService, ScrollSpyService],
-    exports: [TocComponent],
-    entryComponents: [TocComponent],
+    exports: [TocComponent]
 })
 export class TocModule {}

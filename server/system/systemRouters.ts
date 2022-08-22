@@ -3,7 +3,6 @@ import * as csrf from 'csurf';
 import { Request, RequestHandler, Response, Router } from 'express';
 import { GridFSFile } from 'mongodb';
 import { Cursor, QueryOptions } from 'mongoose';
-import { authenticate } from 'passport';
 import { config, ObjectId } from 'server';
 import { handleError, respondError } from 'server/errorHandler';
 import {
@@ -35,11 +34,12 @@ import {
     IdSourceResponse,
     IdSourcesResponse
 } from 'shared/boundaryInterfaces/API/system';
-import { CbError } from 'shared/models.model';
+import { CbError, User } from 'shared/models.model';
 import { Readable } from 'stream';
 import { promisify } from 'util';
 
 require('express-async-errors');
+const passport = require('passport'); // must use require to preserve this pointer
 
 export function module() {
     const router = Router();
@@ -214,7 +214,7 @@ export function module() {
         }
 
         function passportAuthenticate() {
-            authenticate('local', (err, user, info) => {
+            passport.authenticate('local', (err: Error | null, user: User | null, info: string) => {
                 if (err) {
                     respondError()(err);
                     return res.status(403).send();

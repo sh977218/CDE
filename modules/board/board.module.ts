@@ -25,7 +25,6 @@ import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/cre
     imports: [
         CommonModule,
         FormsModule,
-
         RouterModule,
         MatButtonToggleModule,
         MatCardModule,
@@ -56,7 +55,6 @@ import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/cre
         PinBoardSnackbarComponent,
         UnpinBoardComponent,
     ],
-    entryComponents: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class BoardModule {}

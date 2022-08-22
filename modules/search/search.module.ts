@@ -26,7 +26,6 @@ import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.compo
     imports: [
         CommonModule,
         FormsModule,
-
         RouterModule.forChild([]),
         // non-core
         MatIconModule,
@@ -57,8 +56,7 @@ import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.compo
         SummaryListComponent,
         TableListComponent,
     ],
-    entryComponents: [SummaryListComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SearchModule {}

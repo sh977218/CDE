@@ -49,10 +49,8 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         MatSelectModule,
         MatTabsModule,
         MatTooltipModule,
-
         RouterModule,
         // non-core
-
         // internal
         BoardModule,
         PinToBoardModule,
@@ -69,11 +67,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         CdeTableViewPreferencesComponent,
     ],
     exports: [CdeSearchComponent],
-    entryComponents: [
-        BoardCdeSummaryListComponent,
-        BoardCdeSummaryListContentComponent,
-    ],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CdeSearchModule {}

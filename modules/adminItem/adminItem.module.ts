@@ -50,12 +50,10 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         CommonModule,
         CKEditorModule,
         FormsModule,
-
         RouterModule,
         TreeModule,
         // non-core
         NonCoreModule,
-
         // internal
         CompareModule,
         SearchModule,
@@ -114,7 +112,6 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         SaveModalComponent,
         SourcesComponent,
     ],
-    entryComponents: [ClassifyItemDialogComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AdminItemModule {}

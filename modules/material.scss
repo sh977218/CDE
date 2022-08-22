@@ -1,7 +1,7 @@
 @import './theme';
 
 /* BEGIN Custom Angular Material Theme https://material.angular.io/guide/theming */
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @include mat-core(); // CALL ONLY ONCE
 

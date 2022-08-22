@@ -62,10 +62,8 @@ public class SearchSettings extends NlmCdeBaseTest {
         noDrafts();
 
         goToSearchSettings();
-        findElement(By.cssSelector("mat-radio-button input[value='false']:checked"));
-        clickElement(By.xpath("//mat-radio-button[*//input[@value='true']]"));
-        hangon(1);
-        findElement(By.cssSelector("mat-radio-button input[value='true']:checked"));
+        clickElement(By.id("viewPublishAndDraftButton"));
+        closeAlert();
         drafts();
 
         logout();
@@ -75,10 +73,8 @@ public class SearchSettings extends NlmCdeBaseTest {
         drafts();
 
         goToSearchSettings();
-        findElement(By.cssSelector("mat-radio-button input[value='true']:checked"));
-        clickElement(By.xpath("//mat-radio-button[*//input[@value='false']]"));
-        hangon(1);
-        findElement(By.cssSelector("mat-radio-button input[value='false']:checked"));
+        clickElement(By.id("viewPublishOnlyButton"));
+        closeAlert();
         noDrafts();
 
         logout();

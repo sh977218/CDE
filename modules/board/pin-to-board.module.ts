@@ -36,8 +36,7 @@ import { BoardOverviewModule } from 'board/board-overview.module';
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
     ],
-    entryComponents: [PinToBoardLogInModalComponent, PinToBoardModalComponent],
     exports: [PinToBoardDirective],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PinToBoardModule {}

@@ -91,7 +91,6 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
     ],
     exports: [],
-    entryComponents: [],
-    bootstrap: [CdeAppComponent],
+    bootstrap: [CdeAppComponent]
 })
 export class CdeAppModule {}

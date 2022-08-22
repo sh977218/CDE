@@ -3,7 +3,8 @@
     <form #quickSearchForm="ngForm" id="quickSearchForm" class="container" novalidate>
         <button style="display: none" type="submit" (click)="termSearch()"></button>
         <div class="stretchBar inline-group" style="gap: 0">
-            <button class="forSearchDesktop searchDropdown button" [disabled]="embedded" [matMenuTriggerFor]="searchMenu">
+            <button class="forSearchDesktop searchDropdown button" [disabled]="embedded"
+                    [matMenuTriggerFor]="searchMenu">
                 <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
                      style="height: 20px; vertical-align: text-top">
                 {{getSearchLabel(searchType)}}
@@ -53,7 +54,8 @@
     </form>
 </section>
 
-<section *ngIf="elts && aggregations else searchingLoader" class="container searchSection" [class.searchFilterLayout]="filterMode"
+<section *ngIf="elts && aggregations else searchingLoader" class="container searchSection"
+         [class.searchFilterLayout]="filterMode"
          style="margin-top: 0" [style.max-width]="resultsView === 'table' ? 'none' : ''">
     <!--FILTERS-->
     <div *ngIf="filterMode" class="filterPanel">
@@ -71,8 +73,7 @@
                     <span id="term_crumb"
                           class="pill" role="button" tabindex="0"
                           aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
-                          matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                          (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
+                          matTooltipClass="cdeTooltip" (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
                         <span class="text">{{searchedTerm}}</span>
                         <span class="close">X</span>
                     </span>
@@ -85,8 +86,7 @@
                         <span class="classif_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearSelectedClassifications(c)">
+                              matTooltipClass="cdeTooltip" (click)="clearSelectedClassifications(c)">
                             <span class="text">{{c}}</span>
                             <span class="close">X</span>
                         </span>
@@ -102,8 +102,7 @@
                         <span class="classifAlt_filter pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearSelectedClassificationsAlt(c)">
+                              matTooltipClass="cdeTooltip" (click)="clearSelectedClassificationsAlt(c)">
                             <span class="text">{{c}}</span>
                             <span class="close">X</span>
                         </span>
@@ -117,8 +116,7 @@
                         <span class="pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearExcludeOrgs()">
+                              matTooltipClass="cdeTooltip" (click)="clearExcludeOrgs()">
                             <span class="text">{{getExcludedOrgs()}}</span>
                             <span class="close">X</span>
                         </span>
@@ -130,8 +128,7 @@
                         <span class="status_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this registration statuses filter"
                               matTooltip="Remove this registration statuses filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearSelectedStatus(s)">
+                              matTooltipClass="cdeTooltip" (click)="clearSelectedStatus(s)">
                             <span class="text">{{s}}</span>
                             <span class="close">X</span>
                         </span>
@@ -143,8 +140,7 @@
                         <span class="datatype_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this datatype filter"
                               matTooltip="Remove this datatype filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="right"
-                              (click)="clearSelectedDatatype(d)">
+                              matTooltipClass="cdeTooltip" (click)="clearSelectedDatatype(d)">
                             <span class="text">{{d}}</span>
                             <span class="close">X</span>
                         </span>
@@ -188,7 +184,7 @@
                    (click)="setAltClassificationFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
                    aria-label="Add a second classification filter as an AND condition"
                    matTooltip="Add a second classification filter as an AND condition"
-                   matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                   matTooltipClass="cdeTooltip">
                     <mat-icon>add_box</mat-icon>
                 </a>
                 <a *ngIf="userService.isSiteAdmin() && !excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
@@ -197,7 +193,7 @@
                    (click)="setExcludeOrgFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
                    aria-label="Add a second classification filter as a NOT condition"
                    matTooltip="Add a second classification filter as a NOT condition"
-                   matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                   matTooltipClass="cdeTooltip">
                     <mat-icon>indeterminate_check_box</mat-icon>
                 </a>
             </div>
@@ -214,12 +210,12 @@
                                  [attr.aria-label]="t.longName" (click)="alterOrgFilter(t.key)" role="link">
                                 <span class="keyboard-arrow left treeItemIcon"></span>
                                 <span class="treeItemText" [matTooltip]="t.longName"
-                                      matTooltipClass="cdeTooltip" matTooltipPosition="right"> {{t.key}}</span>
+                                      matTooltipClass="cdeTooltip"> {{t.key}}</span>
                             </div>
                             <ng-template #classifSelf>
                                 <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
                                      [matTooltip]="t.longName" [attr.aria-label]="t.longName"
-                                     matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                                     matTooltipClass="cdeTooltip">
                                     {{t.key}}
                                 </div>
                             </ng-template>
@@ -228,7 +224,7 @@
                     <ng-template #classifOrg>
                         <div id="classif-{{t.key}}" class="treeChild input-hover" (click)="alterOrgFilter(t.key)"
                              role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
-                             matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                             matTooltipClass="cdeTooltip">
                             <span class="keyboard-arrow treeItemIcon"></span>
                             <span class="treeItemText">{{t.key}} (<span
                                     id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</span>
@@ -272,7 +268,7 @@
                 <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
                     <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
                            [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
-                           matTooltipClass="cdeTooltip" matTooltipPosition="right">
+                           matTooltipClass="cdeTooltip">
                         <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
                                [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
                                (change)="addStatusFilter(t.key)"/>
@@ -384,12 +380,15 @@
                     </h1>
                     <div class="clearfix"></div>
                     <p>
-                        Enter a phrase/text or explore {{module === 'cde' ? 'CDEs' : 'Forms'}} by selecting a Collection.
+                        Enter a phrase/text or explore {{module === 'cde' ? 'CDEs' : 'Forms'}} by selecting a
+                        Collection.
                     </p>
                     <p>
-                        The NIH CDE Repository hosts <strong><span id="totalItems">{{totalItems}}</span> {{module === 'cde' ? 'CDEs' : 'Forms'}}</strong>
+                        The NIH CDE Repository hosts <strong><span
+                            id="totalItems">{{totalItems}}</span> {{module === 'cde' ? 'CDEs' : 'Forms'}}</strong>
                         from <strong>{{orgs.length}} Collections</strong>.
-                        We provide access to structured human and machine-readable definitions of data elements that have
+                        We provide access to structured human and machine-readable definitions of data elements that
+                        have
                         been recommended or required by NIH Institutes and Centers and other organizations for use in
                         research and for other purposes.
                     </p>
@@ -411,7 +410,8 @@
                                 <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener noreferrer">Source</a>
                                 </div>
                                 <mat-icon class="welcomeDetailIcon" *ngIf="org.htmlOverview"
-                                          id="search_by_classification_info_{{org.name}}" (click)="openOrgDetails(org); $event.stopImmediatePropagation()">
+                                          id="search_by_classification_info_{{org.name}}"
+                                          (click)="openOrgDetails(org); $event.stopImmediatePropagation()">
                                     help_outline
                                 </mat-icon>
                             </fieldset>
@@ -435,10 +435,10 @@
 </section>
 
 <ng-template #searchingLoader>
-<!--    <h1>-->
-<!--        <mat-icon class="spin">auto_renew</mat-icon>-->
-<!--        Searching...-->
-<!--    </h1>-->
+    <h1>
+        <mat-icon class="spin">auto_renew</mat-icon>
+        Searching...
+    </h1>
 </ng-template>
 
 <mat-menu #exportMenu>
