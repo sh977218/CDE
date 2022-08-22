@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { assertUnreachable } from 'shared/models.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';

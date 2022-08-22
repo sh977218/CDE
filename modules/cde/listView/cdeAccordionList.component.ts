@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Elt, ModuleItem, User } from 'shared/models.model';

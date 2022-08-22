@@ -1,11 +1,8 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
-import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'cde-site-audit',

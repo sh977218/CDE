@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormElement, FormElementsContainer, FormQuestion, QuestionValueList } from 'shared/form/form.model';
+import { FormElement, FormElementsContainer, QuestionValueList } from 'shared/form/form.model';
 import {
     Concept, DataElement, DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
     DatatypeContainerNumber,

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef, ViewChild
+    ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
