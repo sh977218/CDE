@@ -1,17 +1,13 @@
-RSS Feeds Result:
-<div class="border">
-    <div class="rssHeader border-top border-bottom p-1">
-        <div style="overflow:hidden">
-            <img *ngIf="rssFeed.image" style="float: left" [title]="rssFeed.image.title" [src]="rssFeed.image.url">
-            <div class="text-center" style="float: left; width:90%; max-width: 95%;">
-                <a [href]="rssFeed.link">{{rssFeed.title}}</a>
-                <br>
-                <span>{{rssFeed.description}}</span>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title  style="font-size: 16px;">
+            Search results for: <a [href]="rssFeed.link">{{rssFeed.title}}</a>
+        </mat-card-title>
+    </mat-card-header>
+    <img mat-card-image *ngIf="rssFeed.image" alt="{{rssFeed.image.title}}" [src]="rssFeed.image.url">
+    <mat-card-content>
+            <div *ngFor="let item of rssFeed.items" class="boxed-div" style="font-size: 16px;">
+                <a [href]="item.link" target="_blank" rel="noopener noreferrer">{{item.title}}</a>
             </div>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-    <div *ngFor="let item of rssFeed.items" class="border-top border-bottom p-1">
-        <a [href]="item.link" target="_blank" rel="noopener noreferrer">{{item.title}}</a>
-    </div>
-</div>
+    </mat-card-content>
+</mat-card>

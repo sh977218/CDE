@@ -13,22 +13,22 @@
     <span *ngIf="textType === 'html'">
         <span *ngIf="!bypassSanitize" [ngClass]="_class" [innerHtml]="text"></span>
         <span *ngIf="bypassSanitize" [ngClass]="_class" [innerHtml]="text | cdeSafeHtml"></span>
-        <span *ngIf="!open" class="fake-button" role="button" tabindex="0" (click)="toggleShow()">
+        <span *ngIf="!open" class="fake-button expandTextButton" role="button" tabindex="0" (click)="toggleShow()">
             <span *ngIf="customMoreLabel">{{customMoreLabel}}</span>
             <span *ngIf="!customMoreLabel">More</span>
         </span>
-        <span *ngIf="open" class="fake-button" role="button" tabindex="0" (click)="toggleShow()">
+        <span *ngIf="open" class="fake-button collapseTextButton" role="button" tabindex="0" (click)="toggleShow()">
             <span *ngIf="customLessLabel">{{customLessLabel}}</span>
             <span *ngIf="!customLessLabel">Less</span>
         </span>
     </span>
         <span *ngIf="textType === 'plainText'">
         <span [ngClass]="_class">{{text}}</span>
-        <span *ngIf="!open" class="fake-button" role="button" tabindex="0" (click)="toggleShow()">
+        <span *ngIf="!open" class="fake-button expandTextButton" role="button" tabindex="0" (click)="toggleShow()">
             <span *ngIf="customMoreLabel">{{customMoreLabel}}</span>
             <span *ngIf="!customMoreLabel">More</span>
         </span>
-        <span *ngIf="open" class="fake-button" role="button" tabindex="0" (click)="toggleShow()">
+        <span *ngIf="open" class="fake-button collapseTextButton" role="button" tabindex="0" (click)="toggleShow()">
             <span *ngIf="customLessLabel">{{customLessLabel}}</span>
             <span *ngIf="!customLessLabel">Less</span>
         </span>
