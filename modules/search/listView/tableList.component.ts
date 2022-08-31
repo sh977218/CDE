@@ -34,7 +34,8 @@ type Row = {
 };
 
 @Component({
-    templateUrl: './tableList.component.html'
+    templateUrl: './tableList.component.html',
+    styleUrls: ['./tableList.component.scss'],
 })
 export class TableListComponent implements OnInit {
     @Input() set elts(elts: ItemElastic[]) {

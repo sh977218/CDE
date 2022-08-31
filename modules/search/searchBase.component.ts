@@ -111,7 +111,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     orgs?: (Organization & { featureIcon?: string })[];
     ownKeys = ownKeys;
     previousUrl?: string;
-    resultsView = '';
+    resultsView: 'summary' | 'table' = 'summary';
     routerSubscription: Subscription;
     searching = false;
     searchSettings: SearchSettings = new SearchSettings();
@@ -580,12 +580,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.filterMode = !this.filterMode;
     }
 
+    isFullScreen() {
+        return this.resultsView === 'table' && this.isSearched();
+    }
+
     isSearched() {
-        return (
-            this.searchSettings.q ||
-            this.searchSettings.selectedOrg ||
-            this.searchSettings.nihEndorsed
-        );
+        return this.searchSettings.q ||
+            this.searchSettings.nihEndorsed ||
+            this.hasSelectedClassifications() ||
+            this.hasSelectedDatatypes() ||
+            this.hasSelectedStatuses();
     }
 
     openOrgDetails(org: Organization) {

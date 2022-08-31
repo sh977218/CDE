@@ -8,10 +8,9 @@
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
         </span>
         <span class="summary-list-after" style="margin-left:5px; float:right;">
-            <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
             <mat-icon
                     id="pinToBoard_{{eltIndex}}"
-                    class="fake-link" svgIcon="pin"
+                    class="fake-link" svgIcon="pin" title="Pin to Board"
                     pinToBoard [eltsToPin]="[elt]"
                     [module]="elt.elementType"
                     style="border: solid 2px #32629599;

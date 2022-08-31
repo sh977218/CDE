@@ -54,9 +54,10 @@
     </form>
 </section>
 
-<section *ngIf="elts && aggregations else searchingLoader" class="container searchSection"
-         [class.searchFilterLayout]="filterMode"
-         style="margin-top: 0" [style.max-width]="resultsView === 'table' ? 'none' : ''">
+<section *ngIf="elts && aggregations else searchingLoader" class="searchSection"
+         [class.container]="!isFullScreen()"
+         [class.container-fluid]="isFullScreen()"
+         [class.searchFilterLayout]="filterMode">
     <!--FILTERS-->
     <div *ngIf="filterMode" class="filterPanel">
         <!-- BREADCRUMBS / Active Filters -->

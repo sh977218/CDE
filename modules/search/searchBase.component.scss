@@ -134,43 +134,37 @@ label.input-hover {
 
 .searchSection {
   display: flex;
-  flex-flow: row;
-  justify-content: center;
-  padding-left: 30px;
-  padding-right: 30px;
-
-  @media(max-width: 772px) {
-    flex-flow: column;
-    align-items: center;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.searchFilterLayout {
+  flex-flow: row wrap;
+  margin-top: 0;
   margin-bottom: 0;
 
-  > :nth-child(1) {
-    box-shadow: 2px 1px 3px rgba(0, 0, 0, .16);
-    flex: 0 0 100%;
-    min-width: 0;
-    padding: 30px 0 30px 10px;
+  &.searchFilterLayout {
+    .filterPanel {
+      flex: 0 0 100%;
+      min-width: 0;
+      padding-top: 30px;
 
-    @media(max-width: 772px) {
-      box-shadow: none;
+      @media(min-width: $searchDesktop) {
+        box-shadow: 3px 3px 4px rgba(0, 0, 0, .16);
+        flex: 1 0 250px;
+        padding-bottom: 30px;
+      }
+    }
+
+    .searchResultsView {
+      @media (min-width: $searchDesktop) {
+        flex: 10 1 400px;
+        padding-left: 30px;
+      }
     }
   }
-}
 
-.filterPanel {
-  max-width: 241px;
-
-  @media(max-width: 772px) {
-    margin-right: auto;
-    margin-left: 30px;
+  .searchResultsView {
+    flex: 0 0 100%;
+    min-width: 0;
+    padding-top: 30px;
   }
 }
-
 
 .searchFilterLayoutActive {
   $lineHeight: 40px;
@@ -262,6 +256,13 @@ label.input-hover {
     margin-top: .1rem;
   }
 
+  .searchHamburger {
+    display: none;
+    @media (max-width: $searchBarSm) {
+      display: initial;
+    }
+  }
+
   > :nth-child(2) {
     min-width: fit-content;
 
@@ -282,29 +283,6 @@ label.input-hover {
         display: inline-block;
       }
     }
-  }
-}
-
-.searchResultsView{
-  display: block;
-  padding: 30px 0 0 0;
-  margin-left: 30px;
-
-  @media (max-width: $screenMd) {
-    padding: 30px 30px 0 30px;
-    margin-left: 0;
-  }
-
-  @media (max-width: 500px) {
-    padding: 30px 10px 0 10px;
-    margin-left: 0;
-  }
-}
-
-.searchHamburger {
-  display: none;
-  @media (max-width: $searchBarSm) {
-    display: initial;
   }
 }
 
