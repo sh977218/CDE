@@ -1,5 +1,6 @@
-// scrollbar top
-:host {
+@import '../../theme';
+
+#tableViewDiv {
   display: block;
   overflow-x: auto;
   transform: rotateX(180deg);
@@ -9,5 +10,31 @@
     margin: 1rem 0 0 0;
     overflow-x: initial;
     transform: rotateX(180deg);
+
+    thead {
+      tr {
+        background-color: unquote($nlmColorPrimary + '33');
+      }
+
+      th {
+        border-color: $nlmBlue;
+      }
+    }
+
+    td {
+      border-color: $nlmGray;
+    }
   }
+
 }
+
+.tableHeaderHelpIcon {
+  color: $nlmBlue;
+}
+
+.cdePinIcon {
+  color: $nlmBlue;
+  padding: 3px 5px 5px 5px;
+}
+
+

@@ -201,6 +201,7 @@ export class ElasticService implements OnDestroy {
         return {
             defaultSearchView: 'summary',
             tableViewFields: {
+                nihEndorsed: true,
                 name: true,
                 naming: false,
                 questionTexts: true,

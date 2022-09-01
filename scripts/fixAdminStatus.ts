@@ -1,3 +1,4 @@
+import 'server/globals';
 import { Model } from 'mongoose';
 import { CdeFormDocument, formDraftModel, formModel, formSourceModel } from 'server/form/mongo-form';
 import { dataElementDraftModel, dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';

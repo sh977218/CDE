@@ -8,16 +8,9 @@
                  matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
         </span>
         <span class="summary-list-after" style="margin-left:5px; float:right;">
-            <mat-icon
-                    id="pinToBoard_{{eltIndex}}"
-                    class="fake-link" svgIcon="pin" title="Pin to Board"
-                    pinToBoard [eltsToPin]="[elt]"
-                    [module]="elt.elementType"
-                    style="border: solid 2px #32629599;
-               border-radius: 3px;
-               padding: 0 5px 5px 5px;
-               height: 30px;
-               width: 30px;">
+            <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
+            <mat-icon id="pinToBoard_{{eltIndex}}" class="fake-link cdePinIcon" svgIcon="pin" pinToBoard
+                      title="Pin to Board" [eltsToPin]="[elt]" [module]="elt.elementType" style="padding: 0 5px 5px 5px;">
             </mat-icon>
         </span>
     </cde-summary-heading>
@@ -28,7 +21,7 @@
         <b>{{elt.numQuestions}} Questions </b>
         <div style="margin-top:10px; margin-bottom: 15px">
                 <span [class]="elt.registrationState.registrationStatus === 'Qualified' ? 'regStatusQualified' : 'regStatusStandard'"
-                        id="registrationStatus_{{eltIndex}}"> {{elt.registrationState.registrationStatus}} </span>
+                      id="registrationStatus_{{eltIndex}}"> {{elt.registrationState.registrationStatus}} </span>
         </div>
         <div class="formDetails">
             <div>

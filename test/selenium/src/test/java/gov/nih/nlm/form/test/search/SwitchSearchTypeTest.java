@@ -10,10 +10,11 @@ import java.util.List;
 public class SwitchSearchTypeTest extends NlmCdeBaseTest {
 
     @Test
-    public void switchSearchType() {
+    public void formSwitchSearchType() {
         goToFormSearch();
         clickElement(By.id("search_by_classification_TEST"));
         clickElement(By.id("classif-NLM CDE Dev Team Test"));
+        textNotPresent("NIH-Endorsed");
         textPresent("ACTIVE FORM FILTERS");
         searchActiveFilter("NLM CDE Dev Team Test");
         assertNoElt(By.xpath("//input[@type='checkbox'][../self::label[contains(., 'NIH-Endorsed')]]"));
@@ -37,4 +38,14 @@ public class SwitchSearchTypeTest extends NlmCdeBaseTest {
         textPresent("ACTIVE FORM FILTERS");
         searchActiveFilter("NLM CDE Dev Team Test");
     }
+
+    @Test
+    public void cdeSwitchSearchType() {
+        goToCdeSearch();
+        clickElement(By.xpath("//*[@id='nihEndorsedHolder']//input"));
+        clickElement(By.id("list_gridView"));
+        findElements(By.xpath("//td[contains(@class,'nihEndorsed')]//img"));
+        findElements(By.xpath("//td[contains(@class,'pin')]//mat-icon"));
+    }
+
 }

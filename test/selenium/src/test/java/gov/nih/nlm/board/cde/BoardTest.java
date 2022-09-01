@@ -6,7 +6,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.Random;
+
 public class BoardTest extends NlmCdeBaseTest {
+    Random rand = new Random(); //instance of random class
+    int upperbound = 2;
 
     public void createBoard(String name, String description, String type) {
         createBoard(name, description, type, "Board created.");
@@ -59,8 +63,12 @@ public class BoardTest extends NlmCdeBaseTest {
     }
 
     private void pinTo(String eltName, String type) {
+        int int_random = rand.nextInt(upperbound);
         if (type.equals("cde")) openCdeInList(eltName);
         if (type.equals("form")) openFormInList(eltName);
+        if (int_random == 1) {
+            clickElement(By.id("list_gridView"));
+        }
         clickElement(By.id("pinToBoard_0"));
     }
 

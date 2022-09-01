@@ -21,11 +21,13 @@ import { BoardOverviewModule } from 'board/board-overview.module';
         CommonModule,
         FormsModule,
         RouterModule,
+
         MatDialogModule,
-        CreateBoardModule,
         MatIconModule,
         MatCardModule,
-        BoardOverviewModule,
+        MatDialogModule,
+        CreateBoardModule,
+        BoardOverviewModule
     ],
     declarations: [
         PinToBoardDirective,

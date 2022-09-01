@@ -131,7 +131,7 @@ gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps(cb) {
         .pipe(gulp.dest(BUILD_DIR))
         .on('error', cb)
         .on('end', () => {
-            run('npm i --silent --production', {cwd: BUILD_DIR}).then(cb, cb);
+            run('npm i --production', {cwd: BUILD_DIR}).then(cb, cb);
         });
 });
 

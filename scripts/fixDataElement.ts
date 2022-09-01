@@ -1,3 +1,4 @@
+import 'server/globals';
 import { Model } from 'mongoose';
 import { DataElementDocument, dataElementModel } from 'server/cde/mongo-cde';
 
@@ -6,29 +7,13 @@ process.on('unhandledRejection', (error) => {
 });
 
 async function doOneCollection(collection: Model<DataElementDocument>) {
-    const cond = {
-        'registrationState.registrationStatus': {$ne: 'Retired'},
-        archived: false
-    };
+    const cond = {};
     const cursor = collection.find(cond).cursor();
     return cursor.eachAsync(async model => {
-        const modelObj = model.toObject();
-        for (const id of modelObj.ids) {
-            const existingObjects = await collection.find({
-                'registrationState.registrationStatus': {$ne: 'Retired'},
-                archived: false,
-                ids: {
-                    $elemMatch: {
-                        source: id.source,
-                        id: id.id
-                    }
-                }
-            });
-            if (existingObjects.length > 1) {
-                console.log(`tinyId ${modelObj.tinyId} source: ${id.source} id: ${id.id} has ${existingObjects.length} duplications: ${existingObjects.map(o => o.tinyId).join(', ')}`);
-            }
-        }
-
+        await model.save().catch(e => {
+            console.log(`${model.tinyId} has error. ${e}`)
+        });
+        return;
     });
 }
 
