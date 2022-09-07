@@ -35,7 +35,7 @@ export function module() {
             await dbPlugins.board.save(board);
             return res.send('Removed');
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });
@@ -76,7 +76,7 @@ export function module() {
             await dbPlugins.board.save(board);
             return res.send();
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     };
@@ -100,7 +100,7 @@ export function module() {
             await dbPlugins.board.save(board);
             return res.send();
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });
@@ -116,7 +116,7 @@ export function module() {
             await boardRefresh();
             return res.send('Board Removed.');
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });
@@ -157,7 +157,7 @@ export function module() {
                     return res.send(exportBoard);
                 });
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });
@@ -194,7 +194,7 @@ export function module() {
                 return res.send(await dbPlugins.board.save(boardDocument));
             }
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });
@@ -210,7 +210,7 @@ export function module() {
             await dbPlugins.board.save(board);
             return res.send('done');
         }
-        catch (err) {
+        catch (err: any) {
             return respondError({req, res})(err);
         }
     });

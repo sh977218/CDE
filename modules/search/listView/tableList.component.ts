@@ -38,7 +38,7 @@ class Heading {
 
     constructor(text) {
         this.text = text;
-        this.tooltip = toolTipMap.get(text) ? toolTipMap.get(text) : ''
+        this.tooltip = toolTipMap.get(text) || '';
     }
 }
 

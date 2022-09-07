@@ -443,7 +443,7 @@ export function elasticsearch<T extends ModuleItem>(type: T, query: any, setting
             took: response.took,
             cdes: type === 'cde' ? items as DataElementElastic[] : undefined,
             forms: type === 'form' ? items as CdeFormElastic[] : undefined,
-        } as T extends 'cde' ? SearchResponseAggregationDe : SearchResponseAggregationForm;
+        } as unknown as T extends 'cde' ? SearchResponseAggregationDe : SearchResponseAggregationForm;
         // @TODO remove after full migration to ES7
         if ((result.totalNumber as any).value > -1) {
             result.totalNumber = (result.totalNumber as any).value;
