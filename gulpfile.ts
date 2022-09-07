@@ -170,7 +170,11 @@ gulp.task('mongorestoretest', function mongorestore() {
     const password = config.database.appData.password;
     const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     const db = config.database.appData.db;
-    const args = ['-u', username, '-p', password, '-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+
+    if (username)  {
+        args.push('-u', username, '-p', password)
+    }
 
     return run('mongorestore ' + args.join(' '), runInAppOptions);
 });

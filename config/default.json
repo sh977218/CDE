@@ -96,8 +96,6 @@
     ],
     "appData": {
       "db": "test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
         "maxPoolSize": 20,
         "ssl": false
@@ -105,8 +103,6 @@
     },
     "log": {
       "db": "cde-logs-test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
         "maxPoolSize": 20,
         "ssl": false

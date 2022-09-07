@@ -21,8 +21,12 @@ export const config = Config as any;
                 database.options.tlsCertificateKeyFile = database.sslCertPath;
             }
         }
-        database.uri = 'mongodb://' + database.username + ':' + database.password + '@'
-            + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+        database.uri = 'mongodb://';
+        if (database.username) {
+            database.uri = database.uri + database.username + ':' + database.password + '@'
+
+        }
+        database.uri = database.uri + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
         if (uriOptions.length) {
             database.uri += '?' + uriOptions.join('&');
         }

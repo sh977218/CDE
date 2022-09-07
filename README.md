@@ -24,33 +24,7 @@ The NODE_CONFIG credentials are used for UMLS and VSAC ticket service validation
 ### Configure Mongo db
 1. Open a terminal, run  
 ```sh
-$> mongod --replSet rs0 --dbpath /path/to/data/db
-```
-2. In another terminal, open up mongo. 
-```sh
-$> mongo
-```
-Then, initiate MongoDB replica set:
-```javascript
-rs.initiate()
-```
-3. Establish users: you will have to create several users for the app, in order for various aspects to function 
-properly. In the same mongo terminal, run the following commands in this order
-
-```sh
-use admin;
-db.createUser( { user: "siteRootAdmin", pwd: "password", roles: [ { role: "root", db: "admin" }, { role: "dbAdmin", db: "test" }, { role: "dbAdmin", db: "cde-logs-test" } ] });
-use test;
-db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "test" } ] });
-use cde-logs-test;
-db.createUser({ user: "cdeuser", pwd: "password", roles: [ { role: "readWrite", db: "cde-logs-test" } ] });
-use migration;
-db.createUser({ user: "miguser", pwd: "password", roles: [ { role: "readWrite", db: "migration" } ] });
-```
-
-4. Restart mongo server with auth on.
-```sh
-$> mongod --auth --replSet rs0 --dbpath /path/to/data/db
+$> mongod --dbpath /path/to/data/db
 ```
 
 ### Preparing to run app (run each step in a separated terminal)
