@@ -76,7 +76,7 @@
     "@elastic/elasticsearch": "7.10.0",
     "@lhncbc/ucum-lhc": "^4.1.4",
     "@socket.io/mongo-adapter": "^0.1.0",
-    "ajv": "^8.11.0",
+    "ajv": "^6.10.2",
     "archiver": "^3.0.0",
     "async": "^3.2.3",
     "aws-sdk": "^2.932.0",
