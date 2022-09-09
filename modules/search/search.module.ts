@@ -57,6 +57,6 @@ import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.compo
         TableListComponent,
     ],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SearchModule {}

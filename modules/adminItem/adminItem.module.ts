@@ -112,6 +112,6 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         SaveModalComponent,
         SourcesComponent,
     ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AdminItemModule {}

@@ -27,7 +27,7 @@ import { BoardOverviewModule } from 'board/board-overview.module';
         MatCardModule,
         MatDialogModule,
         CreateBoardModule,
-        BoardOverviewModule
+        BoardOverviewModule,
     ],
     declarations: [
         PinToBoardDirective,
@@ -39,6 +39,6 @@ import { BoardOverviewModule } from 'board/board-overview.module';
         { provide: MatDialogRef, useValue: {} },
     ],
     exports: [PinToBoardDirective],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PinToBoardModule {}

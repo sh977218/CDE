@@ -64,6 +64,6 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
     ],
     exports: [FormSearchComponent],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FormSearchModule {}

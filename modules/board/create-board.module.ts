@@ -11,6 +11,6 @@ import { CreateBoardModalComponent } from 'board/create-board/create-board-modal
     declarations: [CreateBoardComponent, CreateBoardModalComponent],
     providers: [],
     exports: [CreateBoardComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CreateBoardModule {}

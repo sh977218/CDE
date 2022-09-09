@@ -492,7 +492,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             case 'form':
                 return 'Forms';
             default:
-                throw assertUnreachable(searchType);
+                assertUnreachable(searchType);
         }
     }
 
@@ -585,11 +585,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     isSearched() {
-        return this.searchSettings.q ||
+        return (
+            this.searchSettings.q ||
             this.searchSettings.nihEndorsed ||
             this.hasSelectedClassifications() ||
             this.hasSelectedDatatypes() ||
-            this.hasSelectedStatuses();
+            this.hasSelectedStatuses()
+        );
     }
 
     openOrgDetails(org: Organization) {
@@ -935,7 +937,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
                 return;
             default:
-                throw assertUnreachable(searchType);
+                assertUnreachable(searchType);
         }
     }
 
