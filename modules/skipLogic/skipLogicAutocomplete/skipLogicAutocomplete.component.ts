@@ -1,5 +1,5 @@
 import { Component, Inject, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -20,10 +20,10 @@ export class SkipLogicAutocompleteComponent {
     readonly logicOptions = ['AND', 'OR'];
     labelOptions: string[];
     operatorOptions = ['=', '>', '<', '>=', '<='];
-    skipLogicForm: FormGroup;
+    skipLogicForm: UntypedFormGroup;
 
     constructor(private cdr: ChangeDetectorRef,
-                private formBuilder: FormBuilder,
+                private formBuilder: UntypedFormBuilder,
                 protected dialog: MatDialog,
                 public dialogRef: MatDialogRef<SkipLogicComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: {formElement: FormElement, priorQuestions: FormQuestion[]}) {
@@ -65,8 +65,8 @@ export class SkipLogicAutocompleteComponent {
         }
     }
 
-    get items(): FormArray {
-        return this.skipLogicForm.get('items') as FormArray;
+    get items(): UntypedFormArray {
+        return this.skipLogicForm.get('items') as UntypedFormArray;
     }
 
     createItem(token = new Token()) {

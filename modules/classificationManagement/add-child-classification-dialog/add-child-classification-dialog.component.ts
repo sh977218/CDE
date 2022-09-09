@@ -1,13 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
     templateUrl: './add-child-classification-dialog.component.html',
 })
 export class AddChildClassificationDialogComponent {
-    newClassificationName = new FormControl('', [Validators.required]);
+    newClassificationName = new UntypedFormControl('', [Validators.required]);
     fullClassificationArray: string[] = [];
 
     constructor(public dialogRef: MatDialogRef<AddChildClassificationDialogComponent>,

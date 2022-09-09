@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
@@ -8,7 +8,7 @@ import { DialogData } from 'classificationManagement/dialog-data';
     templateUrl: './remove-org-classification-dialog.component.html',
 })
 export class RemoveOrgClassificationDialogComponent {
-    userTyped = new FormControl('');
+    userTyped = new UntypedFormControl('');
     fullClassificationArray: string[] = [];
 
 

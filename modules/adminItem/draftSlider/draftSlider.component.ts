@@ -1,5 +1,4 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import '../../../node_modules/js-toggle-switch/dist/toggle-switch.min.css';
 import './draftSlider.global.scss';
 import ToggleSwitch from 'js-toggle-switch/dist/toggle-switch';
 

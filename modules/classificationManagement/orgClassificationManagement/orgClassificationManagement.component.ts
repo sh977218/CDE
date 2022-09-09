@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cb } from 'shared/models.model';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
@@ -36,7 +36,7 @@ import {
 export class OrgClassificationManagementComponent {
     @ViewChild('reclassifyComponent', {static: true}) reclassifyComponent!: ClassifyItemComponent;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
-    selectedOrg: FormControl;
+    selectedOrg: UntypedFormControl;
     orgs: Organization[];
 
     treeControl = new FlatTreeControl<FlatClassificationNode>(node => node.level, node => node.expandable);
@@ -51,7 +51,7 @@ export class OrgClassificationManagementComponent {
                 private userService: UserService,
                 private classificationSvc: ClassificationService,
                 private _database: ClassificationDatabase) {
-        this.selectedOrg = new FormControl(this.route.snapshot.queryParams.selectedOrg)
+        this.selectedOrg = new UntypedFormControl(this.route.snapshot.queryParams.selectedOrg)
         this.orgs = this.route.snapshot.data.orgs;
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel,
             this.isExpandable, this.getChildren);

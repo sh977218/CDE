@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { UserService } from '_app/user.service';
 import { switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { User } from 'shared/models.model';
@@ -12,7 +12,7 @@ export class UsernameAutocompleteComponent {
     @Input() placeHolder: string = 'Make the user';
     @Output() selected = new EventEmitter<User | string>();
     filteredUsernames: User[] = [];
-    usernameControl = new FormControl();
+    usernameControl = new UntypedFormControl();
 
     constructor(userService: UserService) {
         this.usernameControl.valueChanges

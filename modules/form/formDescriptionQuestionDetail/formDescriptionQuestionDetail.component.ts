@@ -1,7 +1,7 @@
 import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
@@ -73,7 +73,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     repeatFeLabel = repeatFeLabel;
     readonly separatorKeysCodes: number[] = [ENTER];
     tag: string[] = [];
-    uomControl = new FormControl();
+    uomControl = new UntypedFormControl();
 
     constructor(private alert: AlertService,
                 private http: HttpClient,
