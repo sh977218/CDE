@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
+import { environment } from 'environments/environment';
 import { HomepageGetResponse } from 'shared/boundaryInterfaces/API/system';
 import { assertUnreachable } from 'shared/models.model';
 import { SearchSettings, SearchType } from 'shared/search/search.model';
@@ -56,7 +57,7 @@ export class HomeComponent implements OnInit {
     }
 
     getCardImage(image: NonNullable<UpdateCard['image']>): string {
-        return window.publicUrl + '/server/system/data/' + image.fileId;
+        return environment.publicUrl + '/server/system/data/' + image.fileId;
     }
 
     getSearchLabel(searchType: SearchType): string {

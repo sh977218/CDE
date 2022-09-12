@@ -37,6 +37,7 @@ public class TwoClassifSearch extends BoardTest {
         driver.navigate().back();
         checkSearchResultInfo(null, null, new String[]{"NINDS", "Domain", "Assessments and Examinations", "Imaging Diagnostics"}, null, null);
 
+        moveMouseToCoordinate(0, 0);
         clickElement(By.className("classifAlt_filter"));
         String altSection = "//*[contains(@class,'classifAlt_filter')]";
         searchNoActiveFilter("NINDS", altSection);
