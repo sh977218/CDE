@@ -27,6 +27,7 @@ public class CdeExportJsonTest extends NlmCdeBaseTest {
             String actual = new String(Files.readAllBytes(Paths.get(fileName)));
             Assert.assertTrue(actual.contains("\"designations\":[{\"tags\":[\"Health\"],\"designation\":\"Spinal column injury number\""));
             Assert.assertTrue(actual.contains("\"definitions\":[{\"definition\":\"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.\",\"tags\":[\"Health\"]"));
+            Assert.assertTrue(actual.contains("\"partOfBundles\":[\"Qy8A7JBBYg\"]"));
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail("Exception reading 7cDvUXR6SQe.json -- " + e);

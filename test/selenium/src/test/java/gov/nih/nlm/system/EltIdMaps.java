@@ -58,6 +58,7 @@ public class EltIdMaps {
         eltMap.put("Number of Pregnancies", "oW10_UFbA2c");
         eltMap.put("Oosterhuis score", "WEoSbBfqEDx");
         eltMap.put("Other Group Patient Identifier Number", "hvsUN03ToUz");
+        eltMap.put("Spinal column injury number", "7cDvUXR6SQe");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
         eltMap.put("Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator", "FdhGNj4gd6e");
@@ -141,6 +142,7 @@ public class EltIdMaps {
         eltMap.put("Loinc Widget Test Form", "Q1ncc4Rg_");
         eltMap.put("Magnetic Resonance Spectroscopy (MRS)", "mkfzVkSBtl");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
+        eltMap.put("Neuro-QOL Bank v1.0 - LEx Fnct (Mobility)", "XJ0nN3OKIg");
 
 
         // Display Profile Tests

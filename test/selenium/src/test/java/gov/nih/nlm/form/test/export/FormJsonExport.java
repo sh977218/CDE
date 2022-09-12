@@ -21,7 +21,8 @@ public class FormJsonExport extends NlmCdeBaseTest {
                 "\"valueMeaningName\":\"Yes\"",
                 "\"registrationState\":{\"registrationStatus\":\"Qualified\",\"administrativeStatus\":\"Published\"}",
                 "\"stewardOrg\":{\"name\":\"NINDS\"}",
-                "\"designations\":[{\"tags\":[],\"designation\":\"Adverse Event Tracking Log\""
+                "\"designations\":[{\"tags\":[],\"designation\":\"Adverse Event Tracking Log\"",
+                "isBundle"
         };
 
         mustBeLoggedInAs(nlm_username, nlm_password); // TODO: download as tab, reguser_username

@@ -21,6 +21,7 @@ const conceptSchema = new Schema({
 
 export const deJson = {
     elementType: {type: StringType, default: 'cde', enum: ['cde']},
+    partOfBundles: {type: [StringType], default: [], description: 'Form tinyIds this CDE is part of bundle.'},
     nihEndorsed: {type: Boolean, default: false},
     tinyId: {type: StringType, index: true, description: 'Internal CDE identifier'},
     designations: {

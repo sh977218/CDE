@@ -28,6 +28,7 @@ import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import { removeFromArrayBy } from 'shared/array';
+import { union, uniq, xor } from 'lodash';
 import {
     IdSourceGetResponse, IdSourcePutResponse,
     IdSourceRequest,
@@ -37,6 +38,7 @@ import {
 import { CbError, User } from 'shared/models.model';
 import { Readable } from 'stream';
 import { promisify } from 'util';
+import { flattenFormElement } from 'shared/form/fe';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
@@ -47,6 +49,31 @@ export function module() {
     router.get('/site-version', (req, res) => res.send(version));
 
     router.get('/status/cde', status);
+
+    // every hour
+    new CronJob('0 */60 * * * *', async () => {
+        consoleLog(`Running sync isBundle & partOfBundles at ${new Date()}`);
+        const cdesPartOfBundle = await dataElementModel.find({
+            partOfBundles: {$exists: true, $not: {$size: 0}},
+            archived: false
+        });
+        const cdesToSave = [...cdesPartOfBundle];
+        cdesPartOfBundle.forEach(c => c.partOfBundles = []);
+        const bundles = await formModel.find({isBundle: true, archived: false});
+        for (const bundle of bundles) {
+            const questions = flattenFormElement(bundle);
+            for (const question of questions) {
+                const tinyId = question.question.cde.tinyId;
+                let cde = cdesPartOfBundle.find(c => c.tinyId === tinyId);
+                if (!cde) {
+                    cde = await dataElementModel.findOne({tinyId, archived: false});
+                    cdesToSave.push(cde);
+                }
+                cde.partOfBundles = uniq(union(cde.partOfBundles, [bundle.tinyId]));
+            }
+        }
+        return await Promise.all([...(cdesToSave.map(c => c.save()))]);
+    }, null, true, 'America/New_York', undefined, true).start();
 
     // every sunday at 4:07 AM
     new CronJob('* 7 4 * * 6', () => {
