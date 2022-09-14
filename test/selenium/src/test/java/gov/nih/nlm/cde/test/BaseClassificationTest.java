@@ -113,12 +113,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         hangon(2);
         clickElement(By.id("confirmRenameClassificationBtn"));
         checkAlert("Renaming in progress.");
-        try {
-            textPresent("Classification Renamed");
-            closeAlert();
-        } catch (WebDriverException e) {
-            checkAlert("Classification Renamed");
-        }
+        checkAlert("Classification Renamed");
     }
 
     protected void reclassifyClassificationUnderPath(String org, String[] categories, String classificationName, String[] newCategories) {
@@ -134,12 +129,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
         classifySubmit(newCategories, "");
         checkAlert("Reclassifying in progress.");
-        try {
-            textPresent("Classification Reclassified.");
-            closeAlert();
-        } catch (WebDriverException e) {
-            checkAlert("Classification Reclassified.");
-        }
+        checkAlert("Classification Reclassified.");
     }
 
 }

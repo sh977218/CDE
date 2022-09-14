@@ -9,17 +9,20 @@ import {
     RouterStateSnapshot,
 } from '@angular/router';
 
+const isIE = /MSIE|Trident/.test(window.navigator.userAgent);
+
 @Injectable()
 export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
-    constructor(
-        @Inject(forwardRef(() => Router))private router: Router,
-    ) {}
+    constructor(@Inject(forwardRef(() => Router)) private router: Router) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         return this.checkIE();
     }
 
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    canActivateChild(
+        route: ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ) {
         return this.canActivate(route, state);
     }
 
@@ -28,10 +31,6 @@ export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkIE() {
-        return isIE
-            ? this.router.createUrlTree(['/ieDiscontinued'])
-            : true;
+        return isIE ? this.router.createUrlTree(['/ieDiscontinued']) : true;
     }
 }
-
-const isIE = /MSIE|Trident/.test(window.navigator.userAgent); // core-js polyfills IE documentMode

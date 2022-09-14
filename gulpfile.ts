@@ -59,7 +59,6 @@ gulp.task('environmentInfo', async function npm() {
     await run('npm -v', runInAppOptions);
     await run('npm cache verify', runInAppOptions);
     await run('mongo --version', runInAppOptions);
-    await run('ng --version', runInAppOptions);
 });
 
 gulp.task('buildNode', function buildNode() {

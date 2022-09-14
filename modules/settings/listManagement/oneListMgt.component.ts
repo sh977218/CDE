@@ -1,6 +1,14 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import { ENTER } from '@angular/cdk/keycodes';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
@@ -8,33 +16,34 @@ import { map, startWith } from 'rxjs/operators';
 
 @Component({
     selector: 'cde-one-list-management',
-    templateUrl: './oneListMgt.component.html'
+    templateUrl: './oneListMgt.component.html',
 })
 export class OneListMgtComponent implements OnInit {
     @Input() keys!: string[];
     @Input() allKeys!: string[];
     @Input() placeHolder: string = 'Property Keys';
     @Output() save: EventEmitter<any> = new EventEmitter();
-    @ViewChild('keyInput', {static: true}) keyInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('keyInput', { static: true })
+    keyInput!: ElementRef<HTMLInputElement>;
     filteredKeys!: Observable<string[]>;
-    keyControl = new FormControl();
+    keyControl = new UntypedFormControl();
 
     readonly separatorKeysCodes: number[] = [ENTER];
 
     ngOnInit() {
-        this.filteredKeys = this.keyControl.valueChanges
-            .pipe(
-                startWith(''),
-                map(value => this._filter(this.allKeys, value))
-            );
-
+        this.filteredKeys = this.keyControl.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(this.allKeys, value))
+        );
     }
 
     _filter(options: string[], value: string): string[] {
         if (!value) {
             return [];
         }
-        return options.filter(option => option.toLowerCase().includes(value.toLowerCase()));
+        return options.filter(option =>
+            option.toLowerCase().includes(value.toLowerCase())
+        );
     }
 
     removeKey(key: string) {
@@ -57,7 +66,6 @@ export class OneListMgtComponent implements OnInit {
 
         this.keyControl.setValue(null);
         this.save.emit();
-
     }
 
     autoSelectedKey(key: MatAutocompleteSelectedEvent) {

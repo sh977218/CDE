@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
@@ -8,11 +8,13 @@ import { DialogData } from 'classificationManagement/dialog-data';
     templateUrl: './rename-classification-dialog.component.html',
 })
 export class RenameClassificationDialogComponent {
-    newClassificationName = new FormControl('', [Validators.required]);
+    newClassificationName = new UntypedFormControl('', [Validators.required]);
     fullClassificationArray: string[] = [];
 
-    constructor(public dialogRef: MatDialogRef<RenameClassificationDialogComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    constructor(
+        public dialogRef: MatDialogRef<RenameClassificationDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData
+    ) {
         this.fullClassificationArray = [data.orgName].concat(data.categories);
     }
 

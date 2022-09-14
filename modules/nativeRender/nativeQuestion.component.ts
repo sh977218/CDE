@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { isScore, questionMulti } from 'shared/form/fe';
@@ -81,7 +81,7 @@ export class NativeQuestionComponent implements OnInit {
     isScore = isScore;
     metadataTagsNew?: string;
     questionMulti = questionMulti;
-    vsacControl = new FormControl();
+    vsacControl = new UntypedFormControl();
     vsacCodes: { code: string; displayname: string }[] = [];
     NRS = NativeRenderService;
 

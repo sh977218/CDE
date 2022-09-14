@@ -6,7 +6,7 @@ const path = require('path');
 const favicon = require('serve-favicon');
 
 const database = config.database.appData;
-const url = 'mongodb://' + database.username + ':' + database.password + '@'
+const url = 'mongodb://' + (database.username ? database.username + ':' + database.password + '@' : '')
     + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',')
     + '/' + database.db;
 let db;

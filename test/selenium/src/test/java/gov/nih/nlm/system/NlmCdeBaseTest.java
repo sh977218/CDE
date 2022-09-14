@@ -882,18 +882,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void checkAlert(String text) {
-        int i = 0;
-        while (i < 7) {
-            try {
-                shortWait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(@class,'mat-snack-bar-container')]//span"), text));
-                closeAlert();
-                i = 10;
-            } catch (TimeoutException e) {
-                driver.switchTo().window(driver.getWindowHandle());
-                i++;
-            }
-        }
-        if (i != 10) Assert.fail("Tried " + i + " times. Failed to find text: " + text + " in alert");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@class,'mat-snack-bar-container')]")));
+        closeAlert(text);
     }
 
     public void textPresent(String text, By by) {

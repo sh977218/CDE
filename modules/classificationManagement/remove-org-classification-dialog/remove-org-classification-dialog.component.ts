@@ -1,6 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+    AbstractControl,
+    UntypedFormControl,
+    ValidationErrors,
+    ValidatorFn,
+    Validators,
+} from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
@@ -8,15 +14,22 @@ import { DialogData } from 'classificationManagement/dialog-data';
     templateUrl: './remove-org-classification-dialog.component.html',
 })
 export class RemoveOrgClassificationDialogComponent {
-    userTyped = new FormControl('');
+    userTyped = new UntypedFormControl('');
     fullClassificationArray: string[] = [];
 
-
-    constructor(public dialogRef: MatDialogRef<RemoveOrgClassificationDialogComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+    constructor(
+        public dialogRef: MatDialogRef<RemoveOrgClassificationDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: DialogData
+    ) {
         this.fullClassificationArray = [data.orgName].concat(data.categories);
-        const confirmClassificationName = this.fullClassificationArray[this.fullClassificationArray.length - 1];
-        this.userTyped.setValidators([Validators.required, stringMatchValidator(confirmClassificationName)]);
+        const confirmClassificationName =
+            this.fullClassificationArray[
+                this.fullClassificationArray.length - 1
+            ];
+        this.userTyped.setValidators([
+            Validators.required,
+            stringMatchValidator(confirmClassificationName),
+        ]);
     }
 
     getErrorMessage() {
@@ -28,13 +41,12 @@ export class RemoveOrgClassificationDialogComponent {
         }
         return '';
     }
-
 }
 
 /** Match string with a given string */
 export function stringMatchValidator(nameToBeMatched: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const isMatched = nameToBeMatched === control.value
-        return !isMatched ? {notMatch: {value: control.value}} : null;
+        const isMatched = nameToBeMatched === control.value;
+        return !isMatched ? { notMatch: { value: control.value } } : null;
     };
 }

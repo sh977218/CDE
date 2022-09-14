@@ -73,8 +73,10 @@
                 <div *ngIf="searchedTerm" class="activeFilterClause">
                     <span id="term_crumb"
                           class="pill" role="button" tabindex="0"
-                          aria-label="Remove this search term filter" matTooltip="Remove this search term filter"
-                          matTooltipClass="cdeTooltip" (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
+                          aria-label="Remove this search term filter"
+                          matTooltip="Remove this search term filter"
+                          matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                          (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
                         <span class="text">{{searchedTerm}}</span>
                         <span class="close">X</span>
                     </span>
@@ -87,7 +89,8 @@
                         <span class="classif_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" (click)="clearSelectedClassifications(c)">
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedClassifications(c)">
                             <span class="text">{{c}}</span>
                             <span class="close">X</span>
                         </span>
@@ -103,7 +106,8 @@
                         <span class="classifAlt_filter pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" (click)="clearSelectedClassificationsAlt(c)">
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedClassificationsAlt(c)">
                             <span class="text">{{c}}</span>
                             <span class="close">X</span>
                         </span>
@@ -117,7 +121,8 @@
                         <span class="pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
                               matTooltip="Remove this classification filter"
-                              matTooltipClass="cdeTooltip" (click)="clearExcludeOrgs()">
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearExcludeOrgs()">
                             <span class="text">{{getExcludedOrgs()}}</span>
                             <span class="close">X</span>
                         </span>
@@ -129,7 +134,8 @@
                         <span class="status_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this registration statuses filter"
                               matTooltip="Remove this registration statuses filter"
-                              matTooltipClass="cdeTooltip" (click)="clearSelectedStatus(s)">
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedStatus(s)">
                             <span class="text">{{s}}</span>
                             <span class="close">X</span>
                         </span>
@@ -141,7 +147,8 @@
                         <span class="datatype_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this datatype filter"
                               matTooltip="Remove this datatype filter"
-                              matTooltipClass="cdeTooltip" (click)="clearSelectedDatatype(d)">
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedDatatype(d)">
                             <span class="text">{{d}}</span>
                             <span class="close">X</span>
                         </span>
@@ -185,7 +192,7 @@
                    (click)="setAltClassificationFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
                    aria-label="Add a second classification filter as an AND condition"
                    matTooltip="Add a second classification filter as an AND condition"
-                   matTooltipClass="cdeTooltip">
+                   matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                     <mat-icon>add_box</mat-icon>
                 </a>
                 <a *ngIf="userService.isSiteAdmin() && !excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
@@ -194,7 +201,7 @@
                    (click)="setExcludeOrgFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
                    aria-label="Add a second classification filter as a NOT condition"
                    matTooltip="Add a second classification filter as a NOT condition"
-                   matTooltipClass="cdeTooltip">
+                   matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                     <mat-icon>indeterminate_check_box</mat-icon>
                 </a>
             </div>
@@ -211,12 +218,12 @@
                                  [attr.aria-label]="t.longName" (click)="alterOrgFilter(t.key)" role="link">
                                 <span class="keyboard-arrow left treeItemIcon"></span>
                                 <span class="treeItemText" [matTooltip]="t.longName"
-                                      matTooltipClass="cdeTooltip"> {{t.key}}</span>
+                                      matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'"> {{t.key}}</span>
                             </div>
                             <ng-template #classifSelf>
                                 <div id="classif-{{t.key}}" class="treeCurrent treeItemText"
                                      [matTooltip]="t.longName" [attr.aria-label]="t.longName"
-                                     matTooltipClass="cdeTooltip">
+                                     matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                                     {{t.key}}
                                 </div>
                             </ng-template>
@@ -225,7 +232,7 @@
                     <ng-template #classifOrg>
                         <div id="classif-{{t.key}}" class="treeChild input-hover" (click)="alterOrgFilter(t.key)"
                              role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
-                             matTooltipClass="cdeTooltip">
+                             matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                             <span class="keyboard-arrow treeItemIcon"></span>
                             <span class="treeItemText">{{t.key}} (<span
                                     id="nbOfClassifElts-{{t.key}}">{{t.doc_count}}</span>)</span>
@@ -269,7 +276,7 @@
                 <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
                     <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
                            [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
-                           matTooltipClass="cdeTooltip">
+                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                         <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
                                [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
                                (change)="addStatusFilter(t.key)"/>

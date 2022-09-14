@@ -310,7 +310,7 @@ try {
 
     app.use('/server/loader', isOrgAuthorityMiddleware, loaderModule());
 
-} catch (e) {
+} catch (e: any) {
     console.error(e.stack);
     process.exit();
 }

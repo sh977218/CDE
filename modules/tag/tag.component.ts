@@ -6,7 +6,7 @@ import {
     EventEmitter,
     ElementRef,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import {
     MatAutocomplete,
     MatAutocompleteSelectedEvent,
@@ -42,7 +42,7 @@ export class TagComponent {
     @Output() changed = new EventEmitter();
     @ViewChild('tagAuto') matAutocomplete!: MatAutocomplete;
     @ViewChild('tagInput') tagInput!: ElementRef;
-    tagCtrl = new FormControl();
+    tagCtrl = new UntypedFormControl();
     filteredTags: Observable<string[]>;
 
     constructor() {

@@ -29,6 +29,7 @@ public class CdeSearchBreadCumbTest extends NlmCdeBaseTest {
 
         clickElement(By.className("datatype_crumb"));
         clickElement(By.className("status_crumb"));
+        moveMouseToCoordinate(0, 0);
         clickElement(By.className("classif_crumb"));
         hangon(1);
         clickElement(By.className("classif_crumb"));
