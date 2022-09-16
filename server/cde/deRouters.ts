@@ -24,6 +24,7 @@ import {
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
+import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
@@ -80,8 +81,8 @@ export function module() {
 
     router.get('/api/de/modifiedElements', modifiedElements);
     // Remove /de after June 1st 2020
-    router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
-    router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], nocacheMiddleware, byTinyIdAndVersion);
+    router.get(['/api/de/:tinyId', '/de/:tinyId'], umlsAuth, nocacheMiddleware, byTinyId);
+    router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], umlsAuth, nocacheMiddleware, byTinyIdAndVersion);
 
     router.get('/api/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/server/de', canCreateMiddleware, create);
@@ -110,7 +111,7 @@ export function module() {
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
     /* ---------- PUT NEW REST API above ---------- */
-    router.post('/api/de/search', (req, res) => {
+    router.post('/api/de/search', umlsAuth, (req, res) => {
         const settings: SearchSettingsElastic = req.body;
         settings.includeAggregations = false;
         if (!Array.isArray(settings.selectedStatuses)) {

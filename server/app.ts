@@ -43,7 +43,7 @@ import { startSocketIoServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { module as systemModule } from 'server/system/systemRouters';
 import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
-import { init as authInit, ticketAuth } from 'server/user/authentication';
+import { init as authInit } from 'server/user/authentication';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { canClassifyOrg } from 'shared/security/authorizationShared';
@@ -79,7 +79,6 @@ app.use(helmet.contentSecurityPolicy({
     }
 }));
 app.use(helmet.referrerPolicy({policy: 'same-origin'}));
-app.use(ticketAuth);
 app.use(compress());
 
 app.use(hsts({maxAge: 31536000000}));

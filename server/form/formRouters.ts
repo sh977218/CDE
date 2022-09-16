@@ -31,6 +31,7 @@ import {
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
+import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { CbErr1 } from 'shared/models.model';
 import { getEnvironmentHost } from 'shared/node/env';
@@ -105,9 +106,9 @@ export function module() {
     router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
     // Remove /form after July 1st 2020
-    router.get(['/api/form/:tinyId', '/form/:tinyId'], allowXOrigin, nocacheMiddleware, allRequestsProcessing, byTinyId);
+    router.get(['/api/form/:tinyId', '/form/:tinyId'], umlsAuth, allowXOrigin, nocacheMiddleware, allRequestsProcessing, byTinyId);
     router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
-        [allowXOrigin, nocacheMiddleware], byTinyIdAndVersion);
+        umlsAuth, allowXOrigin, nocacheMiddleware, byTinyIdAndVersion);
 
     router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/api/form/search', allowXOrigin, nocacheMiddleware, (req, res) => {

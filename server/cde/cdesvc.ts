@@ -34,9 +34,6 @@ const sendDataElement = (req: Request, res: Response) => (dataElement: DataEleme
         const cde = dataElement;
         return res.send(js2xml('dataElement', stripBsonIdsElt(cde)));
     }
-    if (!req.user) {
-        hideProprietaryCodes(dataElement);
-    }
     inCdeView(dataElement);
     addCdeToViewHistory(dataElement, req.user);
     return res.send(dataElement);

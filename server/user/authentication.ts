@@ -3,11 +3,11 @@ import fetch from 'node-fetch';
 import { Strategy as CustomStrategy } from 'passport-custom';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { config } from 'server';
+import { logError } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { CbErr1, CbError1, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
-import { isStatus, json, text } from 'shared/fetch';
-import { Parser } from 'xml2js';
+import { isStatus, json } from 'shared/fetch';
 
 const passport = require('passport'); // must use require to preserve this pointer
 
@@ -16,7 +16,7 @@ export type AuthenticatedRequest = {
     username: string,
 } & Request;
 
-const parser = new Parser();
+const dummyUser = Object.freeze({}); // soft authenticated, read permission only, no permissions from a real user
 
 passport.serializeUser((user: User, done: CbError1) => {
     done(null, user._id);
@@ -29,31 +29,21 @@ export function init(app: Express) {
     app.use(passport.session());
 }
 
-export function ticketValidate(tkt: string, cb: CbErr1<string | void>) {
-    fetch(config.uts.ticketValidation + '?service=' + config.uts.service + '&ticket=' + tkt)
+export function umlsApiKeyValidate(apiKey: string, cb: CbErr1<string | void>) {
+    if (!config.uts.apiKeyValidation) {
+        logError({
+            message: 'Configuration Error: uts.apiKeyValidation is missing',
+            origin: 'umlsApiKeyValidate',
+        });
+        return cb('Configuration Error: uts.apiKeyValidation is missing');
+    }
+    fetch(config.uts.apiKeyValidation + apiKey)
         .then(isStatus([200]))
-        .then(text)
+        .then<{valid: false} | {valid: true, username: string}>(json)
         .then((body) => {
-            // Parse xml result from ticket validation
-            parser.parseString(body, (err: Error | null, jsonResult?: any) => {
-                /* istanbul ignore if */
-                if (err) {
-                    return cb('ticketValidate: ' + err);
-                }
-                if (jsonResult['cas:serviceResponse'] &&
-                    jsonResult['cas:serviceResponse']['cas:authenticationFailure']) {
-                    // This statement gets the error message
-                    return cb(jsonResult['cas:serviceResponse']['cas:authenticationFailure'][0].$.code);
-                }
-                /* istanbul ignore else */
-                if (jsonResult['cas:serviceResponse']['cas:authenticationSuccess'] &&
-                    jsonResult['cas:serviceResponse']['cas:authenticationSuccess']) {
-                    // Returns the username
-                    return cb(undefined, jsonResult['cas:serviceResponse']['cas:authenticationSuccess'][0]['cas:user'][0]);
-                }
-
-                return cb('ticketValidate: invalid XML response!');
-            });
+            return body.valid
+                ? cb(undefined, body.username)
+                : cb(undefined);
         }, err => {
             errorLogger.error('getTgt: ERROR with request: ' + err, {stack: new Error().stack});
             return cb(err);
@@ -185,22 +175,18 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocum
     });
 }
 
-export const ticketAuth: RequestHandler = (req, res, next) => {
-    const ticket = req.query.ticket as string;
-    if (!ticket || ticket.length <= 0 || req.url.startsWith('/loginFederated?ticket=')) {
+export const umlsAuth: RequestHandler = (req, res, next) => {
+    const apiKey = req.query.apiKey as string;
+    if (!apiKey || !apiKey.length) {
         next();
         return;
     }
-    ticketValidate(ticket, (err, username) => {
+    umlsApiKeyValidate(apiKey, (err, username) => {
         if (err || !username) {
-            next(); // drop error
+            next(); // drop error, continue unauthenticated
             return;
         }
-        findAddUserLocally({username, ip: req.ip}, (err, user) => {
-            if (user) {
-                req.user = user;
-            }
-            next(err);
-        });
+        req.user = dummyUser; // retrieve codes even if not a CDE user, do not allow use of user privileges
+        next();
     });
 };
