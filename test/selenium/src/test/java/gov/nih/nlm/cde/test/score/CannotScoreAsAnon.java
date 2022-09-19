@@ -9,7 +9,6 @@ public class CannotScoreAsAnon extends NlmCdeBaseTest {
     public void cannotScoreAsAnonymous() {
         goToCdeByName("Head and Neck Lymph Node Left Removed Type");
 
-        goToScoreDerivations();
         textNotPresent("Add Score");
     }
 

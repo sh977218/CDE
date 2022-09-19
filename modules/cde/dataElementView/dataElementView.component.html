@@ -193,7 +193,7 @@
                         <section id="history-div">
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
-                        <section>
+                        <section *ngIf="elt.derivationRules.length || canEdit()">
                             <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
                                                   (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
