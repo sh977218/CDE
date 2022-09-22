@@ -12,19 +12,12 @@ public class LogErrorsTest extends NlmCdeBaseTest {
         driver.get(baseUrl + "/server/log/triggerServerErrorExpress");
         textPresent("received");
 
-        goHome();
-        goToAudit();
-        goToServerLog();
+        driver.get(baseUrl + "/siteAudit?tab=serverErrors");
         textPresent("ReferenceError: trigger is not defined");
         textPresent("/triggerServerErrorExpress");
-    }
 
-    @Test
-    public void goToClientErrorsTabServer() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        driver.get(baseUrl + "/siteAudit?tab=serverErrors");
-        textPresent("Request");
-        textPresent("Stack");
+        driver.get(baseUrl + "/siteAudit?tab=clientErrors");
+        textPresent("Agent");
+        textPresent("URL");
     }
-
 }

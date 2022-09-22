@@ -339,15 +339,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.id("user_audit"));
     }
 
-    protected void goToServerLog() {
-        goToAudit();
-        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
-        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
-        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
-        clickElement(By.xpath("//*[contains(@class,'mat-tab-header-pagination-after')]"));
-        clickElement(By.xpath("//div[. = 'Server Errors']"));
-    }
-
     protected void goToHelp() {
         scrollToTop();
         hoverOverElement(findElement(By.id("helpLink")));
