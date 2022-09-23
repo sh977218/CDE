@@ -1,17 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    TemplateRef,
+    ViewChild,
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { isCdeForm } from 'shared/item';
 import { CdeId, IdSource, Item } from 'shared/models.model';
-import {
-    AddIdentifierModalComponent
-} from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
+import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
 
 @Component({
     selector: 'cde-identifiers',
-    templateUrl: './identifiers.component.html'
+    templateUrl: './identifiers.component.html',
 })
 export class IdentifiersComponent {
     @Input() set elt(e) {
@@ -30,36 +35,48 @@ export class IdentifiersComponent {
 
     @Input() canEdit = false;
     @Output() eltChange = new EventEmitter();
-    @ViewChild('newIdentifierContent', {static: true}) newIdentifierContent!: TemplateRef<any>;
+    @ViewChild('newIdentifierContent', { static: true })
+    newIdentifierContent!: TemplateRef<any>;
     _elt!: Item;
     dialogRef!: MatDialogRef<TemplateRef<any>>;
     idsLinks: string[] = [];
     idSourcesPromise!: Promise<IdSource[]>;
 
-    constructor(private alert: AlertService,
-                public dialog: MatDialog,
-                private http: HttpClient) {
-    }
+    constructor(
+        private alert: AlertService,
+        public dialog: MatDialog,
+        private http: HttpClient
+    ) {}
 
     addLink(source: IdSource, id: CdeId) {
-        this.idsLinks.push(IdentifiersComponent.linkWithId(
-            source && (isCdeForm(this.elt) ? source.linkTemplateForm : source.linkTemplateDe),
-            id
-        ));
+        this.idsLinks.push(
+            IdentifiersComponent.linkWithId(
+                id,
+                source &&
+                    (isCdeForm(this.elt)
+                        ? source.linkTemplateForm
+                        : source.linkTemplateDe)
+            )
+        );
     }
 
     getIdSource(id: CdeId) {
-        return this.getIdSources().then(sources => sources.filter(source => source._id === id.source)[0]);
+        return this.getIdSources().then(
+            sources => sources.filter(source => source._id === id.source)[0]
+        );
     }
 
     getIdSources(): Promise<IdSource[]> {
         if (this.idSourcesPromise) {
             return this.idSourcesPromise;
         } else {
-            return this.idSourcesPromise = this.http.get<IdSourcesResponse>('/server/system/idSources').toPromise().catch(err => {
-                this.alert.httpErrorMessageAlert(err);
-                return [];
-            });
+            return (this.idSourcesPromise = this.http
+                .get<IdSourcesResponse>('/server/system/idSources')
+                .toPromise()
+                .catch(err => {
+                    this.alert.httpErrorMessageAlert(err);
+                    return [];
+                }));
         }
     }
 
@@ -71,22 +88,23 @@ export class IdentifiersComponent {
 
     openNewIdentifierModal() {
         const data = this.getIdSources();
-        this.dialog.open(AddIdentifierModalComponent, {width: '800px', data})
+        this.dialog
+            .open(AddIdentifierModalComponent, { width: '800px', data })
             .afterClosed()
             .subscribe(newIdentifier => {
                 if (newIdentifier) {
-                    this.getIdSource(newIdentifier).then(source => this.addLink(source, newIdentifier));
+                    this.getIdSource(newIdentifier).then(source =>
+                        this.addLink(source, newIdentifier)
+                    );
                     this.elt.ids.push(newIdentifier);
                     this.eltChange.emit();
                 }
             });
     }
 
-
-    static linkWithId(link = '', id: CdeId) {
+    static linkWithId(id: CdeId, link = '') {
         return link
             .replace('{{id}}', id.id || '')
             .replace('{{version}}', id.version || '');
     }
-
 }

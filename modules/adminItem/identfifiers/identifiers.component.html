@@ -1,43 +1,45 @@
-<h2>Identifiers</h2>
-<dl class="cde-property">
-    <dt>Source:</dt>
-    <dd>NLM</dd>
-
-    <meta itemprop="codingSystem" content="NIH CDE Repository"/>
-
-    <dt>Id:</dt>
-    <dd itemprop="codeValue">{{elt.tinyId}}</dd>
-
-    <dt>Version:</dt>
-    <dd itemprop="version">{{elt.version}}</dd>
-
-    <ng-container *ngFor="let id of elt.ids; let i = index">
-        <dt>
+<h2 class="sectionDetailSubtitle">Identifiers</h2>
+<table class="sectionDetailTable">
+    <tr>
+        <th>Source</th>
+        <th>Id</th>
+        <th>Version</th>
+        <th *ngIf="canEdit"></th>
+    </tr>
+    <tr>
+        <td itemprop="codingSystem" content="NIH CDE Repository">NLM</td>
+        <td itemprop="codeValue">{{elt.tinyId}}</td>
+        <td itemprop="version">{{elt.version}}</td>
+        <td *ngIf="canEdit"></td>
+    </tr>
+    <tr *ngFor="let id of elt.ids; let i = index">
+        <td attr.itemprop="source_{{i}}">{{id.source}}</td>
+        <td attr.itemprop="id_{{i}}">
+            <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank"
+               rel="noopener noreferrer">{{id.id}}</a>
+            <ng-template #noLink>{{id.id}}</ng-template>
+        </td>
+        <td attr.itemprop="version_{{i}}">{{id.version}}</td>
+        <td *ngIf="canEdit">
             <ng-container *ngIf="id.edit">Confirm Delete
                 <mat-icon id="confirmRemoveIdentifier-{{i}}" title="Cofirm Delete"
                           class="fake-button" role="button" tabindex="0"
-                          (click)="removeIdentifierByIndex(i)">check</mat-icon>
+                          (click)="removeIdentifierByIndex(i)">check
+                </mat-icon>
                 <mat-icon id="cancelRemoveIdentifier-{{i}}" title="Cancel"
                           class="fake-button" role="button" tabindex="0"
-                          (click)="id.edit = false">cancel</mat-icon>
+                          (click)="id.edit = false">cancel
+                </mat-icon>
             </ng-container>
-            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}" class="fake-button" role="button" tabindex="0"
+            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}" class="fake-button" role="button"
+                      tabindex="0"
                       title="Delete Identifier"
-                      (click)="id.edit = true">delete</mat-icon>
-            Source:
-        </dt>
-        <dd attr.itemprop="source_{{i}}">{{id.source}}</dd>
-
-        <dt>Id:</dt>
-        <dd attr.itemprop="id_{{i}}">
-            <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank" rel="noopener noreferrer">{{id.id}}</a>
-            <ng-template #noLink>{{id.id}}</ng-template>
-        </dd>
-
-        <dt>Version:</dt>
-        <dd attr.itemprop="version_{{i}}">{{id.version}}</dd>
-    </ng-container>
-</dl>
+                      (click)="id.edit = true">delete
+            </mat-icon>
+        </td>
+    </tr>
+</table>
 <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="button" (click)="openNewIdentifierModal()">
-    <mat-icon>add</mat-icon> Add Identifier
+    <mat-icon>add</mat-icon>
+    Add Identifier
 </button>
