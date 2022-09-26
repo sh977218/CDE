@@ -14,7 +14,7 @@ public class GovernanceGroup extends NlmCdeBaseTest {
         clickElement(By.id("browseOrg-ACRIN"));
         textPresent("Incomplete (");
         clickElement(By.xpath("//a[contains(.,'DCE-MRI Kinetics T1 Mapping Quality Type')]"));
-        findElement(By.xpath("//h2[contains(.,'General Details')]"));
+        goToCdeSummary();
         assertNoElt(By.xpath("//cde-registration//button[contains(.,'Edit')]"));
         assertNoElt(By.xpath("//button[contains(.,'Add Name')]"));
         assertNoElt(By.xpath("//button[contains(.,'Upload more files')]"));

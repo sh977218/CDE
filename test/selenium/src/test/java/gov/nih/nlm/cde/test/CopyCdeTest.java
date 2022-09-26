@@ -15,8 +15,8 @@ public class CopyCdeTest extends BaseClassificationTest {
         textPresent("The International SCI Data Sets");
         clickElement(By.id("submit"));
         hangon(1);
-        textPresent("Incomplete", By.cssSelector("[itemprop='registrationStatus']"));
-        textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.cssSelector("[itemprop='name']"));
+        findElement(By.xpath("//dt[contains(.,'Registration Status:')]/following-sibling::dd[1][contains(.,'Incomplete')]"));
+        textPresent("Copy of: Medication affecting cardiovascular function type exam day indicator", By.cssSelector("h1"));
         textPresent("Copy of: xug6J6R8fkf");
     }
 

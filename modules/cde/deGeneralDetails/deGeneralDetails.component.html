@@ -1,21 +1,9 @@
-<h2>General Details</h2>
-<dl id="general-details" class="cde-property">
-    <dt>Name:</dt>
-    <dd itemprop="name">{{elt.designations[0].designation}}</dd>
-
-    <dt>Steward:</dt>
-    <dd id="stewardOrg" itemprop="steward">
-        <cde-inline-select-edit
-                [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-                [isAllowed]="canEdit"
-                [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-                cdeTooltipClass="cdeTooltipMultiline" cdeTooltipPosition="below">
-        </cde-inline-select-edit>
-    </dd>
+<dl id="general-details" class="inline-dl">
+    <dt style="float: none">Question Text</dt>
+    <dd itemprop="name">{{getQuestionText()}}</dd>
 
     <ng-container *ngIf="elt.definitions[0]">
-        <dt>Definition:</dt>
+        <dt style="float: none">Definition</dt>
         <dd itemprop="description">
             <span *ngIf="elt.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{elt.definitions[0].definition}}</span>
             <ng-template #descriptionHtml>
@@ -24,40 +12,28 @@
         </dd>
     </ng-container>
 
-    <dt>Used By:</dt>
-    <dd itemprop="usedBy">
-        <span>{{elt.classification?.length > 0 ? elt.usedBy?.join(', ') : 'None'}}</span>
+
+    <dt>Data Type:</dt>
+    <dd itemprop="datatype">{{elt.valueDomain.datatype}}</dd>
+
+
+
+    <dt>Steward:</dt>
+    <dd id="stewardOrg" itemprop="steward">
+        <cde-inline-select-edit
+            [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+            [isAllowed]="canEdit"
+            [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+            [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+            cdeTooltipClass="cdeTooltipMultiline" cdeTooltipPosition="below">
+        </cde-inline-select-edit>
     </dd>
+
 
     <dt>Origin:</dt>
     <dd>
-        <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                         (modelChange)="eltChange.emit();">addNew
-        </cde-inline-edit>
+    <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
+                     (modelChange)="eltChange.emit();">addNew
+    </cde-inline-edit>
     </dd>
-
-    <ng-container *ngIf="elt.views">
-        <dt>Views:</dt>
-        <dd itemprop="views">{{elt.views}}</dd>
-    </ng-container>
-    <ng-container *ngIf="elt.imported">
-        <dt>Last import:</dt>
-        <dd>{{elt.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    </ng-container>
-    <ng-container *ngIf="elt.created">
-        <dt>Created:</dt>
-        <dd>{{elt.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    </ng-container>
-    <ng-container *ngIf="elt.createdBy && userService.isOrgAuthority()">
-        <dt>Created By:</dt>
-        <dd>{{elt.createdBy.username}}</dd>
-    </ng-container>
-    <ng-container *ngIf="elt.updated">
-        <dt>Updated:</dt>
-        <dd>{{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
-    </ng-container>
-    <ng-container *ngIf="elt.updatedBy && userService.isOrgAuthority()">
-        <dt>Updated By:</dt>
-        <dd>{{elt.updatedBy.username}}</dd>
-    </ng-container>
 </dl>

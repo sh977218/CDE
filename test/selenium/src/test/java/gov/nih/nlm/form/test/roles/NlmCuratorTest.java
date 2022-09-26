@@ -38,7 +38,7 @@ public class NlmCuratorTest extends BaseClassificationTest {
         addClassificationMethod(new String[]{"SeleniumOrg", "Test Classif"});
         modalGone();
         clickElement(By.id("submit"));
-        goToGeneralDetail();
+        goToCdeSummary();
         textPresent(cdeName);
         textPresent(cdeDef);
         findElement(By.xpath("//button[contains(.,'Edit')]"));

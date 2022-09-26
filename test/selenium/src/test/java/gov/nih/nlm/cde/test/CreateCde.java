@@ -27,14 +27,14 @@ public class CreateCde extends BaseClassificationTest {
         addClassificationMethod(new String[]{"TEST", "Classify Board", "Classif_Board_Sub"});
         modalGone();
         clickElement(By.id("submit"));
-        goToGeneralDetail();
+        goToCdeSummary();
         textPresent(cdeName);
         textPresent(cdeDef);
 
         if (checkEs) {
             waitForESUpdate();
             goToCdeByName(cdeName);
-            goToGeneralDetail();
+            goToCdeSummary();
             textPresent(cdeDef);
         }
     }

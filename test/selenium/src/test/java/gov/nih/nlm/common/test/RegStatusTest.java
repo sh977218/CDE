@@ -9,7 +9,7 @@ public abstract class RegStatusTest extends CommonTest {
     public void retire(String eltName, String user) {
         mustBeLoggedInAs(user, password);
         goToEltByName(eltName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textPresent("Qualified");
         editRegistrationStatus("Retired", null, null, null, null);
         version();
@@ -40,12 +40,12 @@ public abstract class RegStatusTest extends CommonTest {
     public void nlmPromotesToStandard(String eltName) {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToEltByName(eltName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textPresent("Qualified");
         editRegistrationStatus("Standard", null, null, null, null);
         closeAlert();
         goToEltByName(eltName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textPresent("Standard");
     }
 

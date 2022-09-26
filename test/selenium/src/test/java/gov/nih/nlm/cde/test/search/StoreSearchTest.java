@@ -13,7 +13,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         searchElt(cdeName, "cde");
         hangon(1);
         clickElement(By.id("linkToElt_0"));
-        textPresent("General Details");
+        textPresent("CDE Summary");
         driver.navigate().back();
         textPresent(cdeName);
         Assert.assertTrue("Smoking History Ind".equals(findElement(By.id("linkToElt_0")).getText()));

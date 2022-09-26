@@ -10,7 +10,7 @@ public class FindRetiredById extends NlmCdeBaseTest {
         String cdeName = "Skull fracture anatomic site";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        goToGeneralDetail();
+        goToCdeSummary();
         editRegistrationStatus("Retired", null, null, null, null);
         goToCdeByName(cdeName);
         newCdeVersion();

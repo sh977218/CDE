@@ -6,7 +6,8 @@ import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-de-general-details[elt]',
-    templateUrl: './deGeneralDetails.component.html'
+    templateUrl: './deGeneralDetails.component.html',
+    styleUrls: ['./deGeneralDetails.component.scss'],
 })
 export class DeGeneralDetailsComponent {
     @Input() canEdit: boolean = false;
@@ -26,5 +27,18 @@ export class DeGeneralDetailsComponent {
     changeStewardOrg(event: string) {
         this.elt.stewardOrg.name = event;
         this.eltChange.emit();
+    }
+
+    getQuestionText() {
+        let designations = this.elt.designations;
+
+        return (
+            designations.find(
+                d => d.tags.indexOf('Preferred Question Text') > -1
+            )?.designation ||
+            designations.find(d => d.tags.indexOf('Question Text') > -1)
+                ?.designation ||
+            'Submitter did not provide a Question Text'
+        );
     }
 }

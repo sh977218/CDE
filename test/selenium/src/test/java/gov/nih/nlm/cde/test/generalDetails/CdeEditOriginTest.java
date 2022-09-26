@@ -10,7 +10,7 @@ public class CdeEditOriginTest extends NlmCdeBaseTest {
         String origin = "new origin";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textNotPresent(origin);
         editOrigin(origin, false);
     }

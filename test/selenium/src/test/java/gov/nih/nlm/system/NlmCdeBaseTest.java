@@ -511,6 +511,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath("//li//a[text()='General Details']"));
     }
 
+    protected void goToCdeSummary() {
+        clickElement(By.xpath("//li//a[text()='CDE Summary']"));
+    }
+
     protected void goToPermissibleValues() {
         clickElement(By.xpath("//li//a[text()='Permissible Values']"));
     }

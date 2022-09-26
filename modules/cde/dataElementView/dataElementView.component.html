@@ -28,19 +28,6 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <main *ngIf="elt" class="container-fluid" itemscope="https://schema.org/MedicalCode">
-                    <h1 id="top-of-page">
-                        <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
-                                          (isDraftChange)="$event?loadElt():loadPublished()"
-                                          [hidden]="!hasDrafts"></cde-draft-slider>
-                        <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
-                             src="/assets/img/endorsedRibbon.svg">
-                        {{elt?.designations[0]?.designation}}
-                    </h1>
-                    <div *ngIf="elt.partOfBundles?.length" class="bundle-box">
-                        <mat-icon fill="1">error_circle_rounded</mat-icon>
-                        <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go to <a
-                            [routerLink]="'/formView/'" [queryParams]="{tinyId:elt.partOfBundles[0]}">bundle</a>
-                    </div>
                     <header>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
@@ -76,8 +63,13 @@
                             </ul>
                         </div>
                     </header>
-                    <nav class="noPrint">
-                        <button id="export" class="button" title="Export"
+                    <nav style="padding-left: 32px" class="noPrint">
+                        <button id="addToBoard" class="button light" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
+                                module="cde">
+                            <mat-icon style="transform: scale(.66)" svgIcon="pin"></mat-icon>
+                            <span class="button-label">Pin to Board</span>
+                        </button>
+                        <button id="export" class="button light" title="Export"
                                 #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu">
                             <mat-icon>play_for_work</mat-icon>
                             <span class="button-label"> Export </span>
@@ -112,19 +104,14 @@
                                 </button>
                             </ng-template>
                         </mat-menu>
-                        <button id="addToBoard" class="button" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
-                                module="cde">
-                            <mat-icon svgIcon="thumb_tack"></mat-icon>
-                            <span class="button-label">Add to Board</span>
-                        </button>
                         <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
-                                id="copyCdeBtn" class="button" title="Copy CDE"
+                                id="copyCdeBtn" class="button light" title="Copy CDE"
                                 (click)="openCopyElementModal(elt)" color="primary">
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
                         </button>
                         <button *ngIf="elt && userService.canViewComment" tourAnchor="discussBtn"
-                                id="discussBtn" class="button" title="Discuss CDE"
+                                id="discussBtn" class="button light" title="Discuss CDE"
                                 (click)="commentDrawer.toggle()">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">
                                 comment
@@ -148,9 +135,31 @@
                                 {{savingText || 'Changed'}}
                             </a>
                         </ng-container>
+                        <div id="viewsCount" style="float: right; font-style: italic; font-size: 14px">
+                            <div>
+                                {{elt.views || 0}} Views
+                            </div>
+                            <div *ngIf="elt.updated">
+                                Updated: {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
+                            </div>
+                        </div>
                     </nav>
-                    <article>
+                    <article style="padding-left: 32px; padding-right: 32px">
                         <section>
+                            <h1>
+                                <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
+                                                  (isDraftChange)="$event?loadElt():loadPublished()"
+                                                  [hidden]="!hasDrafts"></cde-draft-slider>
+                                <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
+                                     src="/assets/img/endorsedRibbon.svg">
+                                {{elt?.designations[0]?.designation}}
+                            </h1>
+                            <div *ngIf="elt.partOfBundles?.length" class="bundle-box">
+                                <mat-icon fill="1">error_circle_rounded</mat-icon>
+                                <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go to <a
+                                    [routerLink]="'/formView/'" [queryParams]="{tinyId:elt.partOfBundles[0]}">bundle</a>
+                            </div>
+                            <h2 style="display: none;">CDE Summary</h2>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
                             <div role="group" aria-label="More Info">

@@ -1,14 +1,13 @@
 <fieldset id="registrationStateDiv">
     <h2 (click)="canEdit && openRegStatusUpdate()"
         [style.cursor]="canEdit ? 'pointer' : 'auto'"
-        class="sectionDetailSubtitle"
-        style="width:auto; margin-bottom: 20px">Status
-        <button *ngIf="canEdit" class="button light" style="margin-left:10px;" title="Edit Status">
+        class="sectionDetailSubtitle cdeRegStatusTitle">Status
+        <button *ngIf="canEdit" class="button light" title="Edit Status">
             <mat-icon>edit</mat-icon>
             Edit
         </button>
     </h2>
-    <dl class="cdeRegStatus">
+    <dl class="inline-dl">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt>Effective Date:</dt>
             <dd>{{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}</dd>
@@ -40,6 +39,18 @@
         <ng-container *ngIf="elt['views']">
             <dt>Views:</dt>
             <dd>{{elt.views}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.imported && userService.isOrgAuthority()">
+            <dt>Last import:</dt>
+            <dd>{{elt.imported | date: 'MM/dd/yyyy, h:mma'}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.createdBy && userService.isOrgAuthority()">
+            <dt>Created By:</dt>
+            <dd>{{elt.createdBy.username}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.updatedBy && userService.isOrgAuthority()">
+            <dt>Updated By:</dt>
+            <dd>{{elt.updatedBy.username}}</dd>
         </ng-container>
     </dl>
 </fieldset>

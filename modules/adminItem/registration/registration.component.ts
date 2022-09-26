@@ -40,7 +40,7 @@ export class RegistrationComponent implements OnInit {
         private alert: AlertService,
         private http: HttpClient,
         public dialog: MatDialog,
-        private userService: UserService
+        public userService: UserService
     ) {}
 
     ngOnInit() {

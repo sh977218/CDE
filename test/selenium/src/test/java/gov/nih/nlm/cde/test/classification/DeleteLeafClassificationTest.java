@@ -11,7 +11,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         String cdeName = "Spectroscopy geometry location not applicable indicator";
         mustBeLoggedInAs(classificationMgtUser_username, password);
         goToCdeByName(cdeName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
         findElement(By.xpath("//*[@id='Domain;Assessments and Examinations;Imaging Diagnostics']"));
@@ -25,7 +25,7 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         textPresent("delete NINDS > Disease > Myasthenia Gravis");
 
         goToCdeByName(cdeName);
-        goToGeneralDetail();
+        goToCdeSummary();
         textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
     }
 

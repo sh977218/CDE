@@ -1,6 +1,6 @@
 <fieldset *ngFor="let eltSource of elt.sources; let $index = index" tourAnchor="sources_{{$index}}"
           id="sources_{{$index}}">
-    <dl class="cdeSource">
+    <dl class="cdeSource inline-dl">
         <ng-container *ngIf="eltSource.sourceName">
             <dt>Name:</dt>
             <dd>{{eltSource.sourceName}}</dd>
