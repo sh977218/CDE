@@ -26,8 +26,7 @@ public class FormAddRemoveIdentifierTest extends NlmCdeBaseTest {
         addNewIdentifier("test2", "MyId3", "MyVersion3");
 
         // remove MyId2
-        clickElement(By.id("removeIdentifier-1"));
-        clickElement(By.id("confirmRemoveIdentifier-1"));
+        removeIdentifier(1);
 
         goToFormByName(formName);
 

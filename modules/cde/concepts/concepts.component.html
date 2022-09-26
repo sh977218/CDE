@@ -1,26 +1,29 @@
-<h2>Concepts</h2>
+<h2 class="sectionDetailSubtitle">Concepts</h2>
 <div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length === 0">
     There are no concepts.
 </div>
-<div *ngFor="let config of conceptConfigurations; ">
-    <div *ngIf="elt[config.type].concepts.length > 0">
-        <div [innerHTML]="config.details.display"></div>
-        <table class="table table-striped">
-            <tr>
-                <th>Code Name</th>
-                <th>Code System</th>
-                <th>Code ID</th>
-                <th id="conceptActions_{{config.type}}" *ngIf="canEdit"></th>
-            </tr>
+<div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length > 0">
+    <table class="sectionDetailTable">
+        <tr>
+            <th></th>
+            <th>Code Name</th>
+            <th>Code System</th>
+            <th>Code ID</th>
+            <th *ngIf="canEdit"></th>
+        </tr>
+        <ng-container *ngFor="let config of conceptConfigurations; ">
             <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                 itemtype="https://schema.org/MedicalCode">
-                <td>
+                <td class="detailTableTdHead">
+                    <span *ngIf="$index === 0">{{config.details.display}}</span>
+                </td>
+                <td class="detailTableTd">
                     <span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
                           itemprop="name" class="fake-link">{{concept.name}}</span>
                 </td>
-                <td itemprop="codeSystem">{{concept.origin}}</td>
-                <td itemprop="codeValue">{{concept.originId}}</td>
-                <td headers="conceptActions_{{config.type}}" *ngIf="canEdit">
+                <td itemprop="codeSystem" class="detailTableTd">{{concept.origin}}</td>
+                <td itemprop="codeValue" class="detailTableTd">{{concept.originId}}</td>
+                <td headers="conceptActions_{{config.type}}" *ngIf="canEdit" class="detailTableTd">
                     <mat-icon id="remove{{config.type}}-{{$index}}" class="fake-button" role="button" tabindex="0"
                               title="Remove" (click)="removeConcept(config.type, $index)">delete_outline
                     </mat-icon>
@@ -28,8 +31,8 @@
                                         (cb)="eltChange.emit()"></cde-sortable-array>
                 </td>
             </tr>
-        </table>
-    </div>
+        </ng-container>
+    </table>
 </div>
 <button *ngIf="canEdit" id="openNewConceptModalBtn" class="button" (click)="openNewConceptModal()">
     <mat-icon>add</mat-icon>

@@ -10,14 +10,14 @@ type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 interface Config {
     type: ConceptTypes;
     details: {
-        display: string,
-        path: string,
+        display: string;
+        path: string;
     };
 }
 
 @Component({
     selector: 'cde-concepts',
-    templateUrl: './concepts.component.html'
+    templateUrl: './concepts.component.html',
 })
 export class ConceptsComponent {
     @Input() public elt: any;
@@ -26,40 +26,55 @@ export class ConceptsComponent {
     conceptConfigurations: Config[] = [
         {
             type: 'dataElementConcept',
-            details: {display: 'Data Element Concept', path: 'dataElementConcept.concepts.name'}
+            details: {
+                display: 'Data Element Concept',
+                path: 'dataElementConcept.concepts.name',
+            },
         },
         {
             type: 'objectClass',
-            details: {display: 'Object Class', path: 'objectClass.concepts.name'}
+            details: {
+                display: 'Object Class',
+                path: 'objectClass.concepts.name',
+            },
         },
         {
             type: 'property',
-            details: {display: 'Property', path: 'property.concepts.name'}
-        }];
+            details: { display: 'Property', path: 'property.concepts.name' },
+        },
+    ];
 
-    constructor(public dialog: MatDialog,
-                private router: Router) {}
+    constructor(public dialog: MatDialog, private router: Router) {}
 
     addNewConcept(newConcept) {
-        if (!this.elt.dataElementConcept) { this.elt.dataElementConcept = {}; }
+        if (!this.elt.dataElementConcept) {
+            this.elt.dataElementConcept = {};
+        }
         if (newConcept.type === 'dec') {
-            if (!this.elt.dataElementConcept.concepts) { this.elt.dataElementConcept.concepts = []; }
+            if (!this.elt.dataElementConcept.concepts) {
+                this.elt.dataElementConcept.concepts = [];
+            }
             this.elt.dataElementConcept.concepts.push(newConcept);
         } else if (newConcept.type === 'prop') {
-            if (!this.elt.property.concepts) { this.elt.property.concepts = []; }
+            if (!this.elt.property.concepts) {
+                this.elt.property.concepts = [];
+            }
             this.elt.property.concepts.push(newConcept);
         } else if (newConcept.type === 'oc') {
-            if (!this.elt.objectClass.concepts) { this.elt.objectClass.concepts = []; }
+            if (!this.elt.objectClass.concepts) {
+                this.elt.objectClass.concepts = [];
+            }
             this.elt.objectClass.concepts.push(newConcept);
         }
         this.eltChange.emit();
     }
 
     openNewConceptModal() {
-       this.dialog.open(AddConceptModalComponent,{width: '800px'})
+        this.dialog
+            .open(AddConceptModalComponent, { width: '800px' })
             .afterClosed()
-            .subscribe(newConcept=>{
-                if(newConcept){
+            .subscribe(newConcept => {
+                if (newConcept) {
                     this.addNewConcept(newConcept);
                 }
             });
@@ -81,7 +96,9 @@ export class ConceptsComponent {
     }
 
     relatedCdes(concept: string, config: Config) {
-        this.router.navigate(['/cde/search'], {queryParams: {q: config.details.path + ':"' + concept + '"'}});
+        this.router.navigate(['/cde/search'], {
+            queryParams: { q: config.details.path + ':"' + concept + '"' },
+        });
     }
 
     removeConcept(type: ConceptTypes, i: number) {

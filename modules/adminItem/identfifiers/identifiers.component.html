@@ -21,20 +21,8 @@
         </td>
         <td attr.itemprop="version_{{i}}">{{id.version}}</td>
         <td *ngIf="canEdit">
-            <ng-container *ngIf="id.edit">Confirm Delete
-                <mat-icon id="confirmRemoveIdentifier-{{i}}" title="Cofirm Delete"
-                          class="fake-button" role="button" tabindex="0"
-                          (click)="removeIdentifierByIndex(i)">check
-                </mat-icon>
-                <mat-icon id="cancelRemoveIdentifier-{{i}}" title="Cancel"
-                          class="fake-button" role="button" tabindex="0"
-                          (click)="id.edit = false">cancel
-                </mat-icon>
-            </ng-container>
-            <mat-icon *ngIf="canEdit && !id.edit" id="removeIdentifier-{{i}}" class="fake-button" role="button"
-                      tabindex="0"
-                      title="Delete Identifier"
-                      (click)="id.edit = true">delete
+            <mat-icon id="removeIdentifier-{{i}}" class="fake-button" role="button" tabindex="0"
+                      title="Remove" (click)="removeIdentifierByIndex(i)">delete_outline
             </mat-icon>
         </td>
     </tr>

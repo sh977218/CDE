@@ -1401,7 +1401,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void removeIdentifier(int index) {
         goToIdentifiers();
         clickElement(By.id("removeIdentifier-" + index));
-        clickElement(By.id("confirmRemoveIdentifier-" + index));
     }
 
     /**
