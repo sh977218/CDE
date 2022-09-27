@@ -4,17 +4,19 @@ import { Item } from 'shared/models.model';
 
 @Component({
     selector: 'cde-admin-item-sources[elt]',
-    templateUrl: './sources.component.html'
+    templateUrl: './sources.component.html',
+    styleUrls: ['./sources.component.scss'],
 })
 export class SourcesComponent {
-
     sourceUrls: any = {};
 
     @Input() set elt(e: Item) {
         e.sources.forEach((s: any) => {
-            const url = `/server/${e.elementType === 'form' ? 'form' : 'de'}/originalSource/${s.sourceName}/${e.tinyId}`;
+            const url = `/server/${
+                e.elementType === 'form' ? 'form' : 'de'
+            }/originalSource/${s.sourceName}/${e.tinyId}`;
             this.http.head(url).subscribe(
-                () => this.sourceUrls[s.sourceName] = url,
+                () => (this.sourceUrls[s.sourceName] = url),
                 err => delete this.sourceUrls[s.sourceName]
             );
         });
@@ -27,7 +29,5 @@ export class SourcesComponent {
 
     private _elt!: Item;
 
-    constructor(private http: HttpClient) {
-    }
-
+    constructor(private http: HttpClient) {}
 }

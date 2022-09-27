@@ -1,28 +1,27 @@
-<fieldset *ngFor="let eltSource of elt.sources; let $index = index" class="cdeFieldset" tourAnchor="sources_{{$index}}"
+<fieldset *ngFor="let eltSource of elt.sources; let $index = index" tourAnchor="sources_{{$index}}"
           id="sources_{{$index}}">
-<legend>Source: {{eltSource.sourceName}}</legend>
-    <dl class="cde-property">
-        <ng-container *ngIf="sourceUrls[eltSource.sourceName]">
-            <dt matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
-            <dd>
-                <a [href]="sourceUrls[eltSource.sourceName]" target="_blank">Raw Artifact</a>
-            </dd>
-        </ng-container>
+    <dl class="cdeSource">
         <ng-container *ngIf="eltSource.sourceName">
             <dt>Name:</dt>
             <dd>{{eltSource.sourceName}}</dd>
         </ng-container>
+        <ng-container *ngIf="sourceUrls[eltSource.sourceName]">
+            <dt matTooltip="Original Data in NLM CDE format">Raw Artifact:</dt>
+            <dd>
+                <a [href]="sourceUrls[eltSource.sourceName]" target="_blank">Raw Artifact <mat-icon>open_in_new</mat-icon></a>
+            </dd>
+        </ng-container>
         <ng-container *ngIf="eltSource.imported">
             <dt>Imported:</dt>
-            <dd>{{eltSource.imported | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dd>{{eltSource.imported | date: 'MM/dd/yyyy, h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.created">
             <dt>Created:</dt>
-            <dd>{{eltSource.created | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dd>{{eltSource.created | date: 'MM/dd/yyyy, h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.updated">
             <dt>Updated:</dt>
-            <dd>{{eltSource.updated | date: 'MM/dd/yyyy @ h:mma'}}</dd>
+            <dd>{{eltSource.updated | date: 'MM/dd/yyyy, h:mma'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.registrationStatus">
             <dt>Registration Status:</dt>

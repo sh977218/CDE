@@ -148,9 +148,6 @@
                         <section>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
-                            <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
-                                              [canEdit]="canEdit()"></cde-registration>
                             <div role="group" aria-label="More Info">
                                 <cde-linked-forms [elt]="elt"></cde-linked-forms>
                                 <cde-mlt [elt]="elt"></cde-mlt>
@@ -190,7 +187,11 @@
                                              (setDefault)="setDefault(elt, $event)"
                                              (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
-                        <section id="history-div">
+                        <section id="submission-info">
+                            <h2>Submission Information</h2>
+                            <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
+                                              [canEdit]="canEdit()"></cde-registration>
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
                         <section *ngIf="elt.derivationRules.length || canEdit()">

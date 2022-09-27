@@ -1,11 +1,14 @@
-<fieldset class="cdeFieldset" id="registrationStateDiv">
-    <legend (click)="canEdit && openRegStatusUpdate()" [style.cursor]="canEdit ? 'pointer' : 'auto'">Registration State:
-        <button *ngIf="canEdit" class="button light" title="Edit Status">
+<fieldset id="registrationStateDiv">
+    <h2 (click)="canEdit && openRegStatusUpdate()"
+        [style.cursor]="canEdit ? 'pointer' : 'auto'"
+        class="sectionDetailSubtitle"
+        style="width:auto; margin-bottom: 20px">Status
+        <button *ngIf="canEdit" class="button light" style="margin-left:10px;" title="Edit Status">
             <mat-icon>edit</mat-icon>
             Edit
         </button>
-    </legend>
-    <dl class="cde-property">
+    </h2>
+    <dl class="cdeRegStatus">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt>Effective Date:</dt>
             <dd>{{elt.registrationState.effectiveDate | date:'MM/dd/yyyy':'z'}}</dd>
@@ -29,6 +32,14 @@
         <ng-container *ngIf="elt.registrationState.administrativeStatus">
             <dt>Administrative Status:</dt>
             <dd>{{elt.registrationState.administrativeStatus}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt.created">
+            <dt>Publish Date:</dt>
+            <dd>{{elt.created | date: 'MM/dd/yyyy, h:mma'}}</dd>
+        </ng-container>
+        <ng-container *ngIf="elt['views']">
+            <dt>Views:</dt>
+            <dd>{{elt.views}}</dd>
         </ng-container>
     </dl>
 </fieldset>

@@ -1926,7 +1926,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected String xpathRegistrationStatusEditable() {
-        return "//legend[contains(text(),'Registration State:')][button]";
+        return "//h2[contains(.,'Status')][button]";
     }
 
     protected Cookie getCurrentCookie() {
