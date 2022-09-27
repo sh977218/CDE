@@ -1,58 +1,54 @@
 <h2>History</h2>
-<div>
-    <div>
-        <label>
-            <input type="checkbox" class="checkbox" [(ngModel)]="showVersioned">
-            Only show versioned revisions.
-        </label>
-        <button *ngIf="numberSelected===2" id="historyCompareBtn" class="button" (click)="openHistoryCompareModal()">
-            <mat-icon>compare_arrows</mat-icon>
-            Compare
-        </button>
-    </div>
-    <table class="table table-hover" id="historyTable">
-        <caption>List of previous versions. Click rows to select them.</caption>
-        <tr>
-            <th width="30px"></th>
-            <th>Updated</th>
-            <ng-container *ngIf="userService.isOrgAuthority()">
-                <th>Updated by</th>
-            </ng-container>
-            <th>Change Note</th>
-            <th>Version</th>
-            <th>View</th>
-        </tr>
-        <ng-container *ngFor="let priorElement of priorElements; index as i; first as first">
-            <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
-                (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
-                <td>
-                    <mat-icon *ngIf="priorElement.selected">check_box</mat-icon>
-                    <mat-icon *ngIf="!priorElement.selected">check_box_outline_blank</mat-icon>
-                </td>
-                <td>
-                    {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
-                </td>
-                <ng-container *ngIf="userService.isOrgAuthority()">
-                    <td>{{priorElement.updatedBy?.username}}</td>
-                </ng-container>
-                <td>{{priorElement.changeNote}}</td>
-                <td>
-                    <ng-container *ngIf="priorElement.isDraft; else version">DRAFT</ng-container>
-                    <ng-template #version>{{priorElement.version}}</ng-template>
-                </td>
-                <td>
-                    <div id="prior-{{i}}">
-                        <ng-container *ngIf="first; else notViewing">
-                            Viewing
-                        </ng-container>
-                        <ng-template #notViewing>
-                            <a [href]="priorElement.url" target="_blank" title="View This Version">
-                                <mat-icon>visibility</mat-icon>
-                            </a>
-                        </ng-template>
-                    </div>
-                </td>
-            </tr>
-        </ng-container>
-    </table>
+<div style="display: flex; justify-content: space-between;">
+    <button *ngIf="numberSelected===2" id="historyCompareBtn" class="button" (click)="openHistoryCompareModal()">
+        <mat-icon>compare_arrows</mat-icon>
+        Compare
+    </button>
+    <span class="spacer"></span>
+    <mat-checkbox [(ngModel)]="showVersioned"> Only show versioned
+        revisions.
+    </mat-checkbox>
 </div>
+<table class="table table-hover" id="historyTable">
+    <tr>
+        <th></th>
+        <th>Updated</th>
+        <ng-container *ngIf="userService.isOrgAuthority()">
+            <th>Updated by</th>
+        </ng-container>
+        <th>Change Note</th>
+        <th>Version</th>
+        <th>View</th>
+    </tr>
+    <ng-container *ngFor="let priorElement of priorElements; index as i; first as first">
+        <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
+            (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
+            <td>
+                <mat-checkbox [(ngModel)]="priorElement.selected"></mat-checkbox>
+            </td>
+            <td>
+                {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}
+            </td>
+            <ng-container *ngIf="userService.isOrgAuthority()">
+                <td>{{priorElement.updatedBy?.username}}</td>
+            </ng-container>
+            <td>{{priorElement.changeNote}}</td>
+            <td>
+                <ng-container *ngIf="priorElement.isDraft; else version">DRAFT</ng-container>
+                <ng-template #version>{{priorElement.version}}</ng-template>
+            </td>
+            <td>
+                <div id="prior-{{i}}">
+                    <ng-container *ngIf="first; else notViewing">
+                        Viewing
+                    </ng-container>
+                    <ng-template #notViewing>
+                        <a [href]="priorElement.url" target="_blank" title="View This Version">
+                            <mat-icon>open_in_new</mat-icon>
+                        </a>
+                    </ng-template>
+                </div>
+            </td>
+        </tr>
+    </ng-container>
+</table>

@@ -44,6 +44,7 @@ import { DeleteClassificationModalComponent } from 'adminItem/classification/del
 import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
 import { AddReferenceDocumentModalComponent } from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     imports: [
@@ -69,6 +70,7 @@ import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-moda
         MatTabsModule,
         MatCardModule,
         TourMatMenuModule,
+        MatCheckboxModule,
     ],
     declarations: [
         AttachmentsComponent,

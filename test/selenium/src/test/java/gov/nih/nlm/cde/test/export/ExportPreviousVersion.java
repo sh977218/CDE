@@ -26,7 +26,7 @@ public class ExportPreviousVersion extends NlmCdeBaseTest {
         clickElement(By.cssSelector(".cdk-overlay-container"));
 
         goToHistory();
-        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[normalize-space() = 'visibility']"));
+        clickElement(By.xpath("//*[@id='prior-1']//mat-icon[normalize-space() = 'open_in_new']"));
         switchTab(1);
 
         clickElement(By.id("export"));
