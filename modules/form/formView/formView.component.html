@@ -37,6 +37,10 @@
                         Form: {{elt?.designations[0]?.designation}}
                     </h1>
                     <header>
+                        <div *ngIf="elt.isBundle" class="bundle-box">
+                            <mat-icon fill="1">error_circle_rounded</mat-icon>
+                            <b>This form is a bundle.</b> Bundles are indivisible. They are not considered valid and reliable if not used in their entirety, as intended.
+                        </div>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is archived. You can
