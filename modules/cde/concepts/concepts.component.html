@@ -3,19 +3,22 @@
     There are no concepts.
 </div>
 <div *ngIf="elt.dataElementConcept.concepts.concat(elt.objectClass.concepts, elt.property.concepts).length > 0">
-    <table class="sectionDetailTable">
+    <table class="sectionDetailTable table-striped">
+        <thead>
         <tr>
             <th></th>
-            <th>Code Name</th>
-            <th>Code System</th>
-            <th>Code ID</th>
+            <th>Concept Name</th>
+            <th>Concept Source</th>
+            <th>Concept ID</th>
             <th *ngIf="canEdit"></th>
         </tr>
+        </thead>
+        <tbody>
         <ng-container *ngFor="let config of conceptConfigurations; ">
             <tr *ngFor="let concept of elt[config.type].concepts; let $index = index" itemscope
                 itemtype="https://schema.org/MedicalCode">
                 <td class="detailTableTdHead">
-                    <span *ngIf="$index === 0">{{config.details.display}}</span>
+                    <strong>{{config.details.display}}</strong>
                 </td>
                 <td class="detailTableTd">
                     <span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
@@ -32,6 +35,7 @@
                 </td>
             </tr>
         </ng-container>
+        </tbody>
     </table>
 </div>
 <button *ngIf="canEdit" id="openNewConceptModalBtn" class="button" (click)="openNewConceptModal()">
