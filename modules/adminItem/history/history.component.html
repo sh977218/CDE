@@ -1,4 +1,4 @@
-<h2>History</h2>
+<h2 class="sectionDetailSubtitle">History</h2>
 <div style="display: flex; justify-content: space-between;">
     <button *ngIf="numberSelected===2" id="historyCompareBtn" class="button" (click)="openHistoryCompareModal()">
         <mat-icon>compare_arrows</mat-icon>
@@ -20,6 +20,7 @@
         <th>Version</th>
         <th>View</th>
     </tr>
+    <tbody>
     <ng-container *ngFor="let priorElement of priorElements; index as i; first as first">
         <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
             (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
@@ -51,4 +52,9 @@
             </td>
         </tr>
     </ng-container>
+    </tbody>
 </table>
+<div *ngIf="priorElementsFull.length > 4" style="display: flex;justify-content: center">
+    <span *ngIf="!toggled" id="expendHistory" class="fake-link" style="font-weight: bold" (click)="expandList()">Expand List<mat-icon>arrow_downward</mat-icon></span>
+    <span *ngIf="toggled" id="collapseHistory" class="fake-link" style="font-weight: bold" (click)="collapseList()">Collapse List<mat-icon>arrow_upward</mat-icon></span>
+</div>

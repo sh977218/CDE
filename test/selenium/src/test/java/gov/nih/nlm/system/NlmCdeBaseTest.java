@@ -1121,10 +1121,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
        @param rightIndex an index starts from 1
      */
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tr[td][" + rightIndex + "]"));
-        int leftSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tr[td][1]"));
-        int rightSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tr[td][2]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
+        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
+        int leftSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr[td][1]"));
+        int rightSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr[td][2]"));
         Assert.assertEquals(1, leftSelect);
         Assert.assertEquals(1, rightSelect);
         clickElement(By.id("historyCompareBtn"));
