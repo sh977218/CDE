@@ -14,11 +14,11 @@
         </ng-template>
         <div style="min-width: 250px"></div>
     </mat-sidenav>
-    <button class="noPrint forNotLgScreen slide-pane-button-right" title="Expand Page Navigation"
+    <button class="noPrint forNotLgScreen slide-pane-button" title="Expand Page Navigation"
             (click)="navDrawer.open()"></button>
     <mat-sidenav-content>
         <mat-sidenav-container [hasBackdrop]="false">
-            <mat-sidenav #commentDrawer mode="side" position="end" style="max-width: 25%">
+            <mat-sidenav #commentDrawer mode="side" position="start" style="max-width: 25%">
                 <div *ngIf="elt && userService.canViewComment">
                     <cde-discuss-area *ngIf="elt" [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"

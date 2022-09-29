@@ -2,11 +2,11 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button class="noPrint forNotLgScreen slide-pane-button-right" title="Expand Page Navigation"
+<button class="noPrint forNotLgScreen slide-pane-button" title="Expand Page Navigation"
         (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
-    <mat-sidenav #navDrawer class="noPrint" position="end" style="border: 0"
+    <mat-sidenav #navDrawer class="noPrint" position="start" style="border: 0"
                  [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
                  fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 148" [fixedBottomGap]="isMobile ? 0 : 99">
         <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
