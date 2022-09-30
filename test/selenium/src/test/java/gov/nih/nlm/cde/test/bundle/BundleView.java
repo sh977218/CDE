@@ -13,4 +13,13 @@ public class BundleView extends NlmCdeBaseTest {
         goToFormByName("DateTypeTest");
         textNotPresent("This form is a bundle");
     }
+
+    @Test
+    public void viewCdeBundle() {
+        goToCdeByName("Unexpected adverse event indicator");
+        textPresent("This CDE is part of a bundle");
+
+        goToCdeByName("Adverse Event Ongoing Event Indicator");
+        textNotPresent("This CDE is part of a bundle");
+    }
 }
