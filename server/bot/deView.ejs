@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include head.ejs %>
+<%- include('head.ejs') %>
 <body role="application">
-<%- include navigation.ejs %>
+<%- include('navigation.ejs') %>
 <div class="container" itemscope="https://schema.org/MedicalCode">
     <% if (elt) { %>
     <h1><%= elt.designations[0].designation %></h1>
-    <%- include generalDetail.ejs %>
+    <%- include('generalDetail.ejs') %>
     <div class="row" id="pvs_tab">
         <h2 class="w-100">Permissible Values:</h2>
         <div class="col-12">
@@ -47,15 +47,15 @@
         </div>
         <% } %>
     </div>
-    <%- include naming.ejs %>
-    <%- include referenceDocuments.ejs %>
-    <%- include properties.ejs %>
-    <%- include identifiers.ejs %>
+    <%- include('naming.ejs') %>
+    <%- include('referenceDocuments.ejs') %>
+    <%- include('properties.ejs') %>
+    <%- include('identifiers.ejs') %>
     <% } %>
 
 </div>
 
-<%- include footer.ejs %>
+<%- include('footer.ejs') %>
 
 <script type="application/ld+json">
         {

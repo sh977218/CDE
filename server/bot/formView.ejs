@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:ng="http://angularjs.org" lang="en">
-<%- include head.ejs %>
+<%- include('head.ejs') %>
 
 <body role="application">
-<%- include navigation.ejs %>
+<%- include('navigation.ejs') %>
 
 <div class="container" itemscope="https://schema.org/MedicalCode">
     <% if (elt) { %>
     <h1><%= elt.designations[0].designation %></h1>
-    <%- include generalDetail.ejs %>
-    <%- include naming.ejs %>
-    <%- include referenceDocuments.ejs %>
-    <%- include properties.ejs %>
-    <%- include identifiers.ejs %>
+    <%- include('generalDetail.ejs') %>
+    <%- include('naming.ejs') %>
+    <%- include('referenceDocuments.ejs') %>
+    <%- include('properties.ejs') %>
+    <%- include('identifiers.ejs') %>
     <% } %>
 
 </div>
 
-<%- include footer.ejs %>
+<%- include('footer.ejs') %>
 
 <script type="application/ld+json">
         {
