@@ -54,7 +54,7 @@
     </ng-container>
     </tbody>
 </table>
-<div *ngIf="priorElementsFull.length > 4" style="display: flex;justify-content: center">
+<div *ngIf="priorElementsFull?.length > 4" style="display: flex;justify-content: center">
     <span *ngIf="!toggled" id="expendHistory" class="fake-link" style="font-weight: bold" (click)="expandList()">Expand List<mat-icon>arrow_downward</mat-icon></span>
     <span *ngIf="toggled" id="collapseHistory" class="fake-link" style="font-weight: bold" (click)="collapseList()">Collapse List<mat-icon>arrow_upward</mat-icon></span>
 </div>

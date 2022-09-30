@@ -23,10 +23,10 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToClassification();
 
         textPresent("GO Trial", By.xpath("//*[@id='GO Trial']"));
-        textPresent("GO Trial", By.xpath("//*[@id='GO Trial,GO Trial']"));
-        textPresent("GO New CDEs", By.xpath("//*[@id='GO Trial,GO New CDEs']"));
+        textPresent("GO Trial", By.xpath("//*[@id='GO Trial;GO Trial']"));
+        textPresent("GO New CDEs", By.xpath("//*[@id='GO Trial;GO New CDEs']"));
         textPresent("CCR Implementation", By.xpath("//*[@id='CCR Implementation']"));
-        textPresent("caBIG", By.xpath("//*[@id='C3D Domain,caBIG']"));
+        textPresent("caBIG", By.xpath("//*[@id='C3D Domain;caBIG']"));
 
         goToIdentifiers();
         textPresent("3157849");

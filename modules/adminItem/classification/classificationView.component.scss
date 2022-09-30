@@ -1,0 +1,47 @@
+@import '../../theme';
+
+:host {
+  max-height: inherit;
+}
+
+.classificationView {
+  column-gap: 40px;
+  display: flex;
+  flex-flow: column wrap;
+  row-gap: 20px;
+
+  @media (min-width: $screenMd) {
+    max-height: inherit;
+  }
+
+  .classificationBox {
+    border-top: 1px #707070 solid;
+    background-color: #f4f4f4;
+    flex: 0 0 100%;
+    padding: 1rem .5rem;
+
+    @media (min-width: $screenMd) {
+      width: calc((100% - 40px) / 2);
+    }
+  }
+
+  .classificationLevel {
+    margin-bottom: 4px;
+    margin-left: 10px;
+    margin-top: 4px;
+    padding-left: 10px;
+  }
+
+  .classificationLevelLine {
+    border-left: 1px #bebebe solid;
+  }
+
+  .classificationTitle {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .mat-icon {
+    margin-top: -4px;
+  }
+}

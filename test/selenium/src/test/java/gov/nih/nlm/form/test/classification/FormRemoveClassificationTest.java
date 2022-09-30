@@ -14,7 +14,7 @@ public class FormRemoveClassificationTest extends NlmCdeBaseTest {
         goToGeneralDetail();
         textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
-        clickElement(By.xpath("//mat-icon[@id = 'PROMIS Instruments,Adult Item Banks,Mental Health-unclassifyBtn']"));
+        clickElement(By.xpath("//mat-icon[@id = 'PROMIS Instruments;Adult Item Banks;Mental Health-unclassifyBtn']"));
         clickElement(By.id("confirmDeleteClassificationBtn"));
         checkAlert("Classification removed.");
         textNotPresent("Mental Health");

@@ -1,26 +1,34 @@
-<div *ngFor="let classification of elt.classification;let i = index" class="pull-left boxed-div">
-    <div *ngIf="showWorkingGroups(classification)" id="classificationOrg-{{classification.stewardOrg.name}}">
-        <p style="font-size: 1.5rem; margin-bottom: .5rem; font-weight: 500; line-height:1.2">{{classification.stewardOrg.name}}</p>
-        <hr/>
-        <tree-root #treeRoot [nodes]="classification.elements" [options]="options">
-            <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                <a [routerLink]="[getClassifLink()]" href="javascript:void(0);"
-                   [queryParams]="searchByClassificationParams(node,classification.stewardOrg.name)" [id]="node.path">
-                    {{ node.data.name }}</a>
-                <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="node.path+'-unclassifyBtn'" title="Remove"
-                          (click)="openDeleteClassificationModal(node,classification.stewardOrg.name)"
-                          class="fake-button" role="button" tabindex="0">delete_outline</mat-icon>
-            </ng-template>
-            <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
-                <div [class.tree-node-expanded]="true" [ngClass]="{'pull-left boxed-div':node.level===1}">
-                    <div class="node-wrapper" [style.padding-left]="node.getNodePadding()">
-                        <tree-node-content [node]="node" [index]="index"
-                                           [template]="templates.treeNodeTemplate"></tree-node-content>
-                    </div>
-                    <tree-node-children [node]="node" [templates]="templates"></tree-node-children>
+<div class="classificationView" [style.max-height]="isMdSize ? getClassification2ColumnHeight() : 'unset'">
+    <div *ngFor="let classification of elt.classification"
+         id="classificationOrg-{{classification.stewardOrg.name}}" class="classificationBox">
+        <ng-container *ngIf="showWorkingGroups(classification)">
+            <div class="classificationTitle">{{classification.stewardOrg.name}}</div>
+            <div *ngFor="let c1 of classification.elements; last as last">
+                <ng-container *ngTemplateOutlet="classificationNode; context: {node: c1, c0: classification.stewardOrg.name, path: c1.name}"></ng-container>
+                <div class="classificationLevel" [class.classificationLevelLine]="!last">
+                    <ng-container *ngFor="let cN of c1.elements">
+                        <ng-container *ngTemplateOutlet="displayTree; context: {c: cN, c0: classification.stewardOrg.name, path: c1.name+ ';' + cN.name}"></ng-container>
+                    </ng-container>
                 </div>
-            </ng-template>
-        </tree-root>
+            </div>
+        </ng-container>
     </div>
 </div>
-<div class="clearfix"></div>
+
+<ng-template #classificationNode let-node="node" let-c0="c0" let-path="path">
+    <a [id]="path" [routerLink]="[getClassifLink()]" [queryParams]="{selectedOrg: c0, classification: path}">
+        {{ node.name }}
+    </a>
+    <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="path + '-unclassifyBtn'" title="Remove"
+              class="fake-button" role="button" tabindex="0"
+              (click)="openDeleteClassificationModal(node, c0, path)">delete_outline</mat-icon>
+</ng-template>
+
+<ng-template #displayTree let-c="c" let-c0="c0" let-path="path">
+    <ng-container *ngTemplateOutlet="classificationNode; context: {node: c, path, c0}"></ng-container>
+    <div class="classificationLevel">
+        <ng-container *ngFor="let cN of c.elements">
+            <ng-container *ngTemplateOutlet="displayTree; context: {c: cN, c0, path: path + ';' + cN.name}"></ng-container>
+        </ng-container>
+    </div>
+</ng-template>

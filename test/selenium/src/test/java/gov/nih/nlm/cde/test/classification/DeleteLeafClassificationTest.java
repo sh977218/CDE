@@ -14,10 +14,10 @@ public class DeleteLeafClassificationTest extends NlmCdeBaseTest {
         goToGeneralDetail();
         textNotPresent("Updated:", By.xpath(xpathGeneralDetailsProperty()));
         goToClassification();
-        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations,Imaging Diagnostics']"));
+        findElement(By.xpath("//*[@id='Domain;Assessments and Examinations;Imaging Diagnostics']"));
         removeClassificationMethod(new String[]{"Domain", "Assessments and Examinations", "Imaging Diagnostics"});
 
-        findElement(By.xpath("//*[@id='Domain,Assessments and Examinations']"));
+        findElement(By.xpath("//*[@id='Domain;Assessments and Examinations']"));
         removeClassificationMethod(new String[]{"Disease", "Myasthenia Gravis"});
         textNotPresent("Myasthenia Gravis");
         openAuditClassification("NINDS > Disease > Myasthenia Gravis");

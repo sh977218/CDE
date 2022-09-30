@@ -1363,7 +1363,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         for (int i = 0; i < categories.length; i++) {
             selector += categories[i];
             if (i < categories.length - 1)
-                selector += ",";
+                selector += ";";
         }
         clickElement(By.xpath("//*[@id='" + selector + "-unclassifyBtn']"));
         textPresent("You are about to delete " + categories[categories.length - 1] + " classification. Are you sure?");
