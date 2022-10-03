@@ -70,10 +70,14 @@ export class ClassificationViewComponent {
         const sectionGapHeight = 20;
         const linkHeight = 24;
         return cumulative(
-            this.elt.classification.map(
-                c => countElements(c.elements) * linkHeight + sectionEmptyHeight
+            this.elt.classification.map(c =>
+                this.showWorkingGroups(c)
+                    ? countElements(c.elements) * linkHeight +
+                      sectionEmptyHeight +
+                      sectionGapHeight
+                    : 0
             ),
-            (acc, sectionHeight) => acc + sectionHeight + sectionGapHeight,
+            (acc, sectionHeight) => acc + sectionHeight,
             0
         );
     }

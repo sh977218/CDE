@@ -1,7 +1,7 @@
 <div class="classificationView" [style.max-height]="isMdSize ? getClassification2ColumnHeight() : 'unset'">
-    <div *ngFor="let classification of elt.classification"
-         id="classificationOrg-{{classification.stewardOrg.name}}" class="classificationBox">
-        <ng-container *ngIf="showWorkingGroups(classification)">
+    <ng-container *ngFor="let classification of elt.classification">
+        <div *ngIf="showWorkingGroups(classification)"
+             id="classificationOrg-{{classification.stewardOrg.name}}" class="classificationBox">
             <div class="classificationTitle">{{classification.stewardOrg.name}}</div>
             <div *ngFor="let c1 of classification.elements; last as last">
                 <ng-container *ngTemplateOutlet="classificationNode; context: {node: c1, c0: classification.stewardOrg.name, path: c1.name}"></ng-container>
@@ -11,8 +11,8 @@
                     </ng-container>
                 </div>
             </div>
-        </ng-container>
-    </div>
+        </div>
+    </ng-container>
 </div>
 
 <ng-template #classificationNode let-node="node" let-c0="c0" let-path="path">

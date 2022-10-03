@@ -36,7 +36,7 @@
                              src="/assets/img/endorsedRibbon.svg">
                         {{elt?.designations[0]?.designation}}
                     </h1>
-                    <div *ngIf="elt.partOfBundles.length" class="bundle-box">
+                    <div *ngIf="elt.partOfBundles?.length" class="bundle-box">
                         <mat-icon fill="1">error_circle_rounded</mat-icon>
                         <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go to <a
                             [routerLink]="'/formView/'" [queryParams]="{tinyId:elt.partOfBundles[0]}">bundle</a>
