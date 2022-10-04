@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Attachment, Item } from 'shared/models.model';
-import { environment } from 'environments/environment';
 
 @Component({
     selector: 'cde-attachments[elt]',
-    templateUrl: './attachments.component.html'
+    templateUrl: './attachments.component.html',
 })
 export class AttachmentsComponent {
     @Input() elt!: Item;
@@ -14,11 +13,11 @@ export class AttachmentsComponent {
     @Output() setDefault = new EventEmitter<number>();
     @Output() upload = new EventEmitter<Event>();
 
-    constructor(public userService: UserService) {
-    }
+    constructor(public userService: UserService) {}
 
     copyUrl(attachment: Attachment) {
-        let url = window.location.origin + '/server/system/data/' + attachment.fileid;
+        let url =
+            window.location.origin + '/server/system/data/' + attachment.fileid;
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
         }
@@ -28,7 +27,9 @@ export class AttachmentsComponent {
         document.body.appendChild(copyElement);
         copyElement.select();
         try {
-            if (!document.execCommand('copy')) { throw new Error('Not allowed.'); }
+            if (!document.execCommand('copy')) {
+                throw new Error('Not allowed.');
+            }
             copyElement.remove();
         } catch (e) {
             copyElement.remove();

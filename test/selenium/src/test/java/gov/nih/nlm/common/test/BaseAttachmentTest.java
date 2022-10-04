@@ -6,11 +6,14 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
-    protected void removeAttachment(String name) {
+    /**
+     *
+     * @param index index from 0
+     */
+    protected void removeAttachmentByIndex(int index) {
         goToAttachments();
-        deleteWithConfirm("//*[contains(@id, 'attachment_')][//a[.='" + name + "']]");
+        clickElement(By.id("removeAttachment-" + index));
         checkAlert("Attachment Removed.");
-        textNotPresent(name);
     }
 
     protected void removeAttachmentForm(String name) {

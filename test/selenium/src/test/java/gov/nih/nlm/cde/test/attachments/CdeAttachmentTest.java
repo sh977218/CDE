@@ -39,7 +39,7 @@ public class CdeAttachmentTest extends BaseAttachmentTest {
         mustBeLoggedInAs(nlmCuratorUser_username, password);
         goToCdeByName(cdeName);
 
-        removeAttachment("glass.jpg");
+        removeAttachmentByIndex(0);
     }
 
 

@@ -1,6 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component, HostListener, Inject, NgZone, OnDestroy, OnInit, TemplateRef
+    ChangeDetectorRef,
+    Component,
+    HostListener,
+    Inject,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
@@ -11,9 +18,7 @@ import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-d
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
-import {
-    CopyDataElementModalComponent
-} from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
+import { CopyDataElementModalComponent } from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
 import { ExportService } from 'non-core/export.service';
@@ -24,7 +29,11 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import { Cb1, Comment, Elt } from 'shared/models.model';
-import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
+import {
+    canEditCuratedItem,
+    hasPrivilegeForOrg,
+    isOrgAuthority,
+} from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 
@@ -32,7 +41,7 @@ import { WINDOW } from 'window.service';
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',
     styleUrls: ['./view.style.scss'],
-    providers: [TocService]
+    providers: [TocService],
 })
 export class DataElementViewComponent implements OnDestroy, OnInit {
     _elt?: DataElement;
@@ -59,34 +68,36 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.orgHelperService.then(() => {
             this.route.queryParams.subscribe(() => {
                 this.hasDrafts = false;
-                this.loadElt((elt) => {
+                this.loadElt(elt => {
                     elt.usedBy = this.orgHelperService.getUsedBy(elt);
                 });
             });
         }, noop);
     }
 
-    constructor(private route: ActivatedRoute,
-                private alert: AlertService,
-                private ref: ChangeDetectorRef,
-                private deViewService: DataElementViewService,
-                public exportService: ExportService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                private dialog: MatDialog,
-                private orgHelperService: OrgHelperService,
-                private router: Router,
-                private scrollService: ScrollService,
-                private title: Title,
-                private tocService: TocService,
-                public userService: UserService,
-                private ngZone: NgZone,
-                @Inject(WINDOW) private window: Window) {
+    constructor(
+        private route: ActivatedRoute,
+        private alert: AlertService,
+        private ref: ChangeDetectorRef,
+        private deViewService: DataElementViewService,
+        public exportService: ExportService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        private dialog: MatDialog,
+        private orgHelperService: OrgHelperService,
+        private router: Router,
+        private scrollService: ScrollService,
+        private title: Title,
+        private tocService: TocService,
+        public userService: UserService,
+        private ngZone: NgZone,
+        @Inject(WINDOW) private window: Window
+    ) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
         this.onResize();
         this.route.fragment.subscribe(() => {
             if (this.elt) {
-                const elt = this.elt
+                const elt = this.elt;
                 setTimeout(() => {
                     this.title.setTitle('Data Element: ' + Elt.getLabel(elt));
                     this.scrollService.scroll();
@@ -103,16 +114,25 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         return this._elt;
     }
 
-    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb: Cb1<DataElement> = noop) {
+    eltLoad(
+        getElt: Observable<DataElement> | Promise<DataElement> | DataElement,
+        cb: Cb1<DataElement> = noop
+    ) {
         if (getElt instanceof Observable) {
             getElt.subscribe(
                 elt => this.eltLoaded(elt, cb),
-                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+                () =>
+                    this.router.navigate(['/pageNotFound'], {
+                        skipLocationChange: true,
+                    })
             );
         } else if (getElt instanceof Promise) {
             getElt.then(
                 elt => this.eltLoaded(elt, cb),
-                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+                () =>
+                    this.router.navigate(['/pageNotFound'], {
+                        skipLocationChange: true,
+                    })
             );
         } else {
             this.eltLoaded(getElt, cb);
@@ -137,12 +157,25 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 checkPvUnicity(elt.valueDomain);
             }
             this.displayStatusWarning = (() => {
-                if (!this.elt || this.elt.archived || this.userService.user && isOrgAuthority(this.userService.user)) {
+                if (
+                    !this.elt ||
+                    this.elt.archived ||
+                    (this.userService.user &&
+                        isOrgAuthority(this.userService.user))
+                ) {
                     return false;
                 }
-                return hasPrivilegeForOrg(this.userService.user, 'edit', this.elt.stewardOrg.name) &&
-                    (this.elt.registrationState.registrationStatus === 'Standard' ||
-                        this.elt.registrationState.registrationStatus === 'Preferred Standard');
+                return (
+                    hasPrivilegeForOrg(
+                        this.userService.user,
+                        'edit',
+                        this.elt.stewardOrg.name
+                    ) &&
+                    (this.elt.registrationState.registrationStatus ===
+                        'Standard' ||
+                        this.elt.registrationState.registrationStatus ===
+                            'Preferred Standard')
+                );
             })();
             cb(elt);
         }
@@ -156,23 +189,39 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     gotoTop() {
         window.scrollTo(0, 0);
-        this.router.navigate([], {queryParams: this.route.snapshot.queryParams, replaceUrl: true})
+        this.router.navigate([], {
+            queryParams: this.route.snapshot.queryParams,
+            replaceUrl: true,
+        });
     }
 
     loadComments(de: DataElement, cb = noop) {
         if (this.userService.canSeeComment()) {
-            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
-                .subscribe(res => {
-                    this.comments = res;
-                    cb();
-                }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+            this.http
+                .get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
+                .subscribe(
+                    res => {
+                        this.comments = res;
+                        cb();
+                    },
+                    err =>
+                        this.alert.httpErrorMessageAlert(
+                            err,
+                            'Error loading comments.'
+                        )
+                );
         } else {
             cb();
         }
     }
 
     loadElt(cb: Cb1<DataElement> = noop) {
-        this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
+        this.eltLoad(
+            this.deViewService.fetchEltForEditing(
+                this.route.snapshot.queryParams
+            ),
+            cb
+        );
     }
 
     loadHighlightedTabs($event: string[]) {
@@ -180,7 +229,10 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     loadPublished(cb = noop) {
-        this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+        this.eltLoad(
+            this.deViewService.fetchPublished(this.route.snapshot.queryParams),
+            cb
+        );
     }
 
     @HostListener('window:resize', [])
@@ -190,14 +242,22 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     openSaveModal() {
         if (this.validationErrors.length) {
-            this.alert.addAlert('danger', 'Please fix all errors before publishing');
+            this.alert.addAlert(
+                'danger',
+                'Please fix all errors before publishing'
+            );
         } else {
             const data = this.elt;
-            this.dialog.open(SaveModalComponent, {width: '500', data}).afterClosed().subscribe(result => {
-                if (result) {
-                    this.saveDraft(this.elt).then(() => this.saveDataElement(this.elt))
-                }
-            })
+            this.dialog
+                .open(SaveModalComponent, { width: '500', data })
+                .afterClosed()
+                .subscribe(result => {
+                    if (result) {
+                        this.saveDraft(this.elt).then(() =>
+                            this.saveDataElement(this.elt)
+                        );
+                    }
+                });
         }
     }
 
@@ -205,36 +265,39 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         const eltCopy = deepCopyElt(elt);
         filterClassificationPerUser(eltCopy, this.userService.userOrgs);
         const data = eltCopy;
-        this.dialog.open(CopyDataElementModalComponent, {width: '1200px', data});
-    }
-
-    setCurrentTab(currentTab: string) {
-        this.currentTab = currentTab;
+        this.dialog.open(CopyDataElementModalComponent, {
+            width: '1200px',
+            data,
+        });
     }
 
     removeAttachment(elt: DataElement, index: number) {
-        this.http.post<DataElement>('/server/attachment/cde/remove', {
-            index,
-            id: elt._id
-        }).subscribe(res => {
-            if (res) {
-                this.eltLoadedFromOwnUpdate(res);
-                this.alert.addAlert('success', 'Attachment Removed.');
-            }
-        });
+        this.http
+            .post<DataElement>('/server/attachment/cde/remove', {
+                index,
+                id: elt._id,
+            })
+            .subscribe(res => {
+                if (res) {
+                    this.eltLoadedFromOwnUpdate(res);
+                    this.alert.addAlert('success', 'Attachment Removed.');
+                }
+            });
     }
 
     setDefault(elt: DataElement, index: number) {
-        this.http.post<DataElement>('/server/attachment/cde/setDefault', {
-            index,
-            state: elt.attachments[index].isDefault,
-            id: elt._id
-        }).subscribe(res => {
-            if (res) {
-                this.eltLoadedFromOwnUpdate(res);
-                this.alert.addAlert('success', 'Saved');
-            }
-        });
+        this.http
+            .post<DataElement>('/server/attachment/cde/setDefault', {
+                index,
+                state: elt.attachments[index].isDefault,
+                id: elt._id,
+            })
+            .subscribe(res => {
+                if (res) {
+                    this.eltLoadedFromOwnUpdate(res);
+                    this.alert.addAlert('success', 'Saved');
+                }
+            });
     }
 
     upload(elt: DataElement, event: Event) {
@@ -248,31 +311,37 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 }
                 /* tslint:enable */
                 formData.append('id', elt._id);
-                this.http.post<any>('/server/attachment/cde/add', formData).subscribe(
-                    r => {
+                this.http
+                    .post<any>('/server/attachment/cde/add', formData)
+                    .subscribe(r => {
                         if (r.message) {
                             this.alert.addAlert('info', r);
                         } else {
                             if (r) {
                                 this.eltLoadedFromOwnUpdate(r);
-                                this.alert.addAlert('success', 'Attachment added.');
+                                this.alert.addAlert(
+                                    'success',
+                                    'Attachment added.'
+                                );
                             }
                         }
-                    }
-                );
+                    });
             }
         }
     }
 
     openDeleteDraftModal() {
-        this.dialog.open(DeleteDraftModalComponent, {width: '500'}).afterClosed().subscribe(result => {
-            if (result) {
-                this.deViewService.removeDraft(this.elt).subscribe(
-                    () => this.loadElt(() => this.hasDrafts = false),
-                    err => this.alert.httpErrorMessageAlert(err)
-                )
-            }
-        })
+        this.dialog
+            .open(DeleteDraftModalComponent, { width: '500' })
+            .afterClosed()
+            .subscribe(result => {
+                if (result) {
+                    this.deViewService.removeDraft(this.elt).subscribe(
+                        () => this.loadElt(() => (this.hasDrafts = false)),
+                        err => this.alert.httpErrorMessageAlert(err)
+                    );
+                }
+            });
     }
 
     saveDraft(elt: DataElement): Promise<void> {
@@ -286,26 +355,32 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, this.elt)
-            .toPromise().then(newElt => {
-                this.draftSaving = undefined;
-                if (newElt) {
-                    this.eltLoadedFromOwnUpdate(newElt);
+        return (this.draftSaving = this.http
+            .put<DataElement>('/server/de/draft/' + elt.tinyId, this.elt)
+            .toPromise()
+            .then(
+                newElt => {
+                    this.draftSaving = undefined;
+                    if (newElt) {
+                        this.eltLoadedFromOwnUpdate(newElt);
+                    }
+                    if (this.unsaved) {
+                        this.unsaved = false;
+                        return this.saveDraft(elt);
+                    }
+                    this.savingText = 'Saved';
+                    setTimeout(() => {
+                        this.savingText = '';
+                    }, 3000);
+                },
+                err => {
+                    this.draftSaving = undefined;
+                    this.savingText =
+                        'Cannot save this old version. Reload and redo.';
+                    this.alert.httpErrorMessageAlert(err);
+                    throw err;
                 }
-                if (this.unsaved) {
-                    this.unsaved = false;
-                    return this.saveDraft(elt);
-                }
-                this.savingText = 'Saved';
-                setTimeout(() => {
-                    this.savingText = '';
-                }, 3000);
-            }, err => {
-                this.draftSaving = undefined;
-                this.savingText = 'Cannot save this old version. Reload and redo.';
-                this.alert.httpErrorMessageAlert(err);
-                throw err;
-            });
+            ));
     }
 
     saveDraftVoid(elt: DataElement): void {
@@ -314,13 +389,25 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     saveDataElement(elt: DataElement) {
         const saveImpl = () => {
-            const publishData = {_id: elt._id, tinyId: elt.tinyId, __v: elt.__v};
-            this.http.post('/server/de/publish', publishData).subscribe(res => {
-                if (res) {
-                    this.hasDrafts = false;
-                    this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
-                }
-            }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
+            const publishData = {
+                _id: elt._id,
+                tinyId: elt.tinyId,
+                __v: elt.__v,
+            };
+            this.http.post('/server/de/publish', publishData).subscribe(
+                res => {
+                    if (res) {
+                        this.hasDrafts = false;
+                        this.loadElt(() =>
+                            this.alert.addAlert(
+                                'success',
+                                'Data Element saved.'
+                            )
+                        );
+                    }
+                },
+                err => this.alert.httpErrorMessageAlert(err, 'Error publishing')
+            );
         };
 
         if (this.draftSaving) {
@@ -334,20 +421,29 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.validationErrors.length = 0;
         const defError = checkDefinitions(elt);
         if (defError.allValid !== true) {
-            this.validationErrors.push({message: defError.message});
+            this.validationErrors.push({ message: defError.message });
         }
         const pvErrors = checkPvUnicity(elt.valueDomain);
         if (pvErrors.allValid !== true) {
-            this.validationErrors.push({message: pvErrors.message});
+            this.validationErrors.push({ message: pvErrors.message });
         }
     }
 
     viewChanges() {
         const draft = this.elt;
-        this.deViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
-            this.dialog.open(CompareHistoryContentComponent,
-                {width: '1000px', data: {newer: draft, older: published}});
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
+        this.deViewService.fetchPublished(this.route.snapshot.queryParams).then(
+            published => {
+                this.dialog.open(CompareHistoryContentComponent, {
+                    width: '1000px',
+                    data: { newer: draft, older: published },
+                });
+            },
+            err =>
+                this.alert.httpErrorMessageAlert(
+                    err,
+                    'Error loading view changes.'
+                )
+        );
     }
 
     viewReady(): void {

@@ -548,7 +548,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToAttachments() {
-        clickElement(By.xpath("//li//a[text()='Attachments']"));
+        By by = By.xpath("//li//a[text()='Attachments']");
+        if (findElementsSize(by) > 0) {
+            clickElement(by);
+        }
     }
 
     protected void goToDisplayProfiles() {

@@ -23,7 +23,7 @@ public class AttachmentReuseTest extends BaseAttachmentTest {
         addAttachment("painLocation.jpg");
 
         goToCdeByName(cde1);
-        removeAttachment("painLocation.jpg");
+        removeAttachmentByIndex(0);
 
         goToCdeByName(cde2);
     }

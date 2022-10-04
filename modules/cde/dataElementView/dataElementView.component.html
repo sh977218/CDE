@@ -186,7 +186,7 @@
                                              (eltChange)="saveDraftVoid(elt)">
                             </cde-identifiers>
                         </section>
-                        <section id="attachments-div">
+                        <section *ngIf="elt.attachments.length || canEdit()" id="attachments-div">
                             <cde-attachments [elt]="elt" [canEdit]="canEdit()"
                                              (removeAttachment)="removeAttachment(elt, $event);"
                                              (setDefault)="setDefault(elt, $event)"

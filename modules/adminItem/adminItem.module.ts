@@ -45,6 +45,7 @@ import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifi
 import { AddReferenceDocumentModalComponent } from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
     imports: [
@@ -71,6 +72,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatCardModule,
         TourMatMenuModule,
         MatCheckboxModule,
+        MatDividerModule,
     ],
     declarations: [
         AttachmentsComponent,
