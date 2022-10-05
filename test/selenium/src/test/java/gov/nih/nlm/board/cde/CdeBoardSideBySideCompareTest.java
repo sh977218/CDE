@@ -33,8 +33,8 @@ public class CdeBoardSideBySideCompareTest extends BoardTest{
         textPresent("cdeCompare1", By.xpath(getSideBySideXpath("left", "designation", "notmatch", 1)));
         textPresent("cdeCompare2", By.xpath(getSideBySideXpath("right", "designation", "notmatch", 1)));
 
-        textPresent("reference document title 1", By.xpath(getSideBySideXpath("left", "reference documents", "notmatch", 1)));
-        textPresent("reference document title 2", By.xpath(getSideBySideXpath("right", "reference documents", "notmatch", 1)));
+        textPresent("reference document title 1", By.xpath(getSideBySideXpath("left", "Related Documents", "notmatch", 1)));
+        textPresent("reference document title 2", By.xpath(getSideBySideXpath("right", "Related Documents", "notmatch", 1)));
 
         textPresent("key 1", By.xpath(getSideBySideXpath("left", "properties", "notmatch", 1)));
         textPresent("key 2", By.xpath(getSideBySideXpath("right", "properties", "notmatch", 1)));

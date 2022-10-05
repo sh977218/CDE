@@ -255,9 +255,9 @@
                             <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-display-profile>
                         </section>
-                        <section id="reference-documents-div">
-                            <cde-reference-document [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
-                            </cde-reference-document>
+                        <section *ngIf="elt.referenceDocuments.length || canEdit()" id="reference-documents-div">
+                            <cde-related-document [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
+                            </cde-related-document>
                         </section>
                         <section id="properties-div">
                             <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">

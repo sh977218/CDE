@@ -2,29 +2,22 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { DataElement } from 'shared/de/dataElement.model';
 import { MatDialog } from '@angular/material/dialog';
-import {
-    AddReferenceDocumentModalComponent
-} from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
+import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add-related-document-modal/add-related-document-modal.component';
 
 @Component({
-    selector: 'cde-reference-document',
-    templateUrl: './referenceDocument.component.html',
-    styles: [`
-      dd {
-        min-height: 20px;
-      }`
-    ]
+    selector: 'cde-related-document',
+    templateUrl: './related-document.component.html',
 })
-export class ReferenceDocumentComponent {
+export class RelatedDocumentComponent {
     @Input() canEdit = false;
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
 
-    constructor(private dialog: MatDialog) {
-    }
+    constructor(private dialog: MatDialog) {}
 
     openNewReferenceDocumentModal() {
-        this.dialog.open(AddReferenceDocumentModalComponent, {width: '800px'})
+        this.dialog
+            .open(AddRelatedDocumentModalComponent, { width: '800px' })
             .afterClosed()
             .subscribe(newReferenceDocument => {
                 if (newReferenceDocument) {

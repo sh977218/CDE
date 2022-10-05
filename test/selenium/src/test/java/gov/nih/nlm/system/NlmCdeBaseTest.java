@@ -536,7 +536,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToReferenceDocuments() {
-        clickElement(By.xpath("//li//a[text()='Reference Documents']"));
+        By by = By.xpath("//li//a[text()='Related Documents']");
+        if (findElementsSize(by) > 0) {
+            clickElement(By.xpath("//li//a[text()='Related Documents']"));
+        }
     }
 
     protected void goToProperties() {
@@ -1566,7 +1569,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         if (section.equalsIgnoreCase("designation")) section = "Designation";
         if (section.equalsIgnoreCase("definition")) section = "Definition";
         if (section.equalsIgnoreCase("identifiers")) section = "Identifiers";
-        if (section.equalsIgnoreCase("reference documents")) section = "Reference Documents";
+        if (section.equalsIgnoreCase("Related Documents")) section = "Reference Documents";
         if (section.equalsIgnoreCase("properties")) section = "Properties";
         if (section.equalsIgnoreCase("data element concept")) section = "Data Element Concept";
         if (section.equalsIgnoreCase("questions")) section = "Questions";

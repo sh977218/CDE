@@ -22,7 +22,5 @@ public class CdeAddRemoveReferenceDocumentTest extends NlmCdeBaseTest {
         addNewReferenceDocument(id, title, uri, providerOrg, languageCode, document);
 
         clickElement(By.id("removeReferenceDocument-0"));
-        textPresent("Confirm Delete");
-        clickElement(By.id("confirmRemoveReferenceDocument-0"));
     }
 }

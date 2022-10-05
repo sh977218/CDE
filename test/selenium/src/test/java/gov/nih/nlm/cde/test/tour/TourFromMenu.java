@@ -18,7 +18,7 @@ public class TourFromMenu extends NlmCdeBaseTest {
             "Any CDE may have multiple names. Names help identify the CDE and are also used as question labels on forms. A name can have one or more tags to describe the context of this name.",
             "Classifications describe the way in which an organization may use a CDE or Form. A CDE can have hundreds of classification. Classifications are defined by steward. A steward may decide to reuse a CDE by adding his own classification to it.",
             "CDEs are sometimes described by one or more concepts. These concepts can come from any terminology, for example LOINC.",
-            "This section contains reference documents for the CDE.",
+            "This section contains Related Documents for the CDE.",
             "This sections show attributes of the CDE that are not common across CDEs. Steward may choose to store properties that are required for their process.",
             "CDEs and Forms can be identified using multiple identification sources. When a group uses a CDE by a particular unique (scoped) identifier, it may be stored here.",
             "If a file is attached to a CDE, it can be viewed or downloaded here.",

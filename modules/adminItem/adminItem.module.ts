@@ -16,7 +16,6 @@ import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyIt
 import { IdentifiersComponent } from 'adminItem/identfifiers/identifiers.component';
 import { NamingComponent } from 'adminItem/naming/naming.component';
 import { PropertiesComponent } from 'adminItem/properties/properties.component';
-import { ReferenceDocumentComponent } from 'adminItem/referenceDocument/referenceDocument.component';
 import { SourcesComponent } from 'adminItem/sources/sources.component';
 import { RegistrationComponent } from 'adminItem/registration/registration.component';
 import { LinkedFormsComponent } from 'adminItem/linkedForms/linkedForms.component';
@@ -40,9 +39,10 @@ import { RegistrationStatusModalComponent } from 'adminItem/registration/registr
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
+import { RelatedDocumentComponent } from 'adminItem/related-document/related-document.component';
+import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add-related-document-modal/add-related-document-modal.component';
 import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
-import { AddReferenceDocumentModalComponent } from 'adminItem/referenceDocument/add-reference-document-modal/add-reference-document-modal.component';
 import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
@@ -92,13 +92,13 @@ import { MatDividerModule } from '@angular/material/divider';
         NamingComponent,
         PropertiesComponent,
         AddPropertyModalComponent,
-        ReferenceDocumentComponent,
-        AddReferenceDocumentModalComponent,
         RegistrationComponent,
         RegistrationStatusModalComponent,
         SaveModalComponent,
         SourcesComponent,
         DeleteDraftModalComponent,
+        RelatedDocumentComponent,
+        AddRelatedDocumentModalComponent,
     ],
     exports: [
         AttachmentsComponent,
@@ -111,10 +111,10 @@ import { MatDividerModule } from '@angular/material/divider';
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,
-        ReferenceDocumentComponent,
         RegistrationComponent,
         SaveModalComponent,
         SourcesComponent,
+        RelatedDocumentComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -82,8 +82,8 @@ public class FormBoardSideBySideCompareTest extends BoardTest{
         textPresent("Id:987654321", By.xpath(getSideBySideXpath("left", "identifiers", "partialMatch", 1)));
         textPresent("Id:123456789", By.xpath(getSideBySideXpath("right", "identifiers", "partialMatch", 1)));
 
-        textPresent("Document Type:www.google.com", By.xpath(getSideBySideXpath("left", "reference documents", "partialMatch", 1)));
-        textPresent("Document Type:www.reddit.com", By.xpath(getSideBySideXpath("right", "reference documents", "partialMatch", 1)));
+        textPresent("Document Type:www.google.com", By.xpath(getSideBySideXpath("left", "Related Documents", "partialMatch", 1)));
+        textPresent("Document Type:www.reddit.com", By.xpath(getSideBySideXpath("right", "Related Documents", "partialMatch", 1)));
 
         textPresent("Prostate Cancer American Joint Committee on Cancer (AJCC) Edition 7 Pathologic Regional Lymph Node N Stage",
                 By.xpath(getSideBySideXpath("left", "questions", "notmatch", 1)));
