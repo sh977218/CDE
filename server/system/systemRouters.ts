@@ -8,7 +8,7 @@ import { handleError, respondError } from 'server/errorHandler';
 import {
     isOrgAuthorityMiddleware, isOrgCuratorMiddleware, isSiteAdminMiddleware, loggedInMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
-import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { DataElementDocument, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
 import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
 import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
@@ -28,7 +28,7 @@ import { reIndex } from 'server/system/elastic';
 import { userById, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import { removeFromArrayBy } from 'shared/array';
-import { union, uniq, xor } from 'lodash';
+import { union, uniq } from 'lodash';
 import {
     IdSourceGetResponse, IdSourcePutResponse,
     IdSourceRequest,
@@ -64,9 +64,12 @@ export function module() {
             const questions = flattenFormElement(bundle);
             for (const question of questions) {
                 const tinyId = question.question.cde.tinyId;
-                let cde = cdesPartOfBundle.find(c => c.tinyId === tinyId);
+                let cde: DataElementDocument | undefined | null = cdesPartOfBundle.find(c => c.tinyId === tinyId);
                 if (!cde) {
                     cde = await dataElementModel.findOne({tinyId, archived: false});
+                    if (!cde) {
+                        continue;
+                    }
                     cdesToSave.push(cde);
                 }
                 cde.partOfBundles = uniq(union(cde.partOfBundles, [bundle.tinyId]));

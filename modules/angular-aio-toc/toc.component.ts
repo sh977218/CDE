@@ -24,6 +24,7 @@ type TocType = 'None' | 'Floating' | 'EmbeddedSimple' | 'EmbeddedExpandable';
 export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChildren('tocItem') private items!: QueryList<ElementRef>;
     activeIndex: number | null = null;
+    actives: boolean[] = [];
     type: TocType = 'None';
     isCollapsed = true;
     isEmbedded = false;
@@ -51,6 +52,7 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.onDestroy))
             .subscribe(tocList => {
                 this.tocList = tocList;
+                this.actives.length = tocList.length;
                 const itemCount = count(
                     this.tocList,
                     item => item.level !== 'h1'
@@ -83,6 +85,27 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.activeIndex = index;
                     if (index === null || index >= items.length) {
                         return;
+                    }
+
+                    this.actives.forEach((a, i, arr) => (arr[i] = false));
+                    const activeItem = this.tocList[index];
+                    if (activeItem.level === 'h3') {
+                        let i = index + 1;
+                        const size = this.tocList.length;
+                        while (i < size && this.tocList[i].level === 'h3') {
+                            this.actives[i] = true;
+                            i++;
+                        }
+
+                        i = index - 1;
+                        while (i >= 0 && this.tocList[i].level === 'h3') {
+                            this.actives[i] = true;
+                            i--;
+                        }
+
+                        if (i >= 0 && this.tocList[i].level === 'h2') {
+                            this.actives[i] = true;
+                        }
                     }
 
                     const e = items.toArray()[index].nativeElement;

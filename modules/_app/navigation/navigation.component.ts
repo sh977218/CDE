@@ -8,10 +8,10 @@ import {
     HostListener,
     Inject,
     Injector,
-    Renderer2
+    Renderer2,
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu'
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { NavigationEnd, Params, Router } from '@angular/router';
 import { CdeAppComponent } from '_app/app.component';
 import { LoginService } from '_app/login.service';
@@ -22,7 +22,12 @@ import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
-import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
+import {
+    canClassify,
+    hasPrivilege,
+    isOrgAuthority,
+    isSiteAdmin,
+} from 'shared/security/authorizationShared';
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -40,32 +45,12 @@ const enum SECTIONS {
 }
 
 const SECTIONS_MAP: { [key in keyof typeof SECTIONS]: string[] } = {
-    home: [
-        '/home',
-        '/404',
-    ],
-    de: [
-        '/cde/search',
-        '/deView',
-    ],
-    form: [
-        '/form/search',
-        '/formView',
-        '/formEdit',
-    ],
-    create: [
-        '/createCde',
-        '/createForm',
-    ],
-    board: [
-        '/quickBoard',
-        '/board',
-        '/boardList',
-        '/myBoards',
-    ],
-    about: [
-        '/about',
-    ],
+    home: ['/home', '/404'],
+    de: ['/cde/search', '/deView'],
+    form: ['/form/search', '/formView', '/formEdit'],
+    create: ['/createCde', '/createForm'],
+    board: ['/quickBoard', '/board', '/boardList', '/myBoards'],
+    about: ['/about'],
     help: [
         '/videos',
         '/guides',
@@ -74,9 +59,7 @@ const SECTIONS_MAP: { [key in keyof typeof SECTIONS]: string[] } = {
         '/api',
         '/contactUs',
     ],
-    searchSettings: [
-        '/searchPreferences',
-    ],
+    searchSettings: ['/searchPreferences'],
     user: [
         '/login',
         '/settings/profile',
@@ -109,14 +92,12 @@ const SECTIONS_MAP: { [key in keyof typeof SECTIONS]: string[] } = {
 };
 const [sections, sectionIndexes, sectionLabels] = scanSections(SECTIONS_MAP);
 
-type CdeNavMenuItem = ({ label: string } | { labelFn: () => string }) &
-    {
-        id: string,
-        condition?: () => boolean,
-    } &
-    ({ link: string, queryParams?: Params } | { children: CdeNavMenuItem[] });
+type CdeNavMenuItem = ({ label: string } | { labelFn: () => string }) & {
+    id: string;
+    condition?: () => boolean;
+} & ({ link: string; queryParams?: Params } | { children: CdeNavMenuItem[] });
 type CdeNavMenu = (CdeNavMenuItem & {
-    section: SECTIONS,
+    section: SECTIONS;
 })[];
 
 @Component({
@@ -127,17 +108,17 @@ type CdeNavMenu = (CdeNavMenuItem & {
 export class NavigationComponent {
     interruptEvent = interruptEvent;
     barStates: {
-        bar: HTMLElement,
-        enteredButton?: boolean,
-        isMatMenuOpen?: boolean,
-        isMatMenu1Open?: boolean,
-        isMatMenu2Open?: boolean,
-        prevButtonTrigger?: MatMenuTrigger,
+        bar: HTMLElement;
+        enteredButton?: boolean;
+        isMatMenuOpen?: boolean;
+        isMatMenu1Open?: boolean;
+        isMatMenu2Open?: boolean;
+        prevButtonTrigger?: MatMenuTrigger;
     }[] = [];
     canClassify = canClassify;
     isOrgAuthority = isOrgAuthority;
     isSiteAdmin = isSiteAdmin;
-    isMobile: boolean = (window.innerWidth < 768);
+    isMobile: boolean = window.innerWidth < 768;
     showHeader: boolean = true;
     subMenuActive: Record<string, boolean> = {};
     menuList: CdeNavMenu = [
@@ -168,7 +149,7 @@ export class NavigationComponent {
                     label: 'Form',
                     id: 'createFormLink',
                     link: '/createForm',
-                }
+                },
             ],
         },
         {
@@ -212,7 +193,7 @@ export class NavigationComponent {
                 {
                     label: 'Contact Us',
                     id: 'contactUsLink',
-                    link: 'https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/'
+                    link: 'https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/',
                 },
             ],
         },
@@ -224,13 +205,18 @@ export class NavigationComponent {
             link: '/login',
         },
         {
-            labelFn: () => this.userService.user ? this.userService.user.username : '',
+            labelFn: () =>
+                this.userService.user ? this.userService.user.username : '',
             id: 'usernameLink',
-            condition: () => window.innerWidth <= 500 && !!this.userService.user,
+            condition: () =>
+                window.innerWidth <= 500 && !!this.userService.user,
             section: SECTIONS.user,
             children: [
                 {
-                    labelFn: () => isSiteAdmin(this.userService.user) ? 'Settings' : 'Profile',
+                    labelFn: () =>
+                        isSiteAdmin(this.userService.user)
+                            ? 'Settings'
+                            : 'Profile',
                     id: 'settingsLink',
                     link: '/settings/profile',
                 },
@@ -246,27 +232,35 @@ export class NavigationComponent {
                     condition: () => isOrgAuthority(this.userService.user),
                     link: '/siteAudit',
                 },
-            ]
-        }
+            ],
+        },
     ];
-    sectionActive: SECTIONS = SECTIONS.home;
+    sectionActive: SECTIONS = -1;
 
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
-        @Inject(forwardRef(() => ApplicationRef)) private appRef: ApplicationRef,
+        @Inject(forwardRef(() => ApplicationRef))
+        private appRef: ApplicationRef,
         @Inject(forwardRef(() => CdeAppComponent)) private app: CdeAppComponent,
-        @Inject(forwardRef(() => ComponentFactoryResolver)) private componentFactoryResolver: ComponentFactoryResolver,
+        @Inject(forwardRef(() => ComponentFactoryResolver))
+        private componentFactoryResolver: ComponentFactoryResolver,
         @Inject(forwardRef(() => Injector)) private injector: Injector,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
         @Inject(forwardRef(() => LoginService)) public loginSvc: LoginService,
-        @Inject(forwardRef(() => NotificationService)) public notificationService: NotificationService,
+        @Inject(forwardRef(() => NotificationService))
+        public notificationService: NotificationService,
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => UserService)) public userService: UserService,
-        @Inject(forwardRef(() => Renderer2)) private ren: Renderer2,
+        @Inject(forwardRef(() => Renderer2)) private ren: Renderer2
     ) {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {
-                this.sectionActive = getWebsiteSection(window.location.pathname, sections, sectionIndexes, sectionLabels);
+                this.sectionActive = getWebsiteSection(
+                    window.location.pathname,
+                    sections,
+                    sectionIndexes,
+                    sectionLabels
+                );
             }
         });
     }
@@ -279,7 +273,7 @@ export class NavigationComponent {
     getBarState(bar: HTMLElement) {
         let barState = this.barStates.filter(b => b.bar === bar)[0];
         if (!barState) {
-            barState = {bar}
+            barState = { bar };
             this.barStates.push(barState);
         }
         return barState;
@@ -298,17 +292,27 @@ export class NavigationComponent {
             this.userService.reload();
             this.router.navigate(['/login']);
         };
-        this.app.ssoLogout(() => {
-        });
-        this.http.post('/server/system/logout', {}, {responseType: 'text'}).subscribe(
-            refreshAndLogin,
-            refreshAndLogin // ignore error in favor of already being logged out
-        );
+        this.app.ssoLogout(() => {});
+        this.http
+            .post('/server/system/logout', {}, { responseType: 'text' })
+            .subscribe(
+                refreshAndLogin,
+                refreshAndLogin // ignore error in favor of already being logged out
+            );
     }
 
-    menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {
+    menuClickCleanup(
+        bar: HTMLElement,
+        trigger: MatMenuTrigger,
+        button: MatButton,
+        menu: MatMenu
+    ) {
         if ((trigger as any).menuOpen) {
-            ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
+            (
+                menu._allItems.first as any as {
+                    _elementRef: ElementRef<HTMLElement>;
+                }
+            )._elementRef.nativeElement.blur();
         } else {
             this.unfocusButton(button);
         }
@@ -317,12 +321,19 @@ export class NavigationComponent {
     menuEnter(bar: HTMLElement, trigger: MatMenuTrigger, menu: MatMenu) {
         const barState = this.getBarState(bar);
         setTimeout(() => {
-            if (barState.prevButtonTrigger && barState.prevButtonTrigger !== trigger) {
+            if (
+                barState.prevButtonTrigger &&
+                barState.prevButtonTrigger !== trigger
+            ) {
                 barState.prevButtonTrigger.closeMenu();
                 barState.prevButtonTrigger = trigger;
                 bar.style.zIndex = NAV_Z_INDEX_ACTIVE;
                 trigger.openMenu();
-                ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
+                (
+                    menu._allItems.first as any as {
+                        _elementRef: ElementRef<HTMLElement>;
+                    }
+                )._elementRef.nativeElement.blur();
                 barState.isMatMenuOpen = true;
                 setTimeout(() => {
                     barState.isMatMenuOpen = false;
@@ -332,7 +343,11 @@ export class NavigationComponent {
                 barState.prevButtonTrigger = trigger;
                 bar.style.zIndex = NAV_Z_INDEX_ACTIVE;
                 trigger.openMenu();
-                ((menu._allItems.first as any) as { _elementRef: ElementRef<HTMLElement> })._elementRef.nativeElement.blur();
+                (
+                    menu._allItems.first as any as {
+                        _elementRef: ElementRef<HTMLElement>;
+                    }
+                )._elementRef.nativeElement.blur();
             } else {
                 barState.enteredButton = true;
                 barState.prevButtonTrigger = trigger;
@@ -388,7 +403,12 @@ export class NavigationComponent {
         barState.isMatMenu2Open = true;
     }
 
-    menu2Leave(bar: HTMLElement, trigger1: MatMenuTrigger, trigger2: MatMenuTrigger, button: MatButton) {
+    menu2Leave(
+        bar: HTMLElement,
+        trigger1: MatMenuTrigger,
+        trigger2: MatMenuTrigger,
+        button: MatButton
+    ) {
         const barState = this.getBarState(bar);
         setTimeout(() => {
             if (barState.isMatMenu2Open) {
@@ -408,20 +428,31 @@ export class NavigationComponent {
         return this.sectionActive === SECTIONS.home;
     }
 
-    toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
+    toggleDrawer = () =>
+        (
+            document.querySelector('.mdl-layout') as any
+        ).MaterialLayout.toggleDrawer();
 
     unfocusButton(button: MatButton) {
         this.ren.removeClass(button._elementRef.nativeElement, 'cdk-focused');
-        this.ren.removeClass(button._elementRef.nativeElement, 'cdk-program-focused');
+        this.ren.removeClass(
+            button._elementRef.nativeElement,
+            'cdk-program-focused'
+        );
         button._elementRef.nativeElement.blur();
     }
 }
 
-function getWebsiteSection(path: string, sections: string[], bucketIndexes: number[], bucketLabels: SECTIONS[]): SECTIONS {
+function getWebsiteSection(
+    path: string,
+    sectionsIn: string[],
+    bucketIndexes: number[],
+    bucketLabels: SECTIONS[]
+): SECTIONS {
     if (!path) {
         return SECTIONS.home;
     }
-    const index = sections.indexOf(path);
+    const index = sectionsIn.indexOf(path);
     const size = bucketIndexes.length;
     let j = 0;
     while (index >= bucketIndexes[j]) {
@@ -431,8 +462,10 @@ function getWebsiteSection(path: string, sections: string[], bucketIndexes: numb
     return bucketLabels[j];
 }
 
-function scanSections(sections: typeof SECTIONS_MAP): [string[], number[], number[]] {
-    const sectionsArray = Object.values(sections);
+function scanSections(
+    sectionsMap: typeof SECTIONS_MAP
+): [string[], number[], number[]] {
+    const sectionsArray = Object.values(sectionsMap);
     const indexSums = cumulative(sectionsArray, (a, s) => a + s.length, 0);
     return [concat(...sectionsArray), indexSums, range(indexSums.length)];
 }

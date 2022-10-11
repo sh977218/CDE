@@ -2,22 +2,21 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button class="noPrint forNotLgScreen slide-pane-button" title="Expand Page Navigation"
+<button class="noPrint forNotMdScreen slide-pane-button" title="Expand Page Navigation"
         (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
     <mat-sidenav #navDrawer class="noPrint" position="start" style="border: 0"
                  [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
-                 fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 148" [fixedBottomGap]="isMobile ? 0 : 99">
+                 fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 132" [fixedBottomGap]="isMobile ? 0 : 99">
         <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
-            <aio-toc></aio-toc>
+            <aio-toc style="padding: 1rem 1rem 0 1rem"></aio-toc>
         </div>
         <ng-template #aioToc>
-            <aio-toc></aio-toc>
+            <aio-toc style="padding: 2rem 0 0 2rem"></aio-toc>
         </ng-template>
-        <div style="min-width: 250px"></div>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content style="margin-left: 240px">
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="end" style="max-width: 25%">
                 <div *ngIf="elt && userService.canViewComment">
@@ -27,7 +26,7 @@
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
-                <main *ngIf="elt" class="container-fluid" itemscope="https://schema.org/MedicalCode">
+                <main *ngIf="elt" class="container-fluid" style="margin-top: 2rem; padding: 0 2rem" itemscope="https://schema.org/MedicalCode">
                     <header>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
@@ -63,7 +62,7 @@
                             </ul>
                         </div>
                     </header>
-                    <nav style="padding-left: 32px" class="noPrint">
+                    <nav class="noPrint">
                         <button id="addToBoard" class="button light" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
                                 module="cde">
                             <mat-icon style="transform: scale(.66)" svgIcon="pin"></mat-icon>
@@ -144,7 +143,7 @@
                             </div>
                         </div>
                     </nav>
-                    <article style="padding-left: 32px; padding-right: 32px">
+                    <article>
                         <section>
                             <h1>
                                 <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
@@ -159,7 +158,7 @@
                                 <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go to <a
                                     [routerLink]="'/formView/'" [queryParams]="{tinyId:elt.partOfBundles[0]}">bundle</a>
                             </div>
-                            <h2 style="display: none;">CDE Summary</h2>
+                            <h2 style="display: none">CDE Summary</h2>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
                             <div role="group" aria-label="More Info">

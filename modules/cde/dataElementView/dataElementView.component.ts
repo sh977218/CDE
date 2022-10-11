@@ -237,7 +237,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 992; // size lg
+        this.isMobile = window.innerWidth < 768; // size Md
     }
 
     openSaveModal() {

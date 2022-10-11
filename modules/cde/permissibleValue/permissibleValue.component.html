@@ -150,10 +150,11 @@
     <h3>Permissible Value</h3>
     <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
         <label *ngFor="let source of SOURCES_KEYS" class="hand-cursor" style="display: inline-block; margin-left: 50px">
-                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" style="margin-right: 2px"
+                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"
+                       style="margin-right: 2px"
                        [(ngModel)]="SOURCES[source].selected"
                        [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
-                       (ngModelChange)="lookupAsSource(source)">{{source}} Codes
+                       (ngModelChange)="lookupAsSource(source)"> {{source}} Codes
                 <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </label>
     </div>
