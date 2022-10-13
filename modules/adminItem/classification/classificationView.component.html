@@ -16,12 +16,15 @@
 </div>
 
 <ng-template #classificationNode let-node="node" let-c0="c0" let-path="path">
-    <a [id]="path" [routerLink]="[getClassifLink()]" [queryParams]="{selectedOrg: c0, classification: path}">
-        {{ node.name }}
-    </a>
-    <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="path + '-unclassifyBtn'" title="Remove"
-              class="fake-button" role="button" tabindex="0"
-              (click)="openDeleteClassificationModal(node, c0, path)">delete_outline</mat-icon>
+    <div class="stretchBar">
+        <a [id]="path" class="shrink" [title]="node.name"
+           [routerLink]="[getClassifLink()]" [queryParams]="{selectedOrg: c0, classification: path}">
+            {{ node.name }}
+        </a>
+        <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="path + '-unclassifyBtn'" title="Remove"
+                  class="fake-button" role="button" tabindex="0"
+                  (click)="openDeleteClassificationModal(node, c0, path)">delete_outline</mat-icon>
+    </div>
 </ng-template>
 
 <ng-template #displayTree let-c="c" let-c0="c0" let-path="path">

@@ -30,10 +30,7 @@
                 <mat-icon>folder_open</mat-icon>
                 Classify this {{ elt.elementType | uppercase}}
             </button>
-            <div id="classificationBody" style="display: inline-block">
-                <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event);">
-                </cde-classification-view>
-            </div>
+            <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event)"></cde-classification-view>
         </div>
         <div *ngIf="validationErrors(elt)" class="form-group text-danger">
             <mat-icon>warning</mat-icon>

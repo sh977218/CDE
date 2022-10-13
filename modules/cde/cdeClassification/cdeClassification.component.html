@@ -9,9 +9,7 @@
         <mat-icon>folder_open</mat-icon>
         Classify this CDE
     </button>
-    <div id="classificationBody">
-        <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event);"></cde-classification-view>
-    </div>
+    <cde-classification-view [elt]="elt" (confirmDelete)="removeClassif($event)"></cde-classification-view>
 </ng-container>
 
 <cde-classify-item #classifyItemComponent [modalTitle]="'Classify this CDE'"
