@@ -38,7 +38,7 @@ export class DeGeneralDetailsComponent {
             )?.designation ||
             designations.find(d => d.tags.indexOf('Question Text') > -1)
                 ?.designation ||
-            'Submitter did not provide a Question Text'
+            ''
         );
     }
 }

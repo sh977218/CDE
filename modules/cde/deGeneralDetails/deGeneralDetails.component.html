@@ -1,16 +1,27 @@
 <dl id="general-details" class="inline-dl">
     <dt style="float: none">Question Text</dt>
-    <dd itemprop="name">{{getQuestionText()}}</dd>
+    <dd itemprop="name">
+        <ng-container *ngIf="getQuestionText(); else noQuestionText">
+            {{getQuestionText()}}
+        </ng-container>
+        <ng-template #noQuestionText>
+            <span style="font-style: italic">Submitter did not provide a Question Text</span>
+        </ng-template>
+    </dd>
 
-    <ng-container *ngIf="elt.definitions[0]">
-        <dt style="float: none">Definition</dt>
-        <dd itemprop="description">
+
+    <dt style="float: none">Definition</dt>
+    <dd itemprop="description">
+        <ng-container *ngIf="elt.definitions[0]; else noDefinition">
             <span *ngIf="elt.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{elt.definitions[0].definition}}</span>
             <ng-template #descriptionHtml>
                 <span [innerHtml]="elt.definitions[0].definition"></span>
             </ng-template>
-        </dd>
-    </ng-container>
+        </ng-container>
+        <ng-template #noDefinition>
+            <span style="font-style: italic">Submitter did not provide a Definition</span>
+        </ng-template>
+    </dd>
 
 
     <dt>Data Type:</dt>
