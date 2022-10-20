@@ -8,27 +8,30 @@ import { FormSummaryListContentComponent } from 'form/listView/formSummaryListCo
 
 @Component({
     selector: 'cde-linked-forms-modal',
-    templateUrl: './linked-form-modal.component.html'
+    templateUrl: './linked-form-modal.component.html',
 })
-
 export class LinkedFormModalComponent {
     forms!: CdeFormElastic[];
     formSummaryContentComponent = FormSummaryListContentComponent;
 
-    constructor(@Inject(MAT_DIALOG_DATA) public elt: Elt,
-                private dialogRef: MatDialogRef<LinkedFormModalComponent>,
-                private elasticService: ElasticService) {
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public elt: Elt,
+        private dialogRef: MatDialogRef<LinkedFormModalComponent>,
+        private elasticService: ElasticService
+    ) {
         const tinyId = elt.tinyId;
         const searchSettings = new SearchSettings();
         searchSettings.q = `"${tinyId}"`;
-        this.elasticService.generalSearchQuery(this.elasticService.buildElasticQuerySettings(searchSettings), 'form',
+        this.elasticService.generalSearchQuery(
+            this.elasticService.buildElasticQuerySettings(searchSettings),
+            'form',
             (err?: string, result?: ElasticQueryResponseForm) => {
                 if (err || !result) {
                     return;
                 }
                 this.forms = result.forms.filter(f => f.tinyId !== tinyId);
-            });
-
+            }
+        );
     }
 
     getFormText() {
@@ -37,10 +40,17 @@ export class LinkedFormModalComponent {
         } else if (this.forms.length === 1) {
             return 'There is 1 form that uses this ' + this.elt.elementType;
         } else if (this.forms.length >= 20) {
-            return 'There are more than 20 forms that use this ' + this.elt.elementType;
+            return (
+                'There are more than 20 forms that use this ' +
+                this.elt.elementType
+            );
         } else {
-            return 'There are ' + this.forms.length + ' forms that use this ' + this.elt.elementType;
+            return (
+                'There are ' +
+                this.forms.length +
+                ' forms that use this ' +
+                this.elt.elementType
+            );
         }
     }
-
 }

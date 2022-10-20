@@ -43,9 +43,13 @@ import { RelatedDocumentComponent } from 'adminItem/related-document/related-doc
 import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add-related-document-modal/add-related-document-modal.component';
 import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
-import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { RelatedContentComponent } from 'adminItem/related-content/related-content.component';
+import { MoreLikeThisComponent } from 'cde/mlt/moreLikeThis.component';
+import { DatasetsComponent } from 'cde/datasets/datasets.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 
 @NgModule({
     imports: [
@@ -73,6 +77,7 @@ import { MatDividerModule } from '@angular/material/divider';
         TourMatMenuModule,
         MatCheckboxModule,
         MatDividerModule,
+        MatExpansionModule,
     ],
     declarations: [
         AttachmentsComponent,
@@ -87,7 +92,6 @@ import { MatDividerModule } from '@angular/material/divider';
         IdentifiersComponent,
         AddIdentifierModalComponent,
         LinkedFormsComponent,
-        LinkedFormModalComponent,
         HistoryComponent,
         NamingComponent,
         PropertiesComponent,
@@ -97,8 +101,12 @@ import { MatDividerModule } from '@angular/material/divider';
         SaveModalComponent,
         SourcesComponent,
         DeleteDraftModalComponent,
-        RelatedDocumentComponent,
         AddRelatedDocumentModalComponent,
+        RelatedDocumentComponent,
+        RelatedContentComponent,
+        LinkedFormModalComponent,
+        MoreLikeThisComponent,
+        DatasetsComponent,
     ],
     exports: [
         AttachmentsComponent,
@@ -115,6 +123,7 @@ import { MatDividerModule } from '@angular/material/divider';
         SaveModalComponent,
         SourcesComponent,
         RelatedDocumentComponent,
+        RelatedContentComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

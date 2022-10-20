@@ -1,22 +1,16 @@
 import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { DataElement } from 'shared/de/dataElement.model';
-import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
+import { CdeSummaryListContentComponent } from 'cde/listView/cdeSummaryListContent.component';
+
+export type MoreLikeThisDataElement = DataElement & { isCollapsed: boolean };
 
 @Component({
     selector: 'cde-mlt',
-    templateUrl: './moreLikeThis.component.html'
+    templateUrl: './moreLikeThis.component.html',
 })
 export class MoreLikeThisComponent {
     @Input() elt!: DataElement;
+    @Input() cdes: MoreLikeThisDataElement[] = [];
 
-    constructor(private router: Router,
-                private dialog: MatDialog) {
-    }
-
-    openMoreLikeThisModal() {
-        const data = this.elt;
-        this.dialog.open(MoreLikeThisModalComponent, {width: '1000px', data});
-    }
+    cdeSummaryContentComponent = CdeSummaryListContentComponent;
 }

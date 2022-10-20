@@ -12,8 +12,8 @@ public class MltDoesntShowRetired extends NlmCdeBaseTest {
         String cdeName = "MltTest";
         mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
-
-        clickElement(By.id("mltButton"));
+        goToRelatedContent();
+        goToMoreLikeThis();
         textNotPresent(cdeName, By.id("mltAccordion"));
     }
 }

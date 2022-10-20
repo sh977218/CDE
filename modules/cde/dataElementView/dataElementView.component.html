@@ -26,7 +26,8 @@
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
-                <main *ngIf="elt" class="container-fluid" style="margin-top: 2rem; padding: 0 2rem" itemscope="https://schema.org/MedicalCode">
+                <main *ngIf="elt" class="container-fluid" style="margin-top: 2rem; padding: 0 2rem"
+                      itemscope="https://schema.org/MedicalCode">
                     <header>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
@@ -155,17 +156,13 @@
                             </h1>
                             <div *ngIf="elt.partOfBundles?.length" class="bundle-box">
                                 <mat-icon fill="1">error_circle_rounded</mat-icon>
-                                <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go to <a
+                                <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go
+                                to <a
                                     [routerLink]="'/formView/'" [queryParams]="{tinyId:elt.partOfBundles[0]}">bundle</a>
                             </div>
                             <h2 style="display: none">CDE Summary</h2>
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
-                            <div role="group" aria-label="More Info">
-                                <cde-linked-forms [elt]="elt"></cde-linked-forms>
-                                <cde-mlt [elt]="elt"></cde-mlt>
-                                <cde-datasets [elt]="elt"></cde-datasets>
-                            </div>
                         </section>
                         <section id="permissible-value-div">
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
@@ -181,9 +178,9 @@
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
                                           (eltChange)="saveDraftVoid(elt)"></cde-concepts>
                         </section>
-                        <section *ngIf="elt.referenceDocuments.length || canEdit()" id="reference-documents-div">
+                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
                             <cde-related-document [elt]="elt" [canEdit]="canEdit()"
-                                                    (eltChange)="saveDraftVoid(elt)"></cde-related-document>
+                                                  (eltChange)="saveDraftVoid(elt)"></cde-related-document>
                         </section>
                         <section id="properties-div">
                             <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
@@ -211,6 +208,9 @@
                             <h2>Rules</h2>
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
                                                   (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
+                        </section>
+                        <section id="related-content">
+                            <cde-related-content [elt]="elt"></cde-related-content>
                         </section>
                     </article>
                 </main>

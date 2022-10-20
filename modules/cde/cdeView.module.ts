@@ -22,10 +22,8 @@ import { CdeModule } from 'cde/cde.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
 import { ConceptsComponent } from 'cde/concepts/concepts.component';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
-import { DatasetsComponent } from 'cde/datasets/datasets.component';
 import { DataElementViewComponent } from 'cde/dataElementView/dataElementView.component';
 import { DerivationRulesComponent } from 'cde/derivationRules/derivationRules.component';
-import { MoreLikeThisComponent } from 'cde/mlt/moreLikeThis.component';
 import { CdeClassificationComponent } from 'cde/cdeClassification/cdeClassification.component';
 import { DeGeneralDetailsComponent } from 'cde/deGeneralDetails/deGeneralDetails.component';
 import { PermissibleValueComponent } from 'cde/permissibleValue/permissibleValue.component';
@@ -41,8 +39,6 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
-import { DatasetsContentModalComponent } from 'cde/datasets/datasets-content-modal/datasets-content-modal.component';
-import { MoreLikeThisModalComponent } from 'cde/mlt/more-like-this-modal/more-like-this-modal.component';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
 import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
 import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
@@ -93,11 +89,7 @@ const appRoutes: Routes = [{ path: '', component: DataElementViewComponent }];
         DataElementViewComponent,
         CopyDataElementModalComponent,
         DerivationRulesComponent,
-        DatasetsComponent,
-        DatasetsContentModalComponent,
         DeGeneralDetailsComponent,
-        MoreLikeThisComponent,
-        MoreLikeThisModalComponent,
         PermissibleValueComponent,
         NewPermissibleValueModalComponent,
         ImportPermissibleValueModalComponent,

@@ -1,0 +1,16 @@
+<h2>Related Content</h2>
+<mat-tab-group #tabGroup animationDuration="0ms" [selectedIndex]="defaultTabIndex"
+               (selectedIndexChange)="tabChanged($event)" color="primary">
+    <mat-tab label="Linked Forms ({{linkedForms.length}})"
+             [labelClass]="defaultTabIndex===0?'button light':'button'">
+        <cde-linked-forms [elt]="elt" [forms]="linkedForms"></cde-linked-forms>
+    </mat-tab>
+    <mat-tab label="More like this ({{mltCdes.length}})"
+             [labelClass]="defaultTabIndex===1?'button light':'button'">
+        <cde-mlt [elt]="elt" [cdes]="mltCdes"></cde-mlt>
+    </mat-tab>
+    <mat-tab label="Linked Data Set ({{dataSets.length}})"
+             [labelClass]="defaultTabIndex===2?'button light':'button'">
+        <cde-datasets [elt]="elt"></cde-datasets>
+    </mat-tab>
+</mat-tab-group>

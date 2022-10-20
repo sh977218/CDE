@@ -383,6 +383,10 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             ));
     }
 
+    filterReferenceDocument() {
+        return this.elt.referenceDocuments.filter(rd => !!rd.document);
+    }
+
     saveDraftVoid(elt: DataElement): void {
         this.saveDraft(elt).catch(noop);
     }

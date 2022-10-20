@@ -1,1 +1,30 @@
-<button id="openDataSetModalBtn" class="button" (click)="openDatasetsModal()">Data Set</button>
+<div *ngIf="!dataSets || dataSets.length === 0">
+    <p style="padding: 0 24px">No Linked Data Sets for this CDE.</p>
+</div>
+<div *ngIf="dataSets && dataSets.length >0">
+    <div>
+        Data sets using this CDE
+        <table class="table table-bordered table-condensed table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Source</th>
+                <th>ID</th>
+                <th>Study</th>
+                <th>Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let dataSet of dataSets; let $index = index">
+                <td>{{$index + 1}}</td>
+                <td>{{dataSet.source}}</td>
+                <td>{{dataSet.id}}</td>
+                <td>
+                    <a id="dataSetStudyUri{{$index}}" href="{{dataSet.studyUri}}" TARGET="_blank">Study</a>
+                </td>
+                <td>{{dataSet.notes}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -16,8 +16,6 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         textPresent("4 results. Sorted by relevance.");
         String viewing = findElement(By.id("linkToElt_0")).getText();
         clickElement(By.id("linkToElt_0"));
-
-        textPresent("More Like This");
         textPresent(viewing);
 
         editRegistrationStatus("Preferred Standard", null, null, null, null);
@@ -36,8 +34,6 @@ public class RemoveStatusStatusFilter extends CdeRegStatusTest {
         }
         textPresent("1 results. Sorted by relevance.");
         clickElement(By.id("linkToElt_0"));
-
-        textPresent("More Like This");
         textPresent(viewing);
 
         editRegistrationStatus("Standard", null, null, null, null);

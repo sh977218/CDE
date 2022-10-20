@@ -1,1 +1,6 @@
-<button tourAnchor="mltButton" id="mltButton" class="button" (click)="openMoreLikeThisModal()">More Like This</button>
+<div style="padding: 0 30px;" id="mltAccordion">
+    <ng-container *ngIf="cdes && cdes.length > 0">
+        <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="cdeSummaryContentComponent"
+                          [elts]="cdes"></cde-summary-list>
+    </ng-container>
+</div>

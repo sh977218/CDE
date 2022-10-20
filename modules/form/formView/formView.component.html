@@ -242,7 +242,9 @@
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                             <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
                                               [canEdit]="canEdit()"></cde-registration>
-                            <cde-linked-forms [elt]="elt"></cde-linked-forms>
+                            <button tourAnchor="openLinkedFormsModalBtn" id="openLinkedFormsModalBtn" class="button"
+                                    (click)="openLinkedFormsModal()">Linked Forms
+                            </button>
                             <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                         </section>
                         <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()"
@@ -255,7 +257,7 @@
                             <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-display-profile>
                         </section>
-                        <section *ngIf="elt.referenceDocuments.length || canEdit()" id="reference-documents-div">
+                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
                             <cde-related-document [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-related-document>
                         </section>

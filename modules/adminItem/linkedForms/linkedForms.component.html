@@ -1,3 +1,6 @@
-<button tourAnchor="openLinkedFormsModalBtn" id="openLinkedFormsModalBtn" class="button"
-        (click)="openLinkedFormsModal()">Linked Forms
-</button>
+<div style="padding: 0 30px;">
+    <ng-container *ngIf="forms && forms.length > 0">
+        <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
+                          [elts]="forms"></cde-summary-list>
+    </ng-container>
+</div>

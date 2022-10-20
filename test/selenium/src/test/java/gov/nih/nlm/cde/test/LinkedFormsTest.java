@@ -11,9 +11,11 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
     public void linkedForms() {
         String cdeName = "Psychiatric history clinical depression past year indicator";
         goToCdeByName(cdeName);
-        clickElement(By.id("openLinkedFormsModalBtn"));
+        goToRelatedContent();
+        goToLinkedForm();
         textPresent("Medical History");
-        textPresent("There is 1 form that uses this cde");
+        goToRelatedContent();
+        goToLinkedForm();
         textPresent("Contains data elements related to the study participant's/ subject's health history. (Examples of CDEs included: review of symptoms and conditions in specific body systems (pulmonary, endocrine, musculoskeletal, etc.)");
     }
 

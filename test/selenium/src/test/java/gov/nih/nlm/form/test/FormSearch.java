@@ -12,16 +12,10 @@ public class FormSearch extends BaseFormTest {
         String cdeName = "Therapeutic Procedure Created Date java.util.Date";
         String formName = "Find By CDE";
         goToCdeByName(cdeName);
-
-        clickElement(By.id("openLinkedFormsModalBtn"));
-        textPresent("There is 1 form that uses this cde");
+        goToRelatedContent();
+        goToLinkedForm();
+        clickElement(By.id("linkToElt_0"));
         textPresent(formName);
-        clickElement(By.xpath("//a[contains(.,'See all linked forms')]"));
-        switchTab(1);
-        textPresent("1 results. Sorted by relevance.");
-        textPresent("qz_W3XYk7jF", By.id("term_crumb"));
-        textPresent(formName);
-        switchTabAndClose(0);
     }
 
     @Test

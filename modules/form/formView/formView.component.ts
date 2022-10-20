@@ -1,5 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,7 +18,13 @@ import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { areDerivationRulesSatisfied, formCdes, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
+import {
+    areDerivationRulesSatisfied,
+    formCdes,
+    formQuestions,
+    repeatFe,
+    repeatFeQuestion,
+} from 'core/form/fe';
 import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 import { FormViewService } from 'form/formView/formView.service';
@@ -25,16 +38,37 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
 import { assertUnreachable, Cb, Cb1, Comment, Elt } from 'shared/models.model';
 import {
-    DataElement, DatatypeContainerDate, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime
+    DataElement,
+    DatatypeContainerDate,
+    DatatypeContainerNumber,
+    DatatypeContainerText,
+    DatatypeContainerTime,
 } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import {
-    CdeForm, CdeFormDraft, FormElement, FormElementsContainer, FormInForm, FormQuestionDraft, QuestionCdeValueList
+    CdeForm,
+    CdeFormDraft,
+    FormElement,
+    FormElementsContainer,
+    FormInForm,
+    FormQuestionDraft,
+    QuestionCdeValueList,
 } from 'shared/form/form.model';
-import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
-import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
+import {
+    addFormIds,
+    getLabel,
+    iterateFe,
+    iterateFes,
+    iterateFeSync,
+    noopSkipIterCb,
+} from 'shared/form/fe';
+import {
+    canEditCuratedItem,
+    hasPrivilegeForOrg,
+} from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
+import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 
 export class LocatableError {
     id?: string;
@@ -49,10 +83,8 @@ export class LocatableError {
 @Component({
     selector: 'cde-form-view',
     templateUrl: 'formView.component.html',
-    styleUrls: [
-        '../../cde/dataElementView/view.style.scss'
-    ],
-    providers: [TocService]
+    styleUrls: ['../../cde/dataElementView/view.style.scss'],
+    providers: [TocService],
 })
 export class FormViewComponent implements OnInit, OnDestroy {
     _elt?: CdeFormDraft;
@@ -74,21 +106,22 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validationErrors: LocatableError[] = [];
     isMobile = false;
 
-    constructor(private alert: AlertService,
-                private cdr: ChangeDetectorRef,
-                private dialog: MatDialog,
-                public exportService: ExportService,
-                private formViewService: FormViewService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                private orgHelperService: OrgHelperService,
-                private route: ActivatedRoute,
-                private router: Router,
-                private scrollService: ScrollService,
-                private title: Title,
-                private tocService: TocService,
-                private ucumService: UcumService,
-                public userService: UserService
+    constructor(
+        private alert: AlertService,
+        private cdr: ChangeDetectorRef,
+        private dialog: MatDialog,
+        public exportService: ExportService,
+        private formViewService: FormViewService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        private orgHelperService: OrgHelperService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private scrollService: ScrollService,
+        private title: Title,
+        private tocService: TocService,
+        private ucumService: UcumService,
+        public userService: UserService
     ) {
         this.exportToTab = !!localStorageService.getItem('exportToTab');
         this.onResize();
@@ -106,10 +139,12 @@ export class FormViewComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.route.queryParams.subscribe(() => {
             this.hasDrafts = false;
-            this.loadElt((elt) => {
-                this.orgHelperService.then(() => {
-                    elt.usedBy = this.orgHelperService.getUsedBy(elt);
-                }).catch(noop);
+            this.loadElt(elt => {
+                this.orgHelperService
+                    .then(() => {
+                        elt.usedBy = this.orgHelperService.getUsedBy(elt);
+                    })
+                    .catch(noop);
             });
         });
     }
@@ -130,24 +165,29 @@ export class FormViewComponent implements OnInit, OnDestroy {
             designations: q.question.cde.newCde.designations,
             definitions: q.question.cde.newCde.definitions,
             stewardOrg: {
-                name: elt.stewardOrg.name
+                name: elt.stewardOrg.name,
             },
             valueDomain: {
                 datatype: q.question.datatype,
                 identifiers: q.question.cde.ids,
                 ids: q.question.cde.ids,
-                datatypeText: (q.question as DatatypeContainerText).datatypeText,
-                datatypeNumber: (q.question as DatatypeContainerNumber).datatypeNumber,
-                datatypeDate: (q.question as DatatypeContainerDate).datatypeDate,
-                datatypeTime: (q.question as DatatypeContainerTime).datatypeTime,
-                permissibleValues: (q.question.cde as QuestionCdeValueList).permissibleValues
+                datatypeText: (q.question as DatatypeContainerText)
+                    .datatypeText,
+                datatypeNumber: (q.question as DatatypeContainerNumber)
+                    .datatypeNumber,
+                datatypeDate: (q.question as DatatypeContainerDate)
+                    .datatypeDate,
+                datatypeTime: (q.question as DatatypeContainerTime)
+                    .datatypeTime,
+                permissibleValues: (q.question.cde as QuestionCdeValueList)
+                    .permissibleValues,
             },
             classification: elt.classification,
             ids: q.question.cde.ids,
-            registrationState: {registrationStatus: 'Incomplete'}
+            registrationState: { registrationStatus: 'Incomplete' },
         };
-        this.http.post<DataElement>('/server/de', dataElement)
-            .subscribe(res => {
+        this.http.post<DataElement>('/server/de', dataElement).subscribe(
+            res => {
                 if (res.tinyId) {
                     q.question.cde.tinyId = res.tinyId;
                     delete q.question.cde.newCde;
@@ -156,25 +196,36 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     q.question.cde.version = res.version;
                 }
                 cb();
-            }, err => {
+            },
+            err => {
                 this.alert.httpErrorMessageAlert(err);
-            });
+            }
+        );
     }
 
     get elt(): CdeFormDraft | undefined {
         return this._elt;
     }
 
-    eltLoad(getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm, cb: Cb1<CdeFormDraft> = noop) {
+    eltLoad(
+        getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm,
+        cb: Cb1<CdeFormDraft> = noop
+    ) {
         if (getForm instanceof Observable) {
             getForm.subscribe(
                 elt => this.eltLoaded(elt, cb),
-                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+                () =>
+                    this.router.navigate(['/pageNotFound'], {
+                        skipLocationChange: true,
+                    })
             );
         } else if (getForm instanceof Promise) {
             getForm.then(
                 elt => this.eltLoaded(elt, cb),
-                () => this.router.navigate(['/pageNotFound'], {skipLocationChange: true})
+                () =>
+                    this.router.navigate(['/pageNotFound'], {
+                        skipLocationChange: true,
+                    })
             );
         } else {
             this.eltLoaded(getForm, cb);
@@ -208,7 +259,10 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     gotoTop() {
         window.scrollTo(0, 0);
-        this.router.navigate([], {queryParams: this.route.snapshot.queryParams, replaceUrl: true})
+        this.router.navigate([], {
+            queryParams: this.route.snapshot.queryParams,
+            replaceUrl: true,
+        });
     }
 
     hasDraftsAndLoggedIn(elt: CdeFormDraft) {
@@ -225,18 +279,32 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     loadComments(form: CdeForm, cb = noop) {
         if (this.userService.canSeeComment()) {
-            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(res => {
-                this.hasComments = res && (res.length > 0);
-                this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-                cb();
-            }, err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.'));
+            this.http
+                .get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId)
+                .subscribe(
+                    res => {
+                        this.hasComments = res && res.length > 0;
+                        this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+                        cb();
+                    },
+                    err =>
+                        this.alert.httpErrorMessageAlert(
+                            err,
+                            'Error loading comments.'
+                        )
+                );
         } else {
             cb();
         }
     }
 
     loadElt(cb: Cb1<CdeFormDraft> = noop) {
-        this.eltLoad(this.formViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
+        this.eltLoad(
+            this.formViewService.fetchEltForEditing(
+                this.route.snapshot.queryParams
+            ),
+            cb
+        );
     }
 
     loadHighlightedTabs($event: string[]) {
@@ -244,7 +312,12 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     loadPublished(cb = noop) {
-        this.eltLoad(this.formViewService.fetchPublished(this.route.snapshot.queryParams), cb);
+        this.eltLoad(
+            this.formViewService.fetchPublished(
+                this.route.snapshot.queryParams
+            ),
+            cb
+        );
     }
 
     @HostListener('window:resize', [])
@@ -256,12 +329,12 @@ export class FormViewComponent implements OnInit, OnDestroy {
         const eltCopy = deepCopyElt(elt);
         filterClassificationPerUser(eltCopy, this.userService.userOrgs);
         const data = eltCopy;
-        this.dialog.open(CopyFormModalComponent, {width: '1200px', data});
+        this.dialog.open(CopyFormModalComponent, { width: '1200px', data });
     }
 
     openFormCdesModal(elt: CdeFormDraft) {
         const data = formQuestions(elt);
-        this.dialog.open(FormCdesModalComponent, {width: '800px', data});
+        this.dialog.open(FormCdesModalComponent, { width: '800px', data });
     }
 
     getFormCdes(elt: CdeFormDraft) {
@@ -271,39 +344,56 @@ export class FormViewComponent implements OnInit, OnDestroy {
     openSaveModal() {
         this.validate(this.elt, () => {
             if (this.validationErrors.length) {
-                this.alert.addAlert('danger', 'Please fix all errors before publishing');
+                this.alert.addAlert(
+                    'danger',
+                    'Please fix all errors before publishing'
+                );
             } else {
                 const data = this.elt;
-                this.dialog.open(SaveModalComponent, {width: '500', data}).afterClosed().subscribe(result => {
-                    if (result) {
-                        this.saveDraft(this.elt).then(() => this.saveForm(this.elt));
-                    }
-                })
-
+                this.dialog
+                    .open(SaveModalComponent, { width: '500', data })
+                    .afterClosed()
+                    .subscribe(result => {
+                        if (result) {
+                            this.saveDraft(this.elt).then(() =>
+                                this.saveForm(this.elt)
+                            );
+                        }
+                    });
             }
         });
     }
 
     removeAttachment(elt: CdeFormDraft, event: number) {
-        this.http.post<CdeForm>('/server/attachment/form/remove', {
-            index: event,
-            id: elt._id
-        }).subscribe(res => {
-            elt = res;
-            this.alert.addAlert('success', 'Attachment Removed.');
-            this.cdr.detectChanges();
-        });
+        this.http
+            .post<CdeForm>('/server/attachment/form/remove', {
+                index: event,
+                id: elt._id,
+            })
+            .subscribe(res => {
+                elt = res;
+                this.alert.addAlert('success', 'Attachment Removed.');
+                this.cdr.detectChanges();
+            });
+    }
+
+    openLinkedFormsModal() {
+        const data = this.elt;
+        this.dialog.open(LinkedFormModalComponent, { width: '800px', data });
     }
 
     openDeleteDraftModal() {
-        this.dialog.open(DeleteDraftModalComponent, {width: '500'}).afterClosed().subscribe(result => {
-            if (result) {
-                this.formViewService.removeDraft(this.elt).subscribe(
-                    () => this.loadElt(() => this.hasDrafts = false),
-                    err => this.alert.httpErrorMessageAlert(err)
-                )
-            }
-        })
+        this.dialog
+            .open(DeleteDraftModalComponent, { width: '500' })
+            .afterClosed()
+            .subscribe(result => {
+                if (result) {
+                    this.formViewService.removeDraft(this.elt).subscribe(
+                        () => this.loadElt(() => (this.hasDrafts = false)),
+                        err => this.alert.httpErrorMessageAlert(err)
+                    );
+                }
+            });
     }
 
     saveDraft(elt: CdeFormDraft): Promise<void> {
@@ -317,25 +407,31 @@ export class FormViewComponent implements OnInit, OnDestroy {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return this.draftSaving = this.http.put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)
-            .toPromise().then(newElt => {
-                this.draftSaving = undefined;
-                elt.__v = newElt.__v;
-                this.validate(elt);
-                if (this.unsaved) {
-                    this.unsaved = false;
-                    return this.saveDraft(elt);
+        return (this.draftSaving = this.http
+            .put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)
+            .toPromise()
+            .then(
+                newElt => {
+                    this.draftSaving = undefined;
+                    elt.__v = newElt.__v;
+                    this.validate(elt);
+                    if (this.unsaved) {
+                        this.unsaved = false;
+                        return this.saveDraft(elt);
+                    }
+                    this.savingText = 'Saved';
+                    setTimeout(() => {
+                        this.savingText = '';
+                    }, 3000);
+                },
+                err => {
+                    this.draftSaving = undefined;
+                    this.savingText =
+                        'Cannot save this old version. Reload and redo.';
+                    this.alert.httpErrorMessageAlert(err);
+                    throw err;
                 }
-                this.savingText = 'Saved';
-                setTimeout(() => {
-                    this.savingText = '';
-                }, 3000);
-            }, err => {
-                this.draftSaving = undefined;
-                this.savingText = 'Cannot save this old version. Reload and redo.';
-                this.alert.httpErrorMessageAlert(err);
-                throw err;
-            });
+            ));
     }
 
     saveDraftVoid(elt: CdeFormDraft): void {
@@ -345,33 +441,71 @@ export class FormViewComponent implements OnInit, OnDestroy {
     saveForm(elt: CdeFormDraft) {
         const saveFormImpl = () => {
             const newCdeQuestions: FormQuestionDraft[] = [];
-            iterateFes(elt.formElements, undefined, undefined, (fe, cb) => {
-                if (!fe.question.cde.tinyId && (fe as FormQuestionDraft).question.cde.newCde) {
-                    newCdeQuestions.push(fe as FormQuestionDraft);
-                }
-                cb();
-            }, () => {
-                forEachOf(newCdeQuestions, (q: FormQuestionDraft, index: any, doneOneCde: Cb) => {
-                    this.createDataElement(elt, q, doneOneCde);
-                }, () => {
-                    const publish = () => {
-                        const publishData = {_id: elt._id, tinyId: elt.tinyId, __v: elt.__v};
-                        this.http.post('/server/form/publish', publishData).subscribe(res => {
-                            if (res) {
-                                this.hasDrafts = false;
-                                this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
-                            }
-                        }, err => this.alert.httpErrorMessageAlert(err, 'Error publishing'));
-                    };
-                    if (newCdeQuestions.length) {
-                        this.saveDraft(elt).then(() => {
-                            publish();
-                        }, err => this.alert.httpErrorMessageAlert(err, 'Error saving form'));
-                    } else {
-                        publish();
+            iterateFes(
+                elt.formElements,
+                undefined,
+                undefined,
+                (fe, cb) => {
+                    if (
+                        !fe.question.cde.tinyId &&
+                        (fe as FormQuestionDraft).question.cde.newCde
+                    ) {
+                        newCdeQuestions.push(fe as FormQuestionDraft);
                     }
-                });
-            });
+                    cb();
+                },
+                () => {
+                    forEachOf(
+                        newCdeQuestions,
+                        (q: FormQuestionDraft, index: any, doneOneCde: Cb) => {
+                            this.createDataElement(elt, q, doneOneCde);
+                        },
+                        () => {
+                            const publish = () => {
+                                const publishData = {
+                                    _id: elt._id,
+                                    tinyId: elt.tinyId,
+                                    __v: elt.__v,
+                                };
+                                this.http
+                                    .post('/server/form/publish', publishData)
+                                    .subscribe(
+                                        res => {
+                                            if (res) {
+                                                this.hasDrafts = false;
+                                                this.loadElt(() =>
+                                                    this.alert.addAlert(
+                                                        'success',
+                                                        'Form saved.'
+                                                    )
+                                                );
+                                            }
+                                        },
+                                        err =>
+                                            this.alert.httpErrorMessageAlert(
+                                                err,
+                                                'Error publishing'
+                                            )
+                                    );
+                            };
+                            if (newCdeQuestions.length) {
+                                this.saveDraft(elt).then(
+                                    () => {
+                                        publish();
+                                    },
+                                    err =>
+                                        this.alert.httpErrorMessageAlert(
+                                            err,
+                                            'Error saving form'
+                                        )
+                                );
+                            } else {
+                                publish();
+                            }
+                        }
+                    );
+                }
+            );
         };
 
         if (this.draftSaving) {
@@ -383,18 +517,23 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     scrollToDescriptionId(elt: CdeFormDraft, id: string) {
         this.currentTab = 'description_tab';
-        this.router.navigate(['/formEdit'], {queryParams: {tinyId: elt.tinyId}, fragment: id});
+        this.router.navigate(['/formEdit'], {
+            queryParams: { tinyId: elt.tinyId },
+            fragment: id,
+        });
     }
 
     setDefault(elt: CdeFormDraft, index: number) {
-        this.http.post<CdeForm>('/server/attachment/form/setDefault', {
-            index,
-            state: elt.attachments[index].isDefault,
-            id: elt._id
-        }).subscribe(res => {
-            this.eltLoadedFromOwnUpdate(res);
-            this.alert.addAlert('success', 'Saved');
-        });
+        this.http
+            .post<CdeForm>('/server/attachment/form/setDefault', {
+                index,
+                state: elt.attachments[index].isDefault,
+                id: elt._id,
+            })
+            .subscribe(res => {
+                this.eltLoadedFromOwnUpdate(res);
+                this.alert.addAlert('success', 'Saved');
+            });
     }
 
     upload(elt: CdeFormDraft, event: Event) {
@@ -409,17 +548,21 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 /* tslint:enable */
             }
             formData.append('id', elt._id);
-            this.http.post<any>('/server/attachment/form/add', formData).subscribe(
-                r => {
+            this.http
+                .post<any>('/server/attachment/form/add', formData)
+                .subscribe(r => {
                     if (r.message) {
                         this.alert.addAlert('info', r);
                     } else {
-                        this.eltLoadedFromOwnUpdate(r)
+                        this.eltLoadedFromOwnUpdate(r);
                         this.alert.addAlert('success', 'Attachment added.');
                     }
-                }
-            );
+                });
         }
+    }
+
+    filterReferenceDocument() {
+        return this.elt.referenceDocuments.filter(rd => !!rd.document);
     }
 
     validate(elt: CdeFormDraft, cb: Cb = noop): void {
@@ -434,56 +577,109 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validateDefinitions(elt: CdeFormDraft) {
         elt.definitions.forEach(def => {
             if (!def.definition || !def.definition.length) {
-                this.validationErrors.push(new LocatableError('Definition may not be empty.', undefined));
+                this.validationErrors.push(
+                    new LocatableError(
+                        'Definition may not be empty.',
+                        undefined
+                    )
+                );
             }
         });
     }
 
     validateNoFeCycle(elt: CdeFormDraft) {
-        iterateFeSync(elt, (f: FormInForm, tinyId: string) => {
-            if (f.inForm.form.tinyId === tinyId) {
-                this.validationErrors.push(new LocatableError(
-                    'Form or Subform refers to itself meaning the form never ends.', f.elementType + '_' + f.feId
-                ));
-            }
-            return tinyId;
-        }, undefined, undefined, elt.tinyId);
+        iterateFeSync(
+            elt,
+            (f: FormInForm, tinyId: string) => {
+                if (f.inForm.form.tinyId === tinyId) {
+                    this.validationErrors.push(
+                        new LocatableError(
+                            'Form or Subform refers to itself meaning the form never ends.',
+                            f.elementType + '_' + f.feId
+                        )
+                    );
+                }
+                return tinyId;
+            },
+            undefined,
+            undefined,
+            elt.tinyId
+        );
     }
 
     validateRepeat(elt: CdeFormDraft) {
         const validationErrors = this.validationErrors;
 
-        const findExistingErrors = (parent: FormElementsContainer, fe: FormElement) => {
+        const findExistingErrors = (
+            parent: FormElementsContainer,
+            fe: FormElement
+        ) => {
             if (fe.repeat) {
                 const repeat = repeatFe(fe);
                 switch (repeat) {
                     case '=':
-                        if (!getQuestionPriorByLabel(fe, fe, repeatFeQuestion(fe), this.elt)) {
-                            validationErrors.push(new LocatableError(
-                                'Repeat Prior Question does not exist: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        if (
+                            !getQuestionPriorByLabel(
+                                fe,
+                                fe,
+                                repeatFeQuestion(fe),
+                                this.elt
+                            )
+                        ) {
+                            validationErrors.push(
+                                new LocatableError(
+                                    'Repeat Prior Question does not exist: "' +
+                                        getLabel(fe) +
+                                        '".',
+                                    fe.elementType + '_' + fe.feId
+                                )
+                            );
                         }
                         break;
                     case 'F':
-                        const refQuestion = NativeRenderService.getFirstQuestion(fe);
+                        const refQuestion =
+                            NativeRenderService.getFirstQuestion(fe);
                         if (!refQuestion) {
-                            validationErrors.push(new LocatableError(
-                                'Repeat First Question does not exist: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                            validationErrors.push(
+                                new LocatableError(
+                                    'Repeat First Question does not exist: "' +
+                                        getLabel(fe) +
+                                        '".',
+                                    fe.elementType + '_' + fe.feId
+                                )
+                            );
                             break;
                         }
                         if (refQuestion.question.datatype !== 'Value List') {
-                            validationErrors.push(new LocatableError(
-                                'Repeat First Question does not a Value List: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                            validationErrors.push(
+                                new LocatableError(
+                                    'Repeat First Question does not a Value List: "' +
+                                        getLabel(fe) +
+                                        '".',
+                                    fe.elementType + '_' + fe.feId
+                                )
+                            );
                         }
                         break;
                     case 'N':
                         if (parseInt(fe.repeat, 10) < 1) {
-                            validationErrors.push(new LocatableError(
-                                'Repeat Number is below 1: "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                            validationErrors.push(
+                                new LocatableError(
+                                    'Repeat Number is below 1: "' +
+                                        getLabel(fe) +
+                                        '".',
+                                    fe.elementType + '_' + fe.feId
+                                )
+                            );
                         }
                         break;
                     case '':
-                        validationErrors.push(new LocatableError(
-                            'Bad Repeat Type "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+                        validationErrors.push(
+                            new LocatableError(
+                                'Bad Repeat Type "' + getLabel(fe) + '".',
+                                fe.elementType + '_' + fe.feId
+                            )
+                        );
                         break;
                     default:
                         throw assertUnreachable(repeat);
@@ -500,10 +696,26 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validateSkipLogic(elt: CdeFormDraft) {
         const validationErrors = this.validationErrors;
 
-        function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
-            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe, fe.skipLogic)) {
-                validationErrors.push(new LocatableError(
-                    'SkipLogic error on form element "' + getLabel(fe) + '".', fe.elementType + '_' + fe.feId));
+        function findExistingErrors(
+            parent: FormElementsContainer,
+            fe: FormElement
+        ) {
+            if (
+                fe.skipLogic &&
+                !SkipLogicValidateService.validateSkipLogic(
+                    parent,
+                    fe,
+                    fe.skipLogic
+                )
+            ) {
+                validationErrors.push(
+                    new LocatableError(
+                        'SkipLogic error on form element "' +
+                            getLabel(fe) +
+                            '".',
+                        fe.elementType + '_' + fe.feId
+                    )
+                );
             }
             if (Array.isArray(fe.formElements)) {
                 fe.formElements.forEach(f => findExistingErrors(fe, f));
@@ -514,23 +726,46 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     validateUoms(elt: CdeFormDraft, callback: Cb) {
-        iterateFe(elt, noopSkipIterCb, undefined, (q, cb) => {
-            this.ucumService.validateUoms(q.question, () => {
-                if (q.question.uomsValid.some(e => !!e)) {
-                    this.validationErrors.push(new LocatableError(
-                        'Unit of Measure error on question "' + getLabel(q) + '".', q.elementType + '_' + q.feId));
-                }
-                cb();
-            });
-        }, () => callback());
+        iterateFe(
+            elt,
+            noopSkipIterCb,
+            undefined,
+            (q, cb) => {
+                this.ucumService.validateUoms(q.question, () => {
+                    if (q.question.uomsValid.some(e => !!e)) {
+                        this.validationErrors.push(
+                            new LocatableError(
+                                'Unit of Measure error on question "' +
+                                    getLabel(q) +
+                                    '".',
+                                q.elementType + '_' + q.feId
+                            )
+                        );
+                    }
+                    cb();
+                });
+            },
+            () => callback()
+        );
     }
 
     viewChanges() {
         const draft = this.elt;
-        this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(published => {
-            this.dialog.open(CompareHistoryContentComponent,
-                {width: '800px', data: {newer: draft, older: published}});
-        }, err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.'));
+        this.formViewService
+            .fetchPublished(this.route.snapshot.queryParams)
+            .then(
+                published => {
+                    this.dialog.open(CompareHistoryContentComponent, {
+                        width: '800px',
+                        data: { newer: draft, older: published },
+                    });
+                },
+                err =>
+                    this.alert.httpErrorMessageAlert(
+                        err,
+                        'Error loading view changes.'
+                    )
+            );
     }
 
     viewReady(): void {

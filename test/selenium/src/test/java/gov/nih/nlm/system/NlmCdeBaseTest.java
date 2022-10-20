@@ -561,6 +561,25 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
+    protected void goToRelatedContent() {
+        By by = By.xpath("//li//a[text()='Related Content']");
+        if (findElementsSize(by) > 0) {
+            clickElement(by);
+        }
+    }
+
+    protected void goToLinkedForm() {
+        clickElement(By.xpath("//*[@id='mat-tab-label-0-0']"));
+    }
+
+    protected void goToMoreLikeThis() {
+        clickElement(By.xpath("//*[@id='mat-tab-label-0-1']"));
+    }
+
+    protected void goToDatasets() {
+        clickElement(By.xpath("//*[@id='mat-tab-label-0-2']"));
+    }
+
     protected void goToDisplayProfiles() {
         clickElement(By.xpath("//li//a[text()='Display Profiles']"));
     }

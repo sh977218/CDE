@@ -1,38 +1,40 @@
 <h2 class="sectionDetailSubtitle">Related Documents</h2>
 <table *ngIf="elt.referenceDocuments.length > 0" class="sectionDetailTable">
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Title</th>
-    <th>URL</th>
-    <th>Provider Org</th>
-    <th>Language Code</th>
-    <th>Document</th>
-    <th *ngIf="canEdit"></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let rd of elt.referenceDocuments;let i = index">
-    <td attr.itemprop="id_{{i}}">{{rd.referenceDocumentId}}</td>
-    <td attr.itemprop="title_{{i}}">{{rd.title}}</td>
-    <td attr.itemprop="uri_{{i}}"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">
-      <mat-icon>open_in_new</mat-icon>
-    </a></td>
-    <td attr.itemprop="providerOrg_{{i}}">{{rd.providerOrg}}</td>
-    <td attr.itemprop="languageCode_{{i}}">{{rd.languageCode}}</td>
-    <td attr.itemprop="document_{{i}}">{{rd.document}}</td>
-    <td *ngIf="canEdit">
-      <mat-icon id="removeReferenceDocument-{{i}}" class="fake-button" role="button" tabindex="0"
-                title="Remove" (click)="removeReferenceDocumentByIndex(i)">delete_outline
-      </mat-icon>
-      <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
-                          (cb)="eltChange.emit()"></cde-sortable-array>
-    </td>
-  </tr>
-  </tbody>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>URL</th>
+        <th>Provider Org</th>
+        <th>Language Code</th>
+        <th>Document</th>
+        <th *ngIf="canEdit"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
+        <tr *ngIf="rd.document">
+            <td attr.itemprop="id_{{i}}">{{rd.referenceDocumentId}}</td>
+            <td attr.itemprop="title_{{i}}">{{rd.title}}</td>
+            <td attr.itemprop="uri_{{i}}"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">
+                <mat-icon>open_in_new</mat-icon>
+            </a></td>
+            <td attr.itemprop="providerOrg_{{i}}">{{rd.providerOrg}}</td>
+            <td attr.itemprop="languageCode_{{i}}">{{rd.languageCode}}</td>
+            <td attr.itemprop="document_{{i}}">{{rd.document}}</td>
+            <td *ngIf="canEdit">
+                <mat-icon id="removeReferenceDocument-{{i}}" class="fake-button" role="button" tabindex="0"
+                          title="Remove" (click)="removeReferenceDocumentByIndex(i)">delete_outline
+                </mat-icon>
+                <cde-sortable-array [theArray]="elt.referenceDocuments" [index]="i"
+                                    (cb)="eltChange.emit()"></cde-sortable-array>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
 </table>
 <button *ngIf="canEdit" id="openNewReferenceDocumentModalBtn" class="button mT"
         (click)="openNewReferenceDocumentModal()">
-  <mat-icon>add</mat-icon>
-  Add Reference Document
+    <mat-icon>add</mat-icon>
+    Add Reference Document
 </button>

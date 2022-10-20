@@ -29,8 +29,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         hangon(2);
         scrollToTop();
         clickElement(By.id("linkToElt_0"));
-
-        textPresent("More Like This");
+        textPresent("More like this");
         driver.navigate().back();
         textPresent("21 – 40");
     }

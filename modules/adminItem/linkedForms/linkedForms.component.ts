@@ -1,22 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 import { Elt } from 'shared/models.model';
+import { CdeFormElastic } from 'shared/form/form.model';
+import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';
 
 @Component({
     selector: 'cde-linked-forms',
-    templateUrl: './linkedForms.component.html'
+    templateUrl: './linkedForms.component.html',
 })
-
 export class LinkedFormsComponent {
     @Input() elt!: Elt;
+    @Input() forms: CdeFormElastic[] = [];
 
-    constructor(public dialog: MatDialog) {
-    }
-
-
-    openLinkedFormsModal() {
-        const data = this.elt;
-        this.dialog.open(LinkedFormModalComponent, {width: '800px', data});
-    }
+    formSummaryContentComponent = FormSummaryListContentComponent;
 }
