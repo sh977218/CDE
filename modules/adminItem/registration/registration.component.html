@@ -1,12 +1,12 @@
 <fieldset id="registrationStateDiv">
-    <h2 (click)="canEdit && openRegStatusUpdate()"
+    <h3 (click)="canEdit && openRegStatusUpdate()"
         [style.cursor]="canEdit ? 'pointer' : 'auto'"
-        class="sectionDetailSubtitle cdeRegStatusTitle">Status
+        class="cdeRegStatusTitle">Status
         <button *ngIf="canEdit" class="button light" title="Edit Status">
             <mat-icon>edit</mat-icon>
             Edit
         </button>
-    </h2>
+    </h3>
     <dl class="inline-dl">
         <ng-container *ngIf="elt.registrationState.effectiveDate">
             <dt>Effective Date:</dt>

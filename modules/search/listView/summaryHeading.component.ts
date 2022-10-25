@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ItemElastic } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-summary-heading',
+    selector: 'cde-summary-heading[elt][eltIndex][urlPrefix]',
     templateUrl: './summaryHeading.component.html',
 })
 export class SummaryHeadingComponent {

@@ -39,7 +39,7 @@
                                 *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
                             <button class="navBarButton" mat-button [id]="menuItem.id"
                                     [class.active]="sectionActive === menuItem.section"
-                                    [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null">
+                                    [routerLink]="menuItem.link || ''" [queryParams]="menuItem.queryParams || null">
                                 {{menuItem.label || menuItem.labelFn()}}
                             </button>
                         </ng-container>
@@ -69,7 +69,7 @@
                                         <ng-container
                                                 *ngIf="!childL1.children || !childL1.children.length; else menuItemWithChildren">
                                             <button mat-menu-item [id]="childL1.id"
-                                                    [routerLink]="childL1.link"
+                                                    [routerLink]="childL1.link || ''"
                                                     [queryParams]="childL1.queryParams || null">
                                                 {{childL1.label || childL1.labelFn()}}
                                             </button>
@@ -158,7 +158,7 @@
                 <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                     <ng-container *ngIf="!menuItem.children || !menuItem.children.length; else mobileMenuWithChildren">
                         <a mat-list-item (click)="sidenav.close()" href="javascript:void(0);"
-                           [routerLink]="menuItem.link" [queryParams]="menuItem.queryParams || null"
+                           [routerLink]="menuItem.link || ''" [queryParams]="menuItem.queryParams || null"
                            [class.active]="sectionActive === menuItem.section">
                             {{menuItem.label || menuItem.labelFn()}}
                         </a>
@@ -182,7 +182,7 @@
                                     <ng-template #mobileMenuItemStandard>
                                         <ng-container
                                                 *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
-                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link"
+                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link || ''"
                                                     [queryParams]="child.queryParams || null"
                                                     (click)="sidenav.close()">
                                                 {{child.label || child.labelFn()}}

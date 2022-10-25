@@ -528,7 +528,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToNaming() {
-        clickElement(By.xpath("//li//a[text()='Naming']"));
+        clickElement(By.xpath("//li//a[text()='Other Names & Definitions']"));
     }
 
     protected void goToClassification() {
@@ -1352,7 +1352,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void addNewReferenceDocument(String id, String title, String uri, String providerOrg, String languageCode, String document) {
-        clickElement(By.xpath("//button[contains(.,'Add Reference Document')]"));
+        clickElement(By.xpath("//button[contains(.,'Add Related Document')]"));
         findElement(By.name("newId")).sendKeys(id);
         findElement(By.name("newTitle")).sendKeys(title);
         findElement(By.name("newUri")).sendKeys(uri);
@@ -1955,7 +1955,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected String xpathRegistrationStatusEditable() {
-        return "//h2[contains(.,'Status')][button]";
+        return "//h3[contains(.,'Status')][button]";
     }
 
     protected Cookie getCurrentCookie() {

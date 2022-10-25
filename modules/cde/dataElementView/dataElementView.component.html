@@ -164,32 +164,44 @@
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
                         </section>
+                        <section>
+                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
+                                              [canEdit]="canEdit()"></cde-registration>
+                        </section>
                         <section id="permissible-value-div">
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
                                                    (eltChange)="saveDraftVoid(elt)"></cde-permissible-value>
                         </section>
+                        <section>
+                            <h2 class="sectionDetailSubtitle">CDE Details</h2>
+                        </section>
                         <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()"
                                     (eltChange)="saveDraftVoid(elt)"></cde-naming>
-                        <section id="classification-div">
-                            <cde-cde-classification [elt]="elt"
-                                                    (eltChange)="eltLoaded($event)"></cde-cde-classification>
-                        </section>
                         <section id="concepts-div">
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
                                           (eltChange)="saveDraftVoid(elt)"></cde-concepts>
-                        </section>
-                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
-                            <cde-related-document [elt]="elt" [canEdit]="canEdit()"
-                                                  (eltChange)="saveDraftVoid(elt)"></cde-related-document>
-                        </section>
-                        <section id="properties-div">
-                            <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
-                            </cde-properties>
                         </section>
                         <section id="identifiers-div">
                             <cde-identifiers [elt]="elt" [canEdit]="canEdit()"
                                              (eltChange)="saveDraftVoid(elt)">
                             </cde-identifiers>
+                        </section>
+                        <section id="properties-div">
+                            <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
+                            </cde-properties>
+                        </section>
+                        <section *ngIf="elt.derivationRules.length || canEdit()">
+                            <h3>Rules</h3>
+                            <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
+                                                  (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
+                        </section>
+                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
+                            <cde-related-document [elt]="elt" [canEdit]="canEdit()"
+                                                  (eltChange)="saveDraftVoid(elt)"></cde-related-document>
+                        </section>
+                        <section id="classification-div">
+                            <cde-cde-classification [elt]="elt"
+                                                    (eltChange)="eltLoaded($event)"></cde-cde-classification>
                         </section>
                         <section *ngIf="elt.attachments.length || canEdit()" id="attachments-div">
                             <cde-attachments [elt]="elt" [canEdit]="canEdit()"
@@ -198,16 +210,11 @@
                                              (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
                         <section id="submission-info">
-                            <h2>Submission Information</h2>
+                            <h2 class="sectionDetailSubtitle">Submission Information</h2>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
-                                              [canEdit]="canEdit()"></cde-registration>
-                            <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
-                        <section *ngIf="elt.derivationRules.length || canEdit()">
-                            <h2>Rules</h2>
-                            <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
-                                                  (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
+                        <section>
+                            <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
                         <section id="related-content">
                             <cde-related-content [elt]="elt"></cde-related-content>
