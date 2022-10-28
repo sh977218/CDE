@@ -181,12 +181,12 @@
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
                                           (eltChange)="saveDraftVoid(elt)"></cde-concepts>
                         </section>
-                        <section id="identifiers-div">
+                        <section *ngIf="elt.ids.length || canEdit()" id="identifiers-div">
                             <cde-identifiers [elt]="elt" [canEdit]="canEdit()"
                                              (eltChange)="saveDraftVoid(elt)">
                             </cde-identifiers>
                         </section>
-                        <section id="properties-div">
+                        <section *ngIf="elt.properties.length || canEdit()" id="properties-div">
                             <cde-properties [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-properties>
                         </section>
@@ -199,7 +199,7 @@
                             <cde-related-document [elt]="elt" [canEdit]="canEdit()"
                                                   (eltChange)="saveDraftVoid(elt)"></cde-related-document>
                         </section>
-                        <section id="classification-div">
+                        <section *ngIf="elt.classification.length || canEdit()" id="classification-div">
                             <cde-cde-classification [elt]="elt"
                                                     (eltChange)="eltLoaded($event)"></cde-cde-classification>
                         </section>
@@ -213,11 +213,11 @@
                             <h2 class="sectionDetailSubtitle">Submission Information</h2>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                         </section>
-                        <section>
+                        <section *ngIf="elt.history.length || canEdit()" id="history-div">
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
                         <section id="related-content">
-                            <cde-related-content [elt]="elt"></cde-related-content>
+                            <cde-related-content [elt]="elt" [canEdit]="canEdit()"></cde-related-content>
                         </section>
                     </article>
                 </main>

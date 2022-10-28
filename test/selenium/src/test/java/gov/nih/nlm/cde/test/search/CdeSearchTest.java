@@ -18,8 +18,6 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         goToConcepts();
         textPresent("Mutation Analysis");
         textPresent("C18302");
-        goToHistory();
-        textPresent("Viewing");
         goToClassification();
 
         textPresent("GO Trial", By.xpath("//*[@id='GO Trial']"));

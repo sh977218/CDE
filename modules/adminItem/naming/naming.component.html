@@ -1,4 +1,4 @@
-<section id="designations-div">
+<section *ngIf="elt.designations.length || canEdit" id="designations-div">
     <h3>Other Names & Definitions</h3>
     <div *ngIf="elt.designations.length === 0">
         There are no designations.
@@ -7,7 +7,8 @@
         <dt>
             <mat-icon *ngIf="canEdit && !designation.edit && elt.designations.length > 1" title="Delete Designation"
                       id="removeDesignation-{{i}}" class="fake-button" role="button" tabindex="0"
-                      (click)="removeDesignationByIndex(i)">delete</mat-icon>
+                      (click)="removeDesignationByIndex(i)">delete
+            </mat-icon>
             <cde-sortable-array *ngIf="canEdit" [theArray]="elt.designations" [index]="i"
                                 (cb)="eltChange.emit()"></cde-sortable-array>
             Name:
@@ -29,7 +30,7 @@
         Add Name
     </button>
 </section>
-<section id="definitions-div">
+<section *ngIf="elt.definitions.length || canEdit" id="definitions-div">
     <h4>Definitions</h4>
     <div *ngIf="elt.definitions.length === 0">
         There are no definitions.
@@ -38,7 +39,8 @@
         <dt>
             <mat-icon *ngIf="canEdit && !definition.edit" title="Delete Definition"
                       id="removeDefinition-{{i}}" class="fake-button" role="button" tabindex="0"
-                      (click)="removeDefinitionByIndex(i)">delete</mat-icon>
+                      (click)="removeDefinitionByIndex(i)">delete
+            </mat-icon>
             <cde-sortable-array [theArray]="elt.definitions" [index]="i" *ngIf="canEdit"
                                 (cb)="eltChange.emit()"></cde-sortable-array>
             Definition:

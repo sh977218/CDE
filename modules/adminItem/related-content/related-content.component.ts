@@ -35,7 +35,9 @@ export class RelatedContentComponent implements OnInit {
                 `/server/de/moreLike/${this.elt.tinyId}`
             )
             .subscribe(
-                response => (this.mltCdes = response.cdes),
+                response => {
+                    this.mltCdes = response.cdes;
+                },
                 () => this.alert.addAlert('error', 'Unable to retrieve MLT')
             );
 
