@@ -34,7 +34,7 @@
         </ng-container>
         <ng-container *ngIf="elt.created">
             <dt>Publish Date:</dt>
-            <dd>{{elt.created | date: 'MM/dd/yyyy, h:mma'}}</dd>
+            <dd>{{elt.created | date: 'MM/dd/yyyy'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt['views']">
             <dt>Views:</dt>
@@ -42,7 +42,7 @@
         </ng-container>
         <ng-container *ngIf="elt.imported && userService.isOrgAuthority()">
             <dt>Last import:</dt>
-            <dd>{{elt.imported | date: 'MM/dd/yyyy, h:mma'}}</dd>
+            <dd>{{elt.imported | date: 'MM/dd/yyyy'}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.createdBy && userService.isOrgAuthority()">
             <dt>Created By:</dt>

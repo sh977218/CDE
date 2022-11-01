@@ -13,15 +13,15 @@
         </ng-container>
         <ng-container *ngIf="eltSource.imported">
             <dt>Imported:</dt>
-            <dd>{{eltSource.imported | date: 'MM/dd/yyyy, h:mma'}}</dd>
+            <dd>{{eltSource.imported | date: 'MM/dd/yyyy'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.created">
             <dt>Created:</dt>
-            <dd>{{eltSource.created | date: 'MM/dd/yyyy, h:mma'}}</dd>
+            <dd>{{eltSource.created | date: 'MM/dd/yyyy'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.updated">
             <dt>Updated:</dt>
-            <dd>{{eltSource.updated | date: 'MM/dd/yyyy, h:mma'}}</dd>
+            <dd>{{eltSource.updated | date: 'MM/dd/yyyy'}}</dd>
         </ng-container>
         <ng-container *ngIf="eltSource.registrationStatus">
             <dt>Registration Status:</dt>

@@ -164,10 +164,6 @@
                             <cde-de-general-details [elt]="elt" [canEdit]="canEdit()"
                                                     (eltChange)="saveDraftVoid(elt)"></cde-de-general-details>
                         </section>
-                        <section>
-                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
-                                              [canEdit]="canEdit()"></cde-registration>
-                        </section>
                         <section id="permissible-value-div">
                             <cde-permissible-value [elt]="elt" [canEdit]="canEdit()"
                                                    (eltChange)="saveDraftVoid(elt)"></cde-permissible-value>
@@ -209,15 +205,17 @@
                                              (setDefault)="setDefault(elt, $event)"
                                              (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
-                        <section id="submission-info">
-                            <h2 class="sectionDetailSubtitle">Submission Information</h2>
-                            <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
-                        </section>
                         <section *ngIf="elt.history.length || canEdit()" id="history-div">
                             <cde-history [elt]="elt" [canEdit]="canEdit()"></cde-history>
                         </section>
                         <section id="related-content">
                             <cde-related-content [elt]="elt" [canEdit]="canEdit()"></cde-related-content>
+                        </section>
+                        <section id="submission-info">
+                            <h2 class="sectionDetailSubtitle">Submission Information</h2>
+                            <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
+                            <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
+                                              [canEdit]="canEdit()"></cde-registration>
                         </section>
                     </article>
                 </main>

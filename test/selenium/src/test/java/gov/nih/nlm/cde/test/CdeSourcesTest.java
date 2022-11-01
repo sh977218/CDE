@@ -13,9 +13,9 @@ public class CdeSourcesTest extends NlmCdeBaseTest {
         textPresent("Name:");
         textPresent("caDSR");
         textPresent("Created:");
-        textPresent("12/10/1994, 3:59PM");
+        textPresent("12/10/1994");
         textPresent("Updated:");
-        textPresent("10/17/2016, 4:59PM");
+        textPresent("10/17/2016");
         textPresent("Registration Status:");
         textPresent("standard");
         textPresent("Datatype:");
