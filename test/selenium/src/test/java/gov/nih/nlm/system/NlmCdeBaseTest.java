@@ -390,12 +390,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void deleteWithConfirm(String xpath) {
-        clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'delete_outline']"));
-        clickElement(By.xpath(xpath + "//mat-icon[normalize-space() = 'check']"));
+        clickElement(By.xpath(xpath + "//mat-icon" + xpathText("delete_outline")));
+        clickElement(By.xpath(xpath + "//mat-icon" + xpathText("check")));
     }
 
     protected void dtPropertyValueContains(String dtXpath, String title, String value) {
-        findElement(By.xpath(dtXpath + "[contains(.,'" + title + "')]/following-sibling::dd[1][contains(.,'" + value + "')]"));
+        findElement(By.xpath(dtXpath + xpathContains(title) + xpathDtValue  + xpathContains(value)));
     }
 
     protected void generalDetailsPropertyValueContains(String title, String value) {
@@ -1076,7 +1076,13 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void loginAs(String username, String password) {
-        driver.get(baseUrl + "/login");
+        if (driver.getCurrentUrl().equals("data:,")) {
+            driver.get(baseUrl + "/login");
+        } else if (driver.findElements(By.id("login_link")).size() > 0) {
+            openLogin();
+        } else {
+            logout();
+        }
         clickElement(By.xpath("//button[text()='Sign In']"));
         String sourceTab = switchTabToLast();
         textPresent("Username:");
@@ -2140,12 +2146,22 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpath));
     }
 
+    protected String xpathContains(String value) {
+        return "[contains(.,'" + value + "')]";
+    }
+
+    protected String xpathDtValue = "/following-sibling::dd[1]";
+
     protected String xpathGeneralDetailsProperty() {
         return "//dl[@id='general-details']/dt";
     }
 
     protected String xpathSourcesProperty() {
         return "//cde-admin-item-sources//dl/dt";
+    }
+
+    protected String xpathText(String text) {
+        return "[normalize-space() = '" + text + "']";
     }
 
     protected void clickSaveButton() {

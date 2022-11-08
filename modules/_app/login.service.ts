@@ -68,6 +68,7 @@ export class LoginService {
                     this.lastRoute.url.indexOf('?')
                 );
             }
+            this.router.navigate(['/login']);
         }
     }
 

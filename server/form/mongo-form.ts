@@ -172,6 +172,9 @@ export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {})
             elt.created = form.created;
             elt.createdBy = form.createdBy;
 
+            // updated by special process, not editing
+            elt.isBundle = form.isBundle;
+
             const newElt = new formModel(elt);
 
             // archive form and replace it with newElt

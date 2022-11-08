@@ -6,6 +6,7 @@ type Privileges = Record<Privilege, boolean>;
 type PrivilegesRegistry = Record<string, Privileges>;
 
 export type RolePrivilege = 'universalAttach' // (no review, edit can NO longer attach)
+    | 'universalBundling' // manage 'isBundle' protected field
     | 'universalComment'
     | 'universalCommentManage'
     | 'universalCreate' // (edit can NO longer create)
@@ -76,6 +77,7 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
     },
     NlmCurator: {
         universalAttach: true,
+        universalBundling: true,
         universalComment: true,
         universalCreate: true,
         universalEdit: true,
@@ -83,6 +85,7 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
     },
     OrgAuthority: { // token role
         universalAttach: true,
+        universalBundling: true,
         universalComment: true,
         universalCommentManage: true,
         universalCreate: true,
@@ -97,6 +100,10 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
 
 export const canAttach = canPrivilegeForUser('attach');
 export const canClassify = canPrivilegeForUser('edit');
+
+export function canBundle(user: User | undefined): boolean {
+    return hasRolePrivilege(user, 'universalBundling');
+}
 
 export function canClassifyOrg(user: User | undefined, org: string | undefined): boolean {
     if (!user) {

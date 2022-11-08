@@ -1,20 +1,17 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { CdeForm } from 'shared/form/form.model';
 import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { fetchForm } from 'nativeRender/form.service';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 
 @Component({
     templateUrl: './form-search-modal.component.html',
 })
 export class FormSearchModalComponent {
-    @Output() selectedForm = new EventEmitter();
+    @Output() selectedForm = new EventEmitter<CdeForm>();
 
-    constructor(public http: HttpClient) {
-    }
+    constructor(public http: HttpClient) {}
 
-    addFormFromSearch(form: CdeForm) {
-        this.http.get<CdeForm>('/api/form/' + form.tinyId)
-            .subscribe(form => {
-                this.selectedForm.emit(form);
-            });
+    addFormFromSearch(form: CdeFormElastic) {
+        fetchForm(form.tinyId).then(form => this.selectedForm.emit(form));
     }
 }

@@ -20,9 +20,26 @@
         {{elt.usedBy?.join(', ')}}
     </dd>
 
+    <dt>Is a Bundle:</dt>
+    <dd>
+        {{ elt.isBundle ? 'Yes' : 'No' }}
+        <button *ngIf="!elt.isDraft && elt.isBundle && canBundle(userService.user)" class="button small"
+                title="This form creates a bundle and all of it's contents are indivisible from it. Does not apply to sub-forms."
+                (click)="unbundle(elt)">
+            <mat-icon>group_off</mat-icon>
+            Destroy Bundle
+        </button>
+        <button *ngIf="!elt.isDraft && !elt.isBundle && canBundle(userService.user)" class="button small"
+                title="A bundled form's contents are indivisible from it. Does not apply to sub-forms."
+                (click)="bundle(elt)">
+            <mat-icon>group</mat-icon>
+            Create Bundle
+        </button>
+    </dd>
+
     <dt>Copyrighted:</dt>
     <dd>
-        <input type="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
+        <input type="checkbox" class="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                id="isCopyrighted" title="copyrighted" (change)="eltChange.emit();"/>
         <div *ngIf="elt.isCopyrighted">
             Statement:
@@ -42,7 +59,7 @@
 
     <dt>Disallow Rendering:</dt>
     <dd>
-        <input type="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
+        <input type="checkbox" class="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
                id="disallowRendering" title="disallow rendering" (change)="eltChange.emit();"/>
     </dd>
 

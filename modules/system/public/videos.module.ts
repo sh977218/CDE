@@ -6,21 +6,18 @@ import { VideosResolve } from 'system/public/components/videos/videos.resolve';
 import { NonCoreModule } from 'non-core/noncore.module';
 
 const appRoutes: Routes = [
-    {path: '', resolve: {videos: VideosResolve}, component: VideosComponent},
+    {
+        path: '',
+        resolve: { videos: VideosResolve },
+        component: VideosComponent,
+    },
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule.forChild(appRoutes),
-        NonCoreModule
-    ],
-    declarations: [
-        VideosComponent
-    ],
+    imports: [CommonModule, RouterModule.forChild(appRoutes), NonCoreModule],
+    declarations: [VideosComponent],
     exports: [],
     providers: [VideosResolve],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class VideosModule {
-}
+export class VideosModule {}

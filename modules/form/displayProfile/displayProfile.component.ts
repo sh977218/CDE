@@ -11,8 +11,8 @@ import { copyDeep } from 'shared/util';
 
 interface DisplayProfileVM {
     aliases: {
-        date?: DateType,
-        edit: boolean,
+        date?: DateType;
+        edit: boolean;
     };
     profile: DisplayProfile;
     sample: CdeForm;
@@ -27,7 +27,9 @@ export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.dPVMs.length = 0;
-        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
+        this.elt.displayProfiles.forEach(profile =>
+            this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile))
+        );
     }
 
     get elt() {
@@ -39,13 +41,11 @@ export class DisplayProfileComponent {
     private _elt!: CdeForm;
     dPVMs: DisplayProfileVM[] = [];
     interruptEvent = interruptEvent;
-    uoms: { u: CodeAndSystem, a: string[] }[] = [];
+    uoms: { u: CodeAndSystem; a: string[] }[] = [];
     uomsDate?: DateType;
     uomsPromise!: Promise<void>;
 
-    constructor(public dialog: MatDialog,
-                private ucumService: UcumService) {
-    }
+    constructor(public dialog: MatDialog, private ucumService: UcumService) {}
 
     addProfile() {
         const newProfile = new DisplayProfile('New Profile');
@@ -63,48 +63,62 @@ export class DisplayProfileComponent {
             return this.uomsPromise;
         }
 
-        return this.uomsPromise = new Promise<void>(resolve => {
+        return (this.uomsPromise = new Promise<void>(resolve => {
             let resourceCount = 0;
             this.uoms.length = 0;
             this.uomsDate = this.elt.updated;
             iterateFeSync(this.elt, undefined, undefined, q => {
                 if (Array.isArray(q.question.unitsOfMeasure)) {
-                    q.question.unitsOfMeasure.filter(u => u.system === 'UCUM').forEach(u => {
-                        resourceCount++;
-                        this.ucumService.getUnitNames(u.code, names => {
-                            if (names) {
-                                this.saveAliases(this.uoms, u, names);
-                            }
-                            if (--resourceCount === 0) {
-                                resolve();
-                            }
+                    q.question.unitsOfMeasure
+                        .filter(u => u.system === 'UCUM')
+                        .forEach(u => {
+                            resourceCount++;
+                            this.ucumService.getUnitNames(u.code, names => {
+                                if (names) {
+                                    this.saveAliases(this.uoms, u, names);
+                                }
+                                if (--resourceCount === 0) {
+                                    resolve();
+                                }
+                            });
                         });
-                    });
                 }
             });
-        });
+        }));
     }
 
     profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
-        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
+        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a =>
+            CodeAndSystem.compare(a.unitOfMeasure, v)
+        );
         return matches.length ? matches[0].alias : v.code;
     }
 
-    profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, a: string) {
-        if (a === v.code) {
+    profileAliasSet(dPVM: DisplayProfileVM, v: CodeAndSystem, alias: string) {
+        if (alias === v.code) {
             const indexes: number[] = [];
             dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
-                if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
+                if (
+                    a.unitOfMeasure.code === v.code &&
+                    a.unitOfMeasure.system === v.system
+                ) {
                     indexes.push(i);
                 }
             });
-            indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
+            indexes
+                .reverse()
+                .forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
         } else {
-            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
+            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u =>
+                CodeAndSystem.compare(u.unitOfMeasure, v)
+            );
             if (existing.length) {
-                existing[0].alias = a;
+                existing[0].alias = alias;
             } else {
-                dPVM.profile.unitsOfMeasureAlias.push({unitOfMeasure: v, alias: a});
+                dPVM.profile.unitsOfMeasureAlias.push({
+                    unitOfMeasure: v,
+                    alias,
+                });
             }
         }
         this.eltChange.emit();
@@ -121,9 +135,17 @@ export class DisplayProfileComponent {
             }
 
             for (const u of dPVM.profile.unitsOfMeasureAlias) {
-                const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
-                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
-                    dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
+                const found = this.uoms.filter(a =>
+                    CodeAndSystem.compare(a.u, u.unitOfMeasure)
+                );
+                if (
+                    !found.length ||
+                    !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)
+                ) {
+                    dPVM.profile.unitsOfMeasureAlias.splice(
+                        dPVM.profile.unitsOfMeasureAlias.indexOf(u),
+                        1
+                    );
                     this.eltChange.emit();
                 }
             }
@@ -138,14 +160,14 @@ export class DisplayProfileComponent {
     }
 
     saveAliases(aliases: any[], v: CodeAndSystem, a: string[]) {
-        removeFromArray(a, v.code)
+        removeFromArray(a, v.code);
         a.unshift(v.code);
 
         const existing = aliases.filter(u => CodeAndSystem.compare(u.u, v));
         if (existing.length) {
             existing[0].a = a;
         } else {
-            aliases.push({u: v, a});
+            aliases.push({ u: v, a });
         }
     }
 
@@ -156,7 +178,9 @@ export class DisplayProfileComponent {
     }
 
     substituteProfile(dPVM: DisplayProfileVM, profile: DisplayProfile) {
-        this.elt.displayProfiles[this.elt.displayProfiles.indexOf(dPVM.profile)] = profile;
+        this.elt.displayProfiles[
+            this.elt.displayProfiles.indexOf(dPVM.profile)
+        ] = profile;
         this.dPVMs.filter(p => p === dPVM)[0].profile = profile;
     }
 
@@ -203,20 +227,21 @@ function getSampleElt(): CdeForm {
         elementType: 'form',
         history: [],
         ids: [],
+        isBundle: false,
         properties: [],
         referenceDocuments: [],
         registrationState: {
-            registrationStatus: 'Incomplete'
+            registrationStatus: 'Incomplete',
         },
         sources: [],
-        stewardOrg: {name: ''},
+        stewardOrg: { name: '' },
         tinyId: '',
         formElements: [
             {
                 elementType: 'section',
                 label: 'Section',
                 skipLogic: {
-                    condition: ''
+                    condition: '',
                 },
                 section: {},
                 formElements: [
@@ -224,7 +249,7 @@ function getSampleElt(): CdeForm {
                         elementType: 'section',
                         label: '',
                         skipLogic: {
-                            condition: ''
+                            condition: '',
                         },
                         section: {},
                         formElements: [
@@ -232,7 +257,7 @@ function getSampleElt(): CdeForm {
                                 elementType: 'question',
                                 label: 'Lately I felt cheerful.',
                                 skipLogic: {
-                                    condition: ''
+                                    condition: '',
                                 },
                                 formElements: [],
                                 question: {
@@ -241,24 +266,24 @@ function getSampleElt(): CdeForm {
                                     answers: [
                                         {
                                             permissibleValue: '5',
-                                            valueMeaningName: 'Always'
+                                            valueMeaningName: 'Always',
                                         },
                                         {
                                             permissibleValue: '4',
-                                            valueMeaningName: 'Often'
+                                            valueMeaningName: 'Often',
                                         },
                                         {
                                             permissibleValue: '3',
-                                            valueMeaningName: 'Sometimes'
+                                            valueMeaningName: 'Sometimes',
                                         },
                                         {
                                             permissibleValue: '2',
-                                            valueMeaningName: 'Rarely'
+                                            valueMeaningName: 'Rarely',
                                         },
                                         {
                                             permissibleValue: '1',
-                                            valueMeaningName: 'Never'
-                                        }
+                                            valueMeaningName: 'Never',
+                                        },
                                     ],
                                     editable: true,
                                     required: false,
@@ -271,34 +296,34 @@ function getSampleElt(): CdeForm {
                                         permissibleValues: [
                                             {
                                                 permissibleValue: '5',
-                                                valueMeaningName: 'Always'
+                                                valueMeaningName: 'Always',
                                             },
                                             {
                                                 permissibleValue: '4',
-                                                valueMeaningName: 'Often'
+                                                valueMeaningName: 'Often',
                                             },
                                             {
                                                 permissibleValue: '3',
-                                                valueMeaningName: 'Sometimes'
+                                                valueMeaningName: 'Sometimes',
                                             },
                                             {
                                                 permissibleValue: '2',
-                                                valueMeaningName: 'Rarely'
+                                                valueMeaningName: 'Rarely',
                                             },
                                             {
                                                 permissibleValue: '1',
-                                                valueMeaningName: 'Never'
-                                            }
+                                                valueMeaningName: 'Never',
+                                            },
                                         ],
                                         tinyId: '',
-                                    }
-                                }
+                                    },
+                                },
                             },
                             {
                                 elementType: 'question',
                                 label: 'Lately I felt confident.',
                                 skipLogic: {
-                                    condition: ''
+                                    condition: '',
                                 },
                                 formElements: [],
                                 question: {
@@ -307,24 +332,24 @@ function getSampleElt(): CdeForm {
                                     answers: [
                                         {
                                             permissibleValue: '5',
-                                            valueMeaningName: 'Always'
+                                            valueMeaningName: 'Always',
                                         },
                                         {
                                             permissibleValue: '4',
-                                            valueMeaningName: 'Often'
+                                            valueMeaningName: 'Often',
                                         },
                                         {
                                             permissibleValue: '3',
-                                            valueMeaningName: 'Sometimes'
+                                            valueMeaningName: 'Sometimes',
                                         },
                                         {
                                             permissibleValue: '2',
-                                            valueMeaningName: 'Rarely'
+                                            valueMeaningName: 'Rarely',
                                         },
                                         {
                                             permissibleValue: '1',
-                                            valueMeaningName: 'Never'
-                                        }
+                                            valueMeaningName: 'Never',
+                                        },
                                     ],
                                     editable: true,
                                     invisible: true,
@@ -338,36 +363,36 @@ function getSampleElt(): CdeForm {
                                         permissibleValues: [
                                             {
                                                 permissibleValue: '5',
-                                                valueMeaningName: 'Always'
+                                                valueMeaningName: 'Always',
                                             },
                                             {
                                                 permissibleValue: '4',
-                                                valueMeaningName: 'Often'
+                                                valueMeaningName: 'Often',
                                             },
                                             {
                                                 permissibleValue: '3',
-                                                valueMeaningName: 'Sometimes'
+                                                valueMeaningName: 'Sometimes',
                                             },
                                             {
                                                 permissibleValue: '2',
-                                                valueMeaningName: 'Rarely'
+                                                valueMeaningName: 'Rarely',
                                             },
                                             {
                                                 permissibleValue: '1',
-                                                valueMeaningName: 'Never'
-                                            }
+                                                valueMeaningName: 'Never',
+                                            },
                                         ],
                                         tinyId: '',
-                                    }
-                                }
-                            }
-                        ]
+                                    },
+                                },
+                            },
+                        ],
                     },
                     {
                         elementType: 'question',
                         label: 'Education level USA type',
                         skipLogic: {
-                            condition: ''
+                            condition: '',
                         },
                         formElements: [],
                         question: {
@@ -377,53 +402,55 @@ function getSampleElt(): CdeForm {
                             answer: 'Never attended/Kindergarten only',
                             answers: [
                                 {
-                                    permissibleValue: 'Never attended/Kindergarten only',
-                                    valueMeaningName: 'Never attended/Kindergarten only'
+                                    permissibleValue:
+                                        'Never attended/Kindergarten only',
+                                    valueMeaningName:
+                                        'Never attended/Kindergarten only',
                                 },
                                 {
                                     permissibleValue: '1st Grade',
-                                    valueMeaningName: '1st Grade'
+                                    valueMeaningName: '1st Grade',
                                 },
                                 {
                                     permissibleValue: '2nd Grade',
-                                    valueMeaningName: '2nd Grade'
+                                    valueMeaningName: '2nd Grade',
                                 },
                                 {
                                     permissibleValue: '3rd Grade',
-                                    valueMeaningName: '3rd Grade'
+                                    valueMeaningName: '3rd Grade',
                                 },
                                 {
                                     permissibleValue: '4th Grade',
-                                    valueMeaningName: '4th Grade'
+                                    valueMeaningName: '4th Grade',
                                 },
                                 {
                                     permissibleValue: '5th Grade',
-                                    valueMeaningName: '5th Grade'
+                                    valueMeaningName: '5th Grade',
                                 },
                                 {
                                     permissibleValue: '6th Grade',
-                                    valueMeaningName: '6th Grade'
+                                    valueMeaningName: '6th Grade',
                                 },
                                 {
                                     permissibleValue: '7th Grade',
-                                    valueMeaningName: '7th Grade'
+                                    valueMeaningName: '7th Grade',
                                 },
                                 {
                                     permissibleValue: '8th Grade',
-                                    valueMeaningName: '8th Grade'
+                                    valueMeaningName: '8th Grade',
                                 },
                                 {
                                     permissibleValue: '9th Grade',
-                                    valueMeaningName: '9th Grade'
+                                    valueMeaningName: '9th Grade',
                                 },
                                 {
                                     permissibleValue: '10th Grade',
-                                    valueMeaningName: '10th Grade'
+                                    valueMeaningName: '10th Grade',
                                 },
                                 {
                                     permissibleValue: '11th Grade',
-                                    valueMeaningName: '11th Grade'
-                                }
+                                    valueMeaningName: '11th Grade',
+                                },
                             ],
                             editable: true,
                             required: false,
@@ -435,68 +462,71 @@ function getSampleElt(): CdeForm {
                                 ids: [],
                                 permissibleValues: [
                                     {
-                                        permissibleValue: 'Never attended/Kindergarten only',
-                                        valueMeaningName: 'Never attended/Kindergarten only'
+                                        permissibleValue:
+                                            'Never attended/Kindergarten only',
+                                        valueMeaningName:
+                                            'Never attended/Kindergarten only',
                                     },
                                     {
                                         permissibleValue: '1st Grade',
-                                        valueMeaningName: '1st Grade'
+                                        valueMeaningName: '1st Grade',
                                     },
                                     {
                                         permissibleValue: '2nd Grade',
-                                        valueMeaningName: '2nd Grade'
+                                        valueMeaningName: '2nd Grade',
                                     },
                                     {
                                         permissibleValue: '3rd Grade',
-                                        valueMeaningName: '3rd Grade'
+                                        valueMeaningName: '3rd Grade',
                                     },
                                     {
                                         permissibleValue: '4th Grade',
-                                        valueMeaningName: '4th Grade'
+                                        valueMeaningName: '4th Grade',
                                     },
                                     {
                                         permissibleValue: '5th Grade',
-                                        valueMeaningName: '5th Grade'
+                                        valueMeaningName: '5th Grade',
                                     },
                                     {
                                         permissibleValue: '6th Grade',
-                                        valueMeaningName: '6th Grade'
+                                        valueMeaningName: '6th Grade',
                                     },
                                     {
                                         permissibleValue: '7th Grade',
-                                        valueMeaningName: '7th Grade'
+                                        valueMeaningName: '7th Grade',
                                     },
                                     {
                                         permissibleValue: '8th Grade',
-                                        valueMeaningName: '8th Grade'
+                                        valueMeaningName: '8th Grade',
                                     },
                                     {
                                         permissibleValue: '9th Grade',
-                                        valueMeaningName: '9th Grade'
+                                        valueMeaningName: '9th Grade',
                                     },
                                     {
                                         permissibleValue: '10th Grade',
-                                        valueMeaningName: '10th Grade'
+                                        valueMeaningName: '10th Grade',
                                     },
                                     {
                                         permissibleValue: '11th Grade',
-                                        valueMeaningName: '11th Grade'
-                                    }
+                                        valueMeaningName: '11th Grade',
+                                    },
                                 ],
                                 tinyId: '',
-                            }
-                        }
+                            },
+                        },
                     },
                     {
                         elementType: 'question',
                         label: 'Person Birth Date',
                         skipLogic: {
-                            condition: '"Education level USA type" = "Never attended/Kindergarten only"'
+                            condition:
+                                '"Education level USA type" = "Never attended/Kindergarten only"',
                         },
                         formElements: [],
                         question: {
                             datatype: 'Date',
-                            datatypeDate: {precision: 'Month'},
+                            datatypeDate: { precision: 'Month' },
                             editable: true,
                             required: false,
                             unitsOfMeasure: [],
@@ -506,17 +536,17 @@ function getSampleElt(): CdeForm {
                                 ids: [],
                                 derivationRules: [],
                                 tinyId: '',
-                            }
+                            },
                         },
                         instructions: {
-                            value: 'Include year and month but no day.'
-                        }
-                    }
+                            value: 'Include year and month but no day.',
+                        },
+                    },
                 ],
                 instructions: {
-                    value: 'Fill out to the best of your knowledge.'
-                }
-            }
-        ]
+                    value: 'Fill out to the best of your knowledge.',
+                },
+            },
+        ],
     };
 }

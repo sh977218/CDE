@@ -109,7 +109,7 @@
                 </button>
                 <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
                         [class.active]="isActiveUserMenu()"
-                        (click)="loginSvc.goToLogin()" routerLink="/login">
+                        (click)="loginSvc.goToLogin()">
                     <span>Sign In</span>
                 </button>
                 <ng-template #loggedInButton>

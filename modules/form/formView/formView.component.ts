@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 import { SaveModalComponent } from 'adminItem/save-modal/saveModal.component';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
@@ -68,7 +69,6 @@ import {
 } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
-import { LinkedFormModalComponent } from 'adminItem/linkedForms/linked-form-modal/linked-form-modal.component';
 
 export class LocatableError {
     id?: string;
@@ -371,15 +371,18 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 id: elt._id,
             })
             .subscribe(res => {
-                elt = res;
-                this.alert.addAlert('success', 'Attachment Removed.');
-                this.cdr.detectChanges();
+                if (res) {
+                    this.eltLoadedFromOwnUpdate(res);
+                    this.alert.addAlert('success', 'Attachment Removed.');
+                }
             });
     }
 
     openLinkedFormsModal() {
-        const data = this.elt;
-        this.dialog.open(LinkedFormModalComponent, { width: '800px', data });
+        this.dialog.open(LinkedFormModalComponent, {
+            width: '800px',
+            data: this.elt,
+        });
     }
 
     openDeleteDraftModal() {

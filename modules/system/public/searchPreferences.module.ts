@@ -6,9 +6,7 @@ import { SearchPreferencesComponent } from 'system/public/components/searchPrefe
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
-const appRoutes: Routes = [
-    {path: '', component: SearchPreferencesComponent},
-];
+const appRoutes: Routes = [{ path: '', component: SearchPreferencesComponent }];
 
 @NgModule({
     imports: [
@@ -19,12 +17,9 @@ const appRoutes: Routes = [
         MatButtonModule,
         MatIconModule,
     ],
-    declarations: [
-        SearchPreferencesComponent,
-    ],
+    declarations: [SearchPreferencesComponent],
     exports: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class SearchPreferencesModule {
-}
+export class SearchPreferencesModule {}

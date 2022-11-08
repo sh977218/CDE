@@ -290,7 +290,7 @@ export class NavigationComponent {
     logout() {
         const refreshAndLogin = () => {
             this.userService.reload();
-            this.router.navigate(['/login']);
+            this.loginSvc.goToLogin();
         };
         this.app.ssoLogout(() => {});
         this.http

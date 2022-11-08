@@ -14,7 +14,7 @@ export class Concepts {
 }
 
 export class DataElement extends Elt {
-    partOfBundles: string[] = [];
+    partOfBundles: string[] = []; // mutable by system batch only
     dataElementConcept?: { // mutable
         concepts?: Concept[],
         conceptualDomain?: {

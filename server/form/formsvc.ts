@@ -1,5 +1,5 @@
 import * as Ajv from 'ajv';
-import { Request, Response } from 'express';
+import { Request, RequestHandler, Response } from 'express';
 import { readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import { config, dbPlugins } from 'server';
@@ -17,6 +17,7 @@ import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
 import { addFormToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
+import { FormBundleRequestHandler } from 'shared/boundaryInterfaces/API/form';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
@@ -101,6 +102,32 @@ function wipeRenderDisallowed(form: CdeForm, user: User) {
         form.formElements = [];
     }
 }
+
+export const bundleCreate: FormBundleRequestHandler = (req, res) => {
+    const tinyId = req.params.tinyId;
+    dbPlugins.form.byTinyId(tinyId).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        dbPlugins.form.updatePropertiesById(form._id, {isBundle: true}).then(
+            savedForm => savedForm ? res.send(savedForm) : res.status(404).send(),
+            respondError({req, res})
+        );
+    }, respondError({req, res}));
+};
+
+export const bundleDestroy: FormBundleRequestHandler = (req, res) => {
+    const tinyId = req.params.tinyId;
+    dbPlugins.form.byTinyId(tinyId).then(form => {
+        if (!form) {
+            return res.status(404).send();
+        }
+        dbPlugins.form.updatePropertiesById(form._id, {isBundle: false}).then(
+            savedForm => savedForm ? res.send(savedForm) : res.status(404).send(),
+            respondError({req, res})
+        );
+    }, respondError({req, res}));
+};
 
 export function byId(req: Request, res: Response) {
     const id = req.params.id;

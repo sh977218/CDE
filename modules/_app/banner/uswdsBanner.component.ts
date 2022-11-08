@@ -11,5 +11,4 @@ import { Component } from '@angular/core';
     templateUrl: './uswdsBanner.component.html',
     styleUrls: ['./uswdsBanner.component.scss'],
 })
-export class UswdsBannerComponent {
-}
+export class UswdsBannerComponent {}

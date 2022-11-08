@@ -6,9 +6,25 @@ import { config, dbPlugins } from 'server';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { elasticsearchForm } from 'server/form/elastic';
 import {
-    viewHistory, byTinyId, byTinyIdAndVersion, latestVersionByTinyId, create, publishFromDraft, publishExternal, byId,
-    priorForms, byTinyIdList, originalSourceByTinyIdSourceName, draftForEditByTinyId, draftSave, draftDelete,
-    forEditById, forEditByTinyId, forEditByTinyIdAndVersion
+    bundleCreate,
+    bundleDestroy,
+    byId,
+    byTinyId,
+    byTinyIdAndVersion,
+    byTinyIdList,
+    create,
+    draftDelete,
+    draftForEditByTinyId,
+    draftSave,
+    forEditById,
+    forEditByTinyId,
+    forEditByTinyIdAndVersion,
+    latestVersionByTinyId,
+    originalSourceByTinyIdSourceName,
+    priorForms,
+    publishFromDraft,
+    publishExternal,
+    viewHistory
 } from 'server/form/formsvc';
 import {
     formModel,
@@ -22,6 +38,7 @@ import {
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
+    canBundleMiddleware,
     canCreateMiddleware,
     canEditByTinyIdMiddleware,
     canEditMiddleware,
@@ -160,6 +177,9 @@ export function module() {
     router.get('/server/form/draft/:tinyId', canViewDraftMiddlewareForm, draftForEditByTinyId);
     router.put('/server/form/draft/:tinyId', canEditMiddlewareForm, draftSave);
     router.delete('/server/form/draft/:tinyId', canEditByTinyIdMiddlewareForm, draftDelete);
+
+    router.post('/server/form/bundle/:tinyId', canBundleMiddleware, bundleCreate);
+    router.post('/server/form/unbundle/:tinyId', canBundleMiddleware, bundleDestroy);
 
     router.get('/server/form/viewingHistory', loggedInMiddleware, nocacheMiddleware, viewHistory);
 

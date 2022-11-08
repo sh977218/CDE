@@ -1,7 +1,7 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
 import { respondError } from 'server/errorHandler';
 import {
-    canAttach,
+    canAttach, canBundle,
     canEditCuratedItem,
     canViewComment,
     hasPrivilegeForOrg,
@@ -35,6 +35,17 @@ export const nocacheMiddleware: RequestHandler = (req, res, next) => {
 export const canAttachMiddleware: RequestHandler = (req, res, next) => {
     loggedInMiddleware(req, res, () => {
         if (!canAttach(req.user)) {
+            // TODO: consider ban
+            res.status(403).send();
+            return;
+        }
+        next();
+    });
+};
+
+export const canBundleMiddleware: RequestHandler = (req, res, next) => {
+    loggedInMiddleware(req, res, () => {
+        if (!canBundle(req.user)) {
             // TODO: consider ban
             res.status(403).send();
             return;

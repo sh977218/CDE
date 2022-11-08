@@ -236,7 +236,7 @@
                             <cde-native-render-full [elt]="elt" [canEdit]="canEdit()"></cde-native-render-full>
                         </section>
                         <section>
-                            <cde-form-general-details [elt]="elt" [canEdit]="canEdit()"
+                            <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (eltReloaded)="eltLoaded($event)"
                                                       (eltChange)="saveDraftVoid(elt)">
                             </cde-form-general-details>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
@@ -245,7 +245,6 @@
                             <button tourAnchor="openLinkedFormsModalBtn" id="openLinkedFormsModalBtn" class="button"
                                     (click)="openLinkedFormsModal()">Linked Forms
                             </button>
-                            <cde-form-term-mapping [elt]="elt"></cde-form-term-mapping>
                         </section>
                         <cde-naming id="naming-div" [elt]="elt" [canEdit]="canEdit()"
                                     (eltChange)="saveDraftVoid(elt)"></cde-naming>

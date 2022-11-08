@@ -30,6 +30,7 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
     elementType: 'form' = 'form';
     expanded?: boolean; // calculated, formDescription view model
     formElements: T[] = []; // mutable
+    isBundle: boolean = false; // mutable, protected
     isCopied?: 'copied' | 'clear'; // volatile, form description
     isCopyrighted?: boolean;
     noRenderAllowed?: boolean;

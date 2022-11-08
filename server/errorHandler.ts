@@ -13,7 +13,7 @@ interface HandlerOptionsNoRes {
     message?: string; // private accurate message
     origin?: string; // unique to calling code
     publicMessage?: string; // non-revealing usability message to be shown to users
-    req?: Request;
+    req?: Request<any, any, any, any>;
     statusCode?: number;
 }
 
