@@ -3,6 +3,7 @@ package gov.nih.nlm.system;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 import io.restassured.http.Cookie;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -25,10 +26,14 @@ import org.testng.annotations.Listeners;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
@@ -40,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 
@@ -49,6 +56,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     public static WebDriver driver;
     public static WebDriverWait wait;
     public static WebDriverWait shortWait;
+    public static boolean hubLogged = false;
 
     private static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
     protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
@@ -64,6 +72,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     private String className = this.getClass().getSimpleName();
     private ScheduledExecutorService videoExec;
+
+    private String hubUrl;
+    protected final ObjectMapper mapper = new ObjectMapper();
+    protected final TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
 
     private int videoRate = 300;
 
@@ -112,11 +124,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         caps.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
 
         baseUrl = System.getProperty("testUrl");
-        String hubUrl = System.getProperty("hubUrl");
+        this.hubUrl = System.getProperty("hubUrl");
 
         URL _hubUrl = null;
         try {
-            _hubUrl = new URL(hubUrl);
+            _hubUrl = new URL(this.hubUrl);
         } catch (MalformedURLException ex) {
             Logger.getLogger(NlmCdeBaseTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,7 +149,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        driver.manage().timeouts().setScriptTimeout(9, TimeUnit.SECONDS);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(9));
+        this.logGridVersions((RemoteWebDriver) driver);
         ngdriver = new NgWebDriver(js);
     }
 
@@ -157,6 +170,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         filePerms.add(PosixFilePermission.OTHERS_WRITE);
         takeScreenshotsRecordVideo(m);
 
+        this.logGridNodeName(((RemoteWebDriver) driver), m.getName());
     }
 
     private void takeScreenshotsRecordVideo(Method m) {
@@ -219,6 +233,86 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             System.out.println(e);
         }
 
+    }
+
+    protected void logGridVersions(RemoteWebDriver rd) {
+        if (NlmCdeBaseTest.hubLogged) {
+            return;
+        }
+        NlmCdeBaseTest.hubLogged = true;
+
+        try {
+            String sessionId = rd.getSessionId().toString();
+            String nodeName = null;
+            // For Selenium 4 Grid
+            String requestData = "{\"query\":\"{ grid {uri version} nodesInfo { nodes { uri version osInfo { name } } } }\"}";
+            URL url = new URL(new URL(this.hubUrl), "/graphql");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.getOutputStream().write(requestData.getBytes());
+            InputStream is = null;
+            try {
+                is = conn.getInputStream();
+            } catch (FileNotFoundException e) {
+                System.out.println("The /graphql endpoint is not available, probably Selenium 3 Grid is used");
+            }
+            if (is != null) {
+                System.out.println(IOUtils.toString(is, StandardCharsets.UTF_8));
+            } else { // For Selenium 3 Grid
+                url = new URL(new URL(this.hubUrl), "/status");
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                System.out.println(IOUtils.toString(conn.getInputStream(), StandardCharsets.UTF_8));
+            }
+        } catch (Exception e) {
+            System.out.println("Error determining the Grid hub version");
+            System.out.println(e);
+        }
+    }
+
+    protected void logGridNodeName(RemoteWebDriver rd, String testName) {
+        try {
+            String sessionId = rd.getSessionId().toString();
+            String nodeName = null;
+            // For Selenium 4 Grid
+            String requestData = "{\"query\":\"{ session (id: \\\"" + sessionId + "\\\") { uri } } \"}";
+            URL url = new URL(new URL(this.hubUrl), "/graphql");
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.getOutputStream().write(requestData.getBytes());
+            InputStream is = null;
+            try {
+                is = conn.getInputStream();
+            } catch (FileNotFoundException e) {
+                System.out.println("The /graphql endpoint is not available, probably Selenium 3 Grid is used");
+            }
+            if (is != null) {
+                Map<String, Object> response = mapper.readValue(is, typeRef);
+                Map<?, ?> responseData = (Map<?, ?>)response.get("data");
+                Map<?, ?> responseSession = (Map<?, ?>)responseData.get("session");
+                nodeName = (String)responseSession.get("uri");
+            } else { // For Selenium 3 Grid
+                url = new URL(new URL(this.hubUrl), "/grid/api/testsession?session=" + sessionId);
+                conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+                Map<String, Object> response = mapper.readValue(conn.getInputStream(), typeRef);
+                nodeName = (String)response.get("proxyId");
+            }
+            System.out.println("Test " + testName + " (session " + sessionId + ") uses Grid node " + nodeName);
+        } catch (Exception e) {
+            System.out.println("Error determining the Grid node name");
+            System.out.println(e);
+        }
     }
 
     protected void assertSearchFilterSelected(String id, boolean state) {
@@ -652,9 +746,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void assertNoElt(By by) {
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
         Assert.assertEquals(driver.findElements(by).size(), 0);
-        driver.manage().timeouts().implicitlyWait(defaultTimeout, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(defaultTimeout));
     }
 
     protected void searchEltAny(String name, String type) {
@@ -972,23 +1066,26 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void login(String username, String password) {
         openLogin();
         clickElement(By.xpath("//button[text()='Sign In']"));
-        int sourceTabIndex = switchTabToLast();
+        String sourceTab = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
         findElement(By.name("password")).sendKeys(password);
         clickElement(By.cssSelector("input[type='submit']"));
-        switchTab(sourceTabIndex);
+        switchTabHandle(sourceTab);
         textPresent(username.toUpperCase(), By.id("username_link"));
     }
 
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
         clickElement(By.xpath("//button[text()='Sign In']"));
+        String sourceTab = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
         findElement(By.name("password")).sendKeys(password);
         clickElement(By.cssSelector("input[type='submit']"));
 
+        switchTabHandle(sourceTab);
+        findElement(By.id("username_link"));
         String usernameStr = username.length() > 17 ? username.substring(0, 17) + "..." : username;
         textPresent(usernameStr.toUpperCase(), By.id("username_link"));
     }
@@ -1113,12 +1210,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         driver.switchTo().window(tabs.get(i));
     }
 
-    protected int switchTabToLast() {
+    protected void switchTabHandle(String handle) {
         hangon(1);
+        driver.switchTo().window(handle);
+    }
+
+    protected String switchTabToLast() {
         String currentTab = driver.getWindowHandle();
-        List<String> tabs = new ArrayList<String>(driver.getWindowHandles());
-        driver.switchTo().window(tabs.get(tabs.size() - 1));
-        return tabs.indexOf(currentTab);
+        Set<String> tabs = driver.getWindowHandles();
+        Assert.assertTrue(tabs.size() > 0);
+        String lastElement = null;
+        for (String tab : tabs) {
+            lastElement = tab;
+        }
+        driver.switchTo().window(lastElement);
+        return currentTab;
     }
 
     protected void fillInput(String type, String value) {

@@ -12,13 +12,13 @@ public class WrongLogin extends NlmCdeBaseTest {
 
         openLogin();
         clickElement(By.xpath("//button[text()='Sign In']"));
-        int sourceTabIndex = switchTabToLast();
+        String sourceTab = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(bad_username);
         findElement(By.name("password")).sendKeys(bad_password);
         clickElement(By.cssSelector("input[type='submit']"));
         textPresent("Login Failed");
-        switchTab(sourceTabIndex);
+        switchTabHandle(sourceTab);
 
         driver.get(baseUrl + "/settings/profile");
         isLoggedOut();
