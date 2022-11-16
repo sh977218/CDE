@@ -32,16 +32,16 @@ app.get('/', function (req, res) {
                 <title>CDE Test Login</title>
             </head>
             <body>
-                <form method="post" action="/login?service=${req.query.service}">
+                <form method="post" action="/login?service=${req.query.service}" autocomplete="off">
                     <label>
                         Username:
-                        <input name="username"/>
+                        <input name="username" autocomplete="off"/>
                     </label>
                     <label>
                         Password:
-                        <input type="password" name="password"/>
+                        <input type="password" name="password" autocomplete="off"/>
                     </label>
-                    <input type="submit"/>
+                    <input type="submit" id="loginSubmitBtn"/>
                 </form>
             </body>
         </html>

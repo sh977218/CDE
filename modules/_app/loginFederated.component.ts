@@ -54,9 +54,6 @@ export class LoginFederatedComponent {
                                     0,
                                     window.location.href.indexOf(thisRoute)
                                 );
-                                console.log(
-                                    'text: ' + text + ' service: ' + service
-                                );
                                 if (text === 'OK' && service) {
                                     if (
                                         window.opener &&

@@ -984,12 +984,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void loginAs(String username, String password) {
         driver.get(baseUrl + "/login");
         clickElement(By.xpath("//button[text()='Sign In']"));
-        int sourceTabIndex = switchTabToLast();
         textPresent("Username:");
         findElement(By.name("username")).sendKeys(username);
         findElement(By.name("password")).sendKeys(password);
         clickElement(By.cssSelector("input[type='submit']"));
-        switchTab(sourceTabIndex);
 
         String usernameStr = username.length() > 17 ? username.substring(0, 17) + "..." : username;
         textPresent(usernameStr.toUpperCase(), By.id("username_link"));
