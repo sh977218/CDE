@@ -1,10 +1,12 @@
-<h2 class="sectionDetailSubtitle">History</h2>
+<h3>History</h3>
 <div style="display: flex; justify-content: space-between;">
-    <button *ngIf="numberSelected===2" id="historyCompareBtn" class="button" (click)="openHistoryCompareModal()">
+    <button id="historyCompareBtn" class="button" (click)="openHistoryCompareModal()" [disabled]="numberSelected!=2">
         <mat-icon>compare_arrows</mat-icon>
         Compare
     </button>
-    <span class="spacer"></span>
+    <span class="spacer">
+        <span *ngIf="numberSelected!=2">Select two versions to compare.</span>
+    </span>
     <mat-checkbox [(ngModel)]="showVersioned"> Only show versioned
         revisions.
     </mat-checkbox>
@@ -22,10 +24,9 @@
     </tr>
     <tbody>
     <ng-container *ngFor="let priorElement of priorElements; index as i; first as first">
-        <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version"
-            (click)="selectRow(i)" [ngClass]="{'isSelected':priorElement.selected}">
+        <tr *ngIf="!showVersioned || priorElement?.version !== priorElements[i-1]?.version">
             <td>
-                <mat-checkbox [(ngModel)]="priorElement.selected"></mat-checkbox>
+                <mat-checkbox (change)="selectRow(i)"></mat-checkbox>
             </td>
             <td>
                 {{priorElement.updated | date: 'MM/dd/yyyy @ h:mma'}}

@@ -1148,13 +1148,19 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
        @param rightIndex an index starts from 1
      */
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]"));
-        clickElement(By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]"));
-        int leftSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr[td][1]"));
-        int rightSelect = findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr[td][2]"));
-        Assert.assertEquals(1, leftSelect);
-        Assert.assertEquals(1, rightSelect);
-        clickElement(By.id("historyCompareBtn"));
+        Assert.assertTrue(!findElement(By.id("historyCompareBtn")).isEnabled());
+        By compareButtonBy = By.id("historyCompareBtn");
+        By checkboxBy1 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]//td//span[input]");
+        By checkboxInputBy1 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]//td//input");
+        By checkboxBy2 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]//td//span[input]");
+        By checkboxInputBy2 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]//td//input");
+        clickElement(checkboxBy1);
+        clickElement(checkboxBy2);
+        Assert.assertEquals(findElement(checkboxInputBy1).isSelected(), true);
+        Assert.assertEquals(findElement(checkboxInputBy2).isSelected(), true);
+        Assert.assertTrue(findElement(By.id("historyCompareBtn")).isEnabled());
+        clickElement(compareButtonBy);
+        findElement(By.className("cdk-overlay-pane"));
     }
 
     private void openAudit(String type, String name) {
