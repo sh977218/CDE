@@ -1,0 +1,30 @@
+.attachment {
+  display: flex;
+  flex-direction: column;
+
+  .boxed-div {
+    display: flex;
+    flex-direction: column;
+
+    div:nth-child(1) {
+      flex-direction: column;
+    }
+
+    div {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+
+      label {
+        font-weight: bold;
+        margin-right: 0.5rem;
+      }
+
+      div {
+        a {
+          display: flex
+        }
+      }
+    }
+  }
+}

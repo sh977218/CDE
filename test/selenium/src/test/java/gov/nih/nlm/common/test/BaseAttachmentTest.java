@@ -1,13 +1,13 @@
 package gov.nih.nlm.common.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 
 public class BaseAttachmentTest extends NlmCdeBaseTest {
 
     /**
-     *
      * @param index index from 0
      */
     protected void removeAttachmentByIndex(int index) {
@@ -34,6 +34,7 @@ public class BaseAttachmentTest extends NlmCdeBaseTest {
         goToAttachments();
         textPresent("Upload more files");
         clickElement(By.id("defaultCbLabel"));
+        Assert.assertTrue(findElement(By.id("defaultCbLabel")).isSelected());
         checkAlert("Saved");
     }
 

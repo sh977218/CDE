@@ -6,48 +6,68 @@
 </ng-container>
 
 <ng-template #displayAttachments>
-    <ng-container *ngFor="let attachment of elt.attachments; let i = index">
-        <div id="attachment_{{i}}" class="boxed-div">
-            <div>
-                <label>Filename:</label> <a id="attachment_file_url_{{i}}"
-                                            href="/server/system/data/{{attachment.fileid}}"
-                                            target="_blank">{{attachment.filename}}
-                <mat-icon>open_in_new</mat-icon>
-            </a>
-            </div>
-            <div>
-                <label>Default Image</label>:{{attachment.isDefault ? 'Yes' : 'N/A'}}
-            </div>
-            <div *ngIf="canEdit">
-                <mat-icon id="removeAttachment-{{i}}" class="fake-button" role="button" tabindex="0"
-                          title="Remove" (click)="removeAttachment.emit(i)">delete_outline
-                </mat-icon>
-                <button class="button small mL" (click)="copyUrl(attachment)">
-                    <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon>
-                    Copy URL
-                </button>
-                <label id="defaultCbLabel">
-                    <input type="checkbox" class="checkbox" [(ngModel)]="attachment.isDefault"
-                           (change)="setDefault.emit(i)"/>
-                    Should this image be displayed in search results?
-                </label>
-                <p>Uploaded by: {{attachment.uploadedBy?.username}}</p>
-            </div>
-            <div>
-                <label> Size</label>:
-                <ng-container *ngIf="attachment.filesize <= 1024*1024; else filesizeMB">
-                    {{attachment.filesize / 1024 | number:'1.0-1'}} kB
+    <div class="attachment">
+        <ng-container *ngFor="let attachment of elt.attachments; let i = index">
+            <div id="attachment_{{i}}" class="boxed-div">
+                <div>
+                    <label>Filename:</label>
+                    <div>
+                        <a id="attachment_file_url_{{i}}"
+                           href="/server/system/data/{{attachment.fileid}}"
+                           target="_blank">{{attachment.filename}}
+                            <mat-icon>open_in_new</mat-icon>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <label>Default Image: </label>
+                    <div>{{attachment.isDefault ? 'Yes' : 'N/A'}}</div>
+                </div>
+                <ng-container *ngIf="canEdit">
+                    <div>
+                        <label>
+                            Should this image be displayed in search results?
+                        </label>
+                        <div>
+                            <input type="checkbox" class="checkbox" [(ngModel)]="attachment.isDefault"
+                                   id="defaultCbLabel"
+                                   (change)="setDefault.emit(i)"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Uploaded by: </label>
+                        <div>
+                            {{attachment.uploadedBy?.username}}
+                        </div>
+                    </div>
+                    <div>
+                        <mat-icon id="removeAttachment-{{i}}" class="fake-button" role="button" tabindex="0"
+                                  title="Remove" (click)="removeAttachment.emit(i)">delete_outline
+                        </mat-icon>
+                        <button class="button small mL" (click)="copyUrl(attachment)">
+                            <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon>
+                            Copy URL
+                        </button>
+                    </div>
                 </ng-container>
-                <ng-template #filesizeMB>
-                    {{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB
-                </ng-template>
+                <div>
+                    <label>Size: </label>
+                    <div>
+                        <ng-container *ngIf="attachment.filesize <= 1024*1024; else filesizeMB">
+                            {{attachment.filesize / 1024 | number:'1.0-1'}} kB
+                        </ng-container>
+                        <ng-template #filesizeMB>
+                            {{attachment.filesize / 1024 / 1024 | number:'1.0-1'}} MB
+                        </ng-template>
+                    </div>
+                </div>
+                <div>
+                    <label>Uploaded date: </label>
+                    <div>{{attachment.uploadDate | date: 'MM/dd/yyyy'}}</div>
+                </div>
             </div>
-            <div>
-                <label>Uploaded date</label>:{{attachment.uploadDate | date: 'MM/dd/yyyy @ h:mma'}}
-            </div>
-        </div>
-
-    </ng-container>
+        </ng-container>
+    </div>
     <div *ngIf="canEdit">
         <label for="fileToUpload">
             <button class="button mT" (click)="openFileDialog()">

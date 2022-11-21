@@ -5,6 +5,7 @@ import { Attachment, Item } from 'shared/models.model';
 @Component({
     selector: 'cde-attachments[elt]',
     templateUrl: './attachments.component.html',
+    styleUrls: ['./attachments.component.scss'],
 })
 export class AttachmentsComponent {
     @Input() elt!: Item;
