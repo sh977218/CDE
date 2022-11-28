@@ -22,7 +22,6 @@ export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
     'SNOMED CT': '',
     SNOMEDCT: '',
 };
-const CONTINUE_TIMEOUT = 5000;
 const httpsAgent = new Agent({
     rejectUnauthorized: false,
 });
@@ -31,17 +30,9 @@ const ttys: Dictionary<string> = {
     NCI: 'PT',
     SNOMEDCT_US: 'PT',
 };
-let _TGT: Promise<string> | undefined; // ticket granting ticket, use until it produces a bad ticket
-let _getTicket: Promise<void> | undefined // use up ticket before getting another one, lock network timeout protected
-
-setInterval(async () => {
-    _TGT = undefined;
-    await getTGT().catch(() => _TGT = undefined);
-}, 60 * 60 * 6 * 1000);
 
 function cleanupRejected(message: string) {
     return (error: Error) => {
-        _TGT = undefined;
         consoleLog(`uts TGT failed: ${message} ${error}`);
         throw error;
     };
@@ -52,110 +43,6 @@ function checkForVsacErrorPage(body: string): string {
         throw new Error('error response');
     }
     return body;
-}
-
-function getTGT(): Promise<string> {
-    if (_TGT) {
-        return _TGT;
-    }
-    if (!config.uts.apikey) {
-        return Promise.reject('apikey is missing, will need that to log in');
-    }
-    return _TGT = fetch(config.uts.tgtUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({apikey: config.uts.apikey})
-    })
-        .then(isStatus([201]))
-        .then(text)
-        .then(
-            tgtHtml => {
-                const re = RegExp(/api-key\/(TGT.*)" method.*/g);
-                const tgtUrlMatches = re.exec(tgtHtml);
-                return tgtUrlMatches ? tgtUrlMatches[1] : '';
-            },
-            cleanupRejected('get TGT ERROR')
-        );
-}
-
-function getTicket<T>(cb: (ticket: string) => Promise<T>): Promise<T> {
-    function fetchTicket() {
-        return getTGT()
-            .then(tgt => fetch(config.uts.tgtUrl + '/' + tgt, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({service: config.uts.service})
-            }));
-    }
-
-    return new Promise<T>((resolve) => {
-        const _getTicketCurrent = _getTicket;
-        _getTicket = new Promise<void>((resolveLock) => {
-            Promise.resolve(_getTicketCurrent).then(() => {
-                const ret = fetchTicket()
-                    .then(res => {
-                        if (res.status === 500) {
-                            consoleLog('uts getTicket crashed, redo');
-                            _TGT = undefined;
-                            return fetchTicket();
-                        }
-                        return res;
-                    })
-                    .then(isStatus([200]))
-                    .then(text)
-                    .then(checkForVsacErrorPage, cleanupRejected('get ticket ERROR'))
-                    .then(ticket => {
-                        if (!ticket) {
-                            throw 'ticket is missing';
-                        }
-                        return ticket;
-                    })
-                    .then(cb);
-
-                let fetching = true;
-                setTimeout(() => {
-                    if (fetching) {
-                        consoleLog('uts get ticket timeout, continuing with application');
-                        fetching = false;
-                        resolveLock();
-                    }
-                }, CONTINUE_TIMEOUT);
-                ret
-                    .catch(err => consoleLog('uts get ticket failed with ' + err.stack || err.message || err.publicMessage || err))
-                    .finally(() => {
-                        if (fetching) {
-                            fetching = false;
-                            resolveLock();
-                        }
-                    });
-
-                resolve(ret);
-            });
-        });
-    });
-}
-
-export function getValueSet(oid: string): Promise<string> {
-    function fetchValueSet(): Promise<string> {
-        return getTicket(ticket => fetch(`https://vsac.nlm.nih.gov/vsac/svs/RetrieveValueSet?id=${oid}&ticket=${ticket}`))
-            .then(isStatus([200, 404]))
-            .then(text)
-            .then(checkForVsacErrorPage, cleanupRejected('get vsac set ERROR'));
-    }
-
-    return fetchValueSet()
-        .then(xml => {
-            if (xml === 'Unauthorized') {
-                _TGT = undefined;
-                consoleLog('uts getValueSet unauthorized redo')
-                return fetchValueSet();
-            }
-            return xml;
-        });
 }
 
 export function searchUmls(term: string): Promise<string> {
@@ -211,7 +98,6 @@ export function searchBySystemAndCode(system: string, code: string): Promise<str
             .catch(cleanupRejected('reject searchBySystemAndCode'))
         .then(text)
         .then(checkForVsacErrorPage, (err: Error) => {
-            _TGT = undefined;
             respondError({details: 'searchBySystemAndCode ' + config.umls.wsHost + '/rest/content/current/source/'
                     + system + '/' + code + '/atoms?ticket=TTT'})(err);
             throw err;

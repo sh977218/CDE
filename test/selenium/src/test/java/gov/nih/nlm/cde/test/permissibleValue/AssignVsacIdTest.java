@@ -31,7 +31,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         textPresent("2186-5");
         newCdeVersion("Adding vsac Id");
 
-        textPresent("Latest");
+        textPresent("20121025");
         textPresent("2135-2");
         textPresent("CDCREC");
         textPresent("Hispanic or Latino", By.id("vsacTableBody"));

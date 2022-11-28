@@ -2,9 +2,9 @@ import { Router } from 'express';
 import { config } from 'server';
 import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    getAtomsFromUMLS, getSourcePT, getValueSet, searchUmls, umlsCuiFromSrc
+    getAtomsFromUMLS, getSourcePT, searchUmls, umlsCuiFromSrc
 } from 'server/uts/utsSvc';
-import { searchValueSet } from 'server/vsac/vsacSvc';
+import { getValueSet, searchValueSet } from 'server/vsac/vsacSvc';
 import { parseString } from 'xml2js';
 
 export function module() {
@@ -22,21 +22,9 @@ export function module() {
     router.get('/vsacBridge/:vsacId', nocacheMiddleware, (req, res) => {
         const vsacId = req.params.vsacId;
         getValueSet(vsacId).then(
-            xmlResp => {
-                if (!xmlResp) {
-                    return res.status(404).send();
-                }
-                parseString(xmlResp, {ignoreAttrs: false, mergeAttrs: true}, (err, jsonResp) => {
-                    /* istanbul ignore if */
-                    if (err) {
-                        res.status(400).send('Invalid XML from VSAC');
-                        return;
-                    }
-                    res.send(jsonResp);
-                });
-            },
+            resp => resp ? res.send(resp) : res.status(404).send(),
             err => res.status(400).send()
-        )
+        );
     });
 
     router.get('/searchUmls', loggedInMiddleware, (req, res) => {

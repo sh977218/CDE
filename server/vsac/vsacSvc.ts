@@ -1,8 +1,13 @@
 import fetch from 'node-fetch';
 import { config } from 'server';
 import { consoleLog } from 'server/log/dbLogger';
-import { json, text } from 'shared/fetch';
+import { handleErrors, isStatus, json, text } from 'shared/fetch';
+import { toBase64 } from 'shared/node/nodeUtil';
 
+type CodeSystem = {system: string, version: string, url: string};
+
+const codeSystems: CodeSystem[] = [];
+const fhirServer = 'https://cts.nlm.nih.gov/fhir';
 let jwt = '';
 
 function checkForVsacErrorPage(body: string): string {
@@ -10,6 +15,35 @@ function checkForVsacErrorPage(body: string): string {
         throw new Error('error response');
     }
     return body;
+}
+
+function getCodeSystems(): Promise<CodeSystem[]> {
+    if (codeSystems.length !== 0) {
+        return Promise.resolve(codeSystems);
+    }
+    return fetch(`${fhirServer}/metadata`)
+        .then<any>(json)
+        .then(metadata => {
+            codeSystems.length = 0;
+            metadata.extension.forEach((extension: any) => {
+                const codeSystem: Partial<CodeSystem> = {};
+                extension.extension.forEach((e: any) => {
+                    switch (e.url) {
+                        case 'name':
+                            codeSystem.system = e.valueString;
+                            break;
+                        case 'system':
+                            codeSystem.url = e.valueUri;
+                            break;
+                        case 'version':
+                            codeSystem.version = e.valueString;
+                            break;
+                    }
+                });
+                codeSystems.push(codeSystem as CodeSystem);
+            });
+            return codeSystems;
+        });
 }
 
 function getJwt(): Promise<string> {
@@ -28,6 +62,11 @@ function getJwt(): Promise<string> {
         jwt = bearer.substr(7);
         return jwt;
     })
+}
+
+function optionFhir(apiKey: string) {
+    const auth = toBase64(`apikey:${apiKey}`);
+    return {headers: {Authorization: `Basic ${auth}`}};
 }
 
 function optionJwt(jwt: string) {
@@ -50,6 +89,45 @@ function handleReject(message: string) {
         jwt = '';
         throw error;
     };
+}
+
+export function getValueSet(oid: string): Promise<VsacValueSetResponse | null> {
+    function fetchValueSet(): Promise<VsacValueSetResponse | null> {
+        return getCodeSystems()
+            .then(() => fetch(`${fhirServer}/ValueSet/${oid}`, optionFhir(config.uts.apikey)))
+            .then(isStatus([200, 404]))
+            .then<any>(json)
+            .then(response => {
+                if (!response?.compose?.include) {
+                    return null;
+                }
+                const concepts: VsacConcept[] = [];
+                response.compose.include.forEach((include: any) => {
+                    let system = '';
+                    let version = '';
+                    const codeSystem = codeSystems.filter(c => c.url === include.system)[0];
+                    if (codeSystem) {
+                        system = codeSystem.system;
+                        version = codeSystem.version;
+                        include.concept.forEach((concept: any) => {
+                            concepts.push({
+                                code: concept.code,
+                                displayName: concept.display,
+                                codeSystemName: system,
+                                codeSystemVersion: version,
+                            });
+                        });
+                    }
+                });
+                return {id: response.id, name: response.name, version: response.version, concepts};
+            }, handleReject('get vsac set ERROR'));
+    }
+
+    return fetchValueSet()
+        .catch(err => {
+            consoleLog(err);
+            return fetchValueSet();
+        });
 }
 
 export function searchValueSet(oid: string, term = '', page = '1'): Promise<string> {
