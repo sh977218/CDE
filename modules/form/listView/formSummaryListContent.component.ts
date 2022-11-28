@@ -16,9 +16,9 @@ export class FormSummaryListContentComponent implements SummaryComponent {
     defaultAttachmentsFilter = isDefault;
     module = 'form';
 
-    constructor() {}
-
     getStewards(): string {
-        return (this.elt.classification || []).map(cl => cl.stewardOrg.name).join(', ');
+        return (this.elt.classification || [])
+            .map(cl => cl.stewardOrg.name)
+            .join(', ');
     }
 }

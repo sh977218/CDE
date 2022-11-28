@@ -82,7 +82,7 @@ export class LoginService {
 
     openLogin() {
         this.federatedUrl = `${environment.federatedLogin}?service=${window.location.origin}/loginFederated`;
-        this.loginWindow = null;
+        this.loginWindow = window.open(this.federatedUrl);
         if (this.loginWindow) {
             window.loggedIn = () => {
                 this.ngZone.run(() => {

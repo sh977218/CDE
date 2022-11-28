@@ -6,6 +6,7 @@ import { FormSummaryListContentComponent } from 'form/listView/formSummaryListCo
 @Component({
     selector: 'cde-linked-forms',
     templateUrl: './linkedForms.component.html',
+    styleUrls: ['./linkedForms.component.scss'],
 })
 export class LinkedFormsComponent {
     @Input() elt!: Elt;
