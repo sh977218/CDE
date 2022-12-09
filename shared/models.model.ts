@@ -30,7 +30,6 @@ export interface Attachment {
     pendingApproval?: boolean;
     scanned?: boolean;
     uploadedBy?: {
-        userId?: ObjectId,
         username?: string,
     };
     uploadDate?: number;

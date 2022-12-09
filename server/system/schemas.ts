@@ -102,7 +102,7 @@ export const attachmentSchema = new Schema({
     uploadDate: Date,
     comment: StringType,
     uploadedBy: {
-        userId: Schema.Types.ObjectId, username: {type: StringType, index: true}
+        username: {type: StringType, index: true}
     },
     filesize: Number,
     isDefault: Boolean,

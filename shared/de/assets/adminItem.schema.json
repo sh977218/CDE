@@ -42,9 +42,6 @@
                 "title": "uploadedBy",
                 "type": "object",
                 "properties": {
-                  "userId": {
-                    "$ref": "#/definitions/objectId"
-                  },
                   "username": {
                     "type": "string"
                   }
@@ -115,9 +112,6 @@
           "title": "createdBy",
           "type": "object",
           "properties": {
-            "userId": {
-              "$ref": "#/definitions/objectId"
-            },
             "username": {
               "type": "string"
             }
@@ -332,9 +326,6 @@
           "title": "updatedBy",
           "type": "object",
           "properties": {
-            "userId": {
-              "$ref": "#/definitions/objectId"
-            },
             "username": {
               "type": "string"
             }

@@ -1022,9 +1022,6 @@ definitions:
       username:
         type: "string"
         example: "jdoe"
-      userId:
-        type: "string"
-        example: 'ObjectId("5711293936f82f59878e9c27")'
   Error:
     type: "object"
     properties:
