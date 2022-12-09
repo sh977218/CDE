@@ -20,8 +20,5 @@ export function stripBsonIdsElt<T extends Elt>(elt: T): T {
     delete elt._id;
     delete elt.updated;
     elt.history = [];
-    if (elt.updatedBy) {
-        delete elt.updatedBy.userId;
-    }
     return elt;
 }

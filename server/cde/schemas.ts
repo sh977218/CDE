@@ -5,7 +5,7 @@ import {
     datatypeExternallyDefinedSchema,
     datatypeNumberSchema, datatypeTextSchema, datatypeTimeSchema, datatypeValueListSchema, definitionSchema,
     derivationRuleSchema, designationSchema, eltLogSchema, idSchema, permissibleValueSchema, propertySchema,
-    referenceDocumentSchema, registrationStateSchema, sourcesNewSchema, sourceSchema
+    referenceDocumentSchema, registrationStateSchema, sourceSchema
 } from 'server/system/schemas';
 import { Classification } from 'shared/models.model';
 
@@ -55,11 +55,9 @@ export const deJson = {
     updated: {type: Date, index: true},
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
-        userId: Schema.Types.ObjectId,
         username: StringType,
     },
     updatedBy: {
-        userId: Schema.Types.ObjectId,
         username: StringType,
     },
     version: StringType,

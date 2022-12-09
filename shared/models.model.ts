@@ -729,7 +729,6 @@ export interface UserRef {
 }
 
 export interface UserRefSecondary {
-    userId: ObjectId;
     username: string;
 }
 
