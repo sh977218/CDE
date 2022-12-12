@@ -27,6 +27,10 @@ export function deepCopyElt(elt: Elt) {
     return eltCopy;
 }
 
+export function deOrForm(module: ModuleItem) {
+    return module === 'form' ? 'form' : 'de';
+}
+
 export function filterClassificationPerUser(elt: Elt, userOrgs: string[]) {
     elt.classification = elt.classification.filter(c => userOrgs.indexOf(c.stewardOrg.name) !== -1);
 }

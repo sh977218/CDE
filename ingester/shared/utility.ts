@@ -839,7 +839,6 @@ export function fixCreated(elt: CdeForm) {
 export function fixCreatedBy(elt: CdeForm) {
     elt.createdBy = {
         username: BATCHLOADER_USERNAME,
-        userId: ''
     };
 }
 

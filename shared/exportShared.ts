@@ -1,4 +1,4 @@
-import { Elt } from 'shared/models.model';
+import { ClassificationElement, Elt } from 'shared/models.model';
 
 export const exportHeader: {
     cdeHeader: string,
@@ -18,7 +18,20 @@ export function stripBsonIds<T>(t: T): T {
 
 export function stripBsonIdsElt<T extends Elt>(elt: T): T {
     delete elt._id;
-    delete elt.updated;
+    function classificationDeleteId(elements: ClassificationElement[]) {
+        elements.forEach(e => {
+            delete (e as any)._id;
+            if (e.elements) {
+                classificationDeleteId(e.elements);
+            }
+        });
+    }
+    elt.classification.forEach(c => {
+        if (c.elements) {
+            classificationDeleteId(c.elements)
+        }
+    });
     elt.history = [];
+    delete elt.updated;
     return elt;
 }

@@ -1,5 +1,12 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
-import { Cb1, Classification, ClassificationElement, Item, ObjectId } from 'shared/models.model';
+import {
+    Cb1,
+    Classification,
+    ClassificationElement,
+    ClassificationElementsContainer,
+    Item,
+    ObjectId
+} from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
 export const actions: {
@@ -28,7 +35,7 @@ export function addCategoriesToOrg(org: Organization, categories: string[]): voi
     addCategoriesToTree(findClassifOrCreate(org.classifications, categories[0]), slice(categories, 1));
 }
 
-export function addCategoriesToTree(tree: Classification | ClassificationElement, categories: string[]): void {
+export function addCategoriesToTree(tree: ClassificationElementsContainer, categories: string[]): void {
     let p = tree;
     categories.forEach(category => {
         if (!p.elements) {
@@ -49,8 +56,8 @@ export function arrangeClassification(item: Item, orgName: string): void {
 
 export function findLeaf(classification: Classification, categories: string[]): any {
     let notExist = false;
-    let leaf: Classification | ClassificationElement | undefined = classification;
-    let parent: Classification | ClassificationElement | undefined = classification;
+    let leaf: ClassificationElementsContainer | undefined = classification;
+    let parent: ClassificationElementsContainer | undefined = classification;
     categories.forEach((category, i) => {
         const found = find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
         if (i === categories.length - 2) {
@@ -96,8 +103,8 @@ export function deleteCategory(tree: Classification, fields: string[]): void {
     }
 }
 
-export function fetchLevel(tree: Classification, fields: string[]): Classification | ClassificationElement {
-    function findCategory(subTree: Classification | ClassificationElement, name: string) {
+export function fetchLevel(tree: Classification, fields: string[]): ClassificationElementsContainer {
+    function findCategory(subTree: ClassificationElementsContainer, name: string) {
         for (const element of subTree.elements) {
             if (element.name === name) {
                 if (!element.elements) {
@@ -110,7 +117,7 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
         return subTree.elements[subTree.elements.length - 1];
     }
 
-    let tempTree: Classification | ClassificationElement = tree;
+    let tempTree: ClassificationElementsContainer = tree;
     for (let j = 0; j < fields.length - 1; j++) {
         if (tempTree) {
             tempTree = findCategory(tempTree, fields[j]);
@@ -264,7 +271,7 @@ export function mergeOrgClassificationAggregate(c1: OrgClassificationAggregate[]
     return mergeElements(e1, e2);
 }
 
-function treeChildren(tree: Classification | ClassificationElement, path: string[], cb: Cb1<string[]>) {
+function treeChildren(tree: ClassificationElementsContainer, path: string[], cb: Cb1<string[]>) {
     tree.elements.forEach((element) => {
         const newPath = path.slice(0);
         newPath.push(element.name);

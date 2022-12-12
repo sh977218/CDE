@@ -59,7 +59,6 @@ export function addToItem<T extends Attachable>(db: AttachableDb<T>, item: T, fi
         filetype: file.mimetype,
         scanned,
         uploadedBy: {
-            userId: user._id,
             username: user.username
         },
         uploadDate: Date.now(),

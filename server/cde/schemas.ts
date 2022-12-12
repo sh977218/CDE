@@ -55,7 +55,7 @@ export const deJson = {
     updated: {type: Date, index: true},
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
-        username: StringType,
+        username: {type: StringType, required: true},
     },
     updatedBy: {
         username: StringType,

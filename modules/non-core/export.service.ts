@@ -217,7 +217,7 @@ export class ExportService {
 
         try {
             /* tslint:disable */
-            !!new Blob();
+            new Blob();
             /* tslint:enable */
         } catch (e) {
             return this.alertService.addAlert(
@@ -278,9 +278,11 @@ export class ExportService {
                                     oneElt.linkedForms['Preferred Standard'];
                                 delete oneElt.linkedForms['Preferred Standard'];
                             }
+                            const rootElement =
+                                module === 'cde' ? 'dataElement' : 'element';
                             zip.file(
                                 oneElt.tinyId + '.xml',
-                                JXON.jsToString({ element: oneElt })
+                                JXON.jsToString({ [rootElement]: oneElt })
                             );
                         });
                         zip.generateAsync({ type: 'blob' }).then(

@@ -153,7 +153,6 @@ export function create(elt: DataElement, user: User, callback: CbError1<DataElem
     wipeDatatype(elt);
     elt.created = Date.now();
     elt.createdBy = {
-        userId: user._id,
         username: user.username,
     };
     const newItem = new dataElementModel(elt);
@@ -254,7 +253,6 @@ function updateUser(elt: DataElement, user: User) {
     wipeDatatype(elt);
     elt.updated = new Date();
     elt.updatedBy = {
-        userId: user._id,
         username: user.username,
     };
 }

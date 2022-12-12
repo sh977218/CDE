@@ -69,7 +69,6 @@ export interface DataElementElastic extends DataElement { // all volatile
     linkedForms?: string;
     primaryDefinitionCopy?: string;
     primaryNameCopy: string;
-    primaryNameSuggest?: string;
     score: number;
     valueDomain: ValueDomain & {nbOfPVs: number};
 }

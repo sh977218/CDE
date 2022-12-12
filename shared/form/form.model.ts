@@ -161,7 +161,6 @@ export interface CdeFormElastic extends CdeForm { // all volatile
     numQuestions?: number;
     primaryDefinitionCopy?: string;
     primaryNameCopy: string;
-    primaryNameSuggest?: string;
     score: number;
 }
 

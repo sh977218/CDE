@@ -16,6 +16,7 @@ import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, respondError } from 'server/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
 import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { writeOutArrayStream } from 'shared/node/expressUtil';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
@@ -149,37 +150,26 @@ export function module() {
         });
     });
     router.post('/server/de/searchExport', (req, res) => {
-        const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
                 export(res: Response) {
-                    let firstElt = true;
-                    let typeSent = false;
-                    elasticSearchExport('cde', query, (err, elt) => {
+                    const [next, dataExists] = writeOutArrayStream(res);
+                    elasticSearchExport('cde', buildElasticSearchQuery(req.user, req.body), (err, elt) => {
                         if (err) {
-                            if (!typeSent) {
-                                res.status(403);
-                            }
-                            return res.send('ERROR with es search export');
+                            return res.status(403).send('ERROR with es search export');
                         }
-                        if (!typeSent) {
-                            res.type('application/json');
-                            res.write('[');
-                            typeSent = true;
-                        }
-                        if (elt) {
-                            if (!firstElt) {
-                                res.write(',');
-                            } else {
-                                storeQuery(req.body);
-                            }
-                            elt = stripBsonIdsElt(elt);
-                            elt = removeElasticFields(elt);
-                            res.write(JSON.stringify(elt));
-                            firstElt = false;
-                        } else {
-                            res.write(']');
-                            res.send();
+                        next(elt
+                            ? JSON.stringify(
+                                removeElasticFields(
+                                    stripBsonIdsElt(elt)
+                                )
+                            )
+                            : null
+                        );
+                    });
+                    dataExists.then(exists => {
+                        if (exists) {
+                            storeQuery(req.body);
                         }
                     });
                 }

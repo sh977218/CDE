@@ -206,7 +206,6 @@ export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {})
 export function create(elt: CdeForm, user: User, callback: CbError1<CdeFormDocument>) {
     elt.created = Date.now();
     elt.createdBy = {
-        userId: user._id,
         username: user.username
     };
     const newItem = new formModel(elt);
@@ -226,7 +225,6 @@ export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: str
 function updateUser(elt: CdeForm, user: User) {
     elt.updated = new Date();
     elt.updatedBy = {
-        userId: user._id,
         username: user.username
     };
 }

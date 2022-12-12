@@ -64,24 +64,36 @@ interface DbStream {
 
 export const esClient = new Client(config.elastic.options);
 
-export function removeElasticFields(elt: DataElementElastic): DataElementElastic;
-export function removeElasticFields(elt: CdeFormElastic): CdeFormElastic;
-export function removeElasticFields(elt: ItemElastic): Item {
-    delete elt.classificationBoost;
+export function removeElasticFields(eltElastic: DataElementElastic): DataElement;
+export function removeElasticFields(eltElastic: CdeFormElastic): CdeForm;
+export function removeElasticFields(eltElastic: ItemElastic): Item {
+    const elt: Partial<ItemElastic> = eltElastic;
     delete elt.flatClassifications;
-    delete (elt as any).primaryNameCopy;
-    delete elt.stewardOrgCopy;
-    delete elt.flatProperties;
-    if (elt.valueDomain) {
-        delete elt.valueDomain.nbOfPVs;
-    }
+    delete elt.highlight;
     delete elt.primaryDefinitionCopy;
-    delete elt.flatMeshSimpleTrees;
-    delete elt.flatMeshTrees;
-    delete elt.flatIds;
-    delete elt.usedByOrgs;
-    delete elt.registrationState.registrationStatusSortOrder;
-    return elt;
+    delete elt.primaryNameCopy;
+    delete elt.score;
+
+    delete elt.linkedForms; // de only
+
+    delete elt.numQuestions; // form only
+
+    delete elt.classificationBoost; // in the object to index but not in the elastic index
+    delete elt.flatIds; // in the object to index but not in the elastic index
+    delete elt.flatProperties; // in the object to index but not in the elastic index
+    if (elt.registrationState) {
+        delete elt.registrationState.registrationStatusSortOrder; // in the object to index but not in the elastic index
+    }
+    delete elt.stewardOrgCopy; // in the object to index but not in the elastic index
+    delete elt.usedByOrgs; // in the object to index but not in the elastic index
+    if (elt.valueDomain) {
+        delete elt.valueDomain.nbOfPVs; // in the object to index but not in the elastic index
+    }
+
+    delete elt.flatMeshSimpleTrees; // not currently used
+    delete elt.flatMeshTrees; // not currently used
+
+    return elt as Item;
 }
 
 function daoMap(key: 'cde' | 'form' | 'board' | 'cdeSuggest' | 'formSuggest'): DbQuery {

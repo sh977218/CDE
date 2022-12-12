@@ -3,8 +3,18 @@ import { dataElementModel } from 'server/cde/mongo-cde';
 import { handleNotFound, handleError } from 'server/errorHandler';
 import { formModel } from 'server/form/mongo-form';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
-import { orgAdmins as userOrgAdmins, orgCurators as userOrgCurators,  orgEditors as userOrgEditors, userById, userByName } from 'server/user/userDb';
+import {
+    orgAdmins as userOrgAdmins,
+    orgCurators as userOrgCurators,
+    orgEditors as userOrgEditors,
+    userById,
+    userByName
+} from 'server/user/userDb';
 import { concat } from 'shared/array';
+import {
+    OrgManageAddRequestHandler,
+    OrgManageRemoveRequestHandler
+} from 'shared/boundaryInterfaces/API/orgManagement';
 import { User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
@@ -80,7 +90,7 @@ export function orgEditors(req: Request, res: Response) {
     }));
 }
 
-export function addOrgAdmin(req: Request, res: Response) {
+export const addOrgAdmin: OrgManageAddRequestHandler = (req, res) => {
     userByName(req.body.username, handleNotFound({req, res}, user => {
         if (user.orgAdmin.indexOf(req.body.org) === -1) {
             user.orgAdmin.push(req.body.org);
@@ -89,18 +99,18 @@ export function addOrgAdmin(req: Request, res: Response) {
             res.send();
         }));
     }));
-}
+};
 
-export function removeOrgAdmin(req: Request, res: Response) {
+export const removeOrgAdmin: OrgManageRemoveRequestHandler = (req, res) => {
     userById(req.body.userId, handleNotFound({req, res}, user => {
         user.orgAdmin = user.orgAdmin.filter(a => a !== req.body.org);
         user.save(handleError({req, res}, () => {
             res.send();
         }));
     }));
-}
+};
 
-export function addOrgCurator(req: Request, res: Response) {
+export const addOrgCurator: OrgManageAddRequestHandler = (req, res) => {
     userByName(req.body.username, handleNotFound({req, res}, user => {
         if (user.orgCurator.indexOf(req.body.org) === -1) {
             user.orgCurator.push(req.body.org);
@@ -109,18 +119,18 @@ export function addOrgCurator(req: Request, res: Response) {
             res.send();
         }));
     }));
-}
+};
 
-export function removeOrgCurator(req: Request, res: Response) {
+export const removeOrgCurator: OrgManageRemoveRequestHandler = (req, res) => {
     userById(req.body.userId, handleNotFound({req, res}, user => {
         user.orgCurator = user.orgCurator.filter(a => a !== req.body.org);
         user.save(handleError({req, res}, () => {
             res.send();
         }));
     }));
-}
+};
 
-export function addOrgEditor(req: Request, res: Response) {
+export const addOrgEditor: OrgManageAddRequestHandler = (req, res) => {
     userByName(req.body.username, handleNotFound({req, res}, user => {
         if (user.orgEditor.indexOf(req.body.org) === -1) {
             user.orgEditor.push(req.body.org);
@@ -129,16 +139,16 @@ export function addOrgEditor(req: Request, res: Response) {
             res.send();
         }));
     }));
-}
+};
 
-export function removeOrgEditor(req: Request, res: Response) {
+export const removeOrgEditor: OrgManageRemoveRequestHandler = (req, res) => {
     userById(req.body.userId, handleNotFound({req, res}, user => {
         user.orgEditor = user.orgEditor.filter(a => a !== req.body.org);
         user.save(handleError({req, res}, () => {
             res.send();
         }));
     }));
-}
+};
 
 export async function addNewOrg(newOrg: Organization) {
     if (newOrg.workingGroupOf) {

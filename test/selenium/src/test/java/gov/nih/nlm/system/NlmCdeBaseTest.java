@@ -1076,7 +1076,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void loginAs(String username, String password) {
-        if (driver.getCurrentUrl().equals("data:,")) {
+        if (driver.getCurrentUrl().equals("data:,")) { // starting page, blank
             driver.get(baseUrl + "/login");
         } else if (driver.findElements(By.id("login_link")).size() > 0) {
             openLogin();

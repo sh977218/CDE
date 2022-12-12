@@ -169,11 +169,9 @@ export const formJson = {
     updated: {type: Date, index: true},
     imported: {type: Date, description: 'Date last imported from source'},
     createdBy: {
-        userId: Schema.Types.ObjectId,
         username: StringType,
     },
     updatedBy: {
-        userId: Schema.Types.ObjectId,
         username: StringType,
     },
     version: StringType,

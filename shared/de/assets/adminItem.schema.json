@@ -39,13 +39,7 @@
                 "type": "string"
               },
               "uploadedBy": {
-                "title": "uploadedBy",
-                "type": "object",
-                "properties": {
-                  "username": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/definitions/UserRefOptional"
               },
               "filesize": {
                 "type": "number"
@@ -109,16 +103,7 @@
           "$ref": "#/definitions/date"
         },
         "createdBy": {
-          "title": "createdBy",
-          "type": "object",
-          "properties": {
-            "username": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "username"
-          ]
+          "$ref": "#/definitions/UserRef"
         },
         "elementType": {
           "type": "string",
@@ -323,13 +308,7 @@
           "$ref": "#/definitions/date"
         },
         "updatedBy": {
-          "title": "updatedBy",
-          "type": "object",
-          "properties": {
-            "username": {
-              "type": "string"
-            }
-          }
+          "$ref": "#/definitions/UserRefOptional"
         },
         "version": {
           "type": "string"
@@ -698,6 +677,25 @@
       "required": [
         "sourceName"
       ]
+    },
+    "UserRef": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "username"
+      ]
+    },
+    "UserRefOptional": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
     }
   }
 }

@@ -52,6 +52,7 @@ import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { CbErr1 } from 'shared/models.model';
 import { getEnvironmentHost } from 'shared/node/env';
+import { writeOutArrayStream } from 'shared/node/expressUtil';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
 const canEditMiddlewareForm = canEditMiddleware(dbPlugins.form);
@@ -233,26 +234,19 @@ export function module() {
             );
     });
     router.post('/server/form/searchExport', (req, res) => {
-        const query = buildElasticSearchQuery(req.user, req.body);
         const exporters = {
             json: {
                 export(res: Response) {
-                    let firstElt = true;
-                    res.type('application/json');
-                    res.write('[');
-                    elasticSearchExport('form', query, handleError({req, res}, (elt) => {
-                        if (elt) {
-                            if (!firstElt) {
-                                res.write(',');
-                            }
-                            elt = stripBsonIdsElt(elt);
-                            elt = removeElasticFields(elt);
-                            res.write(JSON.stringify(elt));
-                            firstElt = false;
-                        } else {
-                            res.write(']');
-                            res.send();
-                        }
+                    const [next] = writeOutArrayStream(res);
+                    elasticSearchExport('form', buildElasticSearchQuery(req.user, req.body), handleError({req, res}, (elt) => {
+                        next(elt
+                            ? JSON.stringify(
+                                removeElasticFields(
+                                    stripBsonIdsElt(elt)
+                                )
+                            )
+                            : null
+                        );
                     }));
                 }
             }

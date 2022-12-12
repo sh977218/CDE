@@ -3,6 +3,7 @@ import { forwardRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement } from 'shared/de/dataElement.model';
+import { deOrForm } from 'shared/elt/elt';
 import { CdeForm } from 'shared/form/form.model';
 import {
     ItemElastic,
@@ -147,22 +148,21 @@ export class ElasticService implements OnDestroy {
         type: 'cde' | 'form',
         cb: CbErr1<ItemElastic[] | void>
     ) {
-        let url = '/server/de/searchExport/';
-        if (type === 'form') {
-            url = '/server/form/searchExport/';
-        }
-        this.http.post<ItemElastic[]>(url, query).subscribe(
-            response => cb(undefined, response),
-            (err: HttpErrorResponse) => {
-                if (err.status === 503) {
+        this.http
+            .post<ItemElastic[]>(
+                `/server/${deOrForm(type)}/searchExport`,
+                query
+            )
+            .subscribe(
+                response => cb(undefined, response),
+                (err: HttpErrorResponse) => {
                     cb(
-                        'The server is busy processing similar request, please try again in a minute.'
+                        err.status === 503
+                            ? 'The server is busy processing similar request, please try again in a minute.'
+                            : 'An error occurred. This issue has been reported.'
                     );
-                } else {
-                    cb('An error occurred. This issue has been reported.');
                 }
-            }
-        );
+            );
     }
 
     loadSearchSettings() {
