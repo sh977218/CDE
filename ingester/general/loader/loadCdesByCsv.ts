@@ -1,7 +1,7 @@
 import * as XLSX from 'xlsx';
 import 'server/globals';
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { project5 } from 'ingester/createMigrationConnection';
+import { NHLBI_Connects_Organ_Support } from 'ingester/createMigrationConnection';
 import { mergeDefinitions, mergeDesignations, DEFAULT_LOADER_CONFIG } from 'ingester/general/shared/utility';
 import { formatRows, getCell } from 'shared/loader/utilities/utility';
 import { createForm } from 'ingester/general/form/form';
@@ -10,6 +10,7 @@ import { findOneCde, updateRawArtifact, updateCde, lastMigrationScript, imported
 import { parseClassification } from 'ingester/general/cde/ParseClassification';
 import { formModel } from 'server/form/mongo-form';
 import { addNewOrg } from 'server/orgManagement/orgSvc';
+import { orgByName } from 'server/orgManagement/orgDb';
 
 
 
@@ -132,13 +133,15 @@ async function runCDE(formattedRows: any[], formMap: any){
 
 
 async function run() {
-    const workbook = XLSX.readFile(project5);
+    const workbook = XLSX.readFile(NHLBI_Connects_Organ_Support);
     const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
-    const formattedRows = formatRows('Project5.csv', workBookRows, DEFAULT_LOADER_CONFIG.skipRows);
+    const formattedRows = formatRows('NHLBI_Organ_Support.csv', workBookRows, DEFAULT_LOADER_CONFIG.skipRows);
 
     const formMap = {
     };
-    await addNewOrg({ name: DEFAULT_LOADER_CONFIG.classificationOrgName });
+    if(!await orgByName(DEFAULT_LOADER_CONFIG.classificationOrgName)){
+        await addNewOrg({ name: DEFAULT_LOADER_CONFIG.classificationOrgName });
+    }
     await runCDE(formattedRows, formMap);
     // Skip doing forms for now
     // await runForm(formattedRows, formMap);
@@ -158,7 +161,7 @@ export async function runDataLoad(csvFile: any){
 
 
 run().then(() => {
-    console.log('Finished loadRADxByCsv.');
+    console.log('Finished loadCdesByCsv.');
     console.log(`newDeCount: ${newDeCount}.`);
     console.log(`existingDeCount: ${existingDeCount}.`);
     console.log(`newFormCount: ${newFormCount}.`);

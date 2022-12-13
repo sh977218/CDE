@@ -97,7 +97,7 @@ const CODE_SYSTEM_MAP: Record<string, PermissibleValueCodeSystem> = {
 export function parseCodeSystemName(key: string) {
     const mappedKey = CODE_SYSTEM_MAP[key];
     if (!mappedKey) {
-        return key as PermissibleValueCodeSystem;
+        return trim(key) as PermissibleValueCodeSystem;
     } else {
         return mappedKey;
     }

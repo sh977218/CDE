@@ -7,14 +7,15 @@ export function parseConcepts(row: any) {
     } = {dataElementConcept: []};
 
     const dataConcepts = getCell(row, 'originId').split('|').map(t => t.trim()).filter(t => t);
+    const origins = getCell(row, 'origin').split('|').map(t => t.trim()).filter(t => t);
 
     if(dataConcepts.length > 0){
-        dataConcepts.forEach((c) => {
-            const codeRegex = /\(([^)]+)\)/.exec(c);
+        dataConcepts.forEach((c, i) => {
+            const codeRegex = /\(([^)]+)\)+$/.exec(c);
             const name = c.replace(codeRegex[0], '').trim();
             concepts.dataElementConcept.push({
                 name,
-                origin: getCell(row, 'origin'),
+                origin: origins.length > 1 ? origins[i] : origins[0],
                 originId: codeRegex[1],
             });
         });

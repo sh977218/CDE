@@ -44,7 +44,7 @@ let SocialDeterminantsOfHealthXlsx = 'S:/MLB/CDE/NINR/BRICSNINRSocDetHealth_NLM_
 let RED_CAP_CSV = "S:/MLB/CDE/REDCap/RADxUPDev_DataDictionary_2020-12-30.csv";
 let radxExecutiveCommittee = 'S:/MLB/CDE/RADX/RADx_Exec_CDEs_2021-07-29_NLM-QA.csv';
 let project5 = 'S:/MLB/CDE/Project5/Project 5_Tier 1 CDE Submission _Extra Pipes removed.csv';
-
+let NHLBI_Connects_Organ_Support = 'S:/MLB/CDE/NHLBI/CDE-Governance Submission_NHLBI CONNECTS 2022-12-01.csv';
 if (hostname() === 'Peter-PC') {
     redCapZipFolder = 'e:/www.phenxtoolkit.org/toolkit_content/redcap_zip/';
     sickleCellDataElementsXlsx = 'C:/Users/Peter/Downloads/SickleCellDataElements_20200305.xlsx';
@@ -64,5 +64,6 @@ export {
     DMDXlsx,
     vteDataElementsMappingCsv,
     radxExecutiveCommittee,
-    project5
+    project5,
+    NHLBI_Connects_Organ_Support
 };

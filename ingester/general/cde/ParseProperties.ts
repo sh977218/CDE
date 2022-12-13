@@ -16,7 +16,7 @@ export function parseProperties(row: any) {
     const sources = getCell(row, 'source').split('|').map(t => t.trim()).filter(t => t);
 
     if(!!sources){
-        properties.push({key: 'Project 5 Source', value: sources.join(', '), source: DEFAULT_LOADER_CONFIG.source});
+        properties.push({key: 'NHLBI Source', value: sources.join(', '), source: DEFAULT_LOADER_CONFIG.source});
     }
 
     return properties;

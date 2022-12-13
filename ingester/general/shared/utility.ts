@@ -5,11 +5,11 @@ const XLSX = require('xlsx');
 
 const DEFAULT_REGISTRATION_STATUS = 'Candidate';
 const DEFAULT_ADMINISTRATIVE_STATUS = 'Org Approve';
-const DEFAULT_CLASSIFICATION_ORG_NAME = 'Project 5';
-const DEFAULT_CLASSIFICATION_ARRAY: string[] = ['Tier 1'];
-const DEFAULT_STEWARD_ORG_NAME = 'Project 5';
-const DEFAULT_SOURCE = 'Project 5';
-const SKIP_ROWS = 4;
+const DEFAULT_CLASSIFICATION_ORG_NAME = 'NHLBI';
+const DEFAULT_CLASSIFICATION_ARRAY: string[] = ['CONNECTS', 'Organ Support'];
+const DEFAULT_STEWARD_ORG_NAME = 'NHLBI';
+const DEFAULT_SOURCE = 'NHLBI';
+const SKIP_ROWS = 2;
 const ENDORSED = true;
 
 const MAPPING_CSV_FILE = 'S:/MLB/CDE/RADX/NIH CDE-R Fields 2021-06-14.xlsx';
