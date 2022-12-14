@@ -4,8 +4,8 @@
         There are no properties.
     </div>
     <ng-container *ngFor="let prop of elt.properties; index as i">
-        <dl class="cde-property-lg">
-            <dt>
+        <dl>
+            <dt attr.itemprop="key_{{i}}">
                 <ng-container *ngIf="canEdit && prop.edit">Confirm Delete
                     <mat-icon id="confirmRemoveProperty-{{i}}" class="fake-button" role="button" tabindex="0"
                               title="Confirm Delete" (click)="removePropertyByIndex(i)">check
@@ -20,10 +20,8 @@
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
                                     (cb)="eltChange.emit()"></cde-sortable-array>
-                Key:
+                {{prop.key}}:
             </dt>
-            <dd attr.itemprop="key_{{i}}">{{prop.key}}</dd>
-            <dt>Value:</dt>
             <dd attr.itemprop="value_{{i}}">
                 <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"
                                       [(defFormat)]="prop.valueFormat" [enableTextTruncate]="false"
