@@ -122,7 +122,6 @@ function processCde(migrationCde, existingCde, processCdeCb) {
         newDe.objectClass = migrationCde.objectClass;
         newDe.property = migrationCde.property;
         newDe.valueDomain = migrationCde.valueDomain;
-        newDe.mappingSpecifications = migrationCde.mappingSpecifications;
         newDe.referenceDocuments = migrationCde.referenceDocuments;
         newDe.ids = migrationCde.ids;
         newDe.properties = updateShare.removeArrayOfSource(newDe.properties, migrationCde.source);

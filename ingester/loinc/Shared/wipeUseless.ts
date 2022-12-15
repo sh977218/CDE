@@ -17,7 +17,6 @@ export function wipeUseless(elt) {
     delete elt.naming;
     delete elt.classification;
     delete elt.attachments;
-    delete elt.mappingSpecifications;
     delete elt.derivationRules;
     delete elt.lastMigrationScript;
     delete elt.registrationState;

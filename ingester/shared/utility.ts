@@ -94,7 +94,6 @@ export function wipeBeforeCompare(obj: any) {
     delete obj.history;
     delete obj.classification;
     delete obj.attachments;
-    delete obj.mappingSpecifications;
     delete obj.derivationRules;
     delete obj.comments;
 

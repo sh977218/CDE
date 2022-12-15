@@ -13,66 +13,6 @@ export class Concepts {
     concepts: Concept[] = [];
 }
 
-export class DataElement extends Elt {
-    partOfBundles: string[] = []; // mutable by system batch only
-    dataElementConcept?: { // mutable
-        concepts?: Concept[],
-        conceptualDomain?: {
-            vsac?: {
-                id?: string,
-                name?: string,
-                version?: string
-            }
-        }
-    };
-    dataSets: DataSet[] = []; // mutable
-    derivationRules: DerivationRule[] = []; // mutable
-    elementType: 'cde' = 'cde';
-    forkOf?: string;
-    mappingSpecifications: { // mutable
-        content?: string,
-        script?: string,
-        spec_type?: string,
-    }[] = [];
-    objectClass: Concepts = new Concepts(); // mutable
-    property: Concepts = new Concepts(); // mutable
-    valueDomain: ValueDomain = valueDomain(); // mutable
-    views?: number;
-
-    static getEltUrl(elt: Elt) {
-        return '/deView?tinyId=' + elt.tinyId;
-    }
-
-    static validate(de: DataElement) {
-        Elt.validate(de);
-
-        if (!Array.isArray(de.derivationRules)) {
-            de.derivationRules = [];
-        }
-        fixDataElement(de);
-        if (de.valueDomain.datatype === 'Date') {
-            if (!de.valueDomain.datatypeDate) {
-                de.valueDomain.datatypeDate = new QuestionTypeDate();
-            }
-            if (!de.valueDomain.datatypeDate.precision
-                || QuestionTypeDate.PRECISION_ENUM.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
-                de.valueDomain.datatypeDate.precision = QuestionTypeDate.PRECISION_DEFAULT;
-            }
-        }
-    }
-}
-
-export interface DataElementElastic extends DataElement { // all volatile
-    [key: string]: any; // used for highlighting
-    flatClassifications?: string[];
-    highlight?: any;
-    linkedForms?: string;
-    primaryDefinitionCopy?: string;
-    primaryNameCopy: string;
-    score: number;
-    valueDomain: ValueDomain & {nbOfPVs: number};
-}
-
 type Precision = 'Year' | 'Month' | 'Day' | 'Hour' | 'Minute' | 'Second';
 export class QuestionTypeDate {
     precision?: Precision;
@@ -124,6 +64,60 @@ export class DataSet {
     notes?: string;
     source?: string;
     studyUri?: string;
+}
+
+export class DataElement extends Elt {
+    partOfBundles: string[] = []; // mutable by system batch only
+    dataElementConcept?: { // mutable
+        concepts?: Concept[],
+        conceptualDomain?: {
+            vsac?: {
+                id?: string,
+                name?: string,
+                version?: string
+            }
+        }
+    };
+    dataSets: DataSet[] = []; // mutable
+    derivationRules: DerivationRule[] = []; // mutable
+    elementType: 'cde' = 'cde';
+    objectClass: Concepts = new Concepts(); // mutable
+    property: Concepts = new Concepts(); // mutable
+    valueDomain: ValueDomain = valueDomain(); // mutable
+    views?: number;
+
+    static getEltUrl(elt: Elt) {
+        return '/deView?tinyId=' + elt.tinyId;
+    }
+
+    static validate(de: DataElement) {
+        Elt.validate(de);
+
+        if (!Array.isArray(de.derivationRules)) {
+            de.derivationRules = [];
+        }
+        fixDataElement(de);
+        if (de.valueDomain.datatype === 'Date') {
+            if (!de.valueDomain.datatypeDate) {
+                de.valueDomain.datatypeDate = new QuestionTypeDate();
+            }
+            if (!de.valueDomain.datatypeDate.precision
+                || QuestionTypeDate.PRECISION_ENUM.indexOf(de.valueDomain.datatypeDate.precision) === -1) {
+                de.valueDomain.datatypeDate.precision = QuestionTypeDate.PRECISION_DEFAULT;
+            }
+        }
+    }
+}
+
+export interface DataElementElastic extends DataElement { // all volatile
+    [key: string]: any; // used for highlighting
+    flatClassifications?: string[];
+    highlight?: any;
+    linkedForms?: string;
+    primaryDefinitionCopy?: string;
+    primaryNameCopy: string;
+    score: number;
+    valueDomain: ValueDomain & {nbOfPVs: number};
 }
 
 export type DataType =
