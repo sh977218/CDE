@@ -16,7 +16,7 @@ public class LinkedFormsTest extends NlmCdeBaseTest {
         textPresent("Medical History");
         goToRelatedContent();
         goToLinkedForm();
-        textPresent("Contains data elements related to the study participant's/ subject's health history. (Examples of CDEs included: review of symptoms and conditions in specific body systems (pulmonary, endocrine, musculoskeletal, etc.)");
+        textPresent("Contains data elements related to the study participant's/ subject's health history. (Examples of CDEs included: review of symptoms and conditions in specific body systems (pulmonary, endocrine, muscu [...]");
     }
 
 }

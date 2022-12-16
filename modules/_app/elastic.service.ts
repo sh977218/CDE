@@ -226,7 +226,19 @@ export class ElasticService implements OnDestroy {
     static highlightElt(cde: ItemElastic) {
         ElasticService.highlightOne('primaryNameCopy', cde);
         ElasticService.highlightOne('primaryDefinitionCopy', cde);
+        ElasticService.highlightPrimaryDefinitionCopy(cde);
         ElasticService.setMatchedBy(cde);
+    }
+
+    static highlightPrimaryDefinitionCopy(cde: ItemElastic) {
+        const primaryDefinitionCopyHighlight =
+            cde.highlight?.primaryDefinitionCopy;
+        if (!primaryDefinitionCopyHighlight) {
+            if (cde.primaryDefinitionCopy.length > 200) {
+                cde.primaryDefinitionCopy =
+                    cde.primaryDefinitionCopy.substring(0, 200) + ' [...]';
+            }
+        }
     }
 
     static highlightOne(field: string, cde: ItemElastic) {

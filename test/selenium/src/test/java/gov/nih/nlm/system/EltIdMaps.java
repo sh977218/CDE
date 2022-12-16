@@ -62,6 +62,7 @@ public class EltIdMaps {
         eltMap.put("Spinal column injury number", "7cDvUXR6SQe");
         eltMap.put("Patient Eligibility Ind-2", "obP4FhjUQTY");
         eltMap.put("Patient Gender Code", "bzGjaFPtQCs");
+        eltMap.put("Patient Health Questionnaire (PHQ-9) Last Two Weeks How Often Little Interest or Pleasure in Doing Things Score 4 Point Scale", "QJxhjQVkke");
         eltMap.put("Patient Newly Diagnosed INSS Stage 4 Neuroblastoma With Unfavorable Feature Eligibility Criteria Yes No Indicator", "FdhGNj4gd6e");
         eltMap.put("Patient Photograph Malignant Neoplasm Assessment Date", "UDUXvtj1RM2");
         eltMap.put("Patient Visual Change Chief Complaint Indicator", "q3bWgQN1wCq");
@@ -144,7 +145,6 @@ public class EltIdMaps {
         eltMap.put("Magnetic Resonance Spectroscopy (MRS)", "mkfzVkSBtl");
         eltMap.put("McGill Quality of Life Questionnaire (MQOL)", "Xk44kSSYe");
         eltMap.put("Neuro-QOL Bank v1.0 - LEx Fnct (Mobility)", "XJ0nN3OKIg");
-
 
         // Display Profile Tests
         eltMap.put("Matrix Display Profile Test", "QktaN3OFL1");
