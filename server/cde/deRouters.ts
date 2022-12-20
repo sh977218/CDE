@@ -28,6 +28,7 @@ import { isSearchEngine } from 'server/system/helper';
 import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import * as path from "path";
 
 const canEditMiddlewareDe = canEditMiddleware(dbPlugins.dataElement);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(dbPlugins.dataElement);
@@ -78,7 +79,13 @@ export function module() {
         }
     });
     require('mongoose-schema-jsonschema')(require('mongoose'));
-    router.get(['/schema/cde', '/schema/de', '/de/schema'], (req, res) => res.send((dataElementModel as any).jsonSchema()));
+    router.get(['/schema/cde', '/schema/de', '/de/schema'], (req, res) => {
+        if (req.query.type === 'xml') {
+            res.sendFile(path.join(process.cwd()) + '/shared/de/assets/dataElement.xsd');
+        } else {
+            res.send((dataElementModel as any).jsonSchema());
+        }
+    });
 
     router.get('/api/de/modifiedElements', modifiedElements);
     // Remove /de after June 1st 2020

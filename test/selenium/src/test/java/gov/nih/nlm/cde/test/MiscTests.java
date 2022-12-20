@@ -66,6 +66,8 @@ public class MiscTests extends NlmCdeBaseTest {
         Assert.assertTrue(get(baseUrl + "/de/schema").asString().contains("{\"title\":\"DataElement\""));
 
         Assert.assertTrue(get(baseUrl + "/schema/form").asString().contains("{\"title\":\"Form\""));
+
+        Assert.assertTrue(get(baseUrl + "/schema/cde?type=xml").asString().contains("<xs:schema"));
     }
 
     @Test
