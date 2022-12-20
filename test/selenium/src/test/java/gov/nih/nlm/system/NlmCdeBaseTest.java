@@ -768,6 +768,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             clickElement(By.id("search.submit"));
             textPresent("results. Sorted by relevance.");
         }
+
+        moveMouseToCoordinate(0, 0); // sometimes leaves the help hover menu open, submit button is near help menu
     }
 
     protected void searchElt(String name, String type) {

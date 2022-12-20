@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 public class ScrollHistoryTest extends NlmCdeBaseTest {
 
-    private void checkScroll(int value) {
+    private void checkSearchScroll(int value) {
         hangon(1);
         int scrollLocation = getCurrentYOffset();
         if (Math.abs(scrollLocation - value) > 10)
@@ -43,18 +43,18 @@ public class ScrollHistoryTest extends NlmCdeBaseTest {
         int painOffset = getCurrentYOffset();
         driver.navigate().refresh();
         findElement(By.id("linkToElt_0"));
-        checkScroll(painOffset);
+        checkSearchScroll(painOffset);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
         findElement(By.id("linkToElt_0"));
-        checkScroll(patientOffset);
+        checkSearchScroll(patientOffset);
 
         driver.navigate().back();
         driver.navigate().back();
         driver.navigate().back();
         findElement(By.id("linkToElt_0"));
-        checkScroll(appleOffset);
+        checkSearchScroll(appleOffset);
     }
 }
