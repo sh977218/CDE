@@ -572,6 +572,10 @@ export class PermissibleValueComponent {
                     this.runManualValidation();
                     this.initSrcOptions();
                     this.eltChange.emit();
+                    this.alert.addAlert(
+                        'success',
+                        'Permissible Values imported'
+                    );
                 } else {
                     this.alert.addAlert(
                         'danger',

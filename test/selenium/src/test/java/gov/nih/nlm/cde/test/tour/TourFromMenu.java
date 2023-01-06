@@ -32,7 +32,7 @@ public class TourFromMenu extends NlmCdeBaseTest {
             "Forms have similar administrative details to CDE. When rendering is allowed, a preview of the form will display in this tab. There are multiple form rending types including: skip logic, printable forms, tables, and hidden questions. More detail about these features can be found on the Display Profiles tab. The repository may not have permission to display all forms. If it does details of form questions and sections are displayed in this tab. Form support logic, selecting possible answer values, scores, repeating questions and many more features.",
             "Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, and RedCAP." };
 
-//    @Test
+    @Test(enabled=false)
     public void tourFromMenu() {
         goHome();
         goToHelp();

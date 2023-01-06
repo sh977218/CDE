@@ -23,14 +23,23 @@ public class ImportPvTest extends NlmCdeBaseTest {
         clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("CK8F0tHZ5wp");
         textNotPresent("Duplicate Permissible Value");
-        goToHistory();
-        selectHistoryAndCompare(1, 2);
+        checkAlert("Permissible Values imported");
 
         String[] ethnicity = {"American Indian or Alaska Native", "Asian", "White",
                 "Black or African American", "Not Reported", "Unknown",
-                "Native Hawaiian or other Pacific Islander"};
+                "Native Hawaiian or Other Pacific Islander"};
+
         for (int i = 0; i < ethnicity.length; i++) {
-            textPresent(ethnicity[i], By.xpath("(//*[@id='Value List']//*[contains(@class,'arrayObjAdd')])[" + ++i + "]"));
+            textPresent(ethnicity[i]);
+        }
+
+        goToHistory();
+        selectHistoryAndCompare(1, 2);
+        for (int i = 0; i < ethnicity.length; i++) {
+            findElement(By.xpath(
+                    "//*[@id='Value List']//*[contains(@class,'arrayObjAdd')]//*[contains(@class,'valueMeaningName')][contains(.,'"
+                            + ethnicity[i] + "')]"
+            ));
         }
     }
 

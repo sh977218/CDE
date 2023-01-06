@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 public class FormCurrentComment extends NlmCdeBaseTest {
 
-//    @Test()
+    @Test(enabled=false)
     public void formCurrentCommentTest() {
         String formName = "Activities of Daily Living and Gait";
         goToFormByName(formName);
