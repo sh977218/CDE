@@ -23,7 +23,6 @@ export function updateOrInsertImpl(elt: DataElement): void {
     riverFunction(elt, doc => {
         if (doc) {
             let doneCount = 0;
-            let doneError;
             const done = (err: Error | null) => {
                 if (err) {
                     logError({
@@ -37,7 +36,6 @@ export function updateOrInsertImpl(elt: DataElement): void {
                     return;
                 }
                 doneCount++;
-                doneError = err;
             };
             delete doc._id;
             esClient.index({

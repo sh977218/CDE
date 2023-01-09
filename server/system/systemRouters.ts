@@ -39,6 +39,7 @@ import { CbError, User } from 'shared/models.model';
 import { Readable } from 'stream';
 import { promisify } from 'util';
 import { flattenFormElement } from 'shared/form/fe';
+import { syncLinkedForms } from 'server/form/syncLinkedForms';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
@@ -160,6 +161,8 @@ export function module() {
             }
         }, process.env.NODE_ENV === 'dev-test' ? 0 : Math.floor(Math.random() * 3600000) + 1);
     }, null, true, 'America/New_York', undefined, true).start();
+
+    new CronJob('00 30 4 * * *', () => syncLinkedForms(), null, true, 'America/New_York').start();
 
     function fileCreatedToday(file: GridFSFile): boolean {
         const today = new Date();

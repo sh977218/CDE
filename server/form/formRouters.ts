@@ -1,4 +1,3 @@
-import { CronJob } from 'cron';
 import { RequestHandler, Response, Router } from 'express';
 import { check, checkSchema } from 'express-validator';
 import { toInteger, round } from 'lodash';
@@ -385,10 +384,6 @@ export function module() {
         syncLinkedForms();
     });
     router.get('/server/syncLinkedForms', (req, res) => res.send(syncLinkedFormsProgress));
-
-    /* tslint:disable */
-    new CronJob('00 30 4 * * *', () => syncLinkedForms(), null, true, 'America/New_York').start();
-    /* tslint:enable */
 
     return router;
 }

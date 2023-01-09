@@ -221,6 +221,7 @@ export const createFormIndexJson = {
             updated: {type: 'date'},
             imported: {type: 'date'},
             nihEndorsed: {type: 'boolean'},
+            noRenderAllowed: {type: 'boolean'},
             numQuestions: {type: 'integer'},
             cdeTinyIds: {type: 'keyword'}
         }

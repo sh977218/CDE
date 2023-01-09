@@ -22,7 +22,6 @@ export function updateOrInsertImpl(elt: CdeForm): void {
     riverFunction(elt, doc => {
         if (doc) {
             let doneCount = 0;
-            let doneError;
             const done = (err: Error | null) => {
                 /* istanbul ignore if */
                 if (err) {
@@ -37,7 +36,6 @@ export function updateOrInsertImpl(elt: CdeForm): void {
                     return;
                 }
                 doneCount++;
-                doneError = err;
             };
             delete doc._id;
             esClient.index({
