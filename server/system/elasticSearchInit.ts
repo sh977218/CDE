@@ -130,11 +130,11 @@ export const createIndexJson = {
                     fileid: {enabled: false},
                     filename: {enabled: false}
                 }
-            }
-            , history: {enabled: false}
-            , version: {type: 'keyword'}
-            , views: {type: 'integer'}
-            , linkedForms: {
+            },
+            history: {enabled: false},
+            version: {type: 'keyword'},
+            views: {type: 'integer'},
+            linkedForms: {
                 properties: {
                     Retired: {type: 'integer'},
                     Incomplete: {type: 'integer'},
@@ -152,7 +152,8 @@ export const createIndexJson = {
                     }
 
                 }
-            }
+            },
+            noRenderAllowed: {type: 'boolean'}
         }
     }, settings: {
         index: {
@@ -221,9 +222,10 @@ export const createFormIndexJson = {
             updated: {type: 'date'},
             imported: {type: 'date'},
             nihEndorsed: {type: 'boolean'},
-            noRenderAllowed: {type: 'boolean'},
             numQuestions: {type: 'integer'},
-            cdeTinyIds: {type: 'keyword'}
+            cdeTinyIds: {type: 'keyword'},
+            noRenderAllowed: {type: 'boolean'}
+
         }
     }, settings: {
         'index.mapping.total_fields.limit': 2000,

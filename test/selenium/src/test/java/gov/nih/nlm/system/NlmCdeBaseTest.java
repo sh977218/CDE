@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -75,7 +76,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     private String hubUrl;
     protected final ObjectMapper mapper = new ObjectMapper();
-    protected final TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+    protected final TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+    };
 
     private int videoRate = 300;
 
@@ -247,7 +249,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             // For Selenium 4 Grid
             String requestData = "{\"query\":\"{ grid {uri version} nodesInfo { nodes { uri version osInfo { name } } } }\"}";
             URL url = new URL(new URL(this.hubUrl), "/graphql");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setConnectTimeout(10000);
@@ -263,7 +265,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 System.out.println(IOUtils.toString(is, StandardCharsets.UTF_8));
             } else { // For Selenium 3 Grid
                 url = new URL(new URL(this.hubUrl), "/status");
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
@@ -282,7 +284,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             // For Selenium 4 Grid
             String requestData = "{\"query\":\"{ session (id: \\\"" + sessionId + "\\\") { uri } } \"}";
             URL url = new URL(new URL(this.hubUrl), "/graphql");
-            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setConnectTimeout(10000);
@@ -296,17 +298,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             }
             if (is != null) {
                 Map<String, Object> response = mapper.readValue(is, typeRef);
-                Map<?, ?> responseData = (Map<?, ?>)response.get("data");
-                Map<?, ?> responseSession = (Map<?, ?>)responseData.get("session");
-                nodeName = (String)responseSession.get("uri");
+                Map<?, ?> responseData = (Map<?, ?>) response.get("data");
+                Map<?, ?> responseSession = (Map<?, ?>) responseData.get("session");
+                nodeName = (String) responseSession.get("uri");
             } else { // For Selenium 3 Grid
                 url = new URL(new URL(this.hubUrl), "/grid/api/testsession?session=" + sessionId);
-                conn = (HttpURLConnection)url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(10000);
                 Map<String, Object> response = mapper.readValue(conn.getInputStream(), typeRef);
-                nodeName = (String)response.get("proxyId");
+                nodeName = (String) response.get("proxyId");
             }
             System.out.println("Test " + testName + " (session " + sessionId + ") uses Grid node " + nodeName);
         } catch (Exception e) {
@@ -395,7 +397,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void dtPropertyValueContains(String dtXpath, String title, String value) {
-        findElement(By.xpath(dtXpath + xpathContains(title) + xpathDtValue  + xpathContains(value)));
+        findElement(By.xpath(dtXpath + xpathContains(title) + xpathDtValue + xpathContains(value)));
     }
 
     protected void generalDetailsPropertyValueContains(String title, String value) {
@@ -1044,10 +1046,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void goToSearch(String type) {
         driver.get(baseUrl + "/" + type + "/search");
         isSearchWelcome();
-        if ("form".equals(type)) {
-            textPresent("PROMIS / Neuro-QOL");
-        }
-        textPresent("Cancer Therapy Evaluation Program");
+        textPresent("PROMIS / Neuro-QOL");
     }
 
     protected void isSearchWelcome() {
