@@ -95,7 +95,8 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
                             ]
                         }
                     }
-                ]
+                ],
+                must_not: []
             }
         },
         size: settings.resultPerPage ? (settings.resultPerPage > 100 ? 100 : settings.resultPerPage) : 20
@@ -138,6 +139,7 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
         }
 
     }
+
     // Filter by selected org
     if (settings.selectedOrg) {
         queryStuff.query.bool.must.push({term: {'classification.stewardOrg.name': settings.selectedOrg}});

@@ -118,6 +118,7 @@ export interface DataElementElastic extends DataElement { // all volatile
     primaryNameCopy: string;
     score: number;
     valueDomain: ValueDomain & {nbOfPVs: number};
+    noRenderAllowed : boolean;
 }
 
 export type DataType =

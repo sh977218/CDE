@@ -8,7 +8,7 @@ import { getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
 async function extractedSyncLinkedForms(cde: DataElement) {
-    const esResult: {body: ElasticQueryResponse<CdeFormElastic>} = await esClient.search({
+    const esResult: { body: ElasticQueryResponse<CdeFormElastic> } = await esClient.search({
         index: config.elastic.formIndex.name,
         q: cde.tinyId,
         size: 200
@@ -29,7 +29,8 @@ async function extractedSyncLinkedForms(cde: DataElement) {
         linkedForms.forms.push({
             tinyId: h._source.tinyId,
             registrationStatus: h._source.registrationState.registrationStatus,
-            primaryName: h._source.primaryNameCopy
+            primaryName: h._source.primaryNameCopy,
+            noRenderAllowed: h._source.noRenderAllowed
         });
         linkedForms[h._source.registrationState.registrationStatus]++;
     });
@@ -41,11 +42,13 @@ async function extractedSyncLinkedForms(cde: DataElement) {
     linkedForms.Incomplete += linkedForms.Candidate;
     linkedForms.Retired += linkedForms.Incomplete;
 
+    const noRenderAllowed  = linkedForms.forms.filter(f => f.noRenderAllowed).length > 0;
+
     esClient.update({
         index: config.elastic.index.name,
         type: '_doc',
         id: cde.tinyId,
-        body: {doc: {linkedForms}}
+        body: {doc: {linkedForms, noRenderAllowed }}
     }).catch(err => console.log(err));
     syncLinkedFormsProgress.done++;
     return Promise.resolve();
@@ -56,7 +59,8 @@ export function syncLinkedFormsByTinyId(tinyId: string): Promise<void> {
         if (cde) {
             return extractedSyncLinkedForms(cde);
         }
-    }, () => {});
+    }, () => {
+    });
 }
 
 export async function syncLinkedForms() {

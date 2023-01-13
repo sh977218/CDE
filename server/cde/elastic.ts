@@ -9,6 +9,7 @@ import { CbError1, SearchResponseAggregationDe, User } from 'shared/models.model
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { copyShallow } from 'shared/util';
+import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 export function updateOrInsert(elt: DataElement): DataElement {
     updateOrInsertImpl(copyShallow(elt));
@@ -64,6 +65,11 @@ export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: C
         settings.selectedElementsAlt = [];
     }
     const query = buildElasticSearchQuery(user, settings);
+
+    if (!isOrgAuthority(user)) {
+        query.query.bool.must_not.push({term: {noRenderAllowed: true}})
+    }
+
     if ((query.from + query.size) > 10000) {
         return cb(new Error('page size exceeded'));
     }

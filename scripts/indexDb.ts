@@ -15,6 +15,9 @@ initEs(() => {
         syncLinkedFormsByTinyId('QJdxq1unyQl'),
         syncLinkedFormsByTinyId('mJR9Jd2JQx'),
         syncLinkedFormsByTinyId('Xyl_qyuhJ7e'),
+        syncLinkedFormsByTinyId('XJVu4kHHFg'),
+        syncLinkedFormsByTinyId('712ArJSHYl'),
+        syncLinkedFormsByTinyId('QktaN3OFL4'),
     ]).then(() => {
         console.log(`indexDb.ts finished successfully.`);
         process.exit(0);

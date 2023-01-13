@@ -162,6 +162,7 @@ export interface CdeFormElastic extends CdeForm { // all volatile
     primaryDefinitionCopy?: string;
     primaryNameCopy: string;
     score: number;
+    noRenderAllowed: boolean
 }
 
 export class DisplayProfile {

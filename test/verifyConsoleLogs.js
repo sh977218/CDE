@@ -21,11 +21,13 @@ let expectedContent = {
     cdeLiveCommentTest: '*',
     cdeTinyIdSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-        'Unable to get the Swagger UI URL from the server'
+        'Unable to get the Swagger UI URL from the server',
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
     ],
     cdeTinyIdVersionSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-        'Unable to get the Swagger UI URL from the server'
+        'Unable to get the Swagger UI URL from the server',
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
     ],
     cdeTruncatePlainPropertiesTest: '*', // ckeditor
     cdeTruncateRichPropertiesTest: '*', // ckeditor
@@ -58,11 +60,13 @@ let expectedContent = {
     ],
     formTinyIdSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-        'Unable to get the Swagger UI URL from the server'
+        'Unable to get the Swagger UI URL from the server',
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
     ],
     formTinyIdVersionSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
-        'Unable to get the Swagger UI URL from the server'
+        'Unable to get the Swagger UI URL from the server',
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
     ],
     formTruncateRichPropertiesTest: '*', // ckeditor
     importVsacValues: "with a status of 500",
