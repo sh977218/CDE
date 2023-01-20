@@ -1,8 +1,9 @@
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
+import { DataElementElastic, ValueDomainValueList } from 'shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic, FormElement, FormQuestion } from 'shared/form/form.model';
 import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
-import { CdeForm, FormElement, FormQuestion } from 'shared/form/form.model';
 
 const primaryNameSuggest = {
     type: 'text',
@@ -298,32 +299,34 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
             }
         }
 
-        const formQuestions: FormQuestion[] = [];
-
-        function findFormQuestions(fe: ItemElastic | FormElement) {
-            if (fe.formElements) {
-                fe.formElements.forEach((fee: FormElement) => {
+        function findFormQuestions(fe: ItemElastic | FormElement, formQuestions: FormQuestion[]): FormQuestion[] {
+            if ((fe as CdeFormElastic | FormElement).formElements) {
+                (fe as CdeFormElastic | FormElement).formElements.forEach((fee: FormElement) => {
                     if (fee.elementType === 'question') {
                         formQuestions.push(fee);
                     } else {
-                        findFormQuestions(fee);
+                        findFormQuestions(fee, formQuestions);
                     }
                 });
             }
+            return formQuestions;
         }
-
-        findFormQuestions(elt);
-
-        elt.numQuestions = formQuestions.length;
-        elt.cdeTinyIds = formQuestions.map(q => q.question.cde.tinyId);
 
         flattenClassification(elt);
-        if (elt.valueDomain && elt.valueDomain.permissibleValues) {
-            elt.valueDomain.nbOfPVs = elt.valueDomain.permissibleValues.length;
-            if (elt.valueDomain.permissibleValues.length > 20) {
-                elt.valueDomain.permissibleValues.length = 20;
+
+        const de = elt as DataElementElastic<ValueDomainValueList>;
+        if (de.valueDomain && (de.valueDomain.permissibleValues)) {
+            de.valueDomain.nbOfPVs = de.valueDomain.permissibleValues.length;
+            if (de.valueDomain.permissibleValues.length > 20) {
+                de.valueDomain.permissibleValues.length = 20;
             }
         }
+
+        const form = elt as CdeFormElastic;
+        const formQuestions = findFormQuestions(elt, []);
+        form.numQuestions = formQuestions.length;
+        form.cdeTinyIds = formQuestions.map(q => q.question.cde.tinyId);
+
         elt.flatClassifications = flatArray;
         elt.stewardOrgCopy = elt.stewardOrg;
         elt.steward = elt.stewardOrg.name;

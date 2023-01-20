@@ -58,6 +58,7 @@ import { orderedList, statusList } from 'shared/regStatusShared';
 import { noop, ownKeys } from 'shared/util';
 import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
+type ItemSuggest = any;
 type NamedCounts = { name: string; count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
 
@@ -155,7 +156,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     url = '/server/form/completion/';
                 }
                 this.http
-                    .post<ElasticQueryResponseHit<ItemElastic>[]>(
+                    .post<ElasticQueryResponseHit<ItemSuggest>[]>(
                         url + encodeURIComponent(term),
                         this.elasticService.buildElasticQuerySettings(
                             this.searchSettings

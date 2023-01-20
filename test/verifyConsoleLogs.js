@@ -84,6 +84,7 @@ let expectedContent = {
         'Failed to load resource: the server responded with a status of',
         'Board Not Found'
     ],
+    renderDisplayProfile: "*", // AccessGUIDID CORS ticket
     report: "*",
     resourcesPage: '*', // 'Content Security Policy', ckeditor
     searchPageSize: '*',

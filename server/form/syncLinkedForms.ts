@@ -2,7 +2,7 @@ import { config, dbPlugins } from 'server';
 import { esClient } from 'server/system/elastic';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { ElasticQueryResponse } from 'shared/models.model';
+import { CurationStatus, ElasticQueryResponse } from 'shared/models.model';
 import { getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
@@ -14,7 +14,16 @@ async function extractedSyncLinkedForms(cde: DataElement) {
         size: 200
     });
 
-    const linkedForms: any = {
+    const linkedForms: {
+        [key in CurationStatus]: number
+    } & {
+        forms: {
+            tinyId: string;
+            registrationStatus: CurationStatus;
+            primaryName: string;
+            noRenderAllowed?: boolean;
+        }[]
+    } = {
         Retired: 0,
         Incomplete: 0,
         Candidate: 0,

@@ -24,6 +24,8 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
     `
 
     // Search for the query term given by user
+    // ElasticSearch Reserved Characters(some are used by power users): + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
+    settings.searchTerm = settings.searchTerm?.replace(/(?<=[^\\])\//g, "\\/"); // escape /
     const hasSearchTerm = !!settings.searchTerm;
     // last resort, we sort.
 

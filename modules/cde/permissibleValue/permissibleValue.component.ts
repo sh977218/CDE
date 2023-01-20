@@ -91,7 +91,7 @@ const SOURCES: Record<PermissibleValueCodeSystem, Source> = {
 export class PermissibleValueComponent {
     @Input() canEdit!: boolean;
 
-    @Input() set elt(v: DataElement) {
+    @Input() set elt(v: DataElement<ValueDomainValueList>) {
         this._elt = v;
         fixDataElement(this.elt);
         if (this.userService.loggedIn()) {
@@ -106,11 +106,11 @@ export class PermissibleValueComponent {
         }
     }
 
-    get elt(): DataElement {
+    get elt(): DataElement<ValueDomainValueList> {
         return this._elt;
     }
 
-    _elt!: DataElement;
+    _elt!: DataElement<ValueDomainValueList>;
     @Output() eltChange = new EventEmitter();
     readonly dataTypeArray = DATA_TYPE_ARRAY;
     containsKnownSystem = false;
@@ -154,9 +154,7 @@ export class PermissibleValueComponent {
         if (this.isVsInPv(vsacValue)) {
             return;
         } else {
-            (
-                this.elt.valueDomain as ValueDomainValueList
-            ).permissibleValues.push({
+            this.elt.valueDomain.permissibleValues.push({
                 permissibleValue: vsacValue.displayName,
                 valueMeaningName: vsacValue.displayName,
                 valueMeaningCode: vsacValue.code,
@@ -176,9 +174,9 @@ export class PermissibleValueComponent {
     }
 
     dupCodesForSameSrc(src: PermissibleValueCodeSystem) {
-        const matchedPvs = (
-            this.elt.valueDomain as ValueDomainValueList
-        ).permissibleValues.filter(pv => pv.codeSystemName === src);
+        const matchedPvs = this.elt.valueDomain.permissibleValues.filter(
+            pv => pv.codeSystemName === src
+        );
         const source = this.SOURCES[src];
         if (src && source) {
             matchedPvs.forEach(pvObj => {
@@ -236,8 +234,7 @@ export class PermissibleValueComponent {
     }
 
     isVsInPv(vs: VsacValue) {
-        const pvs = (this.elt.valueDomain as ValueDomainValueList)
-            .permissibleValues;
+        const pvs = this.elt.valueDomain.permissibleValues;
         if (!pvs) {
             return false;
         }
@@ -314,7 +311,7 @@ export class PermissibleValueComponent {
         }
         const targetSource = this.SOURCES[src].source;
         mapSeries(
-            (this.elt.valueDomain as ValueDomainValueList).permissibleValues,
+            this.elt.valueDomain.permissibleValues,
             async (pv, i, pvs) => {
                 const code: string = pv.valueMeaningCode || '';
                 let source: string = '';
@@ -445,15 +442,12 @@ export class PermissibleValueComponent {
     }
 
     removeAllPermissibleValues() {
-        (this.elt.valueDomain as ValueDomainValueList).permissibleValues = [];
+        this.elt.valueDomain.permissibleValues = [];
         this.runManualValidation();
     }
 
     removePv(index: number) {
-        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.splice(
-            index,
-            1
-        );
+        this.elt.valueDomain.permissibleValues.splice(index, 1);
         this.runManualValidation();
         this.initSrcOptions();
         this.eltChange.emit();
@@ -484,9 +478,7 @@ export class PermissibleValueComponent {
     }
 
     validatePvWithVsac() {
-        const pvs: PermissibleValue[] = (
-            this.elt.valueDomain as ValueDomainValueList
-        ).permissibleValues;
+        const pvs: PermissibleValue[] = this.elt.valueDomain.permissibleValues;
         if (!pvs) {
             return;
         }
@@ -517,9 +509,7 @@ export class PermissibleValueComponent {
     }
 
     async validatePVAgainstUMLS() {
-        const pvs: PermissibleValue[] = (
-            this.elt.valueDomain as ValueDomainValueList
-        ).permissibleValues;
+        const pvs: PermissibleValue[] = this.elt.valueDomain.permissibleValues;
         this.umlsValidationLoading = true;
         this.umlsValidationResults = await this.http
             .post('/server/de/umls', pvs, { responseType: 'text' })
@@ -540,9 +530,7 @@ export class PermissibleValueComponent {
 
     addNewPermissibleValue(newPermissibleValue) {
         this.removeSourceSelection();
-        (this.elt.valueDomain as ValueDomainValueList).permissibleValues.push(
-            newPermissibleValue
-        );
+        this.elt.valueDomain.permissibleValues.push(newPermissibleValue);
         this.runManualValidation();
         this.initSrcOptions();
         this.eltChange.emit();
@@ -564,11 +552,10 @@ export class PermissibleValueComponent {
         if (vd && vd.datatype) {
             if (vd.datatype === 'Value List') {
                 if (vd.permissibleValues.length > 0) {
-                    (
-                        this.elt.valueDomain as ValueDomainValueList
-                    ).permissibleValues = (
-                        this.elt.valueDomain as ValueDomainValueList
-                    ).permissibleValues.concat(vd.permissibleValues);
+                    this.elt.valueDomain.permissibleValues =
+                        this.elt.valueDomain.permissibleValues.concat(
+                            vd.permissibleValues
+                        );
                     this.runManualValidation();
                     this.initSrcOptions();
                     this.eltChange.emit();

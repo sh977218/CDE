@@ -28,7 +28,7 @@ export function status(req: Request, res: Response) {
     if (everythingOk()) {
         res.send('ALL SERVICES UP\n' + JSON.stringify(statusReport));
     } else {
-        res.send('ERROR: ' + JSON.stringify(statusReport));
+        res.status(400).send('ERROR: ' + JSON.stringify(statusReport));
     }
 }
 

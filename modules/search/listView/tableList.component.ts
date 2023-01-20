@@ -4,6 +4,7 @@ import { ElasticService } from '_app/elastic.service';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 import {
     CdeId,
     Designation,
@@ -101,6 +102,10 @@ type Row =
     | {
           css: 'linkedForms';
           values: { tinyId: string; name: string }[];
+      }
+    | {
+          css: 'numQuestions';
+          value: number;
       }
     | {
           css: string;
@@ -492,7 +497,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.numQuestions) {
                 row.push({
                     css: 'numQuestions',
-                    value: e.numQuestions,
+                    value: (e as CdeFormElastic).numQuestions,
                 });
             }
             if (tableSetup.source) {

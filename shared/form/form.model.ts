@@ -12,7 +12,7 @@ import {
 import {
     DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
     DatatypeContainerFile, DatatypeContainerGeo, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
-    DatatypeContainerValueList,
+    DatatypeContainerValueList, ElasticElement,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
@@ -154,15 +154,10 @@ export type CdeFormInputArray = CdeForm & {
     formInput: {[key: string]: QuestionValue}; // volatile, nativeRender and export
 };
 
-export interface CdeFormElastic extends CdeForm { // all volatile
-    [key: string]: any; // used for highlighting
-    flatClassifications?: string[];
-    highlight?: any;
+export interface CdeFormElastic extends CdeForm, ElasticElement { // all volatile
+    // [key: string]: any; // used for highlighting
+    cdeTinyIds: string[];
     numQuestions?: number;
-    primaryDefinitionCopy?: string;
-    primaryNameCopy: string;
-    score: number;
-    noRenderAllowed: boolean
 }
 
 export class DisplayProfile {

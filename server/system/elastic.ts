@@ -74,24 +74,26 @@ export function removeElasticFields(eltElastic: ItemElastic): Item {
     delete elt.primaryNameCopy;
     delete elt.score;
 
-    delete elt.linkedForms; // de only
-
-    delete elt.numQuestions; // form only
-
-    delete elt.classificationBoost; // in the object to index but not in the elastic index
-    delete elt.flatIds; // in the object to index but not in the elastic index
-    delete elt.flatProperties; // in the object to index but not in the elastic index
+    delete elt.classificationBoost;
+    delete elt.flatIds;
+    delete elt.flatProperties;
     if (elt.registrationState) {
-        delete elt.registrationState.registrationStatusSortOrder; // in the object to index but not in the elastic index
+        delete elt.registrationState.registrationStatusSortOrder;
     }
-    delete elt.stewardOrgCopy; // in the object to index but not in the elastic index
-    delete elt.usedByOrgs; // in the object to index but not in the elastic index
-    if (elt.valueDomain) {
-        delete elt.valueDomain.nbOfPVs; // in the object to index but not in the elastic index
+    delete elt.stewardOrgCopy;
+
+    // de only
+    delete (elt as DataElementElastic).linkedForms;
+    if ((elt as DataElementElastic).valueDomain) {
+        delete (elt as DataElementElastic).valueDomain.nbOfPVs;
     }
 
-    delete elt.flatMeshSimpleTrees; // not currently used
-    delete elt.flatMeshTrees; // not currently used
+    // form only
+    delete (elt as CdeFormElastic).numQuestions;
+
+    // delete elt.usedByOrgs; // in the object to index but not in the elastic index
+    // delete elt.flatMeshSimpleTrees; // not currently used
+    // delete elt.flatMeshTrees; // not currently used
 
     return elt as Item;
 }

@@ -78,7 +78,9 @@ export class ExportService {
                             }
                         );
                         if (forms && forms.length) {
-                            r.linkedForms = forms.map(f => f.tinyId).join(', ');
+                            (r as DataElementElastic).linkedForms = forms
+                                .map(f => f.tinyId)
+                                .join(', ');
                         }
                     }
                 }
@@ -113,7 +115,7 @@ export class ExportService {
                                 const foundCdes = result.filter(
                                     c => c.tinyId === matchId.tinyId
                                 );
-                                foundCdes.forEach(c => {
+                                foundCdes.forEach((c: DataElementElastic) => {
                                     if (c.linkedForms) {
                                         c.linkedForms =
                                             c.linkedForms +
@@ -272,9 +274,9 @@ export class ExportService {
                     },
                     xml: (result: ItemElastic[]) => {
                         const zip = new JSZip();
-                        result.forEach(oneElt => {
+                        result.forEach((oneElt: DataElementElastic) => {
                             if (oneElt.linkedForms) {
-                                oneElt.linkedForms.Preferred_Standard =
+                                (oneElt.linkedForms as any).Preferred_Standard =
                                     oneElt.linkedForms['Preferred Standard'];
                                 delete oneElt.linkedForms['Preferred Standard'];
                             }
