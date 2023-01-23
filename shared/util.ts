@@ -36,6 +36,12 @@ export function ownKeys<T extends {}>(obj?: T): (keyof T)[] {
     return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) as (keyof T)[] : [];
 }
 
+export function stringToArray<T extends string = string>(arrayString: string, delim = ';'): T[] {
+    return arrayString
+        ? (arrayString.split(delim) as T[])
+        : [];
+}
+
 export function stringCompare(a: string, b: string): number {
     return a > b ? 1 : (a < b ? -1 : 0);
 }

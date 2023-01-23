@@ -55,7 +55,7 @@ import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
-import { noop, ownKeys } from 'shared/util';
+import { noop, ownKeys, stringToArray } from 'shared/util';
 import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
 type ItemSuggest = any;
@@ -119,6 +119,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     searchedTerm?: string;
     searchTerm: string = '';
     searchTermAutoComplete = new EventEmitter<string>();
+    showLoadingScreen: boolean = false;
+    startingFromWelcomeScreen: boolean = false;
     took?: number;
     topics?: { [topic: string]: NamedCounts };
     topicsKeys: string[] = [];
@@ -196,27 +198,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params: Params) => {
             this.autocompleteSuggestions = undefined;
-            this.searchSettings.classification = params.classification;
-            if (!Array.isArray(params.classification)) {
-                this.searchSettings.classification = params.classification
-                    ? params.classification.split(';')
-                    : [];
-            }
-            this.searchSettings.classificationAlt = params.classificationAlt
-                ? params.classificationAlt.split(';')
-                : [];
-            this.searchSettings.datatypes = params.datatypes
-                ? (params.datatypes.split(';') as DataType[])
-                : [];
-            this.searchSettings.excludeOrgs = params.excludeOrgs
-                ? params.excludeOrgs.split(';')
-                : [];
+            this.searchSettings.classification = Array.isArray(
+                params.classification
+            )
+                ? params.classification
+                : stringToArray(params.classification);
+            this.searchSettings.classificationAlt = stringToArray(
+                params.classificationAlt
+            );
+            this.searchSettings.datatypes = stringToArray(params.datatypes);
+            this.searchSettings.excludeOrgs = stringToArray(params.excludeOrgs);
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
             this.searchSettings.page = parseInt(params.page, 10) || 1;
             this.searchSettings.q = this.searchTerm = params.q;
-            this.searchSettings.regStatuses = params.regStatuses
-                ? (params.regStatuses.split(';') as CurationStatus[])
-                : [];
+            this.searchSettings.regStatuses = stringToArray(params.regStatuses);
             this.searchSettings.selectedOrg = params.selectedOrg;
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
             this.altClassificationFilterMode = !!params.selectedOrgAlt;
@@ -585,8 +580,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.resultsView === 'table' && this.isSearched();
     }
 
-    isSearched() {
-        return (
+    isSearched(): boolean {
+        return !!(
             this.searchSettings.q ||
             this.searchSettings.nihEndorsed ||
             this.hasSelectedClassifications() ||
@@ -623,6 +618,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.lastQueryTimeStamp = timestamp;
         const lastQueryTimeStamp = this.lastQueryTimeStamp;
         this.searching = true;
+        const isSearched = this.isSearched();
+        this.showLoadingScreen = this.startingFromWelcomeScreen && isSearched;
+        this.startingFromWelcomeScreen = !isSearched;
         if (this.searchSettingsInput) {
             Object.assign(this.searchSettings, this.searchSettingsInput);
         }
@@ -828,7 +826,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     reset() {
         this.searchSettings = new SearchSettings();
-        this.aggregations = undefined;
         this.doSearch();
     }
 

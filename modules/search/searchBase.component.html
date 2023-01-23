@@ -54,7 +54,7 @@
     </form>
 </section>
 
-<section *ngIf="elts && aggregations else searchingLoader" class="searchSection"
+<section *ngIf="elts && aggregations && !(searching && showLoadingScreen) else searchingLoader" class="searchSection"
          [class.container]="!isFullScreen()"
          [class.container-fluid]="isFullScreen()"
          [class.searchFilterLayout]="filterMode">
