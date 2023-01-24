@@ -147,7 +147,7 @@ const getRealIp = (req: Request): string => {
 
 // check https
 app.use((req, res, next) => {
-    if (config.proxy && req.originalUrl !== '/status/cde') {
+    if (config.proxy && req.originalUrl !== '/server/system/status/cde') {
         if (req.protocol !== 'https') {
             if (req.query.gotohttps === '1') {
                 res.send('Missing X-Forward-Proto Header');
