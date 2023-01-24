@@ -14,6 +14,11 @@
     </div>
 
     <button class="button" (click)="syncLinkedForms()">Sync Linked Forms</button>
+    <form (ngSubmit)="syncLinkedFormWithCdeTinyId(cdeTinyIdInput.value)">
+        <mat-label>CDE TinyId: </mat-label>
+        <input mat-input #cdeTinyIdInput/>
+        <button class="button" type="submit">Sync Linked Forms with tinyId</button>
+    </form>
     <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
                       [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
     </mat-progress-bar>

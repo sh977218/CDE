@@ -57,13 +57,13 @@ async function extractedSyncLinkedForms(cde: DataElement) {
         index: config.elastic.index.name,
         type: '_doc',
         id: cde.tinyId,
-        body: {doc: {linkedForms, noRenderAllowed }}
+        body: {doc: {linkedForms, noRenderAllowed}}
     }).catch(err => console.log(err));
     syncLinkedFormsProgress.done++;
     return Promise.resolve();
 }
 
-export function syncLinkedFormsByTinyId(tinyId: string): Promise<void> {
+export function syncLinkedFormsByCdeTinyId(tinyId: string): Promise<void> {
     return dbPlugins.dataElement.byTinyId(tinyId).then(cde => {
         if (cde) {
             return extractedSyncLinkedForms(cde);

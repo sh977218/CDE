@@ -29,7 +29,7 @@ import {
     formModel,
     getAuditLog
 } from 'server/form/mongo-form';
-import { syncLinkedForms, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
+import { syncLinkedForms, syncLinkedFormsByCdeTinyId, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
@@ -237,7 +237,10 @@ export function module() {
             json: {
                 export(res: Response) {
                     const [next] = writeOutArrayStream(res);
-                    elasticSearchExport('form', buildElasticSearchQuery(req.user, req.body), handleError({req, res}, (elt) => {
+                    elasticSearchExport('form', buildElasticSearchQuery(req.user, req.body), handleError({
+                        req,
+                        res
+                    }, (elt) => {
                         next(elt
                             ? JSON.stringify(
                                 removeElasticFields(
@@ -266,9 +269,9 @@ export function module() {
 
     router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex.name, (err, resp) => {
+        completionSuggest(term, req.user, req.body, config.elastic.formSuggestIndex, (err, resp) => {
             if (err || !resp) {
-                throw new Error('/formCompletion failed');
+                throw new Error('/formCompletion failed: ' + JSON.stringify(err).substring(1, 200));
             }
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);
@@ -281,8 +284,8 @@ export function module() {
         if (isSearchEngine(req)) {
             dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version)
                 .then(cde => {
-                res.render('bot/formView', {elt: cde});
-            }, respondError({req, res}));
+                    res.render('bot/formView', {elt: cde});
+                }, respondError({req, res}));
         } else {
             respondHomeFull(req, res);
         }
@@ -378,6 +381,12 @@ export function module() {
         });
         res.send({errors, units});
     });
+
+    router.post('/server/syncLinkedFormWithTinyId', isOrgAuthorityMiddleware, async (req, res) => {
+        const tinyId = req.body.tinyId;
+        const result = await syncLinkedFormsByCdeTinyId(tinyId);
+        res.send({result});
+    })
 
     router.post('/server/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();

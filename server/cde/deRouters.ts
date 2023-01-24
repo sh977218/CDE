@@ -193,9 +193,9 @@ export function module() {
 
     router.post('/server/de/completion/:term', nocacheMiddleware, (req, res) => {
         const term = req.params.term;
-        completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex.name, (err, resp) => {
+        completionSuggest(term, req.user, req.body, config.elastic.cdeSuggestIndex, (err, resp) => {
             if (err || !resp) {
-                throw new Error('/cdeCompletion error');
+                throw new Error('/cdeCompletion error: ' + JSON.stringify(err).substring(1, 200));
             }
             resp.hits.hits.forEach(r => r._index = undefined);
             res.send(resp.hits.hits);

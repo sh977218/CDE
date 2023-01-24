@@ -326,7 +326,7 @@ export function initEs(cb: Cb = () => {
 }
 
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
-                                  indexName: string, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
+                                  index: ElasticIndex, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
     const allowedStatuses = getAllowedStatuses(user, settings);
     const suggestQuery = {
         query: {
@@ -346,7 +346,7 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
     };
 
     esClient.search({
-        index: indexName,
+        index: index.name,
         body: suggestQuery
     }, (error, response) => {
         if (error) {
