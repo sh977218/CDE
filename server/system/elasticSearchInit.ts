@@ -15,6 +15,7 @@ export const createSuggestIndexJson = {
     mappings: {
         properties: {
             nameSuggest: primaryNameSuggest,
+            noRenderAllowed: {type: 'boolean'},
             stewardOrg: {
                 properties: {
                     name: {type: 'keyword'}
@@ -251,6 +252,7 @@ export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
     toIndex.registrationState = _elt.registrationState;
     toIndex.stewardOrg = _elt.stewardOrg;
     toIndex.tinyId = _elt.tinyId;
+    toIndex.noRenderAllowed = !!_elt.noRenderAllowed;
 
     cb(toIndex);
     return;

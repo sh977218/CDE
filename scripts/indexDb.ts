@@ -18,6 +18,11 @@ initEs(() => {
         syncLinkedFormsByCdeTinyId('XJVu4kHHFg'),
         syncLinkedFormsByCdeTinyId('712ArJSHYl'),
         syncLinkedFormsByCdeTinyId('QktaN3OFL4'),
+        syncLinkedFormsByCdeTinyId('71dJFmQJyg'),
+        syncLinkedFormsByCdeTinyId('JtjaQb3RDVh'),
+        syncLinkedFormsByCdeTinyId('xcWdhjpJWsp'),
+        syncLinkedFormsByCdeTinyId('XkTjty_hyQe'),
+        syncLinkedFormsByCdeTinyId('GA7OQTKXHuR'),
     ]).then(() => {
         console.log(`indexDb.ts finished successfully.`);
         process.exit(0);
