@@ -42,11 +42,11 @@ export type MongoCondition = any;
 interface DbQuery {
     condition: MongoCondition;
     dao: {
-        name: 'board';
-        count: (query: any) => Promise<number>;
-        getStream: (query: MongoCondition) => Cursor<BoardDocument, QueryOptions<Board>>;
-    }
-    | {
+            name: 'board';
+            count: (query: any) => Promise<number>;
+            getStream: (query: MongoCondition) => Cursor<BoardDocument, QueryOptions<Board>>;
+        }
+        | {
         name: 'cde';
         count: (query: any) => Promise<number>;
         getStream: (query: MongoCondition) => Cursor<DataElementDocument, QueryOptions<DataElement>>;
@@ -166,7 +166,7 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
                     body: req,
                 })
                     .then(handleErrors)
-                    .then<{errors: boolean, err: string}>(json)
+                    .then<{ errors: boolean, err: string }>(json)
                     .then(body => {
                         if (body.errors) {
                             errorHandler(body.err);
@@ -328,7 +328,7 @@ export function initEs(cb: Cb = () => {
 export function completionSuggest(term: ElasticCondition, user: User, settings: SearchSettingsElastic,
                                   index: ElasticIndex, cb: CbError1<ElasticQueryResponse<ItemElastic> | void>) {
     const allowedStatuses = getAllowedStatuses(user, settings);
-    const suggestQuery = {
+    const suggestQuery: any = {
         query: {
             match: {
                 nameSuggest: {
@@ -344,6 +344,14 @@ export function completionSuggest(term: ElasticCondition, user: User, settings: 
             }
         }
     };
+
+    if (index.name === 'cdeSuggest') {
+        suggestQuery.post_filter.bool.filter.push({
+            must_not: {
+                term: {noRenderAllowed: true}
+            }
+        })
+    }
 
     esClient.search({
         index: index.name,

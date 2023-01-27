@@ -59,6 +59,12 @@ async function extractedSyncLinkedForms(cde: DataElement) {
         id: cde.tinyId,
         body: {doc: {linkedForms, noRenderAllowed}}
     }).catch(err => console.log(err));
+    esClient.update({
+        index: config.elastic.cdeSuggestIndex.name,
+        type: '_doc',
+        id: cde.tinyId,
+        body: {doc: {noRenderAllowed}}
+    }).catch(err => console.log(err));
     syncLinkedFormsProgress.done++;
     return Promise.resolve();
 }
