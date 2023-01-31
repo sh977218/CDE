@@ -66,7 +66,7 @@ export class DataSet {
     studyUri?: string;
 }
 
-export class DataElement<V extends ValueDomain = ValueDomain> extends Elt {
+export class DataElement extends Elt {
     partOfBundles: string[] = []; // mutable by system batch only
     dataElementConcept?: { // mutable
         concepts?: Concept[],
@@ -83,7 +83,7 @@ export class DataElement<V extends ValueDomain = ValueDomain> extends Elt {
     elementType: 'cde' = 'cde';
     objectClass: Concepts = new Concepts(); // mutable
     property: Concepts = new Concepts(); // mutable
-    valueDomain: V = valueDomain() as V; // mutable
+    valueDomain: ValueDomain = valueDomain(); // mutable
     views?: number;
 
     static getEltUrl(elt: Elt) {
@@ -126,10 +126,10 @@ export interface ElasticElement {
     }
 }
 
-export interface DataElementElastic<V extends ValueDomain = ValueDomain> extends DataElement<V>, ElasticElement { // all volatile
+export interface DataElementElastic extends DataElement, ElasticElement { // all volatile
     // [key: string]: any; // used for highlighting
     linkedForms?: string;
-    valueDomain: V & {nbOfPVs?: number};
+    valueDomain: ValueDomain & {nbOfPVs?: number};
 }
 
 export type DataType =

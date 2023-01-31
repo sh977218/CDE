@@ -284,7 +284,6 @@ export abstract class Elt {
     _id!: ObjectId;
     archived: boolean = false;
     nihEndorsed: boolean = false;
-    noRenderAllowed?: boolean = false;
     attachments: Attachment[] = [];
     changeNote?: string;
     checked?: boolean; // volatile, used by board compare side-by-side

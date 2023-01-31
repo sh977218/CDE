@@ -252,7 +252,7 @@ export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
     toIndex.registrationState = _elt.registrationState;
     toIndex.stewardOrg = _elt.stewardOrg;
     toIndex.tinyId = _elt.tinyId;
-    toIndex.noRenderAllowed = !!_elt.noRenderAllowed;
+    toIndex.noRenderAllowed = !!(_elt as CdeForm).noRenderAllowed;
 
     cb(toIndex);
     return;
@@ -316,8 +316,8 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
 
         flattenClassification(elt);
 
-        const de = elt as DataElementElastic<ValueDomainValueList>;
-        if (de.valueDomain && (de.valueDomain.permissibleValues)) {
+        const de = elt as DataElementElastic;
+        if (de.valueDomain && de.valueDomain.datatype === 'Value List' && de.valueDomain.permissibleValues) {
             de.valueDomain.nbOfPVs = de.valueDomain.permissibleValues.length;
             if (de.valueDomain.permissibleValues.length > 20) {
                 de.valueDomain.permissibleValues.length = 20;

@@ -97,33 +97,23 @@ export function projectItemForExport(
             .filter(n => n);
     }
     if (settings && (settings.permissibleValues || settings.pvCodeNames)) {
-        cde.valueDomainType = (
-            ele as DataElementElastic<ValueDomainValueList>
-        ).valueDomain.datatype;
+        cde.valueDomainType = (ele as DataElementElastic).valueDomain.datatype;
     }
+    const pvs = (
+        (ele as DataElementElastic).valueDomain as ValueDomainValueList
+    ).permissibleValues;
     if (settings && settings.permissibleValues) {
-        cde.permissibleValues = (
-            (ele as DataElementElastic<ValueDomainValueList>).valueDomain
-                .permissibleValues || []
-        )
+        cde.permissibleValues = (pvs || [])
             .slice(0, 50)
             .map((pv: PermissibleValue) => pv.permissibleValue);
     }
     if (settings && settings.pvCodeNames) {
-        cde.pvCodeNames = (
-            (ele as DataElementElastic<ValueDomainValueList>).valueDomain
-                .permissibleValues || []
-        )
+        cde.pvCodeNames = (pvs || [])
             .slice(0, 50)
             .map((pv: PermissibleValue) => pv.valueMeaningName);
     }
     if (settings && settings.nbOfPVs) {
-        cde.nbOfPVs =
-            ((ele as DataElementElastic<ValueDomainValueList>).valueDomain
-                .permissibleValues &&
-                (ele as DataElementElastic<ValueDomainValueList>).valueDomain
-                    .permissibleValues.length) ||
-            0; // jshint ignore:line
+        cde.nbOfPVs = pvs?.length || 0;
     }
     if (settings && settings.uom) {
         cde.uom = (ele as DataElementElastic).valueDomain.uom;

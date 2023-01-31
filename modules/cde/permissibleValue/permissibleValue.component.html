@@ -161,7 +161,7 @@
                    style="margin-right: 2px"
                    [(ngModel)]="SOURCES[source].selected"
                    [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
-                   (ngModelChange)="lookupAsSource(source)"> {{source}} Codes
+                   (ngModelChange)="lookupAsSource(elt.valueDomain, source)"> {{source}} Codes
             <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </label>
     </div>
@@ -227,7 +227,7 @@
                     </ng-container>
                     <ng-container *ngIf="canEdit">
                         <mat-icon id="pvRemove_{{i}}" class="fake-button" role="button" tabindex="0"
-                                  (click)="removePv(i)">delete_outline
+                                  (click)="removePv(elt.valueDomain, i)">delete_outline
                         </mat-icon>
                         <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                             (cb)="eltChange.emit()"></cde-sortable-array>
@@ -239,22 +239,22 @@
     <div>
         <ng-container *ngIf="canEdit">
             <button id="openAddPermissibleValueModelBtn" class="button light success"
-                    (click)="openNewPermissibleValueModal()">
+                    (click)="openNewPermissibleValueModal(elt.valueDomain)">
                 <mat-icon>add</mat-icon>
                 Add Permissible Value
             </button>
-            <button id="removeAllPermissibleValueBtn" class="button light fail" (click)="removeAllPermissibleValues()">
+            <button id="removeAllPermissibleValueBtn" class="button light fail" (click)="removeAllPermissibleValues(elt.valueDomain)">
                 <mat-icon>delete_outline</mat-icon>
                 Remove All Values
             </button>
             <button id="openImportPVModalBtn" class="button light success" title="Import All Values"
-                    (click)="openImportPermissibleValueModal()">
+                    (click)="openImportPermissibleValueModal(elt.valueDomain)">
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
             </button>
             <button *ngIf="userService.user?.siteAdmin" id="validateAgainstUMLS" class="button light secondary"
                     title="Validate Against UMLS"
-                    (click)="validatePVAgainstUMLS()">
+                    (click)="validatePVAgainstUMLS(elt.valueDomain)">
                 <mat-icon>check_circle_outline</mat-icon>
                 Validate Against UMLS
             </button>
@@ -333,12 +333,12 @@
                 <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
             </td>
             <td>
-                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(con)">add</mat-icon>
+                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(elt.valueDomain, con)">add</mat-icon>
             </td>
         </tr>
     </table>
     <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
-    <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button" (click)="addAllVsac()">
+    <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button" (click)="addAllVsac(elt.valueDomain)">
         <mat-icon id="addAllVsac">add</mat-icon>
         Import Missing Values
     </button>
