@@ -1,13 +1,18 @@
 <h2 class="sectionDetailSubtitle">Permissible Values</h2>
 <dl class="cde-property">
-    <dt>Value Type:</dt>
+    <dt>Data Type:</dt>
     <dd itemprop="datatype">
-        <mat-form-field class="w-100">
-            <mat-select [(value)]="elt.valueDomain.datatype" (selectionChange)="onDataTypeChange()"
-                        [disabled]="!canEdit" placeholder="Select data type">
-                <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
-            </mat-select>
-        </mat-form-field>
+        <ng-container *ngIf="canEdit;else dataTypeTemplate">
+            <mat-form-field class="w-100">
+                <mat-select [(value)]="elt.valueDomain.datatype" (selectionChange)="onDataTypeChange()"
+                            [disabled]="!canEdit" placeholder="Select data type">
+                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </ng-container>
+        <ng-template #dataTypeTemplate>
+            {{elt.valueDomain.datatype}}
+        </ng-template>
     </dd>
 
     <ng-container *ngIf="elt.valueDomain.definition">
@@ -17,17 +22,12 @@
         </dd>
     </ng-container>
 
-    <dt>Unit of Measure:</dt>
-    <dd itemprop="uom">
-        <cde-inline-edit [(model)]="elt.valueDomain.uom" (modelChange)="eltChange.emit();"
-                         [isAllowed]="canEdit"></cde-inline-edit>
-    </dd>
-
     <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
         <dt>Ids:</dt>
         <dd itemprop="identifiers">
             <div *ngFor="let id of elt.valueDomain.ids">
-                {{id.source}}: {{id.id}}<ng-container *ngIf="id.version">, version: {{id.version}}</ng-container>
+                {{id.source}}: {{id.id}}
+                <ng-container *ngIf="id.version">, version: {{id.version}}</ng-container>
             </div>
         </dd>
     </ng-container>
@@ -39,7 +39,8 @@
             <dt>Precision:</dt>
             <dd>
                 <mat-form-field class="w-50">
-                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDate.precision" (selectionChange)="eltChange.emit()"
+                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDate.precision"
+                                (selectionChange)="eltChange.emit()"
                                 [disabled]="!canEdit" required placeholder="Select Precision">
                         <mat-option value="Year">Year</mat-option>
                         <mat-option value="Month">Month</mat-option>
@@ -70,6 +71,11 @@
             <dd itemprop="datatypeNumberPrecision">
                 <cde-inline-edit [(model)]="elt.valueDomain.datatypeNumber.precision"
                                  (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+            </dd>
+            <dt>Unit of Measure:</dt>
+            <dd itemprop="uom">
+                <cde-inline-edit [(model)]="elt.valueDomain.uom" (modelChange)="eltChange.emit();"
+                                 [isAllowed]="canEdit"></cde-inline-edit>
             </dd>
         </ng-container>
         <ng-container *ngSwitchCase="'Text'">
@@ -116,7 +122,8 @@
             <dd>
                 <mat-form-field class="w-50">
                     <mat-label>Select system name</mat-label>
-                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system" (selectionChange)="eltChange.emit()"
+                    <mat-select [(ngModel)]="elt.valueDomain.datatypeDynamicCodeList.system"
+                                (selectionChange)="eltChange.emit()"
                                 [disabled]="!canEdit" required>
                         <mat-option value="VSAC">VSAC</mat-option>
                     </mat-select>
@@ -150,12 +157,12 @@
     <h3>Permissible Value</h3>
     <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
         <label *ngFor="let source of SOURCES_KEYS" class="hand-cursor" style="display: inline-block; margin-left: 50px">
-                <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"
-                       style="margin-right: 2px"
-                       [(ngModel)]="SOURCES[source].selected"
-                       [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
-                       (ngModelChange)="lookupAsSource(source)"> {{source}} Codes
-                <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
+            <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"
+                   style="margin-right: 2px"
+                   [(ngModel)]="SOURCES[source].selected"
+                   [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
+                   (ngModelChange)="lookupAsSource(source)"> {{source}} Codes
+            <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
         </label>
     </div>
     <ng-template #noPvs>
@@ -219,7 +226,9 @@
                         <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
                     </ng-container>
                     <ng-container *ngIf="canEdit">
-                        <mat-icon id="pvRemove_{{i}}" class="fake-button" role="button" tabindex="0" (click)="removePv(i)">delete_outline</mat-icon>
+                        <mat-icon id="pvRemove_{{i}}" class="fake-button" role="button" tabindex="0"
+                                  (click)="removePv(i)">delete_outline
+                        </mat-icon>
                         <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
                                             (cb)="eltChange.emit()"></cde-sortable-array>
                     </ng-container>
@@ -229,7 +238,8 @@
     </ng-container>
     <div>
         <ng-container *ngIf="canEdit">
-            <button id="openAddPermissibleValueModelBtn" class="button light success" (click)="openNewPermissibleValueModal()">
+            <button id="openAddPermissibleValueModelBtn" class="button light success"
+                    (click)="openNewPermissibleValueModal()">
                 <mat-icon>add</mat-icon>
                 Add Permissible Value
             </button>
@@ -242,7 +252,8 @@
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
             </button>
-            <button *ngIf="userService.user?.siteAdmin" id="validateAgainstUMLS" class="button light secondary" title="Validate Against UMLS"
+            <button *ngIf="userService.user?.siteAdmin" id="validateAgainstUMLS" class="button light secondary"
+                    title="Validate Against UMLS"
                     (click)="validatePVAgainstUMLS()">
                 <mat-icon>check_circle_outline</mat-icon>
                 Validate Against UMLS
@@ -288,16 +299,19 @@
         <div *ngIf="!editMode">
             <button *ngIf="canEdit" id="updateOIDBtn" class="button light" (click)="editMode=true">Update O.I.D</button>
             <button *ngIf="canEdit && vsacMappingExists()" id="removeVSButton" class="button light fail"
-                    (click)="removeVSMapping()">Remove Mapping</button>
+                    (click)="removeVSMapping()">Remove Mapping
+            </button>
         </div>
         <div *ngIf="editMode">
             <mat-form-field>
                 <input name="vsacId" [(ngModel)]="elt.dataElementConcept.conceptualDomain.vsac.id" matInput
                        placeholder="VSAC O.I.D"/>
                 <mat-icon matSuffix id="vsacIdCheck" title="Save" class="fake-button" role="button" tabindex="0"
-                          (click)="checkVsacId()">check</mat-icon>
+                          (click)="checkVsacId()">check
+                </mat-icon>
                 <mat-icon matSuffix title="Cancel" class="fake-button" role="button" tabindex="0"
-                          (click)="editMode = false">cancel</mat-icon>
+                          (click)="editMode = false">cancel
+                </mat-icon>
             </mat-form-field>
         </div>
     </div>

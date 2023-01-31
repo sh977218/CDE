@@ -1,0 +1,13 @@
+.cde-property-column {
+  display: flex;
+  flex-direction: column;
+
+  .flex-column {
+    flex-direction: column;
+  }
+
+  div {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

@@ -5,7 +5,7 @@
         </a>
         <span *ngIf="!linkSource">
             <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
-            <ng-template #NAvalue><span>N/A</span></ng-template>
+            <ng-template #NAvalue><span></span></ng-template>
         </span>
         <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
     </span>

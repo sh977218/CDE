@@ -21,16 +21,11 @@ public class CdeEditTest extends NlmCdeBaseTest {
         editDesignationByIndex(0, cdeDesignationChange, null);
         editDefinitionByIndex(0, cdeDefinitionChange, false);
 
-        goToPermissibleValues();
-        propertyEditText("uom", "myUom");
         newCdeVersion("Change note for change number 1");
 
         goToCdeByName(cdeName);
         textPresent(cdeDesignationChange);
         textPresent(cdeDefinitionChange);
-
-        goToPermissibleValues();
-        textPresent("myUom");
 
         goToIdentifiers();
         Assert.assertEquals(findElement(By.cssSelector("[itemprop='version']")).getText(), "1.1");
@@ -51,9 +46,6 @@ public class CdeEditTest extends NlmCdeBaseTest {
         clickElement(By.linkText("view the current version here"));
         textPresent(cdeDesignationChange);
         textPresent(cdeDefinitionChange);
-
-        goToPermissibleValues();
-        textPresent("myUom");
 
         // CDE Audit
         openAuditDataElement(cdeName);

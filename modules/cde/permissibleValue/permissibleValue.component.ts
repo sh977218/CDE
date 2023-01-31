@@ -346,8 +346,8 @@ export class PermissibleValueComponent {
                                     });
                                 } else {
                                     this.SOURCES[src].codes[code] = {
-                                        code: 'N/A',
-                                        meaning: 'N/A',
+                                        code: '',
+                                        meaning: '',
                                     };
                                 }
                             },
@@ -381,8 +381,8 @@ export class PermissibleValueComponent {
                                     };
                                 } else {
                                     this.SOURCES[src].codes[code] = {
-                                        code: 'N/A',
-                                        meaning: 'N/A',
+                                        code: '',
+                                        meaning: '',
                                     };
                                 }
                             },
@@ -426,15 +426,15 @@ export class PermissibleValueComponent {
                         }
                         if (!this.SOURCES[src].codes[code].code) {
                             this.SOURCES[src].codes[code] = {
-                                code: 'N/A',
-                                meaning: 'N/A',
+                                code: '',
+                                meaning: '',
                             };
                         }
                     }
                 } else {
                     this.SOURCES[src].codes[code] = {
-                        code: 'N/A',
-                        meaning: 'N/A',
+                        code: '',
+                        meaning: '',
                     };
                 }
             }

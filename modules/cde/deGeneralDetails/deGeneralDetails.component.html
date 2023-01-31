@@ -1,50 +1,57 @@
-<dl id="general-details" class="inline-dl">
-    <dt style="float: none">Question Text</dt>
-    <dd itemprop="name">
-        <ng-container *ngIf="getQuestionText(); else noQuestionText">
-            {{getQuestionText()}}
-        </ng-container>
-        <ng-template #noQuestionText>
-            <span style="font-style: italic">Submitter did not provide a Question Text</span>
-        </ng-template>
-    </dd>
-
-
-    <dt style="float: none">Definition</dt>
-    <dd itemprop="description">
-        <ng-container *ngIf="elt.definitions[0]; else noDefinition">
-            <span *ngIf="elt.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{elt.definitions[0].definition}}</span>
-            <ng-template #descriptionHtml>
-                <span [innerHtml]="elt.definitions[0].definition"></span>
+<dl id="general-details" class="cde-property-column inline-dl">
+    <div class="flex-column">
+        <dt>Question Text</dt>
+        <dd itemprop="name">
+            <ng-container *ngIf="getQuestionText(); else noQuestionText">
+                {{getQuestionText()}}
+            </ng-container>
+            <ng-template #noQuestionText>
+                <span style="font-style: italic">Submitter did not provide a Question Text</span>
             </ng-template>
-        </ng-container>
-        <ng-template #noDefinition>
-            <span style="font-style: italic">Submitter did not provide a Definition</span>
-        </ng-template>
-    </dd>
+        </dd>
+    </div>
+
+    <div class="flex-column">
+        <dt>Definition</dt>
+        <dd itemprop="description">
+            <ng-container *ngIf="elt.definitions[0]; else noDefinition">
+                <span *ngIf="elt.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{elt.definitions[0].definition}}</span>
+                <ng-template #descriptionHtml>
+                    <span [innerHtml]="elt.definitions[0].definition"></span>
+                </ng-template>
+            </ng-container>
+            <ng-template #noDefinition>
+                <span style="font-style: italic">Submitter did not provide a Definition</span>
+            </ng-template>
+        </dd>
+    </div>
 
 
-    <dt>Data Type:</dt>
-    <dd itemprop="datatype">{{elt.valueDomain.datatype}}</dd>
+    <div>
+        <dt>Data Type:</dt>
+        <dd itemprop="datatype">{{elt.valueDomain.datatype}}</dd>
+    </div>
 
 
+    <div>
+        <dt>Steward:</dt>
+        <dd id="stewardOrg" itemprop="steward">
+            <cde-inline-select-edit
+                    [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
+                    [isAllowed]="canEdit"
+                    [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                    [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
+                    cdeTooltipClass="cdeTooltipMultiline" cdeTooltipPosition="below">
+            </cde-inline-select-edit>
+        </dd>
+    </div>
 
-    <dt>Steward:</dt>
-    <dd id="stewardOrg" itemprop="steward">
-        <cde-inline-select-edit
-            [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
-            [isAllowed]="canEdit"
-            [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-            [cdeTooltip]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"
-            cdeTooltipClass="cdeTooltipMultiline" cdeTooltipPosition="below">
-        </cde-inline-select-edit>
-    </dd>
-
-
-    <dt>Origin:</dt>
-    <dd>
-    <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
-                     (modelChange)="eltChange.emit();">addNew
-    </cde-inline-edit>
-    </dd>
+    <div>
+        <dt>Origin:</dt>
+        <dd>
+            <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
+                             (modelChange)="eltChange.emit();">addNew
+            </cde-inline-edit>
+        </dd>
+    </div>
 </dl>
