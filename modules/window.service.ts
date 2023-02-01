@@ -1,10 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import {
-    ClassProvider,
-    FactoryProvider,
-    InjectionToken,
-    PLATFORM_ID,
-} from '@angular/core';
+import { ClassProvider, FactoryProvider, InjectionToken, PLATFORM_ID } from '@angular/core';
 
 /* Create a new injection token for injecting the window into a component. */
 export const WINDOW = new InjectionToken('WindowToken');
@@ -23,18 +18,15 @@ export class BrowserWindowRef extends WindowRef {
     }
 }
 
-/* Create an factory function that returns the native window object. */
-export function windowFactory(
-    browserWindowRef: BrowserWindowRef,
-    platformId: any
-): Window | {} {
+/* Create a factory function that returns the native window object. */
+export function windowFactory(browserWindowRef: BrowserWindowRef, platformId: any): Window | {} {
     if (isPlatformBrowser(platformId)) {
         return browserWindowRef.nativeWindow;
     }
     return {};
 }
 
-/* Create a injectable provider for the WindowRef token that uses the BrowserWindowRef class. */
+/* Create an injectable provider for the WindowRef token that uses the BrowserWindowRef class. */
 export const browserWindowProvider: ClassProvider = {
     provide: WindowRef,
     useClass: BrowserWindowRef,

@@ -1,12 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    ChangeDetectorRef,
-    Component,
-    HostListener,
-    OnDestroy,
-    OnInit,
-    TemplateRef,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,13 +12,7 @@ import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Dictionary, forEachOf } from 'async';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import {
-    areDerivationRulesSatisfied,
-    formCdes,
-    formQuestions,
-    repeatFe,
-    repeatFeQuestion,
-} from 'core/form/fe';
+import { areDerivationRulesSatisfied, formCdes, formQuestions, repeatFe, repeatFeQuestion } from 'core/form/fe';
 import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
 import { FormViewService } from 'form/formView/formView.service';
@@ -55,18 +42,8 @@ import {
     FormQuestionDraft,
     QuestionCdeValueList,
 } from 'shared/form/form.model';
-import {
-    addFormIds,
-    getLabel,
-    iterateFe,
-    iterateFes,
-    iterateFeSync,
-    noopSkipIterCb,
-} from 'shared/form/fe';
-import {
-    canEditCuratedItem,
-    hasPrivilegeForOrg,
-} from 'shared/security/authorizationShared';
+import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
+import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
 
@@ -171,16 +148,11 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 datatype: q.question.datatype,
                 identifiers: q.question.cde.ids,
                 ids: q.question.cde.ids,
-                datatypeText: (q.question as DatatypeContainerText)
-                    .datatypeText,
-                datatypeNumber: (q.question as DatatypeContainerNumber)
-                    .datatypeNumber,
-                datatypeDate: (q.question as DatatypeContainerDate)
-                    .datatypeDate,
-                datatypeTime: (q.question as DatatypeContainerTime)
-                    .datatypeTime,
-                permissibleValues: (q.question.cde as QuestionCdeValueList)
-                    .permissibleValues,
+                datatypeText: (q.question as DatatypeContainerText).datatypeText,
+                datatypeNumber: (q.question as DatatypeContainerNumber).datatypeNumber,
+                datatypeDate: (q.question as DatatypeContainerDate).datatypeDate,
+                datatypeTime: (q.question as DatatypeContainerTime).datatypeTime,
+                permissibleValues: (q.question.cde as QuestionCdeValueList).permissibleValues,
             },
             classification: elt.classification,
             ids: q.question.cde.ids,
@@ -207,10 +179,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
         return this._elt;
     }
 
-    eltLoad(
-        getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm,
-        cb: Cb1<CdeFormDraft> = noop
-    ) {
+    eltLoad(getForm: Observable<CdeForm> | Promise<CdeForm> | CdeForm, cb: Cb1<CdeFormDraft> = noop) {
         if (getForm instanceof Observable) {
             getForm.subscribe(
                 elt => this.eltLoaded(elt, cb),
@@ -279,32 +248,21 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     loadComments(form: CdeForm, cb = noop) {
         if (this.userService.canSeeComment()) {
-            this.http
-                .get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId)
-                .subscribe(
-                    res => {
-                        this.hasComments = res && res.length > 0;
-                        this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-                        cb();
-                    },
-                    err =>
-                        this.alert.httpErrorMessageAlert(
-                            err,
-                            'Error loading comments.'
-                        )
-                );
+            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(
+                res => {
+                    this.hasComments = res && res.length > 0;
+                    this.tabsCommented = res.map(c => c.linkedTab + '_tab');
+                    cb();
+                },
+                err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.')
+            );
         } else {
             cb();
         }
     }
 
     loadElt(cb: Cb1<CdeFormDraft> = noop) {
-        this.eltLoad(
-            this.formViewService.fetchEltForEditing(
-                this.route.snapshot.queryParams
-            ),
-            cb
-        );
+        this.eltLoad(this.formViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
     loadHighlightedTabs($event: string[]) {
@@ -312,17 +270,12 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     loadPublished(cb = noop) {
-        this.eltLoad(
-            this.formViewService.fetchPublished(
-                this.route.snapshot.queryParams
-            ),
-            cb
-        );
+        this.eltLoad(this.formViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 992; // size lg
+        this.isMobile = window.innerWidth < 768; // size md
     }
 
     openCopyElementModal(elt: CdeFormDraft) {
@@ -344,10 +297,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     openSaveModal() {
         this.validate(this.elt, () => {
             if (this.validationErrors.length) {
-                this.alert.addAlert(
-                    'danger',
-                    'Please fix all errors before publishing'
-                );
+                this.alert.addAlert('danger', 'Please fix all errors before publishing');
             } else {
                 const data = this.elt;
                 this.dialog
@@ -355,9 +305,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     .afterClosed()
                     .subscribe(result => {
                         if (result) {
-                            this.saveDraft(this.elt).then(() =>
-                                this.saveForm(this.elt)
-                            );
+                            this.saveDraft(this.elt).then(() => this.saveForm(this.elt));
                         }
                     });
             }
@@ -429,8 +377,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.draftSaving = undefined;
-                    this.savingText =
-                        'Cannot save this old version. Reload and redo.';
+                    this.savingText = 'Cannot save this old version. Reload and redo.';
                     this.alert.httpErrorMessageAlert(err);
                     throw err;
                 }
@@ -449,10 +396,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 undefined,
                 undefined,
                 (fe, cb) => {
-                    if (
-                        !fe.question.cde.tinyId &&
-                        (fe as FormQuestionDraft).question.cde.newCde
-                    ) {
+                    if (!fe.question.cde.tinyId && (fe as FormQuestionDraft).question.cde.newCde) {
                         newCdeQuestions.push(fe as FormQuestionDraft);
                     }
                     cb();
@@ -470,37 +414,22 @@ export class FormViewComponent implements OnInit, OnDestroy {
                                     tinyId: elt.tinyId,
                                     __v: elt.__v,
                                 };
-                                this.http
-                                    .post('/server/form/publish', publishData)
-                                    .subscribe(
-                                        res => {
-                                            if (res) {
-                                                this.hasDrafts = false;
-                                                this.loadElt(() =>
-                                                    this.alert.addAlert(
-                                                        'success',
-                                                        'Form saved.'
-                                                    )
-                                                );
-                                            }
-                                        },
-                                        err =>
-                                            this.alert.httpErrorMessageAlert(
-                                                err,
-                                                'Error publishing'
-                                            )
-                                    );
+                                this.http.post('/server/form/publish', publishData).subscribe(
+                                    res => {
+                                        if (res) {
+                                            this.hasDrafts = false;
+                                            this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
+                                        }
+                                    },
+                                    err => this.alert.httpErrorMessageAlert(err, 'Error publishing')
+                                );
                             };
                             if (newCdeQuestions.length) {
                                 this.saveDraft(elt).then(
                                     () => {
                                         publish();
                                     },
-                                    err =>
-                                        this.alert.httpErrorMessageAlert(
-                                            err,
-                                            'Error saving form'
-                                        )
+                                    err => this.alert.httpErrorMessageAlert(err, 'Error saving form')
                                 );
                             } else {
                                 publish();
@@ -551,16 +480,14 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 /* tslint:enable */
             }
             formData.append('id', elt._id);
-            this.http
-                .post<any>('/server/attachment/form/add', formData)
-                .subscribe(r => {
-                    if (r.message) {
-                        this.alert.addAlert('info', r);
-                    } else {
-                        this.eltLoadedFromOwnUpdate(r);
-                        this.alert.addAlert('success', 'Attachment added.');
-                    }
-                });
+            this.http.post<any>('/server/attachment/form/add', formData).subscribe(r => {
+                if (r.message) {
+                    this.alert.addAlert('info', r);
+                } else {
+                    this.eltLoadedFromOwnUpdate(r);
+                    this.alert.addAlert('success', 'Attachment added.');
+                }
+            });
         }
     }
 
@@ -580,12 +507,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validateDefinitions(elt: CdeFormDraft) {
         elt.definitions.forEach(def => {
             if (!def.definition || !def.definition.length) {
-                this.validationErrors.push(
-                    new LocatableError(
-                        'Definition may not be empty.',
-                        undefined
-                    )
-                );
+                this.validationErrors.push(new LocatableError('Definition may not be empty.', undefined));
             }
         });
     }
@@ -613,41 +535,26 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validateRepeat(elt: CdeFormDraft) {
         const validationErrors = this.validationErrors;
 
-        const findExistingErrors = (
-            parent: FormElementsContainer,
-            fe: FormElement
-        ) => {
+        const findExistingErrors = (parent: FormElementsContainer, fe: FormElement) => {
             if (fe.repeat) {
                 const repeat = repeatFe(fe);
                 switch (repeat) {
                     case '=':
-                        if (
-                            !getQuestionPriorByLabel(
-                                fe,
-                                fe,
-                                repeatFeQuestion(fe),
-                                this.elt
-                            )
-                        ) {
+                        if (!getQuestionPriorByLabel(fe, fe, repeatFeQuestion(fe), this.elt)) {
                             validationErrors.push(
                                 new LocatableError(
-                                    'Repeat Prior Question does not exist: "' +
-                                        getLabel(fe) +
-                                        '".',
+                                    'Repeat Prior Question does not exist: "' + getLabel(fe) + '".',
                                     fe.elementType + '_' + fe.feId
                                 )
                             );
                         }
                         break;
                     case 'F':
-                        const refQuestion =
-                            NativeRenderService.getFirstQuestion(fe);
+                        const refQuestion = NativeRenderService.getFirstQuestion(fe);
                         if (!refQuestion) {
                             validationErrors.push(
                                 new LocatableError(
-                                    'Repeat First Question does not exist: "' +
-                                        getLabel(fe) +
-                                        '".',
+                                    'Repeat First Question does not exist: "' + getLabel(fe) + '".',
                                     fe.elementType + '_' + fe.feId
                                 )
                             );
@@ -656,9 +563,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                         if (refQuestion.question.datatype !== 'Value List') {
                             validationErrors.push(
                                 new LocatableError(
-                                    'Repeat First Question does not a Value List: "' +
-                                        getLabel(fe) +
-                                        '".',
+                                    'Repeat First Question does not a Value List: "' + getLabel(fe) + '".',
                                     fe.elementType + '_' + fe.feId
                                 )
                             );
@@ -668,9 +573,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                         if (parseInt(fe.repeat, 10) < 1) {
                             validationErrors.push(
                                 new LocatableError(
-                                    'Repeat Number is below 1: "' +
-                                        getLabel(fe) +
-                                        '".',
+                                    'Repeat Number is below 1: "' + getLabel(fe) + '".',
                                     fe.elementType + '_' + fe.feId
                                 )
                             );
@@ -699,23 +602,11 @@ export class FormViewComponent implements OnInit, OnDestroy {
     validateSkipLogic(elt: CdeFormDraft) {
         const validationErrors = this.validationErrors;
 
-        function findExistingErrors(
-            parent: FormElementsContainer,
-            fe: FormElement
-        ) {
-            if (
-                fe.skipLogic &&
-                !SkipLogicValidateService.validateSkipLogic(
-                    parent,
-                    fe,
-                    fe.skipLogic
-                )
-            ) {
+        function findExistingErrors(parent: FormElementsContainer, fe: FormElement) {
+            if (fe.skipLogic && !SkipLogicValidateService.validateSkipLogic(parent, fe, fe.skipLogic)) {
                 validationErrors.push(
                     new LocatableError(
-                        'SkipLogic error on form element "' +
-                            getLabel(fe) +
-                            '".',
+                        'SkipLogic error on form element "' + getLabel(fe) + '".',
                         fe.elementType + '_' + fe.feId
                     )
                 );
@@ -738,9 +629,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     if (q.question.uomsValid.some(e => !!e)) {
                         this.validationErrors.push(
                             new LocatableError(
-                                'Unit of Measure error on question "' +
-                                    getLabel(q) +
-                                    '".',
+                                'Unit of Measure error on question "' + getLabel(q) + '".',
                                 q.elementType + '_' + q.feId
                             )
                         );
@@ -754,21 +643,15 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     viewChanges() {
         const draft = this.elt;
-        this.formViewService
-            .fetchPublished(this.route.snapshot.queryParams)
-            .then(
-                published => {
-                    this.dialog.open(CompareHistoryContentComponent, {
-                        width: '800px',
-                        data: { newer: draft, older: published },
-                    });
-                },
-                err =>
-                    this.alert.httpErrorMessageAlert(
-                        err,
-                        'Error loading view changes.'
-                    )
-            );
+        this.formViewService.fetchPublished(this.route.snapshot.queryParams).then(
+            published => {
+                this.dialog.open(CompareHistoryContentComponent, {
+                    width: '800px',
+                    data: { newer: draft, older: published },
+                });
+            },
+            err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.')
+        );
     }
 
     viewReady(): void {

@@ -114,15 +114,16 @@ If, for some reason, you don't want to use it (for example, if you just want to 
 Run in Bamboo and override variable "browser" with value "coverage"
 
 # Code Maintenance
-## Structure
+## Folder Structure
 * Business Rules and Models go into __shared/__
 * View Models and Angular-dependent code go into __modules/__
 * Database entities and Node-dependent code go into __server/__
 
-## Theming
-### Colors
-Update theme.scss.
-For custom angular colors extract the colors in common.scss by variable to theme.scss
+## API
+API routes are created in Expressing using path __/api/__.
+#### API Documentation via Swagger
+Update route information in __swagger.yaml__. Restart the server to read it in.
+Swagger-tools inserts its own route `/docs` using middleware and creates this page. The page is embedded using an __< iframe >__.
 
 ## Client
 ### CDER CSS Components (commons.scss)
@@ -138,6 +139,15 @@ For custom angular colors extract the colors in common.scss by variable to theme
   * Card
     * <div class="uswdsCard"
 * Included styles h1-h6, .hero, .note, .subtitle
+
+### Theming
+#### Colors
+Update theme.scss.
+For custom angular colors extract the colors in common.scss by variable to theme.scss
+
+## Single Sign-On (SSO)
+Client __App Component__ silently loads UTS into an invisible __< iframe >__ and communicates with it to get the JWT for UTS login.
+The configuration variable for the UTS messenger is __ssoServerReceiver__. 
 
 # CDE Ingesters
 For bulk loading new CDEs/Forms into the system a custom program called a loader must be written. To 

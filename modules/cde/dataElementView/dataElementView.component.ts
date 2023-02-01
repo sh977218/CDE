@@ -29,11 +29,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import { Cb1, Comment, Elt } from 'shared/models.model';
-import {
-    canEditCuratedItem,
-    hasPrivilegeForOrg,
-    isOrgAuthority,
-} from 'shared/security/authorizationShared';
+import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { WINDOW } from 'window.service';
 
@@ -114,10 +110,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         return this._elt;
     }
 
-    eltLoad(
-        getElt: Observable<DataElement> | Promise<DataElement> | DataElement,
-        cb: Cb1<DataElement> = noop
-    ) {
+    eltLoad(getElt: Observable<DataElement> | Promise<DataElement> | DataElement, cb: Cb1<DataElement> = noop) {
         if (getElt instanceof Observable) {
             getElt.subscribe(
                 elt => this.eltLoaded(elt, cb),
@@ -160,21 +153,14 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 if (
                     !this.elt ||
                     this.elt.archived ||
-                    (this.userService.user &&
-                        isOrgAuthority(this.userService.user))
+                    (this.userService.user && isOrgAuthority(this.userService.user))
                 ) {
                     return false;
                 }
                 return (
-                    hasPrivilegeForOrg(
-                        this.userService.user,
-                        'edit',
-                        this.elt.stewardOrg.name
-                    ) &&
-                    (this.elt.registrationState.registrationStatus ===
-                        'Standard' ||
-                        this.elt.registrationState.registrationStatus ===
-                            'Preferred Standard')
+                    hasPrivilegeForOrg(this.userService.user, 'edit', this.elt.stewardOrg.name) &&
+                    (this.elt.registrationState.registrationStatus === 'Standard' ||
+                        this.elt.registrationState.registrationStatus === 'Preferred Standard')
                 );
             })();
             cb(elt);
@@ -197,31 +183,20 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
 
     loadComments(de: DataElement, cb = noop) {
         if (this.userService.canSeeComment()) {
-            this.http
-                .get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId)
-                .subscribe(
-                    res => {
-                        this.comments = res;
-                        cb();
-                    },
-                    err =>
-                        this.alert.httpErrorMessageAlert(
-                            err,
-                            'Error loading comments.'
-                        )
-                );
+            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId).subscribe(
+                res => {
+                    this.comments = res;
+                    cb();
+                },
+                err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.')
+            );
         } else {
             cb();
         }
     }
 
     loadElt(cb: Cb1<DataElement> = noop) {
-        this.eltLoad(
-            this.deViewService.fetchEltForEditing(
-                this.route.snapshot.queryParams
-            ),
-            cb
-        );
+        this.eltLoad(this.deViewService.fetchEltForEditing(this.route.snapshot.queryParams), cb);
     }
 
     loadHighlightedTabs($event: string[]) {
@@ -229,23 +204,17 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     loadPublished(cb = noop) {
-        this.eltLoad(
-            this.deViewService.fetchPublished(this.route.snapshot.queryParams),
-            cb
-        );
+        this.eltLoad(this.deViewService.fetchPublished(this.route.snapshot.queryParams), cb);
     }
 
     @HostListener('window:resize', [])
     onResize() {
-        this.isMobile = window.innerWidth < 768; // size Md
+        this.isMobile = window.innerWidth < 768; // size md
     }
 
     openSaveModal() {
         if (this.validationErrors.length) {
-            this.alert.addAlert(
-                'danger',
-                'Please fix all errors before publishing'
-            );
+            this.alert.addAlert('danger', 'Please fix all errors before publishing');
         } else {
             const data = this.elt;
             this.dialog
@@ -253,9 +222,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 .afterClosed()
                 .subscribe(result => {
                     if (result) {
-                        this.saveDraft(this.elt).then(() =>
-                            this.saveDataElement(this.elt)
-                        );
+                        this.saveDraft(this.elt).then(() => this.saveDataElement(this.elt));
                     }
                 });
         }
@@ -311,21 +278,16 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 }
                 /* tslint:enable */
                 formData.append('id', elt._id);
-                this.http
-                    .post<any>('/server/attachment/cde/add', formData)
-                    .subscribe(r => {
-                        if (r.message) {
-                            this.alert.addAlert('info', r);
-                        } else {
-                            if (r) {
-                                this.eltLoadedFromOwnUpdate(r);
-                                this.alert.addAlert(
-                                    'success',
-                                    'Attachment added.'
-                                );
-                            }
+                this.http.post<any>('/server/attachment/cde/add', formData).subscribe(r => {
+                    if (r.message) {
+                        this.alert.addAlert('info', r);
+                    } else {
+                        if (r) {
+                            this.eltLoadedFromOwnUpdate(r);
+                            this.alert.addAlert('success', 'Attachment added.');
                         }
-                    });
+                    }
+                });
             }
         }
     }
@@ -375,8 +337,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 },
                 err => {
                     this.draftSaving = undefined;
-                    this.savingText =
-                        'Cannot save this old version. Reload and redo.';
+                    this.savingText = 'Cannot save this old version. Reload and redo.';
                     this.alert.httpErrorMessageAlert(err);
                     throw err;
                 }
@@ -402,12 +363,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 res => {
                     if (res) {
                         this.hasDrafts = false;
-                        this.loadElt(() =>
-                            this.alert.addAlert(
-                                'success',
-                                'Data Element saved.'
-                            )
-                        );
+                        this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
                     }
                 },
                 err => this.alert.httpErrorMessageAlert(err, 'Error publishing')
@@ -442,11 +398,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     data: { newer: draft, older: published },
                 });
             },
-            err =>
-                this.alert.httpErrorMessageAlert(
-                    err,
-                    'Error loading view changes.'
-                )
+            err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.')
         );
     }
 

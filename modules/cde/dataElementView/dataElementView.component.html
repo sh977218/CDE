@@ -2,7 +2,7 @@
     <mat-spinner style="margin: 0 auto"></mat-spinner>
 </div>
 
-<button class="noPrint forNotMdScreen slide-pane-button" title="Expand Page Navigation"
+<button *ngIf="!navDrawer.opened" class="noPrint forNotMdScreen slide-pane-button" title="Expand Page Navigation"
         (click)="navDrawer.open()"></button>
 
 <mat-sidenav-container>
@@ -16,7 +16,7 @@
             <aio-toc style="padding: 2rem 0 0 2rem"></aio-toc>
         </ng-template>
     </mat-sidenav>
-    <mat-sidenav-content style="margin-left: 240px">
+    <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '240px'">
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="end" style="max-width: 25%">
                 <div *ngIf="elt && userService.canViewComment">
