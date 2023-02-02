@@ -588,6 +588,8 @@ export class PermissibleValue {
     valueMeaningCode?: string;
     valueMeaningDefinition?: string;
     valueMeaningName?: string;
+    conceptId?: string;
+    conceptSource?: string;
 }
 
 export class Property {

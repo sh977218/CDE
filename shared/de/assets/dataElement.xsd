@@ -21,6 +21,8 @@
       <xs:element name="codeSystemName" type="xs:string" minOccurs="0"/>
       <xs:element name="codeSystemVersion" type="xs:string" minOccurs="0"/>
       <xs:element name="valueMeaningDefinition" type="xs:string" minOccurs="0"/>
+      <xs:element name="conceptId" type="xs:string" minOccurs="0"/>
+      <xs:element name="conceptSource" type="xs:string" minOccurs="0"/>
     </xs:all>
   </xs:complexType>
   <xs:complexType name="valueDomainType">

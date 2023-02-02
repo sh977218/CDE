@@ -59,8 +59,12 @@
         "changeNote": {
           "description": "Description of last modification",
           "anyOf": [
-            {"type": "string"},
-            {"type": "null"}
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "classification": {
@@ -114,12 +118,16 @@
         },
         "definitions": {
           "type": "array",
-          "items": { "$ref": "#/definitions/definition" }
+          "items": {
+            "$ref": "#/definitions/definition"
+          }
         },
         "designations": {
           "type": "array",
           "minItems": 1,
-          "items": { "$ref": "#/definitions/designation" },
+          "items": {
+            "$ref": "#/definitions/designation"
+          },
           "description": "Any string used by which Item is known, addressed or referred to"
         },
         "forkOf": {
@@ -134,7 +142,9 @@
         },
         "ids": {
           "type": "array",
-          "items": { "$ref": "#/definitions/identifier" },
+          "items": {
+            "$ref": "#/definitions/identifier"
+          },
           "description": "Identifier used to establish or indicate what Item is within a specific context"
         },
         "imported": {
@@ -283,7 +293,9 @@
         },
         "sources": {
           "type": "array",
-          "items": { "$ref": "#/definitions/source" },
+          "items": {
+            "$ref": "#/definitions/source"
+          },
           "description": "Name of system from which Item was imported or obtained from"
         },
         "stewardOrg": {
@@ -622,6 +634,12 @@
           "type": "string"
         },
         "valueMeaningName": {
+          "type": "string"
+        },
+        "conceptId": {
+          "type": "string"
+        },
+        "conceptSource": {
           "type": "string"
         }
       },
