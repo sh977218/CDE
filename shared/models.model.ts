@@ -626,7 +626,8 @@ export const administrativeStatuses = [
     'Gov Review',
     'Published',
     'Not Endorsed',
-    'Retired'
+    'Retired',
+    'Released'
 ] as const;
 
 export class RegistrationState {

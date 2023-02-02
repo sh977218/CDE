@@ -827,6 +827,12 @@ definitions:
         valueMeaningName:
           type: "string"
           example: "Yes"
+        conceptId:
+          type: "string"
+          example: "C1234567890"
+        conceptSource:
+          type: "string"
+          example: "NCI | UMLS"
   Properties:
     type: "array"
     items:

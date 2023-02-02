@@ -31,7 +31,9 @@ export const permissibleValueSchema = new Schema({
     valueMeaningCode: StringType,
     valueMeaningDefinition: StringType,
     codeSystemName: StringType,
-    codeSystemVersion: StringType
+    codeSystemVersion: StringType,
+    conceptId: StringType,
+    conceptSource: StringType
 }, {_id: false});
 
 export const derivationRuleSchema = new Schema({
