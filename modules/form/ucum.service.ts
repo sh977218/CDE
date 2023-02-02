@@ -17,9 +17,7 @@ export class UcumService {
     constructor(private http: HttpClient) {}
 
     searchUcum(term: string) {
-        return this.http.get<UcumSynonyms[]>(
-            '/server/ucumNames?uom=' + encodeURIComponent(term)
-        );
+        return this.http.get<UcumSynonyms[]>('/server/ucumNames?uom=' + encodeURIComponent(term));
     }
 
     getUnitNames(uom: string, cb: Cb1<string[]>) {
@@ -28,27 +26,21 @@ export class UcumService {
             return cb(match);
         }
 
-        this.http
-            .get('/server/ucumSynonyms?uom=' + encodeURIComponent(uom))
-            .subscribe(response => {
-                if (Array.isArray(response)) {
-                    this.uomUnitMap.set(uom, response);
-                    return cb(response);
-                }
-                return cb([]);
-            });
+        this.http.get('/server/ucumSynonyms?uom=' + encodeURIComponent(uom)).subscribe(response => {
+            if (Array.isArray(response)) {
+                this.uomUnitMap.set(uom, response);
+                return cb(response);
+            }
+            return cb([]);
+        });
     }
 
-    validateUcumUnits(
-        unitsOfMeasure: CodeAndSystem[],
-        cb: Cb2<string[], string[]>
-    ) {
+    validateUcumUnits(unitsOfMeasure: CodeAndSystem[], cb: Cb2<string[], string[]>) {
         if (Array.isArray(unitsOfMeasure) && unitsOfMeasure.length) {
             this.http
-                .post<{ errors: string[]; units: any[] }>(
-                    '/server/ucumValidate',
-                    { uoms: unitsOfMeasure.map(u => u.code) }
-                )
+                .post<{ errors: string[]; units: any[] }>('/server/ucumValidate', {
+                    uoms: unitsOfMeasure.map(u => u.code),
+                })
                 .subscribe(
                     response => cb(response.errors, response.units),
                     () => cb([], [])
@@ -60,15 +52,12 @@ export class UcumService {
 
     // cb()
     validateUoms(question: Question, cb = noop) {
-        const ucumUnits = question.unitsOfMeasure.filter(
-            (u: CodeAndSystem) => u.system === 'UCUM'
-        );
+        const ucumUnits = question.unitsOfMeasure.filter((u: CodeAndSystem) => u.system === 'UCUM');
         question.uomsValid = [];
         this.validateUcumUnits(ucumUnits, errors => {
             ucumUnits.forEach((u: CodeAndSystem, i: number) => {
                 if (errors[i]) {
-                    question.uomsValid[question.unitsOfMeasure.indexOf(u)] =
-                        errors[i];
+                    question.uomsValid[question.unitsOfMeasure.indexOf(u)] = errors[i];
                 }
             });
             cb();

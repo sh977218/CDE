@@ -11,10 +11,7 @@ export function httpErrorMessage(err: HttpErrorResponse): string {
         // legacy server error objects
         return err.error.message;
     }
-    if (
-        err.message ===
-        'Http failure response for (unknown url): 0 Unknown Error'
-    ) {
+    if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
         return 'Server is not available or you are offline.';
     }
     if (err.statusText) {

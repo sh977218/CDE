@@ -33,9 +33,7 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         if (this.route.snapshot.queryParams.tour) {
             this.router.navigate(['/home']);
-        } else if (
-            this.route.snapshot.queryParams.notifications !== undefined
-        ) {
+        } else if (this.route.snapshot.queryParams.notifications !== undefined) {
             this.router.navigate(['/home']);
         }
 
@@ -44,10 +42,7 @@ export class HomeComponent implements OnInit {
                 .get<HomepageGetResponse>('/server/home')
                 .toPromise()
                 .then(homeData => {
-                    this.updates =
-                        homeData && Array.isArray(homeData?.body?.updates)
-                            ? homeData.body.updates
-                            : [];
+                    this.updates = homeData && Array.isArray(homeData?.body?.updates) ? homeData.body.updates : [];
                 });
         }
     }

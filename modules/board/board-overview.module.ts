@@ -32,11 +32,7 @@ import { MatInputModule } from '@angular/material/input';
         CreateBoardModule,
         TagModule,
     ],
-    declarations: [
-        BoardOverviewComponent,
-        BoardOverviewEditModalComponent,
-        BoardOverviewDeleteModalComponent,
-    ],
+    declarations: [BoardOverviewComponent, BoardOverviewEditModalComponent, BoardOverviewDeleteModalComponent],
     providers: [],
     exports: [BoardOverviewComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

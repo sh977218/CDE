@@ -41,9 +41,7 @@ export class LoginService {
         }
         const url = window.sessionStorage.getItem('nlmcde.lastRoute');
         if (url) {
-            const savedQuery = window.sessionStorage.getItem(
-                'nlmcde.lastRouteQuery'
-            );
+            const savedQuery = window.sessionStorage.getItem('nlmcde.lastRouteQuery');
             let queryParams: Params | null = null;
             try {
                 queryParams = savedQuery && JSON.parse(savedQuery);
@@ -63,10 +61,7 @@ export class LoginService {
                 queryParams: this.route.snapshot.queryParams,
             };
             if (this.lastRoute.url.indexOf('?') > 0) {
-                this.lastRoute.url = this.lastRoute.url.substr(
-                    0,
-                    this.lastRoute.url.indexOf('?')
-                );
+                this.lastRoute.url = this.lastRoute.url.substr(0, this.lastRoute.url.indexOf('?'));
             }
             this.router.navigate(['/login']);
         }
@@ -92,14 +87,8 @@ export class LoginService {
             };
         } else {
             if (this.lastRoute) {
-                window.sessionStorage.setItem(
-                    'nlmcde.lastRoute',
-                    this.lastRoute.url
-                );
-                window.sessionStorage.setItem(
-                    'nlmcde.lastRouteQuery',
-                    paramToQueryString(this.lastRoute.queryParams)
-                );
+                window.sessionStorage.setItem('nlmcde.lastRoute', this.lastRoute.url);
+                window.sessionStorage.setItem('nlmcde.lastRouteQuery', paramToQueryString(this.lastRoute.queryParams));
             }
             window.location.href = this.federatedUrl;
         }

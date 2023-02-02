@@ -1,10 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import {
-    ScrollSpyInfo,
-    ScrollSpyService,
-} from 'angular-aio-toc/scroll-spy.service';
+import { ScrollSpyInfo, ScrollSpyService } from 'angular-aio-toc/scroll-spy.service';
 import { ReplaySubject } from 'rxjs';
 
 export interface TocItem {
@@ -51,9 +48,7 @@ export class TocService {
         this.tocList.next(tocList);
 
         this.scrollSpyInfo = this.scrollSpyService.spyOn(headings);
-        this.scrollSpyInfo.active.subscribe(item =>
-            this.activeItemIndex.next(item && item.index)
-        );
+        this.scrollSpyInfo.active.subscribe(item => this.activeItemIndex.next(item && item.index));
     }
 
     reset() {
@@ -70,9 +65,7 @@ export class TocService {
         div.innerHTML = heading.innerHTML;
 
         // Remove any `.github-links` or `.header-link` elements (along with their content).
-        querySelectorAll(div, '.github-links, .header-link').forEach(
-            removeNode
-        );
+        querySelectorAll(div, '.github-links, .header-link').forEach(removeNode);
 
         // Remove any remaining `a` elements (but keep their content).
         querySelectorAll(div, 'a').forEach(anchorLink => {
@@ -100,12 +93,8 @@ export class TocService {
     }
 
     private findTocHeadings(docElement: Element): HTMLHeadingElement[] {
-        const headings = querySelectorAll<HTMLHeadingElement>(
-            docElement,
-            'h2,h3'
-        );
-        const skipNoTocHeadings = (heading: HTMLHeadingElement) =>
-            !/(?:no-toc|notoc)/i.test(heading.className);
+        const headings = querySelectorAll<HTMLHeadingElement>(docElement, 'h2,h3');
+        const skipNoTocHeadings = (heading: HTMLHeadingElement) => !/(?:no-toc|notoc)/i.test(heading.className);
 
         return headings.filter(skipNoTocHeadings);
     }
@@ -125,10 +114,7 @@ export class TocService {
         if (id) {
             addToMap(id);
         } else {
-            id = (h.textContent || '')
-                .trim()
-                .toLowerCase()
-                .replace(/\W+/g, '-');
+            id = (h.textContent || '').trim().toLowerCase().replace(/\W+/g, '-');
             id = addToMap(id);
             h.id = id;
         }
@@ -153,10 +139,7 @@ function querySelectorAll<K extends keyof SVGElementTagNameMap>(
     parent: Element,
     selector: K
 ): SVGElementTagNameMap[K][];
-function querySelectorAll<E extends Element = Element>(
-    parent: Element,
-    selector: string
-): E[];
+function querySelectorAll<E extends Element = Element>(parent: Element, selector: string): E[];
 function querySelectorAll(parent: Element, selector: string) {
     // Wrap the `NodeList` as a regular `Array` to have access to array methods.
     // NOTE: IE11 does not even support some methods of `NodeList`, such as

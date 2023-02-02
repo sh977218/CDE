@@ -12,10 +12,7 @@ import { ListViewComponent } from 'search/listView/listView.component';
 import { ListViewControlsComponent } from 'search/listView/listViewControls.component';
 import { SummaryHeadingComponent } from 'search/listView/summaryHeading.component';
 import { SummaryListComponent } from 'search/listView/summaryList.component';
-import {
-    SummaryListItemComponent,
-    SummaryPlaceholderDirective,
-} from 'search/listView/summaryListItem.component';
+import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';

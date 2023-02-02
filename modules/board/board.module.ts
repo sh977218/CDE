@@ -49,12 +49,7 @@ import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/cre
         UnpinBoardComponent,
     ],
     providers: [MyBoardsService],
-    exports: [
-        CreateFormFromBoardComponent,
-        ListSortComponent,
-        PinBoardSnackbarComponent,
-        UnpinBoardComponent,
-    ],
+    exports: [CreateFormFromBoardComponent, ListSortComponent, PinBoardSnackbarComponent, UnpinBoardComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class BoardModule {}

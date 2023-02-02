@@ -1,12 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { questionMulti } from 'shared/form/fe';
-import {
-    FormElement,
-    FormElementPart,
-    FormElementsContainer,
-    QuestionValueList,
-} from 'shared/form/form.model';
+import { FormElementsContainer } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-section-matrix',

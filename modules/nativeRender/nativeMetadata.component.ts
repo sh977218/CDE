@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 import { NativeQuestionComponent } from 'nativeRender/nativeQuestion.component';
 import { textTruncate } from 'non-core/browser';
 
-const ACCESSGUDID_LOOKUP =
-    'https://accessgudid.nlm.nih.gov/api/v1/devices/lookup.json';
-const ACCESSGUDID_PARSEUDI =
-    'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.json?udi=';
+const ACCESSGUDID_LOOKUP = 'https://accessgudid.nlm.nih.gov/api/v1/devices/lookup.json';
+const ACCESSGUDID_PARSEUDI = 'https://accessgudid.nlm.nih.gov/api/v1/parse_udi.json?udi=';
 
 type AccessGUDIDDevice = any;
 
@@ -54,12 +52,9 @@ export class NativeMetadataComponent {
             this.nativeFe.formElement.metadataTags = [];
         }
         const metadataTags = this.nativeFe.formElement.metadataTags;
-        const addDI = () =>
-            metadataTags.push({ key: 'device', value: accessgudid });
+        const addDI = () => metadataTags.push({ key: 'device', value: accessgudid });
         if (this.nativeFe.metadataTagsNew === 'UDI') {
-            fetch(
-                ACCESSGUDID_PARSEUDI + encodeURIComponent(metadataSearch.trim())
-            )
+            fetch(ACCESSGUDID_PARSEUDI + encodeURIComponent(metadataSearch.trim()))
                 .then(res => res.json())
                 .then(udi => {
                     if (!udi.error) {
@@ -86,11 +81,7 @@ export class NativeMetadataComponent {
         const ids = accessgudid.gudid.device.identifiers.identifier;
         if (Array.isArray(ids)) {
             const primary = ids.filter(id => id.deviceIdType === 'Primary');
-            return primary.length
-                ? primary[0].deviceId
-                : ids.length
-                ? ids[0].deviceId
-                : '';
+            return primary.length ? primary[0].deviceId : ids.length ? ids[0].deviceId : '';
         } else {
             return ids.deviceId;
         }

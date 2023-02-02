@@ -31,11 +31,7 @@ export class AlertService {
         this.snackBar.open(message, 'Dismiss', config);
     }
 
-    addAlertFromComponent<T>(
-        type: string,
-        component: ComponentType<T>,
-        data: any
-    ) {
+    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any) {
         let config = { duration: this.alertTime };
         if (type === 'danger') {
             config = { duration: 0 };

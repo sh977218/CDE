@@ -1,35 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-} from '@angular/core';
-import {
-    MatAutocompleteSelectedEvent,
-    MatAutocompleteTrigger,
-} from '@angular/material/autocomplete';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import {
-    ActivatedRoute,
-    Event,
-    NavigationStart,
-    Params,
-    Router,
-} from '@angular/router';
+import { ActivatedRoute, Event, NavigationStart, Params, Router } from '@angular/router';
 import { BackForwardService } from '_app/backForward.service';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import {
-    paramsToQueryString,
-    trackByKey,
-    trackByName,
-} from 'non-core/angularHelper';
+import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHelper';
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -64,9 +43,7 @@ type SearchType = 'cde' | 'endorsedCde' | 'form';
 
 const searchDesktopWidth = 772;
 const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)']);
-const orderedFirstOrgIcons = Object.freeze([
-    '/assets/img/endorsedRibbonIcon.png',
-]);
+const orderedFirstOrgIcons = Object.freeze(['/assets/img/endorsedRibbonIcon.png']);
 
 @Component({
     template: '',
@@ -160,17 +137,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 this.http
                     .post<ElasticQueryResponseHit<ItemSuggest>[]>(
                         url + encodeURIComponent(term),
-                        this.elasticService.buildElasticQuerySettings(
-                            this.searchSettings
-                        )
+                        this.elasticService.buildElasticQuerySettings(this.searchSettings)
                     )
                     .pipe(
                         map(hits => {
                             const final = new Set<string>();
                             this.lastTypeahead = {};
                             hits.forEach(e => {
-                                this.lastTypeahead[e._source.nameSuggest] =
-                                    e._id;
+                                this.lastTypeahead[e._source.nameSuggest] = e._id;
                                 final.add(e._source.nameSuggest);
                             });
                             return Array.from(final);
@@ -183,9 +157,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     @HostListener('window:beforeunload') unload() {
         if (/^\/(cde|form)\/search$/.exec(location.pathname)) {
-            window.sessionStorage[
-                'nlmcde.scroll.' + location.pathname + location.search
-            ] = window.scrollY;
+            window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search] = window.scrollY;
         }
     }
 
@@ -198,14 +170,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.route.queryParams.subscribe((params: Params) => {
             this.autocompleteSuggestions = undefined;
-            this.searchSettings.classification = Array.isArray(
-                params.classification
-            )
+            this.searchSettings.classification = Array.isArray(params.classification)
                 ? params.classification
                 : stringToArray(params.classification);
-            this.searchSettings.classificationAlt = stringToArray(
-                params.classificationAlt
-            );
+            this.searchSettings.classificationAlt = stringToArray(params.classificationAlt);
             this.searchSettings.datatypes = stringToArray(params.datatypes);
             this.searchSettings.excludeOrgs = stringToArray(params.excludeOrgs);
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
@@ -215,8 +183,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.selectedOrg = params.selectedOrg;
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
             this.altClassificationFilterMode = !!params.selectedOrgAlt;
-            this.excludeOrgFilterMode =
-                !!params.excludeAllOrgs || !!params.excludeOrgs;
+            this.excludeOrgFilterMode = !!params.excludeAllOrgs || !!params.excludeOrgs;
             this.searchSettings.nihEndorsed = !!params.nihEndorsed;
             if (this.searchSettings.nihEndorsed) {
                 this._searchType = 'endorsedCde';
@@ -297,11 +264,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.classification.length = 0;
 
             if (this.hasSelectedClassificationsAlt()) {
-                this.searchSettings.selectedOrg =
-                    this.searchSettings.selectedOrgAlt;
+                this.searchSettings.selectedOrg = this.searchSettings.selectedOrgAlt;
                 if (this.searchSettings.classificationAlt.length > 0) {
-                    this.searchSettings.classification =
-                        this.searchSettings.classificationAlt;
+                    this.searchSettings.classification = this.searchSettings.classificationAlt;
                     this.searchSettings.classificationAlt = [];
                 }
             }
@@ -339,19 +304,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     clearSelectedDatatype(datatype: DataType) {
-        if (
-            this.searchSettings.datatypes &&
-            removeFromArray(this.searchSettings.datatypes, datatype)
-        ) {
+        if (this.searchSettings.datatypes && removeFromArray(this.searchSettings.datatypes, datatype)) {
             this.doSearch();
         }
     }
 
     clearSelectedStatus(status: CurationStatus) {
-        if (
-            this.searchSettings.regStatuses &&
-            removeFromArray(this.searchSettings.regStatuses, status)
-        ) {
+        if (this.searchSettings.regStatuses && removeFromArray(this.searchSettings.regStatuses, status)) {
             this.doSearch();
         }
     }
@@ -375,8 +334,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     fakeNextPageLink(): string {
         const p =
-            (this.totalItemsLimited || 0) / this.searchSettings.resultPerPage >
-            1
+            (this.totalItemsLimited || 0) / this.searchSettings.resultPerPage > 1
                 ? (this.searchSettings.page ? this.searchSettings.page : 1) + 1
                 : 1;
         return paramsToQueryString(this.generateSearchForTerm(p));
@@ -386,13 +344,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.userService.catch(noop).then(user => {
             this.orgHelperService.then(() => {
                 if (this.aggregations) {
-                    (this.aggregations.orgs.buckets as any) =
-                        this.aggregations.orgs.orgs.buckets.filter(
-                            (bucket: ElasticQueryResponseAggregationBucket) =>
-                                this.orgHelperService.showWorkingGroup(
-                                    bucket.key
-                                ) || isSiteAdmin(user)
-                        );
+                    (this.aggregations.orgs.buckets as any) = this.aggregations.orgs.orgs.buckets.filter(
+                        (bucket: ElasticQueryResponseAggregationBucket) =>
+                            this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
+                    );
                 }
                 cb();
             }, cb);
@@ -404,42 +359,28 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.searchSettings.q) {
             searchTerms.q = this.searchSettings.q;
         }
-        if (
-            this.searchSettings.regStatuses &&
-            this.searchSettings.regStatuses.length > 0
-        ) {
+        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
         }
-        if (
-            this.searchSettings.datatypes &&
-            this.searchSettings.datatypes.length > 0
-        ) {
+        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0) {
             searchTerms.datatypes = this.searchSettings.datatypes.join(';');
         }
         if (this.searchSettings.selectedOrg) {
             searchTerms.selectedOrg = this.searchSettings.selectedOrg;
         }
         if (this.searchSettings.classification.length > 0) {
-            searchTerms.classification =
-                this.searchSettings.classification.join(';');
+            searchTerms.classification = this.searchSettings.classification.join(';');
         }
         if (this.searchSettings.selectedOrgAlt) {
             searchTerms.selectedOrgAlt = this.searchSettings.selectedOrgAlt;
         }
-        if (
-            this.altClassificationFilterMode &&
-            this.searchSettings.classificationAlt.length > 0
-        ) {
-            searchTerms.classificationAlt =
-                this.searchSettings.classificationAlt.join(';');
+        if (this.altClassificationFilterMode && this.searchSettings.classificationAlt.length > 0) {
+            searchTerms.classificationAlt = this.searchSettings.classificationAlt.join(';');
         }
         if (this.searchSettings.excludeAllOrgs) {
             searchTerms.excludeAllOrgs = true;
         }
-        if (
-            this.searchSettings.excludeOrgs &&
-            this.searchSettings.excludeOrgs.length > 0
-        ) {
+        if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
             searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         }
         if (pageNumber > 1) {
@@ -498,9 +439,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             return [];
         }
         return [this.searchSettings.selectedOrg].concat(
-            Array.isArray(this.searchSettings.classification)
-                ? this.searchSettings.classification
-                : []
+            Array.isArray(this.searchSettings.classification) ? this.searchSettings.classification : []
         );
     }
 
@@ -509,19 +448,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             return ['(Select Orgs)'];
         }
         return [this.searchSettings.selectedOrgAlt].concat(
-            Array.isArray(this.searchSettings.classificationAlt)
-                ? this.searchSettings.classificationAlt
-                : []
+            Array.isArray(this.searchSettings.classificationAlt) ? this.searchSettings.classificationAlt : []
         );
     }
 
     getExcludedOrgs(): string {
         if (this.searchSettings.excludeAllOrgs) {
-            return (
-                'Exclude all Orgs (except ' +
-                this.searchSettings.selectedOrg +
-                ')'
-            );
+            return 'Exclude all Orgs (except ' + this.searchSettings.selectedOrg + ')';
         } else if (this.searchSettings.excludeOrgs.length > 0) {
             return this.searchSettings.excludeOrgs.join(' , ');
         } else {
@@ -558,10 +491,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     hasSelectedDatatypes() {
-        return (
-            this.searchSettings.datatypes &&
-            this.searchSettings.datatypes.length > 0
-        );
+        return this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0;
     }
 
     hasSelectedStatuses() {
@@ -624,9 +554,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.searchSettingsInput) {
             Object.assign(this.searchSettings, this.searchSettingsInput);
         }
-        const settings = this.elasticService.buildElasticQuerySettings(
-            this.searchSettings
-        );
+        const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
         this.elasticService.generalSearchQuery(
             settings,
             this.module,
@@ -634,16 +562,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 const result: SearchResponseAggregationItem = resultNonAgg;
                 this.searchedTerm = this.searchSettings.q;
                 if (corrected && this.searchedTerm) {
-                    this.searchedTerm = this.searchedTerm.replace(
-                        /[^\w\s]/gi,
-                        ''
-                    );
+                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
                 }
                 if (err || !result || !result.aggregations) {
-                    this.alert.addAlert(
-                        'danger',
-                        'There was a problem with your query'
-                    );
+                    this.alert.addAlert('danger', 'There was a problem with your query');
                     this.elts = [];
                     this.searching = false;
                     return;
@@ -652,13 +574,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.searching = false;
                     return;
                 }
-                this.numPages = Math.ceil(
-                    result.totalNumber / this.searchSettings.resultPerPage
-                );
+                this.numPages = Math.ceil(result.totalNumber / this.searchSettings.resultPerPage);
                 this.took = result.took;
                 this.totalItems = result.totalNumber;
-                this.totalItemsLimited =
-                    this.totalItems <= 10000 ? this.totalItems : 10000;
+                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
                 this.elts =
                     this.module === 'form'
@@ -697,8 +616,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                 this.aggregations = result.aggregations;
 
-                this.aggregationsFlatClassifications = this.aggregations
-                    .flatClassifications
+                this.aggregationsFlatClassifications = this.aggregations.flatClassifications
                     ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
                           (c: ElasticQueryResponseAggregationBucket) => ({
                               name: c.key.split(';').pop() || '',
@@ -726,13 +644,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 const orgsCreatedPromise = new Promise<void>(resolve => {
                     this.filterOutWorkingGroups(() => {
                         this.orgHelperService.then(() => {
-                            this.orgHelperService.addLongNameToOrgs(
-                                aggregations.orgs.buckets
-                            );
+                            this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
                         }, noop);
-                        const [firstOrgs, otherOrgs] = partition(
-                            aggregations.orgs.buckets,
-                            org => orderedFirstOrgNames.includes(org.key)
+                        const [firstOrgs, otherOrgs] = partition(aggregations.orgs.buckets, org =>
+                            orderedFirstOrgNames.includes(org.key)
                         );
                         firstOrgs.sort((a, b) => {
                             const A = orderedFirstOrgNames.indexOf(a.key);
@@ -749,23 +664,13 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
                 });
 
-                this.aggregationsFlatClassifications.sort(
-                    SearchBaseComponent.compareObjName
-                );
-                this.aggregationsFlatClassificationsAlt.sort(
-                    SearchBaseComponent.compareObjName
-                );
+                this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
+                this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
                 this.aggregations.statuses.statuses.buckets.sort(
-                    (
-                        a: ElasticQueryResponseAggregationBucket,
-                        b: ElasticQueryResponseAggregationBucket
-                    ) =>
-                        SearchBaseComponent.getRegStatusIndex(a) -
-                        SearchBaseComponent.getRegStatusIndex(b)
+                    (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
+                        SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
                 );
-                this.aggregationsTopics.sort(
-                    SearchBaseComponent.compareObjName
-                );
+                this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
 
                 if (!this.isSearched()) {
                     this.orgs = [];
@@ -773,36 +678,24 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                     orgsCreatedPromise.then(() => {
                         this.orgHelperService.then(orgsDetailedInfo => {
-                            aggregations.orgs.buckets.forEach(
-                                (
-                                    orgBucket: ElasticQueryResponseAggregationBucket
-                                ) => {
-                                    if (orgsDetailedInfo[orgBucket.key]) {
-                                        orgs.push({
-                                            classifications: [],
-                                            name: orgBucket.key,
-                                            longName:
-                                                orgsDetailedInfo[orgBucket.key]
-                                                    .longName,
-                                            count: orgBucket.doc_count,
-                                            uri: orgsDetailedInfo[orgBucket.key]
-                                                .uri,
-                                            extraInfo:
-                                                orgsDetailedInfo[orgBucket.key]
-                                                    .extraInfo,
-                                            htmlOverview:
-                                                orgsDetailedInfo[orgBucket.key]
-                                                    .htmlOverview,
-                                            cdeStatusValidationRules: [],
-                                        });
-                                    }
+                            aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
+                                if (orgsDetailedInfo[orgBucket.key]) {
+                                    orgs.push({
+                                        classifications: [],
+                                        name: orgBucket.key,
+                                        longName: orgsDetailedInfo[orgBucket.key].longName,
+                                        count: orgBucket.doc_count,
+                                        uri: orgsDetailedInfo[orgBucket.key].uri,
+                                        extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
+                                        htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
+                                        cdeStatusValidationRules: [],
+                                    });
                                 }
-                            );
+                            });
                             let orgIndex = 0;
                             orderedFirstOrgNames.forEach((name, i) => {
                                 if (orgs[orgIndex].name === name) {
-                                    orgs[orgIndex].featureIcon =
-                                        orderedFirstOrgIcons[i];
+                                    orgs[orgIndex].featureIcon = orderedFirstOrgIcons[i];
                                     orgIndex++;
                                 }
                             });
@@ -839,14 +732,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     scrollHistoryLoad() {
-        if (
-            this.backForwardService.isBackForward ||
-            (this.router as any).navigationId === 1
-        ) {
-            const previousSpot =
-                window.sessionStorage[
-                    'nlmcde.scroll.' + location.pathname + location.search
-                ];
+        if (this.backForwardService.isBackForward || (this.router as any).navigationId === 1) {
+            const previousSpot = window.sessionStorage['nlmcde.scroll.' + location.pathname + location.search];
             if (previousSpot != null) {
                 SearchBaseComponent.waitScroll(2, previousSpot);
             }
@@ -856,8 +743,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     scrollHistorySave() {
         if (!this.backForwardService.isBackForward) {
-            window.sessionStorage['nlmcde.scroll.' + this.previousUrl] =
-                window.scrollY;
+            window.sessionStorage['nlmcde.scroll.' + this.previousUrl] = window.scrollY;
         }
     }
 
@@ -917,10 +803,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
                 return;
             case 'endorsedCde':
-                if (
-                    this.module === 'form' ||
-                    !this.searchSettings.nihEndorsed
-                ) {
+                if (this.module === 'form' || !this.searchSettings.nihEndorsed) {
                     this.searchSettings.nihEndorsed = true;
                     this.module = 'cde';
                     this.doSearch();
@@ -975,9 +858,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     elasticsearchPinQuery() {
-        return this.elasticService.buildElasticQuerySettings(
-            this.searchSettings
-        );
+        return this.elasticService.buildElasticQuerySettings(this.searchSettings);
     }
 
     static compareObjName(a: { name: string }, b: { name: string }): number {
@@ -1007,10 +888,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
     static waitScroll(count: number, previousSpot: number) {
         if (count > 0) {
-            setTimeout(
-                () => SearchBaseComponent.waitScroll(count - 1, previousSpot),
-                100
-            );
+            setTimeout(() => SearchBaseComponent.waitScroll(count - 1, previousSpot), 100);
         } else {
             window.scrollTo(0, previousSpot);
         }

@@ -1,16 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-    Component,
-    ElementRef,
-    forwardRef,
-    Inject,
-    ViewChild,
-} from '@angular/core';
-import {
-    DomSanitizer,
-    SafeResourceUrl,
-    Title,
-} from '@angular/platform-browser';
+import { Component, ElementRef, forwardRef, Inject, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
@@ -54,27 +44,17 @@ export class CdeAppComponent {
             user => {},
             () => {
                 const userService = this.userService;
-                window.addEventListener(
-                    'message',
-                    function receiveMessage(message: MessageEvent) {
-                        if (
-                            message.origin === window.ssoServerOrigin &&
-                            message.data
-                        ) {
-                            userService.loginViaJwt(message.data);
-                        }
+                window.addEventListener('message', function receiveMessage(message: MessageEvent) {
+                    if (message.origin === window.ssoServerOrigin && message.data) {
+                        userService.loginViaJwt(message.data);
                     }
-                );
+                });
                 this.utsSendMessage('Messages', () => {});
             }
         );
         this.userService.subscribe(user => {
             this.userService.catch((err?: HttpErrorResponse) => {
-                if (
-                    err &&
-                    err.status === 0 &&
-                    err.statusText === 'Unknown Error'
-                ) {
+                if (err && err.status === 0 && err.statusText === 'Unknown Error') {
                     this.router.navigate(['/offline'], {
                         skipLocationChange: true,
                     });
@@ -90,10 +70,7 @@ export class CdeAppComponent {
                 }
                 if (r.outlet === 'primary') {
                     r.data.subscribe((data: Data) =>
-                        this.title.setTitle(
-                            data.title ||
-                                'NIH Common Data Elements (CDE) Repository'
-                        )
+                        this.title.setTitle(data.title || 'NIH Common Data Elements (CDE) Repository')
                     );
                 }
             }
@@ -125,10 +102,7 @@ export class CdeAppComponent {
             )
         );
 
-        iconReg.addSvgIcon(
-            'pin',
-            sanitizer.bypassSecurityTrustResourceUrl('/assets/img/Pin.svg')
-        );
+        iconReg.addSvgIcon('pin', sanitizer.bypassSecurityTrustResourceUrl('/assets/img/Pin.svg'));
     }
 
     frameReady() {
@@ -148,25 +122,15 @@ export class CdeAppComponent {
 
     utsSendMessage(message: string, cb: () => void) {
         if (!this.iframeReady) {
-            this.ssoServerReceiver =
-                this.sanitizer.bypassSecurityTrustResourceUrl(
-                    environment.ssoServerReceiver
-                );
+            this.ssoServerReceiver = this.sanitizer.bypassSecurityTrustResourceUrl(environment.ssoServerReceiver);
             this.iframeReady = new Promise<void>(resolve => {
                 this.iframeReadyTwice = false;
                 this.iframePromiseResolve = resolve;
             });
         }
         this.iframeReady.then(() => {
-            if (
-                this.receiver &&
-                this.receiver.nativeElement &&
-                this.receiver.nativeElement.contentWindow
-            ) {
-                this.receiver.nativeElement.contentWindow.postMessage(
-                    message,
-                    window.ssoServerOrigin
-                );
+            if (this.receiver && this.receiver.nativeElement && this.receiver.nativeElement.contentWindow) {
+                this.receiver.nativeElement.contentWindow.postMessage(message, window.ssoServerOrigin);
                 cb();
             }
         });

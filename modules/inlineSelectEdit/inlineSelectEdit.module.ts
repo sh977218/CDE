@@ -9,14 +9,7 @@ import { TextTruncateModule } from 'textTruncate/textTruncate.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-    imports: [
-        CKEditorModule,
-        CommonModule,
-        FormsModule,
-        MatIconModule,
-        MatTooltipModule,
-        TextTruncateModule,
-    ],
+    imports: [CKEditorModule, CommonModule, FormsModule, MatIconModule, MatTooltipModule, TextTruncateModule],
     declarations: [InlineSelectEditComponent],
     exports: [InlineSelectEditComponent],
     providers: [],

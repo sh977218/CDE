@@ -21,28 +21,17 @@ export class MergeFormService {
     maxNumberQuestions!: number;
     numMergedQuestions!: number;
 
-    constructor(
-        private http: HttpClient,
-        public isAllowedModel: IsAllowedService
-    ) {}
+    constructor(private http: HttpClient, public isAllowedModel: IsAllowedService) {}
 
-    saveForm({
-        form,
-        cb,
-    }: {
-        form: CompareForm;
-        cb: CbErr1<CompareForm | void>;
-    }) {
-        this.http
-            .post<CompareForm>('/server/form/publishExternal', form)
-            .subscribe(
-                data => {
-                    cb(undefined, data);
-                },
-                err => {
-                    cb('Error, unable to save form ' + form.tinyId + ' ' + err);
-                }
-            );
+    saveForm({ form, cb }: { form: CompareForm; cb: CbErr1<CompareForm | void> }) {
+        this.http.post<CompareForm>('/server/form/publishExternal', form).subscribe(
+            data => {
+                cb(undefined, data);
+            },
+            err => {
+                cb('Error, unable to save form ' + form.tinyId + ' ' + err);
+            }
+        );
     }
 
     private async mergeQuestions(
@@ -63,11 +52,7 @@ export class MergeFormService {
         }
     }
 
-    async doMerge(
-        mergeFrom: CompareForm,
-        mergeTo: CompareForm,
-        fields: FormMergeFields
-    ) {
+    async doMerge(mergeFrom: CompareForm, mergeTo: CompareForm, fields: FormMergeFields) {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
             throw new Error('number of question on left is not same on right.');
         } else {
@@ -90,27 +75,16 @@ export class MergeFormService {
                 transferClassifications(mergeFrom, mergeTo);
             }
             if (fields.questions) {
-                await this.mergeQuestions(
-                    mergeFrom.questions,
-                    mergeTo.questions,
-                    fields
-                );
+                await this.mergeQuestions(mergeFrom.questions, mergeTo.questions, fields);
             }
         }
     }
 
-    validateQuestions(
-        left: CompareForm,
-        right: CompareForm,
-        fields: FormMergeFields
-    ) {
+    validateQuestions(left: CompareForm, right: CompareForm, fields: FormMergeFields) {
         this.error.error = '';
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
-        if (
-            fields.questions &&
-            left.questions.length > right.questions.length
-        ) {
+        if (fields.questions && left.questions.length > right.questions.length) {
             this.error.error = 'Form merge from has too many questions';
             return this.error;
         }

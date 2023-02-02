@@ -12,10 +12,7 @@ export class SiteAuditComponent implements OnInit {
     isAdmin = false;
     tabIndex = 0;
 
-    constructor(
-        public userService: UserService,
-        private route: ActivatedRoute
-    ) {
+    constructor(public userService: UserService, private route: ActivatedRoute) {
         this.userService.then(user => (this.isAdmin = isSiteAdmin(user)), noop);
     }
 

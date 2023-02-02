@@ -5,9 +5,7 @@ import { AlertService } from 'alert/alert.service';
 import { uniqWith, isEqual } from 'lodash';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import {
-    Cb,
     Cb1,
-    CbErr,
     CbErrorObj,
     Item,
     ItemClassification,
@@ -32,9 +30,7 @@ export class ClassificationService {
             allPossibleCategories.push(accumulateCategories.concat(i));
             accumulateCategories.push(i);
         });
-        let recentlyClassification = this.localStorageService.getItem(
-            'classificationHistory'
-        );
+        let recentlyClassification = this.localStorageService.getItem('classificationHistory');
         if (!recentlyClassification) {
             recentlyClassification = [];
         }
@@ -46,14 +42,9 @@ export class ClassificationService {
         );
         recentlyClassification = uniqWith(
             recentlyClassification,
-            (a: any, b: any) =>
-                isEqual(a.categories, b.categories) &&
-                isEqual(a.orgName, b.orgName)
+            (a: any, b: any) => isEqual(a.categories, b.categories) && isEqual(a.orgName, b.orgName)
         );
-        this.localStorageService.setItem(
-            'classificationHistory',
-            recentlyClassification
-        );
+        this.localStorageService.setItem('classificationHistory', recentlyClassification);
     }
 
     classifyItem(
@@ -68,21 +59,13 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org,
         };
-        this.http
-            .post(endPoint, postBody, { responseType: 'text' })
-            .subscribe(() => {
-                this.updateClassificationLocalStorage(postBody);
-                cb();
-            }, cb);
+        this.http.post(endPoint, postBody, { responseType: 'text' }).subscribe(() => {
+            this.updateClassificationLocalStorage(postBody);
+            cb();
+        }, cb);
     }
 
-    removeClassification(
-        elt: Item,
-        org: string,
-        classifArray: string[],
-        endPoint: string,
-        cb: Cb1<string | void>
-    ) {
+    removeClassification(elt: Item, org: string, classifArray: string[], endPoint: string, cb: Cb1<string | void>) {
         const deleteBody: ItemClassification = {
             categories: classifArray,
             eltId: elt._id,
@@ -91,10 +74,7 @@ export class ClassificationService {
         this.http.post(endPoint, deleteBody).subscribe(() => cb(), cb);
     }
 
-    removeOrgClassification(
-        deleteClassification: ItemClassification,
-        next: Cb1<string>
-    ) {
+    removeOrgClassification(deleteClassification: ItemClassification, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(10000);
         this.http
             .post(
@@ -106,12 +86,7 @@ export class ClassificationService {
                 },
                 { responseType: 'text' }
             )
-            .subscribe(next, () =>
-                this.alert.addAlert(
-                    'danger',
-                    'Unexpected error removing classification'
-                )
-            );
+            .subscribe(next, () => this.alert.addAlert('danger', 'Unexpected error removing classification'));
     }
 
     reclassifyOrgClassification(
@@ -131,15 +106,10 @@ export class ClassificationService {
                 },
                 { responseType: 'text' }
             )
-            .subscribe(next, () =>
-                this.alert.addAlert('danger', 'Unexpected error reclassifying')
-            );
+            .subscribe(next, () => this.alert.addAlert('danger', 'Unexpected error reclassifying'));
     }
 
-    renameOrgClassification(
-        newClassification: ItemClassificationNew,
-        next: Cb1<string>
-    ) {
+    renameOrgClassification(newClassification: ItemClassificationNew, next: Cb1<string>) {
         const settings = new SearchSettingsElastic(10000);
         this.http
             .post(
@@ -151,18 +121,10 @@ export class ClassificationService {
                 },
                 { responseType: 'text' }
             )
-            .subscribe(next, () =>
-                this.alert.addAlert(
-                    'danger',
-                    'Unexpected error renaming classification'
-                )
-            );
+            .subscribe(next, () => this.alert.addAlert('danger', 'Unexpected error renaming classification'));
     }
 
-    addChildClassification(
-        newClassification: ItemClassification,
-        next: Cb1<string>
-    ) {
+    addChildClassification(newClassification: ItemClassification, next: Cb1<string>) {
         this.http
             .put(
                 '/server/classification/addOrgClassification/',
@@ -174,15 +136,9 @@ export class ClassificationService {
             )
             .subscribe(next, (err: HttpErrorResponse) => {
                 if (err.status === 409) {
-                    this.alert.addAlert(
-                        'danger',
-                        'Classification Already Exists'
-                    );
+                    this.alert.addAlert('danger', 'Classification Already Exists');
                 }
-                this.alert.addAlert(
-                    'danger',
-                    'Unexpected error adding classification: ' + err.status
-                );
+                this.alert.addAlert('danger', 'Unexpected error adding classification: ' + err.status);
             });
     }
 }

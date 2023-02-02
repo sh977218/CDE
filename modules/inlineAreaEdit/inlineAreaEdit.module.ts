@@ -8,13 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TextTruncateModule } from 'textTruncate/textTruncate.module';
 
 @NgModule({
-    imports: [
-        CKEditorModule,
-        CommonModule,
-        FormsModule,
-        MatIconModule,
-        TextTruncateModule,
-    ],
+    imports: [CKEditorModule, CommonModule, FormsModule, MatIconModule, TextTruncateModule],
     declarations: [InlineAreaEditComponent],
     exports: [InlineAreaEditComponent],
     providers: [],

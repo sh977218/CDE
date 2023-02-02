@@ -3,13 +3,7 @@ import { saveAs } from 'file-saver';
 import { Parser } from 'json2csv';
 import * as JSZip from 'jszip';
 import { isEqual, uniqWith } from 'lodash';
-import {
-    CdeForm,
-    FormElement,
-    FormElementsContainer,
-    FormQuestion,
-    FormSection,
-} from 'shared/form/form.model';
+import { CdeForm, FormElement, FormElementsContainer, FormQuestion, FormSection } from 'shared/form/form.model';
 import { isQuestion } from 'shared/form/fe';
 
 const json2csvParser = new Parser({
@@ -34,13 +28,13 @@ const json2csvParser = new Parser({
     ],
 });
 
-const datatTypeToRedcapDataType: Dictionary<string> = {
+const dataTypeToRedcapDataType: Dictionary<string> = {
     Text: 'text',
     'Value List': 'radio',
     Number: 'text',
     Date: 'text',
 };
-const datatTypeToRedcapValidationType: Dictionary<string> = {
+const dataTypeToRedcapValidationType: Dictionary<string> = {
     Text: '',
     'Value List': '',
     Number: 'number',
@@ -120,18 +114,13 @@ export class RedcapExport {
 
     static formatSkipLogic(skipLogicString: string, map: Dictionary<string>) {
         let redCapSkipLogic = skipLogicString;
-        const _skipLogicString = skipLogicString
-            .replace(/ AND /g, ' and ')
-            .replace(/ OR /g, ' or ');
-        const foundEquationArray = _skipLogicString.match(/"([^"])+"/g);
+        const skipLogicStringTemp = skipLogicString.replace(/ AND /g, ' and ').replace(/ OR /g, ' or ');
+        const foundEquationArray = skipLogicStringTemp.match(/"([^"])+"/g);
         if (foundEquationArray && foundEquationArray.length > 0) {
             foundEquationArray.forEach((label, i) => {
                 if (i % 2 === 0) {
                     const foundVariable = map[label.replace(/\"/g, '')];
-                    redCapSkipLogic = redCapSkipLogic.replace(
-                        label,
-                        '[' + foundVariable + ']'
-                    );
+                    redCapSkipLogic = redCapSkipLogic.replace(label, '[' + foundVariable + ']');
                 }
             });
         } else {
@@ -145,44 +134,26 @@ export class RedcapExport {
         const labelToVariablesMap: Dictionary<string> = {};
         let variableCounter = 1;
         let sectionsAsMatrix =
-            form.displayProfiles &&
-            form.displayProfiles[0] &&
-            form.displayProfiles[0].sectionsAsMatrix;
+            form.displayProfiles && form.displayProfiles[0] && form.displayProfiles[0].sectionsAsMatrix;
 
-        function oneLayerFormconvertSectionToRow(
-            formElement: FormElement,
-            i: number
-        ) {
+        function oneLayerFormconvertSectionToRow(formElement: FormElement, i: number) {
             const sectionHeader = formElement.label ? formElement.label : '';
-            const fieldLabel = formElement.instructions
-                ? formElement.instructions.value
-                : '';
+            const fieldLabel = formElement.instructions ? formElement.instructions.value : '';
             if (sectionsAsMatrix) {
-                const temp = uniqWith(
-                    formElement.formElements,
-                    (a: FormElement, b: FormElement) =>
-                        isEqual(
-                            isQuestion(a) &&
-                                a.question.datatype === 'Value List' &&
-                                a.question.answers,
-                            isQuestion(b) &&
-                                b.question.datatype === 'Value List' &&
-                                b.question.answers
-                        )
+                const temp = uniqWith(formElement.formElements, (a: FormElement, b: FormElement) =>
+                    isEqual(
+                        isQuestion(a) && a.question.datatype === 'Value List' && a.question.answers,
+                        isQuestion(b) && b.question.datatype === 'Value List' && b.question.answers
+                    )
                 );
                 if (temp.length > 1) {
                     sectionsAsMatrix = false;
                 }
             }
-            let _sectionSkipLogic = '';
-            const sectionSkipLogic = formElement.skipLogic
-                ? formElement.skipLogic.condition
-                : '';
+            let sectionSkipLogicTemp = '';
+            const sectionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
             if (sectionSkipLogic) {
-                _sectionSkipLogic = RedcapExport.formatSkipLogic(
-                    sectionSkipLogic,
-                    labelToVariablesMap
-                );
+                sectionSkipLogicTemp = RedcapExport.formatSkipLogic(sectionSkipLogic, labelToVariablesMap);
             }
             return {
                 'Variable / Field Name': 'insect_' + i,
@@ -196,7 +167,7 @@ export class RedcapExport {
                 'Text Validation Min': '',
                 'Text Validation Max': '',
                 'Identifier?': '',
-                'Branching Logic (Show field only if...)': _sectionSkipLogic,
+                'Branching Logic (Show field only if...)': sectionSkipLogicTemp,
                 'Required Field?': '',
                 'Custom Alignment': '',
                 'Question Number (surveys only)': '',
@@ -207,26 +178,16 @@ export class RedcapExport {
 
         function oneLayerFormconvertQuestionToRow(formElement: FormQuestion) {
             const q = formElement.question;
-            let _questionSkipLogic = '';
-            const questionSkipLogic = formElement.skipLogic
-                ? formElement.skipLogic.condition
-                : '';
+            let questionSkipLogicTemp = '';
+            const questionSkipLogic = formElement.skipLogic ? formElement.skipLogic.condition : '';
             if (questionSkipLogic) {
-                _questionSkipLogic = RedcapExport.formatSkipLogic(
-                    questionSkipLogic,
-                    labelToVariablesMap
-                );
+                questionSkipLogicTemp = RedcapExport.formatSkipLogic(questionSkipLogic, labelToVariablesMap);
             }
             if (!q.cde.tinyId) {
                 q.cde.tinyId = 'missing question cde';
             }
             let variableName =
-                'nlmcde_' +
-                form.tinyId.toLowerCase() +
-                '_' +
-                variableCounter++ +
-                '_' +
-                q.cde.tinyId.toLowerCase();
+                'nlmcde_' + form.tinyId.toLowerCase() + '_' + variableCounter++ + '_' + q.cde.tinyId.toLowerCase();
             if (existingVariables[variableName]) {
                 let index = existingVariables[variableName];
                 const newVariableName = variableName + '_' + index;
@@ -244,27 +205,17 @@ export class RedcapExport {
                 'Variable / Field Name': variableName,
                 'Form Name': form.designations[0].designation,
                 'Section Header': '',
-                'Field Type': datatTypeToRedcapDataType[q.datatype],
+                'Field Type': dataTypeToRedcapDataType[q.datatype],
                 'Field Label': fieldLabel,
-                'Choices, Calculations, OR Slider Labels': (
-                    (q.datatype === 'Value List' && q.answers) ||
-                    []
-                )
+                'Choices, Calculations, OR Slider Labels': ((q.datatype === 'Value List' && q.answers) || [])
                     .map(a => a.permissibleValue + ',' + a.valueMeaningName)
                     .join('|'),
                 'Field Note': '',
-                'Text Validation Type OR Show Slider Number':
-                    datatTypeToRedcapValidationType[q.datatype],
-                'Text Validation Min':
-                    q.datatype === 'Number' && q.datatypeNumber
-                        ? q.datatypeNumber.minValue
-                        : '',
-                'Text Validation Max':
-                    q.datatype === 'Number' && q.datatypeNumber
-                        ? q.datatypeNumber.maxValue
-                        : '',
+                'Text Validation Type OR Show Slider Number': dataTypeToRedcapValidationType[q.datatype],
+                'Text Validation Min': q.datatype === 'Number' && q.datatypeNumber ? q.datatypeNumber.minValue : '',
+                'Text Validation Max': q.datatype === 'Number' && q.datatypeNumber ? q.datatypeNumber.maxValue : '',
                 'Identifier?': '',
-                'Branching Logic (Show field only if...)': _questionSkipLogic,
+                'Branching Logic (Show field only if...)': questionSkipLogicTemp,
                 'Required Field?': q.required,
                 'Custom Alignment': '',
                 'Question Number (surveys only)': '',
@@ -277,13 +228,9 @@ export class RedcapExport {
         let sectionIndex = 0;
         for (const formElement of form.formElements) {
             sectionIndex++;
-            instrumentJsonRows.push(
-                oneLayerFormconvertSectionToRow(formElement, sectionIndex)
-            );
+            instrumentJsonRows.push(oneLayerFormconvertSectionToRow(formElement, sectionIndex));
             for (const fe of formElement.formElements) {
-                instrumentJsonRows.push(
-                    oneLayerFormconvertQuestionToRow(fe as FormQuestion)
-                );
+                instrumentJsonRows.push(oneLayerFormconvertQuestionToRow(fe as FormQuestion));
             }
         }
         return json2csvParser.parse(instrumentJsonRows);

@@ -1,24 +1,9 @@
-import {
-    Component,
-    Input,
-    Output,
-    ViewChild,
-    EventEmitter,
-    ElementRef,
-} from '@angular/core';
+import { Component, Input, Output, ViewChild, EventEmitter, ElementRef } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import {
-    MatAutocomplete,
-    MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
-import {
-    startWith,
-    distinctUntilChanged,
-    debounceTime,
-    map,
-} from 'rxjs/operators';
+import { startWith, distinctUntilChanged, debounceTime, map } from 'rxjs/operators';
 import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
 
 @Component({
@@ -50,11 +35,7 @@ export class TagComponent {
             startWith(''),
             debounceTime(300),
             distinctUntilChanged(),
-            map(value =>
-                this.allTags.filter(
-                    t => t.toLowerCase().indexOf(value.toLowerCase()) > -1
-                )
-            )
+            map(value => this.allTags.filter(t => t.toLowerCase().indexOf(value.toLowerCase()) > -1))
         );
     }
 

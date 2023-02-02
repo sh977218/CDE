@@ -1,12 +1,5 @@
-import {
-    DataElementElastic,
-    ValueDomainValueList,
-} from 'shared/de/dataElement.model';
-import {
-    ItemElastic,
-    PermissibleValue,
-    TableViewFields,
-} from 'shared/models.model';
+import { DataElementElastic, ValueDomainValueList } from 'shared/de/dataElement.model';
+import { ItemElastic, PermissibleValue, TableViewFields } from 'shared/models.model';
 
 export function getCdeCsvHeader(settings: TableViewFields): string {
     let cdeHeader = 'Name';
@@ -69,48 +62,31 @@ export function getCdeCsvHeader(settings: TableViewFields): string {
     return cdeHeader;
 }
 
-export function projectItemForExport(
-    ele: ItemElastic,
-    settings?: TableViewFields
-): any {
+export function projectItemForExport(ele: ItemElastic, settings?: TableViewFields): any {
     const cde: any = {
         name: ele.designations[0].designation,
     };
     if (settings && settings.questionTexts) {
         cde.questionTexts = ele.designations
-            .filter(
-                n =>
-                    (n.tags || []).filter(t => t.indexOf('Question Text') > -1)
-                        .length > 0
-            )
+            .filter(n => (n.tags || []).filter(t => t.indexOf('Question Text') > -1).length > 0)
             .map(n => n.designation)
             .filter(n => n);
     }
     if (settings && settings.naming) {
         cde.otherNames = ele.designations
-            .filter(
-                n =>
-                    (n.tags || []).filter(t => t.indexOf('Question Text') > -1)
-                        .length === 0
-            )
+            .filter(n => (n.tags || []).filter(t => t.indexOf('Question Text') > -1).length === 0)
             .map(n => n.designation)
             .filter(n => n);
     }
     if (settings && (settings.permissibleValues || settings.pvCodeNames)) {
         cde.valueDomainType = (ele as DataElementElastic).valueDomain.datatype;
     }
-    const pvs = (
-        (ele as DataElementElastic).valueDomain as ValueDomainValueList
-    ).permissibleValues;
+    const pvs = ((ele as DataElementElastic).valueDomain as ValueDomainValueList).permissibleValues;
     if (settings && settings.permissibleValues) {
-        cde.permissibleValues = (pvs || [])
-            .slice(0, 50)
-            .map((pv: PermissibleValue) => pv.permissibleValue);
+        cde.permissibleValues = (pvs || []).slice(0, 50).map((pv: PermissibleValue) => pv.permissibleValue);
     }
     if (settings && settings.pvCodeNames) {
-        cde.pvCodeNames = (pvs || [])
-            .slice(0, 50)
-            .map((pv: PermissibleValue) => pv.valueMeaningName);
+        cde.pvCodeNames = (pvs || []).slice(0, 50).map((pv: PermissibleValue) => pv.valueMeaningName);
     }
     if (settings && settings.nbOfPVs) {
         cde.nbOfPVs = pvs?.length || 0;
@@ -133,11 +109,7 @@ export function projectItemForExport(
         cde.administrativeStatus = ele.registrationState.administrativeStatus;
     }
     if (!settings || settings.ids) {
-        if (
-            settings &&
-            settings.identifiers &&
-            settings.identifiers.length > 0
-        ) {
+        if (settings && settings.identifiers && settings.identifiers.length > 0) {
             settings.identifiers.forEach(i => {
                 cde[i] = '';
                 ele.ids.forEach(id => {
@@ -147,13 +119,7 @@ export function projectItemForExport(
                 });
             });
         } else {
-            cde.ids = ele.ids.map(
-                id =>
-                    id.source +
-                    ': ' +
-                    id.id +
-                    (id.version ? ' v' + id.version : '')
-            );
+            cde.ids = ele.ids.map(id => id.source + ': ' + id.id + (id.version ? ' v' + id.version : ''));
         }
     }
     if (settings && settings.source) {

@@ -10,19 +10,11 @@ export class SortableArrayComponent {
     @Output() cb = new EventEmitter();
 
     moveUp() {
-        this.theArray.splice(
-            this.index - 1,
-            0,
-            this.theArray.splice(this.index, 1)[0]
-        );
+        this.theArray.splice(this.index - 1, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }
     moveDown() {
-        this.theArray.splice(
-            this.index + 1,
-            0,
-            this.theArray.splice(this.index, 1)[0]
-        );
+        this.theArray.splice(this.index + 1, 0, this.theArray.splice(this.index, 1)[0]);
         this.cb.emit();
     }
     moveTop() {

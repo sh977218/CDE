@@ -15,10 +15,7 @@ import {
     Cb2,
     CbErr1,
 } from 'shared/models.model';
-import {
-    SearchSettings,
-    SearchSettingsElastic,
-} from 'shared/search/search.model';
+import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 
 const includeRetiredSessionKey = 'nlmcde.includeRetired';
 
@@ -45,9 +42,7 @@ export class ElasticService implements OnDestroy {
         }
     }
 
-    buildElasticQuerySettings(
-        queryParams: SearchSettings
-    ): SearchSettingsElastic {
+    buildElasticQuerySettings(queryParams: SearchSettings): SearchSettingsElastic {
         return {
             resultPerPage: queryParams.resultPerPage,
             searchTerm: queryParams.q,
@@ -81,16 +76,12 @@ export class ElasticService implements OnDestroy {
     generalSearchQuery(
         settings: SearchSettingsElastic,
         type: 'cde' | 'form',
-        cb:
-            | CbErr2<SearchResponseAggregationDe, boolean>
-            | CbErr2<SearchResponseAggregationForm, boolean>
+        cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>
     ): void;
     generalSearchQuery(
         settings: SearchSettingsElastic,
         type: 'cde' | 'form',
-        cb:
-            | CbErr2<SearchResponseAggregationDe, boolean>
-            | CbErr2<SearchResponseAggregationForm, boolean>
+        cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>
     ): void {
         const search = (
             good: Cb2<SearchResponseAggregationItem, boolean | void>,
@@ -100,9 +91,7 @@ export class ElasticService implements OnDestroy {
             if (type === 'form') {
                 url = '/server/form/search';
             }
-            this.http
-                .post<SearchResponseAggregationItem>(url, settings)
-                .subscribe(good as any, bad as any);
+            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good as any, bad as any);
         };
 
         const success: Cb2<SearchResponseAggregationItem, boolean | void> = (
@@ -118,24 +107,14 @@ export class ElasticService implements OnDestroy {
                 ElasticService.highlightResults(responseForm.forms);
                 responseForm.forms.forEach(CdeForm.validate);
             }
-            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(
-                undefined,
-                response,
-                isRetry
-            );
+            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(undefined, response, isRetry);
         };
 
         search(success, () => {
             if (settings.searchTerm) {
-                settings.searchTerm = settings.searchTerm.replace(
-                    /[^\w\s]/gi,
-                    ''
-                );
+                settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
             }
-            search(
-                response => success(response, true),
-                cb as CbErr2<SearchResponseAggregationItem, boolean | void>
-            );
+            search(response => success(response, true), cb as CbErr2<SearchResponseAggregationItem, boolean | void>);
         });
     }
 
@@ -143,51 +122,35 @@ export class ElasticService implements OnDestroy {
         return this.searchSettings.defaultSearchView;
     }
 
-    getExport(
-        query: SearchSettingsElastic,
-        type: 'cde' | 'form',
-        cb: CbErr1<ItemElastic[] | void>
-    ) {
-        this.http
-            .post<ItemElastic[]>(
-                `/server/${deOrForm(type)}/searchExport`,
-                query
-            )
-            .subscribe(
-                response => cb(undefined, response),
-                (err: HttpErrorResponse) => {
-                    cb(
-                        err.status === 503
-                            ? 'The server is busy processing similar request, please try again in a minute.'
-                            : 'An error occurred. This issue has been reported.'
-                    );
-                }
-            );
+    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr1<ItemElastic[] | void>) {
+        this.http.post<ItemElastic[]>(`/server/${deOrForm(type)}/searchExport`, query).subscribe(
+            response => cb(undefined, response),
+            (err: HttpErrorResponse) => {
+                cb(
+                    err.status === 503
+                        ? 'The server is busy processing similar request, please try again in a minute.'
+                        : 'An error occurred. This issue has been reported.'
+                );
+            }
+        );
     }
 
     loadSearchSettings() {
-        this.searchSettings =
-            this.localStorageService.getItem('SearchSettings') ||
-            ElasticService.getDefault();
+        this.searchSettings = this.localStorageService.getItem('SearchSettings') || ElasticService.getDefault();
 
         if (!this.unsubscribeUser) {
             this.unsubscribeUser = this.userService.subscribe(user => {
-                this.searchSettings =
-                    user?.searchSettings || ElasticService.getDefault();
+                this.searchSettings = user?.searchSettings || ElasticService.getDefault();
             });
         }
 
-        this.includeRetired = !!window.sessionStorage.getItem(
-            includeRetiredSessionKey
-        );
+        this.includeRetired = !!window.sessionStorage.getItem(includeRetiredSessionKey);
     }
 
     saveConfiguration() {
         this.localStorageService.setItem('SearchSettings', this.searchSettings);
         if (this.userService.user) {
-            this.http
-                .post('/server/user/', { searchSettings: this.searchSettings })
-                .subscribe();
+            this.http.post('/server/user/', { searchSettings: this.searchSettings }).subscribe();
         }
 
         if (this.includeRetired) {
@@ -231,12 +194,10 @@ export class ElasticService implements OnDestroy {
     }
 
     static highlightPrimaryDefinitionCopy(cde: ItemElastic) {
-        const primaryDefinitionCopyHighlight =
-            cde.highlight?.primaryDefinitionCopy;
+        const primaryDefinitionCopyHighlight = cde.highlight?.primaryDefinitionCopy;
         if (!primaryDefinitionCopyHighlight) {
             if (cde.primaryDefinitionCopy.length > 200) {
-                cde.primaryDefinitionCopy =
-                    cde.primaryDefinitionCopy.substring(0, 200) + ' [...]';
+                cde.primaryDefinitionCopy = cde.primaryDefinitionCopy.substring(0, 200) + ' [...]';
             }
         }
     }
@@ -256,15 +217,11 @@ export class ElasticService implements OnDestroy {
                     cde[field] = cde.highlight[field][0];
                 } else {
                     if (cde[field].length > 50) {
-                        cde[field] =
-                            cde[field].substr(0, 50) +
-                            ' [...] ' +
-                            cde.highlight[field][0];
+                        cde[field] = cde[field].substr(0, 50) + ' [...] ' + cde.highlight[field][0];
                     }
                 }
             } else {
-                cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] =
-                    cde.highlight[field][0];
+                cde[field.replace(/\..+$/, '')][field.replace(/^.+\./, '')] = cde.highlight[field][0];
             }
         } else {
             if (field.indexOf('.') < 0) {
@@ -286,10 +243,7 @@ export class ElasticService implements OnDestroy {
             cde.highlight = { matchedBy: field };
             return;
         } else {
-            if (
-                cde.highlight.primaryNameCopy ||
-                cde.highlight.primaryDefinitionCopy
-            ) {
+            if (cde.highlight.primaryNameCopy || cde.highlight.primaryDefinitionCopy) {
                 return;
             }
             const matched = Object.keys(cde.highlight)[0];

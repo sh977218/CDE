@@ -1,7 +1,4 @@
-export function DELETE<BoundaryOut>(
-    url: string,
-    object: BoundaryOut
-): Promise<void> {
+export function DELETE<BoundaryOut>(url: string, object: BoundaryOut): Promise<void> {
     return fetch(url, {
         method: 'DELETE',
         headers: {
@@ -16,10 +13,7 @@ export function GET<BoundaryIn>(url: string): Promise<BoundaryIn> {
     return fetch(url).then(res => res.json());
 }
 
-export function POST<BoundaryOut, BoundaryIn>(
-    url: string,
-    object: BoundaryOut
-): Promise<BoundaryIn> {
+export function POST<BoundaryOut, BoundaryIn>(url: string, object: BoundaryOut): Promise<BoundaryIn> {
     return fetch(url, {
         method: 'POST',
         headers: {
@@ -30,10 +24,7 @@ export function POST<BoundaryOut, BoundaryIn>(
     }).then(res => res.json());
 }
 
-export function PUT<BoundaryOut, BoundaryIn>(
-    url: string,
-    object: BoundaryOut
-): Promise<BoundaryIn> {
+export function PUT<BoundaryOut, BoundaryIn>(url: string, object: BoundaryOut): Promise<BoundaryIn> {
     return fetch(url, {
         method: 'PUT',
         headers: {

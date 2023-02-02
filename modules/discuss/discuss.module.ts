@@ -21,11 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 
         // internal
     ],
-    declarations: [
-        DiscussAreaComponent,
-        CommentsComponent,
-        LatestCommentsComponent,
-    ],
+    declarations: [DiscussAreaComponent, CommentsComponent, LatestCommentsComponent],
     exports: [DiscussAreaComponent, LatestCommentsComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

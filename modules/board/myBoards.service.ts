@@ -35,31 +35,18 @@ export class MyBoardsService {
     };
     reloading = false;
 
-    constructor(
-        private http: HttpClient,
-        private alert: AlertService,
-        private userService: UserService
-    ) {
+    constructor(private http: HttpClient, private alert: AlertService, private userService: UserService) {
         if (userService.user) {
             this.loadMyBoards();
         }
     }
 
     loadMyBoards(type?: ModuleItem, cb = noop) {
-        this.filter.selectedShareStatus = this.filter.shareStatus
-            .filter(a => a.checked)
-            .map(a => a.key);
-        this.filter.selectedTags = this.filter.tags
-            .filter(a => a.checked)
-            .map(a => a.key);
-        this.filter.selectedTypes = this.filter.types
-            .filter(a => a.checked)
-            .map(a => a.key);
+        this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
+        this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
+        this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
         this.http
-            .post<ElasticQueryResponseAggregations<ItemElastic>>(
-                '/server/board/myBoards',
-                this.filter
-            )
+            .post<ElasticQueryResponseAggregations<ItemElastic>>('/server/board/myBoards', this.filter)
             .subscribe(res => {
                 if (res.hits) {
                     this.boards = res.hits.hits.map(h => {
@@ -67,27 +54,14 @@ export class MyBoardsService {
                         return h._source;
                     });
                     this.filter.tags = res.aggregations.tagAgg.buckets;
-                    this.filter.tags.forEach(
-                        t =>
-                            (t.checked =
-                                this.filter.selectedTags.indexOf(t.key) > -1)
-                    );
+                    this.filter.tags.forEach(t => (t.checked = this.filter.selectedTags.indexOf(t.key) > -1));
                     this.filter.types = res.aggregations.typeAgg.buckets;
                     this.filter.shareStatus = res.aggregations.ssAgg.buckets;
                     this.filter.shareStatus.forEach(
-                        ss =>
-                            (ss.checked =
-                                this.filter.selectedShareStatus.indexOf(
-                                    ss.key
-                                ) > -1)
+                        ss => (ss.checked = this.filter.selectedShareStatus.indexOf(ss.key) > -1)
                     );
-                    this.filter.types.forEach(
-                        t =>
-                            (t.checked =
-                                this.filter.selectedTypes.indexOf(t.key) > -1)
-                    );
-                    this.filter.suggestTags =
-                        res.aggregations.tagAgg.buckets.map(t => t.key);
+                    this.filter.types.forEach(t => (t.checked = this.filter.selectedTypes.indexOf(t.key) > -1));
+                    this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
                 }
                 this.reloading = false;
                 if (type && this.boards) {
@@ -100,13 +74,9 @@ export class MyBoardsService {
 
     sortBoardList(type?: ModuleItem) {
         const defaultBoardId =
-            type === 'form'
-                ? this.userService.user?.formDefaultBoard
-                : this.userService.user?.cdeDefaultBoard;
+            type === 'form' ? this.userService.user?.formDefaultBoard : this.userService.user?.cdeDefaultBoard;
         if (type && defaultBoardId && this.boards) {
-            const boardIdx = this.boards.findIndex(
-                b => b._id === defaultBoardId
-            );
+            const boardIdx = this.boards.findIndex(b => b._id === defaultBoardId);
             if (boardIdx > 0) {
                 this.boards.splice(0, 0, this.boards.splice(boardIdx, 1)[0]);
             }
@@ -146,21 +116,13 @@ export class MyBoardsService {
             })
             .subscribe(
                 () => {
-                    this.alert.addAlertFromComponent(
-                        'success',
-                        PinBoardSnackbarComponent,
-                        {
-                            message: 'All elements pinned to ',
-                            boardId: board._id,
-                            boardName: board.name,
-                        }
-                    );
+                    this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
+                        message: 'All elements pinned to ',
+                        boardId: board._id,
+                        boardName: board.name,
+                    });
                 },
-                () =>
-                    this.alert.addAlert(
-                        'danger',
-                        'Not all elements were not pinned!'
-                    )
+                () => this.alert.addAlert('danger', 'Not all elements were not pinned!')
             );
     }
 

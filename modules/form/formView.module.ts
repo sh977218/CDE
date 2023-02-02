@@ -122,12 +122,7 @@ const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
         CopyFormModalComponent,
     ],
     exports: [],
-    providers: [
-        FormViewService,
-        WINDOW_PROVIDERS,
-        SkipLogicValidateService,
-        UcumService,
-    ],
+    providers: [FormViewService, WINDOW_PROVIDERS, SkipLogicValidateService, UcumService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FormViewModule {}

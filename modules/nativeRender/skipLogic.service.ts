@@ -8,11 +8,7 @@ import { FormElement, FormElementsContainer } from 'shared/form/form.model';
 export class SkipLogicService {
     constructor(private errorHandler: ErrorHandler) {}
 
-    evalSkipLogic(
-        parent: FormElementsContainer,
-        fe: FormElement,
-        nrs: NativeRenderService
-    ): boolean {
+    evalSkipLogic(parent: FormElementsContainer, fe: FormElement, nrs: NativeRenderService): boolean {
         try {
             return evaluateSkipLogic(
                 fe.skipLogic ? fe.skipLogic.condition : undefined,
@@ -22,9 +18,7 @@ export class SkipLogicService {
             );
         } catch (error) {
             this.errorHandler.handleError({
-                name:
-                    'Skip Logic Evaluation Error: ' +
-                    (fe.skipLogic && fe.skipLogic.condition),
+                name: 'Skip Logic Evaluation Error: ' + (fe.skipLogic && fe.skipLogic.condition),
                 message: error.message,
                 stack: error.stack,
             });
@@ -32,11 +26,7 @@ export class SkipLogicService {
         }
     }
 
-    evalSkipLogicAndClear(
-        parent: FormElementsContainer,
-        fe: FormElement,
-        nrs: NativeRenderService
-    ): boolean {
+    evalSkipLogicAndClear(parent: FormElementsContainer, fe: FormElement, nrs: NativeRenderService): boolean {
         const skipLogicResult = this.evalSkipLogic(parent, fe, nrs);
         if (!skipLogicResult && isQuestion(fe)) {
             fe.question.answer = undefined;

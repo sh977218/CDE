@@ -9,7 +9,6 @@ import {
     Output,
     SimpleChanges,
 } from '@angular/core';
-import { cloneDeep } from 'lodash';
 import { environment } from 'environments/environment';
 import 'inlineAreaEdit/inlineAreaEdit.global.scss';
 
@@ -17,9 +16,7 @@ import 'inlineAreaEdit/inlineAreaEdit.global.scss';
     selector: 'cde-inline-area-edit',
     templateUrl: './inlineAreaEdit.component.html',
 })
-export class InlineAreaEditComponent
-    implements OnInit, AfterViewInit, OnChanges
-{
+export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() model!: string;
     @Input() isAllowed = false;
     @Input() bypassSanitize = false;
@@ -53,9 +50,7 @@ export class InlineAreaEditComponent
 
     confirmSave() {
         if (InlineAreaEditComponent.isInvalidHtml(this.value)) {
-            alert(
-                'Error. Img src may only be a relative url starting with /data'
-            );
+            alert('Error. Img src may only be a relative url starting with /data');
         } else {
             this.editMode = false;
             this.defFormatChange.emit(this.localFormat);

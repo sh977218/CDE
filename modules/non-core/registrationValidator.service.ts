@@ -16,23 +16,14 @@ export class RegistrationValidatorService {
         const rulesOrgs: StatusValidationRulesByOrg = {};
         if (item.classification) {
             item.classification.forEach(c => {
-                rulesOrgs[c.stewardOrg.name] =
-                    this.orgHelperService.getStatusValidationRules(
-                        c.stewardOrg.name
-                    );
+                rulesOrgs[c.stewardOrg.name] = this.orgHelperService.getStatusValidationRules(c.stewardOrg.name);
             });
         }
         return rulesOrgs;
     }
 }
 
-const statuses: CurationStatus[] = [
-    'Standard',
-    'Qualified',
-    'Recorded',
-    'Candidate',
-    'Incomplete',
-];
+const statuses: CurationStatus[] = ['Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete'];
 export interface RuleStatus {
     ruleError?: string;
     ruleName: string;
@@ -51,9 +42,7 @@ export function processRules(
         ? undefined
         : orgRules
               .filter((r: StatusValidationRules) =>
-                  statusesIndex > -1
-                      ? statuses.slice(statusesIndex).includes(r.targetStatus)
-                      : true
+                  statusesIndex > -1 ? statuses.slice(statusesIndex).includes(r.targetStatus) : true
               )
               .map((r: StatusValidationRules) => ({
                   ruleName: r.ruleName,
@@ -77,9 +66,7 @@ function lookForPropertyInNestedObject(
     if (fields.length === 1) {
         if (rule.rule.regex) {
             return Promise.resolve(
-                new RegExp(rule.rule.regex).test(obj[key])
-                    ? ''
-                    : `${rule.rule.regex} not found in ${obj[key]}`
+                new RegExp(rule.rule.regex).test(obj[key]) ? '' : `${rule.rule.regex} not found in ${obj[key]}`
             );
         } else if (rule.rule.customValidations) {
             if (rule.rule.customValidations.includes('permissibleValuesUMLS')) {
@@ -110,25 +97,14 @@ function lookForPropertyInNestedObject(
         return Promise.resolve('field validation not found');
     }
     if (!Array.isArray(obj[key])) {
-        return lookForPropertyInNestedObject(
-            cde,
-            rule,
-            obj[key],
-            fields.slice(1)
-        );
+        return lookForPropertyInNestedObject(cde, rule, obj[key], fields.slice(1));
     }
     switch (rule.occurence) {
         case 'atLeastOne':
             return Promise.resolve(
                 obj[key].reduce(
                     (acc: boolean, subTree: any) =>
-                        acc ||
-                        lookForPropertyInNestedObject(
-                            cde,
-                            rule,
-                            subTree,
-                            fields.slice(1)
-                        ),
+                        acc || lookForPropertyInNestedObject(cde, rule, subTree, fields.slice(1)),
                     false
                 )
             );
@@ -136,13 +112,7 @@ function lookForPropertyInNestedObject(
             return Promise.resolve(
                 obj[key].reduce(
                     (acc: boolean, subTree: any) =>
-                        acc &&
-                        lookForPropertyInNestedObject(
-                            cde,
-                            rule,
-                            subTree,
-                            fields.slice(1)
-                        ),
+                        acc && lookForPropertyInNestedObject(cde, rule, subTree, fields.slice(1)),
                     true
                 )
             );
@@ -150,16 +120,11 @@ function lookForPropertyInNestedObject(
     return Promise.resolve('validation not found');
 }
 
-export function cdePassingRule(
-    cde: any,
-    rule: StatusValidationRules
-): Promise<string> {
+export function cdePassingRule(cde: any, rule: StatusValidationRules): Promise<string> {
     return lookForPropertyInNestedObject(cde, rule, cde, rule.field.split('.'));
 }
 
-export function getStatusRules(
-    cdeOrgRules: StatusValidationRulesByOrg
-): StatusValidationRulesByOrgReg {
+export function getStatusRules(cdeOrgRules: StatusValidationRulesByOrg): StatusValidationRulesByOrgReg {
     const cdeStatusRules: StatusValidationRulesByOrgReg = {
         Incomplete: {},
         Candidate: {},

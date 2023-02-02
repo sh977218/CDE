@@ -2,11 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-    MAT_DIALOG_DATA,
-    MatDialogModule,
-    MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
@@ -29,11 +25,7 @@ import { BoardOverviewModule } from 'board/board-overview.module';
         CreateBoardModule,
         BoardOverviewModule,
     ],
-    declarations: [
-        PinToBoardDirective,
-        PinToBoardLogInModalComponent,
-        PinToBoardModalComponent,
-    ],
+    declarations: [PinToBoardDirective, PinToBoardLogInModalComponent, PinToBoardModalComponent],
     providers: [
         { provide: MAT_DIALOG_DATA, useValue: {} },
         { provide: MatDialogRef, useValue: {} },

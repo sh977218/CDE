@@ -15,20 +15,14 @@ import { transferClassifications } from 'shared/classification/classificationSha
 import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
 
-export async function doMerge(
-    tinyIdFrom: string,
-    tinyIdTo: string,
-    fields: DeMergeFields
-) {
+export async function doMerge(tinyIdFrom: string, tinyIdTo: string, fields: DeMergeFields) {
     if (tinyIdFrom === tinyIdTo) {
         throw new Error('You cannot merge same data elements.');
     }
     const cdeFrom = await getCdeByTinyId(tinyIdFrom);
     const cdeTo = await getCdeByTinyId(tinyIdTo);
     if (cdeFrom.isDraft) {
-        throw new Error(
-            `You cannot merge draft data element. ${cdeFrom.tinyId}`
-        );
+        throw new Error(`You cannot merge draft data element. ${cdeFrom.tinyId}`);
     }
     if (cdeTo.isDraft) {
         throw new Error(`You cannot merge draft data element. ${cdeTo.tinyId}`);

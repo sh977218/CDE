@@ -18,20 +18,14 @@ export class NativeSectionComponent {
         if (this.formElement.repeat && this.formElement.repeat !== '1') {
             return 'table';
         }
-        if (
-            this.nrs.profile.sectionsAsMatrix &&
-            this.canBeDisplayedAsMatrix(this.formElement)
-        ) {
+        if (this.nrs.profile.sectionsAsMatrix && this.canBeDisplayedAsMatrix(this.formElement)) {
             return 'matrix';
         }
         return 'section';
     }
 
     isSectionDisplayed(section: FormSectionOrForm) {
-        return (
-            section.label ||
-            section.formElements.some(elem => elem.elementType === 'question')
-        );
+        return section.label || section.formElements.some(elem => elem.elementType === 'question');
     }
 
     canBeDisplayedAsMatrix(section: FormSectionOrForm) {
@@ -44,8 +38,7 @@ export class NativeSectionComponent {
         if (
             section &&
             section.formElements &&
-            (section.formElements.length === 0 ||
-                section.formElements.length === 1)
+            (section.formElements.length === 0 || section.formElements.length === 1)
         ) {
             return false;
         }
@@ -61,9 +54,7 @@ export class NativeSectionComponent {
                     result = false;
                     return;
                 }
-                const newHash = JSON.stringify(
-                    formElem.question.answers.map(a => a.valueMeaningName)
-                );
+                const newHash = JSON.stringify(formElem.question.answers.map(a => a.valueMeaningName));
                 if (!answerHash) {
                     answerHash = newHash;
                     return;

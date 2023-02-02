@@ -1,10 +1,6 @@
-export function handleDropdown(
-    dropdownMenus: HTMLElement[]
-): [() => void, () => void] {
+export function handleDropdown(dropdownMenus: HTMLElement[]): [() => void, () => void] {
     const documentHandler = () => {
-        dropdownMenus.forEach(dropdownMenu =>
-            dropdownMenu.classList.remove('show')
-        );
+        dropdownMenus.forEach(dropdownMenu => dropdownMenu.classList.remove('show'));
         dropdownMenus.length = 0;
     };
     document.addEventListener('click', documentHandler);

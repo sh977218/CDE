@@ -8,14 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        NonCoreModule,
-        MatInputModule,
-        MatAutocompleteModule,
-    ],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, NonCoreModule, MatInputModule, MatAutocompleteModule],
     declarations: [UsernameAutocompleteComponent],
     exports: [UsernameAutocompleteComponent],
     providers: [],

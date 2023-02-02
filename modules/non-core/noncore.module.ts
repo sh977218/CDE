@@ -10,11 +10,6 @@ import { RegistrationValidatorService } from 'non-core/registrationValidator.ser
     imports: [],
     declarations: [PlaceHoldEmptyPipe, SafeHtmlPipe],
     exports: [PlaceHoldEmptyPipe, SafeHtmlPipe],
-    providers: [
-        ClassificationService,
-        ExportService,
-        IsAllowedService,
-        RegistrationValidatorService,
-    ],
+    providers: [ClassificationService, ExportService, IsAllowedService, RegistrationValidatorService],
 })
 export class NonCoreModule {}

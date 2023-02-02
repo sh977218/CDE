@@ -10,13 +10,11 @@ export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {
     constructor(private router: Router, private http: HttpClient) {}
 
     resolve() {
-        return this.http
-            .get<Organization>('/server/orgManagement/managedOrgs')
-            .pipe(
-                catchError(() => {
-                    this.router.navigate(['/404']);
-                    return EMPTY;
-                })
-            );
+        return this.http.get<Organization>('/server/orgManagement/managedOrgs').pipe(
+            catchError(() => {
+                this.router.navigate(['/404']);
+                return EMPTY;
+            })
+        );
     }
 }

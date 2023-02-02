@@ -32,7 +32,6 @@ export class TextTruncateComponent {
 
     toggleShow(): void {
         this.open = !this.open;
-        this._class =
-            this._class === 'collapseText' ? 'expandText' : 'collapseText';
+        this._class = this._class === 'collapseText' ? 'expandText' : 'collapseText';
     }
 }

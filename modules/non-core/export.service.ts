@@ -5,22 +5,14 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { getFormQuestionsAsQuestionCde } from 'core/form/fe';
 import { getFormOdm } from 'core/form/form';
-import {
-    convertToCsv,
-    getCdeCsvHeader,
-    projectItemForExport,
-} from 'core/system/export';
+import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 import { RedcapExport } from 'form/redcapExport';
 import { saveAs } from 'file-saver';
 import * as JSZip from 'jszip';
 import JXON from 'jxon';
 import { intersectionWith } from 'lodash';
 import { fetchFormStringById } from 'nativeRender/form.service';
-import {
-    processRules,
-    RegistrationValidatorService,
-    RuleStatus,
-} from 'non-core/registrationValidator.service';
+import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import {
@@ -61,39 +53,25 @@ export class ExportService {
             if (result.length < 50) {
                 for (const r of result) {
                     if (r !== undefined) {
-                        const forms = await new Promise<CdeForm[] | undefined>(
-                            resolve => {
-                                const lfSettings =
-                                    this.elasticService.buildElasticQuerySettings(
-                                        new SearchSettings(r.tinyId)
-                                    );
-                                this.elasticService.generalSearchQuery(
-                                    lfSettings,
-                                    'form',
-                                    (
-                                        err?: string,
-                                        esRes?: ElasticQueryResponseForm
-                                    ) => resolve(esRes && esRes.forms)
-                                );
-                            }
-                        );
+                        const forms = await new Promise<CdeForm[] | undefined>(resolve => {
+                            const lfSettings = this.elasticService.buildElasticQuerySettings(
+                                new SearchSettings(r.tinyId)
+                            );
+                            this.elasticService.generalSearchQuery(
+                                lfSettings,
+                                'form',
+                                (err?: string, esRes?: ElasticQueryResponseForm) => resolve(esRes && esRes.forms)
+                            );
+                        });
                         if (forms && forms.length) {
-                            (r as DataElementElastic).linkedForms = forms
-                                .map(f => f.tinyId)
-                                .join(', ');
+                            (r as DataElementElastic).linkedForms = forms.map(f => f.tinyId).join(', ');
                         }
                     }
                 }
             } else {
-                const lfSettings =
-                    this.elasticService.buildElasticQuerySettings(
-                        new SearchSettings()
-                    );
+                const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
                 let esResp = await this.http
-                    .post<ElasticQueryResponse>(
-                        '/server/form/scrollExport',
-                        lfSettings
-                    )
+                    .post<ElasticQueryResponse>('/server/form/scrollExport', lfSettings)
                     .toPromise();
                 let totalNbOfForms = 0;
                 let formCounter = 0;
@@ -104,23 +82,17 @@ export class ExportService {
                         for (const hit of (esResp as any).hits.hits) {
                             formCounter++;
                             const esForm = hit._source;
-                            const formCdes =
-                                getFormQuestionsAsQuestionCde(esForm);
+                            const formCdes = getFormQuestionsAsQuestionCde(esForm);
                             const interArr: ItemElastic[] = intersectionWith(
                                 nonEmptyResults,
                                 formCdes,
                                 (a: any, b: any) => a.tinyId === b.tinyId
                             );
                             interArr.forEach(matchId => {
-                                const foundCdes = result.filter(
-                                    c => c.tinyId === matchId.tinyId
-                                );
+                                const foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
                                 foundCdes.forEach((c: DataElementElastic) => {
                                     if (c.linkedForms) {
-                                        c.linkedForms =
-                                            c.linkedForms +
-                                            ', ' +
-                                            esForm.tinyId;
+                                        c.linkedForms = c.linkedForms + ', ' + esForm.tinyId;
                                     } else {
                                         c.linkedForms = esForm.tinyId;
                                     }
@@ -128,11 +100,7 @@ export class ExportService {
                             });
                             this.alertService.addAlert(
                                 'success',
-                                'Attaching linked forms ' +
-                                    Math.trunc(
-                                        (100 * formCounter) / totalNbOfForms
-                                    ) +
-                                    '%'
+                                'Attaching linked forms ' + Math.trunc((100 * formCounter) / totalNbOfForms) + '%'
                             );
                         }
                         return true;
@@ -145,31 +113,18 @@ export class ExportService {
                     keepScrolling = intersectOnBatch(esResp);
                     // tslint:disable-next-line:max-line-length
                     esResp = await this.http
-                        .get<ElasticQueryResponse>(
-                            '/server/form/scrollExport/' +
-                                (esResp as any)._scroll_id
-                        )
+                        .get<ElasticQueryResponse>('/server/form/scrollExport/' + (esResp as any)._scroll_id)
                         .toPromise();
                 }
             }
         }
         return result.reduce(
-            (csv, r) =>
-                csv +
-                (r
-                    ? convertToCsv(
-                          projectItemForExport(r, settings.tableViewFields)
-                      )
-                    : '\n'),
+            (csv, r) => csv + (r ? convertToCsv(projectItemForExport(r, settings.tableViewFields)) : '\n'),
             getCdeCsvHeader(settings.tableViewFields)
         );
     }
 
-    exportDe = (
-        elt: DataElement,
-        queryString: string,
-        type: 'json' | 'xml'
-    ) => {
+    exportDe = (elt: DataElement, queryString: string, type: 'json' | 'xml') => {
         fetch('/server/de/byId/' + elt._id + queryString)
             .then(res => res.text())
             .then(data => {
@@ -178,10 +133,7 @@ export class ExportService {
                 this.alertService.addAlert('', 'Export downloaded.');
             })
             .catch(err => {
-                this.alertService.addAlert(
-                    '',
-                    'Export failed with err: ' + err
-                );
+                this.alertService.addAlert('', 'Export failed with err: ' + err);
             });
     };
 
@@ -193,10 +145,7 @@ export class ExportService {
                 this.alertService.addAlert('', 'Export downloaded.');
             })
             .catch(err => {
-                this.alertService.addAlert(
-                    '',
-                    'Export failed with err: ' + err
-                );
+                this.alertService.addAlert('', 'Export failed with err: ' + err);
             });
     };
 
@@ -206,15 +155,8 @@ export class ExportService {
         exportSettings: ExportRecordSettings,
         cb?: Cb1<ExportRecord[] | undefined>
     ) {
-        if (
-            !this.userService.loggedIn() &&
-            (module === 'form' ||
-                (module === 'cde' && type === 'validationRules'))
-        ) {
-            return this.alertService.addAlert(
-                'danger',
-                'Please login to access this feature'
-            );
+        if (!this.userService.loggedIn() && (module === 'form' || (module === 'cde' && type === 'validationRules'))) {
+            return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
 
         try {
@@ -229,20 +171,12 @@ export class ExportService {
         }
 
         if (type !== 'validationRules') {
-            this.alertService.addAlert(
-                '',
-                'Your export is being generated, please wait.'
-            );
+            this.alertService.addAlert('', 'Your export is being generated, please wait.');
         }
 
-        this.alertService.addAlert(
-            '',
-            'Fetching ' + module + 's. Please wait...'
-        );
+        this.alertService.addAlert('', 'Fetching ' + module + 's. Please wait...');
         this.elasticService.getExport(
-            this.elasticService.buildElasticQuerySettings(
-                exportSettings.searchSettings
-            ),
+            this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings),
             module || 'cde',
             (err, result) => {
                 if (err) {
@@ -257,20 +191,14 @@ export class ExportService {
                         const csv = await this.resultToCsv(result);
                         const blob = new Blob([csv], { type: 'text/csv' });
                         saveAs(blob, 'SearchExport.csv');
-                        this.alertService.addAlert(
-                            '',
-                            'Search results downloaded as CSV.'
-                        );
+                        this.alertService.addAlert('', 'Search results downloaded as CSV.');
                     },
                     json: (result: ItemElastic[]) => {
                         const blob = new Blob([JSON.stringify(result)], {
                             type: 'application/json',
                         });
                         saveAs(blob, 'SearchExport.json');
-                        this.alertService.addAlert(
-                            '',
-                            'Search results downloaded as JSON.'
-                        );
+                        this.alertService.addAlert('', 'Search results downloaded as JSON.');
                     },
                     xml: (result: ItemElastic[]) => {
                         const zip = new JSZip();
@@ -280,96 +208,61 @@ export class ExportService {
                                     oneElt.linkedForms['Preferred Standard'];
                                 delete oneElt.linkedForms['Preferred Standard'];
                             }
-                            const rootElement =
-                                module === 'cde' ? 'dataElement' : 'element';
-                            zip.file(
-                                oneElt.tinyId + '.xml',
-                                JXON.jsToString({ [rootElement]: oneElt })
-                            );
+                            const rootElement = module === 'cde' ? 'dataElement' : 'element';
+                            zip.file(oneElt.tinyId + '.xml', JXON.jsToString({ [rootElement]: oneElt }));
                         });
-                        zip.generateAsync({ type: 'blob' }).then(
-                            (content: any) =>
-                                saveAs(content, 'SearchExport_XML.zip')
+                        zip.generateAsync({ type: 'blob' }).then((content: any) =>
+                            saveAs(content, 'SearchExport_XML.zip')
                         );
-                        this.alertService.addAlert(
-                            'success',
-                            'Search results downloaded as XML.'
-                        );
+                        this.alertService.addAlert('success', 'Search results downloaded as XML.');
                     },
                     odm: (elts: CdeFormElastic[]) => {
                         const zip = new JSZip();
                         elts.forEach(elt => {
                             getFormOdm(elt, (err, odmElt) => {
                                 if (!err) {
-                                    zip.file(
-                                        elt.tinyId + '.xml',
-                                        JXON.jsToString({ ODM: odmElt })
-                                    );
+                                    zip.file(elt.tinyId + '.xml', JXON.jsToString({ ODM: odmElt }));
                                 }
                             });
                         });
-                        zip.generateAsync({ type: 'blob' }).then(
-                            (content: any) =>
-                                saveAs(content, 'SearchExport_ODM.zip')
+                        zip.generateAsync({ type: 'blob' }).then((content: any) =>
+                            saveAs(content, 'SearchExport_ODM.zip')
                         );
-                        this.alertService.addAlert(
-                            'success',
-                            'Search results downloaded as ODM XML.'
-                        );
+                        this.alertService.addAlert('success', 'Search results downloaded as ODM XML.');
                     },
                     validationRules: (elts: ItemElastic[]) => {
-                        const orgName =
-                            exportSettings.searchSettings.selectedOrg;
+                        const orgName = exportSettings.searchSettings.selectedOrg;
                         if (!cb || !orgName) {
                             return;
                         }
                         const status = exportSettings.status;
-                        const validations: Promise<ExportRecord | undefined>[] =
-                            elts.map(elt => {
-                                const cdeOrgRules =
-                                    this.registrationValidatorService.getOrgRulesForCde(
-                                        elt
-                                    );
-                                const ruleStatuses = processRules(
-                                    elt,
-                                    orgName,
-                                    status,
-                                    cdeOrgRules
-                                );
-                                if (!ruleStatuses) {
-                                    return Promise.resolve(undefined);
+                        const validations: Promise<ExportRecord | undefined>[] = elts.map(elt => {
+                            const cdeOrgRules = this.registrationValidatorService.getOrgRulesForCde(elt);
+                            const ruleStatuses = processRules(elt, orgName, status, cdeOrgRules);
+                            if (!ruleStatuses) {
+                                return Promise.resolve(undefined);
+                            }
+                            const ruleStatusesExists = ruleStatuses;
+                            return Promise.all(ruleStatuses.map(rule => rule.ruleResultPromise)).then(results => {
+                                if (results.every(result => !result)) {
+                                    return undefined; // All PASS
                                 }
-                                const ruleStatusesExists = ruleStatuses;
-                                return Promise.all(
-                                    ruleStatuses.map(
-                                        rule => rule.ruleResultPromise
-                                    )
-                                ).then(results => {
-                                    if (results.every(result => !result)) {
-                                        return undefined; // All PASS
-                                    }
-                                    const record: ExportRecord = {
-                                        tinyId: elt.tinyId,
-                                        cdeName:
-                                            elt.designations[0].designation,
-                                        validationRules: ruleStatusesExists,
-                                    };
-                                    results.forEach((ri, i) => {
-                                        record.validationRules[i].ruleError =
-                                            ri;
-                                    });
-                                    return record;
+                                const record: ExportRecord = {
+                                    tinyId: elt.tinyId,
+                                    cdeName: elt.designations[0].designation,
+                                    validationRules: ruleStatusesExists,
+                                };
+                                results.forEach((ri, i) => {
+                                    record.validationRules[i].ruleError = ri;
                                 });
+                                return record;
                             });
+                        });
                         Promise.all(validations).then(
                             r =>
                                 cb(
                                     r
-                                        .filter<ExportRecord>(
-                                            (
-                                                r: ExportRecord | undefined
-                                            ): r is ExportRecord => !!r
-                                        )
+                                        .filter<ExportRecord>((r: ExportRecord | undefined): r is ExportRecord => !!r)
                                         .slice(0, 100)
                                 ),
                             () => cb(undefined)
@@ -380,18 +273,12 @@ export class ExportService {
                 if (result) {
                     const exporter = (exporters as any)[type];
                     if (!exporter) {
-                        this.alertService.addAlert(
-                            'danger',
-                            'This export format is not supported.'
-                        );
+                        this.alertService.addAlert('danger', 'This export format is not supported.');
                     } else {
                         exporter(result);
                     }
                 } else {
-                    this.alertService.addAlert(
-                        'danger',
-                        'There was no data to export.'
-                    );
+                    this.alertService.addAlert('danger', 'There was no data to export.');
                 }
             }
         );
@@ -405,18 +292,13 @@ export class ExportService {
             saveAs(blob, 'QuickBoardExport' + '.csv');
             this.alertService.addAlert('', 'Export downloaded.');
         } else {
-            this.alertService.addAlert(
-                'danger',
-                'Something went wrong, please try again in a minute.'
-            );
+            this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
 
     async formCdeExport(form: CdeForm) {
         this.alertService.addAlert('', 'Fetching cdes. Please wait...');
-        const tinyIdList = getFormQuestionsAsQuestionCde(form).map(
-            f => f.tinyId
-        );
+        const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
         const elts = await this.http
             .get<DataElement[]>('/server/de/list/' + tinyIdList)
             .toPromise()
@@ -430,10 +312,7 @@ export class ExportService {
             saveAs(blob, 'FormCdes-' + form.tinyId + '.csv');
             this.alertService.addAlert('', 'Export downloaded.');
         } else {
-            this.alertService.addAlert(
-                'danger',
-                'Something went wrong, please try again in a minute.'
-            );
+            this.alertService.addAlert('danger', 'Something went wrong, please try again in a minute.');
         }
     }
 

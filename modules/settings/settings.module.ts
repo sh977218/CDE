@@ -336,13 +336,7 @@ const appRoutes: Routes = [
         ViewingHistoryComponent,
     ],
     exports: [],
-    providers: [
-        DraftsService,
-        MyDraftsResolve,
-        MyOrgDraftsResolve,
-        AllDraftsResolve,
-        ManagedOrgsResolve,
-    ],
+    providers: [DraftsService, MyDraftsResolve, MyOrgDraftsResolve, AllDraftsResolve, ManagedOrgsResolve],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SettingsModule {}

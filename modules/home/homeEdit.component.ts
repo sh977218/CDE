@@ -44,11 +44,7 @@ export class HomeEditComponent {
             .toPromise();
     }
 
-    attachmentUpload(
-        homepage: HomePageDraft,
-        updateCard: UpdateCard,
-        event: Event
-    ) {
+    attachmentUpload(homepage: HomePageDraft, updateCard: UpdateCard, event: Event) {
         if (event.srcElement) {
             const files = (event.srcElement as HTMLInputElement).files;
             if (files && files.length > 0) {
@@ -58,18 +54,13 @@ export class HomeEditComponent {
                     formData.append('uploadedFiles', files[i]);
                 }
                 /* tslint:enable */
-                this.http
-                    .post<HomepageAttachResponse>(
-                        '/server/homeAttach',
-                        formData
-                    )
-                    .subscribe(r => {
-                        updateCard.image = {
-                            fileId: r.fileId,
-                            uploadedBy: this.userService.user?._id,
-                        };
-                        this.autoSave(homepage);
-                    });
+                this.http.post<HomepageAttachResponse>('/server/homeAttach', formData).subscribe(r => {
+                    updateCard.image = {
+                        fileId: r.fileId,
+                        uploadedBy: this.userService.user?._id,
+                    };
+                    this.autoSave(homepage);
+                });
             }
         }
     }
@@ -108,17 +99,13 @@ export class HomeEditComponent {
 
     deleteDraft() {
         Promise.all([
-            this.http
-                .get<HomepageDraftGetResponse>('/server/homeEdit')
-                .toPromise(),
+            this.http.get<HomepageDraftGetResponse>('/server/homeEdit').toPromise(),
             this.http.get<HomepageGetResponse>('/server/home').toPromise(),
         ])
             .then(drafts => {
                 const [draft, original] = drafts;
                 if (draft) {
-                    const keepIds = (original ? original.body.updates : [])
-                        .map(u => u.image?.fileId)
-                        .filter(isString);
+                    const keepIds = (original ? original.body.updates : []).map(u => u.image?.fileId).filter(isString);
                     return Promise.all(
                         draft.body.updates.map(u => {
                             if (u.image && !keepIds.includes(u.image.fileId)) {
@@ -142,11 +129,7 @@ export class HomeEditComponent {
                         .get<HomepageGetResponse>('/server/home')
                         .toPromise()
                         .then(original => {
-                            if (
-                                (original ? original.body.updates : []).every(
-                                    u => u.image?.fileId !== fileId
-                                )
-                            ) {
+                            if ((original ? original.body.updates : []).every(u => u.image?.fileId !== fileId)) {
                                 return this.attachmentDelete(fileId);
                             }
                         });
@@ -159,19 +142,13 @@ export class HomeEditComponent {
 
     deleteUpdate(homepage: HomePageDraft, update: UpdateCard) {
         this.deleteImage(update).then(() => {
-            homepage.body.updates.splice(
-                homepage.body.updates.indexOf(update),
-                1
-            );
+            homepage.body.updates.splice(homepage.body.updates.indexOf(update), 1);
             this.autoSave(homepage);
         });
     }
 
     editable() {
-        return (
-            !this.homepage?.updateInProgress &&
-            this.homepage?.updatedBy === this.userService.user
-        );
+        return !this.homepage?.updateInProgress && this.homepage?.updatedBy === this.userService.user;
     }
 
     editLockAvailable() {
@@ -205,9 +182,7 @@ export class HomeEditComponent {
     postLoad(homepage: HomePageDraft) {
         this.timestampExpire = homepage.updated + 1800000; // add 30 minutes
         this.editing =
-            this.noDraft ||
-            (!homepage.updateInProgress &&
-                homepage.updatedBy === this.userService.user?._id);
+            this.noDraft || (!homepage.updateInProgress && homepage.updatedBy === this.userService.user?._id);
         if (!Array.isArray(homepage.body.updates)) {
             homepage.body.updates = [];
         }
@@ -220,10 +195,7 @@ export class HomeEditComponent {
             .toPromise()
             .then(original => {
                 return this.http
-                    .put<HomepageDraftPutResponse>(
-                        '/server/homeEdit',
-                        homepage as HomepageDraftPutRequest
-                    )
+                    .put<HomepageDraftPutResponse>('/server/homeEdit', homepage as HomepageDraftPutRequest)
                     .toPromise()
                     .then(newHomepage => {
                         homepage.updated = newHomepage.updated;
@@ -231,26 +203,15 @@ export class HomeEditComponent {
                         // homepage.updateInProgress = undefined;
                     })
                     .then(() =>
-                        this.http
-                            .put<HomepagePutResponse>(
-                                '/server/home',
-                                homepage as HomepagePutRequest
-                            )
-                            .toPromise()
+                        this.http.put<HomepagePutResponse>('/server/home', homepage as HomepagePutRequest).toPromise()
                     )
-                    .then(() =>
-                        this.http.delete('/server/homeEdit').toPromise()
-                    )
+                    .then(() => this.http.delete('/server/homeEdit').toPromise())
                     .then(() =>
                         Promise.all(
                             (original ? original.body.updates : [])
                                 .map(u => u.image?.fileId)
                                 .filter(isString)
-                                .filter(fileId =>
-                                    homepage.body.updates.every(
-                                        u => u.image?.fileId !== fileId
-                                    )
-                                )
+                                .filter(fileId => homepage.body.updates.every(u => u.image?.fileId !== fileId))
                                 .map(fileId => this.attachmentDelete(fileId))
                         )
                     )

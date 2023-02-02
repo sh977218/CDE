@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { CbErr, Elt } from 'shared/models.model';
-import {
-    Organization,
-    StatusValidationRules,
-} from 'shared/organization/organization';
+import { Organization, StatusValidationRules } from 'shared/organization/organization';
 import { validateOrganization } from 'shared/organization/organizationShared';
 import { isOrgCurator } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
@@ -29,10 +26,7 @@ export class OrgHelperService {
     addLongNameToOrgs(buckets: any) {
         if (buckets) {
             buckets.forEach((v: any) => {
-                if (
-                    this.orgsDetailedInfo[v.key] &&
-                    this.orgsDetailedInfo[v.key].longName
-                ) {
+                if (this.orgsDetailedInfo[v.key] && this.orgsDetailedInfo[v.key].longName) {
                     v.longName = this.orgsDetailedInfo[v.key].longName;
                 }
             });
@@ -46,29 +40,20 @@ export class OrgHelperService {
     createOrgDetailedInfoHtml(orgName: string) {
         if (this.orgsDetailedInfo[orgName]) {
             const anOrg = this.orgsDetailedInfo[orgName];
-            if (
-                anOrg.longName ||
-                anOrg.mailAddress ||
-                anOrg.emailAddress ||
-                anOrg.phoneNumber ||
-                anOrg.uri
-            ) {
+            if (anOrg.longName || anOrg.mailAddress || anOrg.emailAddress || anOrg.phoneNumber || anOrg.uri) {
                 let orgDetailsInfoHtml = 'Organization Details';
                 orgDetailsInfoHtml += '\nName: ' + anOrg.name;
                 if (anOrg.longName) {
                     orgDetailsInfoHtml += '\nLong name: ' + anOrg.longName;
                 }
                 if (anOrg.mailAddress) {
-                    orgDetailsInfoHtml +=
-                        '\nMailing address: ' + anOrg.mailAddress;
+                    orgDetailsInfoHtml += '\nMailing address: ' + anOrg.mailAddress;
                 }
                 if (anOrg.emailAddress) {
-                    orgDetailsInfoHtml +=
-                        '\nE-mail address: ' + anOrg.emailAddress;
+                    orgDetailsInfoHtml += '\nE-mail address: ' + anOrg.emailAddress;
                 }
                 if (anOrg.phoneNumber) {
-                    orgDetailsInfoHtml +=
-                        '\nPhone number: ' + anOrg.phoneNumber;
+                    orgDetailsInfoHtml += '\nPhone number: ' + anOrg.phoneNumber;
                 }
                 if (anOrg.uri) {
                     orgDetailsInfoHtml += '\nWebsite: ' + anOrg.uri;
@@ -81,9 +66,7 @@ export class OrgHelperService {
     }
 
     getStatusValidationRules(orgName: string): StatusValidationRules[] {
-        return this.orgsDetailedInfo[orgName]
-            ? this.orgsDetailedInfo[orgName].cdeStatusValidationRules
-            : [];
+        return this.orgsDetailedInfo[orgName] ? this.orgsDetailedInfo[orgName].cdeStatusValidationRules : [];
     }
 
     getUsedBy(elt: Elt) {
@@ -98,25 +81,19 @@ export class OrgHelperService {
     }
 
     reload(): Promise<OrgDetailedInfo> {
-        return (this.promise = new Promise<OrgDetailedInfo>(
-            (resolve, reject) => {
-                const userPromise = this.userService.catch(noop);
-                this.http
-                    .get<Organization[]>(
-                        '/server/orgManagement/listOrgsDetailedInfo'
-                    )
-                    .subscribe(response => {
-                        this.orgsDetailedInfo = {};
-                        response.forEach(org => {
-                            if (org) {
-                                validateOrganization(org);
-                                this.orgsDetailedInfo[org.name] = org;
-                            }
-                        });
-                        userPromise.then(() => resolve(this.orgsDetailedInfo));
-                    }, reject);
-            }
-        ));
+        return (this.promise = new Promise<OrgDetailedInfo>((resolve, reject) => {
+            const userPromise = this.userService.catch(noop);
+            this.http.get<Organization[]>('/server/orgManagement/listOrgsDetailedInfo').subscribe(response => {
+                this.orgsDetailedInfo = {};
+                response.forEach(org => {
+                    if (org) {
+                        validateOrganization(org);
+                        this.orgsDetailedInfo[org.name] = org;
+                    }
+                });
+                userPromise.then(() => resolve(this.orgsDetailedInfo));
+            }, reject);
+        }));
     }
 
     showWorkingGroup(orgToHide: string) {
@@ -124,8 +101,7 @@ export class OrgHelperService {
             return false;
         }
         const parentOrgOfThisClass =
-            this.orgsDetailedInfo[orgToHide] &&
-            this.orgsDetailedInfo[orgToHide].workingGroupOf;
+            this.orgsDetailedInfo[orgToHide] && this.orgsDetailedInfo[orgToHide].workingGroupOf;
         if (typeof parentOrgOfThisClass === 'undefined') {
             return true;
         }
@@ -142,15 +118,8 @@ export class OrgHelperService {
 
         let isSisterOfWg = false;
         this.userService.user.orgAdmin
-            .concat(
-                this.userService.user.orgCurator,
-                this.userService.user.orgEditor
-            )
-            .filter(
-                org =>
-                    this.orgsDetailedInfo[org] &&
-                    this.orgsDetailedInfo[org].workingGroupOf
-            )
+            .concat(this.userService.user.orgCurator, this.userService.user.orgEditor)
+            .filter(org => this.orgsDetailedInfo[org] && this.orgsDetailedInfo[org].workingGroupOf)
             .map(org => this.orgsDetailedInfo[org].workingGroupOf)
             .forEach(parentOrg => {
                 if (parentOrg === parentOrgOfThisClass) {

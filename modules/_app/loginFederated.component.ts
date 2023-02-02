@@ -46,96 +46,52 @@ export class LoginFederatedComponent {
                             text => {
                                 const authChild = document.createElement('p');
                                 authChild.textContent = 'done';
-                                document
-                                    .querySelector('body')
-                                    .appendChild(authChild);
+                                document.querySelector('body').appendChild(authChild);
                                 const thisRoute = '/loginFederated';
-                                const service = window.location.href.substr(
-                                    0,
-                                    window.location.href.indexOf(thisRoute)
-                                );
+                                const service = window.location.href.substr(0, window.location.href.indexOf(thisRoute));
                                 if (text === 'OK' && service) {
-                                    if (
-                                        window.opener &&
-                                        window.opener.loggedIn
-                                    ) {
+                                    if (window.opener && window.opener.loggedIn) {
                                         try {
                                             window.opener.loggedIn();
                                             window.close();
                                         } catch (err) {
-                                            const errorChild =
-                                                document.createElement('p');
+                                            const errorChild = document.createElement('p');
                                             errorChild.textContent = err;
-                                            document
-                                                .querySelector('body')
-                                                .appendChild(errorChild);
+                                            document.querySelector('body').appendChild(errorChild);
 
-                                            const errorChild1 =
-                                                document.createElement('p');
-                                            errorChild1.textContent =
-                                                'Flat Catch: ' +
-                                                JSON.stringify(err);
-                                            document
-                                                .querySelector('body')
-                                                .appendChild(errorChild1);
+                                            const errorChild1 = document.createElement('p');
+                                            errorChild1.textContent = 'Flat Catch: ' + JSON.stringify(err);
+                                            document.querySelector('body').appendChild(errorChild1);
                                         }
                                     } else {
-                                        const url =
-                                            window.sessionStorage.getItem(
-                                                'nlmcde.lastRoute'
-                                            );
+                                        const url = window.sessionStorage.getItem('nlmcde.lastRoute');
                                         if (url) {
-                                            const savedQuery =
-                                                window.sessionStorage.getItem(
-                                                    'nlmcde.lastRouteQuery'
-                                                );
-                                            window.sessionStorage.removeItem(
-                                                'nlmcde.lastRoute'
-                                            );
-                                            window.sessionStorage.removeItem(
-                                                'nlmcde.lastRouteQuery'
-                                            );
-                                            window.location.href =
-                                                service +
-                                                url +
-                                                (savedQuery || '');
+                                            const savedQuery = window.sessionStorage.getItem('nlmcde.lastRouteQuery');
+                                            window.sessionStorage.removeItem('nlmcde.lastRoute');
+                                            window.sessionStorage.removeItem('nlmcde.lastRouteQuery');
+                                            window.location.href = service + url + (savedQuery || '');
                                         } else {
-                                            window.location.href =
-                                                service + '/home';
+                                            window.location.href = service + '/home';
                                         }
                                     }
                                 } else {
                                     const child = document.createElement('h1');
-                                    child.textContent =
-                                        'Login Failed ' +
-                                        ' text: ' +
-                                        text +
-                                        ' service: ' +
-                                        service;
-                                    document
-                                        .querySelector('body')
-                                        .appendChild(child);
+                                    child.textContent = 'Login Failed ' + ' text: ' + text + ' service: ' + service;
+                                    document.querySelector('body').appendChild(child);
                                 }
                             },
                             err => {
                                 const child = document.createElement('h1');
                                 child.textContent = 'Login Error';
-                                document
-                                    .querySelector('body')
-                                    .appendChild(child);
+                                document.querySelector('body').appendChild(child);
 
                                 const errorChild = document.createElement('p');
                                 errorChild.textContent = err;
-                                document
-                                    .querySelector('body')
-                                    .appendChild(errorChild);
+                                document.querySelector('body').appendChild(errorChild);
 
                                 const errorChild1 = document.createElement('p');
-                                errorChild1.textContent =
-                                    'Flat: ' + JSON.stringify(err);
-                                document
-                                    .querySelector('body')
-                                    .appendChild(errorChild1);
+                                errorChild1.textContent = 'Flat: ' + JSON.stringify(err);
+                                document.querySelector('body').appendChild(errorChild1);
                             }
                         );
                 } else {

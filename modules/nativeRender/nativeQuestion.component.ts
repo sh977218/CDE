@@ -3,11 +3,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { isScore, questionMulti } from 'shared/form/fe';
-import {
-    FormQuestion,
-    FormQuestionFollow,
-    QuestionValueList,
-} from 'shared/form/form.model';
+import { FormQuestion, FormQuestionFollow, QuestionValueList } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-native-question',
@@ -91,17 +87,11 @@ export class NativeQuestionComponent implements OnInit {
         if (this.formElement.question.datatype === 'Dynamic Code List') {
             const q = this.formElement.question;
             this.loadVsacCode(q.datatypeDynamicCodeList.code || '', '');
-            this.vsacControl.valueChanges
-                .pipe(debounceTime(400), distinctUntilChanged())
-                .subscribe(value => {
-                    this.loadVsacCode(
-                        q.datatypeDynamicCodeList.code || '',
-                        value
-                    );
-                });
+            this.vsacControl.valueChanges.pipe(debounceTime(400), distinctUntilChanged()).subscribe(value => {
+                this.loadVsacCode(q.datatypeDynamicCodeList.code || '', value);
+            });
         }
-        this.formElement.question.previousUom =
-            this.formElement.question.answerUom;
+        this.formElement.question.previousUom = this.formElement.question.answerUom;
     }
 
     loadVsacCode(code = '', term = '') {
@@ -116,11 +106,7 @@ export class NativeQuestionComponent implements OnInit {
     classColumns(pvIndex: number, index: number) {
         let result = '';
 
-        if (
-            pvIndex !== -1 &&
-            this.nrs.profile &&
-            this.nrs.profile.numberOfColumns
-        ) {
+        if (pvIndex !== -1 && this.nrs.profile && this.nrs.profile.numberOfColumns) {
             switch (this.nrs.profile.numberOfColumns) {
                 case 2:
                     result = 'col-sm-6';
@@ -177,9 +163,7 @@ export class NativeQuestionComponent implements OnInit {
         if (question.answer === undefined) {
             question.answer = question.answers[0].permissibleValue;
         }
-        return question.answers.findIndex(
-            pv => pv.permissibleValue === question.answer
-        );
+        return question.answers.findIndex(pv => pv.permissibleValue === question.answer);
     }
 
     likertSliderValueSet(question: QuestionValueList, index: number) {

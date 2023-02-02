@@ -61,9 +61,7 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         AlertModule,
         TourMatMenuModule.forRoot(),
         LoggerModule.forRoot({
-            level: environment.production
-                ? NgxLoggerLevel.OFF
-                : NgxLoggerLevel.TRACE,
+            level: environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
             serverLogLevel: NgxLoggerLevel.ERROR,
             serverLoggingUrl: '/server/log/clientExceptionLogs',
         }),

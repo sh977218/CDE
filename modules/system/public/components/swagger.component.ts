@@ -6,15 +6,14 @@ import { AfterViewInit, Component } from '@angular/core';
     styleUrls: ['./swagger.component.scss'],
 })
 export class SwaggerComponent implements AfterViewInit {
-    constructor() {
-    }
-
     ngAfterViewInit() {
         const initializeIFrame = setInterval(() => {
-            if (!(window.frames as any).swaggerFrame
-                || !(window.frames as any).swaggerFrame.contentDocument
-                || !(window.frames as any).swaggerFrame.contentDocument.body
-                || (window.frames as any).swaggerFrame.contentDocument.body.innerText.indexOf('swagger') === -1) {
+            if (
+                !(window.frames as any).swaggerFrame ||
+                !(window.frames as any).swaggerFrame.contentDocument ||
+                !(window.frames as any).swaggerFrame.contentDocument.body ||
+                (window.frames as any).swaggerFrame.contentDocument.body.innerText.indexOf('swagger') === -1
+            ) {
                 return;
             }
 

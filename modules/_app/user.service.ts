@@ -14,14 +14,24 @@ import {
     isSiteAdmin,
     canViewComment,
 } from 'shared/security/authorizationShared';
-import {
-    newNotificationSettings,
-    newNotificationSettingsMediaDrawer,
-} from 'shared/user';
+import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { noop } from 'shared/util';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
 import { removeFromArray } from 'shared/array';
+
+@Component({
+    template: `
+        <h1 mat-dialog-title>Inactivity timeout</h1>
+        <mat-dialog-content>
+            <p>Your session was automatically timed out.</p>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+            <button class="button secondary" [mat-dialog-close]="">OK</button>
+        </mat-dialog-actions>
+    `,
+})
+export class InactivityLoggedOutComponent {}
 
 @Injectable()
 export class UserService {
@@ -42,9 +52,7 @@ export class UserService {
     ) {
         this.reload();
         this.resetInactivityTimeout();
-        document.body.addEventListener('click', () =>
-            this.resetInactivityTimeout()
-        );
+        document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
 
     canSeeComment = () => canViewComment(this.user);
@@ -85,12 +93,7 @@ export class UserService {
         }
         this._user = UserService.validate(user);
         this.setOrganizations();
-        if (
-            this._user.searchSettings &&
-            !['summary', 'table'].includes(
-                this._user.searchSettings.defaultSearchView
-            )
-        ) {
+        if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
             this._user.searchSettings.defaultSearchView = 'summary';
         }
         this.canViewComment = canViewComment(this.user);
@@ -143,24 +146,16 @@ export class UserService {
 
     setOrganizations() {
         if (hasRolePrivilege(this.user, 'universalCreate')) {
-            this.http
-                .get<Organization[]>('/server/orgManagement/managedOrgs')
-                .subscribe(orgs => {
-                    this.userOrgs = orgs.map(org => org.name);
-                });
+            this.http.get<Organization[]>('/server/orgManagement/managedOrgs').subscribe(orgs => {
+                this.userOrgs = orgs.map(org => org.name);
+            });
         } else {
             this.userOrgs = Array.from(
                 new Set(
                     new Array<string>().concat(
-                        this.user && Array.isArray(this.user.orgAdmin)
-                            ? this.user.orgAdmin
-                            : [],
-                        this.user && Array.isArray(this.user.orgCurator)
-                            ? this.user.orgCurator
-                            : [],
-                        this.user && Array.isArray(this.user.orgEditor)
-                            ? this.user.orgEditor
-                            : []
+                        this.user && Array.isArray(this.user.orgAdmin) ? this.user.orgAdmin : [],
+                        this.user && Array.isArray(this.user.orgCurator) ? this.user.orgCurator : [],
+                        this.user && Array.isArray(this.user.orgEditor) ? this.user.orgEditor : []
                     )
                 )
             );
@@ -199,8 +194,7 @@ export class UserService {
             user.notificationSettings = newNotificationSettings();
         }
         if (!user.notificationSettings.comment) {
-            user.notificationSettings.comment =
-                newNotificationSettingsMediaDrawer();
+            user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
         }
         return user;
     }
@@ -209,16 +203,3 @@ export class UserService {
         return uriView(c.element.eltType, c.element.eltId);
     }
 }
-
-@Component({
-    template: `
-        <h1 mat-dialog-title>Inactivity timeout</h1>
-        <mat-dialog-content>
-            <p>Your session was automatically timed out.</p>
-        </mat-dialog-content>
-        <mat-dialog-actions>
-            <button class="button secondary" [mat-dialog-close]="">OK</button>
-        </mat-dialog-actions>
-    `,
-})
-export class InactivityLoggedOutComponent {}

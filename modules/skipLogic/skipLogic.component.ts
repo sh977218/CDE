@@ -2,10 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormElement, SkipLogic } from 'shared/form/form.model';
 import { getQuestionsPrior } from 'shared/form/skipLogic';
-import {
-    SkipLogicAutocompleteComponent,
-    Token,
-} from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
+import { SkipLogicAutocompleteComponent, Token } from 'skipLogic/skipLogicAutocomplete/skipLogicAutocomplete.component';
 
 @Component({
     selector: 'cde-skip-logic',
@@ -34,8 +31,7 @@ export class SkipLogicComponent {
                     if (!this.formElement.skipLogic) {
                         this.formElement.skipLogic = new SkipLogic();
                     }
-                    this.formElement.skipLogic.condition =
-                        this.tokensToSkipLogic(tokens);
+                    this.formElement.skipLogic.condition = this.tokensToSkipLogic(tokens);
                     this.saved.emit();
                 }
             });
@@ -45,8 +41,7 @@ export class SkipLogicComponent {
         let skipLogic = '';
         tokens.forEach((t: Token, i: number) => {
             if (t.label && t.operator) {
-                skipLogic +=
-                    '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
+                skipLogic += '"' + t.label + '" ' + t.operator + ' "' + t.answer + '"';
                 if (i < tokens.length - 1) {
                     skipLogic += ' ' + t.logic + ' ';
                 }

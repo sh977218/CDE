@@ -1,13 +1,5 @@
 import './toc.global.scss';
-import {
-    AfterViewInit,
-    Component,
-    ElementRef,
-    OnDestroy,
-    OnInit,
-    QueryList,
-    ViewChildren,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocItem, TocService } from 'angular-aio-toc/toc.service';
@@ -38,8 +30,7 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
         private router: Router,
         private tocService: TocService
     ) {
-        this.isEmbedded =
-            elementRef.nativeElement.className.indexOf('embedded') !== -1;
+        this.isEmbedded = elementRef.nativeElement.className.indexOf('embedded') !== -1;
     }
 
     /* CDE custom, not part of original component */
@@ -48,25 +39,20 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.tocService.tocList
-            .pipe(takeUntil(this.onDestroy))
-            .subscribe(tocList => {
-                this.tocList = tocList;
-                this.actives.length = tocList.length;
-                const itemCount = count(
-                    this.tocList,
-                    item => item.level !== 'h1'
-                );
+        this.tocService.tocList.pipe(takeUntil(this.onDestroy)).subscribe(tocList => {
+            this.tocList = tocList;
+            this.actives.length = tocList.length;
+            const itemCount = count(this.tocList, item => item.level !== 'h1');
 
-                this.type =
-                    itemCount > 0
-                        ? this.isEmbedded
-                            ? itemCount > this.primaryMax
-                                ? 'EmbeddedExpandable'
-                                : 'EmbeddedSimple'
-                            : 'Floating'
-                        : 'None';
-            });
+            this.type =
+                itemCount > 0
+                    ? this.isEmbedded
+                        ? itemCount > this.primaryMax
+                            ? 'EmbeddedExpandable'
+                            : 'EmbeddedSimple'
+                        : 'Floating'
+                    : 'None';
+        });
     }
 
     ngAfterViewInit() {
@@ -75,9 +61,7 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
             // which, in turn, are caused by the rendering that happened due to a ChangeDetection.
             // Without asap, we would be updating the model while still in a ChangeDetection handler, which is disallowed by Angular.
             combineLatest([
-                this.tocService.activeItemIndex.pipe(
-                    subscribeOn(asapScheduler)
-                ),
+                this.tocService.activeItemIndex.pipe(subscribeOn(asapScheduler)),
                 this.items.changes.pipe(startWith(this.items)),
             ])
                 .pipe(takeUntil(this.onDestroy))
@@ -114,12 +98,10 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
                     const eRect = e.getBoundingClientRect();
                     const pRect = p.getBoundingClientRect();
 
-                    const isInViewport =
-                        eRect.top >= pRect.top && eRect.bottom <= pRect.bottom;
+                    const isInViewport = eRect.top >= pRect.top && eRect.bottom <= pRect.bottom;
 
                     if (!isInViewport) {
-                        p.scrollTop +=
-                            eRect.top - pRect.top - p.clientHeight / 2;
+                        p.scrollTop += eRect.top - pRect.top - p.clientHeight / 2;
                     }
                 });
         }

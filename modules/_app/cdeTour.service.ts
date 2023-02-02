@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TourService } from 'ngx-ui-tour-md-menu';
 
+/*
 const navigationSteps: Array<any> = [
     {
         title: 'Welcome',
@@ -39,16 +40,14 @@ const searchResultSteps: Array<any> = [
     {
         title: 'Browse by Organization',
         anchorId: 'search_by_classification_AECC',
-        content:
-            'These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.',
+        content: 'These boxes represent classifications. Clicking NLM will browse all CDEs classified by NLM.',
         route: 'cde/search',
         isAsync: true,
     },
     {
         title: 'Search Result',
         anchorId: 'resultListTour',
-        content:
-            'Browsing can return hundreds of anchorIds sorted by relevance.',
+        content: 'Browsing can return hundreds of anchorIds sorted by relevance.',
         route: '/cde/search?selectedOrg=NLM',
         isAsync: true,
     },
@@ -101,8 +100,7 @@ const cdeSteps: Array<any> = [
     {
         title: 'More Like This',
         anchorId: 'mltButton',
-        content:
-            'This section lists CDEs that are most similar to the CDE currently viewed.',
+        content: 'This section lists CDEs that are most similar to the CDE currently viewed.',
     },
     {
         title: 'Linked Forms',
@@ -112,8 +110,7 @@ const cdeSteps: Array<any> = [
     {
         title: 'Data Sets',
         anchorId: 'openDataSetModalBtn',
-        content:
-            'CDEs may be used in research. If datasets are public, they can be found here.',
+        content: 'CDEs may be used in research. If datasets are public, they can be found here.',
     },
     {
         title: 'Status',
@@ -126,8 +123,7 @@ const cdeSteps: Array<any> = [
     {
         title: 'Permissible Values',
         anchorId: 'permissible-values',
-        content:
-            'This tab will tell us if a CDE is based on a number, text, value list or other datatype.',
+        content: 'This tab will tell us if a CDE is based on a number, text, value list or other datatype.',
     },
     {
         title: 'Names',
@@ -172,8 +168,7 @@ const cdeSteps: Array<any> = [
     {
         title: 'Attachments',
         anchorId: 'attachments',
-        content:
-            'If a file is attached to a CDE, it can be viewed or downloaded here.',
+        content: 'If a file is attached to a CDE, it can be viewed or downloaded here.',
     },
     {
         title: 'History',
@@ -185,8 +180,7 @@ const cdeSteps: Array<any> = [
     {
         title: 'Derivation Rules',
         anchorId: 'derivation-rules',
-        content:
-            'Derivation Rules are used to connect CDEs together, for example, in the form of a score.',
+        content: 'Derivation Rules are used to connect CDEs together, for example, in the form of a score.',
     },
     {
         title: 'Validation Rules',
@@ -237,10 +231,10 @@ const formSteps = [
     {
         title: 'Export',
         anchorId: 'export',
-        content:
-            'Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, and RedCAP.',
+        content: 'Forms can be exported when users are logged in. Available formats are JSON, XML, ODM, and RedCAP.',
     },
 ];
+*/
 
 @Injectable()
 export class CdeTourService {
