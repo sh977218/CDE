@@ -54,7 +54,7 @@ $itemWidth: 208px;
 
       &.active,
       &.activeSection {
-        background-color: #f2f2f2;
+        background-color: $nlmColorBorderActive;
       }
 
       &.h2.activeSection * {

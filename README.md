@@ -145,6 +145,13 @@ Swagger-tools inserts its own route `/docs` using middleware and creates this pa
 Update theme.scss.
 For custom angular colors extract the colors in common.scss by variable to theme.scss
 
+## Entities
+__Data Element__ and __Form__ have properties stored in multiple locations that need to be kept in sync.
+* /server/_{entity}_/__schemas.ts__ (Mongoose type)
+* /server/swagger/api/__swagger.yaml__ (API documentation)
+* /shared/_{entity}_/_{entity}___.model.ts__ (TS type)
+* /shared/_{entity}_/assets/_{entity}___.schema.json__ (JSON Schema)
+
 ## Single Sign-On (SSO)
 Client __App Component__ silently loads UTS into an invisible __< iframe >__ and communicates with it to get the JWT for UTS login.
 The configuration variable for the UTS messenger is __ssoServerReceiver__. 

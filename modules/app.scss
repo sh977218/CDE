@@ -29,7 +29,7 @@ fieldset {
     height: 140px;
 
     &:hover {
-      background-color: #f2f2f2;
+      background-color: $nlmColorBorderActive;
     }
   }
 
@@ -60,19 +60,8 @@ fieldset {
 }
 
 .sectionDetailSubtitle {
-  /* Layout Properties */
-  top: 676px;
-  left: 270px;
-  width: 722px;
-  height: 26px;
-  /* UI Properties */
-  font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-20)/var(--unnamed-line-spacing-30) var(--unnamed-font-family-roboto);
-  letter-spacing: var(--unnamed-character-spacing-0-4);
-  text-align: left;
-  font: normal normal normal 20px/30px Roboto;
   letter-spacing: 0.4px;
   color: #707070;
-  opacity: 1;
 }
 
 .inline-dl {
