@@ -151,7 +151,7 @@ export type CdeFormDraft = CdeForm<FormElementDraft>;
 export type CdeFormFollow = CdeForm<FormElementFollow>;
 
 export type CdeFormInputArray = CdeForm & {
-    formInput: {[key: string]: QuestionValue}; // volatile, nativeRender and export
+    formInput: { [key: string]: QuestionValue }; // volatile, nativeRender and export
 };
 
 export interface CdeFormElastic extends CdeForm, ElasticElement { // all volatile

@@ -1,4 +1,5 @@
 import * as Config from 'config';
+
 export const config = Config as any;
 
 ['log', 'appData', 'migration'].forEach(databaseName => {
@@ -11,6 +12,9 @@ export const config = Config as any;
         }
         if (database.options.replicaSet) {
             uriOptions.push('replicaSet=' + database.options.replicaSet);
+        }
+        if (database.options.directConnection) {
+            uriOptions.push('directConnection=true');
         }
         if (database.options.ssl) {
             uriOptions.push('tls=true');
