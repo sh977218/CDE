@@ -99,7 +99,8 @@ export const createIndexJson = {
                     datatype: {type: 'keyword'},
                     permissibleValues: {
                         properties: {
-                            codeSystemName: {type: 'keyword'}
+                            codeSystemName: {type: 'keyword'},
+                            conceptSource: {type: 'keyword'}
                         }
                     }
                 }

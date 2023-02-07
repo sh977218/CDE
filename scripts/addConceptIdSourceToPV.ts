@@ -59,7 +59,7 @@ async function doOneFormCollection(collection: Model<CdeFormDocument>) {
             console.log(`update ${collection.modelName} form tinyId: '${formObj.tinyId}', archived: ${formObj.archived}`);
         }
         await form.save().catch(e => {
-            console.log(`${form.tinyId} has error. ${e}`)
+            console.log(`${collection.modelName}: ${form.tinyId} has error. ${e}`)
         });
         return;
     });
@@ -79,7 +79,7 @@ async function doOneDataElementCollection(collection: Model<DataElementDocument>
                 console.log(`update ${collection.modelName} CDE tinyId: '${cdeObject.tinyId}', archived: ${cdeObject.archived}`);
             }
             await cde.save().catch(e => {
-                console.log(`${cde.tinyId} has error. ${e}`)
+                console.log(`${collection.modelName} ${cde.tinyId} has error. ${e}`)
             });
         }
 
