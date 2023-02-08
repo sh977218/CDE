@@ -22,12 +22,7 @@ import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
-import {
-    canClassify,
-    hasPrivilege,
-    isOrgAuthority,
-    isSiteAdmin,
-} from 'shared/security/authorizationShared';
+import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -51,19 +46,11 @@ const SECTIONS_MAP: { [key in keyof typeof SECTIONS]: string[] } = {
     create: ['/createCde', '/createForm'],
     board: ['/quickBoard', '/board', '/boardList', '/myBoards'],
     about: ['/about'],
-    help: [
-        '/videos',
-        '/guides',
-        '/whatsNew',
-        '/resources',
-        '/api',
-        '/contactUs',
-    ],
+    help: ['/videos', '/guides', '/whatsNew', '/resources', '/api', '/contactUs'],
     searchSettings: ['/searchPreferences'],
     user: [
         '/login',
         '/settings/profile',
-        '/settings/notification',
         '/settings/viewingHistory',
         '/settings/publishedForms',
         '/settings/myDrafts',
@@ -205,18 +192,13 @@ export class NavigationComponent {
             link: '/login',
         },
         {
-            labelFn: () =>
-                this.userService.user ? this.userService.user.username : '',
+            labelFn: () => (this.userService.user ? this.userService.user.username : ''),
             id: 'usernameLink',
-            condition: () =>
-                window.innerWidth <= 500 && !!this.userService.user,
+            condition: () => window.innerWidth <= 500 && !!this.userService.user,
             section: SECTIONS.user,
             children: [
                 {
-                    labelFn: () =>
-                        isSiteAdmin(this.userService.user)
-                            ? 'Settings'
-                            : 'Profile',
+                    labelFn: () => (isSiteAdmin(this.userService.user) ? 'Settings' : 'Profile'),
                     id: 'settingsLink',
                     link: '/settings/profile',
                 },
@@ -293,20 +275,13 @@ export class NavigationComponent {
             this.loginSvc.goToLogin();
         };
         this.app.ssoLogout(() => {});
-        this.http
-            .post('/server/system/logout', {}, { responseType: 'text' })
-            .subscribe(
-                refreshAndLogin,
-                refreshAndLogin // ignore error in favor of already being logged out
-            );
+        this.http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe(
+            refreshAndLogin,
+            refreshAndLogin // ignore error in favor of already being logged out
+        );
     }
 
-    menuClickCleanup(
-        bar: HTMLElement,
-        trigger: MatMenuTrigger,
-        button: MatButton,
-        menu: MatMenu
-    ) {
+    menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {
         if ((trigger as any).menuOpen) {
             (
                 menu._allItems.first as any as {
@@ -321,10 +296,7 @@ export class NavigationComponent {
     menuEnter(bar: HTMLElement, trigger: MatMenuTrigger, menu: MatMenu) {
         const barState = this.getBarState(bar);
         setTimeout(() => {
-            if (
-                barState.prevButtonTrigger &&
-                barState.prevButtonTrigger !== trigger
-            ) {
+            if (barState.prevButtonTrigger && barState.prevButtonTrigger !== trigger) {
                 barState.prevButtonTrigger.closeMenu();
                 barState.prevButtonTrigger = trigger;
                 bar.style.zIndex = NAV_Z_INDEX_ACTIVE;
@@ -403,12 +375,7 @@ export class NavigationComponent {
         barState.isMatMenu2Open = true;
     }
 
-    menu2Leave(
-        bar: HTMLElement,
-        trigger1: MatMenuTrigger,
-        trigger2: MatMenuTrigger,
-        button: MatButton
-    ) {
+    menu2Leave(bar: HTMLElement, trigger1: MatMenuTrigger, trigger2: MatMenuTrigger, button: MatButton) {
         const barState = this.getBarState(bar);
         setTimeout(() => {
             if (barState.isMatMenu2Open) {
@@ -428,17 +395,11 @@ export class NavigationComponent {
         return this.sectionActive === SECTIONS.home;
     }
 
-    toggleDrawer = () =>
-        (
-            document.querySelector('.mdl-layout') as any
-        ).MaterialLayout.toggleDrawer();
+    toggleDrawer = () => (document.querySelector('.mdl-layout') as any).MaterialLayout.toggleDrawer();
 
     unfocusButton(button: MatButton) {
         this.ren.removeClass(button._elementRef.nativeElement, 'cdk-focused');
-        this.ren.removeClass(
-            button._elementRef.nativeElement,
-            'cdk-program-focused'
-        );
+        this.ren.removeClass(button._elementRef.nativeElement, 'cdk-program-focused');
         button._elementRef.nativeElement.blur();
     }
 }
@@ -462,9 +423,7 @@ function getWebsiteSection(
     return bucketLabels[j];
 }
 
-function scanSections(
-    sectionsMap: typeof SECTIONS_MAP
-): [string[], number[], number[]] {
+function scanSections(sectionsMap: typeof SECTIONS_MAP): [string[], number[], number[]] {
     const sectionsArray = Object.values(sectionsMap);
     const indexSums = cumulative(sectionsArray, (a, s) => a + s.length, 0);
     return [concat(...sectionsArray), indexSums, range(indexSums.length)];
