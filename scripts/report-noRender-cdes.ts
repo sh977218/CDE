@@ -2,11 +2,18 @@ import 'server/globals';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import { flattenFormElement } from '../shared/form/fe';
+import { Client } from '@elastic/elasticsearch';
+import { config } from '../server/config';
+import { ElasticQueryResponse } from '../shared/models.model';
+import { CdeFormElastic } from '../shared/form/form.model';
 const XLSX = require('xlsx');
 
-const cond = {noRenderAllowed: true};
+const cond = {noRenderAllowed: true, tinyId: {$in:
+            // ['QJOUwY4CAM']}};
+            ['QJOUwY4CAM','XyWzqt6p8','m1fTbJSrFe','QJV0Kca6U','QJsx6Q8iOt_','7yvWqF6T8']}};
 
 const cdesToBeDeleted: any  = {};
+export const esClient = new Client(config.elastic.options);
 
 async function reportForm() {
     const forms: any = await formModel.find(cond);
@@ -52,10 +59,25 @@ function addToCdesToBeDeleted(form: any, cdes: any) {
             name: cdes[0].designations[0].designation,
             forms: [{
                 tinyId: form.tinyId,
-                name: form.designations[0].designation
+                name: form.designations[0].designation,
             }],
             classifStewards: getClassifStewards([], cdes),
             regStatus: cdes[0].registrationState.registrationStatus
+        }
+    }
+}
+
+async function isThisCdeUsedOnRenderForm(tinyId): Promise<any> {
+    const esResult: { body: ElasticQueryResponse<CdeFormElastic> } = await esClient.search({
+        index: config.elastic.index.name,
+        q: `tinyId:${tinyId}`,
+    });
+    if (!esResult.body.hits.hits[0]._source.linkedForms) {
+        return;
+    }
+    for (const f of esResult.body.hits.hits[0]._source.linkedForms.forms) {
+        if (!f.noRenderAllowed) {
+            return f;
         }
     }
 }
@@ -64,10 +86,11 @@ async function run() {
     await reportForm();
     const csvData: any[] = [];
     console.log('CDEs to be deleted');
-    Object.keys(cdesToBeDeleted).forEach(tinyId => {
+    for (const tinyId of Object.keys(cdesToBeDeleted)) {
        const cde = cdesToBeDeleted[tinyId];
        console.log(tinyId);
        console.log(cde.name);
+       const renderForm = await isThisCdeUsedOnRenderForm(tinyId);
        console.log('--FORMS--');
        cde.forms.forEach((f: any) => {
            console.log(`  ${f.tinyId} - ${f.name}`)
@@ -76,7 +99,13 @@ async function run() {
        cde.classifStewards.forEach((st: any) => {
           console.log(`    ${st}`);
        });
-       csvData.push([tinyId, cde.name, cde.regStatus, cde.forms[0].tinyId, cde.forms[0].name, cde.classifStewards[0]]);
+        if (renderForm) {
+            console.log(`NOT DELETING ${tinyId} because it is part of ${renderForm.tinyId}`);
+        } else {
+            console.log(`**DELETE** ${tinyId} -- ${cde.name}`);
+            await dataElementModel.deleteMany({tinyId})
+        }
+       csvData.push([tinyId, cde.name, cde.regStatus, cde.forms[0].tinyId, cde.forms[0].name, cde.classifStewards[0], renderForm === undefined?'YES':'NO']);
        let i = 1;
        while(cde.forms[i] || cde.classifStewards[i]) {
             const newRow: string[] = ['', ''];
@@ -91,20 +120,22 @@ async function run() {
             csvData.push(newRow);
             i++;
        }
-    });
+    }
+    
 
-    console.log('--- CDES used outside of NINDS ---');
-    Object.keys(cdesToBeDeleted).forEach(tinyId => {
-        const cde = cdesToBeDeleted[tinyId];
-        if (cde.classifStewards.filter((cl: any) => cl !== 'NINDS').length) {
-            console.log(`CDE ${tinyId} is used by ${cde.classifStewards.join(' ')}`);
-        }
-    });
+
+    // console.log('--- CDES used outside of NINDS ---');
+    // Object.keys(cdesToBeDeleted).forEach(tinyId => {
+    //     const cde = cdesToBeDeleted[tinyId];
+    //     if (cde.classifStewards.filter((cl: any) => cl !== 'NINDS').length) {
+    //         console.log(`CDE ${tinyId} is used by ${cde.classifStewards.join(' ')}`);
+    //     }
+    // });
 
     console.log('--- END OF REPORT ---');
     const ws = XLSX.utils.json_to_sheet(csvData);
     const wb = {Sheets: {data: ws}, SheetNames: ['data']};
-    XLSX.utils.sheet_add_aoa(ws, [['CDE ID', 'CDE Name', 'CDE Status', 'Form ID', 'Form Name', 'CDE Classification']],
+    XLSX.utils.sheet_add_aoa(ws, [['CDE ID', 'CDE Name', 'CDE Status', 'Form ID', 'Form Name', 'CDE Classification', 'DELETE']],
         { origin: "A1" });
     XLSX.writeFile(wb, 'cde_noRender_report.xlsx');
 
