@@ -695,7 +695,7 @@ export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TASK_STATE_UNREAD = 1;
 
-export type UserRoles = ArrayToType<typeof rolesEnum>;
+export type UserRole = ArrayToType<typeof rolesEnum>;
 export const rolesEnum = ['AttachmentReviewer', 'BoardPublisher', 'CommentAuthor',
     'CommentReviewer', 'DocumentationEditor', 'GovernanceGroup', 'NlmCurator', 'OrgAuthority'] as const;
 
@@ -713,7 +713,7 @@ export interface User {
     publishedForms?: PublishedForm[];
     quota?: number;
     refreshToken?: string;
-    roles?: UserRoles[];
+    roles?: UserRole[];
     searchSettings?: UserSearchSettings;
     siteAdmin?: boolean;
     tasks?: Task[];

@@ -56,7 +56,7 @@ public class FormAddCdeTest extends QuestionTest {
     private void checkNewCde1() {
         String cdeName1 = "newCde1";
         goToCdeByName(cdeName1);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Text", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
         textPresent(cdeName1, By.cssSelector("[itemprop='designation_0']"));
@@ -66,7 +66,7 @@ public class FormAddCdeTest extends QuestionTest {
     private void checkNewCde2() {
         String cdeName2 = "newCde2";
         goToCdeByName(cdeName2);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Date", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
         textPresent(cdeName2, By.cssSelector("[itemprop='designation_0']"));
@@ -82,7 +82,7 @@ public class FormAddCdeTest extends QuestionTest {
     private void checkNewCde3() {
         String cdeName3 = "newCde3";
         goToCdeByName(cdeName3);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Number", By.cssSelector("[itemprop='datatype']"));
         goToNaming();
         textPresent(cdeName3, By.cssSelector("[itemprop='designation_0']"));
@@ -98,7 +98,7 @@ public class FormAddCdeTest extends QuestionTest {
     private void checkNewCde4() {
         String cdeName4 = "newCde4";
         goToCdeByName(cdeName4);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Value List", By.cssSelector("[itemprop='datatype']"));
         textPresent("1", By.id("pvValue_0"));
 
@@ -110,7 +110,7 @@ public class FormAddCdeTest extends QuestionTest {
     private void checkNewCde5() {
         String cdeName5 = "newCde5";
         goToCdeByName(cdeName5);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Text", By.cssSelector("[itemprop='datatype']"));
 
         goToNaming();

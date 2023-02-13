@@ -32,7 +32,6 @@ import {
     canAttachMiddleware,
     canSeeCommentMiddleware,
     checkEditing,
-    isDocumentationEditor,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware,
     isSiteAdminMiddleware
@@ -46,7 +45,7 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { init as authInit } from 'server/user/authentication';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
-import { canClassifyOrg } from 'shared/security/authorizationShared';
+import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
 
 require('source-map-support').install();

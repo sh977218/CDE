@@ -1,5 +1,5 @@
 import { intersection, union } from 'lodash';
-import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRoles } from 'shared/models.model';
+import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRole } from 'shared/models.model';
 
 export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
 type Privileges = Record<Privilege, boolean>;
@@ -13,7 +13,7 @@ export type RolePrivilege = 'universalAttach' // (no review, edit can NO longer 
     | 'universalEdit'
     | 'universalSearch';
 type RolePrivileges = Partial<Record<RolePrivilege, boolean>>;
-type RolePrivilegesRegistry = Record<UserRoles, RolePrivileges>;
+type RolePrivilegesRegistry = Record<UserRole, RolePrivileges>;
 
 const orgEditorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
     attach: false,
@@ -63,7 +63,7 @@ export const orgAdminPrivileges: Readonly<PrivilegesRegistry> = Object.freeze<Pr
 
 export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<RolePrivilegesRegistry>({
     AttachmentReviewer: {}, // token role
-    BoardPublisher: {}, // token role
+    BoardPublisher: {},
     CommentAuthor: {
         universalComment: true,
     },
@@ -95,7 +95,7 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
 });
 
 /**
- * API Exports
+ * Individual Privilege (1 Function = 1 Privilege) Can user ...?
  */
 
 export const canAttach = canPrivilegeForUser('attach');
@@ -157,9 +157,25 @@ export function canEditCuratedItem(user: User | undefined, item: Item | undefine
     return hasPrivilegeForOrg(user, 'edit', item.stewardOrg.name);
 }
 
+/**
+ * Token Roles (Old way) REMOVE and replace with individual privileges per use
+ */
+
+export function isDocumentationEditor<T>(elt: T, user?: User) {
+    return hasRole(user, 'DocumentationEditor');
+}
+
 export function isNlmCurator(user: User | undefined): boolean {
     return hasRole(user, 'NlmCurator');
 }
+
+export function isOrgAuthority(user: User | undefined): boolean {
+    return hasRole(user, 'OrgAuthority');
+}
+
+/**
+ * API Exports
+ */
 
 export function isOrg(user: User | undefined): boolean {
     if (!user) {
@@ -178,10 +194,6 @@ export function isOrgAdmin(user: User | undefined, org?: string): boolean {
         return true;
     }
     return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0) || false;
-}
-
-export function isOrgAuthority(user: User | undefined): boolean {
-    return hasRole(user, 'OrgAuthority');
 }
 
 export function isOrgCurator(user: User | undefined, org?: string): boolean {
@@ -225,26 +237,9 @@ export function hasPrivilegeForOrg(user: User | undefined, privilege: Privilege 
     if (hasPrivilegeInRoles(user, privilege)) {
         return true;
     }
-    let permitted = false;
-    if (user.orgAdmin.includes(org)) {
-        permitted = getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege);
-        if (permitted) {
-            return true;
-        }
-    }
-    if (user.orgCurator.includes(org)) {
-        permitted = getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege);
-        if (permitted) {
-            return true;
-        }
-    }
-    if (user.orgEditor.includes(org)) {
-        permitted = getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege);
-        if (permitted) {
-            return true;
-        }
-    }
-    return false;
+    return user.orgAdmin.includes(org) && getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege)
+        || user.orgCurator.includes(org) && getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege)
+        || user.orgEditor.includes(org) && getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege);
 }
 
 export function hasPrivilegeInRoles(user: User, privilege: Privilege): boolean {
@@ -273,14 +268,14 @@ export function hasRolePrivilege(user: User | undefined, privilege: RolePrivileg
     if (isSiteAdmin(user)) {
         return true;
     }
-    return user.roles ? user.roles.some(role => rolePrivileges[role][privilege]) : false;
+    return user.roles?.some(role => rolePrivileges[role][privilege]) ?? false;
 }
 
 /**
  * Role Management
  */
 
-export function addRole(user: User, role: UserRoles) {
+export function addRole(user: User, role: UserRole) {
     if (!hasRole(user, role)) {
         user.roles = intersection(
             union(
@@ -292,20 +287,14 @@ export function addRole(user: User, role: UserRoles) {
     }
 }
 
-export function hasRole(user: User | undefined, role: UserRoles | undefined): boolean {
+export function hasRole(user: User | undefined, role: UserRole | undefined): boolean {
     if (!user || !role) {
         return false;
     }
     if (isSiteAdmin(user)) {
         return true;
     }
-    if (user.roles && user.roles.indexOf(role) > -1) {
-        return true;
-    }
-    if (role === 'BoardPublisher') {
-        return isOrgCurator(user); // was "return user.orgCurator && user.orgCurator.length > 0;"
-    }
-    return false;
+    return user.roles ? user.roles.indexOf(role) > -1 : false;
 }
 
 /**

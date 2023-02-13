@@ -93,10 +93,6 @@ export function canSeeComment(user: User) {
     return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user)
 }
 
-export function isDocumentationEditor<T>(elt: T, user?: User) {
-    return hasRole(user, 'DocumentationEditor');
-}
-
 export function checkEditing(elt: Item, user?: User) {
     return canEditCuratedItem(user, elt);
 }
@@ -120,7 +116,7 @@ export function checkBoardViewerShip(board?: Board, user?: User) {
 }
 
 export function unauthorizedPublishing(user: User, board: Board) {
-    return board.shareStatus === 'Public' && !hasRole(user, 'BoardPublisher');
+    return board.shareStatus === 'Public' && !(hasRole(user, 'BoardPublisher') || isOrgCurator(user));
 }
 
 export const nocacheMiddleware: RequestHandler = (req, res, next) => {

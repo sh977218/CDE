@@ -10,7 +10,7 @@ public class VMDefinitionTest extends NlmCdeBaseTest {
     public void vmDefinitions() {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName("Specimen Integrity Type SpecimenIntegrity");
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Undamaged in any way; whole");
     }
 

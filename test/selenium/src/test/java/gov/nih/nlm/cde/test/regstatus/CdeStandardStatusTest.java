@@ -18,7 +18,7 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
         shortWait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-icon[. = 'edit']")));
 
         // Can't edit Value Type or add / remove pv
-        goToPermissibleValues();
+        goToDataTypeDetails();
 
         checkElementDoesNotExistByLocator(By.xpath("//*[@itemprop='datatype']//input[not(@disabled)]"));
 

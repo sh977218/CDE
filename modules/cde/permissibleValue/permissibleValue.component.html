@@ -1,9 +1,9 @@
-<h2 class="sectionDetailSubtitle">Permissible Values</h2>
+<h2 class="sectionDetailSubtitle">Data Type Details</h2>
 <dl class="cde-property">
     <dt>Data Type:</dt>
     <dd itemprop="datatype">
         <ng-container *ngIf="canEdit;else dataTypeTemplate">
-            <mat-form-field class="w-100">
+            <mat-form-field>
                 <mat-select [(value)]="elt.valueDomain.datatype" (selectionChange)="onDataTypeChange()"
                             [disabled]="!canEdit" placeholder="Select data type">
                     <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>

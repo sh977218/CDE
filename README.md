@@ -121,7 +121,7 @@ Run in Bamboo and override variable "browser" with value "coverage"
 * node_modules overrides go into public repositories or __packages/__ (see section)
 
 ## API
-API routes are created in Expressing using path __/api/__.
+API routes are created in Express using path __/api/__.
 #### API Documentation via Swagger
 Update route information in __swagger.yaml__. Restart the server to read it in.
 Swagger-tools inserts its own route `/docs` using middleware and creates this page. The page is embedded using an __< iframe >__.
@@ -152,6 +152,7 @@ __Data Element__ and __Form__ have properties stored in multiple locations that 
 * /server/swagger/api/__swagger.yaml__ (API documentation)
 * /shared/_{entity}_/_{entity}___.model.ts__ (TS type)
 * /shared/_{entity}_/assets/_{entity}___.schema.json__ (JSON Schema)
+* __(searchable properties or views only)__ /server/system/__elasticSearchInit.ts__ (ElasticSearch index mapping)
 
 ## Packages
 ### Create package:
