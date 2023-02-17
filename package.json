@@ -83,7 +83,6 @@
     "async": "^3.2.3",
     "body-parser": "^1.18.3",
     "byline": "4.2.1",
-    "clamav.js": "^0.12.0",
     "compression": "^1.7.4",
     "config": "^3.3.1",
     "connect-flash": "^0.1.1",

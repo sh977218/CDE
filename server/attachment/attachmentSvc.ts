@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import * as md5 from 'md5';
-import { config, dbPlugins, ObjectId } from 'server';
+import { dbPlugins, ObjectId } from 'server';
 import { respondError } from 'server/errorHandler';
 import { addFile, deleteFileById } from 'server/mongo/mongo/gfs';
 import { FileCreateInfo } from 'server/system/mongo-data';
 import { Attachable, AttachableDb } from 'shared/boundaryInterfaces/db/tags/attachableDb';
 import { Attachment, User } from 'shared/models.model';
 
-const createScanner = require('clamav.js').createScanner;
 const createReadStream = require('streamifier').createReadStream;
 
 interface FileInfo {
@@ -24,32 +23,27 @@ export function add<T extends Attachable>(req: Request & { files: FileInfo[] }, 
     }
 
     const fileBuffer = req.files[0].buffer;
-    const stream = createReadStream(fileBuffer);
     const streamFS1 = createReadStream(fileBuffer);
-    return scanFile(stream).then(
-        scanned => db.byId(req.body.id)
-            .then(item => {
-                if (!item) {
-                    return res.status(404).send();
-                }
-                if (!crudPermission(item, req.user)) {
-                    return res.status(401).send('You do not own this element');
-                }
-                const file = req.files[0];
-                const fileCreate: FileCreateInfo = {
-                    filename: file.originalname,
-                    stream: streamFS1,
-                    md5: md5(fileBuffer),
-                };
-                return addToItem(db, item, file, fileCreate, scanned, req.user, 'some comment')
-                    .then(newItem => res.send(newItem));
-            })
-            .catch(respondError({req, res})),
-        () => res.status(431).send('The file probably contains a virus.')
-    );
+    db.byId(req.body.id)
+        .then(item => {
+            if (!item) {
+                return res.status(404).send();
+            }
+            if (!crudPermission(item, req.user)) {
+                return res.status(401).send('You do not own this element');
+            }
+            const file = req.files[0];
+            const fileCreate: FileCreateInfo = {
+                filename: file.originalname,
+                stream: streamFS1,
+                md5: md5(fileBuffer),
+            };
+            return addToItem(db, item, file, fileCreate, req.user, 'some comment')
+                .then(newItem => res.send(newItem));
+        })
 }
 
-export function addToItem<T extends Attachable>(db: AttachableDb<T>, item: T, file: FileInfo, fileCreate: FileCreateInfo, scanned: boolean,
+export function addToItem<T extends Attachable>(db: AttachableDb<T>, item: T, file: FileInfo, fileCreate: FileCreateInfo,
                                                 user: User, comment: string): Promise<T | null> {
     const attachment: Attachment = {
         comment,
@@ -57,7 +51,6 @@ export function addToItem<T extends Attachable>(db: AttachableDb<T>, item: T, fi
         filename: file.originalname,
         filesize: file.size,
         filetype: file.mimetype,
-        scanned,
         uploadedBy: {
             username: user.username
         },
@@ -70,7 +63,7 @@ export function addToItem<T extends Attachable>(db: AttachableDb<T>, item: T, fi
             contentType: attachment.filetype,
             metadata: {
                 md5: fileCreate.md5,
-                status: scanned ? 'approved' : 'uploaded',
+                status: 'approved',
             }
         }
     ).then(newId => {
@@ -108,20 +101,6 @@ export function removeUnusedAttachment(id: string): Promise<void> {
                 return deleteFileById(new ObjectId(id));
             }
         });
-}
-
-export function scanFile(stream: any): Promise<boolean> {
-    return new Promise(((resolve, reject) => {
-        createScanner(config.antivirus.port, config.antivirus.ip).scan(stream, (err: any, object: any, malicious: boolean) => {
-            if (err) {
-                return resolve(false);
-            }
-            if (malicious) {
-                return reject();
-            }
-            return resolve(true);
-        });
-    }));
 }
 
 export function setDefault<T extends Attachable>(req: Request, res: Response, db: AttachableDb<T>,

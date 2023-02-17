@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import * as md5 from 'md5';
 import * as multer from 'multer';
 import { config, dbPlugins } from 'server';
-import { removeUnusedAttachment, scanFile } from 'server/attachment/attachmentSvc';
+import { removeUnusedAttachment } from 'server/attachment/attachmentSvc';
 import { respondError } from 'server/errorHandler';
 import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
 import { isNlmCuratorMiddleware } from 'server/system/authorization';
@@ -81,26 +81,23 @@ export function module() {
         (req, res): Promise<Response> => {
             const file = (req.files as any)[0];
             const fileBuffer = file.buffer;
-            const stream = createReadStream(fileBuffer);
             const streamFS1 = createReadStream(fileBuffer);
-            return scanFile(stream).then(scanned => {
-                const fileCreate: FileCreateInfo = {
-                    filename: file.originalname,
-                    stream: streamFS1,
-                    md5: md5(fileBuffer),
-                };
-                return addFile(
-                    fileCreate,
-                    {
-                        contentType: file.mimetype,
-                        metadata: {
-                            md5: fileCreate.md5,
-                            status: scanned ? 'approved' : 'uploaded',
-                        }
+            const fileCreate: FileCreateInfo = {
+                filename: file.originalname,
+                stream: streamFS1,
+                md5: md5(fileBuffer),
+            };
+            return addFile(
+                fileCreate,
+                {
+                    contentType: file.mimetype,
+                    metadata: {
+                        md5: fileCreate.md5,
+                        status: 'approved',
                     }
-                )
-                    .then(newId => res.send({fileId: newId.toString()} as HomepageAttachResponse));
-            });
+                }
+            )
+                .then(newId => res.send({fileId: newId.toString()} as HomepageAttachResponse));
         }
     );
 

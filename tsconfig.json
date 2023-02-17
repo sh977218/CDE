@@ -20,7 +20,8 @@
     "sourceMap": true,
     "strict": false,
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+      "global.d.ts"
     ]
   },
   "angularCompilerOptions": {
