@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from 'system/public/components/login/login.component';
+import { LoginResolve } from 'system/public/components/login/login.resolve';
 
 const appRoutes: Routes = [
     {
         path: '',
         component: LoginComponent,
-    }
+        resolve: { lastRoute: LoginResolve },
+    },
 ];
 
 @NgModule({
@@ -21,14 +23,9 @@ const appRoutes: Routes = [
         // non-core
         // internal
     ],
-    declarations: [
-        LoginComponent,
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    declarations: [LoginComponent],
+    exports: [],
+    providers: [LoginResolve],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class LoginModule {
-}
+export class LoginModule {}
