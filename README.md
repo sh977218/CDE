@@ -118,6 +118,7 @@ Run in Bamboo and override variable "browser" with value "coverage"
 * Business Rules and Models go into __shared/__
 * View Models and Angular-dependent code go into __modules/__
 * Database entities and Node-dependent code go into __server/__
+* node_modules overrides go into public repositories or __packages/__ (see section)
 
 ## API
 API routes are created in Expressing using path __/api/__.
@@ -151,6 +152,24 @@ __Data Element__ and __Form__ have properties stored in multiple locations that 
 * /server/swagger/api/__swagger.yaml__ (API documentation)
 * /shared/_{entity}_/_{entity}___.model.ts__ (TS type)
 * /shared/_{entity}_/assets/_{entity}___.schema.json__ (JSON Schema)
+
+## Packages
+### Create package:
+* Modify the external files.
+* Increment the version number. (npm stale files without clearing cache)
+* In the package directory, run: `npm pack`
+* Move the new archive __.tgz__ to __packages/__
+* Add to __package.json__: `"<package>": "file:packages/<package>-<version>.tgz",`
+### Modify package:
+* Install the package (could be by `npm init` in __packages__): `npm i <package>-<version>.tgz`
+* Modify the package files.
+* Increment the version number. (npm stale files without clearing cache)
+* In the package directory, run: `npm pack`
+* Move the new archive __.tgz__ to __packages/__
+### Rebuild and Install ngx-text-diff
+* Modify the package files.
+* Increment the version number. (npm stale files without clearing cache)
+* `npm run pack_ngx-text-diff`
 
 ## Single Sign-On (SSO)
 Client __App Component__ silently loads UTS into an invisible __< iframe >__ and communicates with it to get the JWT for UTS login.

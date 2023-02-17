@@ -89,6 +89,7 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
     streamArray.push(gulp.src(appDir('./config/*.json'))
         .pipe(gulp.dest(BUILD_DIR + '/config/')));
 
+    // build dir may not be a sub-folder, need packages
     streamArray.push(gulp.src(appDir('./package.json'))
         .pipe(replace('"startJs": "node ./buildNode/server/app.js",', '"startJs": "node ./server/app.js",'))
         .pipe(replace('"testServer": "node ./test/testLoginServer.js",', ''))
@@ -97,6 +98,8 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
             : replace('"ingester": "file:./ingester",', '')
         )
         .pipe(gulp.dest(BUILD_DIR + '/')));
+    streamArray.push(gulp.src(appDir('./packages/**'))
+        .pipe(gulp.dest(BUILD_DIR + '/packages/')));
 
     // from buildNode
     streamArray.push(gulp.src('./modules/**')
