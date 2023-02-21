@@ -12,6 +12,7 @@ import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { FormResolve } from 'form/formDescription/form.resolve';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
+import { ArticleGuard } from '_app/routerGuard/articleGuard';
 
 const appRoutes: Routes = [
     {
@@ -183,6 +184,7 @@ const appRoutes: Routes = [
         OrgAuthorityGuard,
         OrgCuratorGuard,
         SiteAdminGuard,
+        ArticleGuard,
     ],
     exports: [RouterModule],
 })

@@ -85,6 +85,15 @@ export const canSeeCommentMiddleware: RequestHandler = (req, res, next) => {
     }
 };
 
+export const canEditArticleMiddleware: RequestHandler = (req, res, next) => {
+    if (canEditArticle(req.user)) {
+        next();
+    } else {
+        return res.status(401).send();
+    }
+};
+
+
 // --------------------------------------------------
 // Permission Helpers with Request/Response
 // --------------------------------------------------

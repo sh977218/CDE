@@ -13,6 +13,7 @@ import {
     hasRolePrivilege,
     isSiteAdmin,
     canViewComment,
+    canEditArticle,
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { noop } from 'shared/util';
@@ -74,6 +75,7 @@ export class UserService {
     isOrgAdmin = () => isOrgAdmin(this.user);
     isOrgAuthority = () => isOrgAuthority(this.user);
     isSiteAdmin = () => isSiteAdmin(this.user);
+    isDocumentEditor = () => canEditArticle(this.user);
 
     loggedIn(): User | undefined {
         return this.user;

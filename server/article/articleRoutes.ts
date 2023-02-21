@@ -1,8 +1,8 @@
-import { RequestHandler, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import * as Parser from 'rss-parser';
 import { dbPlugins } from 'server';
 import { Article } from 'shared/article/article.model';
-import { isOrgAuthorityMiddleware } from 'server/system/authorization';
+import { canEditArticleMiddleware } from 'server/system/authorization';
 
 const parser = new Parser();
 require('express-async-errors');
@@ -16,7 +16,7 @@ export function module() {
         });
     });
 
-    router.post('/:key', isOrgAuthorityMiddleware, async (req, res): Promise<Response> => {
+    router.post('/:key', canEditArticleMiddleware, async (req, res): Promise<Response> => {
         if (req.body.key !== req.params.key) {
             return res.status(400).send();
         }

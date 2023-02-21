@@ -7,7 +7,7 @@ public class WhatsNew extends NlmCdeBaseTest {
 
     @Test
     public void whatsNew() {
-        mustBeLoggedInAs(theOrgAuth_username, password);
+        mustBeLoggedInAs(documentationEditor_username, password);
         goToArticles();
         selectArticleByKey("whatsNew");
 

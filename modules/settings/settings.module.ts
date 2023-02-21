@@ -84,6 +84,7 @@ import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
+import { ArticleGuard } from '_app/routerGuard/articleGuard';
 
 const appRoutes: Routes = [
     {
@@ -226,7 +227,7 @@ const appRoutes: Routes = [
             {
                 path: 'articles',
                 component: ArticleAdminComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [ArticleGuard],
                 data: { title: 'Articles' },
             },
             {

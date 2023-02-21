@@ -119,6 +119,10 @@ export function canViewComment(user: User | undefined): boolean {
     return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user);
 }
 
+export function canEditArticle(user: User | undefined): boolean {
+    return hasRole(user, 'DocumentationEditor');
+}
+
 export function canComment(user: User, item: Item | Board): boolean {
     if (!user || !item) {
         return false;
@@ -262,13 +266,13 @@ export function hasPrivilegeInRoles(user: User, privilege: Privilege): boolean {
 }
 
 export function hasRolePrivilege(user: User | undefined, privilege: RolePrivilege | undefined): boolean {
-    if (!user || !privilege) {
-        return false;
-    }
     if (isSiteAdmin(user)) {
         return true;
     }
-    return user.roles?.some(role => rolePrivileges[role][privilege]) ?? false;
+    if (!user || !privilege) {
+        return false;
+    }
+    return user.roles ? user.roles.some(role => rolePrivileges[role][privilege]) : false;
 }
 
 /**

@@ -46,6 +46,7 @@ public interface USERNAME {
     String commentEditor_username = "commentEditor";
     String attachmentReviewer_username = "attachmentReviewer";
     String ctep_fileCurator_username = "ctep_fileCurator";
+    String documentationEditor_username = "docEditor";
     String tableViewUser_username = "tableViewUser";
     String pinAllBoardUser_username = "pinAllBoardUser";
     String testEditor_username = "testEditor";

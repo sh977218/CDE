@@ -41,7 +41,8 @@
           "functions": false
         }],
         "@typescript-eslint/no-unused-expressions": "warn",
-        "@typescript-eslint/no-loop-func": "warn"
+        "@typescript-eslint/no-loop-func": "warn",
+        "@typescript-eslint/no-redeclare": "off"
       }
     }
   ]
