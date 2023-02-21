@@ -156,21 +156,22 @@ __Data Element__ and __Form__ have properties stored in multiple locations that 
 
 ## Packages
 ### Create package:
-* Modify the external files.
-* Increment the version number. (npm stale files without clearing cache)
-* In the package directory, run: `npm pack`
-* Move the new archive __.tgz__ to __packages/__
-* Add to __package.json__: `"<package>": "file:packages/<package>-<version>.tgz",`
+1. Modify the external files.
+2. Increment the version number. (npm stale files without clearing cache)
+3. In the package directory, run: `npm pack`
+4. Move the new archive __.tgz__ to __packages/__
+5. Add to __package.json__: `"<package>": "file:packages/<package>-<version>.tgz",`
 ### Modify package:
-* Install the package (could be by `npm init` in __packages__): `npm i <package>-<version>.tgz`
-* Modify the package files.
-* Increment the version number. (npm stale files without clearing cache)
-* In the package directory, run: `npm pack`
-* Move the new archive __.tgz__ to __packages/__
-### Rebuild and Install ngx-text-diff
-* Modify the package files.
-* Increment the version number. (npm stale files without clearing cache)
-* `npm run pack_ngx-text-diff`
+1. Install the package (could be by `npm init` in __packages__): `npm i <package>-<version>.tgz`
+2. Modify the package files.
+3. Increment the version number. (npm stale files without clearing cache)
+4. In the package directory, run: `npm pack`
+5. Move the new archive __.tgz__ to __packages/__
+### GitHub package:
+1. Update GitHub with new version.
+2. `npm pack`
+3. Create a GitHub release and upload the __.tgz__ file.
+4. Update package.json with new release URL.
 
 ## Single Sign-On (SSO)
 Client __App Component__ silently loads UTS into an invisible __< iframe >__ and communicates with it to get the JWT for UTS login.

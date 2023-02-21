@@ -24,7 +24,7 @@ export function add<T extends Attachable>(req: Request & { files: FileInfo[] }, 
 
     const fileBuffer = req.files[0].buffer;
     const streamFS1 = createReadStream(fileBuffer);
-    db.byId(req.body.id)
+    return db.byId(req.body.id)
         .then(item => {
             if (!item) {
                 return res.status(404).send();
