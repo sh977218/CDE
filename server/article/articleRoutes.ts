@@ -10,7 +10,7 @@ require('express-async-errors');
 export function module() {
     const router = Router();
 
-    ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about'].forEach(a => {
+    ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about', 'nihDataSharing'].forEach(a => {
         router.get('/' + a, async (req, res): Promise<Response> => {
             return res.send(await dbPlugins.article.byKey(a));
         });

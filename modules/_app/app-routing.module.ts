@@ -131,6 +131,11 @@ const appRoutes: Routes = [
         data: { title: `What's New`, article: 'whatsNew', preload: false },
     },
     {
+        path: 'nihDataSharing',
+        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
+        data: { title: `NIH Data Sharing`, article: 'nihDataSharing', preload: false },
+    },
+    {
         path: 'guides',
         loadChildren: () => import('system/public/guide.module').then(m => m.GuideModule),
         data: { title: 'Guides', preload: false },

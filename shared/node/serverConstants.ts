@@ -28,5 +28,6 @@ export const htmlServedUri: string[] = [
     '/searchPreferences',
     '/siteAudit',
     '/siteAccountManagement',
-    '/whatsNew'
+    '/whatsNew',
+    '/nihDataSharing'
 ];
