@@ -12,14 +12,14 @@ public class DynamicCodeListDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         changeDatatype(datatype);
         selectMatSelect("","Select system name", "VSAC");
         findElement(By.id("dynamicListCode")).sendKeys("some OID");
         hangon(1);
 
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
 
         goToHistory();
         selectHistoryAndCompare(1, 2);

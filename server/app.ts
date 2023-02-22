@@ -29,10 +29,9 @@ import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
-    canAttachMiddleware,
+    canAttachMiddleware, canEditArticleMiddleware,
     canSeeCommentMiddleware,
     checkEditing,
-    isDocumentationEditor,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware,
     isSiteAdminMiddleware
@@ -46,7 +45,7 @@ import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/traf
 import { init as authInit } from 'server/user/authentication';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
-import { canClassifyOrg } from 'shared/security/authorizationShared';
+import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
 
 require('source-map-support').install();
@@ -275,7 +274,7 @@ try {
     app.use('/', appModule());
     app.use('/server/attachment/cde', canAttachMiddleware, attachmentModule(dbPlugins.dataElement, checkEditing));
     app.use('/server/attachment/form', canAttachMiddleware, attachmentModule(dbPlugins.form, checkEditing));
-    app.use('/server/attachment/article', canAttachMiddleware, attachmentModule(dbPlugins.article, isDocumentationEditor));
+    app.use('/server/attachment/article', canEditArticleMiddleware, attachmentModule(dbPlugins.article, isDocumentationEditor));
     app.use('/server/discuss', discussModule({
         allComments: isOrgAuthorityMiddleware,
         canSeeComment: canSeeCommentMiddleware,

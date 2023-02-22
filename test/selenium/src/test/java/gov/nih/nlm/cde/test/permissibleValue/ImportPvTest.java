@@ -11,7 +11,7 @@ public class ImportPvTest extends NlmCdeBaseTest {
         String cdeName = "Non-Pathology Findings";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         clickElement(By.id("openImportPVModalBtn"));
         importPvByTinyId("mJQiShWEW");
         textPresent("The following errors need to be corrected in order to Publish");

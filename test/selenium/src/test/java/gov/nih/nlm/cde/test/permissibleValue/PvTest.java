@@ -15,7 +15,7 @@ public class PvTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         findElement(By.xpath("//li[contains(@class,'active')][contains(@class,'h1')][contains(.,'DCE-MRI Kinetics T1')]"));
-        goToPermissibleValues();
+        goToDataTypeDetails();
         findElement(By.xpath("//li[contains(@class,'active')][contains(@class,'h2')][contains(.,'Permissible Values')]"));
 
         String value = " added to pv";

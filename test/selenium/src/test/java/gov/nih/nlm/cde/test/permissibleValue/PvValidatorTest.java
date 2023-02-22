@@ -40,7 +40,7 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         String cdeName = "PvValidatorCde";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textNotPresent("There are validation errors");
 
         changeField(0, "pv2");

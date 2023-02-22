@@ -83,7 +83,7 @@
                     </mat-list>
                 </ng-container>
 
-                <ng-container *ngIf="userSvc.isOrgAuthority()">
+                <ng-container *ngIf="userSvc.isDocumentEditor()">
                     <mat-divider></mat-divider>
                     <mat-list-item id="users" [routerLinkActive]="['isActive']" routerLink="users">
                         Users

@@ -12,6 +12,7 @@ import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
 import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { FormResolve } from 'form/formDescription/form.resolve';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
+import { ArticleGuard } from '_app/routerGuard/articleGuard';
 
 const appRoutes: Routes = [
     {
@@ -131,6 +132,11 @@ const appRoutes: Routes = [
         data: { title: `What's New`, article: 'whatsNew', preload: false },
     },
     {
+        path: 'nihDataSharing',
+        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
+        data: { title: `NIH Data Sharing`, article: 'nihDataSharing', preload: false },
+    },
+    {
         path: 'guides',
         loadChildren: () => import('system/public/guide.module').then(m => m.GuideModule),
         data: { title: 'Guides', preload: false },
@@ -178,6 +184,7 @@ const appRoutes: Routes = [
         OrgAuthorityGuard,
         OrgCuratorGuard,
         SiteAdminGuard,
+        ArticleGuard,
     ],
     exports: [RouterModule],
 })

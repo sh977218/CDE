@@ -1,29 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable, NgZone } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { environment } from 'environments/environment';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 
-interface SavedRoute {
-    url: string;
-    queryParams: Params | null;
-}
-
-function paramToQueryString(p: Params | null) {
-    if (!p) {
-        return '';
-    }
-    const q = Object.keys(p)
-        .map(k => k + '=' + p[k])
-        .join('&');
-    return q ? '?' + q : '';
-}
-
 @Injectable()
 export class LoginService {
     federatedUrl: string = '';
-    lastRoute?: SavedRoute;
+    lastRoute: UrlTree;
     loginWindow: Window | null = null;
 
     constructor(
@@ -35,43 +20,22 @@ export class LoginService {
         @Inject(forwardRef(() => NgZone)) public ngZone: NgZone
     ) {}
 
-    getPreviousRoute(): SavedRoute {
-        if (this.lastRoute) {
-            return this.lastRoute;
-        }
-        const url = window.sessionStorage.getItem('nlmcde.lastRoute');
-        if (url) {
-            const savedQuery = window.sessionStorage.getItem('nlmcde.lastRouteQuery');
-            let queryParams: Params | null = null;
-            try {
-                queryParams = savedQuery && JSON.parse(savedQuery);
-            } catch (e) {}
-            window.sessionStorage.removeItem('nlmcde.lastRoute');
-            window.sessionStorage.removeItem('nlmcde.lastRouteQuery');
-            return { url, queryParams };
-        } else {
-            return { url: '/home', queryParams: null };
-        }
-    }
-
     goToLogin() {
         if (window.location.href.indexOf('login') === -1) {
-            this.lastRoute = {
-                url: this.router.url.toString() + '',
-                queryParams: this.route.snapshot.queryParams,
-            };
-            if (this.lastRoute.url.indexOf('?') > 0) {
-                this.lastRoute.url = this.lastRoute.url.substr(0, this.lastRoute.url.indexOf('?'));
-            }
             this.router.navigate(['/login']);
         }
     }
 
     loggedIn() {
         this.userService.reload(() => {
-            const lastRoute = this.getPreviousRoute();
-            this.router.navigate([lastRoute.url], {
-                queryParams: lastRoute.queryParams,
+            const queryParams = this.lastRoute.queryParams;
+            const fragment = this.lastRoute.fragment;
+            this.lastRoute.queryParams = {};
+            this.lastRoute.fragment = null;
+            const url = this.lastRoute.toString();
+            this.router.navigate([url], {
+                queryParams,
+                fragment,
             });
         });
     }
@@ -85,12 +49,6 @@ export class LoginService {
                     this.loggedIn();
                 });
             };
-        } else {
-            if (this.lastRoute) {
-                window.sessionStorage.setItem('nlmcde.lastRoute', this.lastRoute.url);
-                window.sessionStorage.setItem('nlmcde.lastRouteQuery', paramToQueryString(this.lastRoute.queryParams));
-            }
-            window.location.href = this.federatedUrl;
         }
     }
 }

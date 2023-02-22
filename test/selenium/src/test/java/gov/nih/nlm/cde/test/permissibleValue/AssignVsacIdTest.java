@@ -15,7 +15,7 @@ public class AssignVsacIdTest extends NlmCdeBaseTest {
         String cdeName = "Patient Ethnic Group Category";
         mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("No Value Set specified.");
         clickElement(By.id("updateOIDBtn"));
         findElement(By.name("vsacId")).sendKeys("invalidId");

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { Item, UserRoles } from 'shared/models.model';
+import { Item, UserRole } from 'shared/models.model';
 import { canEditCuratedItem, isOrgCurator, isSiteAdmin, hasRole } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class IsAllowedService {
     constructor(private userService: UserService) {}
 
-    hasRole(role: UserRoles) {
+    hasRole(role: UserRole) {
         return hasRole(this.userService.user, role);
     }
 

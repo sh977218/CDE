@@ -12,7 +12,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
 
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         changeDatatype(datatype);
         propertyEditText("datatypeNumberMin", "123");
         propertyEditText("datatypeNumberMax", "456");
@@ -26,7 +26,7 @@ public class NumberDatatypeTest extends NlmCdeBaseTest {
         textPresent("Text", By.xpath("//*[@id='Data Type']//td-ngx-text-diff"));
         clickElement(By.id("closeHistoryCompareModal"));
 
-        goToPermissibleValues();
+        goToDataTypeDetails();
         propertyEditText("datatypeNumberMin", "789");
         propertyEditText("datatypeNumberMax", "987");
         newCdeVersion();

@@ -12,7 +12,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
         String cdeName = "Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator";
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         clickElement(By.id("openAddPermissibleValueModelBtn"));
         clickElement(By.id("valueMeaningNameInput"));
         findElement(By.id("valueMeaningNameInput")).sendKeys("Female");
@@ -48,7 +48,7 @@ public class AddUmlsPv extends NlmCdeBaseTest {
 
         logout();
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
 
         Assert.assertFalse(findElement(By.id("displayLNCCodes")).isEnabled());
         Assert.assertFalse(findElement(By.id("displaySNOMEDCT_USCodes")).isEnabled());

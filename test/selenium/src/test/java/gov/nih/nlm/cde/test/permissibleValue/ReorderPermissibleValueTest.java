@@ -11,7 +11,7 @@ public class ReorderPermissibleValueTest extends NlmCdeBaseTest {
         String cdeName = "Reorder permissible values cde";
         mustBeLoggedInAs(testEditor_username, password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
 
         reorderBySection("permissible-value", "down", 0);
         textPresent("pv1", By.id("pvValue_1"));

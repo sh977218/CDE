@@ -12,7 +12,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
         textPresent("Genotype Therapy Basis Mutation Analysis Indicator");
         textPresent("Text descriptor to indicate whether genotype directed therapy was based on mutation testing");
         textPresent("Qualified");
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("Unknown");
 
         goToConcepts();
@@ -40,7 +40,7 @@ public class CdeSearchTest extends NlmCdeBaseTest {
     @Test
     public void vdInstruction() {
         goToCdeByName("Participant Identifier Source");
-        goToPermissibleValues();
+        goToDataTypeDetails();
         textPresent("One of \"GUID\" or \"Source Registry Specific Identifier\"", By.cssSelector("[itemprop='instructions']"));
     }
 

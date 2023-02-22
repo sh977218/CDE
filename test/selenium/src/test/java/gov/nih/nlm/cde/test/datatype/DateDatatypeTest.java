@@ -9,7 +9,7 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         String cdeName = "Assessment date and time";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
-        goToPermissibleValues();
+        goToDataTypeDetails();
         selectMatSelect("", "Select Precision", "Year");
         selectMatSelect("", "Select Precision", "Month");
         selectMatSelect("", "Select Precision", "Day");

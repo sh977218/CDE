@@ -49,7 +49,7 @@ export function module() {
 
     router.get('/site-version', (req, res) => res.send(version));
 
-    router.get('/status/cde', status); // used for DevOps health check API (heartbeat)
+    router.get('/status/cde', status); // used for DevOps health check API (heartbeat), has a HTTPS redirect bypass
 
     // every hour
     new CronJob('0 */60 * * * *', async () => {

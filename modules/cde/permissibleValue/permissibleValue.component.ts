@@ -62,16 +62,8 @@ const SOURCES: Record<PermissibleValueCodeSystem, Source> = {
 
 @Component({
     selector: 'cde-permissible-value',
-    templateUrl: 'permissibleValue.component.html',
-    styles: [
-        `
-            #pvTable {
-                overflow: auto;
-                width: 100%;
-                max-height: 500px;
-            }
-        `,
-    ],
+    templateUrl: './permissibleValue.component.html',
+    styleUrls: ['./permissibleValue.component.scss'],
 })
 export class PermissibleValueComponent {
     @Input() canEdit!: boolean;

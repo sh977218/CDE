@@ -118,9 +118,10 @@ Run in Bamboo and override variable "browser" with value "coverage"
 * Business Rules and Models go into __shared/__
 * View Models and Angular-dependent code go into __modules/__
 * Database entities and Node-dependent code go into __server/__
+* node_modules overrides go into public repositories or __packages/__ (see section)
 
 ## API
-API routes are created in Expressing using path __/api/__.
+API routes are created in Express using path __/api/__.
 #### API Documentation via Swagger
 Update route information in __swagger.yaml__. Restart the server to read it in.
 Swagger-tools inserts its own route `/docs` using middleware and creates this page. The page is embedded using an __< iframe >__.
@@ -151,6 +152,26 @@ __Data Element__ and __Form__ have properties stored in multiple locations that 
 * /server/swagger/api/__swagger.yaml__ (API documentation)
 * /shared/_{entity}_/_{entity}___.model.ts__ (TS type)
 * /shared/_{entity}_/assets/_{entity}___.schema.json__ (JSON Schema)
+* __(searchable properties or views only)__ /server/system/__elasticSearchInit.ts__ (ElasticSearch index mapping)
+
+## Packages
+### Create package:
+1. Modify the external files.
+2. Increment the version number. (npm stale files without clearing cache)
+3. In the package directory, run: `npm pack`
+4. Move the new archive __.tgz__ to __packages/__
+5. Add to __package.json__: `"<package>": "file:packages/<package>-<version>.tgz",`
+### Modify package:
+1. Install the package (could be by `npm init` in __packages__): `npm i <package>-<version>.tgz`
+2. Modify the package files.
+3. Increment the version number. (npm stale files without clearing cache)
+4. In the package directory, run: `npm pack`
+5. Move the new archive __.tgz__ to __packages/__
+### GitHub package:
+1. Update GitHub with new version.
+2. `npm pack`
+3. Create a GitHub release and upload the __.tgz__ file.
+4. Update package.json with new release URL.
 
 ## Single Sign-On (SSO)
 Client __App Component__ silently loads UTS into an invisible __< iframe >__ and communicates with it to get the JWT for UTS login.
