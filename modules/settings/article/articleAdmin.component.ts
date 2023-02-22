@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ArticleAdminComponent {
     article!: Partial<Article>;
-    articles = ['whatsNew', 'contactUs', 'videos', 'guides', 'about', 'resources'];
+    articles = ['whatsNew', 'contactUs', 'videos', 'guides', 'about', 'resources', 'nihDataSharing'];
     selectedKey?: string;
 
     constructor(private http: HttpClient, public dialog: MatDialog, private alertSvc: AlertService) {}
