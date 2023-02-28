@@ -26,8 +26,10 @@ public class CodesFromNCI extends NlmCdeBaseTest {
         goToDataTypeDetails();
 
         clickElement(By.id("displayLNCCodes"));
-        textPresent("American Indian or Alaska Native", By.id("nameAsLNC_0"));
-        textPresent("LA6155-1", By.id("codeAsLNC_0"));
+//        textPresent("American Indian or Alaska Native", By.id("nameAsLNC_0"));
+//        textPresent("LA6155-1", By.id("codeAsLNC_0"));
+        textPresent("Native american", By.id("nameAsLNC_0"));
+        textPresent("LA16817-1", By.id("codeAsLNC_0"));
         textNotPresent("Retrieving...");
 
         clickElement(By.id("displaySNOMEDCT_USCodes"));

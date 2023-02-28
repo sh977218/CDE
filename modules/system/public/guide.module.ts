@@ -8,27 +8,22 @@ import { RouterModule, Routes } from '@angular/router';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { GuideComponent } from 'system/public/components/guide/guide.component';
 
-const appRoutes: Routes = [
-    {path: '', component: GuideComponent},
-];
+const appRoutes: Routes = [{ path: '', component: GuideComponent }];
 
 @NgModule({
     imports: [
         CommonModule,
         RouterModule.forChild(appRoutes),
+        MatButtonModule,
         MatSidenavModule,
         MatIconModule,
         NonCoreModule,
         TocModule,
         RouterModule,
-        MatButtonModule
     ],
-    declarations: [
-        GuideComponent
-    ],
+    declarations: [GuideComponent],
     exports: [],
     providers: [],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class GuideModule {
-}
+export class GuideModule {}

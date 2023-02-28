@@ -9,7 +9,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 })
 export class SettingsComponent {
     @ViewChild('drawer', { static: true }) drawer!: MatSidenav;
-    isMobile: boolean = window.innerWidth <= 575;
+    isMobile: boolean = window.innerWidth < 576;
     opened: boolean = true;
 
     constructor(private router: Router, public userSvc: UserService) {
@@ -22,7 +22,7 @@ export class SettingsComponent {
 
     @HostListener('window:resize', ['$event'])
     onResize() {
-        this.isMobile = window.innerWidth <= 575;
+        this.isMobile = window.innerWidth < 576;
     }
 
     scrollTop() {

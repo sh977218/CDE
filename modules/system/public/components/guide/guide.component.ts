@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
@@ -9,26 +9,37 @@ import { Article } from 'shared/article/article.model';
 @Component({
     selector: 'cde-guide',
     templateUrl: 'guide.component.html',
-    styleUrls: ['guide.component.scss'],
+    styleUrls: ['guide.component.scss', '../../../../cde/dataElementView/view.style.scss'],
     encapsulation: ViewEncapsulation.None,
-    providers: [TocService]
+    providers: [TocService],
 })
-export class GuideComponent implements AfterViewInit {
+export class GuideComponent implements OnDestroy, AfterViewInit {
     article?: Article;
+    isMobile = false;
 
-    constructor(private http: HttpClient,
-                private router: Router,
-                private cd: ChangeDetectorRef,
-                private scrollService: ScrollService,
-                private tocService: TocService,
-                private userService: UserService
+    constructor(
+        private http: HttpClient,
+        private router: Router,
+        private cd: ChangeDetectorRef,
+        private scrollService: ScrollService,
+        private tocService: TocService,
+        public userService: UserService
     ) {
-        this.http.get<Article>(`/server/article/guides`)
-            .subscribe(a => this.article = a);
+        this.http.get<Article>(`/server/article/guides`).subscribe(a => (this.article = a));
+        this.onResize();
     }
 
     ngAfterViewInit(): void {
         this.renderToc();
+    }
+
+    ngOnDestroy() {
+        this.tocService.reset();
+    }
+
+    @HostListener('window:resize', [])
+    onResize() {
+        this.isMobile = window.innerWidth < 768; // size md
     }
 
     renderToc() {
@@ -41,7 +52,6 @@ export class GuideComponent implements AfterViewInit {
             const elementList = document.getElementsByTagName('main');
             this.tocService.genToc(elementList[0], path);
             this.scrollService.scroll();
-        },2000)
-
+        }, 2000);
     }
 }
