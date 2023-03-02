@@ -182,7 +182,7 @@
                 <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
                 <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
                 <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
-                <th>Actions</th>
+                <th *ngIf="canEdit">Actions</th>
             </tr>
             <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
                 <td id="pvValue_{{i}}">
@@ -222,7 +222,7 @@
                 <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
                     {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
                 </td>
-                <td id="pvAction_{{i}}">
+                <td id="pvAction_{{i}}" *ngIf="canEdit">
                     <ng-container *ngIf="pv.notValid">
                         <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
                     </ng-container>

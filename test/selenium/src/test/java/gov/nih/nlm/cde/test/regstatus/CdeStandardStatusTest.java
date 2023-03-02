@@ -22,8 +22,6 @@ public class CdeStandardStatusTest extends NlmCdeBaseTest {
 
         checkElementDoesNotExistByLocator(By.xpath("//*[@itemprop='datatype']//input[not(@disabled)]"));
 
-        Assert.assertTrue(findElements(By.xpath("//td[contains(@id, 'pvAction') and not(*)]")).size() > 0);
-
         findElement(By.xpath("//*[@id='pvValue_1'][not(//mat-icon[contains(., 'edit')])]"));
 
         findElement(By.xpath("//div[not(//button[@id = 'openAddPermissibleValueModelBtn'])]"));
