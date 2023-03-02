@@ -3,14 +3,14 @@
     <table *ngIf="elt.valueDomain.permissibleValues.length > 0" class="summaryTable cdeTable"
            summary="List of permissible values">
         <tr>
-            <th id="value_{{eltIndex}}" class="col-5 summaryLabel">Value</th>
-            <th id="codeName_{{eltIndex}}" class="col-5 summaryLabel">Code Name</th>
-            <th id="code_{{eltIndex}}" class="col-2 summaryLabel">Code</th>
+            <th id="value_{{eltIndex}}" class="col-5 summaryLabel">Label</th>
+            <th id="codeName_{{eltIndex}}" class="col-5 summaryLabel">Code</th>
+            <th id="code_{{eltIndex}}" class="col-2 summaryLabel">ConceptID</th>
         </tr>
         <tr *ngFor="let pv of elt.valueDomain.permissibleValues | slice:0:4; let i = index">
             <td headers="value_{{eltIndex}}" class="col-5 text-truncate">{{pv.permissibleValue}}</td>
-            <td headers="codeName_{{eltIndex}}" class="col-5 text-truncate">{{pv.valueMeaningName}}</td>
-            <td headers="code_{{eltIndex}}" class="col-2 text-truncate">{{pv.valueMeaningCode}}</td>
+            <td headers="codeName_{{eltIndex}}" class="col-5 text-truncate">{{pv.valueMeaningCode}}</td>
+            <td headers="code_{{eltIndex}}" class="col-2 text-truncate">{{pv.conceptId}}</td>
         </tr>
         <tr *ngIf="elt.valueDomain.permissibleValues.length > 5">
             <td colspan="3" style="font-style: italic"> ({{elt.valueDomain.nbOfPVs}} total) See full table in <a style="text-decoration: underline"

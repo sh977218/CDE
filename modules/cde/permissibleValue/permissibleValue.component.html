@@ -171,15 +171,16 @@
     <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs">
         <table id="pvTable" class="table table-bordered table-condensed table-striped table-responsive">
             <tr>
-                <th>Value</th>
-                <th>Code Name</th>
-                <th>Code</th>
-                <th>Code System</th>
+                <th>PV Labels</th>
+                <th>PV Definitions</th>
+                <th>PV Concept Identifiers</th>
+                <th>PV Terminology Sources</th>
+                <th>Codes for PVs</th>
+                <th>PV Code Systems</th>
                 <th *ngIf="SOURCES['UMLS'].selected" colspan="2">UMLS</th>
                 <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
                 <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
                 <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
-                <th>Code Description</th>
                 <th>Actions</th>
             </tr>
             <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
@@ -187,9 +188,13 @@
                     <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit();"></cde-inline-edit>
                 </td>
-                <td id="pvMeaningName_{{i}}">
-                    <cde-inline-edit [(model)]="pv.valueMeaningName" [isAllowed]="canEdit"
+                <td id="pvMeaningDefinition_{{i}}">
+                    <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
+                                     [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit();"></cde-inline-edit>
+                </td>
+                <td id="pvConceptId_{{i}}">{{pv.conceptId}}</td>
+                <td id="pvConceptSource_{{i}}">{{pv.conceptSource}}</td>
                 <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
                 <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
                 <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}">
@@ -215,11 +220,6 @@
                 </td>
                 <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}">
                     {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
-                </td>
-                <td id="pvMeaningDefinition_{{i}}">
-                    <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
-                                     [isAllowed]="canEdit"
-                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
                 </td>
                 <td id="pvAction_{{i}}">
                     <ng-container *ngIf="pv.notValid">
