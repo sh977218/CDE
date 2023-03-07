@@ -16,6 +16,7 @@ $itemWidth: 208px;
 }
 
 .toc-inner {
+  overflow-x: hidden;
   width: $itemWidth;
 
   ul.toc-list {

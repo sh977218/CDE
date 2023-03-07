@@ -2,6 +2,10 @@
 
 mat-sidenav {
   border: 0;
+
+  ::ng-deep [cdkscrollable] {
+    overflow: overlay;
+  }
 }
 
 mat-sidenav-content {

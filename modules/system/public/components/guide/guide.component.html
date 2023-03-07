@@ -13,7 +13,7 @@
             </ng-template>
         </mat-sidenav>
         <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '240px'">
-            <main>
+            <main class="content">
                 <button class="button light" routerLink="/settings/articles" *ngIf="userService.isOrgAuthority()">
                     <mat-icon>edit</mat-icon>
                     Edit
