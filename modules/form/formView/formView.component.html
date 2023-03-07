@@ -5,7 +5,7 @@
 <button *ngIf="!navDrawer.opened" class="noPrint forNotMdScreen slide-pane-button" title="Expand Page Navigation"
         (click)="navDrawer.open()"></button>
 
-<mat-sidenav-container>
+<mat-sidenav-container class="container">
     <mat-sidenav #navDrawer class="noPrint" position="start" style="border: 0"
                  [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
                  fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 132" [fixedBottomGap]="isMobile ? 0 : 99">
@@ -13,12 +13,12 @@
             <aio-toc style="padding: 1rem 1rem 0 1rem"></aio-toc>
         </div>
         <ng-template #aioToc>
-            <aio-toc style="padding: 2rem 0 0 2rem"></aio-toc>
+            <aio-toc style="padding: 2rem 2rem 0 0"></aio-toc>
         </ng-template>
     </mat-sidenav>
     <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '240px'">
         <mat-sidenav-container [hasBackdrop]="false">
-            <mat-sidenav #commentDrawer mode="side" position="start" style="max-width: 25%">
+            <mat-sidenav #commentDrawer mode="side" position="start">
                 <div *ngIf="elt && userService.canViewComment">
                     <cde-discuss-area *ngIf="elt" [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"
@@ -26,8 +26,7 @@
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
-                <main *ngIf="elt" class="container-fluid" style="margin-top: 2rem; padding: 0 2rem"
-                      itemscope="https://schema.org/MedicalCode">
+                <main *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
                     <h1 id="top-of-page" style="display: inline">
                         <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
                                           (isDraftChange)="$event?loadElt():loadPublished()"

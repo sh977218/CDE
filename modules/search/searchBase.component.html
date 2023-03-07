@@ -1,56 +1,58 @@
 <section class="searchBar" [class.cde]="searchType === 'cde' || searchType === 'endorsedCde'"
          [class.form]="searchType === 'form'">
     <form #quickSearchForm="ngForm" id="quickSearchForm" class="container" novalidate>
-        <button style="display: none" type="submit" (click)="termSearch()"></button>
-        <div class="stretchBar inline-group" style="gap: 0">
-            <button class="forSearchDesktop searchDropdown button" [disabled]="embedded"
-                    [matMenuTriggerFor]="searchMenu">
+        <div class="content">
+            <button style="display: none" type="submit" (click)="termSearch()"></button>
+            <div class="stretchBar inline-group" style="gap: 0">
+                <button class="forSearchDesktop searchDropdown button" [disabled]="embedded"
+                        [matMenuTriggerFor]="searchMenu">
+                    <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
+                         style="height: 20px; vertical-align: text-top">
+                    {{getSearchLabel(searchType)}}
+                    <mat-icon *ngIf="!embedded" style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
+                </button>
+                <label class="shrink grow d-block mN">
+                    <input #autoCompleteInput id="ftsearch-input" name="q" class="form-control"
+                           [placeholder]="isSearchDesktop ? 'Search by topic, keyword, or organization' : 'Search by topic, keyword, or org...'"
+                           maxlength="500" [matAutocomplete]="auto"
+                           [(ngModel)]="searchTerm" (ngModelChange)="searchTermAutoComplete.emit($event)"/>
+                </label>
+                <button id="search.submit" class="button icon" (click)="termSearch()">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </div>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
+                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-autocomplete>
+            <button class="searchDropdown button forNotSearchDesktop" style="margin-top: 1rem; width: 100%"
+                    [disabled]="embedded" [matMenuTriggerFor]="searchMenu">
                 <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
                      style="height: 20px; vertical-align: text-top">
                 {{getSearchLabel(searchType)}}
                 <mat-icon *ngIf="!embedded" style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
             </button>
-            <label class="shrink grow d-block mN">
-                <input #autoCompleteInput id="ftsearch-input" name="q" class="form-control"
-                       [placeholder]="isSearchDesktop ? 'Search by topic, keyword, or organization' : 'Search by topic, keyword, or org...'"
-                       maxlength="500" [matAutocomplete]="auto"
-                       [(ngModel)]="searchTerm" (ngModelChange)="searchTermAutoComplete.emit($event)"/>
-            </label>
-            <button id="search.submit" class="button icon" (click)="termSearch()">
-                <mat-icon>search</mat-icon>
-            </button>
+            <!-- Error display area -->
+            <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
+               class="error-block">
+                <span>Query terms must be 500 characters or less.</span>
+            </p>
+            <mat-menu #searchMenu="matMenu">
+                <button mat-menu-item [class.active]="searchType === 'endorsedCde'"
+                        (click)="setSearchType('endorsedCde')">
+                    <img src="/assets/img/endorsedRibbonIcon.png"
+                         style="height: 20px; vertical-align: text-top">
+                    <span>Search NIH-Endorsed CDEs</span>
+                </button>
+                <button mat-menu-item [class.active]="searchType === 'cde'" (click)="setSearchType('cde')">
+                    <span>Search All CDEs</span>
+                </button>
+                <button mat-menu-item [class.active]="searchType === 'form'" (click)="setSearchType('form')">
+                    <span>Search Forms</span>
+                </button>
+            </mat-menu>
         </div>
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
-            <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
-                {{ option }}
-            </mat-option>
-        </mat-autocomplete>
-        <button class="searchDropdown button forNotSearchDesktop" style="margin-top: 1rem; width: 100%"
-                [disabled]="embedded" [matMenuTriggerFor]="searchMenu">
-            <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
-                 style="height: 20px; vertical-align: text-top">
-            {{getSearchLabel(searchType)}}
-            <mat-icon *ngIf="!embedded" style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
-        </button>
-        <!-- Error display area -->
-        <p [hidden]="quickSearchForm.form.valid || quickSearchForm.form.pristine"
-           class="error-block">
-            <span>Query terms must be 500 characters or less.</span>
-        </p>
-        <mat-menu #searchMenu="matMenu">
-            <button mat-menu-item [class.active]="searchType === 'endorsedCde'"
-                    (click)="setSearchType('endorsedCde')">
-                <img src="/assets/img/endorsedRibbonIcon.png"
-                     style="height: 20px; vertical-align: text-top">
-                <span>Search NIH-Endorsed CDEs</span>
-            </button>
-            <button mat-menu-item [class.active]="searchType === 'cde'" (click)="setSearchType('cde')">
-                <span>Search All CDEs</span>
-            </button>
-            <button mat-menu-item [class.active]="searchType === 'form'" (click)="setSearchType('form')">
-                <span>Search Forms</span>
-            </button>
-        </mat-menu>
     </form>
 </section>
 
@@ -59,7 +61,7 @@
          [class.container-fluid]="isFullScreen()"
          [class.searchFilterLayout]="filterMode">
     <!--FILTERS-->
-    <div *ngIf="filterMode" class="filterPanel">
+    <div *ngIf="filterMode" class="content filterPanel">
         <!-- BREADCRUMBS / Active Filters -->
         <div *ngIf="isSearched()">
             <div class="searchFilterTitle">ACTIVE {{module === 'cde' ? 'CDE' : 'FORM'}} FILTERS</div>
@@ -308,7 +310,7 @@
         </div>
     </div>
     <!-- CONTENT -->
-    <div class="searchResultsView">
+    <div class="content searchResultsView">
         <ng-container *ngIf="elts.length > 0 && aggregations; else noResults">
             <ng-container *ngIf="isSearched(); else welcomePage">
                 <div class="searchResultBar" style="margin-bottom: 1rem">
@@ -375,7 +377,7 @@
                 </div>
             </ng-container>
             <ng-template #welcomePage>
-                <section id="tabs" class="cde-bg-grey" style="margin-bottom: 30px; padding: 30px">
+                <section id="tabs" class="cde-bg-grey" style="margin-bottom: 0; padding: 30px">
                     <h1>
                         Search {{module === 'cde' ? 'CDEs' : 'Forms'}}
                         <button id="export" class="button light"
@@ -443,7 +445,7 @@
 </section>
 
 <ng-template #searchingLoader>
-    <h1>
+    <h1 class="container">
         <mat-icon class="spin">auto_renew</mat-icon>
         Searching...
     </h1>

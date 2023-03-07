@@ -5,15 +5,14 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-whats-new',
-    templateUrl: 'article.component.html'
+    templateUrl: 'article.component.html',
 })
 export class ArticleComponent {
     article?: Article;
 
-    constructor(private http: HttpClient,
-                private activatedRoute: ActivatedRoute
-                ) {
-        this.http.get<Article>(`/server/article/${this.activatedRoute.snapshot.data.article}`)
-            .subscribe(a => this.article = a);
+    constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {
+        this.http
+            .get<Article>(`/server/article/${this.activatedRoute.snapshot.data.article}`)
+            .subscribe(a => (this.article = a));
     }
 }

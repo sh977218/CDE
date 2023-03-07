@@ -4,11 +4,10 @@ import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/myBoards.service';
 
 @Component({
-    templateUrl: './myBoards.component.html'
+    templateUrl: './myBoards.component.html',
 })
 export class MyBoardsComponent {
-    constructor(public myBoardsSvc: MyBoardsService,
-                public userService: UserService) {
+    constructor(public myBoardsSvc: MyBoardsService, public userService: UserService) {
         this.myBoardsSvc.loadMyBoards();
     }
 

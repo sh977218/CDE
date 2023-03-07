@@ -103,31 +103,57 @@ th {
   text-align: -webkit-match-parent;
 }
 
+$containerPadding: 16px;
+$scrollbarWidth: 18px;
+
 .container, .container-fluid {
-  margin: 1rem auto;
-  padding: 0 1rem;
+  margin: 0 auto;
+  padding: 0 $containerPadding;
   width: 100%;
 }
 
 .container {
+  padding: 0;
+
+  .content {
+    padding: $containerPadding;
+  }
+
+  &.mat-sidenav-container {
+    .content {
+      padding: $containerPadding $containerPadding $containerPadding 2rem;
+    }
+  }
+
   @media (min-width: $screenSm) {
     & {
-      max-width: 540px;
+      max-width: $screenSm - 2 * $containerPadding - $scrollbarWidth;
+
+      .content {
+        padding: $containerPadding 0;
+      }
+    }
+    &.mat-sidenav-container {
+      max-width: 100%;
     }
   }
   @media (min-width: $screenMd) {
-    & {
-      max-width: 720px;
+    &, &.mat-sidenav-container {
+      max-width: $screenMd - 4 * $containerPadding - $scrollbarWidth;
+
+      .content {
+        padding: 2 * $containerPadding 0;
+      }
     }
   }
   @media (min-width: $screenLg) {
-    & {
-      max-width: 960px;
+    &, &.mat-sidenav-container {
+      max-width: $screenLg - 4 * $containerPadding - $scrollbarWidth;
     }
   }
   @media (min-width: $screenXl) {
-    & {
-      max-width: 1140px;
+    &, &.mat-sidenav-container {
+      max-width: $screenXl - 4 * $containerPadding - $scrollbarWidth;
     }
   }
 }
@@ -208,11 +234,11 @@ h1 {
 
   .mat-icon {
     @include h1;
-    //height: 1em;
+    height: 1em;
     line-height: $nlmLineHeight;
     margin-bottom: 0;
     vertical-align: text-top;
-    //width: 1em;
+    width: 1em;
   }
 }
 
@@ -228,10 +254,10 @@ h2 {
 
   .mat-icon {
     @include h2;
-    //height: 1em;
+    height: 1em;
     line-height: $nlmLineHeight;
     vertical-align: text-top;
-    //width: 1em;
+    width: 1em;
   }
 }
 
@@ -248,11 +274,11 @@ h3, h4, h5, h6 {
 
   .mat-icon {
     @include h3;
-    //height: 1em;
+    height: 1em;
     line-height: $nlmLineHeight;
     margin-bottom: 0;
     //vertical-align: text-top;
-    //width: 1em;
+    width: 1em;
 
     // workaround for small font size
     font-size: 1.25rem;

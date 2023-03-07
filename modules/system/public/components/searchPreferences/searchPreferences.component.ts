@@ -8,7 +8,7 @@ import { UserSearchSettings } from 'shared/models.model';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 @Component({
-    templateUrl: 'searchPreferences.component.html'
+    templateUrl: 'searchPreferences.component.html',
 })
 export class SearchPreferencesComponent implements OnInit {
     exportToTab: string = '';

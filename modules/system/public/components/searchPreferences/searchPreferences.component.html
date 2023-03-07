@@ -1,62 +1,66 @@
 <div class="container">
-    <h1>
-        <mat-icon>search</mat-icon>
-        Search Results
-    </h1>
-    <label *ngIf="isOrgAuthority(userService.user)"  id="includeRetired">
-        <input type="checkbox" [(ngModel)]="esService.includeRetired">
-        Include Retired Content (this session only)
-    </label>
-    <h2>
-        <mat-icon>sort</mat-icon>
-        Default Search Results View
-    </h2>
-    <section>
-        <div>By default, I want to see results as:</div>
-        <div>
-            <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType" value="summary">
-                <mat-icon style="margin-left: 5px">view_list</mat-icon>
-                Summary
-            </label>
+    <div class="content">
+        <h1>
+            <mat-icon>search</mat-icon>
+            Search Results
+        </h1>
+        <label *ngIf="isOrgAuthority(userService.user)" id="includeRetired">
+            <input type="checkbox" [(ngModel)]="esService.includeRetired">
+            Include Retired Content (this session only)
+        </label>
+        <h2>
+            <mat-icon>sort</mat-icon>
+            Default Search Results View
+        </h2>
+        <section>
+            <div>By default, I want to see results as:</div>
+            <div>
+                <label>
+                    <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType"
+                           value="summary">
+                    <mat-icon style="margin-left: 5px">view_list</mat-icon>
+                    Summary
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType"
+                           value="table">
+                    <mat-icon style="margin-left: 5px">table_chart</mat-icon>
+                    Table
+                </label>
+            </div>
+        </section>
+        <section>
+            <div>When possible, I want to download data as:</div>
+            <div>
+                <label>
+                    <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="">
+                    <mat-icon style="margin-left: 5px">attachment</mat-icon>
+                    File (default)
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="tab">
+                    <mat-icon style="margin-left: 5px">tab</mat-icon>
+                    New Tab
+                </label>
+            </div>
+        </section>
+        <div class="actions">
+            <button class="button fail" type="button" (click)="loadDefault()">
+                <mat-icon>undo</mat-icon>
+                Load Default
+            </button>
+            <button class="button secondary" type="button" (click)="cancelSettings()">
+                <mat-icon>cancel</mat-icon>
+                Cancel
+            </button>
+            <button class="button success" type="button" (click)="saveSettings()">
+                <mat-icon>check</mat-icon>
+                Save
+            </button>
         </div>
-        <div>
-            <label>
-                <input type="radio" [(ngModel)]="searchSettings.defaultSearchView" name="searchListType" value="table">
-                <mat-icon style="margin-left: 5px">table_chart</mat-icon>
-                Table
-            </label>
-        </div>
-    </section>
-    <section>
-        <div>When possible, I want to download data as:</div>
-        <div>
-            <label>
-                <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="">
-                <mat-icon style="margin-left: 5px">attachment</mat-icon>
-                File (default)
-            </label>
-        </div>
-        <div>
-            <label>
-                <input type="radio" [(ngModel)]="exportToTab" name="downloadType" value="tab">
-                <mat-icon style="margin-left: 5px">tab</mat-icon>
-                New Tab
-            </label>
-        </div>
-    </section>
-    <div class="actions">
-        <button class="button fail" type="button" (click)="loadDefault()">
-            <mat-icon>undo</mat-icon>
-            Load Default
-        </button>
-        <button class="button secondary" type="button" (click)="cancelSettings()">
-            <mat-icon>cancel</mat-icon>
-            Cancel
-        </button>
-        <button class="button success" type="button" (click)="saveSettings()">
-            <mat-icon>check</mat-icon>
-            Save
-        </button>
     </div>
 </div>

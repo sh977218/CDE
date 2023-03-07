@@ -1,29 +1,31 @@
 <div class="container">
-    <h1>Our sign in process has changed.</h1>
-    <section>
-        We are migrating UMLS Terminology Service (UTS) accounts to a service that will allow you to sign in to UTS
-        using your NIH credentials, Google, Microsoft, Facebook, or another identity provider of your choice.
-    </section>
-    <section class="loginBoxes">
-        <div>
-            <div>Already have a UTS account?</div>
+    <div class="content">
+        <h1>Our sign in process has changed.</h1>
+        <section>
+            We are migrating UMLS Terminology Service (UTS) accounts to a service that will allow you to sign in to UTS
+            using your NIH credentials, Google, Microsoft, Facebook, or another identity provider of your choice.
+        </section>
+        <section class="loginBoxes">
             <div>
-                <button class="button" (click)="loginService.openLogin()">Sign In</button>
+                <div>Already have a UTS account?</div>
+                <div>
+                    <button class="button" (click)="loginService.openLogin()">Sign In</button>
+                </div>
+                <div>
+                    Select this option to sign in via NIH, Google, Microsoft, Facebook, your research organization, or
+                    Login.gov
+                </div>
             </div>
             <div>
-                Select this option to sign in via NIH, Google, Microsoft, Facebook, your research organization, or
-                Login.gov
+                <div>Don't have an account?</div>
+                <div>
+                    <a class="button" href="https://uts.nlm.nih.gov/uts/signup-login"
+                       target="_blank">Sign Up</a>
+                </div>
+                <div>
+                    Select this option if you don't have a UMLS Terminology Services (UTS) license/account.
+                </div>
             </div>
-        </div>
-        <div>
-            <div>Don't have an account?</div>
-            <div>
-                <a class="button" href="https://uts.nlm.nih.gov/uts/signup-login"
-                   target="_blank">Sign Up</a>
-            </div>
-            <div>
-                Select this option if you don't have a UMLS Terminology Services (UTS) license/account.
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </div>
