@@ -6,10 +6,7 @@ import { ClassificationService } from 'non-core/classification.service';
 import { map } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-    MatTreeFlatDataSource,
-    MatTreeFlattener,
-} from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { UntypedFormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cb } from 'shared/models.model';
@@ -47,10 +44,7 @@ export class OrgClassificationManagementComponent {
         node => node.expandable,
         node => node.elements
     );
-    dataSource = new MatTreeFlatDataSource(
-        this.treeControl,
-        this.treeFlattener
-    );
+    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
     constructor(
         private http: HttpClient,
@@ -62,24 +56,11 @@ export class OrgClassificationManagementComponent {
         private classificationSvc: ClassificationService,
         private _database: ClassificationDatabase
     ) {
-        this.selectedOrg = new UntypedFormControl(
-            this.route.snapshot.queryParams.selectedOrg
-        );
+        this.selectedOrg = new UntypedFormControl(this.route.snapshot.queryParams.selectedOrg);
         this.orgs = this.route.snapshot.data.orgs;
-        this.treeFlattener = new MatTreeFlattener(
-            this.transformer,
-            this.getLevel,
-            this.isExpandable,
-            this.getChildren
-        );
-        this.treeControl = new FlatTreeControl<FlatClassificationNode>(
-            this.getLevel,
-            this.isExpandable
-        );
-        this.dataSource = new MatTreeFlatDataSource(
-            this.treeControl,
-            this.treeFlattener
-        );
+        this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
+        this.treeControl = new FlatTreeControl<FlatClassificationNode>(this.getLevel, this.isExpandable);
+        this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
         _database.dataChange.subscribe(data => {
             this.dataSource.data = data;
@@ -100,11 +81,7 @@ export class OrgClassificationManagementComponent {
 
     isExpandable = (node: FlatClassificationNode) => node.expandable;
 
-    getChildren = (node: ClassificationNode): ClassificationNode[] =>
-        node.elements;
-
-    hasChild = (_: number, _nodeData: FlatClassificationNode) =>
-        _nodeData.expandable;
+    getChildren = (node: ClassificationNode): ClassificationNode[] => node.elements;
 
     getSearchParam(node: FlatClassificationNode): SearchQueryParameter {
         const path = this.getClassificationPath(node);
@@ -155,10 +132,7 @@ export class OrgClassificationManagementComponent {
             orgName: this.selectedOrg.value,
         };
         this.http
-            .post<Organization>(
-                '/server/classification/updateOrgClassification',
-                postBody
-            )
+            .post<Organization>('/server/classification/updateOrgClassification', postBody)
             .pipe(
                 map(org => {
                     return [
@@ -173,19 +147,13 @@ export class OrgClassificationManagementComponent {
                 data => {
                     this._database.initialize(data);
                 },
-                () =>
-                    this.alert.addAlert(
-                        'danger',
-                        'There was an issue update this org.'
-                    )
+                () => this.alert.addAlert('danger', 'There was an issue update this org.')
             );
     }
 
     orgChanged(event: any, cb?: any) {
         this.http
-            .get<Organization>(
-                '/server/orgManagement/org/' + encodeURIComponent(event.value)
-            )
+            .get<Organization>('/server/orgManagement/org/' + encodeURIComponent(event.value))
             .pipe(
                 map(org => {
                     return [
@@ -219,15 +187,12 @@ export class OrgClassificationManagementComponent {
                         orgName: data.orgName,
                         categories: data.categories,
                     };
-                    this.classificationSvc.addChildClassification(
-                        newClassification,
-                        message => {
-                            if (message) {
-                                this.orgChanged({ value: data.orgName });
-                                this.alert.addAlert('success', message);
-                            }
+                    this.classificationSvc.addChildClassification(newClassification, message => {
+                        if (message) {
+                            this.orgChanged({ value: data.orgName });
+                            this.alert.addAlert('success', message);
                         }
-                    );
+                    });
                 }
             });
     }
@@ -243,24 +208,14 @@ export class OrgClassificationManagementComponent {
             .subscribe(
                 confirm => {
                     if (confirm) {
-                        this.classificationSvc.removeOrgClassification(
-                            data,
-                            message => {
-                                if (message) {
-                                    this.alert.addAlert('success', message);
-                                    this.checkJob(
-                                        'deleteClassification',
-                                        data.orgName,
-                                        () => {
-                                            this.alert.addAlert(
-                                                'success',
-                                                'Classification Deleted'
-                                            );
-                                        }
-                                    );
-                                }
+                        this.classificationSvc.removeOrgClassification(data, message => {
+                            if (message) {
+                                this.alert.addAlert('success', message);
+                                this.checkJob('deleteClassification', data.orgName, () => {
+                                    this.alert.addAlert('success', 'Classification Deleted');
+                                });
                             }
-                        );
+                        });
                     }
                 },
                 () => {}
@@ -282,33 +237,21 @@ export class OrgClassificationManagementComponent {
                         categories: data.categories,
                         newName: newClassificationName,
                     };
-                    this.classificationSvc.renameOrgClassification(
-                        newClassification,
-                        (message: string) => {
-                            if (message) {
-                                this.alert.addAlert('success', message);
-                                this.checkJob(
-                                    'renameClassification',
-                                    data.orgName,
-                                    () => {
-                                        this.alert.addAlert(
-                                            'success',
-                                            'Classification Renamed.'
-                                        );
-                                    }
-                                );
-                            }
+                    this.classificationSvc.renameOrgClassification(newClassification, (message: string) => {
+                        if (message) {
+                            this.alert.addAlert('success', message);
+                            this.checkJob('renameClassification', data.orgName, () => {
+                                this.alert.addAlert('success', 'Classification Renamed.');
+                            });
                         }
-                    );
+                    });
                 }
             });
     }
 
     openReclassificationModal(node: FlatClassificationNode) {
         const data = this.getClassificationPath(node);
-        const classificationArray = [data.orgName]
-            .concat(data.categories)
-            .join(' > ');
+        const classificationArray = [data.orgName].concat(data.categories).join(' > ');
         const title = `Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ${classificationArray} +  </strong> with new classification(s).</p>`;
         this.dialog
             .open(ClassifyItemDialogComponent, {
@@ -327,14 +270,8 @@ export class OrgClassificationManagementComponent {
                     newClassification,
                     (message: string) => {
                         this.alert.addAlert('info', message);
-                        this.checkJob(
-                            'reclassifyClassification',
-                            result.selectedOrg,
-                            () =>
-                                this.alert.addAlert(
-                                    'success',
-                                    'Classification Reclassified.'
-                                )
+                        this.checkJob('reclassifyClassification', result.selectedOrg, () =>
+                            this.alert.addAlert('success', 'Classification Reclassified.')
                         );
                     }
                 );
@@ -343,18 +280,16 @@ export class OrgClassificationManagementComponent {
 
     checkJob(type: string, orgName: string, cb: Cb) {
         const indexFn = setInterval(() => {
-            this.http
-                .get<any>('/server/system/jobStatus/' + type)
-                .subscribe(res => {
-                    if (res.done === true) {
-                        this.orgChanged({ value: orgName }, () => {
-                            clearInterval(indexFn);
-                            if (cb) {
-                                cb();
-                            }
-                        });
-                    }
-                });
+            this.http.get<any>('/server/system/jobStatus/' + type).subscribe(res => {
+                if (res.done === true) {
+                    this.orgChanged({ value: orgName }, () => {
+                        clearInterval(indexFn);
+                        if (cb) {
+                            cb();
+                        }
+                    });
+                }
+            });
         }, 5000);
     }
 

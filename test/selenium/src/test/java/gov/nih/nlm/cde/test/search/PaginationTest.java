@@ -11,7 +11,7 @@ public class PaginationTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         textPresent("1 – 20 of 10000");
-        clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
+        paginatorNext();
         textPresent("21 – 40 of 10000");
     }
 
@@ -24,7 +24,7 @@ public class PaginationTest extends NlmCdeBaseTest {
         clickElement(By.id("classif-Disease"));
         hangon(2);
         clickElement(By.id("regstatus-Qualified"));
-        clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
+        paginatorNext();
         hangon(2);
         checkSearchResultInfo("patient", new String[]{"NINDS", "Disease"}, null, new String[]{"Qualified"}, null);
     }

@@ -14,8 +14,8 @@ public class adminOfMultipleOrgsCanSeeDropdownTest extends BaseClassificationTes
         selectOrgClassification(org);
         expandOrgClassification(org);
         textPresent(classification);
-        clickElement(By.xpath("(//mat-icon[normalize-space() = 'more_vert'])[1]"));
-        clickElement(By.xpath("//mat-icon[normalize-space() = 'transform']"));
+        clickElement(By.xpath("(//button[mat-icon[normalize-space() = 'more_vert']])[1]"));
+        clickElement(By.xpath("//button[mat-icon[normalize-space() = 'transform']]"));
         clickElement(By.xpath("//button[contains(.,'Close')]"));
     }
 

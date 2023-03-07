@@ -35,6 +35,7 @@ let expectedContent = {
     codesFromNCI: '/server/uts/umlsPtSource/',
     contactUs: '*', // ckeditor
     createUser: 'with a status of 409',
+    deleteFormAnswerList: 'with a status of 409',
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
         "422 (Unprocessable Entity)"

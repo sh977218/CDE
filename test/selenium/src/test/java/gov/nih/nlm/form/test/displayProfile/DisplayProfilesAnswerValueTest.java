@@ -17,7 +17,7 @@ public class DisplayProfilesAnswerValueTest extends BaseFormTest {
 
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        selectMatSelect("//dt[contains(.,'Display As')]/following-sibling::dd[1]", "", "Likert Scale");
+        selectMatSelectByLabel("//dt[contains(.,'Display As')]/following-sibling::dd[1]", "", "Likert Scale");
         textPresent("Likert Scale");
         saveEditQuestionById("question_0-0");
         textPresent("Likert Scale");

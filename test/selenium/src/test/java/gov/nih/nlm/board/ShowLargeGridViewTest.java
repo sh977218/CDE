@@ -20,7 +20,7 @@ public class ShowLargeGridViewTest extends BoardTest {
         textNotPresent("VentilatorAssistanceUtilznInd");
         textNotPresent("HMQMstFreqHlthProfCareTyp");
         clickElement(By.id("list_gridView"));
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        paginatorNext();
         textNotPresent("Ventilator assistance utilization indicator");
         textPresent("Surgery radiosurgery lobe location text");
         textPresent("BRCDifficltFallAslpNghtInd");

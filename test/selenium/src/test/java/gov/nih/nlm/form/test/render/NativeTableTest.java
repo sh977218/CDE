@@ -56,7 +56,7 @@ public class NativeTableTest extends BaseFormTest {
         startEditSectionById("form_0-2");
         clickElement(By.xpath("//*[@id='form_0-2']//*[contains(@class,'section_label')]//mat-icon[normalize-space() = 'edit']"));
         setRepeat("form_0-2", "=");
-        selectMatSelect("//*[@id='form_0-2']", "Question Label", "Family history relative age at onset value");
+        selectMatSelectByPlaceholder("//*[@id='form_0-2']", "Question Label", "Family history relative age at onset value");
         saveEditSectionById("form_0-2");
         textPresent("Repeats: over Question Answer \"Family history relative age at onset value\"", By.cssSelector("#form_0-2 > .card > .card-header"));
 

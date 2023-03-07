@@ -51,8 +51,7 @@
                                 (click)="menuClickCleanup(minorBar, levelOneTrigger, button, levelOne)"
                                 (mouseenter)="menuEnter(minorBar, levelOneTrigger, levelOne)"
                                 (mouseleave)="menuLeave(minorBar, levelOneTrigger, button)">
-                            {{menuItem.label || menuItem.labelFn()}}
-                            <mat-icon>expand_more</mat-icon>
+                            {{menuItem.label || menuItem.labelFn()}}<span><mat-icon>expand_more</mat-icon></span>
                         </button>
                         <mat-menu #levelOne="matMenu" direction="down" yPosition="below">
                             <div (mouseenter)="menu1Enter(minorBar)"
@@ -103,11 +102,12 @@
                         notifications_active
                     </mat-icon>
                 </button>
-                <button *ngIf="userService.isSiteAdmin()" mat-icon-button [class.active]="isActiveSearchSettings()"
-                        routerLink="/searchPreferences" id="searchPreferences" title="Search Preferences">
+                <button *ngIf="userService.isSiteAdmin()" mat-icon-button id="searchPreferences"
+                        [class.active]="isActiveSearchSettings()" title="Search Preferences"
+                        routerLink="/searchPreferences">
                     <mat-icon>settings</mat-icon>
                 </button>
-                <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
+                <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link" class="navBarButton"
                         routerLink="/login">
                     <span>Sign In</span>
                 </button>
@@ -117,8 +117,7 @@
                             [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
                             (mouseenter)="menuEnter(minorBar, userMenuTrigger, loginMenu)"
                             (mouseleave)="menuLeave(minorBar, userMenuTrigger, userButton)">
-                        {{userService.user.username | uppercase | cdeTruncateLongName}}
-                        <mat-icon>expand_more</mat-icon>
+                        {{userService.user.username | uppercase | cdeTruncateLongName}}<span><mat-icon>expand_more</mat-icon></span>
                     </button>
                     <mat-menu #loginMenu="matMenu">
                         <div (mouseenter)="menu1Enter(minorBar)"

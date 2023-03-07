@@ -15,7 +15,6 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { NavigationEnd, Params, Router } from '@angular/router';
 import { CdeAppComponent } from '_app/app.component';
 import { LoginService } from '_app/login.service';
-import '_app/navigation/navigation.global.scss';
 import { NotificationService } from '_app/notifications/notification.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';

@@ -11,19 +11,25 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatLegacySliderModule } from '@angular/material/legacy-slider';
+import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
-
 import { TreeModule } from '@circlon/angular-tree-component';
 import { AdminItemModule } from 'adminItem/adminItem.module';
+import { TocModule } from 'angular-aio-toc/toc.module';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { BoardModule } from 'board/board.module';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 import { CdeModule } from 'cde/cde.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
+import { QuestionAccordionListComponent } from 'cde/listView/questionAccordingList/questionAccordingList.component';
 import { CompareModule } from 'compare/compare.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { DiscussModule } from 'discuss/discuss.module';
@@ -32,30 +38,23 @@ import { FormViewComponent } from 'form/formView/formView.component';
 import { FormViewService } from 'form/formView/formView.service';
 import { FormSearchModule } from 'form/formSearch.module';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
-import { UcumService } from 'form/ucum.service';
 import { DisplayProfileComponent } from 'form/displayProfile/displayProfile.component';
 import { FormClassificationComponent } from 'form/formClassification/formClassification.component';
 import { FormGeneralDetailsComponent } from 'form/formGeneralDetails/formGeneralDetails.component';
 import { NativeRenderFullComponent } from 'form/nativeRenderFull/nativeRenderFull.component';
-import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
-import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
-import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
-import { NativeRenderModule } from 'nativeRender/nativeRender.module';
-import { NonCoreModule } from 'non-core/noncore.module';
-import { SortableArrayModule } from 'sortableArray/sortableArray.module';
-import { SkipLogicModule } from 'skipLogic/skipLogic.module';
-import { TagModule } from 'tag/tag.module';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { QuestionAccordionListComponent } from 'cde/listView/questionAccordingList/questionAccordingList.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { WINDOW_PROVIDERS } from 'window.service';
-import { TocModule } from 'angular-aio-toc/toc.module';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
-import { PinToBoardModule } from 'board/pin-to-board.module';
 import { CopyFormModalComponent } from 'form/formView/copy-form-modal/copy-form-modal.component';
 import { FormCdesModalComponent } from 'form/formView/form-cdes-modal/form-cdes-modal.component';
+import { UcumService } from 'form/ucum.service';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
+import { NonCoreModule } from 'non-core/noncore.module';
+import { SkipLogicModule } from 'skipLogic/skipLogic.module';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
+import { TagModule } from 'tag/tag.module';
+import { WINDOW_PROVIDERS } from 'window.service';
 
 const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
 
@@ -74,13 +73,12 @@ const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
         MatGridListModule,
         MatIconModule,
         MatInputModule,
+        MatLegacySliderModule,
         MatMenuModule,
         MatSelectModule,
-        MatSliderModule,
         MatTabsModule,
         MatAutocompleteModule,
         MatTooltipModule,
-
         RouterModule.forChild(appRoutes),
         TreeModule,
         // non-core

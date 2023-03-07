@@ -100,16 +100,16 @@ mat-card {
   }
 }
 
-mat-form-field.centered > .mat-form-field-wrapper {
+mat-form-field.centered > .mat-mdc-text-field-wrapper {
   top: 50%;
   transform: translateY(-50%);
 }
 
-mat-form-field.mat-form-field .mat-form-field-infix {
+mat-form-field.mat-mdc-form-field .mat-mdc-form-field-infix {
   padding: .3rem 0;
 }
 
-.mat-form-field-suffix .button .mat-icon {
+.mat-mdc-form-field-suffix .button .mat-icon {
   line-height: 1rem;
 }
 
@@ -122,9 +122,9 @@ button.mat-button-base {
   margin-right: 0.2rem !important;
 }
 
-mat-radio-button .mat-radio-label {
-  align-items: flex-start;
-  white-space: inherit;
+mat-radio-button label {  // vertical center with button
+  line-height: 17px;
+  margin: 0;
 }
 
 table {
@@ -157,6 +157,27 @@ table {
   //  //filter: brightness(0.5) sepia(1) hue-rotate(140deg) saturate(6);
   //}
 }
+
+button[mat-icon-button] {
+  .mat-icon {
+    vertical-align: baseline;
+  }
+
+  &.small {
+    width: 24px;
+    height: 24px;
+    line-height: 36px;
+    padding: 0;
+
+    .mat-icon {
+      font-size: 20px;
+      vertical-align: unset;
+    }
+  }
+}
+
+
+
 
 .mat-snack-bar-container {
   background-color: white;

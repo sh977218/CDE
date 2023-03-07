@@ -10,7 +10,6 @@ import {
     SimpleChanges,
 } from '@angular/core';
 import { environment } from 'environments/environment';
-import 'inlineAreaEdit/inlineAreaEdit.global.scss';
 
 @Component({
     selector: 'cde-inline-area-edit',

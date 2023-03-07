@@ -11,7 +11,7 @@ public class BrowseUsers extends NlmCdeBaseTest {
     public void browseUsers() {
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToUsers();
-        searchUsername("cabig");
+        searchUsername("cabig", "cabigeditor");
         clickElement(By.xpath("//button[text()='Search']"));
 
         Assert.assertEquals(findElement(By.id("user_username")).getText(), "cabigEditor");

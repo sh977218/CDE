@@ -10,11 +10,11 @@ public class DateDatatypeTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToDataTypeDetails();
-        selectMatSelect("", "Select Precision", "Year");
-        selectMatSelect("", "Select Precision", "Month");
-        selectMatSelect("", "Select Precision", "Day");
-        selectMatSelect("", "Select Precision", "Hour");
-        selectMatSelect("", "Select Precision", "Minute");
-        selectMatSelect("", "Select Precision", "Second");
+        selectMatSelectByPlaceholder("", "Select Precision", "Year");
+        selectMatSelectByPlaceholder("", "Select Precision", "Month");
+        selectMatSelectByPlaceholder("", "Select Precision", "Day");
+        selectMatSelectByPlaceholder("", "Select Precision", "Hour");
+        selectMatSelectByPlaceholder("", "Select Precision", "Minute");
+        selectMatSelectByPlaceholder("", "Select Precision", "Second");
     }
 }

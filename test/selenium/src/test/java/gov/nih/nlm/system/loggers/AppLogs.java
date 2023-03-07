@@ -25,6 +25,6 @@ public class AppLogs extends NlmCdeBaseTest {
         findElement(By.id("appToDate")).sendKeys("0101P");
 
         clickElement(By.id("searchBtn"));
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        paginatorNext();
     }
 }

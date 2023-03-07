@@ -20,12 +20,12 @@ public class FormAddCdeTest extends QuestionTest {
         addCdesByNames(cdeNames);
         startEditQuestionById("question_0-1");
         Assert.assertEquals(
-                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip/mat-icon")).size(),
-                0
+                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip")).size(),
+                1
         );
         addCdeDesignationById("question_0-1", "newCde2 second name");
         Assert.assertEquals(
-                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip/mat-icon")).size(),
+                driver.findElements(By.xpath("//*[@id='question_0-1']//mat-card//mat-chip-list//mat-chip")).size(),
                 2
         );
         addCdeIdentifierById("question_0-1", "newCde2Source", "newCde2Id");

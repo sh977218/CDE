@@ -27,7 +27,7 @@ public class FormDragQuestionDropTest extends QuestionTest {
         textPresent("N/A", By.id("section_2"));
 
         addQuestionToSection("Smoking History Ind", 1);
-        addQuestionToSectionByAutoComplete("Patient Ethnic Group Cat", 1);
+        addQuestionToSectionByAutoComplete(1, "Patient Ethnic Group Cat", "Patient Ethnic Group Category");
         textPresent("Patient Ethnic Group Category");
         closeAlert();
         saveFormEdit();

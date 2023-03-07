@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UcumService } from 'form/ucum.service';
-import 'form/displayProfile/displayProfile.global.scss';
 import { interruptEvent } from 'non-core/browser';
 import { removeFromArray } from 'shared/array';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
@@ -27,9 +26,7 @@ export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
         this.dPVMs.length = 0;
-        this.elt.displayProfiles.forEach(profile =>
-            this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile))
-        );
+        this.elt.displayProfiles.forEach(profile => this.dPVMs.push(DisplayProfileComponent.dPVMNew(profile)));
     }
 
     get elt() {
@@ -88,9 +85,7 @@ export class DisplayProfileComponent {
     }
 
     profileAliasGet(dPVM: DisplayProfileVM, v: CodeAndSystem) {
-        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a =>
-            CodeAndSystem.compare(a.unitOfMeasure, v)
-        );
+        const matches = dPVM.profile.unitsOfMeasureAlias.filter(a => CodeAndSystem.compare(a.unitOfMeasure, v));
         return matches.length ? matches[0].alias : v.code;
     }
 
@@ -98,20 +93,13 @@ export class DisplayProfileComponent {
         if (alias === v.code) {
             const indexes: number[] = [];
             dPVM.profile.unitsOfMeasureAlias.forEach((a, i) => {
-                if (
-                    a.unitOfMeasure.code === v.code &&
-                    a.unitOfMeasure.system === v.system
-                ) {
+                if (a.unitOfMeasure.code === v.code && a.unitOfMeasure.system === v.system) {
                     indexes.push(i);
                 }
             });
-            indexes
-                .reverse()
-                .forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
+            indexes.reverse().forEach(i => dPVM.profile.unitsOfMeasureAlias.splice(i, 1));
         } else {
-            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u =>
-                CodeAndSystem.compare(u.unitOfMeasure, v)
-            );
+            const existing = dPVM.profile.unitsOfMeasureAlias.filter(u => CodeAndSystem.compare(u.unitOfMeasure, v));
             if (existing.length) {
                 existing[0].alias = alias;
             } else {
@@ -135,17 +123,9 @@ export class DisplayProfileComponent {
             }
 
             for (const u of dPVM.profile.unitsOfMeasureAlias) {
-                const found = this.uoms.filter(a =>
-                    CodeAndSystem.compare(a.u, u.unitOfMeasure)
-                );
-                if (
-                    !found.length ||
-                    !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)
-                ) {
-                    dPVM.profile.unitsOfMeasureAlias.splice(
-                        dPVM.profile.unitsOfMeasureAlias.indexOf(u),
-                        1
-                    );
+                const found = this.uoms.filter(a => CodeAndSystem.compare(a.u, u.unitOfMeasure));
+                if (!found.length || !found.map(a => a.a.indexOf(u.alias)).every(r => r > 0)) {
+                    dPVM.profile.unitsOfMeasureAlias.splice(dPVM.profile.unitsOfMeasureAlias.indexOf(u), 1);
                     this.eltChange.emit();
                 }
             }
@@ -178,9 +158,7 @@ export class DisplayProfileComponent {
     }
 
     substituteProfile(dPVM: DisplayProfileVM, profile: DisplayProfile) {
-        this.elt.displayProfiles[
-            this.elt.displayProfiles.indexOf(dPVM.profile)
-        ] = profile;
+        this.elt.displayProfiles[this.elt.displayProfiles.indexOf(dPVM.profile)] = profile;
         this.dPVMs.filter(p => p === dPVM)[0].profile = profile;
     }
 
@@ -402,10 +380,8 @@ function getSampleElt(): CdeForm {
                             answer: 'Never attended/Kindergarten only',
                             answers: [
                                 {
-                                    permissibleValue:
-                                        'Never attended/Kindergarten only',
-                                    valueMeaningName:
-                                        'Never attended/Kindergarten only',
+                                    permissibleValue: 'Never attended/Kindergarten only',
+                                    valueMeaningName: 'Never attended/Kindergarten only',
                                 },
                                 {
                                     permissibleValue: '1st Grade',
@@ -462,10 +438,8 @@ function getSampleElt(): CdeForm {
                                 ids: [],
                                 permissibleValues: [
                                     {
-                                        permissibleValue:
-                                            'Never attended/Kindergarten only',
-                                        valueMeaningName:
-                                            'Never attended/Kindergarten only',
+                                        permissibleValue: 'Never attended/Kindergarten only',
+                                        valueMeaningName: 'Never attended/Kindergarten only',
                                     },
                                     {
                                         permissibleValue: '1st Grade',
@@ -520,8 +494,7 @@ function getSampleElt(): CdeForm {
                         elementType: 'question',
                         label: 'Person Birth Date',
                         skipLogic: {
-                            condition:
-                                '"Education level USA type" = "Never attended/Kindergarten only"',
+                            condition: '"Education level USA type" = "Never attended/Kindergarten only"',
                         },
                         formElements: [],
                         question: {

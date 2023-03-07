@@ -63,7 +63,7 @@ public class SearchSettings extends NlmCdeBaseTest {
 
         goToSearchSettings();
         clickElement(By.id("viewPublishAndDraftButton"));
-        closeAlert();
+        closeAlert("Saved");
         drafts();
 
         logout();
@@ -74,7 +74,8 @@ public class SearchSettings extends NlmCdeBaseTest {
 
         goToSearchSettings();
         clickElement(By.id("viewPublishOnlyButton"));
-        closeAlert();
+        closeAlert("Saved");
+        hangon(1);
         noDrafts();
 
         logout();

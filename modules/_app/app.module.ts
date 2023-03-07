@@ -59,7 +59,7 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         // internal
         CdeAppRoutingModule,
         AlertModule,
-        TourMatMenuModule.forRoot(),
+        TourMatMenuModule,
         LoggerModule.forRoot({
             level: environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
             serverLogLevel: NgxLoggerLevel.ERROR,

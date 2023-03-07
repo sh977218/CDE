@@ -40,8 +40,7 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     protected void expandOrgClassification(String orgName) {
-        clickElement(By.xpath("//*[@id='" + orgName + "']//preceding-sibling::button[//mat-icon[normalize-space() = 'chevron_right']]"));
-        hangon(2);
+        expandOrgClassificationUnderPath(new String[]{orgName});
     }
 
     protected void expandOrgClassificationUnderPath(String[] categories) {
@@ -49,7 +48,11 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
             for (int i = 0; i < categories.length; i++) {
                 String[] _categories = Arrays.copyOfRange(categories, 0, i + 1);
                 String id = String.join(",", _categories);
-                clickElement(By.xpath("//*[@id='" + id + "']//preceding-sibling::button[//mat-icon[contains(.,'chevron_right')]]"));
+                clickElement(
+                        By.xpath("//*[@id='" + id + "']//preceding-sibling::button[mat-icon[normalize-space()='chevron_right']]"),
+                        "for id" + id
+                );
+                findElement(By.xpath("//*[@id='" + id + "']//preceding-sibling::button[mat-icon[normalize-space()='expand_more']]"));
             }
         }
     }
@@ -61,14 +64,9 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
 
     protected void addClassificationUnderPath(String[] categories, String classificationName) {
         if (categories.length > 0) {
-            for (int i = 0; i < categories.length; i++) {
-                String[] _categories = Arrays.copyOfRange(categories, 0, i + 1);
-                String expandIconId = String.join(",", _categories);
-                clickElement(By.xpath("//*[@id='" + expandIconId + "']//preceding-sibling::button"));
-            }
-            By dropMenuIconBy = By.xpath("//*[@id='" + String.join(",", categories) + "']//following-sibling::button");
-            clickElement(dropMenuIconBy);
-            clickElement(By.xpath("//button[mat-icon[normalize-space() = 'subdirectory_arrow_left']]"));
+            expandOrgClassificationUnderPath(Arrays.copyOfRange(categories, 0, categories.length - 1));
+            openMenuByPath(categories);
+            clickElement(By.xpath("//button[@mat-menu-item][mat-icon[normalize-space() = 'subdirectory_arrow_left']]"));
         } else {
             clickElement(By.id("addClassificationUnderRoot"));
         }
@@ -80,13 +78,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     protected void deleteClassificationUnderPath(String[] categories, String classificationName) {
-        for (int i = 0; i < categories.length; i++) {
-            String[] _categories = Arrays.copyOfRange(categories, 0, i + 1);
-            String expandIconId = String.join(",", _categories);
-            clickElement(By.xpath("//*[@id='" + expandIconId + "']//preceding-sibling::button"));
-        }
-        By dropMenuIconBy = By.xpath("//*[@id='" + String.join(",", categories) + "']//following-sibling::button");
-        clickElement(dropMenuIconBy);
+        expandOrgClassificationUnderPath(categories);
+        openMenuByPath(categories);
         clickElement(By.xpath("//button[mat-icon[normalize-space() = 'delete_outline']]"));
         findElement(By.id("removeClassificationUserTyped")).sendKeys(classificationName);
         hangon(2);
@@ -100,14 +93,17 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
         }
     }
 
+    protected void openMenuById(String id) {
+        clickElement(By.xpath("//*[@id='" + id + "']//following-sibling::button[mat-icon[normalize-space() = 'more_vert']]"));
+    }
+
+    protected void openMenuByPath(String[] path) {
+        openMenuById(String.join(",", path));
+    }
+
     protected void renameClassificationUnderPath(String[] categories, String classificationName) {
-        for (int i = 0; i < categories.length; i++) {
-            String[] _categories = Arrays.copyOfRange(categories, 0, i + 1);
-            String expandIconId = String.join(",", _categories);
-            clickElement(By.xpath("//*[@id='" + expandIconId + "']//preceding-sibling::button"));
-        }
-        By dropMenuIconBy = By.xpath("//*[@id='" + String.join(",", categories) + "']//following-sibling::button");
-        clickElement(dropMenuIconBy);
+        expandOrgClassificationUnderPath(categories);
+        openMenuByPath(categories);
         clickElement(By.xpath("//button[mat-icon[normalize-space() = 'edit']]"));
         findElement(By.id("newClassificationName")).sendKeys(classificationName);
         hangon(2);
@@ -117,13 +113,8 @@ public class BaseClassificationTest extends NlmCdeBaseTest {
     }
 
     protected void reclassifyClassificationUnderPath(String org, String[] categories, String classificationName, String[] newCategories) {
-        for (int i = 0; i < categories.length; i++) {
-            String[] _categories = Arrays.copyOfRange(categories, 0, i + 1);
-            String expandIconId = String.join(",", _categories);
-            clickElement(By.xpath("//*[@id='" + expandIconId + "']//preceding-sibling::button"));
-        }
-        By dropMenuIconBy = By.xpath("//*[@id='" + String.join(",", categories) + "']//following-sibling::button");
-        clickElement(dropMenuIconBy);
+        expandOrgClassificationUnderPath(Arrays.copyOfRange(categories, 0, categories.length - 1));
+        openMenuByPath(categories);
         clickElement(By.xpath("//button[mat-icon[normalize-space() = 'transform']]"));
         textPresent("Classify CDEs in Bulk");
         new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);

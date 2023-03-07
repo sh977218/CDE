@@ -132,7 +132,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
             clickElement(By.name("searchUomInput"));
             findElement(By.name("searchUomInput")).clear();
             findElement(By.name("searchUomInput")).sendKeys(text);
-            clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + text + "')]"));
+            clickElement(By.xpath(xpathMatAutocomplete + xpathMatDropdownByTextPartial(text)));
         } else {
             clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionUom')]//mat-icon[normalize-space() = 'add']"));
         }
@@ -141,13 +141,13 @@ public class BaseFormTest extends NlmCdeBaseTest {
 
     protected void setRepeat(String sectionId, String repeat) {
         if (repeat == null || "".equals(repeat)) {
-            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "");
+            selectMatSelectByLabel("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "");
         } else if (repeat.charAt(0) == 'F') {
-            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over first question");
+            selectMatSelectByLabel("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over first question");
         } else if (repeat.charAt(0) == '=') {
-            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
+            selectMatSelectByLabel("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Over answer of specified question");
         } else {
-            selectMatSelect("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
+            selectMatSelectByLabel("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]", "", "Set Number of Times");
             findElement(By.xpath("//*[@id='" + sectionId + "']//*[contains(@class,'section_cardinality')]/input")).sendKeys(repeat + Keys.ENTER);
         }
         checkAlert("Saved");

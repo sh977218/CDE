@@ -9,64 +9,26 @@
     <button id="updateOrgBtn" class="button" (click)="updateOrganization()">Update</button>
     <div class="boxed-div" style="overflow: hidden" *ngIf="selectedOrg.value">
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-            <!-- This is the tree node template for leaf nodes -->
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-                <!-- use a disabled button to provide padding for tree leaf -->
-                <button mat-icon-button disabled></button>
-                <a [id]="getClassificationPath(node).categories.join(',')" [routerLink]="['/cde/search']"
-                   target="_blank" [queryParams]="getSearchParam(node)" href="javascript:void(0);">{{node.name}}</a>
+                <ng-container *ngIf="node.expandable; else expandableButton">
+                    <button mat-icon-button matTreeNodeToggle
+                            [attr.aria-label]="'Toggle ' + node.name">
+                        <mat-icon class="mat-icon-rtl-mirror">
+                            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        </mat-icon>
+                    </button>
+                </ng-container>
+                <ng-template #expandableButton>
+                    <button mat-icon-button disabled></button>
+                </ng-template>
+                <a [id]="getHtmlId(node)" target="_blank"
+                   [routerLink]="['/cde/search']" [queryParams]="getSearchParam(node)">{{node.name}}</a>
                 <ng-container *ngIf="isOrgAdmin()">
                     <button mat-icon-button title="Add Child Classification" [id]="getAddClassificationRootButtonId()"
                             (click)="openAddChildClassificationModal(node);"
                             *ngIf="treeControl.getLevel(node) === 0">
                         <mat-icon>subdirectory_arrow_left</mat-icon>
-                        Add Child Classification
-                    </button>
-                    <button mat-icon-button [matMenuTriggerFor]="actionMenuLeaf" aria-label="actions"
-                            *ngIf="treeControl.getLevel(node) !== 0">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #actionMenuLeaf="matMenu">
-                        <button mat-menu-item title="Add Child Classification"
-                                (click)="openAddChildClassificationModal(node);">
-                            <mat-icon>subdirectory_arrow_left</mat-icon>
-                            Add Child Classification
-                        </button>
-                        <button mat-menu-item title="Remove Classification"
-                                (click)="openDeleteClassificationModal(node);">
-                            <mat-icon>delete_outline</mat-icon>
-                            Remove
-                        </button>
-                        <button mat-menu-item title="Edit Classification"
-                                (click)="openRenameClassificationModal(node);">
-                            <mat-icon>edit</mat-icon>
-                            Edit
-                        </button>
-                        <button mat-menu-item title="Reclassify"
-                                (click)="openReclassificationModal(node);">
-                            <mat-icon>transform</mat-icon>
-                            Reclassify
-                        </button>
-                    </mat-menu>
-                </ng-container>
-            </mat-tree-node>
-            <!-- This is the tree node template for expandable nodes -->
-            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-                <button mat-icon-button matTreeNodeToggle
-                        [attr.aria-label]="'Toggle ' + node.name">
-                    <mat-icon class="mat-icon-rtl-mirror">
-                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                    </mat-icon>
-                </button>
-                <a [id]="getHtmlId(node)" [routerLink]="['/cde/search']" target="_blank" href="javascript:void(0);"
-                   [queryParams]="getSearchParam(node)">{{node.name}}</a>
-                <ng-container *ngIf="isOrgAdmin()">
-                    <button mat-icon-button title="Add Child Classification"
-                            (click)="openAddChildClassificationModal(node);" [id]="getAddClassificationRootButtonId()"
-                            *ngIf="treeControl.getLevel(node) === 0">
-                        <mat-icon class="mat-icon-rtl-mirror">subdirectory_arrow_left</mat-icon>
-                        Add Child Classification
-                    </button>
+                    </button><small *ngIf="treeControl.getLevel(node) === 0">Add Child Classification</small>
                     <button mat-icon-button [matMenuTriggerFor]="actionMenuNode" aria-label="actions"
                             *ngIf="treeControl.getLevel(node) !== 0">
                         <mat-icon>more_vert</mat-icon>

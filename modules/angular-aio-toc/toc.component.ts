@@ -1,4 +1,3 @@
-import './toc.global.scss';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { ScrollService } from 'angular-aio-toc/scroll.service';

@@ -13,14 +13,14 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat*");
         textNotPresent("Specimen Laterality");
         textPresent("Cell Specimen");
-        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Cell Specimen Requirement')]"));
+        selectMatDropdownByText("Cell Specimen Requirement Pathology Finding Status Specimen Histopathological Text Type");
         textPresent("The smallest units of living structure capable of independent existence");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToCdeSearch();
         findElement(By.id("ftsearch-input")).sendKeys("specimen lat");
         textPresent("Specimen Laterality");
-        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Specimen Laterality Not Specified Reason')]"));
+        selectMatDropdownByText("Specimen Laterality Not Specified Reason");
         textPresent("02/03/2016");
     }
 
@@ -29,13 +29,13 @@ public class AutoCompletionWelcomeTest extends NlmCdeBaseTest {
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
         textNotPresent("MultiSelect");
-        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'Multiple Sclerosis Quality of Life')]"));
+        selectMatDropdownByText("Multiple Sclerosis Quality of Life (MSQOL)-54");
         textPresent("Rendering has been disabled for this form.");
 
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToSearch("form");
         findElement(By.id("ftsearch-input")).sendKeys("multi");
-        clickElement(By.xpath("//span[@class='mat-option-text' and contains(., 'MultiSelect Logic')]"));
+        selectMatDropdownByText("MultiSelect Logic");
         textPresent("Medicaid");
     }
 

@@ -351,21 +351,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void addIdSource(String source, String deLink, String formLink) {
-        findElement(By.xpath("//input[@data-placeholder = 'New Id:']")).sendKeys(source);
+        findElement(By.xpath("//input[@placeholder = 'New Id:']")).sendKeys(source);
         clickElement(By.xpath("//button[contains(., 'Add')]"));
-        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Data Element Link')]")).sendKeys(deLink);
-        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")); // save
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).sendKeys(deLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")); // save
         hangon(2); // wait for save refresh
-        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")).sendKeys(formLink);
-        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Version')]")); // save
+        findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).sendKeys(formLink);
+        clickElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Version')]")); // save
         hangon(2); // wait for save refresh
         textPresent(source);
         Assert.assertEquals(
-                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Data Element Link')]")).getAttribute("value"),
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Data Element Link')]")).getAttribute("value"),
                 deLink
         );
         Assert.assertEquals(
-                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@data-placeholder, 'Form Link')]")).getAttribute("value"),
+                findElement(By.xpath("//tr[td[contains(., '" + source + "')]]//input[contains(@placeholder, 'Form Link')]")).getAttribute("value"),
                 formLink
         );
     }
@@ -415,7 +415,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void gotoClassificationMgt() {
         goToUserMenu();
-        clickElement(By.xpath("//button[normalize-space(text())='Classifications']"));
+        clickElement(By.xpath("//button[@role='menuitem'][span[normalize-space()='Classifications']]"));
         textPresent("Classifications");
     }
 
@@ -681,7 +681,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void goToHistory() {
-        clickElement(By.xpath("//li//a[text()='History']"));
+        clickElement(By.xpath("//li/a[text()='History']"));
+        findElement(By.xpath("//li[a[text()='History']][contains(@class,'active')]"));
     }
 
     protected void goToScoreDerivations() {
@@ -847,13 +848,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return driver.findElement(by);
     }
 
-    protected void notFindElement(By by) {
-        List<WebElement> foundElements = driver.findElements(by);
-        if (foundElements.size() != 0) {
-            throw new Error("Elements in " + by.toString() + " has found.");
-        }
-    }
-
     protected int findElementsSize(By by) {
         return driver.findElements(by).size();
     }
@@ -877,6 +871,10 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void clickElement(By by) {
+        clickElement(by, "");
+    }
+
+    protected void clickElement(By by, String errorText) {
         try {
             wait.until(ExpectedConditions.presenceOfElementLocated(by));
             scrollToView(by);
@@ -929,6 +927,17 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
      */
     public void modalGone() {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container")));
+    }
+
+    public String alertText() {
+        String snackTxt;
+        try {
+            // sometimes, the snack goes from processing to done and selenium will mark as stale
+            snackTxt = findElement(By.cssSelector("simple-snack-bar [matsnackbarlabel]")).getText();
+        } catch (StaleElementReferenceException e) {
+            snackTxt = findElement(By.cssSelector("simple-snack-bar [matsnackbarlabel]")).getText();
+        }
+        return snackTxt;
     }
 
     public void closeAlert() {
@@ -1000,7 +1009,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void checkAlert(String text) {
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@class,'mat-snack-bar-container')]")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@class,'mat-mdc-snack-bar-container')]")));
         closeAlert(text);
     }
 
@@ -1099,7 +1108,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void logout() {
         goToUserMenu();
-        clickElement(By.xpath("//button[normalize-space(text())='Log Out']"));
+        clickElement(By.xpath("//button[@role='menuitem'][span[normalize-space()='Log Out']]"));
         isLoggedOut();
         isLoginPage();
     }
@@ -1263,14 +1272,11 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void selectHistoryAndCompare(Integer leftIndex, Integer rightIndex) {
         Assert.assertTrue(!findElement(By.id("historyCompareBtn")).isEnabled());
         By compareButtonBy = By.id("historyCompareBtn");
-        By checkboxBy1 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]//td//span[input]");
-        By checkboxInputBy1 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + leftIndex + "]//td//input");
-        By checkboxBy2 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]//td//span[input]");
-        By checkboxInputBy2 = By.xpath("//*[@id='historyTable']/tbody/tr[td][" + rightIndex + "]//td//input");
-        clickElement(checkboxBy1);
-        clickElement(checkboxBy2);
-        Assert.assertEquals(findElement(checkboxInputBy1).isSelected(), true);
-        Assert.assertEquals(findElement(checkboxInputBy2).isSelected(), true);
+        String xpathTr = "//*[@id='historyTable']/tbody/tr[td]";
+        clickElement(By.xpath(xpathTr + "[" + leftIndex + "]//td//mat-checkbox"));
+        clickElement(By.xpath(xpathTr + "[" + rightIndex + "]//td//mat-checkbox"));
+        findElement(By.xpath(xpathTr + "[" + leftIndex + "]//td//mat-checkbox" + xpathMatCheckboxChecked));
+        findElement(By.xpath(xpathTr + "[" + rightIndex + "]//td//mat-checkbox"+ xpathMatCheckboxChecked));
         Assert.assertTrue(findElement(By.id("historyCompareBtn")).isEnabled());
         clickElement(compareButtonBy);
         findElement(By.className("cdk-overlay-pane"));
@@ -1288,7 +1294,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                         By.cssSelector("mat-accordion"), name));
                 break;
             } catch (Exception e) {
-                clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+                paginatorNext();
             }
 
         }
@@ -1305,6 +1311,14 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void openAuditForm(String name) {
         openAudit("Form", name);
+    }
+
+    public void paginatorPrevious() {
+        clickElement(By.cssSelector("button.mat-mdc-paginator-navigation-previous"));
+    }
+
+    public void paginatorNext() {
+        clickElement(By.cssSelector("button.mat-mdc-paginator-navigation-next"));
     }
 
     protected void downloadAsFile() {
@@ -1439,7 +1453,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.id("codeId")).sendKeys(cId);
         if (cType != null) {
             clickElement(By.id("conceptType"));
-            clickElement(By.xpath("//mat-option[. = '" + cType + "']"));
+            selectMatDropdownByText(cType);
         }
         clickSaveButton();
         modalGone();
@@ -1498,7 +1512,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void changeDatatype(String newDatatype) {
         if (PREDEFINED_DATATYPE.contains(newDatatype)) {
-            selectMatSelect("//*[@itemprop='datatype']", "Select data type", newDatatype);
+            selectMatSelectByPlaceholder("//*[@itemprop='datatype']", "Select data type", newDatatype);
         } else {
             System.out.println("Invalidate data type: " + newDatatype);
         }
@@ -1816,7 +1830,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void selectDisplayProfileByName(String name) {
         clickElement(By.id("select_display_profile"));
-        clickElement(By.xpath("//button[contains(@class, 'mat-menu-item') and normalize-space(text()) = '" + name + "']"));
+        clickElement(By.xpath("//button[@role='menuitem' and normalize-space() = '" + name + "']"));
     }
 
     /**
@@ -2051,12 +2065,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.id("selectQuestionNoLabel"));
     }
 
-    protected void searchUsername(String username) {
+    protected void searchUsername(String searchUsername) {
+        searchUsername(searchUsername, searchUsername);
+    }
+
+    protected void searchUsername(String searchUsername, String foundUsername) {
         clickElement(By.name("searchUsersInput"));
         findElement(By.name("searchUsersInput")).clear();
-        findElement(By.name("searchUsersInput")).sendKeys(username);
-        findElements(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
-        clickElement(By.xpath("//*[contains(@id,'mat-autocomplete-')]//mat-option[contains(.,'" + username.toLowerCase() + "')]"));
+        findElement(By.name("searchUsersInput")).sendKeys(searchUsername);
+        findElements(By.xpath(xpathMatAutocomplete + xpathMatDropdownByText(foundUsername.toLowerCase())));
+        clickElement(By.xpath(xpathMatAutocomplete + xpathMatDropdownByText(foundUsername.toLowerCase())));
     }
 
     protected void startEditMeshDescriptors() {
@@ -2095,14 +2113,21 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent(optionText, bySelect);
     }
 
-    protected void selectMatSelect(String xpathParent, String selectLabel, String optionText) {
+    protected void selectMatSelectByLabel(String xpathParent, String selectLabel, String optionText) {
         String xpathSelect = xpathParent + (selectLabel.length() > 0
-                ? "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')]/label[contains(.,'" + selectLabel + "')]]"
-                : "//mat-select[following-sibling::*[contains(@class,'mat-form-field-label-wrapper')][not(label)]]"
+                ? "//mat-select[ancestor::mat-form-field//mat-label[text()='" + selectLabel + "']]"
+                : "//mat-select[ancestor::mat-form-field[not(//mat-label)]]"
         );
         clickElement(By.xpath(xpathSelect));
         selectMatDropdownByText(optionText);
-        findElement(By.xpath(xpathSelect + "//*[contains(@class,'mat-select-value')][contains(.,'" + optionText + "')]"));
+        findElement(By.xpath(xpathSelect + "//*[contains(@id,'mat-select-value-')][contains(., '" + optionText + "')]"));
+    }
+
+    protected void selectMatSelectByPlaceholder(String xpathParent, String selectPlaceholder, String optionText) {
+        String xpathSelect = xpathParent + "//mat-select[@placeholder='" + selectPlaceholder + "']";
+        clickElement(By.xpath(xpathSelect));
+        selectMatDropdownByText(optionText);
+        findElement(By.xpath(xpathSelect + "//*[contains(@id,'mat-select-value-')][contains(., '" + optionText + "')]"));
     }
 
     protected void clickMatSelect() {
@@ -2118,11 +2143,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     }
 
     protected void selectMatDropdownByText(String text) {
-        clickElement(By.xpath("//mat-option[normalize-space() = '" + text + "']"));
+        clickElement(By.xpath(xpathMatDropdownByText(text)));
     }
 
     protected void removeMatChipByText(String text) {
-        clickElement(By.xpath("//mat-chip[normalize-space(div/following-sibling::text()) ='" + text + "']//mat-icon"));
+        clickElement(By.xpath("//mat-chip[span[normalize-space() = '" + text + "']]//mat-icon[text()='cancel']"));
+        assertNoElt(By.xpath("//mat-chip[span[normalize-space() = '" + text + "']]"));
     }
 
     protected void addMatChipByTextArray(String[] chips) {
@@ -2155,6 +2181,18 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected String xpathGeneralDetailsProperty() {
         return "//dl[@id='general-details']/dt";
+    }
+
+    protected String xpathMatAutocomplete = "//*[contains(@id,'mat-autocomplete-')]";
+
+    protected String xpathMatCheckboxChecked = "[contains(@class,'mat-mdc-checkbox-checked')]";
+
+    protected String xpathMatDropdownByText(String text) {
+        return "//mat-option[normalize-space() = '" + text + "']";
+    }
+
+    protected String xpathMatDropdownByTextPartial(String text) {
+        return "//mat-option[contains(.,'" + text + "')]";
     }
 
     protected String xpathSourcesProperty() {

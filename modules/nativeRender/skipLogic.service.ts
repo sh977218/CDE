@@ -16,7 +16,7 @@ export class SkipLogicService {
                 fe,
                 nrs.addError.bind(nrs)
             );
-        } catch (error) {
+        } catch (error: any) {
             this.errorHandler.handleError({
                 name: 'Skip Logic Evaluation Error: ' + (fe.skipLogic && fe.skipLogic.condition),
                 message: error.message,

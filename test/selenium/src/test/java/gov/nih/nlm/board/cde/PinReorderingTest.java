@@ -43,7 +43,7 @@ public class PinReorderingTest extends BoardTest {
         checkAlert("Saved");
         textPresent("Urinary tract surgical procedure indicator", By.id("linkToElt_19"));
 
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        paginatorNext();
         textPresent("Walking ability status", By.id("linkToElt_0"));
         reorderBySection(section, "top", 0);
         checkAlert("Saved");
@@ -52,7 +52,7 @@ public class PinReorderingTest extends BoardTest {
         checkAlert("Saved");
         textPresent("Brief Pain Inventory (BPI) - pain general activity interference scale", By.id("linkToElt_0"));
 
-        clickElement(By.cssSelector(".mat-paginator-navigation-previous"));
+        paginatorPrevious();
         textPresent("Walking ability status", By.id("linkToElt_0"));
         textPresent("Urinary tract surgical procedure indicator", By.id("linkToElt_19"));
     }

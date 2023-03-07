@@ -2,7 +2,7 @@ mat-list mat-list {
   margin-left: 1rem;
 }
 
-mat-list-item {
+mat-list-item, mat-list-item ::ng-deep .mdc-list-item__primary-text {
   cursor: pointer;
   height: 20px !important;
   font-size: 12px !important;

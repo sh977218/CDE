@@ -35,7 +35,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
 
         String ipTerm = findElement(By.cssSelector("td.ip")).getText();
 
-        clickElement(By.cssSelector(".mat-paginator-navigation-next"));
+        paginatorNext();
         clickElement(By.xpath("//th[. = 'Method']"));
         textPresent("200");
 
@@ -47,7 +47,7 @@ public class HttpLogSearch extends NlmCdeBaseTest {
         findElement(By.name("ip")).clear();
         findElement(By.name("ip")).sendKeys(ipTerm);
         clickElement(By.id("searchBtn"));
-        clickElement(By.cssSelector(".mat-paginator-navigation-previous"));
+        paginatorPrevious();
         textPresent(ipTerm);
         List<WebElement> ips = driver.findElements(By.cssSelector(".ip"));
         for (WebElement ip : ips) {

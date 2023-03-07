@@ -1,4 +1,3 @@
-import 'form/formDescription/formDescription.global.scss';
 import { HttpClient } from '@angular/common/http';
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -32,30 +31,38 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild(TreeComponent) tree!: TreeComponent;
     dragActive: boolean = false;
     elt: CdeForm;
-    formElementEditing: {formElement?: FormElement, formElements?: FormElement[], index?: number} = {};
+    formElementEditing: { formElement?: FormElement; formElements?: FormElement[]; index?: number } = {};
     isMobile: boolean = false;
     isModalOpen: boolean = false;
     missingCdes: string[] = [];
     topSpacing: number;
     treeOptions: ITreeOptions = {
-        allowDrag: (element: TreeNode) => !FormDescriptionComponent.isSubForm(element)
-            || element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent),
-        allowDrop: (element, {parent, index}) => {
-            return element !== parent && parent.data.elementType !== 'question' && (!element
-                || !element.ref && (element.data.elementType !== 'question' || parent.data.elementType === 'section')
-                || element.ref === 'section' || element.ref === 'form' || element.ref === 'pasteSection'
-                || (element.ref === 'question' && parent.data.elementType === 'section')
-            ) && !FormDescriptionComponent.isSubForm(parent);
+        allowDrag: (element: TreeNode) =>
+            !FormDescriptionComponent.isSubForm(element) ||
+            (element.data.elementType === 'form' && !FormDescriptionComponent.isSubForm(element.parent)),
+        allowDrop: (element, { parent, index }) => {
+            return (
+                element !== parent &&
+                parent.data.elementType !== 'question' &&
+                (!element ||
+                    (!element.ref &&
+                        (element.data.elementType !== 'question' || parent.data.elementType === 'section')) ||
+                    element.ref === 'section' ||
+                    element.ref === 'form' ||
+                    element.ref === 'pasteSection' ||
+                    (element.ref === 'question' && parent.data.elementType === 'section')) &&
+                !FormDescriptionComponent.isSubForm(parent)
+            );
         },
         actionMapping: {
             mouse: {
-                drag: () => this.dragActive = true,
-                dragEnd: () => this.dragActive = false,
-                drop: (tree: TreeModel, node: TreeNode, $event: any, {from, to}: any) => {
+                drag: () => (this.dragActive = true),
+                dragEnd: () => (this.dragActive = false),
+                drop: (tree: TreeModel, node: TreeNode, $event: any, { from, to }: any) => {
                     if (from.ref) {
                         this.formElementEditing = {
                             formElements: to.parent.data.formElements,
-                            index: to.index
+                            index: to.index,
                         };
                         if (from.ref === 'section') {
                             const newSection = new FormSection();
@@ -70,36 +77,38 @@ export class FormDescriptionComponent implements OnInit {
                             this.formElementEditing.formElement = copiedSection;
                             this.addFormElement(copiedSection);
                         } else {
-                            TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                            TREE_ACTIONS.MOVE_NODE(tree, node, $event, { from, to });
                             addFormIds(this.elt);
                             this.updateTree();
                             // this.onEltChange.emit(); treeEvent will handle
                         }
                     } else {
-                        TREE_ACTIONS.MOVE_NODE(tree, node, $event, {from, to});
+                        TREE_ACTIONS.MOVE_NODE(tree, node, $event, { from, to });
                         addFormIds(this.elt);
                         this.updateTree();
                         this.dragActive = false;
                         // this.onEltChange.emit(); treeEvent will handle
                     }
-                }
-            }
+                },
+            },
         },
         childrenField: 'formElements',
         displayField: 'label',
-        isExpandedField: 'expanded'
+        isExpandedField: 'expanded',
     };
     updateDataCredit: number = 0;
     validationErrors: LocatableError[] = [];
 
-    constructor(private router: Router,
-                private route: ActivatedRoute,
-                private _hotkeysService: HotkeysService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                public userService: UserService,
-                private alert: AlertService,
-                public matDialog: MatDialog) {
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private _hotkeysService: HotkeysService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        public userService: UserService,
+        private alert: AlertService,
+        public matDialog: MatDialog
+    ) {
         this.elt = this.route.snapshot.data.form;
         this.addExpanded(this.elt);
         addFormIds(this.elt);
@@ -111,20 +120,23 @@ export class FormDescriptionComponent implements OnInit {
     ngOnInit(): void {
         this._hotkeysService.add([
             new Hotkey('q', (event: KeyboardEvent): boolean => {
-                if (!this.isModalOpen && !isEmpty(this.formElementEditing) &&
-                    this.formElementEditing.formElement && this.formElementEditing.formElement.elementType === 'question') {
+                if (
+                    !this.isModalOpen &&
+                    !isEmpty(this.formElementEditing) &&
+                    this.formElementEditing.formElement &&
+                    this.formElementEditing.formElement.elementType === 'question'
+                ) {
                     this.formElementEditing.index++;
                     this.openQuestionSearch('add');
                 }
                 return false;
-            })
+            }),
         ]);
 
         const fragment = this.route.snapshot.fragment;
         if (fragment) {
             this.scrollToDescriptionId(fragment);
         }
-
     }
 
     canEdit() {
@@ -163,56 +175,55 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     openFormSearch() {
-        const diaRef = this.matDialog.open(FormSearchModalComponent, {width: '1200px'});
-        const sub = diaRef.componentInstance.selectedForm
-            .subscribe(form => {
-                const inForm = convertFormToSection(form);
-                this.addExpanded(inForm);
-                this.formElementEditing.formElement = inForm;
-                this.addFormElement(inForm);
-                this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
-            })
-        diaRef.afterClosed()
-            .subscribe(res => sub.unsubscribe());
+        const diaRef = this.matDialog.open(FormSearchModalComponent, { width: '1200px' });
+        const sub = diaRef.componentInstance.selectedForm.subscribe(form => {
+            const inForm = convertFormToSection(form);
+            this.addExpanded(inForm);
+            this.formElementEditing.formElement = inForm;
+            this.addFormElement(inForm);
+            this.setCurrentEditing(this.formElementEditing.formElements, inForm, this.formElementEditing.index);
+        });
+        diaRef.afterClosed().subscribe(res => sub.unsubscribe());
     }
 
     openQuestionSearch(questionModelMode = 'search') {
         const diaRef = this.matDialog.open(QuestionSearchModalComponent, {
-            width: '1200px', height: '800',
-            data: {questionModelMode}
+            width: '1200px',
+            height: '800',
+            data: { questionModelMode },
         });
-        const sub = diaRef.componentInstance.selectedQuestion
-            .subscribe(de => {
-                convertCdeToQuestion(de, question => {
-                    if (!question) {
-                        return;
-                    }
-                    question.formElements = [];
-                    question.expanded = true;
-                    question.edit = true;
-                    this.addFormElement(question);
-                    this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
-                    waitRendered(
-                        () => !!document.getElementById('question_' + question.feId),
-                        () => scrollTo('question_' + question.feId)
-                    );
-                });
-            })
-        diaRef.afterClosed()
-            .subscribe(res => sub.unsubscribe());
+        const sub = diaRef.componentInstance.selectedQuestion.subscribe(de => {
+            convertCdeToQuestion(de, question => {
+                if (!question) {
+                    return;
+                }
+                question.formElements = [];
+                question.expanded = true;
+                question.edit = true;
+                this.addFormElement(question);
+                this.setCurrentEditing(this.formElementEditing.formElements, question, this.formElementEditing.index);
+                waitRendered(
+                    () => !!document.getElementById('question_' + question.feId),
+                    () => scrollTo('question_' + question.feId)
+                );
+            });
+        });
+        diaRef.afterClosed().subscribe(res => sub.unsubscribe());
     }
 
     saveEdit() {
-        this.http.put('/server/form/draft/' + this.elt.tinyId, this.elt)
-            .subscribe((elt: any) => {
+        this.http.put('/server/form/draft/' + this.elt.tinyId, this.elt).subscribe(
+            (elt: any) => {
                 this.missingCdes = areDerivationRulesSatisfied(this.elt);
                 CdeForm.validate(this.elt);
                 this.alert.addAlert('success', 'Saved');
                 this.elt.__v = elt.__v;
-            }, error => {
+            },
+            error => {
                 this.alert.httpErrorMessageAlert(error);
-                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.')
-            });
+                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.');
+            }
+        );
     }
 
     @HostListener('window:scroll')
@@ -222,7 +233,7 @@ export class FormDescriptionComponent implements OnInit {
 
     scrollToolbar() {
         const nav = this.navHeight();
-        this.topSpacing = (window.pageYOffset > nav ? 0 : (nav - window.pageYOffset));
+        this.topSpacing = window.pageYOffset > nav ? 0 : nav - window.pageYOffset;
     }
 
     scrollToDescriptionId(id: string) {
@@ -234,7 +245,7 @@ export class FormDescriptionComponent implements OnInit {
             this.formElementEditing = {
                 formElement,
                 formElements,
-                index
+                index,
             };
         } else {
             if (this.formElementEditing.formElement === formElement) {
@@ -244,7 +255,7 @@ export class FormDescriptionComponent implements OnInit {
                 this.formElementEditing = {
                     formElement,
                     formElements,
-                    index
+                    index,
                 };
             }
         }
@@ -256,7 +267,7 @@ export class FormDescriptionComponent implements OnInit {
         }
         if (event && event.eventName === 'moveNode') {
             this.updateDataCredit++;
-            setTimeout(() => this.updateDataCredit = 0, 100);
+            setTimeout(() => (this.updateDataCredit = 0), 100);
         }
     }
 
@@ -273,5 +284,4 @@ export class FormDescriptionComponent implements OnInit {
         }
         return n && n.data && n.data.elementType === 'form';
     }
-
 }

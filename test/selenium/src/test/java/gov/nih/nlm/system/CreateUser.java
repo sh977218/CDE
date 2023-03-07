@@ -18,7 +18,7 @@ public class CreateUser extends NlmCdeBaseTest {
         findElement(By.id("newUsername")).sendKeys(newUsername);
         clickElement(By.id("createNewUserBtn"));
         checkAlert("User created");
-        searchUsername("Coco Ch");
+        searchUsername("Coco Ch", "coco channel");
         clickElement(By.xpath("//button[text()='Search']"));
         textPresent("coco channel");
     }
@@ -32,7 +32,7 @@ public class CreateUser extends NlmCdeBaseTest {
         findElement(By.id("newUsername")).sendKeys(newUsername);
         clickElement(By.id("createNewUserBtn"));
         checkAlert("Cannot create user. Does it already exist?");
-        searchUsername("Coco Ch");
+        searchUsername("Coco Ch",  "coco channel");
         clickElement(By.xpath("//button[text()='Search']"));
         textPresent("coco channel");
     }

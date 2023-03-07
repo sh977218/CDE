@@ -96,6 +96,19 @@ mat-toolbar {
   }
 }
 
+.navBarButton, #username_link {
+  font-size: 14px;
+
+  mat-icon {
+    vertical-align: middle;
+  }
+
+  span mat-icon {
+    vertical-align: baseline;
+    height: 17px;
+  }
+}
+
 .navBarButton {
   @media (max-width: $mediumScreen) {
     display: none;
@@ -167,7 +180,7 @@ mat-toolbar {
 
   }
 
-  #username_link{
+  #username_link {
     @media (max-width: $smallScreen){
       & {
         display: none;
@@ -190,7 +203,7 @@ mat-toolbar {
     border-radius: unset;
     line-height: 36px;
     height: 100%;
-    padding-top: 3px;
+    padding-top: 0;
 
     &:hover {
       background-color: $nlmColorPrimaryLight;
@@ -199,6 +212,18 @@ mat-toolbar {
     &.active {
       color: $nlmColorPrimary;
       background-color: $nlmColorLightest;
+    }
+
+    &[mat-icon-button] {
+      padding-bottom: 6px;
+
+      mat-icon {
+        vertical-align: text-bottom;
+      }
+
+      ::ng-deep  .mat-mdc-button-persistent-ripple {
+        border-radius: initial;
+      }
     }
   }
 }
@@ -442,7 +467,7 @@ router-outlet ::ng-deep + *:not(nav) {
   padding-bottom: 0;
 }
 
-.mat-menu-item {
+.mat-mdc-menu-item {
   width: 160px; // size fits "Report a Problem"
 }
 
@@ -450,8 +475,8 @@ router-outlet ::ng-deep + *:not(nav) {
   text-decoration: none;
 }
 
-.mat-list-item,
-.mat-menu-item {
+.mat-mdc-list-item,
+.mat-mdc-menu-item {
   color: $nlmColorSecondaryDark;
   letter-spacing: .007rem;
   border-top: $nlmColorSecondaryLightest 2px solid;
@@ -476,23 +501,29 @@ router-outlet ::ng-deep + *:not(nav) {
 
 }
 
+.mat-mdc-list-item mat-icon {
+  vertical-align: bottom;
+}
+
 .menuTitle {
   color: $nlmColorSecondaryLight;
   height: 30px;
+  line-height: 26px;
   padding-left: 16px;
   padding-top: 8px;
   display: flex;
   justify-content: space-between;
 
-  mat-icon {
-    font-size: 20px;
-    vertical-align: unset;
-  }
-
   button {
     width: 24px;
     height: 24px;
     line-height: 36px;
+    padding: 0;
+
+    mat-icon {
+      font-size: 20px;
+      vertical-align: unset;
+    }
   }
 }
 

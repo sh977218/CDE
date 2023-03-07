@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../out-tsc/app",
+    "pretty": false,
+    "sourceMap": false,
+    "strict": true,
+    "strictPropertyInitialization": false,
     "types": []
   },
   "files": [
@@ -13,7 +16,30 @@
     "../../shared/**/*"
   ],
   "exclude": [
+    "../../shared/article",
+    "../../shared/board",
+    "../../shared/boundaryInterfaces",
+    "../../shared/builtIn.ts",
+    "../../shared/classification",
+    "../../shared/composition.ts",
+    "../../shared/constants.ts",
+    "../../shared/de/umls.ts",
+    "../../shared/elt",
+    "../../shared/exportShared.ts",
+    "../../shared/fetch.ts",
+    "../../shared/form/formAndFe.ts",
+    "../../shared/loader",
+    "../../shared/mapping",
+    "../../shared/node",
+    "../../shared/organization",
+    "../../shared/promise.ts",
+    "../../shared/regStatusShared.ts",
+    "../../shared/search",
+    "../../shared/security",
+    "../../shared/singleton.model.ts",
+    "../../shared/user.ts",
+    "../../shared/util.ts",
     "src/test.ts",
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
   ]
 }

@@ -6,8 +6,8 @@
     "baseUrl": "./modules",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2020",
-    "module": "es2020",
+    "target": "es2022",
+    "module": "es2022",
     "lib": [
       "es2020",
       "dom"

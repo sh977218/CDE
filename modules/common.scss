@@ -165,6 +165,7 @@ html {
   font-family: Roboto, Helvetica Neue, Arial, Tahoma, sans-serif;
   font-size: $nlmRem;
   font-weight: 400;
+  letter-spacing: normal;
   line-height: $nlmLineHeight;
 }
 
@@ -172,6 +173,11 @@ body {
   @extend html;
   margin: 0;
   padding: 0;
+}
+
+button.mdc-button,
+mat-list-item .mdc-list-item__primary-text {
+  @extend html;
 }
 
 a,
@@ -229,7 +235,8 @@ h1 {
   }
 
   .button {
-    vertical-align: text-bottom;
+    margin: 0;
+    vertical-align: baseline;
   }
 
   .mat-icon {
@@ -415,7 +422,7 @@ h3, h4, h5, h6 {
   }
 }
 
-.button {
+.button, .button.mdc-button {
   @extend body;
   background-color: $nlmColorPrimary;
   border: 0;

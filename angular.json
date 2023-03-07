@@ -10,7 +10,7 @@
       "prefix": "cde",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "scss"
         }
       },
       "architect": {
@@ -24,8 +24,15 @@
             "tsConfig": "tsconfigApp.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
+              "async",
+              "diff-match-patch",
+              "file-saver",
+              "js-toggle-switch",
+              "jszip",
+              "jxon",
               "lodash",
-              "async"
+              "mousetrap",
+              "mobx"
             ],
             "assets": [
               {

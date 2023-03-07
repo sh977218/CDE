@@ -23,7 +23,7 @@ public class CdeSearchXmlExport extends NlmCdeBaseTest {
         textPresent("Search results downloaded as XML.");
         String fileName = downloadFolder + "/SearchExport_XML.zip";
         waitForDownload(fileName);
-;
+
         String[] expected = {
                 "<tags>Health</tags>",
                 "<name>Common Toxicity Criteria Adverse Event Iron Excess Grade</name>",

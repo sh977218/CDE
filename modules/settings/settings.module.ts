@@ -17,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -36,7 +37,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
-
+import { ArticleGuard } from '_app/routerGuard/articleGuard';
 import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
@@ -84,7 +85,6 @@ import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
-import { ArticleGuard } from '_app/routerGuard/articleGuard';
 
 const appRoutes: Routes = [
     {
@@ -306,6 +306,7 @@ const appRoutes: Routes = [
         FormSearchModule,
         SearchModule,
         UsernameAutocompleteModule,
+        MatLegacyChipsModule,
     ],
     declarations: [
         ArticleHelpDialogComponent,

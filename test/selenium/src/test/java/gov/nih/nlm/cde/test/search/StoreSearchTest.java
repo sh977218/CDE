@@ -24,7 +24,7 @@ public class StoreSearchTest extends NlmCdeBaseTest {
         goToCdeSearch();
         clickElement(By.id("browseOrg-NINDS"));
         scrollToTop();
-        clickElement(By.cssSelector("button.mat-paginator-navigation-next"));
+        paginatorNext();
         textPresent("21 – 40");
         hangon(2);
         scrollToTop();

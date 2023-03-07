@@ -13,7 +13,7 @@ public class QuestionDefaultValueTest extends NlmCdeBaseTest {
         goToFormByName(formName);
         goToFormDescription();
         startEditQuestionById("question_0-0");
-        selectMatSelect("//*[@id='question_0-0']//dt[contains(.,'Default Answer')]/following-sibling::dd[1]",
+        selectMatSelectByPlaceholder("//*[@id='question_0-0']//dt[contains(.,'Default Answer')]/following-sibling::dd[1]",
                 "Select Default Answer", "Brother");
         saveEditQuestionById("question_0-0");
 

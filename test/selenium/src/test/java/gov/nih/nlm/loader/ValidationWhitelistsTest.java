@@ -63,7 +63,7 @@ public class ValidationWhitelistsTest extends NlmCdeBaseTest {
         clickElement(By.id("createNewWhitelistBtn"));
         modalGone();
 
-        selectMatSelect("", "Whitelist", collectionNameCopy);
+        selectMatSelectByPlaceholder("", "Whitelist", collectionNameCopy);
         clickElement(By.id("openEditWhitelistModalBtn"));
         textPresent("copy");
         textPresent("terms");
@@ -77,7 +77,7 @@ public class ValidationWhitelistsTest extends NlmCdeBaseTest {
         mustBeLoggedInAs(theOrgAuth_username, password);
         goToSpellCheck();
 
-        selectMatSelect("", "Whitelist", collectionName);
+        selectMatSelectByPlaceholder("", "Whitelist", collectionName);
 
         clickElement(By.id("openEditWhitelistModalBtn"));
         addMatChipByText(term);

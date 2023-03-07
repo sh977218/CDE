@@ -1,4 +1,3 @@
-import { escape } from 'lodash';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic, FormElement } from 'shared/form/form.model';
 import { Item, ModuleAll } from 'shared/models.model';
@@ -65,10 +64,10 @@ export const ITEM_MAP: {
 export function itemAsElastic<T extends DataElement | CdeForm>(doc: T): T extends DataElement ? DataElementElastic : CdeFormElastic {
     const elt = doc as unknown as T extends DataElement ? DataElementElastic : CdeFormElastic;
     elt.stewardOrgCopy = elt.stewardOrg;
-    elt.primaryNameCopy = escape(elt.designations[0].designation);
+    elt.primaryNameCopy = encodeURIComponent(elt.designations[0].designation);
     elt.primaryDefinitionCopy = '';
     if (elt.definitions[0] && elt.definitions[0].definition) {
-        elt.primaryDefinitionCopy = escape(elt.definitions[0].definition);
+        elt.primaryDefinitionCopy = encodeURIComponent(elt.definitions[0].definition);
     }
     return elt;
 }
