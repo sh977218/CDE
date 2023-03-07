@@ -280,9 +280,10 @@ export function module() {
             return res.status(403).end();
         }
         req.session.destroy(() => {
-            req.logout();
-            res.clearCookie('connect.sid');
-            res.redirect('/login');
+            (req.logout as any)((err: any) => {
+                res.clearCookie('connect.sid');
+                res.redirect('/login');
+            });
         });
     });
 

@@ -47,7 +47,7 @@ export class ExportService {
         protected http: HttpClient
     ) {}
 
-    async resultToCsv(result: ItemElastic[]) {
+    async resultToCsv(result: ItemElastic[]): Promise<string> {
         const settings = this.elasticService.searchSettings;
         if (settings.tableViewFields.linkedForms) {
             if (result.length < 50) {
@@ -64,7 +64,7 @@ export class ExportService {
                             );
                         });
                         if (forms && forms.length) {
-                            (r as DataElementElastic).linkedForms = forms.map(f => f.tinyId).join(', ');
+                            (r as any).linkedForms = forms.map(f => f.tinyId).join(', ');
                         }
                     }
                 }
@@ -92,7 +92,7 @@ export class ExportService {
                                 const foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
                                 foundCdes.forEach((c: DataElementElastic) => {
                                     if (c.linkedForms) {
-                                        c.linkedForms = c.linkedForms + ', ' + esForm.tinyId;
+                                        (c as any).linkedForms = c.linkedForms + ', ' + esForm.tinyId;
                                     } else {
                                         c.linkedForms = esForm.tinyId;
                                     }

@@ -62,7 +62,7 @@ export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<
 }
 
 export function authBeforeVsac(req: Request, username: string, password: string,
-                               done: (error: Error | null, user?: UserDocument | null, options?: { message: string }) => void) {
+                               done: (error: Error | null, user?: UserDocument, options?: { message: string }) => void) {
     // Allows other items on the event queue to complete before execution, excluding IO related events.
     process.nextTick(() => {
         /* istanbul ignore if */
@@ -86,7 +86,7 @@ export function authBeforeVsac(req: Request, username: string, password: string,
                 }
                 /* istanbul ignore else */
                 if (username) {
-                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user || null));
+                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user || undefined));
                 } else {
                     done(new Error('No UMLS User'));
                 }

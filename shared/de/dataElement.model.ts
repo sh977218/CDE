@@ -1,4 +1,4 @@
-import { CdeId, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
+import { CdeId, CurationStatus, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
 import { Question } from 'shared/form/form.model';
 import { copyValueDomain } from 'shared/datatype';
 import { Dictionary } from 'async';
@@ -127,8 +127,16 @@ export interface ElasticElement {
 }
 
 export interface DataElementElastic extends DataElement, ElasticElement { // all volatile
-    // [key: string]: any; // used for highlighting
-    linkedForms?: string;
+    linkedForms: {
+        [key in CurationStatus]: number
+    } & {
+        forms: {
+            tinyId: string;
+            registrationStatus: CurationStatus;
+            primaryName: string;
+            noRenderAllowed?: boolean;
+        }[]
+    };
     valueDomain: ValueDomain & {nbOfPVs?: number};
 }
 

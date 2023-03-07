@@ -83,7 +83,7 @@ export function removeElasticFields(eltElastic: ItemElastic): Item {
     delete elt.stewardOrgCopy;
 
     // de only
-    delete (elt as DataElementElastic).linkedForms;
+    delete (elt as Partial<DataElementElastic>).linkedForms;
     if ((elt as DataElementElastic).valueDomain) {
         delete (elt as DataElementElastic).valueDomain.nbOfPVs;
     }

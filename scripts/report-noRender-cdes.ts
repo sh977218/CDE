@@ -1,11 +1,11 @@
 import 'server/globals';
+import { Client } from '@elastic/elasticsearch';
+import { config } from 'server';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
-import { flattenFormElement } from '../shared/form/fe';
-import { Client } from '@elastic/elasticsearch';
-import { config } from '../server/config';
-import { ElasticQueryResponse } from '../shared/models.model';
-import { CdeFormElastic } from '../shared/form/form.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
+import { flattenFormElement } from 'shared/form/fe';
+import { ElasticQueryResponse } from 'shared/models.model';
 const XLSX = require('xlsx');
 
 const cond = {noRenderAllowed: true, tinyId: {$in:
@@ -67,8 +67,8 @@ function addToCdesToBeDeleted(form: any, cdes: any) {
     }
 }
 
-async function isThisCdeUsedOnRenderForm(tinyId): Promise<any> {
-    const esResult: { body: ElasticQueryResponse<CdeFormElastic> } = await esClient.search({
+async function isThisCdeUsedOnRenderForm(tinyId: string): Promise<DataElementElastic['linkedForms']['forms'][0] | undefined> {
+    const esResult: { body: ElasticQueryResponse<DataElementElastic> } = await esClient.search({
         index: config.elastic.index.name,
         q: `tinyId:${tinyId}`,
     });
@@ -105,7 +105,8 @@ async function run() {
             console.log(`**DELETE** ${tinyId} -- ${cde.name}`);
             await dataElementModel.deleteMany({tinyId})
         }
-       csvData.push([tinyId, cde.name, cde.regStatus, cde.forms[0].tinyId, cde.forms[0].name, cde.classifStewards[0], renderForm === undefined?'YES':'NO']);
+       csvData.push([tinyId, cde.name, cde.regStatus, cde.forms[0].tinyId, cde.forms[0].name, cde.classifStewards[0],
+           renderForm === undefined?'YES':'NO']);
        let i = 1;
        while(cde.forms[i] || cde.classifStewards[i]) {
             const newRow: string[] = ['', ''];
@@ -121,7 +122,6 @@ async function run() {
             i++;
        }
     }
-    
 
 
     // console.log('--- CDES used outside of NINDS ---');
@@ -136,7 +136,7 @@ async function run() {
     const ws = XLSX.utils.json_to_sheet(csvData);
     const wb = {Sheets: {data: ws}, SheetNames: ['data']};
     XLSX.utils.sheet_add_aoa(ws, [['CDE ID', 'CDE Name', 'CDE Status', 'Form ID', 'Form Name', 'CDE Classification', 'DELETE']],
-        { origin: "A1" });
+        { origin: 'A1' });
     XLSX.writeFile(wb, 'cde_noRender_report.xlsx');
 
     process.exit(0);

@@ -73,8 +73,6 @@
               "modules/form/displayProfile/displayProfile.global.scss",
               "modules/form/formDescription/formDescription.global.scss",
               "modules/adminItem/draftSlider/draftSlider.global.scss",
-              "modules/common.scss",
-              "modules/theme.scss",
               "modules/app.scss"
             ],
             "scripts": [

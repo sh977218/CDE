@@ -1,13 +1,15 @@
 import 'server/globals';
-
-const XLSX = require('xlsx');
 import { dataElementModel } from 'server/cde/mongo-cde';
+import { PermissibleValue, PermissibleValueCodeSystem } from 'shared/models.model';
+import {readFile, utils} from 'xlsx';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doCollection(rows, classificationStewardOrg) {
+type Row = any;
+
+async function doCollection(rows: Row, classificationStewardOrg: string) {
     for (const row of rows) {
         const cdeName = row['CDE Name'].trim();
         const cond = {
@@ -37,28 +39,28 @@ async function doCollection(rows, classificationStewardOrg) {
 }
 
 
-function cleanUpRow(row) {
+function cleanUpRow(row: Row) {
     const cdeNameArray = row['CDE Name'].split('-');
     if (cdeNameArray[1]) {
         row['CDE Name'] = cdeNameArray[1].trim();
     }
 }
 
-function cleanUpRows(rows) {
+function cleanUpRows(rows: Row[]) {
     for (const row of rows) {
         cleanUpRow(row);
     }
 }
 
-export function parseArray(text) {
+export function parseArray(text: string): string[] {
     if (!text) {
-        return null;
+        console.error('column missing');
+        process.exit(1);
     }
     return text.split('|').map(t => t.trim()).filter(t => t);
 }
 
-export function parsePermissibleValue(row: any) {
-    const pvs = [];
+export function parsePermissibleValue(row: Row): PermissibleValue[] {
     const permissibleValueArray = parseArray(row['Permissible Value (PV) Labels']);
     const valueMeaningDefinitionArray = parseArray(row['Permissible Value (PV) Definitions']);
 
@@ -73,28 +75,24 @@ export function parsePermissibleValue(row: any) {
         console.log(`pv length not same.`);
     }
 
-    permissibleValueArray.forEach((pv: any, i) => {
-        const permissibleValue: any = {
-            permissibleValue: permissibleValueArray[i],
-            valueMeaningDefinition: valueMeaningDefinitionArray[i],
-            valueMeaningCode: valueMeaningCodeArray ? valueMeaningCodeArray[i] : '',
-            codeSystemName: codeSystemName ? (codeSystemName[i] ? codeSystemName[i] : codeSystemName[0]) : '',
-            conceptId: conceptIdArray[i],
-            conceptSource: conceptSource ? conceptSource[0] : '',
-
-        };
-        pvs.push(permissibleValue);
-    });
-
-    return pvs;
+    return permissibleValueArray.map((pv: any, i) => ({
+        permissibleValue: permissibleValueArray[i],
+        valueMeaningDefinition: valueMeaningDefinitionArray[i],
+        valueMeaningCode: valueMeaningCodeArray ? valueMeaningCodeArray[i] : '',
+        codeSystemName: (codeSystemName
+            ? (codeSystemName[i] ? codeSystemName[i] : codeSystemName[0])
+            : '') as PermissibleValueCodeSystem,
+        conceptId: conceptIdArray[i],
+        conceptSource: conceptSource ? conceptSource[0] : '',
+    }));
 }
 
 
 async function run() {
-    const workbook1 = XLSX.readFile('C:/Users/huangs8/Downloads/Project 5.csv');
-    const workbook2 = XLSX.readFile('C:/Users/huangs8/Downloads/NHLBI CONNECTS.csv');
-    const project5Rows = XLSX.utils.sheet_to_json(workbook1.Sheets.Sheet1);
-    const nhlbiRows = XLSX.utils.sheet_to_json(workbook2.Sheets.Sheet1);
+    const workbook1 = readFile('C:/Users/huangs8/Downloads/Project 5.csv');
+    const workbook2 = readFile('C:/Users/huangs8/Downloads/NHLBI CONNECTS.csv');
+    const project5Rows = utils.sheet_to_json<Row>(workbook1.Sheets.Sheet1);
+    const nhlbiRows = utils.sheet_to_json<Row>(workbook2.Sheets.Sheet1);
     cleanUpRows(nhlbiRows);
 
     await doCollection(project5Rows.filter(o => o['CDE Data Type'] === 'Value List'), 'Project 5 (COVID-19)');
