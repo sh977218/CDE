@@ -138,7 +138,8 @@
             <dt>Link:</dt>
             <dd itemprop="datatypeExternallyDefinedLink">
                 <cde-inline-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.link"
-                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"></cde-inline-edit>
+                                 (modelChange)="eltChange.emit();" [isAllowed]="canEdit"
+                                 [linkSource]="elt.valueDomain.datatypeExternallyDefined.link"></cde-inline-edit>
             </dd>
 
             <dt>Description:</dt>
