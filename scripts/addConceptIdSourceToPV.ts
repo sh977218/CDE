@@ -1,121 +1,110 @@
 import 'server/globals';
-import { Model } from 'mongoose';
-import {
-    DataElementDocument, dataElementDraftModel, dataElementModel, dataElementSourceModel
-} from 'server/cde/mongo-cde';
-import { CdeFormDocument, formModel, formDraftModel, formSourceModel } from 'server/form/mongo-form';
-import { CdeForm, FormElement, FormSectionOrForm } from 'shared/form/form.model';
-import { isQuestion } from 'shared/form/fe';
+
+const XLSX = require('xlsx');
+import { dataElementModel } from 'server/cde/mongo-cde';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-function fixQuestionInSection(questionFe: any, formObj) {
-    questionFe.question.cde.permissibleValues.forEach(pv => {
-        copyConcept(pv, formObj);
-    })
-    questionFe.question.answers.forEach(a => {
-        copyConcept(a, formObj);
-    })
-}
-
-function fixSectionInform(sectionInformFe: FormSectionOrForm, formObj) {
-    const formElements: FormElement[] = [];
-    for (const fe of sectionInformFe.formElements) {
-        if (isQuestion(fe)) {
-            fixQuestionInSection(fe, formObj);
-            formElements.push(fe);
+async function doCollection(rows, classificationStewardOrg) {
+    for (const row of rows) {
+        const cdeName = row['CDE Name'].trim();
+        const cond = {
+            'designations.designation': cdeName,
+            'classification.stewardOrg.name': classificationStewardOrg,
+            archived: false
+        };
+        const cdes = await dataElementModel.find(cond);
+        if (cdes.length === 0) {
+            throw new Error(`${cdeName} not found.`);
+        } else if (cdes.length > 1) {
+            throw new Error(`${cdeName} multiple found.`);
         } else {
-            fe.formElements = fixSectionInform(fe, formObj);
-            formElements.push(fe);
-        }
-    }
-    return formElements;
-}
-
-function fixFormElements(formObj: CdeForm) {
-    const formElements: FormElement[] = [];
-    for (const fe of formObj.formElements) {
-        if (isQuestion(fe)) {
-            fixQuestionInSection(fe, formObj);
-            formElements.push(fe);
-        } else {
-            fe.formElements = fixSectionInform(fe, formObj);
-            formElements.push(fe);
-        }
-    }
-    return formElements;
-}
-
-async function doOneFormCollection(collection: Model<CdeFormDocument>) {
-    const cond = {};
-    const cursor = collection.find(cond).cursor();
-    return cursor.eachAsync(async form => {
-        const formObj = form.toObject() as any;
-        form.formElements = fixFormElements(formObj);
-        form.markModified('formElements');
-        if (formObj.dirty) {
-            console.log(`update ${collection.modelName} form tinyId: '${formObj.tinyId}', archived: ${formObj.archived}`);
-        }
-        await form.save().catch(e => {
-            console.log(`${collection.modelName}: ${form.tinyId} has error. ${e}`)
-        });
-        return;
-    });
-}
-
-async function doOneDataElementCollection(collection: Model<DataElementDocument>) {
-    const cond = {};
-    const cursor = collection.find(cond).cursor();
-    return cursor.eachAsync(async cde => {
-        const cdeObject = cde.toObject() as any;
-        if (cdeObject.valueDomain.datatype === 'Value List') {
-            cdeObject.valueDomain.permissibleValues.forEach(pv => {
-                copyConcept(pv, cdeObject);
-            })
-            cde.valueDomain = cdeObject.valueDomain;
-            if (cdeObject.dirty) {
-                console.log(`update ${collection.modelName} CDE tinyId: '${cdeObject.tinyId}', archived: ${cdeObject.archived}`);
+            const cde = cdes[0];
+            const cdeObject = cde.toObject() as any;
+            const pv = parsePermissibleValue(row);
+            if (!pv.length) {
+                throw new Error(`${cdeName} pv is empty.`);
             }
+            cdeObject.valueDomain.permissibleValues = pv;
+            cde.valueDomain = cdeObject.valueDomain;
             await cde.save().catch(e => {
-                console.log(`${collection.modelName} ${cde.tinyId} has error. ${e}`)
+                console.log(`${cdeName} has error. ${e}`);
             });
         }
-
-        return;
-    });
-}
-
-function copyConcept(pv, modelObj) {
-    if (['UMLS', 'NCI Thesaurus'].includes(pv.codeSystemName?.trim())) {
-        pv.conceptSource = pv.codeSystemName ? pv.codeSystemName.trim() : '';
-        pv.conceptId = pv.valueMeaningCode ? pv.valueMeaningCode.trim() : '';
-        modelObj.dirty = true;
     }
 }
 
-function run() {
-    // const dataElementTasks = [];
-    // const dataElementTasks = [dataElementModel].map(model => doOneDataElementCollection(model));
-    const dataElementTasks = [dataElementModel, dataElementDraftModel, dataElementSourceModel].map(model => doOneDataElementCollection(model));
 
-    // const formTasks = [];
-    // const formTasks = [formModel].map(model => doOneFormCollection(model));
-    const formTasks = [formModel, formDraftModel, formSourceModel].map(model => doOneFormCollection(model));
-
-    const tasks = dataElementTasks.concat(formTasks);
-
-    // Parallel
-
-    Promise.all(tasks).then(() => {
-        console.log('done all collections');
-        process.exit(0);
-    }, err => {
-        console.log('err ' + err);
-        process.exit(1);
-    });
-
+function cleanUpRow(row) {
+    const cdeNameArray = row['CDE Name'].split('-');
+    if (cdeNameArray[1]) {
+        row['CDE Name'] = cdeNameArray[1].trim();
+    }
 }
 
-run();
+function cleanUpRows(rows) {
+    for (const row of rows) {
+        cleanUpRow(row);
+    }
+}
+
+export function parseArray(text) {
+    if (!text) {
+        return null;
+    }
+    return text.split('|').map(t => t.trim()).filter(t => t);
+}
+
+export function parsePermissibleValue(row: any) {
+    const pvs = [];
+    const permissibleValueArray = parseArray(row['Permissible Value (PV) Labels']);
+    const valueMeaningDefinitionArray = parseArray(row['Permissible Value (PV) Definitions']);
+
+    const conceptIdArray = parseArray(row['Permissible Value (PV) \nConcept Identifiers']);
+    const conceptSource = parseArray(row['Permissible Value (PV) Terminology Sources']);
+
+    const valueMeaningCodeArray = parseArray(row['Codes for Permissible Value']);
+    const codeSystemName = parseArray(row['Permissible Value \nCode Systems']);
+
+    if (permissibleValueArray.length !== valueMeaningDefinitionArray.length
+        || valueMeaningDefinitionArray.length !== conceptIdArray.length) {
+        console.log(`pv length not same.`);
+    }
+
+    permissibleValueArray.forEach((pv: any, i) => {
+        const permissibleValue: any = {
+            permissibleValue: permissibleValueArray[i],
+            valueMeaningDefinition: valueMeaningDefinitionArray[i],
+            valueMeaningCode: valueMeaningCodeArray ? valueMeaningCodeArray[i] : '',
+            codeSystemName: codeSystemName ? (codeSystemName[i] ? codeSystemName[i] : codeSystemName[0]) : '',
+            conceptId: conceptIdArray[i],
+            conceptSource: conceptSource ? conceptSource[0] : '',
+
+        };
+        pvs.push(permissibleValue);
+    });
+
+    return pvs;
+}
+
+
+async function run() {
+    const workbook1 = XLSX.readFile('C:/Users/huangs8/Downloads/Project 5.csv');
+    const workbook2 = XLSX.readFile('C:/Users/huangs8/Downloads/NHLBI CONNECTS.csv');
+    const project5Rows = XLSX.utils.sheet_to_json(workbook1.Sheets.Sheet1);
+    const nhlbiRows = XLSX.utils.sheet_to_json(workbook2.Sheets.Sheet1);
+    cleanUpRows(nhlbiRows);
+
+    await doCollection(project5Rows.filter(o => o['CDE Data Type'] === 'Value List'), 'Project 5 (COVID-19)');
+    await doCollection(nhlbiRows.filter(o => o['CDE Data Type'] === 'Value List'), 'NHLBI');
+}
+
+run().then(() => {
+    console.log('done all collections');
+    process.exit(0);
+}, err => {
+    console.log('err ' + err);
+    process.exit(1);
+});
