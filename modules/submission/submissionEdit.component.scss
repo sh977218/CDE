@@ -1,0 +1,104 @@
+@import '../theme';
+
+label {
+  padding: 5px 16px;
+  vertical-align: top;
+  width: 100%;
+
+  &.half {
+    @media (min-width: $screenMd) {
+      width: 50%;
+    }
+  }
+
+  &.halfAddon {
+    @media (min-width: $screenMd) {
+      width: 15%;
+    }
+  }
+
+  &.halfBase {
+    @media (min-width: $screenMd) {
+      width: 35%;
+    }
+  }
+
+  &.errorRequired {
+    div {
+      color: $nlmColorFail;
+
+      span {
+        display: inline;
+      }
+    }
+    > input, > textarea, > select, .borderBox {
+      border-color: $nlmColorFail;
+      border-style: solid;
+      border-width: 2px;
+      outline-color: $nlmColorFail;
+    }
+  }
+
+  div {
+    font-weight: bold;
+    margin-bottom: .5rem;
+
+    &.subTitle {
+      font-size: smaller;
+      font-weight: initial;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  > input, > select, > textarea {
+    padding: 10px;
+    width: 100%;
+  }
+
+  > input[type=checkbox] {
+    width: unset;
+  }
+}
+
+.fake-link {
+  margin-right: 16px;
+  text-decoration: underline;
+}
+
+.fileInput {
+  display: flex;
+  padding-left: 10%;
+  padding-right: 10%;
+
+  .borderBox {
+    border: 1px solid black;
+    flex-grow: 1;
+    padding: 8px;
+  }
+}
+
+.heading {
+  color: #707070;
+  font-size: 1.3rem;
+  font-variant: all-small-caps;
+  font-weight: 700;
+  padding: 5px 16px;
+}
+
+.stepperSection {
+  padding: 5px 16px;
+
+  dt {
+    font-weight: bold;
+    margin-bottom: 2px;
+    width: 100%;
+  }
+
+  dd {
+    margin-bottom: 12px;
+    width: 100%;
+  }
+}

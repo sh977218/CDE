@@ -66,14 +66,15 @@
               "node_modules/@circlon/angular-tree-component/css/angular-tree-component.css",
               "node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css",
               "node_modules/js-toggle-switch/dist/toggle-switch.css",
-              "modules/angular-aio-toc/toc.global.scss",
+              "modules/app.scss",
               "modules/_app/navigation/navigation.global.scss",
-              "modules/nativeRender/nativeRender.global.scss",
-              "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
+              "modules/adminItem/draftSlider/draftSlider.global.scss",
+              "modules/angular-aio-toc/toc.global.scss",
               "modules/form/displayProfile/displayProfile.global.scss",
               "modules/form/formDescription/formDescription.global.scss",
-              "modules/adminItem/draftSlider/draftSlider.global.scss",
-              "modules/app.scss"
+              "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
+              "modules/nativeRender/nativeRender.global.scss",
+              "modules/submission/submissionEdit.component.global.scss"
             ],
             "scripts": [
               "node_modules/@popperjs/core/dist/umd/popper.js",
@@ -94,6 +95,20 @@
                 {
                   "replace": "modules/environments/environment.ts",
                   "with": "modules/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "test": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "modules/environments/environment.ts",
+                  "with": "modules/environments/environment.test.ts"
                 }
               ]
             },
@@ -125,7 +140,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.06mb"
+                  "maximumError": "1.13mb"
                 }
               ],
               "outputHashing": "all"
@@ -142,7 +157,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.06mb"
+                  "maximumError": "1.13mb"
                 }
               ],
               "outputHashing": "all"
@@ -159,6 +174,9 @@
           "configurations": {
             "development": {
               "browserTarget": "cde-cli:build:development"
+            },
+            "test": {
+              "browserTarget": "cde-cli:build:test"
             },
             "ci1": {
               "browserTarget": "cde-cli:build:ci1"

@@ -37,16 +37,16 @@ public class NativeRequiredAndDefault extends BaseFormTest {
 
     private void checkDefault() {
         textNotPresent("Please fill out this field.");
-        findElement(By.cssSelector("input[name='0-0'][value='0']:checked"));
-        findElement(By.cssSelector("input[name='0-1'][value='0']:checked"));
+        findElement(By.cssSelector("input[name='0-0'][value='0']" + cssInputRadioChecked));
+        findElement(By.cssSelector("input[name='0-1'][value='0']" + cssInputCheckboxChecked));
         Assert.assertEquals(findElement(By.cssSelector("input[name='0-2']")).getAttribute("value"), "2019-09-03");
         Assert.assertEquals(findElement(By.cssSelector("input[name='0-3']")).getAttribute("value"), "0");
         Assert.assertEquals(findElement(By.cssSelector("input[name='0-4']")).getAttribute("value"), "a");
         Assert.assertEquals(findElement(By.cssSelector("textarea[name='0-5']")).getAttribute("value"), "a");
-        findElement(By.cssSelector("input[name='0_0-6-0'][value='0']:checked"));
-        findElement(By.cssSelector("input[name='0_0-6-1'][value='0']:checked"));
-        findElement(By.cssSelector("input[name='1_0-6-0'][value='0']:checked"));
-        findElement(By.cssSelector("input[name='1_0-6-1'][value='0']:checked"));
+        findElement(By.cssSelector("input[name='0_0-6-0'][value='0']" + cssInputRadioChecked));
+        findElement(By.cssSelector("input[name='0_0-6-1'][value='0']" + cssInputCheckboxChecked));
+        findElement(By.cssSelector("input[name='1_0-6-0'][value='0']" + cssInputRadioChecked));
+        findElement(By.cssSelector("input[name='1_0-6-1'][value='0']" + cssInputCheckboxChecked));
         Assert.assertEquals(findElement(By.cssSelector("input[name='0_0-6-2']")).getAttribute("value"), "0");
         Assert.assertEquals(findElement(By.cssSelector("input[name='1_0-6-2']")).getAttribute("value"), "0");
         Assert.assertEquals(findElement(By.cssSelector("input[name='0_0-6-3']")).getAttribute("value"), "2019-09-03");
@@ -55,8 +55,8 @@ public class NativeRequiredAndDefault extends BaseFormTest {
         Assert.assertEquals(findElement(By.cssSelector("input[name='1_0-6-4']")).getAttribute("value"), "a");
         Assert.assertEquals(findElement(By.cssSelector("textarea[name='0_0-6-5']")).getAttribute("value"), "a");
         Assert.assertEquals(findElement(By.cssSelector("textarea[name='1_0-6-5']")).getAttribute("value"), "a");
-        findElement(By.cssSelector("input[name='0-7-0'][value='0']:checked"));
-        findElement(By.cssSelector("input[name='0-7-1'][value='1']:checked"));
+        findElement(By.cssSelector("input[name='0-7-0'][value='0']" + cssInputRadioChecked));
+        findElement(By.cssSelector("input[name='0-7-1'][value='1']" + cssInputRadioChecked));
     }
 
     private void checkRequired() {

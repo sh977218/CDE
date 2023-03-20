@@ -104,7 +104,7 @@ In the following order, run these commands, all of them either in their own term
 
 Now, you need the app running in some way when you run the test.
 
-We have include a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
+We have included a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
 
 (Don’t forget to have elastic and mongo running while you run the app, even if you are running it throught he start-test-instance script)
 
@@ -112,6 +112,26 @@ If, for some reason, you don't want to use it (for example, if you just want to 
 
 ## Code Coverage
 Run in Bamboo and override variable "browser" with value "coverage"
+
+## Setting Environment
+Node and Angular environments needs to be dialed-in in unison in order to properly set the environment servers the application will use.
+
+| NODE_ENV Environment | CLI Environment | Local Servers                      | Login Server  | Notes                        |
+|----------------------|-----------------|------------------------------------|---------------|------------------------------|
+| `default`            | `prod`          | NODE(3000)                         | uts-ws        |                              |
+| `test`               | `test`          | NODE(3001)                         | uts-ws-qa     |                              |
+| `test-local`         | `development`   | NODE(3001), login(3002)            | localhost CDE |                              |
+| `test-ssl`           | `prod`          | NODE(3001)                         | uts-ws        | with HTTPS                   |
+| `test-uts`           | `development`?  | NODE(3001), UTS(3000), UTS-X(4200) | localhost UTS | start UTS servers separately |
+
+* Set Node
+  * `NODE_ENV=<environment> npm start`
+* Start local login server
+  * `NODE_ENV=<environment> npm run testServer`
+* Set Angular CLI Build
+  * `"buildApp": "npx ng b cde-cli --configuration=<environment>",`
+* Set Angular CLI Dev
+  * `"devApp": "ng serve cde-cli --configuration=<environment>",`
 
 # Code Maintenance
 ## Folder Structure

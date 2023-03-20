@@ -5,6 +5,7 @@ import { dataElementDb } from 'server/mongo/dataElementDb';
 import { formDb } from 'server/mongo/formDb';
 import { idSourceDb } from 'server/mongo/idSourceDb';
 import { singletonDb } from 'server/mongo/singletonDb';
+import { submissionDb } from 'server/mongo/submissionDb';
 
 export const mongoPlugins: DbPlugins = Object.freeze({
     article: articleDb,
@@ -13,4 +14,5 @@ export const mongoPlugins: DbPlugins = Object.freeze({
     form: formDb,
     idSource: idSourceDb,
     singleton: singletonDb,
+    submission: submissionDb,
 });

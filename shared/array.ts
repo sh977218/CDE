@@ -30,6 +30,16 @@ export function cumulative<T, U>(array: U[],
     return array.map((a, i, array) => accumulator = mappingFn(accumulator, a, i, array));
 }
 
+export function deduplicate<T>(arr: T[]): T[] {
+    return Array.from(new Set(arr));
+}
+
+export function orderedSetAdd<T>(arr: T[], elem: T): void {
+    if (!arr.includes(elem)) {
+        arr.push(elem);
+    }
+}
+
 export function partition<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]>): [T[], T[]] { // filtered and excluded lists
     return arr.reduce((result: [T[], T[]], e: T, i: number, arr: T[]) => {
         condition(e, i, arr)
@@ -67,4 +77,8 @@ export function removeFromArrayBy<T>(arr: T[], iterCb: CbRet3<boolean, T, number
         return;
     }
     return arr.splice(index, 1)[0];
+}
+
+export function sortFirst<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]>) {
+    return concat(...partition(arr, condition));
 }

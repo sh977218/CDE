@@ -1,10 +1,13 @@
 import { Page } from '@playwright/test';
+import { MaterialPo } from '../pages/material.po';
 
 export class NavigationMenuPo {
     protected page: Page;
+    protected matPage: MaterialPo;
 
     constructor(page: Page) {
         this.page = page;
+        this.matPage = new MaterialPo(page);
     }
 
     async login(username: string, password: string) {
@@ -53,5 +56,10 @@ export class NavigationMenuPo {
     async gotoMyBoard() {
         await this.page.getByTestId('myBoardsLink').click();
         return this.page.waitForSelector('h1', { state: 'visible' });
+    }
+
+    async gotoSubmissions() {
+        await this.page.locator('#createEltLink').hover();
+        await this.matPage.matMenuItem('Collection').click();
     }
 }

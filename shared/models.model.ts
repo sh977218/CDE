@@ -708,6 +708,11 @@ export interface User {
     avatarUrl?: string;
     email?: string;
     formViewHistory?: string[];
+    lastLoginInformation?: {
+        email: string;
+        firstName: string;
+        lastName: string;
+    };
     notificationSettings?: NotificationSettings;
     orgAdmin: string[];
     orgCurator: string[];

@@ -60,6 +60,11 @@ const appRoutes: Routes = [
         data: { title: 'Manage Classification', preload: false },
     },
     {
+        path: 'collection',
+        loadChildren: () => import('submission/submission.module').then(m => m.SubmissionModule),
+        data: { title: 'Collections', preload: false },
+    },
+    {
         path: 'createCde',
         loadChildren: () => import('cde/cdeCreate.module').then(m => m.CdeCreateModule),
         data: { title: 'Create Data Element', preload: false },

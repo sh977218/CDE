@@ -10,7 +10,6 @@ declare global {
         // frames: Dictionary<Window>; // ts lib.dom definition is wrong
         loggedIn: () => void;
         publicUrl: string;
-        showCovidBanner: boolean;
         siteKey: string;
         ssoServerOrigin: string;
         ssoServerReceiver: string;

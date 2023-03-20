@@ -18,6 +18,9 @@ export function httpErrorMessage(err: HttpErrorResponse): string {
         // general status codes
         return err.statusText;
     }
+    if (err.status === 409) {
+        return 'Conflict. Already Exists';
+    }
     return err.message; // fallback to full angular http description
 }
 

@@ -6,6 +6,20 @@ export function callbackify<T>(asyncFn: Promise<T>): (a: CbErr1<T>) => void {
     };
 }
 
+export function fileInputToFormData(input?: HTMLInputElement): FormData | null {
+    const files = input?.files;
+    if (!files || files.length === 0) {
+        return null;
+    }
+    const formData = new FormData();
+    /* tslint:disable */
+    for (let i = 0; i < files.length; i++) {
+        formData.append('uploadedFiles', files[i]);
+    }
+    /* tslint:enable */
+    return formData;
+}
+
 export function interruptEvent(event?: Event) {
     if (event) {
         event.preventDefault();

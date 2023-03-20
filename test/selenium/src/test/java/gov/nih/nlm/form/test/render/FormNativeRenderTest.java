@@ -53,9 +53,9 @@ public class FormNativeRenderTest extends BaseFormTest {
         WebElement label = findElement(By.xpath("//*[@id='Cytosine adenine guanine repeat expansion result_4-0']//"
                 + byValueListValueXPath("Not known")));
         label.findElement(By.xpath("//input[@type='radio']"));
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
+        Assert.assertEquals(label.findElements(By.cssSelector("input" + cssInputRadioChecked)).size(), 1);
         label.findElement(By.cssSelector("input")).click();
-        Assert.assertEquals(label.findElements(By.cssSelector("input:checked")).size(), 1);
+        Assert.assertEquals(label.findElements(By.cssSelector("input" + cssInputRadioChecked)).size(), 1);
 
         clickElement(By.id("selectRenderButton"));
         clickElement(By.id("button_print_follow"));

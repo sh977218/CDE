@@ -19,7 +19,7 @@ public class TextAreaInput extends NlmCdeBaseTest {
         String q0 = "#question_0-0";
         clickElement(By.cssSelector(q0 + " span[title='Patient Name']"));
         clickElement(By.cssSelector(q0 + textAreaInput));
-        Assert.assertEquals(driver.findElements(By.cssSelector(q0 + textAreaInput + ":checked")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.cssSelector(q0 + textAreaInput + cssInputCheckboxChecked)).size(), 1);
         clickElement(By.cssSelector(q0 + " span[title='Patient Name']"));
 
 
@@ -28,7 +28,7 @@ public class TextAreaInput extends NlmCdeBaseTest {
         closeAlert();
         clickElement(By.cssSelector(q11 + textAreaInput));
         closeAlert();
-        Assert.assertEquals(driver.findElements(By.cssSelector(q11 + textAreaInput + ":checked")).size(), 1);
+        Assert.assertEquals(driver.findElements(By.cssSelector(q11 + textAreaInput + cssInputCheckboxChecked)).size(), 1);
         clickElement(By.cssSelector(q11 + " span[title='Noncompliant Reason Text']"));
 
         saveFormEdit();

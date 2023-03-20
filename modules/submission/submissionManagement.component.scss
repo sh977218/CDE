@@ -1,0 +1,233 @@
+@use 'sass:math';
+@import '../theme';
+
+$lightGray: #707070;
+$darkGray: #4a4a4a;
+
+h1 img.nlmBlue {
+  margin: 3rem -2rem -3.5rem -3rem;
+}
+
+hr {
+  border-top: 2px solid $nlmColorDisabled;
+}
+
+img.nlmBlue {
+  margin-left: -2rem;
+  margin-right: 1rem;
+
+  @include colorNlmBlue;
+}
+
+.createHeading {
+  $createHeadingMargin: 1.5rem;
+
+  img.nlmBlue {
+    float: left;
+  }
+
+  .headingContent {
+    margin: $createHeadingMargin;
+
+    button.button {
+      margin-bottom: 0;
+    }
+
+    p {
+      margin-block-start: .5rem;
+      margin-block-end: $createHeadingMargin;
+    }
+  }
+}
+
+label {
+  margin-right: 1rem;
+}
+
+.badge {
+  line-height: 24px;
+  margin: 0 .5rem 0 0;
+  border-radius: 1rem;
+  padding: .25em .8em;
+}
+
+.closeButton {
+  //color: $nlmColorSecondary;
+  //font-size: 20px;
+}
+
+.fake-button {
+  color: $nlmColorLightest;
+}
+
+.divButton {
+  cursor: pointer;
+  background-color: $nlmColorPrimary;
+  color: $nlmColorLightest;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: $nlmColorPrimaryDark;
+    transition: all .1s ease-in-out;
+  }
+
+  &:active:not(:disabled), &.active:not(:disabled) {
+    background-color: $nlmColorPrimaryDarkest;
+    color: $nlmColorLightest;
+  }
+
+  &:disabled {
+    background-color: $nlmColorDisabled;
+  }
+}
+
+$borderActive: 4px;
+@function borderActive() {
+  @return $borderActive solid $nlmColorPrimary;
+}
+
+.actionGrid {
+  $cellHeight: 50px;
+  $borderWidth: 1px; // 2px (doubled up in the design)
+  $fontSize: 14px;
+  $iconHeight: 30px;
+  $paddingSize: 5px;
+
+  font-size: $fontSize;
+  margin: 1rem 0;
+  overflow-x: auto;
+  display: grid;
+  grid-template-columns: 68px min-content;
+
+  .cellGroup {
+    display: grid;
+    grid-auto-flow: column;
+
+    &.active {
+      .cell {
+        border-top: borderActive();
+
+        &:first-child {
+          border-left: borderActive();
+        }
+
+        &:last-child {
+          border-right: borderActive();
+        }
+      }
+    }
+  }
+
+  .cellGroupActions {
+    border-bottom: borderActive();
+    border-left: borderActive();
+    border-right: borderActive();
+    padding: 1rem;
+
+    i {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+
+  .cell, .headingColumn, .headingRow {
+    height: $cellHeight;
+    padding: $paddingSize;
+  }
+
+  .cell, .headingRow {
+    border-right: 2 * $borderWidth solid #ccc;
+    padding-right: $paddingSize - 2 * $borderWidth;
+    width: 125px;
+
+    &.narrow {
+      text-align: center;
+      width: 60px;
+    }
+
+    &.wide {
+      width: 325px;
+    }
+  }
+
+  .cell {
+  }
+
+  .cellGroup.even .cell {
+    background-color: #f5f5f5;
+  }
+
+  .headingColumn {
+    border: $borderWidth solid $nlmColorLightest;
+    border-right-width: 4 * $borderWidth;
+    padding: math.div($cellHeight - $iconHeight - 2 * $borderWidth, 2) $paddingSize;
+    text-align: center;
+
+    mat-icon {
+      height: $iconHeight;
+      width: $iconHeight;
+      font-size: $iconHeight;
+    }
+  }
+
+  .headingRow {
+    color: $nlmColorLightest;
+    font-weight: bold;
+    position: relative;
+    padding: 8px;
+
+    mat-icon {
+      bottom: 3px;
+      position: absolute;
+      right: -2px;
+    }
+  }
+
+  .headingColumn.headingRow {
+    background-color: $nlmColorPrimaryDarkest;
+    padding: 16px 0;
+    width: unset;
+  }
+}
+
+.contentPane {
+  mat-radio-button {
+    margin-left: 24px;
+  }
+
+  .heading {
+    color: $lightGray;
+    font-size: 20px;
+    font-variant: all-petite-caps;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .responsiveGrid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $screenSm) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (min-width: $screenLg) {
+      grid-template-columns: .75fr 1fr .7fr;
+    }
+
+    > * {
+      min-width: 100%;
+    }
+  }
+
+  .responsiveGrid {
+    @media (min-width: $screenXl) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    label {
+      display: block;
+    }
+  }
+}

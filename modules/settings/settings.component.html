@@ -125,6 +125,10 @@
                     </mat-list>
                 </ng-container>
 
+                <mat-list-item *ngIf="canSubmissionReview(userSvc.user)" [routerLinkActive]="['isActive']" routerLink="collections">
+                    Collections
+                </mat-list-item>
+
                 <ng-container *ngIf="userSvc.user?.siteAdmin">
                     <mat-divider></mat-divider>
                     <mat-list-item id="siteAdmins" [routerLinkActive]="['isActive']" routerLink="siteAdmins"

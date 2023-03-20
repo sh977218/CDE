@@ -124,6 +124,19 @@ export function respondError<T>(options?: T extends Error ? never : HandlerOptio
     return handler;
 }
 
+export function respondPromise<T>(options: HandlerOptionsRes, promise: Promise<T>): Promise<Response> {
+    return promise.then(
+        t => options.res.send(t),
+        err => {
+            if (typeof err === 'string') {
+                return options.res.status(400).send(err);
+            }
+            const handler = respondError(options) as unknown as (err: HandledError) => Response; // WORKAROUND: typescript bug
+            return handler(err);
+        }
+    );
+}
+
 export function splitError<T = void, U = void, V = void>(errCb: CbError1<T>, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
     return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {

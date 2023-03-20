@@ -4,6 +4,7 @@ import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 import { IdSourceDb } from 'shared/boundaryInterfaces/db/idSourceDb';
 import { SingletonDb } from 'shared/boundaryInterfaces/db/singletonDb';
+import { SubmissionDb } from 'shared/boundaryInterfaces/db/submissionDb';
 import { assertUnreachable, ModuleAll, ModuleItem } from 'shared/models.model';
 
 export type DbPlugins = Readonly<{
@@ -13,6 +14,7 @@ export type DbPlugins = Readonly<{
     form: FormDb;
     idSource: IdSourceDb;
     singleton: SingletonDb;
+    submission: SubmissionDb;
 }>;
 
 export function moduleItemToDbName(module: ModuleItem) {

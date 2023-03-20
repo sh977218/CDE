@@ -79,7 +79,6 @@ let expectedContent = {
     launchFhirApp: '*',
     lockoutLogin: 'login - Failed to load resource: the server responded with a status of 403',
     logClientErrors: '*',
-    meshTopics: 'classificationmanagement - Form submission canceled because the form is not connected',
     noDoublePin: [
         'Failed to load resource: the server responded with a status of 409 (Conflict)',
         'Already added'

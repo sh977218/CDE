@@ -7,7 +7,6 @@
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
-  "autoSyncMesh": true,
   "elastic": {
     "index": {
       "name": "cdetest"
@@ -39,7 +38,6 @@
       }
     ]
   },
-  "showCovidBanner": false,
   "test": {
     "testLoginServer": {
       "port": 3002

@@ -105,7 +105,6 @@ th {
 
 $containerPadding: 16px;
 $containerPaddingLarge: 2 * $containerPadding;
-$scrollbarWidth: 18px;
 
 .container, .container-fluid {
   margin: 0 auto;
@@ -160,7 +159,8 @@ body {
 }
 
 button.mdc-button,
-mat-list-item .mdc-list-item__primary-text {
+mat-list-item .mdc-list-item__primary-text,
+mat-radio-button > .mdc-form-field label {
   @extend html;
 }
 
@@ -180,6 +180,12 @@ a,
   &:hover mat-icon {
     filter: drop-shadow(0 0 3px #888);
   }
+}
+
+button.fake-link {
+  background-color: inherit;
+  border: none;
+  padding: 0;
 }
 
 a.no-link {
@@ -358,6 +364,18 @@ h3, h4, h5, h6 {
     background-color: #17a2b8;
   }
 
+  &.badge-outline {
+    color: $nlmColorSecondary;
+    background-color: $nlmColorLightest;
+    border: 1px solid $nlmColorSecondaryDark;
+  }
+
+  &.badge-outline-gray {
+    color: $nlmTextColor;
+    background-color: $nlmColorSecondaryLightest;
+    border: 1px solid $nlmColorSecondaryDark;
+  }
+
   &.badge-secondary {
     color: #fff;
     background-color: #6c757d;
@@ -411,11 +429,16 @@ h3, h4, h5, h6 {
   border: 0;
   border-radius: $formInputBorderRadius;
   color: $nlmColorLightest;
+  cursor: pointer;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .15));
   margin-bottom: .5rem;
   margin-right: .5rem;
   padding: .5rem 1rem;
   transition: all .2s ease-in-out;
+
+  &.active {
+    cursor: initial;
+  }
 
   @include unify-parent("a") {
     color: $nlmColorLightest;
@@ -509,6 +532,40 @@ h3, h4, h5, h6 {
     &:active:not(:disabled), &.active:not(:disabled) {
       background-color: $nlmColorLightest;
       color: $nlmColorSecondary;
+    }
+
+    &:disabled {
+      background-color: $nlmColorDisabled;
+    }
+  }
+
+  &.alternate {
+    background-color: $nlmColorAlternate;
+
+    &:hover {
+      background-color: $nlmColorAlternateDark;
+    }
+
+    &:active:not(:disabled), &.active:not(:disabled) {
+      background-color: $nlmColorAlternateDarkest;
+      color: $nlmColorLightest;
+    }
+
+    &:disabled {
+      background-color: $nlmColorDisabled;
+    }
+  }
+
+  &.dark {
+    background-color: $nlmColorPrimary;
+
+    &:hover {
+      background-color: $nlmColorPrimaryDark;
+    }
+
+    &:active:not(:disabled), &.active:not(:disabled) {
+      background-color: $nlmColorPrimaryDarkest;
+      color: $nlmColorLightest;
     }
 
     &:disabled {
@@ -644,6 +701,18 @@ h3, h4, h5, h6 {
     &:last-child {
       border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
     }
+  }
+}
+
+.contentPane {
+  background-color: $nlmColorSecondaryLightest;
+  border-left: 8px $nlmColorPrimary solid;
+  padding: 16px;
+
+  &.alert {
+    background-color: #f4e7df;
+    border-left-color: #d04400;
+    padding: 8px;
   }
 }
 
@@ -1228,6 +1297,7 @@ input.checkbox[type='checkbox'] {
     background-color: $nlmColorLightest;
     border: 1px $nlmColorSecondaryDark solid;
     content: "";
+    cursor: pointer;
     display: block;
     height: 16px;
     position: relative;
@@ -1239,6 +1309,7 @@ input.checkbox[type='checkbox'] {
     border: solid white;
     border-width: 0 2px 2px 0;
     content: "";
+    cursor: pointer;
     display: block;
     height: 10px;
     left: 5px;
@@ -1255,6 +1326,24 @@ input.checkbox[type='checkbox'] {
 
   &:not(:checked):hover:before {
     border-width: 2px;
+  }
+
+  &[disabled]:before {
+    border: 1px #cdcdcd solid;
+    cursor: unset;
+  }
+
+  &[disabled]:checked:before {
+    background-color: $nlmColorPrimaryLightest;
+  }
+
+  &[disabled]:hover:before {
+    border-width: 1px;
+  }
+
+  &[disabled]:checked:after {
+    border-color: $nlmColorPrimaryLight;
+    cursor: unset;
   }
 }
 

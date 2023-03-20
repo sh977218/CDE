@@ -1,0 +1,478 @@
+<mat-stepper #stepper class="container">
+    <ng-template matStepperIcon="edit">
+        <mat-icon>check</mat-icon>
+    </ng-template>
+    <mat-step [stepControl]="page1" label="Collection Details">
+        <form [formGroup]="page1" (ngSubmit)="page1Submitted=true; !page1.invalid && saveIfChanged(page1) && stepper.next()">
+            <div *ngIf="page1Submitted && page1.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields. Missing Fields marked "Incomplete".
+            </div>
+            <label class="half" [class.errorRequired]="errorRequired1('name') || errorMessage(page1, 'name')">
+                <div>Collection Title<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Ex. Topic Collection 1"
+                        formControlName="name"
+                />
+                <div *ngIf="errorMessage(page1, 'name')"><small>{{errorMessage(page1, 'name')}}</small></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired1('collectionUrl') || errorMessage(page1, 'collectionUrl')">
+                <div>Collection URL<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Ex. https://cdecollection.gov"
+                        formControlName="collectionUrl"
+                />
+                <div *ngIf="errorMessage(page1, 'collectionUrl')"><small>{{errorMessage(page1, 'collectionUrl')}}</small></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired1('version')">
+                <div>Version Number<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Ex. 1.A"
+                        formControlName="version"
+                />
+            </label>
+            <label [class.errorRequired]="errorRequired1('collectionDescription') || errorMessage(page1, 'collectionDescription')">
+                <div>Collection Description<span> - Incomplete</span></div>
+                <textarea
+                        matInput
+                        placeholder="Enter a description"
+                        formControlName="collectionDescription"></textarea>
+                <div *ngIf="errorMessage(page1, 'collectionDescription')"><small>{{errorMessage(page1, 'collectionDescription')}}</small></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired1('nihInitiative')">
+                <div>NIH ICO or NIH Wide Initiative<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Ex. IC_Network_topic"
+                        formControlName="nihInitiative"
+                />
+            </label>
+            <label class="half">
+                <div>Branch/Division (optional)</div>
+                <input
+                        matInput
+                        placeholder="Ex. https://cdecollection.gov"
+                        formControlName="nihInitiativeBranch"
+                />
+            </label>
+            <label>
+                <div>Additional Collection Information (optional)</div>
+                <textarea
+                        matInput
+                        placeholder="Provide information helpful for NIH Endorsement Review"
+                        formControlName="additionalInformation"></textarea>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired1('administrativeStatus')">
+                <div>Administrative Status<span> - Incomplete</span></div>
+                <select placeholder="Select..."
+                            formControlName="administrativeStatus">
+                    <option *ngFor="let adminStatus of validAdminStatus"
+                            value="{{adminStatus}}">{{adminStatus}}</option>
+                </select>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired1('registrationStatus')">
+                <div>Registration Status<span> - Incomplete</span></div>
+                <select placeholder="Select..."
+                            formControlName="registrationStatus">
+                    <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
+                </select>
+            </label>
+            <div class="stepperSection">
+                <div style="float: right">
+                    <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
+                    <button type="submit" class="button">
+                        Next
+                        <mat-icon style="margin-right: 0">chevron_right</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="page2" label="Contact Information">
+        <form [formGroup]="page2" (ngSubmit)="page2Submitted=true; !page2.invalid && saveIfChanged(page2) && stepper.next()">
+            <div *ngIf="page2Submitted && page2.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields. Missing Fields marked "Incomplete".
+            </div>
+            <div class="heading">Submitter Information</div>
+            <label *ngIf="canSave">
+                <input type="checkbox" class="checkbox" #submitterCheckbox
+                       [checked]="isSubmitterPocSubmitter()"
+                       (change)="!$event.checked && setSubmitterPocFromSubmitter()"
+                       [disabled]="submitterCheckbox.checked"> I am the Submitter</label>
+            <label class="half" [class.errorRequired]="errorRequired2('submitterEmail') || errorMessage(page2, 'submitterEmail')">
+                <div>Submitter Email<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="ex. yourname@email.com"
+                        formControlName="submitterEmail"
+                />
+                <div *ngIf="errorMessage(page2, 'submitterEmail')"><small>{{errorMessage(page2, 'submitterEmail')}}</small></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired2('submitterOrganization') || errorMessage(page2, 'submitterOrganization')">
+                <div>Submitter Organization<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="ex. Organization Name"
+                        formControlName="submitterOrganization"
+                />
+                <div *ngIf="errorMessage(page2, 'submitterOrganization')"><small>{{errorMessage(page2, 'submitterOrganization')}}</small></div>
+            </label>
+            <label style="margin-bottom: 0">
+                <div style="margin-bottom: 0">Submitter Name</div>
+            </label>
+            <label class="halfAddon">
+                <div class="subTitle">Title (optional)</div>
+                <input
+                        matInput
+                        placeholder="..."
+                        formControlName="submitterNameTitle"
+                />
+            </label>
+            <label class="halfBase" [class.errorRequired]="errorRequired2('submitterNameFirst')">
+                <div class="subTitle">First Name<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="submitterNameFirst"
+                />
+            </label>
+            <label class="halfAddon" [class.errorRequired]="errorMessage(page2, 'submitterNameMi')">
+                <div class="subTitle">M.I. (optional)</div>
+                <input
+                        matInput [maxLength]="2"
+                        placeholder="M.I."
+                        formControlName="submitterNameMi"
+                />
+                <div *ngIf="errorMessage(page2, 'submitterNameMi')"><small>{{errorMessage(page2, 'submitterNameMi')}}</small></div>
+            </label>
+            <label class="halfBase" [class.errorRequired]="errorRequired2('submitterNameLast')">
+                <div class="subTitle">Last Name<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="submitterNameLast"
+                />
+            </label>
+            <hr>
+            <div class="heading">Organization Information</div>
+            <label *ngIf="canSave">
+                <input type="checkbox" class="checkbox" #orgCheckbox
+                       [checked]="isOrgPocSubmitterPoc()"
+                       (change)="!$event.checked && setOrgPocFromSubmitterPoc()"
+                       [disabled]="orgCheckbox.checked"> Same as the Submitter POC</label>
+            <label class="half" [class.errorRequired]="errorRequired2('organizationEmail') || errorMessage(page2, 'organizationEmail')">
+                <div>Organization POC Email<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="ex. name@organization.com"
+                        formControlName="organizationEmail"
+                />
+                <div *ngIf="errorMessage(page2, 'organizationEmail')"><small>{{errorMessage(page2, 'organizationEmail')}}</small></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired2('organizationUrl') || errorMessage(page2, 'organizationUrl')">
+                <div>Organization URL<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="ex. https://organization.gov"
+                        formControlName="organizationUrl"
+                />
+                <div *ngIf="errorMessage(page2, 'organizationUrl')"><small>{{errorMessage(page2, 'organizationUrl')}}</small></div>
+            </label>
+            <label style="margin-bottom: 0">
+                <div style="margin-bottom: 0">Organization POC</div>
+            </label>
+            <label class="halfAddon">
+                <div class="subTitle">Title (optional)</div>
+                <input
+                        matInput
+                        placeholder="..."
+                        formControlName="organizationPocTitle"
+                />
+            </label>
+            <label class="halfBase" [class.errorRequired]="errorRequired2('organizationPocFirst')">
+                <div class="subTitle">First Name<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="First Name"
+                        formControlName="organizationPocFirst"
+                />
+            </label>
+            <label class="halfAddon" [class.errorRequired]="errorMessage(page2, 'organizationPocMi')">
+                <div class="subTitle">M.I. (optional)</div>
+                <input
+                        matInput [maxLength]="2"
+                        placeholder="M.I."
+                        formControlName="organizationPocMi"
+                />
+                <div *ngIf="errorMessage(page2, 'organizationPocMi')"><small>{{errorMessage(page2, 'organizationPocMi')}}</small></div>
+            </label>
+            <label class="halfBase" [class.errorRequired]="errorRequired2('organizationPocLast')">
+                <div class="subTitle">Last Name<span> - Incomplete</span></div>
+                <input
+                        matInput
+                        placeholder="Last Name"
+                        formControlName="organizationPocLast"
+                />
+            </label>
+            <hr>
+            <div class="heading">Curator Information</div>
+            <label class="half">
+                <div>Organization Curators (optional)</div>
+                <mat-form-field class="inputBox">
+                    <mat-chip-grid #orgCuratorGrid aria-label="Curator selection">
+                        <mat-chip-row *ngFor="let u of page2?.get('organizationCurators').value">
+                            {{u}}
+                            <button matChipRemove>
+                                <mat-icon [attr.aria-label]="'remove ' + u" (click)="removeOrgCurator(u)">cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    </mat-chip-grid>
+                    <input placeholder="Select all that apply..." [formControl]="searchCtrlOrgCurator"
+                           [matChipInputFor]="orgCuratorGrid" [matAutocomplete]="autoOrgCurator"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           (matChipInputTokenEnd)="addOrgCurator($event)"/>
+                    <mat-icon matSuffix>list</mat-icon>
+                    <mat-autocomplete #autoOrgCurator="matAutocomplete" (opened)="updateOrgCurators()" (optionSelected)="selectedOrgCurator($event)">
+                        <mat-option *ngFor="let username of filteredOrgCurators | async" [value]="username">
+                            {{username}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </label>
+            <label class="half">
+                <div></div>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired2('nlmCurators')">
+                <div>NLM Curators<span> - Incomplete</span></div>
+                <mat-form-field class="inputBox" hideRequiredMarker="true">
+                    <mat-chip-grid #nlmCuratorGrid aria-label="Curator selection">
+                        <mat-chip-row *ngFor="let u of page2?.get('nlmCurators').value">
+                            {{u}}
+                            <button matChipRemove>
+                                <mat-icon [attr.aria-label]="'remove ' + u" (click)="removeNlmCurator(u)">cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    </mat-chip-grid>
+                    <input placeholder="Select all that apply..." [formControl]="searchCtrlNlmCurator"
+                           [matChipInputFor]="nlmCuratorGrid" [matAutocomplete]="autoNlmCurator"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           (matChipInputTokenEnd)="addNlmCurator($event)"/>
+                    <mat-icon matSuffix>list</mat-icon>
+                    <mat-autocomplete #autoNlmCurator="matAutocomplete" (opened)="updateNlmCurators()" (optionSelected)="selectedNlmCurator($event)">
+                        <mat-option *ngFor="let username of filteredNlmCurators | async" [value]="username">
+                            {{username}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </label>
+            <label class="half" [class.errorRequired]="errorRequired2('governanceReviewers')">
+                <div>NIH Governance Committee Reviewers<span> - Incomplete</span></div>
+                <mat-form-field class="inputBox" hideRequiredMarker="true">
+                    <mat-chip-grid #reviewerGrid aria-label="Curator selection">
+                        <mat-chip-row *ngFor="let u of page2?.get('governanceReviewers').value">
+                            {{u}}
+                            <button matChipRemove>
+                                <mat-icon [attr.aria-label]="'remove ' + u" (click)="removeReviewer(u)">cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    </mat-chip-grid>
+                    <input placeholder="Select all that apply..." [formControl]="searchCtrlReviewer"
+                           [matChipInputFor]="reviewerGrid" [matAutocomplete]="autoReviewer"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           (matChipInputTokenEnd)="addReviewer($event)"/>
+                    <mat-icon matSuffix>list</mat-icon>
+                    <mat-autocomplete #autoReviewer="matAutocomplete" (opened)="updateReviewers()" (optionSelected)="selectedReviewer($event)">
+                        <mat-option *ngFor="let username of filteredReviewers | async" [value]="username">
+                            {{username}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+            </label>
+            <div class="stepperSection">
+                <button class="button" type="button" (click)="saveIfChanged(page2) && stepper.previous()">
+                    <mat-icon style="margin-left: -.5rem">chevron_left</mat-icon>
+                    Back
+                </button>
+                <div style="float: right">
+                    <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
+                    <button type="submit" class="button">
+                        Next
+                        <mat-icon style="margin-right: 0">chevron_right</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step [stepControl]="page3" label="License & Upload">
+        <form class="container" [formGroup]="page3" (ngSubmit)="page3Submitted=true; !page3.invalid && saveIfChanged(page3) && stepper.next()">
+            <div *ngIf="page3Submitted && page3.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields. Missing Fields marked "Incomplete".
+            </div>
+            <label [class.errorRequired]="errorCustom3('oneLicenseRequired')">
+                <div>Does any part of this submission have license or copyright restrictions?<span> - Incomplete</span></div>
+                <div class="subTitle">Select all that apply.</div>
+            </label>
+            <label><input type="checkbox" class="checkbox" formControlName="licensePublic"> Free -- Publicly Available</label>
+            <label><input type="checkbox" class="checkbox" formControlName="licenseAttribution"> Free -- Attribution Required</label>
+            <label><input type="checkbox" class="checkbox" formControlName="licensePermission"> Free -- Permission Required</label>
+            <label><input type="checkbox" class="checkbox" formControlName="licenseCost"> Proprietary -- Cost/Purchase Required</label>
+            <label><input type="checkbox" class="checkbox" formControlName="licenseTraining"> Proprietary -- Training Required</label>
+            <label><input type="checkbox" class="checkbox" formControlName="licenseOther"> Other</label>
+            <label [class.errorRequired]="errorRequired3('licenseInformation') || errorMessage(page3, 'licenseInformation')">
+                <div>Licensing/Copyright Description<span> - Incomplete</span></div>
+                <textarea
+                        matInput
+                        placeholder="If there are any licensing/copyright restrictions please provide a general description, and complete the Copyright/Licensing Information Worksheet."
+                        formControlName="licenseInformation"></textarea>
+                <a>Copyright/Licensing Information Worksheet <mat-icon>open_in_new</mat-icon></a>
+                <div *ngIf="errorMessage(page3, 'licenseInformation')"><small>{{errorMessage(page3, 'licenseInformation')}}</small></div>
+            </label>
+            <hr>
+            <div class="heading">Uploaded Files</div>
+            <label [class.errorRequired]="errorRequired3('boolWorkbook')">
+                <div>Upload Collection File<span> - Incomplete</span></div>
+                <a>Please use NIH CDE Repository Submission Template <mat-icon>open_in_new</mat-icon></a>
+                <label for="fileWorkbook" class="fileInput">
+                    <button class="button"
+                            [disabled]="page3.controls.boolWorkbook.disabled"
+                            [class.fail]="errorRequired3('boolWorkbook')"
+                            (click)="!page3.controls.boolWorkbook.disabled && openFileDialog('fileWorkbook')">
+                        Browse
+                    </button>
+                    <div class="borderBox" (click)="openAttachment($event, submission.attachmentWorkbook)">{{submission.attachmentWorkbook?.filename}}</div>
+                </label>
+                <input id="fileWorkbook" style="display: none"
+                       type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                       (change)="attachmentUpload('attachmentWorkbook', $event)">
+            </label>
+            <label>
+                <div>Upload Supporting Documentation (optional)</div>
+                <label for="fileSupporting" class="fileInput">
+                    <button class="button"
+                            [disabled]="page3.controls.boolSupporting.disabled"
+                            (click)="!page3.controls.boolSupporting.disabled && openFileDialog('fileSupporting')">
+                        Browse
+                    </button>
+                    <div class="borderBox" (click)="openAttachment($event, submission.attachmentSupporting)">{{submission.attachmentSupporting?.filename}}</div>
+                </label>
+                <input id="fileSupporting" style="display: none" type="file" (change)="attachmentUpload('attachmentSupporting', $event)">
+            </label>
+            <div class="stepperSection">
+                <button type="button" class="button" (click)="saveIfChanged(page3) && stepper.previous()">
+                    <mat-icon style="margin-left: -.5rem">chevron_left</mat-icon>
+                    Back
+                </button>
+                <div style="float: right">
+                    <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
+                    <button type="submit" class="button">
+                        Next
+                        <mat-icon style="margin-right: 0">chevron_right</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step label="Review & Submit">
+        <div class="container">
+            <div *ngIf="page4Submitted && page1.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields on page 1. Missing Fields marked "Incomplete".
+            </div>
+            <div *ngIf="page4Submitted && page2.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields on page 2. Missing Fields marked "Incomplete".
+            </div>
+            <div *ngIf="page4Submitted && page3.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Please complete all required fields on page 3. Missing Fields marked "Incomplete".
+            </div>
+            <span class="heading">Collection Details</span>
+            <mat-icon *ngIf="canSave" class="fake-button" role="button" tabindex="0" (click)="stepper.previous();stepper.previous();stepper.previous()">edit</mat-icon>
+            <div class="stepperSection">
+                <dl>
+                    <dt>Collection Title</dt>
+                    <dd>{{page1.value.name}}</dd>
+                    <dt>Collection Description</dt>
+                    <dd>{{page1.value.collectionDescription}}</dd>
+                    <dt>Collection URL</dt>
+                    <dd>{{page1.value.collectionUrl}}</dd>
+                    <dt>Version Number</dt>
+                    <dd>{{page1.value.version}}</dd>
+                    <dt>ICO/Initiative Name</dt>
+                    <dd>{{page1.value.nihInitiative}}</dd>
+                    <dt>Branch/Division</dt>
+                    <dd>{{page1.value.nihInitiativeBranch}}</dd>
+                    <dt>Additional Collection Information</dt>
+                    <dd>{{page1.value.additionalInformation}}</dd>
+                    <dt>Administrative Status</dt>
+                    <dd>{{page1.value.administrativeStatus}}</dd>
+                    <dt>Registration Status</dt>
+                    <dd>{{page1.value.registrationStatus}}</dd>
+                </dl>
+            </div>
+            <hr>
+            <span class="heading">Contact Information</span>
+            <mat-icon *ngIf="canSave" class="fake-button" role="button" tabindex="0" (click)="stepper.previous();stepper.previous()">edit</mat-icon>
+            <div class="stepperSection">
+                <dl>
+                    <dt>Submitter Email</dt>
+                    <dd>{{page2.value.submitterEmail}}</dd>
+                    <dt>Submitter Organization</dt>
+                    <dd>{{page2.value.submitterOrganization}}</dd>
+                    <dt>Submitter Name</dt>
+                    <dd>{{page2.value.submitterNameTitle}} {{page2.value.submitterNameFirst}} {{page2.value.submitterNameMi}} {{page2.value.submitterNameLast}}</dd>
+                    <dt>Organization Email</dt>
+                    <dd>{{page2.value.organizationEmail}}</dd>
+                    <dt>Organization Url</dt>
+                    <dd>{{page2.value.organizationUrl}}</dd>
+                    <dt>Organization Point of Contact</dt>
+                    <dd>{{page2.value.organizationPocTitle}} {{page2.value.organizationPocFirst}} {{page2.value.organizationPocMi}} {{page2.value.organizationPocLast}}</dd>
+                    <dt>Organization Curators</dt>
+                    <dd>{{page2.value.organizationCurators?.join(', ')}}</dd>
+                    <dt>NLM Curators</dt>
+                    <dd>{{page2.value.nlmCurators?.join(', ')}}</dd>
+                    <dt>NIH Governance Committee Curators</dt>
+                    <dd>{{page2.value.governanceReviewers?.join(', ')}}</dd>
+                </dl>
+            </div>
+            <hr>
+            <span class="heading">License & Upload</span>
+            <mat-icon *ngIf="canSave" class="fake-button" role="button" tabindex="0" (click)="stepper.previous();">edit</mat-icon>
+            <div class="stepperSection">
+                <dl>
+                    <dt>License</dt>
+                    <dd>
+                        <div *ngIf="page3.value.licensePublic">Free -- Publicly Available</div>
+                        <div *ngIf="page3.value.licenseAttribution">Free -- Attribution Required</div>
+                        <div *ngIf="page3.value.licensePermission">Free -- Permission Required</div>
+                        <div *ngIf="page3.value.licenseCost">Proprietary -- Cost/Purchase Required</div>
+                        <div *ngIf="page3.value.licenseTraining">Proprietary -- Training Required</div>
+                        <div *ngIf="page3.value.licenseOther">Other</div>
+                    </dd>
+                    <dt>License Information</dt>
+                    <dd>{{page3.value.licenseInformation}}</dd>
+                    <dt>Collection File</dt>
+                    <dd>{{submission?.attachmentWorkbook?.filename}}</dd>
+                    <dt>Supporting Documentation</dt>
+                    <dd>{{submission?.attachmentSupporting?.filename}}</dd>
+                </dl>
+            </div>
+            <hr>
+            <div class="stepperSection">
+                <button matStepperPrevious type="button" class="button">
+                    <mat-icon style="margin-left: -.5rem">chevron_left</mat-icon>
+                    Back
+                </button>
+                <div style="float: right">
+                    <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
+                    <button *ngIf="canSave" type="submit" class="button" (click)="submit()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </mat-step>
+</mat-stepper>

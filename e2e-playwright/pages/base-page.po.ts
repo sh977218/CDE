@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class BasePagePo {
     protected page: Page;
@@ -25,6 +25,10 @@ export class BasePagePo {
 
     deleteDraft() {
         return this.page.getByTestId(`delete-draft`);
+    }
+
+    async locate(query: string) {
+        await expect(this.page.locator(query)).toBeVisible();
     }
 
     /* Generate Details */

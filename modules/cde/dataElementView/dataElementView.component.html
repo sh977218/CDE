@@ -31,8 +31,7 @@
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is archived. You can
-                            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}"
-                               href="javascript:void(0);">view the current version
+                            <a routerLink="/deView" [queryParams]="{tinyId: elt.tinyId}">view the current version
                                 here</a>.
                         </div>
                         <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
@@ -41,14 +40,14 @@
                             <strong>Warning:</strong> This data element is retired.
                             <a data-testid="data-element-view-mergeTo-link" *ngIf="elt.registrationState.mergedTo"
                                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.mergedTo.tinyId}">Merged to {{elt.registrationState.mergedTo.tinyId}}</a>
-                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView" href="javascript:void(0);"
+                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
                                [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
                         </div>
                         <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"
                              class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is about to be retired.
-                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView" href="javascript:void(0);"
+                            <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView"
                                [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
                                 Replacement</a>
                         </div>

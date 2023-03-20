@@ -1,7 +1,20 @@
-import { RequestHandler, Router } from 'express';
-import { isOrgAuthorityMiddleware, loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
+import { RequestHandler, Response, Router } from 'express';
+import { respondPromise } from 'server/errorHandler';
 import {
-    byId as userById, byUsername, save as userSave, updateUser, userByName, UserFull, usersByUsername
+    canSubmissionSubmitMiddleware,
+    isOrgAuthorityMiddleware,
+    loggedInMiddleware,
+    nocacheMiddleware
+} from 'server/system/authorization';
+import {
+    byId as userById,
+    byUsername, governanceReviewers, nlmCurators,
+    orgCurators,
+    save as userSave,
+    updateUser,
+    userByName,
+    UserFull,
+    usersByUsername
 } from 'server/user/userDb';
 import { User } from 'shared/models.model';
 
@@ -11,18 +24,15 @@ const passport = require('passport'); // must use require to preserve this point
 export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
     const router = Router();
 
-    router.get('/', nocacheMiddleware, async (req, res) => {
+    router.get('/', nocacheMiddleware, async (req, res): Promise<Response> => {
         if (!req.user) {
             return res.send({});
-        } else {
-            const user = await userById(req.user._id);
-            res.send(user);
         }
+        return respondPromise({res}, userById(req.user._id).then(user => user));
     });
 
-    router.post('/', loggedInMiddleware, async (req, res) => {
-        await updateUser(req.user, req.body);
-        res.send();
+    router.post('/', loggedInMiddleware, async (req, res): Promise<Response> => {
+        return respondPromise({res}, updateUser(req.user, req.body));
     });
 
     router.post('/jwt', (req, res, next) => {
@@ -32,6 +42,25 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
                 res.status(err ? 401 : 200).send(err ? err : user);
             });
         })(req, res, next);
+    });
+
+    router.get('/governanceReviewerNames', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
+        return governanceReviewers()
+            .then(users => res.send(users.map(user => user.username)));
+    });
+
+    router.get('/nlmCuratorNames', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
+        return nlmCurators()
+            .then(users => res.send(users.map(user => user.username)));
+    });
+
+    router.get('/orgCuratorNames/:org', canSubmissionSubmitMiddleware, (req, res) => {
+        orgCurators([req.params.org], (err, users) => {
+            if (err && !users) {
+                res.status(400).send();
+            }
+            res.send(users.map(u => u.username));
+        });
     });
 
     router.get('/usernames/:username', async (req, res) => {

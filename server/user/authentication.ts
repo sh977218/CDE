@@ -54,15 +54,16 @@ export function umlsApiKeyValidate(apiKey: string, cb: CbErr1<string | void>) {
         });
 }
 
-export function updateUserAfterLogin(user: UserDocument, ip: string, cb: CbNode<UserDocument>) {
+export function updateUserAfterLogin(user: UserDocument, updates: UserUpdateProfile, cb: CbNode<UserDocument>) {
     if (user.knownIPs.length > 100) {
         user.knownIPs.pop();
     }
-    if (user.knownIPs.indexOf(ip) < 0) {
-        user.knownIPs.unshift(ip);
+    if (user.knownIPs.indexOf(updates.ip) < 0) {
+        user.knownIPs.unshift(updates.ip);
     }
 
-    updateUserIps(user._id, user.knownIPs, cb);
+    updateUserIps(
+        user._id, user.knownIPs, updates.lastLoginInformation, cb);
 }
 
 export function authBeforeVsac(req: Request, username: string, password: string,
@@ -84,17 +85,28 @@ export function authBeforeVsac(req: Request, username: string, password: string,
                 let domain: string = '';
                 try {
                     username = body.utsUser.username;
-                    domain = body.idpUserOrg
+                    domain = body.idpUserOrg;
                 } catch (e) {
                     done(new Error('UMLS authentication failed'));
                 }
                 /* istanbul ignore else */
                 if (username) {
-                    findAddUserLocally({username, ip: req.ip, domain}, (err, user) => done(err, user || undefined));
+                    findAddUserLocally(
+                        {username, domain},
+                        {
+                            ip: req.ip,
+                            lastLoginInformation: {
+                                email: body.email,
+                                firstName: body.firstName,
+                                lastName: body.lastName
+                            }
+                        },
+                        (err, user) => done(err, user || undefined)
+                    );
                 } else {
                     done(new Error('No UMLS User'));
                 }
-            });
+            }, done);
     });
 }
 
@@ -126,7 +138,7 @@ passport.use('utsJwt', new CustomStrategy((req, cb) => {
                 cb('usernames did not match');
                 return;
             }
-            findAddUserLocally({username, ip: req.ip}, (err, userDoc) => {
+            findAddUserLocally({username}, {ip: req.ip}, (err, userDoc) => {
                 cb(err, userDoc);
             });
         })
@@ -136,12 +148,20 @@ passport.use('utsJwt', new CustomStrategy((req, cb) => {
 export interface UserAddProfile {
     domain?: string
     username: string;
-    ip: string;
     accessToken?: string;
     refreshToken?: string;
 }
 
-export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocument>) {
+export interface UserUpdateProfile {
+    ip: string;
+    lastLoginInformation?: {
+        email: string;
+        firstName: string;
+        lastName: string;
+    }
+}
+
+export function findAddUserLocally(profile: UserAddProfile, updates: UserUpdateProfile, cb: CbNode<UserDocument>) {
     userByName(profile.username, (err, user) => {
         /* istanbul ignore if */
         if (err) {
@@ -170,11 +190,11 @@ export function findAddUserLocally(profile: UserAddProfile, cb: CbNode<UserDocum
                         cb(new Error('save not successful'));
                         return;
                     }
-                    updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(null, newUser));
+                    updateUserAfterLogin(user, updates, (err, newUser) => cb(null, newUser));
                 }
             );
         } else {
-            updateUserAfterLogin(user, profile.ip, (err, newUser) => cb(null, newUser));
+            updateUserAfterLogin(user, updates, (err, newUser) => cb(null, newUser));
         }
     });
 }

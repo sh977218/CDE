@@ -77,14 +77,19 @@ app.get('/serviceValidate', (req, res) => {
     });
 });
 
-if ([
+if (![
     'dev-test', // CI
     'my-test', // additional local
-    'test' // default local
-].includes(process.env.NODE_ENV) && config.test && config.test.testLoginServer.port) {
+    // 'test' // default local, uses UTS login
+    'test-local' // local required for test server
+].includes(process.env.NODE_ENV)) {
+    console.error(`Test Login Server not started. Current test configuration NODE_ENV=${process.env.NODE_ENV} is not recognized.`);
+    process.exit(1);
+} else if (!config.test || !config.test.testLoginServer.port) {
+    console.error(`Test Login Server not started. Check test configuration. Current NODE_ENV=${process.env.NODE_ENV}`);
+    process.exit(1)
+} else {
     const port = config.test.testLoginServer.port;
     app.listen(port);
     console.log('TEST Login Server running on port ' + port);
-} else {
-    console.error(`Test Login Server not started. Check test configuration. Current process.env.NODE_ENV: ${process.env.NODE_ENV}`);
 }

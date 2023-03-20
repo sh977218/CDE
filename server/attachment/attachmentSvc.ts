@@ -1,9 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, RequestHandler, Response, Router } from 'express';
 import * as md5 from 'md5';
-import { dbPlugins, ObjectId } from 'server';
+import * as multer from 'multer';
+import { config, dbPlugins, ObjectId } from 'server';
 import { respondError } from 'server/errorHandler';
 import { addFile, deleteFileById } from 'server/mongo/mongo/gfs';
 import { FileCreateInfo } from 'server/system/mongo-data';
+import { AttachmentAttachResponse, AttachmentDetachRequest } from 'shared/boundaryInterfaces/API/system';
 import { Attachable, AttachableDb } from 'shared/boundaryInterfaces/db/tags/attachableDb';
 import { Attachment, User } from 'shared/models.model';
 
@@ -14,6 +16,23 @@ interface FileInfo {
     mimetype?: string;
     originalname: string;
     size?: number;
+}
+
+export function attachmentRoutes(router: Router, middleware: RequestHandler, attachPath: string, detachPath: string) {
+    router.post(attachPath, middleware,
+        multer({...config.multer, storage: multer.memoryStorage()}).any(),
+        (req, res): Promise<Response> => saveFile((req.files as any)[0])
+                .then(newId => res.send({fileId: newId.toString()} as AttachmentAttachResponse))
+    );
+
+    router.post(detachPath, middleware, (req, res): Promise<Response> => {
+        const body: AttachmentDetachRequest = req.body;
+        if (!body.fileId) {
+            return Promise.resolve(res.send());
+        }
+        return removeUnusedAttachment(body.fileId)
+            .then(() => res.send());
+    });
 }
 
 export function add<T extends Attachable>(req: Request & { files: FileInfo[] }, res: Response, db: AttachableDb<T>,
@@ -101,6 +120,26 @@ export function removeUnusedAttachment(id: string): Promise<void> {
                 return deleteFileById(new ObjectId(id));
             }
         });
+}
+
+export function saveFile(file: any): Promise<ObjectId> {
+    const fileBuffer = file.buffer;
+    const streamFS1 = createReadStream(fileBuffer);
+    const fileCreate: FileCreateInfo = {
+        filename: file.originalname,
+        stream: streamFS1,
+        md5: md5(fileBuffer),
+    };
+    return addFile(
+        fileCreate,
+        {
+            contentType: file.mimetype,
+            metadata: {
+                md5: fileCreate.md5,
+                status: 'approved',
+            }
+        }
+    );
 }
 
 export function setDefault<T extends Attachable>(req: Request, res: Response, db: AttachableDb<T>,

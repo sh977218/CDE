@@ -1,0 +1,394 @@
+<div class="container">
+  <main class="content">
+    <section *ngIf="!canReview() && !canEdit()">
+      <h1>
+        <img class="nlmBlue" src="/assets/homepage/SubmitIcon.png" alt="Submit">
+        Introduction to Collections
+      </h1>
+      <p>Collections are the way data is loaded into the Common Data Elements Repository.
+        It is an automated workflow of steps and approvals performed by authorized individuals,
+        such as NLM Curators and the Governance committee.</p>
+    </section>
+    <section *ngIf="canEdit() || canReview()">
+      <h1>NLM Organizational Authority Dashboard</h1>
+    </section>
+    <section *ngIf="canEdit()">
+      <ng-container>
+        <hr>
+        <div class="createHeading">
+          <img class="nlmBlue" src="/assets/homepage/SubmitIcon.png" alt="Submit">
+          <div class="headingContent">
+            <h2>New CDE Collection</h2>
+            <p>Begin a New CDE Collection submission.</p>
+            <button class="button" routerLink="/collection/edit">Begin Submission</button>
+          </div>
+        </div>
+        <hr>
+      </ng-container>
+    </section>
+    <section *ngIf="canEdit() && submissions?.length">
+      <h2>{{submissions?.length}} Collections</h2>
+
+      <form class="stretchBar inline-group" style="gap: 0; margin-bottom: 10px">
+        <label class="shrink grow d-block" style="margin: 0">
+          <input name="search" class="form-control" style="border-color: gray"
+                 placeholder="Enter Search Terms Here"
+                 [(ngModel)]="searchTermInput"/>
+        </label>
+        <button type="submit" class="button icon" style="margin-bottom: 0" aria-label="Search" (click)="search()">
+          <mat-icon id="search.submit">search</mat-icon>
+        </button>
+      </form>
+
+      <div>
+        <button class="button light" [class.active]="mode === 'filters'" (click)="mode = mode !== 'filters' ? 'filters' : undefined">
+          <mat-icon>filter_list</mat-icon>
+          Filters
+        </button>
+        <button class="button light" [class.active]="mode === 'hide'" (click)="mode = mode !== 'hide' ? 'hide' : undefined">
+          <mat-icon>visibility_off</mat-icon>
+          Show/Hide Columns
+        </button>
+      </div>
+
+      <div *ngIf="mode === 'filters'" class="contentPane">
+        <button class="button light" [matMenuTriggerFor]="submitOrgMenu">Submitting Org <mat-icon>list</mat-icon></button>
+        <mat-menu #submitOrgMenu="matMenu">
+          <input mat-menu-item [(ngModel)]="filterSubmittingOrgs" (ngModelChange)="filterBySubmittingOrgs()"/>
+          <label mat-menu-item *ngFor="let org of filteredSubmittingOrgs">
+            <input type="checkbox" class="checkbox" [(ngModel)]="selectedSubmittingOrgs[org]" (ngModelChange)="filterSubmissions()">
+            {{org}}
+          </label>
+        </mat-menu>
+        <button class="button light" [matMenuTriggerFor]="collectionTitleMenu">Collection Title <mat-icon>list</mat-icon></button>
+        <mat-menu #collectionTitleMenu="matMenu">
+          <input mat-menu-item [(ngModel)]="filterCollectionTiles" (ngModelChange)="filterByCollectionTitles()"/>
+          <label mat-menu-item *ngFor="let title of filteredCollectionTitles">
+            <input type="checkbox" class="checkbox" [(ngModel)]="selectedCollectionTitles[title]" (ngModelChange)="filterSubmissions()">
+            {{title}}
+          </label>
+        </mat-menu>
+        <button class="button light" [matMenuTriggerFor]="adminStatusMenu">Admin Status <mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #adminStatusMenu="matMenu">
+          <label mat-menu-item *ngFor="let status of adminStatuses">
+            <input type="checkbox" class="checkbox" [(ngModel)]="selectedAdminStatuses[status]" (ngModelChange)="filterSubmissions()">
+            {{status}}
+          </label>
+        </mat-menu>
+        <button class="button light" [matMenuTriggerFor]="regStatusMenu">Registration Status <mat-icon>arrow_drop_down</mat-icon></button>
+        <mat-menu #regStatusMenu="matMenu">
+          <label mat-menu-item *ngFor="let status of regStatus">
+            <input type="checkbox" class="checkbox" [(ngModel)]="selectedRegStatuses[status]" (ngModelChange)="filterSubmissions()">
+            {{status}}
+          </label>
+        </mat-menu>
+      </div>
+      <div *ngIf="mode === 'hide'" class="contentPane">
+        <div>
+          <span class="heading">Column Options</span>
+          <mat-radio-group aria-label="Group Selection" color="primary" [(ngModel)]="showColumnsGroup">
+            <mat-radio-button value="default" (click)="showColumnsDefault()">Default</mat-radio-button>
+            <mat-radio-button value="user">User Selected</mat-radio-button>
+            <mat-radio-button value="all" (click)="showColumnsAll()">Select All</mat-radio-button>
+            <mat-radio-button value="none" (click)="showColumnsNone()">Deselect All</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <hr>
+        <div class="responsiveGrid" style="gap: 10px 30px">
+          <div>
+            <div class="heading">Collection Details</div>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.administrativeStatus" (ngModelChange)="showColumns()"/>
+              Administrative Status
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.collectionTitle" disabled/>
+              Collection Title
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.collectionUrl" (ngModelChange)="showColumns()"/>
+              Collection URL
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.dateSubmitted" (ngModelChange)="showColumns()"/>
+              Date of Submission
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.dateModified" (ngModelChange)="showColumns()"/>
+              Date Modified
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.endorsed" (ngModelChange)="showColumns()"/>
+              NIH-Endorsed
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.nihInitiative" (ngModelChange)="showColumns()"/>
+              NIH ICO/ NIH Wide Initiative
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.numberCdes" (ngModelChange)="showColumns()"/>
+              Number of CDEs in Collection
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.registrationStatus" (ngModelChange)="showColumns()"/>
+              Registration Status
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.version" (ngModelChange)="showColumns()"/>
+              Version Number
+            </label>
+          </div>
+          <div>
+            <div class="heading">Contact Information</div>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.poc" (ngModelChange)="showColumns()"/>
+              Submitter Name / Email
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.orgPoc" (ngModelChange)="showColumns()"/>
+              Organization Point of Contact Name / Email
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.submittingOrg" disabled/>
+              Submitting Organization
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.organizationUrl" (ngModelChange)="showColumns()"/>
+              Organization URL
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.organizationCurators" (ngModelChange)="showColumns()"/>
+              Organization Curators
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.nlmCurators" (ngModelChange)="showColumns()"/>
+              NLM Curators
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.governanceReviewers" (ngModelChange)="showColumns()"/>
+              NIH Governance Committee Curators
+            </label>
+          </div>
+          <div>
+            <div class="heading">License & Copyright Information</div>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.license" (ngModelChange)="showColumns()"/>
+              License
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.licenseInformation" (ngModelChange)="showColumns()"/>
+              License Description
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.attachmentWorkbook" (ngModelChange)="showColumns()"/>
+              Collection File
+            </label>
+            <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.attachmentSupporting" (ngModelChange)="showColumns()"/>
+              Supporting Documentation
+            </label>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 10px 0">
+        <span class="badge badge-outline-gray hand-cursor" role="button" tabindex="0" title="Remove Query Filter"
+                      *ngIf="searchTerm"
+                      (click)="searchTermInput = ''; search()">
+          {{searchTerm}}
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+        <span class="badge badge-outline-gray hand-cursor" role="button" tabindex="0" title="Remove Submitting Organization Filter"
+              *ngFor="let key of getFilter(selectedSubmittingOrgs)"
+              (click)="selectedSubmittingOrgs[key] = false; filterSubmissions()">
+          {{key}}
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+        <span class="badge badge-outline-gray hand-cursor" role="button" tabindex="0" title="Remove Collection Title Filter"
+              *ngFor="let key of getFilter(selectedCollectionTitles)"
+              (click)="selectedCollectionTitles[key] = false; filterSubmissions()">
+          {{key}}
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+        <span class="badge badge-outline-gray hand-cursor" role="button" tabindex="0" title="Remove Administrative Status Filter"
+              *ngFor="let key of getFilter(selectedAdminStatuses)"
+              (click)="selectedAdminStatuses[key] = false; filterSubmissions()">
+          {{key}}
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+        <span class="badge badge-outline-gray hand-cursor" role="button" tabindex="0" title="Remove Registration Status Filter"
+              *ngFor="let key of getFilter(selectedRegStatuses)"
+              (click)="selectedRegStatuses[key] = false; filterSubmissions()">
+          {{key}}
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+        <span *ngIf="searchTerm || getFilter(selectedSubmittingOrgs).length || getFilter(selectedCollectionTitles).length || getFilter(selectedAdminStatuses).length || getFilter(selectedRegStatuses).length"
+              class="badge badge-outline hand-cursor" role="button" tabindex="0" title="Clear All"
+              (click)="clearAll()">
+          Clear All
+          <mat-icon class="closeButton">close</mat-icon>
+        </span>
+      </div>
+
+      <div class="actionGrid">
+        <div class="headingColumn headingRow">Actions</div>
+        <div class="cellGroup">
+          <div *ngIf="showColumn.endorsed" class="headingRow narrow divButton">
+            <img src="/assets/img/endorsedRibbonIcon.png"
+                 style="height: 32px; vertical-align: text-top" title="NIH Endorsed CDEs"/>
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'endorsed'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.submittingOrg" class="headingRow divButton">
+            Submitting Organization
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'submittingOrg'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.collectionTitle" class="headingRow wide divButton">
+            Collection Title
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'collectionTitle'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.collectionUrl" class="headingRow divButton">
+            Collection URL
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'collectionUrl'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.administrativeStatus" class="headingRow divButton">
+            Administrative Status
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'administrativeStatus'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.registrationStatus" class="headingRow divButton">
+            Registration Status
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'registrationStatus'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.dateSubmitted" class="headingRow divButton">
+            Date Submitted
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'dateSubmitted'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.dateModified" class="headingRow divButton">
+            Date Modified
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'dateModified'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.nihInitiative" class="headingRow divButton">
+            NIH ICO/ NIH Wide Initiative
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'nihInitiative'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.version" class="headingRow divButton">
+            Version
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'version'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.numberCdes" class="headingRow divButton">
+            Number of CDEs in Collection
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'numberCdes'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.poc" class="headingRow divButton">
+            Submitter Name & Email
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'poc'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.orgPoc" class="headingRow divButton">
+            Org POC Name & Email
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'orgPoc'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.organizationUrl" class="headingRow divButton">
+            Organization URL
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'organizationUrl'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.organizationCurators" class="headingRow divButton">
+            Organization Curators
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'organizationCurators'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.nlmCurators" class="headingRow divButton">
+            NLM Curators
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'nlmCurators'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.governanceReviewers" class="headingRow divButton">
+            NLM Governance Committee Reviewers
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'governanceReviewers'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.license" class="headingRow divButton">
+            License
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'license'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.licenseInformation" class="headingRow divButton">
+            License/Copyright Information
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'licenseInformation'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.attachmentWorkbook" class="headingRow divButton">
+            Collection File
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'attachmentWorkbook'}"></ng-container>
+          </div>
+          <div *ngIf="showColumn.attachmentSupporting" class="headingRow divButton">
+            Supporting Documentation
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'attachmentSupporting'}"></ng-container>
+          </div>
+        </div> <!-- sticky top bar -->
+        <ng-container *ngFor="let s of displaySubmissions; index as i">
+          <div class="headingColumn divButton" [class.active]="i === openIndex" role="button" tabindex="0"
+               (click)="openIndex = openIndex !== i ? i : null">
+            <mat-icon>{{i === openIndex ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+          </div>
+          <div class="cellGroup" [class.active]="i === openIndex" [class.even]="i % 2">
+            <div *ngIf="showColumn.endorsed" class="cell narrow">
+              <img *ngIf="s.endorsed" src="/assets/img/endorsedRibbonIcon.png"
+                   style="height: 32px; vertical-align: text-top" title="NIH Endorsed CDEs"/></div>
+            <div *ngIf="showColumn.submittingOrg" class="cell">{{s.submitterOrganization}}</div>
+            <div *ngIf="showColumn.collectionTitle" class="cell wide">{{s.name}}</div>
+            <div *ngIf="showColumn.collectionUrl" class="cell">{{s.collectionUrl}}</div>
+            <div *ngIf="showColumn.administrativeStatus" class="cell">{{s.administrativeStatus}}</div>
+            <div *ngIf="showColumn.registrationStatus" class="cell">{{s.registrationStatus}}</div>
+            <div *ngIf="showColumn.dateSubmitted" class="cell">{{s.dateSubmitted | date:'yyyy-MM-dd'}}</div>
+            <div *ngIf="showColumn.dateModified" class="cell">{{s.dateModified | date:'yyyy-MM-dd'}}</div>
+            <div *ngIf="showColumn.nihInitiative" class="cell">{{s.nihInitiative}}<br>{{s.nihInitiativeBranch}}</div>
+            <div *ngIf="showColumn.version" class="cell">{{s.version}}</div>
+            <div *ngIf="showColumn.numberCdes" class="cell">{{s.numberCdes}}</div>
+            <div *ngIf="showColumn.poc" class="cell">{{s.submitterNameTitle}} {{s.submitterNameFirst}} {{s.submitterNameMi}} {{s.submitterNameLast}}<br>{{s.submitterEmail}}</div>
+            <div *ngIf="showColumn.orgPoc" class="cell">{{s.organizationPocTitle}} {{s.organizationPocFirst}} {{s.organizationPocMi}} {{s.organizationPocLast}}<br>{{s.organizationEmail}}</div>
+            <div *ngIf="showColumn.organizationUrl" class="cell">{{s.organizationUrl}}</div>
+            <div *ngIf="showColumn.organizationCurators" class="cell">{{s.organizationCurators.join(', ')}}</div>
+            <div *ngIf="showColumn.nlmCurators" class="cell">{{s.nlmCurators.join(', ')}}</div>
+            <div *ngIf="showColumn.governanceReviewers" class="cell">{{s.governanceReviewers.join(', ')}}</div>
+            <div *ngIf="showColumn.license" class="cell">
+              <div *ngIf="s.licensePublic">Free -- Publicly Available</div>
+              <div *ngIf="s.licenseAttribution">Free -- Attribution Required</div>
+              <div *ngIf="s.licensePermission">Free -- Permission Required</div>
+              <div *ngIf="s.licenseCost">Proprietary -- Cost/Purchase Required</div>
+              <div *ngIf="s.licenseTraining">Proprietary -- Training Required</div>
+              <div *ngIf="s.licenseOther">Other</div>
+            </div>
+            <div *ngIf="showColumn.licenseInformation" class="cell">{{s.licenseInformation}}</div>
+            <div *ngIf="showColumn.attachmentWorkbook" class="cell">{{s.attachmentWorkbook?.filename}}</div>
+            <div *ngIf="showColumn.attachmentSupporting" class="cell">{{s.attachmentSupporting?.filename}}</div>
+          </div>
+          <ng-container *ngIf="i === openIndex">
+            <div></div>
+            <div class="cellGroupActions">
+              <p>Select action for <i>{{s.name}}</i>:</p>
+              <div>
+                <button class="button small light" (click)="view(s)">View</button>
+                <button class="button small light" routerLink="/collection/edit" [queryParams]="{_id: s._id}">Edit</button>
+                <button class="button small">Change Status</button>
+                <span class="fake-link" role="link" tabindex="0">
+                  <i>Download Submission</i>
+                  <mat-icon style="margin-left: 3px">download</mat-icon>
+                </span>
+                <ng-container *ngIf="canReview()">
+                  <mat-icon *ngIf="!s.endorsed" title="Approve" class="fake-button" role="button" tabindex="0" style="color: green"
+                            (click)="approve(s)">thumb_up</mat-icon>
+                  <mat-icon *ngIf="!s.endorsed" title="Decline" class="fake-button" role="button" tabindex="0" style="color: darkred"
+                            (click)="decline(s)">thumb_down</mat-icon>
+                  <cde-delete-with-confirm *ngIf="!s.endorsed" (deleted)="delete(s)"></cde-delete-with-confirm>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+      <mat-paginator [length]="filteredSubmissions.length"
+                     [pageSize]="pageSize"
+                     [pageSizeOptions]="[10, 25, 100]"
+                     (page)="pageChange($event.pageIndex, $event.pageSize)"
+                     aria-label="Select page">
+      </mat-paginator>
+    </section>
+  </main>
+</div>
+
+<ng-template #sorter let-field="field">
+  <mat-icon role="button" tabindex="0" class="fake-button" (click)="setSort(field)">{{getSortState(field)}}</mat-icon>
+</ng-template>

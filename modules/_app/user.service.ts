@@ -88,8 +88,11 @@ export class UserService {
             .then(user => this.processUser(user));
     }
 
-    processUser(user: User): Promise<User> {
-        if (!user || !user.username) {
+    processUser(user: User | {}): Promise<User> {
+        function isUser(user: User | {}): user is User {
+            return !!(user as User).username;
+        }
+        if (!user || !isUser(user)) {
             this._user = null;
             return Promise.reject();
         }
@@ -105,16 +108,21 @@ export class UserService {
         return Promise.resolve(user);
     }
 
-    reload(cb = noop) {
-        this.clear();
+    reload(cb = noop): void {
         this.promise = this.http
-            .get<User>('/server/user/')
+            .get<User | {}>('/server/user/')
             .toPromise()
-            .then(user => this.processUser(user));
-        this.promise.finally(() => {
+            .then(user => this.reloadFrom(user));
+        this.promise.then(cb, cb);
+    }
+
+    reloadFrom(user: User | {}): Promise<User> {
+        this.clear();
+        const promise = Promise.resolve(user).then(user => this.processUser(user));
+        promise.finally(() => {
             this.listeners.forEach(listener => listener(this._user || null));
         });
-        this.promise.then(cb, cb);
+        return promise;
     }
 
     resetInactivityTimeout() {
@@ -133,14 +141,17 @@ export class UserService {
     }
 
     save(incrementalUpdate: Partial<User>) {
-        this.http.post('/server/user/', incrementalUpdate).subscribe(
-            () => {
-                this.reload(() => {
-                    this.alert.addAlert('success', 'Saved');
-                });
-            },
-            err => this.alert.httpErrorMessageAlert(err)
-        );
+        this.http
+            .post<User>('/server/user/', incrementalUpdate)
+            .toPromise()
+            .then(
+                user => {
+                    this.reloadFrom(user).then(() => {
+                        this.alert.addAlert('success', 'Saved');
+                    });
+                },
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     searchUsernames(username: string) {

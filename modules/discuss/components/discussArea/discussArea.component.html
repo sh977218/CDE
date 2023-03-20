@@ -5,7 +5,7 @@
 
     <ng-template #discussArea>
         <ng-container *ngIf="!userService.user else newCommentTemplate">
-            Please <a routerLink="/login" href="javascript:void(0);">log in</a> to comment.
+            Please <a routerLink="/login">log in</a> to comment.
         </ng-container>
         <ng-template #newCommentTemplate>
             <form #newCommentForm="ngForm" name="newCommentForm" id="newCommentForm" novalidate

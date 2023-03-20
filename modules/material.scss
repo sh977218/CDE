@@ -176,9 +176,6 @@ button[mat-icon-button] {
   }
 }
 
-
-
-
 .mat-snack-bar-container {
   background-color: white;
   border-radius: 40px !important;
@@ -198,7 +195,7 @@ button[mat-icon-button] {
   }
 }
 
-cde-related-content{
+cde-related-content {
   mat-tab-group {
     mat-tab-header {
       .button, .button.light {
@@ -214,7 +211,7 @@ cde-related-content{
     }
 
     mat-tab-body {
-      border: 1px solid $nlmColorPrimary
+      border: 1px solid $nlmColorPrimary;
     }
   }
 }

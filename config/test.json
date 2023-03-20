@@ -7,7 +7,6 @@
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
-  "autoSyncMesh": true,
   "elastic": {
     "index": {
       "name": "cdetest"
@@ -39,11 +38,11 @@
       }
     ]
   },
-  "showCovidBanner": false,
-  "test": {
-    "testLoginServer": {
-      "port": 3002
-    }
+  "uts": {
+    "federatedLogin": "https://uts-qa.nlm.nih.gov/uts/login",
+    "federatedService": "https://uts-ws-qa.nlm.nih.gov",
+    "federatedServiceValidate": "https://uts-ws-qa.nlm.nih.gov/rest/serviceValidate",
+    "ssoServerOrigin": "https://uts-qa.nlm.nih.gov",
+    "ssoServerReceiver": "https://uts-qa.nlm.nih.gov/uts/messenger"
   }
 }
-

@@ -19,7 +19,7 @@ import { FormViewService } from 'form/formView/formView.service';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';
 import { UcumService } from 'form/ucum.service';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
-import { isIe } from 'non-core/browser';
+import { fileInputToFormData, isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -470,16 +470,8 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     upload(elt: CdeFormDraft, event: Event) {
-        if (event.srcElement && (event.srcElement as HTMLInputElement).files) {
-            const files = (event.srcElement as HTMLInputElement).files;
-            const formData = new FormData();
-            if (files) {
-                /* tslint:disable */
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('uploadedFiles', files[i]);
-                }
-                /* tslint:enable */
-            }
+        const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
+        if (formData) {
             formData.append('id', elt._id);
             this.http.post<any>('/server/attachment/form/add', formData).subscribe(r => {
                 if (r.message) {

@@ -1,0 +1,130 @@
+@use 'sass:math';
+@import '../theme';
+
+mat-stepper {
+  .mat-horizontal-stepper-header-container {
+    $space: 32px;
+    $maxTextWidth: 142px;
+    $stepLabelOffset: 16px;
+    $stepLineBackoff: 0;
+    $stepperMaxWidth: 800px;
+
+    $stepIconSize: 24px;
+    $lineHeight: 18px;
+    $lineHeightActive: 20px;
+    $spaceBottom: $space;
+    $stepWidth: $maxTextWidth + 10px;
+    $stepPaddingTop: $stepIconSize;
+    $stepPaddingBottom: $stepIconSize + $lineHeight;
+    $stepPaddingSide: math.div($stepWidth - $stepIconSize, 2);
+
+    margin: 0 $space $spaceBottom $space;
+    transition: margin .3s ease-in-out;
+
+    @media (max-width: 4 * $stepWidth + 2 * $space + $scrollbarWidth) {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    @media (min-width: $stepperMaxWidth + 2 * $space) {
+      max-width: $stepperMaxWidth;
+      margin: 0 auto $spaceBottom;
+      width: 100%;
+    }
+
+    .mat-stepper-horizontal-line {
+      align-self: start;
+      margin: ($stepPaddingTop + .5 * $stepIconSize) (-$stepPaddingSide + $stepLineBackoff) 0;
+    }
+
+    .mat-horizontal-stepper-header {
+      align-items: initial;
+      height: $stepIconSize;
+      padding: $stepPaddingTop $stepPaddingSide $stepPaddingBottom;
+
+      .mat-step-icon {
+        background-color: $nlmColorLightest;
+        border: 1px solid $nlmColorPrimary;
+        border-radius: unset;
+        color: $nlmColorPrimary;
+        margin-right: 0;
+
+        &.mat-step-icon-selected {
+          background-color: $nlmColorPrimary;
+          color: $nlmColorLightest;
+        }
+      }
+
+      .mat-step-label {
+        position: absolute;
+        margin-left: math.div($stepIconSize, 2);
+        margin-top: $stepIconSize + $stepLabelOffset;
+        transform: translateX(-50%);
+
+        @media (max-width: 4 * $stepWidth - 1) {
+          font-size: $nlmFontSizeMin;
+        }
+
+        &.mat-step-label-selected {
+          .mat-step-text-label {
+            color: $nlmColorPrimary;
+          }
+        }
+      }
+    }
+  }
+}
+
+mat-form-field.inputBox {
+  width: 100%;
+
+  > :nth-child(1) {
+    background-color: $nlmColorLightest;
+    border: 1px solid rgb(118, 118, 118);
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    &.mdc-text-field--focused {
+      outline: black auto 1px;
+    }
+
+    .mat-mdc-form-field-focus-overlay,
+    .mdc-line-ripple {
+      display: none;
+    }
+
+    .mat-mdc-form-field-infix {
+      display: inline;
+      padding-bottom: 10px !important;
+      padding-top: 10px !important;
+
+      mat-chip-grid {
+        display: inline;
+
+        > * {
+          display: inline;
+          min-width: auto;
+        }
+      }
+
+      input {
+        border-left: none !important;
+        margin-left: 0;
+        padding: 6px 0 0 10px;
+        width: auto;
+      }
+    }
+  }
+
+  > :nth-child(2) {
+    display: none;
+  }
+}
+
+label.errorRequired {
+  mat-form-field.inputBox > :nth-child(1) {
+    border-color: $nlmColorFail;
+    border-width: 2px;
+  }
+}

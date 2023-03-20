@@ -1,25 +1,19 @@
 import * as fs from 'fs';
 import { Request, Response, Router } from 'express';
-import * as md5 from 'md5';
-import * as multer from 'multer';
-import { config, dbPlugins } from 'server';
-import { removeUnusedAttachment } from 'server/attachment/attachmentSvc';
+import { dbPlugins } from 'server';
 import { respondError } from 'server/errorHandler';
-import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
+import { getFile, gfs } from 'server/mongo/mongo/gfs';
 import { isNlmCuratorMiddleware } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
-import { FileCreateInfo } from 'server/system/mongo-data';
 import { version } from 'server/version';
 import {
-    HomepageAttachResponse,
-    HomepageDetachRequest, HomepageDraftGetResponse, HomepageDraftPutRequest, HomepageDraftPutResponse,
+    HomepageDraftGetResponse, HomepageDraftPutRequest, HomepageDraftPutResponse,
     HomepageGetResponse,
     HomepagePutRequest, HomepagePutResponse
 } from 'shared/boundaryInterfaces/API/system';
 import { SingletonServer as Singleton } from 'shared/singleton.model';
 import * as path from 'path';
-
-const createReadStream = require('streamifier').createReadStream;
+import { attachmentRoutes } from 'server/attachment/attachmentSvc';
 
 require('express-async-errors');
 
@@ -76,39 +70,7 @@ export function module() {
             .then((newHomepage) => res.send(newHomepage as HomepagePutResponse));
     });
 
-    router.post('/server/homeAttach', isNlmCuratorMiddleware,
-        multer({...config.multer, storage: multer.memoryStorage()}).any(),
-        (req, res): Promise<Response> => {
-            const file = (req.files as any)[0];
-            const fileBuffer = file.buffer;
-            const streamFS1 = createReadStream(fileBuffer);
-            const fileCreate: FileCreateInfo = {
-                filename: file.originalname,
-                stream: streamFS1,
-                md5: md5(fileBuffer),
-            };
-            return addFile(
-                fileCreate,
-                {
-                    contentType: file.mimetype,
-                    metadata: {
-                        md5: fileCreate.md5,
-                        status: 'approved',
-                    }
-                }
-            )
-                .then(newId => res.send({fileId: newId.toString()} as HomepageAttachResponse));
-        }
-    );
-
-    router.post('/server/homeDetach', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
-        const body: HomepageDetachRequest = req.body;
-        if (!body.fileId) {
-            return Promise.resolve(res.send());
-        }
-        return removeUnusedAttachment(body.fileId)
-            .then(() => res.send());
-    });
+    attachmentRoutes(router, isNlmCuratorMiddleware, '/server/homeAttach', '/server/homeDetach');
 
     router.delete('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
         return dbPlugins.singleton.byId('homeEdit').then(draft => {

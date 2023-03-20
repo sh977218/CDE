@@ -72,19 +72,6 @@ public class BoardTest extends NlmCdeBaseTest {
         clickElement(By.id("pinToBoard_0"));
     }
 
-    public void goToBoard(String boardName) {
-        String boardId = EltIdMaps.eltMap.get(boardName);
-        if (boardId != null) {
-            driver.get(baseUrl + "/board/" + boardId);
-            textPresent(boardName);
-        } else {
-            gotoMyBoards();
-            textPresent(boardName);
-            clickElement(By.xpath("//*[@id='" + boardName + "']//span"));
-            textPresent(boardName, By.xpath("//*[@id='board_name_" + boardName + "']"));
-        }
-    }
-
     public int getNumberElementsByBoardName(String boardName) {
         WebElement numElt = findElement(By.xpath("//*[@id='" + boardName + "']//*[contains(@class,'numElement')]"));
         int num = Integer.parseInt(numElt.getText().trim());

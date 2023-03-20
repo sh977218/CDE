@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { fileInputToFormData } from 'non-core/browser';
 import {
-    HomepageAttachResponse,
-    HomepageDetachRequest,
+    AttachmentAttachResponse,
+    AttachmentDetachRequest,
     HomepageDraftGetResponse,
     HomepageDraftPutRequest,
     HomepageDraftPutResponse,
@@ -40,28 +41,20 @@ export class HomeEditComponent {
         return this.http
             .post<void>('/server/homeDetach', {
                 fileId,
-            } as HomepageDetachRequest)
+            } as AttachmentDetachRequest)
             .toPromise();
     }
 
     attachmentUpload(homepage: HomePageDraft, updateCard: UpdateCard, event: Event) {
-        if (event.srcElement) {
-            const files = (event.srcElement as HTMLInputElement).files;
-            if (files && files.length > 0) {
-                const formData = new FormData();
-                /* tslint:disable */
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('uploadedFiles', files[i]);
-                }
-                /* tslint:enable */
-                this.http.post<HomepageAttachResponse>('/server/homeAttach', formData).subscribe(r => {
-                    updateCard.image = {
-                        fileId: r.fileId,
-                        uploadedBy: this.userService.user?._id,
-                    };
-                    this.autoSave(homepage);
-                });
-            }
+        const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
+        if (formData) {
+            this.http.post<AttachmentAttachResponse>('/server/homeAttach', formData).subscribe(r => {
+                updateCard.image = {
+                    fileId: r.fileId,
+                    uploadedBy: this.userService.user?._id,
+                };
+                this.autoSave(homepage);
+            });
         }
     }
 

@@ -45,6 +45,7 @@ import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
+import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
 import { FormSearchModule } from 'form/formSearch.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
@@ -72,19 +73,19 @@ import { OrgsEditComponent } from 'settings/orgsEdit/orgsEdit.component';
 import { ProfileComponent } from 'settings/profile/profile.component';
 import { PropertiesManagementComponent } from 'settings/propertiesManagement/propertiesManagement.component';
 import { SearchSettingsComponent } from 'settings/search/searchSettings.component';
+import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 import { ServerStatusComponent } from 'settings/serverStatus/serverStatus.component';
 import { SettingsComponent } from 'settings/settings.component';
+import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
+import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
+import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
 import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
+import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
-import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
-import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
-import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
-import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
-import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 
 const appRoutes: Routes = [
     {
@@ -274,6 +275,7 @@ const appRoutes: Routes = [
         MatGridListModule,
         MatIconModule,
         MatInputModule,
+        MatLegacyChipsModule,
         MatListModule,
         MatMenuModule,
         MatNativeDateModule,
@@ -296,6 +298,7 @@ const appRoutes: Routes = [
         MatTreeModule,
         // internal
         NonCoreModule,
+        DeleteWithConfirmModule,
         InlineEditModule,
         InlineAreaEditModule,
         InlineSelectEditModule,
@@ -306,7 +309,6 @@ const appRoutes: Routes = [
         FormSearchModule,
         SearchModule,
         UsernameAutocompleteModule,
-        MatLegacyChipsModule,
     ],
     declarations: [
         ArticleHelpDialogComponent,

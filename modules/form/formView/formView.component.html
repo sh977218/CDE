@@ -44,9 +44,8 @@
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is archived. You can
-                            <a id="viewCurrentEltLink" href="javascript:void(0);"
-                               routerLink="/formView" [queryParams]="{tinyId: elt.tinyId}">view the current version
-                                here</a>.
+                            <a id="viewCurrentEltLink" routerLink="/formView"
+                               [queryParams]="{tinyId: elt.tinyId}">view the current version here</a>.
                         </div>
                         <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
                              role="alert">
@@ -61,7 +60,7 @@
                              class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this form is about to be retired.
-                            <a *ngIf="elt.registrationState.replacedBy?.tinyId" href="javascript:void(0);"
+                            <a *ngIf="elt.registrationState.replacedBy?.tinyId"
                                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Possible
                                 Replacement</a>
                         </div>
@@ -181,8 +180,7 @@
                                 </ng-template>
                             </ng-container>
                             <ng-template #exportNotLoggedIn>
-                                <a mat-menu-item *ngIf="!userService.loggedIn()" class="no-link"
-                                   routerLink="/login" href="javascript:void(0);">
+                                <a mat-menu-item *ngIf="!userService.loggedIn()" class="no-link" routerLink="/login">
                                     Please login to export forms.
                                 </a>
                             </ng-template>

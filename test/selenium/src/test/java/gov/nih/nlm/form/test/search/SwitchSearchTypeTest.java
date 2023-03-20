@@ -31,7 +31,7 @@ public class SwitchSearchTypeTest extends NlmCdeBaseTest {
         textPresent("ACTIVE CDE FILTERS");
         searchActiveFilter("NLM CDE Dev Team Test");
         findElement(By.xpath("//input[@type='checkbox'][../self::label[contains(., 'NIH-Endorsed')]]"));
-        findElement(By.cssSelector("input[type='checkbox']:checked"));
+        findElement(By.cssSelector("input" + cssInputCheckboxChecked));
         clickElement(By.xpath("//button[contains(@class, 'searchDropdown')][contains(., 'NIH-Endorsed CDEs')]"));
 
         clickElement(By.xpath("//button[contains(., 'Search Forms')]"));

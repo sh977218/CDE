@@ -3,7 +3,7 @@ import { Document, Model, Query } from 'mongoose';
 import { config } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { CbError, CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
+import { CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -26,8 +26,8 @@ export interface UserFull extends User {
     lockCounter: number;
     knownIPs: string[];
     notificationDate?: {
-        serverLogDate: Date | number,
-        clientLogDate: Date | number
+        serverLogDate: Date | number;
+        clientLogDate: Date | number;
     };
     password: string;
 }
@@ -57,6 +57,11 @@ const userSchema = new Schema({
     email: StringType,
     password: StringType,
     lastLogin: Date,
+    lastLoginInformation: {
+        email: StringType,
+        firstName: StringType,
+        lastName: StringType,
+    },
     notificationDate: {
         serverLogDate: Date,
         clientLogDate: Date
@@ -122,11 +127,13 @@ export function addUser(user: Omit<UserFull, '_id'>, callback: CbError1<UserDocu
     new userModel(user).save(callback);
 }
 
-export function updateUserIps(userId: string, ips: string[], callback: CbError1<UserDocument | null>) {
+export function updateUserIps(userId: string, ips: string[], lastLoginInformation: UserFull['lastLoginInformation'],
+                              callback: CbError1<UserDocument | null>): void {
     userModel.findByIdAndUpdate(userId, {
         lockCounter: 0,
         lastLogin: Date.now(),
-        knownIPs: ips
+        knownIPs: ips,
+        lastLoginInformation
     }, {new: true}, callback);
 }
 
@@ -146,8 +153,7 @@ export function find(crit: any, cb: CbError1<UserDocument[]>) {
     userModel.find(crit, cb);
 }
 
-// cb(err, {nMatched, nUpserted, nModified})
-export function updateUser(user: User, fields: Partial<UserFull>): Promise<void> {
+export function updateUser(user: User, fields: Partial<UserFull>): Promise<UserFull> {
     const update: Partial<UserFull> = {};
     if (fields.commentNotifications) {
         update.commentNotifications = fields.commentNotifications;
@@ -177,7 +183,13 @@ export function updateUser(user: User, fields: Partial<UserFull>): Promise<void>
     if(fields.formDefaultBoard){
         update.formDefaultBoard = fields.formDefaultBoard;
     }
-    return userModel.updateOne({_id: user._id}, {$set: update}).then();
+    return userModel.findOneAndUpdate({_id: user._id}, {$set: update}, {projection: userProject, new: true})
+        .then(user => {
+            if (!user) {
+                return Promise.reject('User not found');
+            }
+            return user.toObject();
+        });
 }
 
 export function usersByName(name: string, callback: CbError1<UserDocument[]>) {
@@ -211,6 +223,13 @@ export function siteAdmins(): Promise<UserDocument[]> {
 
 export function orgAuthorities(): Promise<UserDocument[]> {
     return userModel.find({roles: 'OrgAuthority'}, 'username').then();
+}
+
+export function governanceReviewers(): Promise<UserDocument[]> {
+    return userModel.find({roles: 'GovernanceGroup'}, 'username').then();
+}
+export function nlmCurators(): Promise<UserDocument[]> {
+    return userModel.find({roles: 'NlmCurator'}, 'username').then();
 }
 
 // Org

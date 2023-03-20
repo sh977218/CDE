@@ -235,27 +235,27 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (!matrix) {
             clickElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayAsMatrix_" + index + "']//input")).getAttribute("aria-checked"), "false");
+            driver.findElement(By.cssSelector("#displayAsMatrix_" + index + " input" + cssInputCheckboxNotChecked));
         }
         if (displayValues) {
             clickElement(By.xpath("//*[@id='displayValues_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayValues_" + index + "']//input")).getAttribute("aria-checked"), "true");
+            driver.findElement(By.cssSelector("#displayValues_" + index + " input" + cssInputCheckboxChecked));
         }
         if (!instructions) {
             clickElement(By.xpath("//*[@id='displayInstructions_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInstructions_" + index + "']//input")).getAttribute("aria-checked"), "false");
+            driver.findElement(By.cssSelector("#displayInstructions_" + index + " input" + cssInputCheckboxNotChecked));
         }
         if (!numbering) {
             clickElement(By.xpath("//*[@id='displayNumbering_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayNumbering_" + index + "']//input")).getAttribute("aria-checked"), "false");
+            driver.findElement(By.cssSelector("#displayNumbering_" + index + " input" + cssInputCheckboxNotChecked));
         }
         if (displayMetadataDevice) {
             clickElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayMetadataDevice_" + index + "']//input")).getAttribute("aria-checked"), "true");
+            driver.findElement(By.cssSelector("#displayMetadataDevice_" + index + " input" + cssInputCheckboxChecked));
         }
 
         nativeSelect(By.xpath("//*[@id='profile_" + index + "']//select"), displayType);
@@ -275,7 +275,7 @@ public class BaseFormTest extends NlmCdeBaseTest {
         if (displayInvisible) {
             clickElement(By.xpath("//*[@id='displayInvisible_" + index + "']//label"));
             hangon(1);
-            Assert.assertEquals(driver.findElement(By.xpath("//*[@id='displayInvisible_" + index + "']//input")).getAttribute("aria-checked"), "true");
+            driver.findElement(By.cssSelector("#displayInvisible_" + index + " input" + cssInputCheckboxChecked));
         }
 
         if (answerDropdownLimit > 0) {

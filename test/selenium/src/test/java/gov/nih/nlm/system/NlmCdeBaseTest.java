@@ -325,11 +325,16 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 findElement(By.xpath("//*[@id='" + id + "' and contains(@class, 'treeChild')]"));
         } else {
             if (state)
-                findElement(By.cssSelector("#" + id + ":checked"));
+                findElement(By.cssSelector("#" + id + cssInputCheckboxChecked));
             else
-                findElement(By.cssSelector("#" + id + ":not(:checked)"));
+                findElement(By.cssSelector("#" + id + cssInputCheckboxNotChecked));
         }
     }
+
+    protected String cssInputCheckboxChecked = "[type='checkbox']:checked";
+    protected String cssInputCheckboxNotChecked = "[type='checkbox']:not(:checked)";
+    protected String cssInputRadioChecked = "[type='radio']:checked";
+    protected String cssInputRadioNotChecked = "[type='radio']:not(:checked)";
 
     protected void cdeFormTitleExists() {
         findElement(By.cssSelector("h1"));
@@ -1541,7 +1546,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             gotoMyBoards();
             textPresent(boardName);
             clickElement(By.xpath("//*[@id='viewBoard_" + boardName + "']"));
-            textPresent(boardName, By.xpath("//h3[@id='board_name_" + boardName + "']"));
+            textPresent(boardName, By.xpath("//h1[@id='board_name_" + boardName + "']"));
         }
     }
 
@@ -2077,16 +2082,8 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpathMatAutocomplete + xpathMatDropdownByText(foundUsername.toLowerCase())));
     }
 
-    protected void startEditMeshDescriptors() {
-        clickElement(By.xpath(xpathMeshDescriptorsEditable()));
-    }
-
     protected void startEditRegistrationStatus() {
         clickElement(By.xpath(xpathRegistrationStatusEditable()));
-    }
-
-    protected String xpathMeshDescriptorsEditable() {
-        return "//legend[contains(text(),'Mesh Descriptors:')][button]";
     }
 
     protected String xpathRegistrationStatusEditable() {

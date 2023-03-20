@@ -32,7 +32,7 @@
         <div>
             <a *ngIf="section.elementType === 'form' && section.inForm.form.tinyId" target="_blank"
                title="{{section.inForm.form.name}}"
-               [routerLink]="'/formView'" href="javascript:void(0);"
+               [routerLink]="'/formView'"
                [queryParams]="{tinyId: section.inForm.form.tinyId, version: section.inForm.form.version}">
                 <mat-icon>visibility</mat-icon>
                 View Form

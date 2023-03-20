@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { AlertService } from 'alert/alert.service';
-import { Article } from 'shared/article/article.model';
-import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AlertService } from 'alert/alert.service';
+import { fileInputToFormData } from 'non-core/browser';
+import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
+import { Article } from 'shared/article/article.model';
 
 @Component({
     selector: 'cde-article-admin',
@@ -30,16 +31,8 @@ export class ArticleAdminComponent {
     }
 
     upload(event: Event) {
-        if (event.srcElement && (event.srcElement as HTMLInputElement).files) {
-            const files = (event.srcElement as HTMLInputElement).files;
-            const formData = new FormData();
-            if (files) {
-                /* tslint:disable */
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('uploadedFiles', files[i]);
-                }
-                /* tslint:disable */
-            }
+        const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
+        if (formData) {
             formData.append('id', this.article._id || '');
             this.http.post<Article>('/server/attachment/article/add', formData).subscribe(
                 res => (this.article = res),

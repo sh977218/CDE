@@ -8,6 +8,7 @@ import { HomePagePo } from '../pages/home-page.po';
 import { CdePagePo } from '../pages/cde-page.po';
 import { FormPagePo } from '../pages/form-page.po';
 import { MyBoardPagePo } from '../pages/board/my-board-page.po';
+import { MaterialPo } from '../pages/material.po';
 import { BoardPagePo } from '../pages/board/board-page.po';
 import { SearchPagePo } from '../pages/search-page.po';
 import { SnackBarPo } from '../pages/snack-bar.po';
@@ -29,6 +30,10 @@ import { ManageClassificationPo } from '../pages/manage-classifications/manage-c
 import { AuditTabPo } from '../pages/audit/audit-tab.po';
 import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
 import { ConsoleMessage } from 'playwright-core';
+
+// Submission
+import { SubmissionEditPo } from '../pages/submission/submissionEdit.po';
+import { SubmissionManagePo } from '../pages/submission/submissionManage.po';
 
 async function codeCoverage(page: Page) {
     const coverage: string = await page.evaluate('JSON.stringify(window.__coverage__);');
@@ -56,9 +61,12 @@ const test = baseTest.extend<{
     auditTab: AuditTabPo;
     classificationAuditPage: ClassificationAuditPagePo;
     manageClassificationPage: ManageClassificationPo;
-    settingMenu: SettingMenuPo;
-    profilePage: ProfilePagePo;
     manageOrganizationsPage: ManageOrganizationsPo;
+    materialPage: MaterialPo;
+    profilePage: ProfilePagePo;
+    settingMenu: SettingMenuPo;
+    submissionEditPage: SubmissionEditPo;
+    submissionManagePage: SubmissionManagePo;
 }>({
     basePage: async ({page}, use) => {
         await use(new BasePagePo(page));
@@ -108,11 +116,20 @@ const test = baseTest.extend<{
     settingMenu: async ({page}, use) => {
         await use(new SettingMenuPo(page));
     },
+    manageOrganizationsPage: async ({ page }, use) => {
+        await use(new ManageOrganizationsPo(page));
+    },
+    materialPage: async ({ page }, use) => {
+        await use(new MaterialPo(page));
+    },
     profilePage: async ({page}, use) => {
         await use(new ProfilePagePo(page));
     },
-    manageOrganizationsPage: async ({page}, use) => {
-        await use(new ManageOrganizationsPo(page));
+    submissionEditPage: async ({page}, use) => {
+        await use(new SubmissionEditPo(page));
+    },
+    submissionManagePage: async ({page}, use) => {
+        await use(new SubmissionManagePo(page));
     },
 });
 

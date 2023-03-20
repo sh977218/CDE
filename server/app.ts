@@ -26,6 +26,7 @@ import { module as logModule } from 'server/log/logRoutes';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
+import { module as submissionModule } from './submission/submissionRoutes'
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
@@ -297,6 +298,7 @@ try {
     app.use('/', deModule());
     app.use('/', formModule());
     app.use('/server/board', boardModule());
+    app.use('/server/submission', submissionModule())
     swaggerInit(app);
     app.use('/server/user', userModule({
         search: isOrgAdminMiddleware,

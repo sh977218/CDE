@@ -137,8 +137,9 @@ export class ClassificationService {
             .subscribe(next, (err: HttpErrorResponse) => {
                 if (err.status === 409) {
                     this.alert.addAlert('danger', 'Classification Already Exists');
+                } else {
+                    this.alert.addAlert('danger', 'Unexpected error adding classification: ' + err.status);
                 }
-                this.alert.addAlert('danger', 'Unexpected error adding classification: ' + err.status);
             });
     }
 }

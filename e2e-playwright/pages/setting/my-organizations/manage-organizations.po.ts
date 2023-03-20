@@ -23,7 +23,7 @@ export class ManageOrganizationsPo {
         return this.page.getByTestId('add-organization-submit')
     }
 
-    managedOrganizations(orgName) {
+    managedOrganizations(orgName: string) {
         return this.page.locator('[data-testid="managed-organization"]', {
             has: this.page.locator('[data-testid="organization-name"]', {
                 has: this.page.getByText(orgName, {exact: true})

@@ -24,10 +24,15 @@ $nlmColorFail: #a71d2a;
 $nlmColorFailLight: #ff1744;
 $nlmColorFailLightest: #ffe5e5;
 
-$nlmColorPrimaryDark: $nlmDarkBlue;
+$nlmColorPrimaryDarkest: $nlmDarkBlue;
+$nlmColorPrimaryDark: #365475;
 $nlmColorPrimary: $nlmBlue;
 $nlmColorPrimaryLight: $nlmLightBlue;
 $nlmColorPrimaryLightest: #e2f0ff;
+
+$nlmColorAlternateDarkest: #062B53;
+$nlmColorAlternateDark: #154374;
+$nlmColorAlternate: $nlmBlue;
 
 $nlmColorSecondaryDark: $nlmDarkGray;
 $nlmColorSecondary: #545454;
@@ -52,6 +57,7 @@ $navSecondColor: $navBackgroundColor;
 $navHeight: 132px; /*NAVIGATION_HEIGHT*/
 $theme-banner-background-color: $navColor;
 $theme-banner-link-color: $navBackgroundColor;
+$scrollbarWidth: 18px;
 
 /* Form Controls */
 $formInputTextColor: #495057;
@@ -65,5 +71,10 @@ $nlmBannerBackgroundColor: $nlmYellow;
 $nlmLineHeight: 1.25;
 $nlmQualifiedColor: $nlmGreen;
 $nlmRem: 16px;
+$nlmFontSizeMin: 12px;
 $nlmSelectedBackgroundColor: #f5f5f5;
 $nlmTextColor: $nlmColorSecondaryDark;
+
+@mixin colorNlmBlue {
+  filter: invert(.5) sepia(1) hue-rotate(170.5deg) contrast(1) saturate(3.05) brightness(0.588); // #fff to #326295
+}

@@ -21,6 +21,7 @@ import { TocService } from 'angular-aio-toc/toc.service';
 import { CopyDataElementModalComponent } from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
+import { fileInputToFormData } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -266,27 +267,19 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     }
 
     upload(elt: DataElement, event: Event) {
-        if (event.srcElement) {
-            const files = (event.srcElement as HTMLInputElement).files;
-            if (files && files.length > 0) {
-                const formData = new FormData();
-                /* tslint:disable */
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('uploadedFiles', files[i]);
-                }
-                /* tslint:enable */
-                formData.append('id', elt._id);
-                this.http.post<any>('/server/attachment/cde/add', formData).subscribe(r => {
-                    if (r.message) {
-                        this.alert.addAlert('info', r);
-                    } else {
-                        if (r) {
-                            this.eltLoadedFromOwnUpdate(r);
-                            this.alert.addAlert('success', 'Attachment added.');
-                        }
+        const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
+        if (formData) {
+            formData.append('id', elt._id);
+            this.http.post<any>('/server/attachment/cde/add', formData).subscribe(r => {
+                if (r.message) {
+                    this.alert.addAlert('info', r);
+                } else {
+                    if (r) {
+                        this.eltLoadedFromOwnUpdate(r);
+                        this.alert.addAlert('success', 'Attachment added.');
                     }
-                });
-            }
+                }
+            });
         }
     }
 

@@ -161,6 +161,14 @@ export function canEditCuratedItem(user: User | undefined, item: Item | undefine
     return hasPrivilegeForOrg(user, 'edit', item.stewardOrg.name);
 }
 
+export function canSubmissionReview(user: User | undefined) {
+    return hasRole(user, 'GovernanceGroup') || isOrgAuthority(user);
+}
+
+export function canSubmissionSubmit(user: User | undefined) {
+    return isNlmCurator(user) || canSubmissionReview(user);
+}
+
 /**
  * Token Roles (Old way) REMOVE and replace with individual privileges per use
  */
