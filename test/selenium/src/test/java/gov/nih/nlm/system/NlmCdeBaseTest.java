@@ -1041,7 +1041,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void goHome() {
         driver.get(baseUrl);
-        textPresent("Use Common Data Elements for More FAIR Research Data");
+        textPresent("Supports the NIH Data Management and Sharing Policy");
     }
 
     protected void goToCdeSearch() {
