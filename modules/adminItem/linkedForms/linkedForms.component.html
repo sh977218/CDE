@@ -1,3 +1,6 @@
+<div *ngIf="!forms || forms.length === 0">
+    <p style="padding: 0 24px">No Linked Forms for this CDE.</p>
+</div>
 <div style="padding: 0 30px;">
     <ng-container *ngIf="forms && forms.length > 0">
         <cde-summary-list id="linkedFormsAccordionList" [contentComponent]="formSummaryContentComponent"
