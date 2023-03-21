@@ -4,15 +4,15 @@
     <mat-sidenav-container class="container">
         <mat-sidenav #navDrawer class="noPrint" position="start" style="border: 0"
                      [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile" [disableClose]="!isMobile"
-                     fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 132" [fixedBottomGap]="isMobile ? 0 : 99">
+                     fixedInViewport="true" [fixedTopGap]="isMobile ? 110 : 132.5" [fixedBottomGap]="isMobile ? 0 : 99">
             <div *ngIf="isMobile; else aioToc" (click)="navDrawer.close()">
                 <aio-toc style="padding: 1rem 1rem 0 1rem"></aio-toc>
             </div>
             <ng-template #aioToc>
-                <aio-toc style="padding: 2rem 2rem 0 0"></aio-toc>
+                <aio-toc style="padding: 2rem 2rem 0 2rem"></aio-toc>
             </ng-template>
         </mat-sidenav>
-        <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '240px'">
+        <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '272px'">
             <main class="content">
                 <button class="button light" routerLink="/settings/articles" *ngIf="userService.isOrgAuthority()">
                     <mat-icon>edit</mat-icon>

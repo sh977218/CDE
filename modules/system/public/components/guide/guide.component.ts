@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
@@ -10,7 +10,6 @@ import { Article } from 'shared/article/article.model';
     selector: 'cde-guide',
     templateUrl: 'guide.component.html',
     styleUrls: ['guide.component.scss', '../../../../cde/dataElementView/view.style.scss'],
-    encapsulation: ViewEncapsulation.None,
     providers: [TocService],
 })
 export class GuideComponent implements OnDestroy, AfterViewInit {

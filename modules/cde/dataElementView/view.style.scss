@@ -1,5 +1,13 @@
 @import '../../theme';
 
+@media (min-width: $screenMd) {
+  .container, .container.mat-sidenav-container {
+    .content {
+      padding-left: 10px;
+    }
+  }
+}
+
 mat-sidenav {
   border: 0;
 

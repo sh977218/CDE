@@ -9,13 +9,13 @@ import {
     RouterStateSnapshot,
 } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { canClassify, isOrgCurator } from 'shared/security/authorizationShared';
+import { canClassify } from 'shared/security/authorizationShared';
 
 @Injectable()
 export class ClassifyGuard implements CanActivate, CanActivateChild, CanLoad {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
@@ -31,16 +31,19 @@ export class ClassifyGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkPermission(): Promise<boolean> {
-        return this.userService.then(user => {
-            if (canClassify(user)) {
-                return true;
-            } else {
-                this.router.navigate(['/home']);
+        return this.userService.then(
+            user => {
+                if (canClassify(user)) {
+                    return true;
+                } else {
+                    this.router.navigate(['/home']);
+                    return false;
+                }
+            },
+            () => {
+                this.router.navigate(['/login']);
                 return false;
             }
-        }, () => {
-            this.router.navigate(['/login']);
-            return false;
-        });
+        );
     }
 }

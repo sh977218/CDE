@@ -125,35 +125,18 @@ $scrollbarWidth: 18px;
     }
   }
 
-  @media (min-width: $screenSm) {
+  @media (min-width: $screenMd) {
     & {
-      max-width: $screenSm - 2 * $containerPadding - $scrollbarWidth;
+      max-width: 1000px + 2 * 2 * $containerPadding;
 
       .content {
-        padding: $containerPadding 0;
+        padding: 2 * $containerPadding;
       }
     }
     &.mat-sidenav-container {
-      max-width: 100%;
-    }
-  }
-  @media (min-width: $screenMd) {
-    &, &.mat-sidenav-container {
-      max-width: $screenMd - 4 * $containerPadding - $scrollbarWidth;
-
       .content {
-        padding: 2 * $containerPadding 0;
+        padding: 2 * $containerPadding 2 * $containerPadding 2 * $containerPadding 0;
       }
-    }
-  }
-  @media (min-width: $screenLg) {
-    &, &.mat-sidenav-container {
-      max-width: $screenLg - 4 * $containerPadding - $scrollbarWidth;
-    }
-  }
-  @media (min-width: $screenXl) {
-    &, &.mat-sidenav-container {
-      max-width: $screenXl - 4 * $containerPadding - $scrollbarWidth;
     }
   }
 }
