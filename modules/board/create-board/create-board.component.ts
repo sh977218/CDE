@@ -8,7 +8,7 @@ import { AlertService } from 'alert/alert.service';
 
 @Component({
     selector: 'cde-create-board',
-    templateUrl: './create-board.component.html'
+    templateUrl: './create-board.component.html',
 })
 export class CreateBoardComponent {
     @Input() elts: Item[] = [];
@@ -16,11 +16,12 @@ export class CreateBoardComponent {
     @Input() module;
     newBoard: any;
 
-    constructor(public dialog: MatDialog,
-                private alert: AlertService,
-                public userSvc: UserService,
-                public myBoardService: MyBoardsService) {
-    }
+    constructor(
+        public dialog: MatDialog,
+        private alert: AlertService,
+        public userSvc: UserService,
+        public myBoardService: MyBoardsService
+    ) {}
 
     openCreateNewBoardModal() {
         this.newBoard = {
@@ -28,19 +29,24 @@ export class CreateBoardComponent {
             pins: this.elts.map(e => ({
                 tinyId: e.tinyId,
                 name: e.designations[0].designation,
-                type: this.module
-            }))
+                type: this.module,
+            })),
         };
 
-        this.dialog.open(CreateBoardModalComponent, {
-            width: '800px',
-            data: this.newBoard,
-        }).afterClosed()
+        this.dialog
+            .open(CreateBoardModalComponent, {
+                width: '800px',
+                data: this.newBoard,
+            })
+            .afterClosed()
             .subscribe(newBoard => {
                 if (newBoard) {
-                    this.myBoardService.createBoard(newBoard).subscribe(() => {
-                        this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
-                    }, err => this.alert.httpErrorMessageAlert(err))
+                    this.myBoardService.createBoard(newBoard).subscribe(
+                        () => {
+                            this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
+                        },
+                        err => this.alert.httpErrorMessageAlert(err)
+                    );
                 }
             });
     }

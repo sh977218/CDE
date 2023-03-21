@@ -9,14 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 const appRoutes: Routes = [{ path: '', component: SearchPreferencesComponent }];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        RouterModule.forChild(appRoutes),
-
-        MatButtonModule,
-        MatIconModule,
-    ],
+    imports: [CommonModule, FormsModule, RouterModule.forChild(appRoutes), MatButtonModule, MatIconModule],
     declarations: [SearchPreferencesComponent],
     exports: [],
     providers: [],

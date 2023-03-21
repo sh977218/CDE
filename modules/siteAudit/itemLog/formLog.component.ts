@@ -6,7 +6,7 @@ import { EltLog } from 'shared/models.model';
 
 @Component({
     selector: 'cde-form-log',
-    templateUrl: './formLog.component.html'
+    templateUrl: './formLog.component.html',
 })
 export class FormLogComponent {
     records: EltLog[] = [];
@@ -24,19 +24,21 @@ export class FormLogComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<EltLog[]>('/server/form/getAuditLog', {
-            includeBatch: this.includeBatch,
-            skip: this.currentPage * this.pageSize,
-            limit: this.pageSize
-        }).subscribe(response => {
-            if (Array.isArray(response)) {
-                this.records = response;
-                this.records.forEach(rec => {
-                    if (rec.diff) {
-                        rec.diff.forEach(makeHumanReadable);
-                    }
-                });
-            }
-        });
+        this.http
+            .post<EltLog[]>('/server/form/getAuditLog', {
+                includeBatch: this.includeBatch,
+                skip: this.currentPage * this.pageSize,
+                limit: this.pageSize,
+            })
+            .subscribe(response => {
+                if (Array.isArray(response)) {
+                    this.records = response;
+                    this.records.forEach(rec => {
+                        if (rec.diff) {
+                            rec.diff.forEach(makeHumanReadable);
+                        }
+                    });
+                }
+            });
     }
 }

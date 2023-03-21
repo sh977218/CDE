@@ -5,14 +5,12 @@ import { isSiteAdmin } from 'shared/security/authorizationShared';
 
 @Component({
     selector: 'cde-profile',
-    templateUrl: 'profile.component.html'
+    templateUrl: 'profile.component.html',
 })
 export class ProfileComponent {
     isSiteAdmin = isSiteAdmin;
 
-    constructor(
-        public userService: UserService
-    ) {
+    constructor(public userService: UserService) {
         this.userService.reload();
     }
 

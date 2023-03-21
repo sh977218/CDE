@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
-type Concept = { name?: string, originId?: string, origin: string, type: string };
+type Concept = { name?: string; originId?: string; origin: string; type: string };
 
 @Component({
-    templateUrl: './add-concept-modal.component.html'
+    templateUrl: './add-concept-modal.component.html',
 })
 export class AddConceptModalComponent {
-    newConcept: Concept = {origin: 'LOINC', type: 'dec'};
+    newConcept: Concept = { origin: 'LOINC', type: 'dec' };
 }

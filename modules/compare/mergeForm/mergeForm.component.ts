@@ -5,26 +5,23 @@ import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merg
 
 @Component({
     selector: 'cde-merge-form',
-    templateUrl: './mergeForm.component.html'
+    templateUrl: './mergeForm.component.html',
 })
 export class MergeFormComponent {
     @Input() source!: CompareForm;
     @Input() destination!: CompareForm;
-    @Output() doneMergeForm = new EventEmitter<{ left: CompareForm, right: CompareForm }>();
+    @Output() doneMergeForm = new EventEmitter<{ left: CompareForm; right: CompareForm }>();
 
-    constructor(public dialog: MatDialog) {
-    }
-
+    constructor(public dialog: MatDialog) {}
 
     openMergeFormModal() {
         const data = {
             source: this.source,
-            destination: this.destination
-        }
-        const diaRef = this.dialog.open(MergeFormModalComponent, {width: '1000px', data});
+            destination: this.destination,
+        };
+        const diaRef = this.dialog.open(MergeFormModalComponent, { width: '1000px', data });
 
-        const sub = diaRef.componentInstance.doneMerge
-            .subscribe(result => this.doneMergeForm.emit(result))
+        const sub = diaRef.componentInstance.doneMerge.subscribe(result => this.doneMergeForm.emit(result));
         diaRef.afterClosed().subscribe(res => sub.unsubscribe());
     }
 }

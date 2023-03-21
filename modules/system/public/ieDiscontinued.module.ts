@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IeDiscontinuedComponent } from 'system/public/components/ieDiscontinued.component';
 
-const appRoutes: Routes = [
-    {path: '', component: IeDiscontinuedComponent},
-];
+const appRoutes: Routes = [{ path: '', component: IeDiscontinuedComponent }];
 
 @NgModule({
     imports: [
@@ -17,14 +15,9 @@ const appRoutes: Routes = [
 
         // internal
     ],
-    declarations: [
-        IeDiscontinuedComponent,
-    ],
-    exports: [
-    ],
-    providers: [
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    declarations: [IeDiscontinuedComponent],
+    exports: [],
+    providers: [],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class IeDiscontinuedModule {
-}
+export class IeDiscontinuedModule {}

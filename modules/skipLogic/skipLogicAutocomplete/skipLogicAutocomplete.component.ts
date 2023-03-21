@@ -1,16 +1,8 @@
 import { Component, Inject, ChangeDetectorRef } from '@angular/core';
-import {
-    UntypedFormGroup,
-    UntypedFormBuilder,
-    UntypedFormArray,
-} from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
 import { SkipLogicComponent } from 'skipLogic/skipLogic.component';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
-import {
-    MAT_DIALOG_DATA,
-    MatDialog,
-    MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 export class Token {
     answer: string = '';
@@ -41,16 +33,12 @@ export class SkipLogicAutocompleteComponent {
             priorQuestions: FormQuestion[];
         }
     ) {
-        this.labelOptions = data.priorQuestions.map(
-            q => q.label || q.question.cde.name || ''
-        );
+        this.labelOptions = data.priorQuestions.map(q => q.label || q.question.cde.name || '');
         this.skipLogicForm = this.formBuilder.group({
             items: this.formBuilder.array([]),
         });
 
-        const tokens = this.getTokens(
-            data.formElement.skipLogic && data.formElement.skipLogic.condition
-        );
+        const tokens = this.getTokens(data.formElement.skipLogic && data.formElement.skipLogic.condition);
         tokens.forEach(token => {
             if (token.label) {
                 const question = this.getQuestionByLabel(token.label);
@@ -99,8 +87,7 @@ export class SkipLogicAutocompleteComponent {
 
     private getQuestionByLabel(label: string) {
         const temp = this.data.priorQuestions.filter(
-            (q: FormQuestion) =>
-                (q.label ? q.label : q.question.cde.name) === label
+            (q: FormQuestion) => (q.label ? q.label : q.question.cde.name) === label
         );
         return temp.length === 1 ? temp[0] : undefined;
     }

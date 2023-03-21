@@ -21,17 +21,19 @@ const tabMap: Dictionary<string> = {
     ids_tab: 'ids',
     attachments_tab: 'attachments',
     history_tab: 'history',
-    rules_tab: 'derivationRules'
+    rules_tab: 'derivationRules',
 };
 
 @Component({
     selector: 'cde-discuss-area',
-    templateUrl: './discussArea.component.html'
+    templateUrl: './discussArea.component.html',
 })
 export class DiscussAreaComponent {
     @Input() set elt(e: Item | Board) {
         this.canManageComment = curry(canCommentManage)(this.userService.user)(e);
-        if (!this.newComment.element) { this.newComment.element = {eltType: 'cde', eltId: ''}; }
+        if (!this.newComment.element) {
+            this.newComment.element = { eltType: 'cde', eltId: '' };
+        }
         this.newComment.element.eltType = e.elementType;
         const id = e.elementType === 'cde' || e.elementType === 'form' ? e.tinyId : e.id;
         this.newComment.element.eltId = id;
@@ -56,16 +58,17 @@ export class DiscussAreaComponent {
     eltId!: string;
     newComment: Comment = new Comment();
 
-    constructor(private http: HttpClient,
-                public isAllowedModel: IsAllowedService,
-                public userService: UserService,
-                public alertService: AlertService) {
-    }
+    constructor(
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        public userService: UserService,
+        public alertService: AlertService
+    ) {}
 
     postNewComment() {
-        this.http.post('/server/discuss/postComment', this.newComment)
-            .subscribe(() => this.newComment.text = '',
-                err => this.alertService.addAlert('danger', err.error));
+        this.http.post('/server/discuss/postComment', this.newComment).subscribe(
+            () => (this.newComment.text = ''),
+            err => this.alertService.addAlert('danger', err.error)
+        );
     }
-
 }

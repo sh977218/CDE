@@ -16,11 +16,7 @@ export class ListSortComponent {
 
     pinModal: any;
 
-    constructor(
-        private alert: AlertService,
-        private boardListService: BoardListService,
-        private http: HttpClient,
-    ) {}
+    constructor(private alert: AlertService, private boardListService: BoardListService, private http: HttpClient) {}
 
     moveUp(id: string) {
         this.movePin('/server/board/pinMoveUp', id);
@@ -35,12 +31,17 @@ export class ListSortComponent {
     }
 
     movePin(endPoint: string, pinId: string) {
-        this.http.post(endPoint, {boardId: this.boardListService.board.id, tinyId: pinId}, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Saved');
-            this.boardListService.reload.emit();
-        }, err => {
-            this.alert.httpErrorMessageAlert(err);
-            this.boardListService.reload.emit();
-        });
+        this.http
+            .post(endPoint, { boardId: this.boardListService.board.id, tinyId: pinId }, { responseType: 'text' })
+            .subscribe(
+                () => {
+                    this.alert.addAlert('success', 'Saved');
+                    this.boardListService.reload.emit();
+                },
+                err => {
+                    this.alert.httpErrorMessageAlert(err);
+                    this.boardListService.reload.emit();
+                }
+            );
     }
 }

@@ -15,10 +15,10 @@ type NewQuestion = FormQuestionDraft['question'] & {
     cde: {
         newCde: FormQuestionDraft['question']['cde']['newCde'];
     };
-}
+};
 
 @Component({
-    templateUrl: './saveModal.component.html'
+    templateUrl: './saveModal.component.html',
 })
 export class SaveModalComponent {
     @Output() eltChange = new EventEmitter();
@@ -30,32 +30,34 @@ export class SaveModalComponent {
     versionNumber$: Subject<string> = new Subject<string>();
     onChangeNote$: Subject<string> = new Subject<string>();
 
-    constructor(public http: HttpClient,
-                @Inject(MAT_DIALOG_DATA) public elt: any,
-                public dialog: MatDialog,
-                private alert: AlertService) {
+    constructor(
+        public http: HttpClient,
+        @Inject(MAT_DIALOG_DATA) public elt: any,
+        public dialog: MatDialog,
+        private alert: AlertService
+    ) {
         this.newVersionVersionUnicity();
-        if (this.elt.elementType === 'form' && (this.elt.isDraft)) {
-            iterateFormElements(this.elt.elt, {
-                async: true,
-                questionCb: (fe: FormQuestionDraft, cb?: Cb) => {
-                    if (fe.question.cde.newCde) {
-                        this.newQuestions.push(fe.question as NewQuestion);
-                        if (cb) {
+        if (this.elt.elementType === 'form' && this.elt.isDraft) {
+            iterateFormElements(
+                this.elt.elt,
+                {
+                    async: true,
+                    questionCb: (fe: FormQuestionDraft, cb?: Cb) => {
+                        if (fe.question.cde.newCde) {
+                            this.newQuestions.push(fe.question as NewQuestion);
+                            if (cb) {
+                                cb();
+                            }
+                        } else if (cb) {
                             cb();
                         }
-                    } else if (cb) {
-                        cb();
-                    }
-                }
-            }, () => {
-            });
+                    },
+                },
+                () => {}
+            );
         }
 
-        this.versionNumber$.pipe(
-            debounceTime(1000),
-            distinctUntilChanged(),
-        ).subscribe(versionNumber => {
+        this.versionNumber$.pipe(debounceTime(1000), distinctUntilChanged()).subscribe(versionNumber => {
             this.newVersionVersionUnicity(versionNumber);
         });
     }
@@ -72,17 +74,19 @@ export class SaveModalComponent {
         if (!newVersion) {
             newVersion = this.elt.version;
         }
-        this.http.get(ITEM_MAP[this.elt.elementType].api + this.elt.tinyId + '/latestVersion/', {responseType: 'text'}).subscribe(
-            (res: string) => {
-                if (res && newVersion && isEqual(res, newVersion)) {
-                    this.duplicatedVersion = true;
-                } else {
-                    this.duplicatedVersion = false;
-                    this.overrideVersion = false;
-                }
-                this.eltChange.emit();
-            },
-            (err: any) => this.alert.httpErrorMessageAlert(err)
-        );
+        this.http
+            .get(ITEM_MAP[this.elt.elementType].api + this.elt.tinyId + '/latestVersion/', { responseType: 'text' })
+            .subscribe(
+                (res: string) => {
+                    if (res && newVersion && isEqual(res, newVersion)) {
+                        this.duplicatedVersion = true;
+                    } else {
+                        this.duplicatedVersion = false;
+                        this.overrideVersion = false;
+                    }
+                    this.eltChange.emit();
+                },
+                (err: any) => this.alert.httpErrorMessageAlert(err)
+            );
     }
 }

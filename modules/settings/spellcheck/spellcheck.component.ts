@@ -5,50 +5,50 @@ import { AlertService } from 'alert/alert.service';
 import { ValidationWhitelist } from 'shared/models.model';
 import { PageEvent } from '@angular/material/paginator';
 import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list-modal/edit-white-list-modal.component';
-import {
-    DeleteWhiteListModalComponent
-} from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
+import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { remove as _remove } from 'lodash';
 
-type SpellingErrors = Record<string, {
-    row: number,
-    name: string,
-    error: string,
-    field: string
-}[]>
+type SpellingErrors = Record<
+    string,
+    {
+        row: number;
+        name: string;
+        error: string;
+        field: string;
+    }[]
+>;
 
 @Component({
     selector: 'cde-spellcheck',
     templateUrl: './spellcheck.component.html',
-    styles: [`
-      .checkBoxCell {
-        cursor: pointer;
-        text-align: center;
-        vertical-align: middle;
-      }
-    `]
+    styles: [
+        `
+            .checkBoxCell {
+                cursor: pointer;
+                text-align: center;
+                vertical-align: middle;
+            }
+        `,
+    ],
 })
 export class SpellCheckComponent {
-
     whiteList: ValidationWhitelist[] = [];
     checkingFile = false;
     retrievingWhitelists = false;
     updatingWhitelists = false;
     fileErrors: string[] = [];
     selectedErrors: Set<string> = new Set();
-    spellingErrors: SpellingErrors = {}
-    showAllTermErrors: Record<string, boolean> = {}
+    spellingErrors: SpellingErrors = {};
+    showAllTermErrors: Record<string, boolean> = {};
     errorLimit = 5;
-    currentErrorPage: string [] = [];
+    currentErrorPage: string[] = [];
     pageIndex = 0;
     pageSize = 10;
 
     selectedWhiteList: ValidationWhitelist;
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public dialog: MatDialog) {
+    constructor(private alert: AlertService, private http: HttpClient, public dialog: MatDialog) {
         this.getWhiteLists();
     }
 
@@ -61,14 +61,15 @@ export class SpellCheckComponent {
     }
 
     getWhiteLists() {
-        this.http.get<ValidationWhitelist[]>('/server/loader/whitelists')
-            .subscribe(res => this.whiteList = res,
-                error => this.alert.httpErrorMessageAlert(error));
+        this.http.get<ValidationWhitelist[]>('/server/loader/whitelists').subscribe(
+            res => (this.whiteList = res),
+            error => this.alert.httpErrorMessageAlert(error)
+        );
     }
 
     whiteListSelectedErrors() {
         if (this.selectedErrors.size > 0) {
-            this.selectedWhiteList.terms = this.selectedWhiteList.terms.concat(Array.from(this.selectedErrors))
+            this.selectedWhiteList.terms = this.selectedWhiteList.terms.concat(Array.from(this.selectedErrors));
             this.updateWhiteList(this.selectedWhiteList, res => {
                 this.selectedErrors.clear();
                 if (this.getMisspelledTerms().length > 0) {
@@ -82,13 +83,15 @@ export class SpellCheckComponent {
     }
 
     updateWhiteList(whiteList, cb?) {
-        this.http.post<any>('/server/loader/updatewhitelist', whiteList)
-            .subscribe(res => {
+        this.http.post<any>('/server/loader/updatewhitelist', whiteList).subscribe(
+            res => {
                 if (res) {
                     this.alert.addAlert('success', 'Whitelist updated');
                 }
                 if (cb) cb(res);
-            }, err => this.alert.httpErrorMessageAlert(err));
+            },
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     spellcheckCSV(event: Event) {
@@ -96,7 +99,7 @@ export class SpellCheckComponent {
         if (files && files.length > 0 && this.selectedWhiteList) {
             const formData = new FormData();
             formData.append('uploadedFile', files[0]);
-            formData.append('whitelist', this.selectedWhiteList.collectionName)
+            formData.append('whitelist', this.selectedWhiteList.collectionName);
             this.checkingFile = true;
             this.http.post<any>('/server/loader/spellcheckCSVLoad', formData).subscribe(
                 response => {
@@ -127,7 +130,8 @@ export class SpellCheckComponent {
     }
 
     openAddWhitelistModal() {
-        this.dialog.open(AddWhiteListModalComponent, {width: '800px'})
+        this.dialog
+            .open(AddWhiteListModalComponent, { width: '800px' })
             .afterClosed()
             .subscribe(newWhiteList => {
                 if (newWhiteList) {
@@ -140,7 +144,8 @@ export class SpellCheckComponent {
 
     openCopyWhitelistModal() {
         const data = this.selectedWhiteList;
-        this.dialog.open(AddWhiteListModalComponent, {width: '800px', data})
+        this.dialog
+            .open(AddWhiteListModalComponent, { width: '800px', data })
             .afterClosed()
             .subscribe(newWhiteList => {
                 if (newWhiteList) {
@@ -151,14 +156,15 @@ export class SpellCheckComponent {
     }
 
     addNewWhiteList(newWhiteList) {
-        this.http.post('/server/loader/addNewWhitelist', newWhiteList, {responseType: 'text'})
-            .subscribe(() => this.alert.addAlert('success', 'New Whitelist added'),
-                () => this.alert.addAlert('danger', 'Cannot create new whitelist. Does it already exist?'));
-
+        this.http.post('/server/loader/addNewWhitelist', newWhiteList, { responseType: 'text' }).subscribe(
+            () => this.alert.addAlert('success', 'New Whitelist added'),
+            () => this.alert.addAlert('danger', 'Cannot create new whitelist. Does it already exist?')
+        );
     }
 
     openEditWhitelistModal() {
-        this.dialog.open(EditWhiteListModalComponent, {width: '800px', data: this.selectedWhiteList})
+        this.dialog
+            .open(EditWhiteListModalComponent, { width: '800px', data: this.selectedWhiteList })
             .afterClosed()
             .subscribe(res => {
                 if (res) {
@@ -168,7 +174,8 @@ export class SpellCheckComponent {
     }
 
     openDeleteWhitelistModal() {
-        this.dialog.open(DeleteWhiteListModalComponent, {data: this.selectedWhiteList})
+        this.dialog
+            .open(DeleteWhiteListModalComponent, { data: this.selectedWhiteList })
             .afterClosed()
             .subscribe(res => {
                 if (res) {
@@ -180,12 +187,13 @@ export class SpellCheckComponent {
     }
 
     deleteWhiteList(collectionName) {
-        this.http.delete(`/server/loader/deletewhitelist/${collectionName}`)
-            .subscribe(() => this.alert.addAlert('success', 'Whitelist deleted'),
-                err => this.alert.addAlert('danger', `Could not remove whitelist. ${err} `))
+        this.http.delete(`/server/loader/deletewhitelist/${collectionName}`).subscribe(
+            () => this.alert.addAlert('success', 'Whitelist deleted'),
+            err => this.alert.addAlert('danger', `Could not remove whitelist. ${err} `)
+        );
     }
 
-    getMisspelledTerms(): string [] {
+    getMisspelledTerms(): string[] {
         return Object.keys(this.spellingErrors).sort();
     }
 

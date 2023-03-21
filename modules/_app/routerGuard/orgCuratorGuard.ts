@@ -15,7 +15,7 @@ import { isOrgCurator } from 'shared/security/authorizationShared';
 export class OrgCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
@@ -31,16 +31,19 @@ export class OrgCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkLogin(): Promise<boolean> {
-        return this.userService.then(user => {
-            if (isOrgCurator(user)) {
-                return true;
-            } else {
-                this.router.navigate(['/home']);
+        return this.userService.then(
+            user => {
+                if (isOrgCurator(user)) {
+                    return true;
+                } else {
+                    this.router.navigate(['/home']);
+                    return false;
+                }
+            },
+            () => {
+                this.router.navigate(['/login']);
                 return false;
             }
-        }, () => {
-            this.router.navigate(['/login']);
-            return false;
-        });
+        );
     }
 }

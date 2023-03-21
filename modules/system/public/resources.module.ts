@@ -10,9 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
-const appRoutes: Routes = [
-    {path: '', resolve: {resource: ResourceResolve}, component: ResourcesComponent},
-];
+const appRoutes: Routes = [{ path: '', resolve: { resource: ResourceResolve }, component: ResourcesComponent }];
 
 @NgModule({
     imports: [
@@ -24,13 +22,9 @@ const appRoutes: Routes = [
         MatIconModule,
         MatListModule,
     ],
-    declarations: [
-        ResourcesComponent,
-        ResourcesRssComponent
-    ],
+    declarations: [ResourcesComponent, ResourcesRssComponent],
     exports: [],
     providers: [ResourceResolve],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ResourcesModule {
-}
+export class ResourcesModule {}

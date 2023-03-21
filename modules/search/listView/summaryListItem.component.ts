@@ -1,8 +1,17 @@
 import {
-    AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, ComponentRef, Directive, EventEmitter, Input,
-    OnChanges, Output,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ComponentFactoryResolver,
+    ComponentRef,
+    Directive,
+    EventEmitter,
+    Input,
+    OnChanges,
+    Output,
     SimpleChanges,
-    ViewChild, ViewContainerRef
+    ViewChild,
+    ViewContainerRef,
 } from '@angular/core';
 
 import { Elt } from 'shared/models.model';
@@ -31,19 +40,22 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
     @Input() eltIndex!: number;
     @Input() contentComponent: any;
     @Output() selectChange = new EventEmitter<string>();
-    @ViewChild(SummaryPlaceholderDirective, {static: true}) cHost!: SummaryPlaceholderDirective;
+    @ViewChild(SummaryPlaceholderDirective, { static: true }) cHost!: SummaryPlaceholderDirective;
     componentRef!: ComponentRef<any>;
 
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
-                private cdr: ChangeDetectorRef) {}
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver, private cdr: ChangeDetectorRef) {}
 
     ngAfterViewInit() {
         this.loadComponent();
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.elt && this.componentRef) { (this.componentRef.instance as SummaryComponent).elt = this.elt; }
-        if (changes.eltIndex && this.componentRef) { (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex; }
+        if (changes.elt && this.componentRef) {
+            (this.componentRef.instance as SummaryComponent).elt = this.elt;
+        }
+        if (changes.eltIndex && this.componentRef) {
+            (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex;
+        }
     }
 
     loadComponent() {
@@ -55,7 +67,9 @@ export class SummaryListItemComponent implements AfterViewInit, OnChanges {
         this.componentRef = viewContainerRef.createComponent(componentFactory);
         (this.componentRef.instance as SummaryComponent).elt = this.elt;
         (this.componentRef.instance as SummaryComponent).eltIndex = this.eltIndex;
-        (this.componentRef.instance as SummaryComponent).selectChange.subscribe((event: string) => this.selectChange.emit(event));
+        (this.componentRef.instance as SummaryComponent).selectChange.subscribe((event: string) =>
+            this.selectChange.emit(event)
+        );
         this.cdr.detectChanges();
     }
 }

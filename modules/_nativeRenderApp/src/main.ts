@@ -7,4 +7,6 @@ if (environment.production) {
     enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(NativeRenderAppModule).catch(err => console.error(err));
+platformBrowserDynamic()
+    .bootstrapModule(NativeRenderAppModule)
+    .catch(err => console.error(err));

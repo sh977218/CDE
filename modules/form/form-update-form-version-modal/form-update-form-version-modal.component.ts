@@ -6,12 +6,12 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { isEqual } from 'lodash';
 
 @Component({
-    templateUrl: './form-update-form-version-modal.component.html'
+    templateUrl: './form-update-form-version-modal.component.html',
 })
 export class FormUpdateFormVersionModalComponent {
     updateFormVersion: any = {
         currentSection: {},
-        newSection: {}
+        newSection: {},
     };
 
     constructor(@Inject(MAT_DIALOG_DATA) public formSection: FormInForm) {
@@ -23,7 +23,7 @@ export class FormUpdateFormVersionModalComponent {
             const oldVersion = formSection.inForm.form.version ? formSection.inForm.form.version : '';
             fetchForm(formSection.inForm.form.tinyId, oldVersion).then(oldForm => {
                 this.openUpdateFormVersionMerge(convertFormToSection(newForm), formSection, newForm, oldForm);
-            })
+            });
         });
     }
 
@@ -40,5 +40,4 @@ export class FormUpdateFormVersionModalComponent {
         this.updateFormVersion.currentSection = currentSection;
         this.updateFormVersion.newSection = newSection;
     }
-
 }

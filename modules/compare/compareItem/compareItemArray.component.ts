@@ -55,12 +55,12 @@ const compareArrayOption: any[] = [
         },
         property: 'referenceDocuments',
         data: [
-            {label: 'Title', property: 'title'},
-            {label: 'URI', property: 'uri'},
-            {label: 'Provider Org', property: 'providerOrg'},
-            {label: 'Language Code', property: 'languageCode'},
-            {label: 'Document', property: 'document'}
-        ]
+            { label: 'Title', property: 'title' },
+            { label: 'URI', property: 'uri' },
+            { label: 'Provider Org', property: 'providerOrg' },
+            { label: 'Language Code', property: 'languageCode' },
+            { label: 'Document', property: 'document' },
+        ],
     },
     {
         label: 'Designation',
@@ -84,9 +84,9 @@ const compareArrayOption: any[] = [
         },
         property: 'designations',
         data: [
-            {label: 'Designation', property: 'designation'},
-            {label: 'Tags', property: 'tags', array: true}
-        ]
+            { label: 'Designation', property: 'designation' },
+            { label: 'Tags', property: 'tags', array: true },
+        ],
     },
     {
         label: 'Definition',
@@ -116,10 +116,10 @@ const compareArrayOption: any[] = [
         },
         property: 'definitions',
         data: [
-            {label: 'Definition', property: 'definition'},
-            {label: 'Format', property: 'definitionFormat'},
-            {label: 'Tags', property: 'tags', array: true}
-        ]
+            { label: 'Definition', property: 'definition' },
+            { label: 'Format', property: 'definitionFormat' },
+            { label: 'Tags', property: 'tags', array: true },
+        ],
     },
     {
         label: 'Properties',
@@ -143,9 +143,9 @@ const compareArrayOption: any[] = [
         },
         property: 'properties',
         data: [
-            {label: 'Key', property: 'key'},
-            {label: 'Value', property: 'value'}
-        ]
+            { label: 'Key', property: 'key' },
+            { label: 'Value', property: 'value' },
+        ],
     },
     {
         label: 'Identifiers',
@@ -169,12 +169,12 @@ const compareArrayOption: any[] = [
         },
         property: 'ids',
         data: [
-            {label: 'Source', property: 'source'},
-            {label: 'ID', property: 'id'},
-            {label: 'Version', property: 'version'}
+            { label: 'Source', property: 'source' },
+            { label: 'ID', property: 'id' },
+            { label: 'Version', property: 'version' },
         ],
-        diff: []
-    }
+        diff: [],
+    },
 ];
 
 const cdeCompareArrayOption: any[] = [
@@ -206,12 +206,12 @@ const cdeCompareArrayOption: any[] = [
         },
         property: 'valueDomain.permissibleValues',
         data: [
-            {label: 'Value', property: 'permissibleValue'},
-            {label: 'Code Name', property: 'valueMeaningName'},
-            {label: 'Code', property: 'valueMeaningCode'},
-            {label: 'Code System', property: 'codeSystemName'},
-            {label: 'Code Description', property: 'valueMeaningDefinition'}
-        ]
+            { label: 'Value', property: 'permissibleValue' },
+            { label: 'Code Name', property: 'valueMeaningName' },
+            { label: 'Code', property: 'valueMeaningCode' },
+            { label: 'Code System', property: 'codeSystemName' },
+            { label: 'Code Description', property: 'valueMeaningDefinition' },
+        ],
     },
     {
         label: 'Concepts',
@@ -226,12 +226,12 @@ const cdeCompareArrayOption: any[] = [
         },
         property: 'concepts',
         data: [
-            {label: 'Name', property: 'name'},
-            {label: 'Origin', property: 'origin'},
-            {label: 'Origin Id', property: 'originId'}
+            { label: 'Name', property: 'name' },
+            { label: 'Origin', property: 'origin' },
+            { label: 'Origin Id', property: 'originId' },
         ],
-        diff: []
-    }
+        diff: [],
+    },
 ];
 const formCompareArrayOption: any[] = [
     {
@@ -270,8 +270,11 @@ const formCompareArrayOption: any[] = [
                         a.display = true;
                         b.display = true;
                     }
-                    if (a.question.datatype === 'Value List' && b.question.datatype === 'Value List'
-                        && !isEqual(a.question.answers, b.question.answers)) {
+                    if (
+                        a.question.datatype === 'Value List' &&
+                        b.question.datatype === 'Value List' &&
+                        !isEqual(a.question.answers, b.question.answers)
+                    ) {
                         a.diff.add('question.answers');
                         b.diff.add('question.answers');
                         a.question.answers = JSON.stringify(a.question.answers);
@@ -282,7 +285,10 @@ const formCompareArrayOption: any[] = [
                 }
                 return result;
             }
-            if ((a.elementType === 'form' && b.elementType === 'form') || (a.elementType === 'section' && b.elementType === 'section')) {
+            if (
+                (a.elementType === 'form' && b.elementType === 'form') ||
+                (a.elementType === 'section' && b.elementType === 'section')
+            ) {
                 if (isEmpty(a.diff)) {
                     a.diff = new Set<string>();
                 }
@@ -295,8 +301,12 @@ const formCompareArrayOption: any[] = [
                     result = isEqual(a.inForm.form.tinyId, b.inForm.form.tinyId);
                 }
                 if (result) {
-                    if (!isEqual(a.instructions && a.instructions.value ? a.instructions.value : '',
-                        b.instructions && b.instructions.value ? b.instructions.value : '')) {
+                    if (
+                        !isEqual(
+                            a.instructions && a.instructions.value ? a.instructions.value : '',
+                            b.instructions && b.instructions.value ? b.instructions.value : ''
+                        )
+                    ) {
                         a.diff.add('instructions.value');
                         b.diff.add('instructions.value');
                         a.display = true;
@@ -321,28 +331,33 @@ const formCompareArrayOption: any[] = [
         },
         property: 'questions',
         data: [
-            {label: 'Label', property: 'label'},
-            {label: 'Element Type', property: 'elementType'},
-            {label: 'Form', property: 'inForm.form.tinyId', url: '/formView?tinyId='},
-            {label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId='},
-            {label: 'Unit of Measure', property: 'question.unitsOfMeasure'},
-            {label: 'repeat', property: 'repeat'},
-            {label: 'Skip Logic', property: 'skipLogic.condition'},
-            {label: 'Instruction', property: 'instructions.value'},
-            {label: 'Answer', property: 'question.answers', array: true}
+            { label: 'Label', property: 'label' },
+            { label: 'Element Type', property: 'elementType' },
+            { label: 'Form', property: 'inForm.form.tinyId', url: '/formView?tinyId=' },
+            { label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId=' },
+            { label: 'Unit of Measure', property: 'question.unitsOfMeasure' },
+            { label: 'repeat', property: 'repeat' },
+            { label: 'Skip Logic', property: 'skipLogic.condition' },
+            { label: 'Instruction', property: 'instructions.value' },
+            { label: 'Answer', property: 'question.answers', array: true },
         ],
-        diff: new Set<string>()
-    }
+        diff: new Set<string>(),
+    },
 ];
 
 @Component({
     selector: 'cde-compare-item-array',
-    templateUrl: './compareItemArray.component.html'
+    templateUrl: './compareItemArray.component.html',
 })
 export class CompareItemArrayComponent implements OnInit {
     @Input() older!: ComparedDe | ComparedForm;
     @Input() newer!: ComparedDe | ComparedForm;
-    @Input() filter!: { add: { select: any }, edited: { select: any }, remove: { select: any }, reorder: { select: any } };
+    @Input() filter!: {
+        add: { select: any };
+        edited: { select: any };
+        remove: { select: any };
+        reorder: { select: any };
+    };
     options: any[] = [];
     _get = get;
     _isEmpty = isEmpty;
@@ -362,10 +377,10 @@ export class CompareItemArrayComponent implements OnInit {
                 this.older.objectClass = new Concepts();
             }
             if (!this.newer.dataElementConcept) {
-                this.newer.dataElementConcept = {concepts: []};
+                this.newer.dataElementConcept = { concepts: [] };
             }
             if (!this.older.dataElementConcept) {
-                this.older.dataElementConcept = {concepts: []};
+                this.older.dataElementConcept = { concepts: [] };
             }
             this.older.concepts = this.older.property.concepts
                 .concat(this.older.objectClass.concepts)
@@ -430,11 +445,13 @@ function doCompareArrayImpl(currentArray: any[], priorArray: any[], option: any)
             temp.currentElt = b;
             temp.priorElt = a;
             const diff = new Set();
-            Array.from(a.diff).concat(Array.from(b.diff)).forEach(d => {
-                if (!isEmpty(d)) {
-                    diff.add(d);
-                }
-            });
+            Array.from(a.diff)
+                .concat(Array.from(b.diff))
+                .forEach(d => {
+                    if (!isEmpty(d)) {
+                        diff.add(d);
+                    }
+                });
             temp.diff = Array.from(diff);
             temp.edit = !isEmpty(diff);
             if (temp.edit) {

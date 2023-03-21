@@ -7,15 +7,14 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class ResourceResolve implements Resolve<Observable<Article>> {
-    constructor(private router: Router,
-                public http: HttpClient) {
-    }
+    constructor(private router: Router, public http: HttpClient) {}
 
     resolve() {
-        return this.http.get<Article>('/server/article/resourcesAndFeed')
-            .pipe(catchError(() => {
+        return this.http.get<Article>('/server/article/resourcesAndFeed').pipe(
+            catchError(() => {
                 this.router.navigate(['/404']);
                 return EMPTY;
-            }));
+            })
+        );
     }
 }

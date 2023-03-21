@@ -2,10 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-    templateUrl: './copy-data-element-modal.component.html'
+    templateUrl: './copy-data-element-modal.component.html',
 })
 export class CopyDataElementModalComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public eltCopy,
-                public dialogRef: MatDialogRef<CopyDataElementModalComponent>) {
-    }
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public eltCopy,
+        public dialogRef: MatDialogRef<CopyDataElementModalComponent>
+    ) {}
 }

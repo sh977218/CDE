@@ -1,22 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    ViewChild,
-    OnInit,
-    TemplateRef,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import {
-    AdministrativeStatus,
-    administrativeStatuses,
-    Item,
-    RegistrationState,
-} from 'shared/models.model';
+import { AdministrativeStatus, administrativeStatuses, Item, RegistrationState } from 'shared/models.model';
 import { RegistrationStatusModalComponent } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 
 @Component({
@@ -46,8 +33,7 @@ export class RegistrationComponent implements OnInit {
     ngOnInit() {
         this.newState = {
             registrationStatus: this.elt.registrationState.registrationStatus,
-            administrativeStatus:
-                this.elt.registrationState.administrativeStatus,
+            administrativeStatus: this.elt.registrationState.administrativeStatus,
         };
     }
 

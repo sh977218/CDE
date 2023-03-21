@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-designation',
-    templateUrl: './newDesignation.component.html'
+    templateUrl: './newDesignation.component.html',
 })
 export class NewDesignationComponent {
     @Input() tags = [];
@@ -14,5 +14,4 @@ export class NewDesignationComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.tags = data.tags;
     }
-
 }

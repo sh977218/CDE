@@ -8,8 +8,7 @@ export class NotificationService {
     serverErrorNumber = 0;
     clientErrorNumber = 0;
 
-    constructor(@Inject(forwardRef(() => HttpClient)) public http: HttpClient) {
-    }
+    constructor(@Inject(forwardRef(() => HttpClient)) public http: HttpClient) {}
 
     toggle() {
         this.show = !this.show;

@@ -17,8 +17,7 @@ export class AttachmentsComponent {
     constructor(public userService: UserService) {}
 
     copyUrl(attachment: Attachment) {
-        let url =
-            window.location.origin + '/server/system/data/' + attachment.fileid;
+        let url = window.location.origin + '/server/system/data/' + attachment.fileid;
         if (attachment.filetype && attachment.filetype.indexOf('video') > -1) {
             url += '.mp4';
         }

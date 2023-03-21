@@ -3,7 +3,7 @@ import { interruptEvent, openUrl } from 'non-core/browser';
 import { Elt } from 'shared/models.model';
 
 @Component({
-    templateUrl: './accordionListHeading.component.html'
+    templateUrl: './accordionListHeading.component.html',
 })
 export class AccordionListHeadingComponent {
     @Input() addMode: any;

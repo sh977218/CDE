@@ -13,29 +13,29 @@ export class NewPermissibleValueModalComponent {
     umlsTerms: UmlsTerm[] = [];
     private searchTerms = new Subject<string>();
 
-    constructor(public http: HttpClient,) {
-        this.searchTerms.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            switchMap(term => term
-                ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(
-                    catchError(() => EMPTY)
+    constructor(public http: HttpClient) {
+        this.searchTerms
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                switchMap(term =>
+                    term
+                        ? this.http.get('/server/uts/searchUmls?searchTerm=' + term).pipe(catchError(() => EMPTY))
+                        : EMPTY
                 )
-                : EMPTY
             )
-        ).subscribe((res: any) => {
-            if (res?.result?.results) {
-                this.umlsTerms = res.result.results;
-            } else {
-                this.umlsTerms = [];
-            }
-        });
+            .subscribe((res: any) => {
+                if (res?.result?.results) {
+                    this.umlsTerms = res.result.results;
+                } else {
+                    this.umlsTerms = [];
+                }
+            });
     }
 
     lookupUmls() {
         this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
     }
-
 
     selectFromUmls(term: UmlsTerm) {
         this.newPermissibleValue.valueMeaningName = term.name;

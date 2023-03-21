@@ -5,6 +5,5 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     templateUrl: './board-overview-delete-modal.component.html',
 })
 export class BoardOverviewDeleteModalComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public board) {
-    }
+    constructor(@Inject(MAT_DIALOG_DATA) public board) {}
 }

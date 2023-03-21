@@ -14,10 +14,8 @@ export class ImportPermissibleValueModalComponent {
         excludeOrgs: [],
         excludeAllOrgs: false,
         regStatuses: [],
-        resultPerPage: 20
+        resultPerPage: 20,
     };
 
-    constructor(public dialogRef: MatDialogRef<ImportPermissibleValueModalComponent>) {
-    }
-
+    constructor(public dialogRef: MatDialogRef<ImportPermissibleValueModalComponent>) {}
 }

@@ -40,17 +40,9 @@ export class LinkedFormModalComponent {
         } else if (this.forms.length === 1) {
             return 'There is 1 form that uses this ' + this.elt.elementType;
         } else if (this.forms.length >= 20) {
-            return (
-                'There are more than 20 forms that use this ' +
-                this.elt.elementType
-            );
+            return 'There are more than 20 forms that use this ' + this.elt.elementType;
         } else {
-            return (
-                'There are ' +
-                this.forms.length +
-                ' forms that use this ' +
-                this.elt.elementType
-            );
+            return 'There are ' + this.forms.length + ' forms that use this ' + this.elt.elementType;
         }
     }
 }

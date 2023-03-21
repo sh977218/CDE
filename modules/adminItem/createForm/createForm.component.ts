@@ -18,17 +18,19 @@ import { ClassificationClassified, ClassificationHistory, Definition, Designatio
 @Component({
     selector: 'cde-create-form',
     templateUrl: './createForm.component.html',
-    styles: [`
-        label {
-            font-weight: 700;
-        }
-    `]
+    styles: [
+        `
+            label {
+                font-weight: 700;
+            }
+        `,
+    ],
 })
 export class CreateFormComponent implements OnInit {
     @Input() elt!: CdeForm;
     @Output() done = new EventEmitter();
     @Output() eltChange = new EventEmitter();
-    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
+    @ViewChild('classifyItemComponent', { static: true }) classifyItemComponent!: ClassifyItemComponent;
     @ViewChildren(TreeComponent) classificationView!: QueryList<TreeComponent>;
 
     ngOnInit() {
@@ -40,19 +42,21 @@ export class CreateFormComponent implements OnInit {
         }
     }
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public isAllowedModel: IsAllowedService,
-                private localStorageService: LocalStorageService,
-                private location: Location,
-                private router: Router, public userService: UserService) {
-    }
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        private localStorageService: LocalStorageService,
+        private location: Location,
+        private router: Router,
+        public userService: UserService
+    ) {}
 
     afterClassified(event: ClassificationClassified) {
         const postBody = {
             categories: event.classificationArray,
             eltId: this.elt._id,
-            orgName: event.selectedOrg
+            orgName: event.selectedOrg,
         };
         classifyItem(this.elt, event.selectedOrg, event.classificationArray);
         this.updateClassificationLocalStorage(postBody);
@@ -67,14 +71,15 @@ export class CreateFormComponent implements OnInit {
     }
 
     createForm() {
-        this.http.post<CdeForm>('/server/form', this.elt)
-            .subscribe(res => {
-                    this.router.navigate(['/formView'], {queryParams: {tinyId: res.tinyId}});
-                    if (this.done) {
-                        this.done.emit();
-                    }
-                },
-                err => this.alert.httpErrorMessageAlert(err));
+        this.http.post<CdeForm>('/server/form', this.elt).subscribe(
+            res => {
+                this.router.navigate(['/formView'], { queryParams: { tinyId: res.tinyId } });
+                if (this.done) {
+                    this.done.emit();
+                }
+            },
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     confirmDelete(event: DeletedNodeEvent) {

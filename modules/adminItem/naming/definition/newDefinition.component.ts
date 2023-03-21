@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-new-definition',
-    templateUrl: './newDefinition.component.html'
+    templateUrl: './newDefinition.component.html',
 })
 export class NewDefinitionComponent {
     @Input() tags = [];
@@ -14,5 +14,4 @@ export class NewDefinitionComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.tags = data.tags;
     }
-
 }

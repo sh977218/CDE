@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'cde-videos',
-    templateUrl: 'videos.component.html'
+    templateUrl: 'videos.component.html',
 })
 export class VideosComponent {
     videos?: Article;

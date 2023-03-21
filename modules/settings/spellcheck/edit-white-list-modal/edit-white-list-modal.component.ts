@@ -7,11 +7,13 @@ import { cloneDeep } from 'lodash';
 
 @Component({
     templateUrl: './edit-white-list-modal.component.html',
-    styles: [`
-      .example-chip-list {
-        width: 100%;
-      }
-    `]
+    styles: [
+        `
+            .example-chip-list {
+                width: 100%;
+            }
+        `,
+    ],
 })
 export class EditWhiteListModalComponent {
     oldTerms = [];
@@ -21,7 +23,6 @@ export class EditWhiteListModalComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public selectedWhiteList: ValidationWhitelist) {
         this.oldTerms = cloneDeep(selectedWhiteList.terms);
     }
-
 
     add(event: MatChipInputEvent): void {
         const value = (event.value || '').trim();

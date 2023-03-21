@@ -5,7 +5,5 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     templateUrl: './form-cdes-modal.component.html',
 })
 export class FormCdesModalComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public questions){
-
-    }
+    constructor(@Inject(MAT_DIALOG_DATA) public questions) {}
 }

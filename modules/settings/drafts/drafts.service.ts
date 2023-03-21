@@ -4,9 +4,7 @@ import { Article } from 'shared/article/article.model';
 
 @Injectable()
 export class DraftsService {
-
-    constructor(public http: HttpClient) {
-    }
+    constructor(public http: HttpClient) {}
 
     myDrafts() {
         return this.http.get<Article>('/server/system/myDrafts');

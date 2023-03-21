@@ -3,10 +3,7 @@ import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import {
-    OrgManageAddRequest,
-    OrgManageRemoveRequest,
-} from 'shared/boundaryInterfaces/API/orgManagement';
+import { OrgManageAddRequest, OrgManageRemoveRequest } from 'shared/boundaryInterfaces/API/orgManagement';
 import { UsersOrgQuery } from 'shared/models.model';
 
 @Component({
@@ -43,23 +40,15 @@ export class OrgAdminComponent {
                     this.alert.addAlert('success', 'Saved');
                     this.getAdmins();
                 },
-                () =>
-                    this.alert.addAlert(
-                        'danger',
-                        'There was an issue adding this administrator.'
-                    )
+                () => this.alert.addAlert('danger', 'There was an issue adding this administrator.')
             );
     }
 
     getAdmins() {
         if (this.isAllowedModel.hasRole('OrgAuthority')) {
-            return this.http
-                .get<UsersOrgQuery[]>('/server/orgManagement/orgAdmins')
-                .subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/orgAdmins').subscribe(r => this.setOrgs(r));
         } else {
-            return this.http
-                .get<UsersOrgQuery[]>('/server/orgManagement/myOrgsAdmins')
-                .subscribe(r => this.setOrgs(r));
+            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/myOrgsAdmins').subscribe(r => this.setOrgs(r));
         }
     }
 

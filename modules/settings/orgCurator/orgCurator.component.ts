@@ -3,10 +3,7 @@ import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import {
-    OrgManageAddRequest,
-    OrgManageRemoveRequest,
-} from 'shared/boundaryInterfaces/API/orgManagement';
+import { OrgManageAddRequest, OrgManageRemoveRequest } from 'shared/boundaryInterfaces/API/orgManagement';
 import { ObjectId } from 'shared/models.model';
 import { stringCompare } from 'shared/util';
 
@@ -36,13 +33,9 @@ export class OrgCuratorComponent {
     }
 
     getOrgCurators() {
-        this.http
-            .get<OrgUsers[]>('/server/orgManagement/orgCurators')
-            .subscribe(response => {
-                this.orgCurators = response.sort((a, b) =>
-                    stringCompare(a.org, b.org)
-                );
-            });
+        this.http.get<OrgUsers[]>('/server/orgManagement/orgCurators').subscribe(response => {
+            this.orgCurators = response.sort((a, b) => stringCompare(a.org, b.org));
+        });
     }
 
     addOrgCurator() {
@@ -60,8 +53,7 @@ export class OrgCuratorComponent {
                     this.alert.addAlert('success', 'Saved');
                     this.getOrgCurators();
                 },
-                () =>
-                    this.alert.addAlert('danger', 'There was an issue saving.')
+                () => this.alert.addAlert('danger', 'There was an issue saving.')
             );
         this.newOrgName = '';
     }

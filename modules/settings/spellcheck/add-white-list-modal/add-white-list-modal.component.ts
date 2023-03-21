@@ -7,16 +7,18 @@ import { cloneDeep } from 'lodash';
 
 @Component({
     templateUrl: './add-white-list-modal.component.html',
-    styles: [`
-      .example-chip-list {
-        width: 100%;
-      }
-    `]
+    styles: [
+        `
+            .example-chip-list {
+                width: 100%;
+            }
+        `,
+    ],
 })
 export class AddWhiteListModalComponent {
     newWhiteList: ValidationWhitelist = {
         collectionName: '',
-        terms: []
+        terms: [],
     };
 
     addOnBlur = true;
@@ -25,7 +27,7 @@ export class AddWhiteListModalComponent {
     constructor(@Inject(MAT_DIALOG_DATA) public selectedWhiteList: ValidationWhitelist) {
         if (selectedWhiteList) {
             this.newWhiteList = cloneDeep(selectedWhiteList);
-            this.newWhiteList.collectionName = `Copy of ${selectedWhiteList.collectionName}`
+            this.newWhiteList.collectionName = `Copy of ${selectedWhiteList.collectionName}`;
         }
     }
 

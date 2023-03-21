@@ -15,9 +15,7 @@ export class NamingComponent implements OnInit {
     @Output() eltChange = new EventEmitter();
     allTags: string[] = [];
 
-    constructor(private orgHelperService: OrgHelperService,
-                public dialog: MatDialog) {
-    }
+    constructor(private orgHelperService: OrgHelperService, public dialog: MatDialog) {}
 
     ngOnInit() {
         const stewardOrgName = this.elt.stewardOrg.name;
@@ -27,7 +25,8 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDefinitionModal() {
-        this.dialog.open(NewDefinitionComponent, {data: {tags: this.allTags}})
+        this.dialog
+            .open(NewDefinitionComponent, { data: { tags: this.allTags } })
             .afterClosed()
             .subscribe(newDefinition => {
                 if (newDefinition) {
@@ -38,7 +37,8 @@ export class NamingComponent implements OnInit {
     }
 
     openNewDesignationModal() {
-        this.dialog.open(NewDesignationComponent, {data: {tags: this.allTags}})
+        this.dialog
+            .open(NewDesignationComponent, { data: { tags: this.allTags } })
             .afterClosed()
             .subscribe(newDesignation => {
                 if (newDesignation) {

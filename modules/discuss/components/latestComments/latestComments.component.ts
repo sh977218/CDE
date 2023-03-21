@@ -7,14 +7,13 @@ import { Comment, DiscussionComments } from 'shared/models.model';
 
 @Component({
     selector: 'cde-latest-comments',
-    templateUrl: 'latestComments.component.html'
+    templateUrl: 'latestComments.component.html',
 })
 export class LatestCommentsComponent {
-    comments: DiscussionComments = {currentCommentsPage: 1, totalItems: 10000, latestComments: []};
+    comments: DiscussionComments = { currentCommentsPage: 1, totalItems: 10000, latestComments: [] };
     getEltLink = UserService.getEltLink;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute) {
+    constructor(private http: HttpClient, private route: ActivatedRoute) {
         this.getComments(1);
     }
 

@@ -14,55 +14,63 @@ export function convertFormToSection(form: CdeForm): FormInForm | undefined {
                 tinyId: form.tinyId,
                 version: form.version,
                 name: form.designations[0] ? form.designations[0].designation : '',
-                ids: form.ids
-            }
+                ids: form.ids,
+            },
         },
         label: form.designations[0] ? form.designations[0].designation : '',
         skipLogic: {
-            condition: ''
+            condition: '',
         },
     };
 }
 
 export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => void): void {
-    if (!form) { return cb(undefined, ''); }
+    if (!form) {
+        return cb(undefined, '');
+    }
     if (!form.formElements) {
         form.formElements = [];
     }
 
     function cdeToOdmDatatype(cdeType: string) {
-        return ({
-            'Value List': 'text',
-            Character: 'text',
-            Numeric: 'float',
-            'Date/Time': 'datetime',
-            Number: 'float',
-            Text: 'text',
-            Date: 'date',
-            'Externally Defined': 'text',
-            'String\nNumeric': 'text',
-            anyClass: 'text',
-            'java.util.Date': 'date',
-            'java.lang.String': 'text',
-            'java.lang.Long': 'float',
-            'java.lang.Integer': 'integer',
-            'java.lang.Double': 'float',
-            'java.lang.Boolean': 'boolean',
-            'java.util.Map': 'text',
-            'java.lang.Float': 'float',
-            Time: 'time',
-            'xsd:string': 'text',
-            'java.lang.Character': 'text',
-            'xsd:boolean': 'boolean',
-            'java.lang.Short': 'integer',
-            'java.sql.Timestamp': 'time',
-            'DATE/TIME': 'datetime',
-            'java.lang.Byte': 'integer'
-        } as {[key: string]: string})[cdeType] || 'text';
+        return (
+            (
+                {
+                    'Value List': 'text',
+                    Character: 'text',
+                    Numeric: 'float',
+                    'Date/Time': 'datetime',
+                    Number: 'float',
+                    Text: 'text',
+                    Date: 'date',
+                    'Externally Defined': 'text',
+                    'String\nNumeric': 'text',
+                    anyClass: 'text',
+                    'java.util.Date': 'date',
+                    'java.lang.String': 'text',
+                    'java.lang.Long': 'float',
+                    'java.lang.Integer': 'integer',
+                    'java.lang.Double': 'float',
+                    'java.lang.Boolean': 'boolean',
+                    'java.util.Map': 'text',
+                    'java.lang.Float': 'float',
+                    Time: 'time',
+                    'xsd:string': 'text',
+                    'java.lang.Character': 'text',
+                    'xsd:boolean': 'boolean',
+                    'java.lang.Short': 'integer',
+                    'java.sql.Timestamp': 'time',
+                    'DATE/TIME': 'datetime',
+                    'java.lang.Byte': 'integer',
+                } as { [key: string]: string }
+            )[cdeType] || 'text'
+        );
     }
 
     function escapeHTML(text?: string) {
-        if (!text) { return ''; }
+        if (!text) {
+            return '';
+        }
         return text.replace(/\<.+?\>/gi, ''); // jshint ignore:line
     }
 
@@ -78,9 +86,9 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
         Study: {
             $OID: form.tinyId,
             GlobalVariables: {
-                StudyName: escapeHTML(form.designations[0].designation)
-                , StudyDescription: escapeHTML(form.definitions[0].definition)
-                , ProtocolName: escapeHTML(form.designations[0].designation)
+                StudyName: escapeHTML(form.designations[0].designation),
+                StudyDescription: escapeHTML(form.definitions[0].definition),
+                ProtocolName: escapeHTML(form.designations[0].designation),
             },
             BasicDefinitions: {},
             MetaDataVersion: {
@@ -90,8 +98,8 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                     StudyEventRef: {
                         $Mandatory: 'Yes',
                         $OrderNumber: '1',
-                        $StudyEventOID: 'SE_' + form.tinyId
-                    }
+                        $StudyEventOID: 'SE_' + form.tinyId,
+                    },
                 },
                 StudyEventDef: {
                     $Name: 'SE',
@@ -102,7 +110,7 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                         $FormOID: form.tinyId,
                         $Mandatory: 'Yes',
                         $OrderNumber: '1',
-                    }
+                    },
                 },
                 FormDef: {
                     $Name: escapeHTML(form.designations[0].designation),
@@ -138,19 +146,18 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             };
             if (q1.question.answers) {
                 let codeListAlreadyPresent = false;
-                codeLists.forEach((cl) => {
+                codeLists.forEach(cl => {
                     const codeListInHouse = cl.CodeListItem.map((i: any) => i.Decode.TranslatedText._).sort();
-                    const codeListToAdd = (q1.question.answers || [])
-                        .map((a: any) => a.valueMeaningName).sort();
+                    const codeListToAdd = (q1.question.answers || []).map((a: any) => a.valueMeaningName).sort();
                     if (JSON.stringify(codeListInHouse) === JSON.stringify(codeListToAdd)) {
-                        odmQuestion.CodeListRef = {$CodeListOID: cl.$OID};
+                        odmQuestion.CodeListRef = { $CodeListOID: cl.$OID };
                         questions.push(odmQuestion);
                         codeListAlreadyPresent = true;
                     }
                 });
 
                 if (!codeListAlreadyPresent) {
-                    odmQuestion.CodeListRef = {$CodeListOID: 'CL_' + oid};
+                    odmQuestion.CodeListRef = { $CodeListOID: 'CL_' + oid };
                     questions.push(odmQuestion);
                     const codeList: any = {
                         $DataType: cdeToOdmDatatype(q1.question.datatype),
@@ -164,8 +171,8 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                                 TranslatedText: {
                                     '$xml:lang': 'en',
                                     _: pv.valueMeaningName,
-                                }
-                            }
+                                },
+                            },
                         };
                         if (pv.valueMeaningCode) {
                             cl.Alias = {
@@ -179,7 +186,9 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                 }
             }
         });
-        const oid = Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        const oid = Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
         odmJsonForm.Study.MetaDataVersion.FormDef.ItemGroupRef.push({
             $ItemGroupOID: oid,
             $Mandatory: 'Yes',
@@ -193,8 +202,8 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
             Description: {
                 TranslatedText: {
                     '$xml:lang': 'en',
-                    _: s1.label
-                }
+                    _: s1.label,
+                },
             },
             ItemRef: childrenOids.map((oid, i) => {
                 return {
@@ -202,16 +211,16 @@ export function getFormOdm(form: CdeForm, cb: (error?: string, odm?: any) => voi
                     $Mandatory: 'Yes',
                     $OrderNumber: i,
                 };
-            })
+            }),
         });
     });
-    sections.forEach((s) => {
+    sections.forEach(s => {
         odmJsonForm.Study.MetaDataVersion.ItemGroupDef.push(s);
     });
-    questions.forEach((s) => {
+    questions.forEach(s => {
         odmJsonForm.Study.MetaDataVersion.ItemDef.push(s);
     });
-    codeLists.forEach((cl) => {
+    codeLists.forEach(cl => {
         odmJsonForm.Study.MetaDataVersion.CodeList.push(cl);
     });
     cb(undefined, odmJsonForm);

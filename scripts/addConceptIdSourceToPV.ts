@@ -54,7 +54,7 @@ function cleanUpRows(rows: Row[]) {
 
 export function parseArray(text: string): string[] {
     if (!text) {
-        return null;
+        return [];
     }
     return text.split('|').map(t => t.trim()).filter(t => t);
 }

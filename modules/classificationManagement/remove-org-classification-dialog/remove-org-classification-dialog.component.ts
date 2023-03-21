@@ -1,12 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import {
-    AbstractControl,
-    UntypedFormControl,
-    ValidationErrors,
-    ValidatorFn,
-    Validators,
-} from '@angular/forms';
+import { AbstractControl, UntypedFormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
 
 @Component({
@@ -22,14 +16,8 @@ export class RemoveOrgClassificationDialogComponent {
         @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
         this.fullClassificationArray = [data.orgName].concat(data.categories);
-        const confirmClassificationName =
-            this.fullClassificationArray[
-                this.fullClassificationArray.length - 1
-            ];
-        this.userTyped.setValidators([
-            Validators.required,
-            stringMatchValidator(confirmClassificationName),
-        ]);
+        const confirmClassificationName = this.fullClassificationArray[this.fullClassificationArray.length - 1];
+        this.userTyped.setValidators([Validators.required, stringMatchValidator(confirmClassificationName)]);
     }
 
     getErrorMessage() {

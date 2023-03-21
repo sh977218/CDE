@@ -7,7 +7,7 @@ import { PageEvent } from '@angular/material/paginator';
 
 @Component({
     selector: 'cde-de-log',
-    templateUrl: './dataElementLog.component.html'
+    templateUrl: './dataElementLog.component.html',
 })
 export class DataElementLogComponent {
     records: EltLog[] = [];
@@ -25,19 +25,21 @@ export class DataElementLogComponent {
             this.currentPage = event.pageIndex;
         }
 
-        this.http.post<EltLog[]>('/server/de/getAuditLog', {
-            includeBatch: this.includeBatch,
-            skip: this.currentPage * this.pageSize,
-            limit: this.pageSize
-        }).subscribe(response => {
-            if (Array.isArray(response)) {
-                this.records = response;
-                this.records.forEach(rec => {
-                    if (rec.diff) {
-                        rec.diff.forEach(d => makeHumanReadable(d));
-                    }
-                });
-            }
-        });
+        this.http
+            .post<EltLog[]>('/server/de/getAuditLog', {
+                includeBatch: this.includeBatch,
+                skip: this.currentPage * this.pageSize,
+                limit: this.pageSize,
+            })
+            .subscribe(response => {
+                if (Array.isArray(response)) {
+                    this.records = response;
+                    this.records.forEach(rec => {
+                        if (rec.diff) {
+                            rec.diff.forEach(d => makeHumanReadable(d));
+                        }
+                    });
+                }
+            });
     }
 }

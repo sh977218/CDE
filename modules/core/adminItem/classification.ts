@@ -3,8 +3,15 @@ import { addCategory, findSteward } from 'shared/classification/classificationSh
 import { ClassificationElement, Elt, Item } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import {
-    attachmentComparator, dataSetComparator, definitionComparator, derivationRuleComparator, designationComparator,
-    idComparator, propertyComparator, referenceDocumentComparator, sourceComparator
+    attachmentComparator,
+    dataSetComparator,
+    definitionComparator,
+    derivationRuleComparator,
+    designationComparator,
+    idComparator,
+    propertyComparator,
+    referenceDocumentComparator,
+    sourceComparator,
 } from 'shared/elt/comparator';
 
 export function classifyItem(item: Item, orgName: string, classifPath: string[]): void {
@@ -15,12 +22,12 @@ export function classifyItem(item: Item, orgName: string, classifPath: string[])
         }
         const newClassification = {
             stewardOrg: {
-                name: orgName
+                name: orgName,
             },
-            elements: []
+            elements: [],
         };
         item.classification.push(newClassification);
-        steward = {index: item.classification.length - 1, object: newClassification};
+        steward = { index: item.classification.length - 1, object: newClassification };
     }
     for (let i = 1; i <= classifPath.length; i++) {
         addCategory(steward.object, classifPath.slice(0, i));
@@ -62,7 +69,11 @@ export function mergeArrayByDefinitions(eltFrom: Elt, eltTo: Elt) {
 }
 
 export function mergeArrayByReferenceDocuments(eltFrom: Elt, eltTo: Elt) {
-    eltTo.referenceDocuments = unionWith(eltTo.referenceDocuments, eltFrom.referenceDocuments, referenceDocumentComparator);
+    eltTo.referenceDocuments = unionWith(
+        eltTo.referenceDocuments,
+        eltFrom.referenceDocuments,
+        referenceDocumentComparator
+    );
 }
 
 export function mergeArrayByProperties(eltFrom: Elt, eltTo: Elt) {

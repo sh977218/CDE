@@ -1,11 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { DeletedNodeEvent } from 'adminItem/classification/classificationView.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
@@ -45,20 +39,12 @@ export class CdeClassificationComponent {
             (err: HttpErrorResponse | void) => {
                 if (err) {
                     if (err.status === 409) {
-                        this.alert.addAlert(
-                            'danger',
-                            'Classification Already Exists'
-                        );
+                        this.alert.addAlert('danger', 'Classification Already Exists');
                     } else {
-                        this.alert.addAlert(
-                            'danger',
-                            'Unexpected error adding classification'
-                        );
+                        this.alert.addAlert('danger', 'Unexpected error adding classification');
                     }
                 } else {
-                    this.reloadElt(() =>
-                        this.alert.addAlert('success', 'Classification added.')
-                    );
+                    this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }
             }
         );
@@ -69,28 +55,23 @@ export class CdeClassificationComponent {
     }
 
     reloadElt(cb: Cb) {
-        this.http
-            .get<DataElement>(ITEM_MAP.cde.api + this.elt.tinyId)
-            .subscribe(
-                res => {
-                    this.elt = res;
-                    this.eltChange.emit(this.elt);
-                    if (cb) {
-                        cb();
-                    }
-                },
-                err => {
-                    if (err) {
-                        this.alert.addAlert(
-                            'danger',
-                            'Error retrieving. ' + err
-                        );
-                    }
-                    if (cb) {
-                        cb();
-                    }
+        this.http.get<DataElement>(ITEM_MAP.cde.api + this.elt.tinyId).subscribe(
+            res => {
+                this.elt = res;
+                this.eltChange.emit(this.elt);
+                if (cb) {
+                    cb();
                 }
-            );
+            },
+            err => {
+                if (err) {
+                    this.alert.addAlert('danger', 'Error retrieving. ' + err);
+                }
+                if (cb) {
+                    cb();
+                }
+            }
+        );
     }
 
     removeClassif(event: DeletedNodeEvent) {
@@ -101,17 +82,9 @@ export class CdeClassificationComponent {
             '/server/classification/removeCdeClassification/',
             err => {
                 if (err) {
-                    this.alert.addAlert(
-                        'danger',
-                        'Unexpected error removing classification'
-                    );
+                    this.alert.addAlert('danger', 'Unexpected error removing classification');
                 } else {
-                    this.reloadElt(() =>
-                        this.alert.addAlert(
-                            'success',
-                            'Classification removed.'
-                        )
-                    );
+                    this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }
             }
         );

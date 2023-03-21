@@ -15,10 +15,7 @@ export class DeGeneralDetailsComponent {
     @Output() eltChange = new EventEmitter();
     userOrgs: string[] = [];
 
-    constructor(
-        public orgHelperService: OrgHelperService,
-        public userService: UserService
-    ) {
+    constructor(public orgHelperService: OrgHelperService, public userService: UserService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
         }, noop);
@@ -33,11 +30,8 @@ export class DeGeneralDetailsComponent {
         let designations = this.elt.designations;
 
         return (
-            designations.find(
-                d => d.tags.indexOf('Preferred Question Text') > -1
-            )?.designation ||
-            designations.find(d => d.tags.indexOf('Question Text') > -1)
-                ?.designation ||
+            designations.find(d => d.tags.indexOf('Preferred Question Text') > -1)?.designation ||
+            designations.find(d => d.tags.indexOf('Question Text') > -1)?.designation ||
             ''
         );
     }

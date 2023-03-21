@@ -23,7 +23,7 @@ export interface BoardQuery {
     templateUrl: './boardView.component.html',
 })
 export class BoardViewComponent implements OnInit, OnDestroy {
-    @ViewChild('classifyCdesModal', {static: true}) classifyCdesModal!: ClassifyItemComponent;
+    @ViewChild('classifyCdesModal', { static: true }) classifyCdesModal!: ClassifyItemComponent;
     board!: Board;
     boardId!: string;
     currentPage: number = 0;
@@ -36,13 +36,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     totalItems!: number;
     url!: string;
 
-    constructor(private http: HttpClient,
-                private route: ActivatedRoute,
-                private title: Title,
-                private alert: AlertService,
-                public esService: ElasticService,
-                public userService: UserService,
-                private boardListService: BoardListService) {
+    constructor(
+        private http: HttpClient,
+        private route: ActivatedRoute,
+        private title: Title,
+        private alert: AlertService,
+        public esService: ElasticService,
+        public userService: UserService,
+        private boardListService: BoardListService
+    ) {
         if (!this.dropdownUnregister) {
             [this.dropdownHandler, this.dropdownUnregister] = handleDropdown(this.dropdownMenus);
         }
@@ -52,7 +54,6 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         this.boardId = this.route.snapshot.params.boardId;
         this.reload();
         this.url = location.href;
-
     }
 
     ngOnDestroy() {
@@ -64,21 +65,31 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     }
 
     addClassification(event: ClassificationClassified) {
-        const _timeout = setInterval(() => this.alert.addAlert('warning',
-            'Classification task is still in progress. Please hold on.'), 3000);
-        this.http.post(this.board.type === 'form' ? '/server/classification/classifyFormBoard' : '/server/classification/classifyCdeBoard',
-            {
-                boardId: this.boardId,
-                categories: event.classificationArray,
-                orgName: event.selectedOrg
-            }
-        ).subscribe(() => {
-            clearInterval(_timeout);
-            this.alert.addAlert('success', 'All Elements classified.');
-        }, () => {
-            this.alert.addAlert('danger', 'Unexpected error. Not Elements were classified! You may try again.');
-            clearInterval(_timeout);
-        });
+        const timeout = setInterval(
+            () => this.alert.addAlert('warning', 'Classification task is still in progress. Please hold on.'),
+            3000
+        );
+        this.http
+            .post(
+                this.board.type === 'form'
+                    ? '/server/classification/classifyFormBoard'
+                    : '/server/classification/classifyCdeBoard',
+                {
+                    boardId: this.boardId,
+                    categories: event.classificationArray,
+                    orgName: event.selectedOrg,
+                }
+            )
+            .subscribe(
+                () => {
+                    clearInterval(timeout);
+                    this.alert.addAlert('success', 'All Elements classified.');
+                },
+                () => {
+                    this.alert.addAlert('danger', 'Unexpected error. Not Elements were classified! You may try again.');
+                    clearInterval(timeout);
+                }
+            );
     }
 
     classifyEltBoard() {
@@ -94,12 +105,15 @@ export class BoardViewComponent implements OnInit, OnDestroy {
             });
             if (csv) {
                 const blob = new Blob([csv], {
-                    type: 'text/csv'
+                    type: 'text/csv',
                 });
-                saveAs(blob, 'BoardExport' + '.csv');  // jshint ignore:line
+                saveAs(blob, 'BoardExport' + '.csv'); // jshint ignore:line
                 this.alert.addAlert('success', 'Export downloaded.');
             } else {
-                this.alert.addAlert('danger', 'The server is busy processing similar request, please try again in a minute.');
+                this.alert.addAlert(
+                    'danger',
+                    'The server is busy processing similar request, please try again in a minute.'
+                );
             }
         });
     }
@@ -117,18 +131,21 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     }
 
     reload() {
-        this.http.get<BoardQuery>('/server/board/' + this.boardId + '/' + (this.currentPage) * 20).subscribe(response => {
-            if (response.board) {
-                this.board = response.board;
-                this.elts = response.elts;
-                this.totalItems = response.totalItems;
-                this.title.setTitle('Board: ' + this.board.name);
-                this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
-                this.boardListService.board = this.board;
-                this.boardListService.currentPage = this.currentPage;
-                this.boardListService.totalItems = this.totalItems;
-            }
-        }, err => this.alert.httpErrorMessageAlert(err, 'Board'))
+        this.http.get<BoardQuery>('/server/board/' + this.boardId + '/' + this.currentPage * 20).subscribe(
+            response => {
+                if (response.board) {
+                    this.board = response.board;
+                    this.elts = response.elts;
+                    this.totalItems = response.totalItems;
+                    this.title.setTitle('Board: ' + this.board.name);
+                    this.modalTitle = 'Classify ' + (this.board.type === 'form' ? 'Form' : 'CDE') + 's in this Board';
+                    this.boardListService.board = this.board;
+                    this.boardListService.currentPage = this.currentPage;
+                    this.boardListService.totalItems = this.totalItems;
+                }
+            },
+            err => this.alert.httpErrorMessageAlert(err, 'Board')
+        );
     }
 
     setPage(newPage: PageEvent) {

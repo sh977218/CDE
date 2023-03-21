@@ -1,12 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ENTER } from '@angular/cdk/keycodes';
 import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
@@ -41,9 +33,7 @@ export class OneListMgtComponent implements OnInit {
         if (!value) {
             return [];
         }
-        return options.filter(option =>
-            option.toLowerCase().includes(value.toLowerCase())
-        );
+        return options.filter(option => option.toLowerCase().includes(value.toLowerCase()));
     }
 
     removeKey(key: string) {

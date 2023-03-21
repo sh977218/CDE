@@ -15,29 +15,29 @@ export class AppLogComponent {
     totalItems?: number;
     toDate: any;
 
-    constructor(
-        private http: HttpClient
-    ) {}
+    constructor(private http: HttpClient) {}
 
     searchLogs(event?: PageEvent) {
         if (event) {
             this.currentPage = event.pageIndex;
         }
-        this.http.post<any>('/server/log/appLogs', {
-            currentPage: this.currentPage,
-            fromDate: this.fromDate,
-            toDate: this.toDate
-        }).subscribe(res => {
-            if (res.totalItems) {
-                this.totalItems = res.totalItems;
-            }
-            this.gridLogEvents = res.logs.map((log: AppLogEntry) => {
-                return {
-                    date: new Date(log.date).toLocaleString(),
-                    level: log.level,
-                    message: log.message
-                };
+        this.http
+            .post<any>('/server/log/appLogs', {
+                currentPage: this.currentPage,
+                fromDate: this.fromDate,
+                toDate: this.toDate,
+            })
+            .subscribe(res => {
+                if (res.totalItems) {
+                    this.totalItems = res.totalItems;
+                }
+                this.gridLogEvents = res.logs.map((log: AppLogEntry) => {
+                    return {
+                        date: new Date(log.date).toLocaleString(),
+                        level: log.level,
+                        message: log.message,
+                    };
+                });
             });
-        });
     }
 }

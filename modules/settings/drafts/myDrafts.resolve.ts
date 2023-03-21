@@ -7,15 +7,14 @@ import { DraftsService } from 'settings/drafts/drafts.service';
 
 @Injectable()
 export class MyDraftsResolve implements Resolve<Observable<Article>> {
-    constructor(private router: Router,
-                private draftSvc: DraftsService) {
-    }
+    constructor(private router: Router, private draftSvc: DraftsService) {}
 
     resolve() {
-        return this.draftSvc.myDrafts()
-            .pipe(catchError(() => {
+        return this.draftSvc.myDrafts().pipe(
+            catchError(() => {
                 this.router.navigate(['/404']);
                 return EMPTY;
-            }));
+            })
+        );
     }
 }

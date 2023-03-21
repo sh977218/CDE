@@ -5,28 +5,24 @@ import { FormDescriptionComponent } from 'form/formDescription/formDescription.c
 import { DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
 import { FormElement, FormQuestion } from 'shared/form/form.model';
-import {
-    FormUpdateCdeVersionModalComponent
-} from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
+import { FormUpdateCdeVersionModalComponent } from 'form/form-update-cde-version-modal/form-update-cde-version-modal.component';
 
 @Component({
     selector: 'cde-form-description-question',
-    templateUrl: './formDescriptionQuestion.component.html'
+    templateUrl: './formDescriptionQuestion.component.html',
 })
 export class FormDescriptionQuestionComponent implements OnInit {
     @Input() canEdit = false;
     @Input() index!: number;
     @Input() node!: TreeNode;
     @Output() stageElt: EventEmitter<void> = new EventEmitter<void>();
-    @ViewChild('updateCdeVersionTmpl', {static: true}) updateCdeVersionTmpl!: TemplateRef<any>;
+    @ViewChild('updateCdeVersionTmpl', { static: true }) updateCdeVersionTmpl!: TemplateRef<any>;
     isScore = isScore;
     isSubForm = false;
     parent!: FormElement;
     question!: FormQuestion;
 
-    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent,
-                public dialog: MatDialog) {
-    }
+    constructor(@Host() public formDescriptionComponent: FormDescriptionComponent, public dialog: MatDialog) {}
 
     ngOnInit() {
         this.question = this.node.data;
@@ -77,7 +73,8 @@ export class FormDescriptionQuestionComponent implements OnInit {
 
     openUpdateCdeVersionModal(currentQuestion) {
         const data = currentQuestion;
-        this.dialog.open(FormUpdateCdeVersionModalComponent, {width: '1000px', data})
+        this.dialog
+            .open(FormUpdateCdeVersionModalComponent, { width: '1000px', data })
             .afterClosed()
             .subscribe(newQuestion => {
                 if (newQuestion) {

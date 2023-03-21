@@ -26,20 +26,22 @@ type CommentWithShowReplies = Comment & {
 @Component({
     selector: 'cde-comments',
     templateUrl: './comments.component.html',
-    styles: [`
-        .strike {
-            text-decoration: line-through;
-        }
+    styles: [
+        `
+            .strike {
+                text-decoration: line-through;
+            }
 
-        .commentDiv {
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
+            .commentDiv {
+                background-color: white;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
 
-        .commentBox {
-            background-color: rgb(245, 245, 245);
-        }
-    `]
+            .commentBox {
+                background-color: rgb(245, 245, 245);
+            }
+        `,
+    ],
 })
 export class CommentsComponent implements OnInit, OnDestroy {
     @Input() eltId!: string;
@@ -62,14 +64,15 @@ export class CommentsComponent implements OnInit, OnDestroy {
     newReply: CommentReply = new CommentReply();
 
     subscriptions: any = {};
-    private emitCurrentReplying = new Subject<{ _id: string, comment: ReplyDraft }>();
+    private emitCurrentReplying = new Subject<{ _id: string; comment: ReplyDraft }>();
 
-    constructor(private http: HttpClient,
-                public dialog: MatDialog,
-                public isAllowedModel: IsAllowedService,
-                public userService: UserService,
-                public alertService: AlertService) {
-    }
+    constructor(
+        private http: HttpClient,
+        public dialog: MatDialog,
+        public isAllowedModel: IsAllowedService,
+        public userService: UserService,
+        public alertService: AlertService
+    ) {}
 
     ngOnInit() {
         // join channel "comment"
@@ -78,28 +81,34 @@ export class CommentsComponent implements OnInit, OnDestroy {
         this.socket.emit('room', this.eltId);
         this.loadComments();
         this.socket.on('commentUpdated', () => this.loadComments());
-        this.socket.on('userTyping', (data: { commentId: string, username: string }) => {
+        this.socket.on('userTyping', (data: { commentId: string; username: string }) => {
             this.comments.forEach(c => {
-                if (c._id === data.commentId && this.userService.user && data.username !== this.userService.user.username) {
+                if (
+                    c._id === data.commentId &&
+                    this.userService.user &&
+                    data.username !== this.userService.user.username
+                ) {
                     if (this.subscriptions[c._id]) {
                         this.subscriptions[c._id].unsubscribe();
                     }
                     c.currentlyReplying = true;
                     this.subscriptions[c._id] = timer(10000)
-                        .pipe(take(1)).subscribe(() => c.currentlyReplying = false);
+                        .pipe(take(1))
+                        .subscribe(() => (c.currentlyReplying = false));
                 }
             });
         });
 
-        this.emitCurrentReplying.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            map(obj => {
-                this.socket.emit('currentReplying', this.eltId, obj._id);
-                return EMPTY;
-            })
-        ).subscribe();
-
+        this.emitCurrentReplying
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                map(obj => {
+                    this.socket.emit('currentReplying', this.eltId, obj._id);
+                    return EMPTY;
+                })
+            )
+            .subscribe();
     }
 
     ngOnDestroy() {
@@ -108,14 +117,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
 
     loadComments() {
         if (this.userService.canSeeComment()) {
-            this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId)
-                .subscribe(res => {
-                    res.forEach(c => {
-                        c.currentComment = c.linkedTab === this._currentTab;
-                        c.newReply = {};
-                    });
-                    this.comments = res;
+            this.http.get<Array<any>>('/server/discuss/comments/eltId/' + this.eltId).subscribe(res => {
+                res.forEach(c => {
+                    c.currentComment = c.linkedTab === this._currentTab;
+                    c.newReply = {};
                 });
+                this.comments = res;
+            });
         }
     }
 
@@ -128,38 +136,40 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     removeComment(commentId: string) {
-        this.http.post('/server/discuss/deleteComment', {commentId}).subscribe();
+        this.http.post('/server/discuss/deleteComment', { commentId }).subscribe();
     }
 
     resolveComment(commentId: string) {
-        this.http.post('/server/discuss/resolveComment', {commentId}).subscribe();
+        this.http.post('/server/discuss/resolveComment', { commentId }).subscribe();
     }
 
     reopenComment(commentId: string) {
-        this.http.post('/server/discuss/reopenComment', {commentId}).subscribe();
+        this.http.post('/server/discuss/reopenComment', { commentId }).subscribe();
     }
 
     removeReply(replyId: string) {
-        this.http.post('/server/discuss/deleteReply', {replyId}).subscribe();
+        this.http.post('/server/discuss/deleteReply', { replyId }).subscribe();
     }
 
     resolveReply(replyId: string) {
-        this.http.post('/server/discuss/resolveReply', {replyId}).subscribe();
+        this.http.post('/server/discuss/resolveReply', { replyId }).subscribe();
     }
 
     reopenReply(replyId: string) {
-        this.http.post('/server/discuss/reopenReply', {replyId}).subscribe();
+        this.http.post('/server/discuss/reopenReply', { replyId }).subscribe();
     }
 
     replyToComment(comment: CommentWithReplyDraft) {
-        this.http.post('/server/discuss/replyComment', {
-            commentId: comment._id,
-            eltName: this.eltName,
-            reply: comment.newReply.text
-        }).subscribe(
-            () => comment.newReply = {},
-            err => this.alertService.addAlert('danger', err.error)
-        );
+        this.http
+            .post('/server/discuss/replyComment', {
+                commentId: comment._id,
+                eltName: this.eltName,
+                reply: comment.newReply.text,
+            })
+            .subscribe(
+                () => (comment.newReply = {}),
+                err => this.alertService.addAlert('danger', err.error)
+            );
     }
 
     cancelReply(comment: CommentWithReplyDraft) {
@@ -167,7 +177,7 @@ export class CommentsComponent implements OnInit, OnDestroy {
     }
 
     changeOnReply(comment: CommentWithReplyDraft) {
-        this.emitCurrentReplying.next({_id: comment._id, comment: comment.newReply});
+        this.emitCurrentReplying.next({ _id: comment._id, comment: comment.newReply });
     }
 
     showReply(comment: CommentWithShowReplies, j: number) {

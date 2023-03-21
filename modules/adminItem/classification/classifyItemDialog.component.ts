@@ -12,9 +12,8 @@ import { noop } from 'shared/util';
 
 const actionMapping: IActionMapping = {
     mouse: {
-        click: () => {
-        }
-    }
+        click: () => {},
+    },
 };
 
 @Component({
@@ -30,7 +29,7 @@ export class ClassifyItemDialogComponent {
         childrenField: 'elements',
         hasChildrenField: 'elements',
         isExpandedField: 'expanded',
-        actionMapping
+        actionMapping,
     };
     selectedOrg!: string;
     treeNode?: TreeNode;
@@ -41,7 +40,7 @@ export class ClassifyItemDialogComponent {
         private localStorageService: LocalStorageService,
         public dialogRef: MatDialogRef<ClassifyItemDialogComponent, ClassificationClassified>,
         public userService: UserService,
-        @Inject(MAT_DIALOG_DATA) public data: ClassifyItemDialogData,
+        @Inject(MAT_DIALOG_DATA) public data: ClassifyItemDialogData
     ) {
         this.orgClassificationsRecentlyAddView = this.localStorageService.getItem('classificationHistory');
         if (this.selectedOrg) {
@@ -58,7 +57,7 @@ export class ClassifyItemDialogComponent {
     classifyItemByRecentlyAdd(classificationRecentlyAdd: ClassificationClassifier) {
         this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationRecentlyAdd.categories,
-            orgName: classificationRecentlyAdd.orgName
+            orgName: classificationRecentlyAdd.orgName,
         });
         this.dialogRef.close({
             classificationArray: classificationRecentlyAdd.categories,
@@ -69,20 +68,20 @@ export class ClassifyItemDialogComponent {
     classifyItemByTree(treeNode: TreeNode, selectedOrg: string) {
         this.treeNode = treeNode;
         const classificationArray = [treeNode.data.name];
-        let _treeNode = treeNode;
-        while (_treeNode.parent) {
-            _treeNode = _treeNode.parent;
-            if (!_treeNode.data.virtual) {
-                classificationArray.unshift(_treeNode.data.name);
+        let node = treeNode;
+        while (node.parent) {
+            node = node.parent;
+            if (!node.data.virtual) {
+                classificationArray.unshift(node.data.name);
             }
         }
         this.classificationSvc.updateClassificationLocalStorage({
             categories: classificationArray,
-            orgName: this.selectedOrg
+            orgName: this.selectedOrg,
         });
         this.dialogRef.close({
             classificationArray,
-            selectedOrg
+            selectedOrg,
         });
     }
 
@@ -92,9 +91,11 @@ export class ClassifyItemDialogComponent {
                 org => {
                     this.selectedOrg = value;
                     this.orgClassificationsTreeView = org;
-                }, () => {
+                },
+                () => {
                     this.orgClassificationsTreeView = undefined;
-                });
+                }
+            );
         } else {
             this.orgClassificationsTreeView = undefined;
         }

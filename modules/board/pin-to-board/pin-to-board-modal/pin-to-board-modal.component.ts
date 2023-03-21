@@ -8,13 +8,13 @@ import { ModuleItem } from 'shared/models.model';
     templateUrl: './pin-to-board-modal.component.html',
 })
 export class PinToBoardModalComponent {
-
-    constructor(@Inject(MAT_DIALOG_DATA) public module: ModuleItem,
-                private dialogRef: MatDialogRef<PinToBoardModalComponent>,
-                public myBoardsSvc: MyBoardsService,
-                public userService: UserService) {
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public module: ModuleItem,
+        private dialogRef: MatDialogRef<PinToBoardModalComponent>,
+        public myBoardsSvc: MyBoardsService,
+        public userService: UserService
+    ) {
         this.myBoardsSvc.loadMyBoards(module);
-
     }
 
     selectBoard(board) {

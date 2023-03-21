@@ -7,17 +7,18 @@ import { Organization } from 'shared/organization/organization';
 import { noop } from 'shared/util';
 
 @Component({
-    templateUrl: './propertiesManagement.component.html'
+    templateUrl: './propertiesManagement.component.html',
 })
 export class PropertiesManagementComponent {
     allPropertyKeys: string[] = [];
     orgs: any[];
 
-    constructor(private http: HttpClient,
-                private alert: AlertService,
-                private route: ActivatedRoute,
-                private orgHelperService: OrgHelperService) {
-
+    constructor(
+        private http: HttpClient,
+        private alert: AlertService,
+        private route: ActivatedRoute,
+        private orgHelperService: OrgHelperService
+    ) {
         this.orgs = this.route.snapshot.data.managedOrgs;
         this.orgs.forEach(o => {
             if (o.propertyKeys) {

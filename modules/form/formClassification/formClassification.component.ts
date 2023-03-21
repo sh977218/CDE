@@ -1,11 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { DeletedNodeEvent } from 'adminItem/classification/classificationView.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
@@ -14,12 +8,7 @@ import { fetchForm } from 'nativeRender/form.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm, FormElement } from 'shared/form/form.model';
-import {
-    Cb,
-    ClassificationClassified,
-    IdVersion,
-    ItemClassification,
-} from 'shared/models.model';
+import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
 import { canClassify } from 'shared/security/authorizationShared';
 
 @Component({
@@ -67,55 +56,36 @@ export class FormClassificationComponent {
                         const fn = setInterval(() => {
                             //noinspection TypeScriptValidateTypes
                             this.http
-                                .get<any>(
-                                    '/server/classification/bulkClassifyCdeStatus/' +
-                                        this.elt._id
-                                )
+                                .get<any>('/server/classification/bulkClassifyCdeStatus/' + this.elt._id)
                                 .subscribe(
                                     res => {
                                         this.showProgressBar = true;
-                                        if (
-                                            res.numberProcessed >=
-                                            res.numberTotal
-                                        ) {
+                                        if (res.numberProcessed >= res.numberTotal) {
                                             this.http
                                                 .get(
-                                                    '/server/classification/resetBulkClassifyCdesStatus/' +
-                                                        this.elt._id
+                                                    '/server/classification/resetBulkClassifyCdesStatus/' + this.elt._id
                                                 )
                                                 .subscribe(
                                                     () => {
                                                         //noinspection TypeScriptUnresolvedFunction
                                                         clearInterval(fn);
-                                                        this.alert.addAlert(
-                                                            'success',
-                                                            'All CDEs Classified.'
-                                                        );
+                                                        this.alert.addAlert('success', 'All CDEs Classified.');
                                                     },
                                                     () => {
-                                                        this.alert.addAlert(
-                                                            'danger',
-                                                            'Unexpected error classifying'
-                                                        );
+                                                        this.alert.addAlert('danger', 'Unexpected error classifying');
                                                     }
                                                 );
                                         }
                                     },
                                     () => {
-                                        this.alert.addAlert(
-                                            'danger',
-                                            'Unexpected error classifying'
-                                        );
+                                        this.alert.addAlert('danger', 'Unexpected error classifying');
                                     }
                                 );
                         }, 5000);
                     }
                 },
                 () => {
-                    this.alert.addAlert(
-                        'danger',
-                        'Unexpected error classifying'
-                    );
+                    this.alert.addAlert('danger', 'Unexpected error classifying');
                 }
             );
     }
@@ -128,14 +98,9 @@ export class FormClassificationComponent {
             '/server/classification/addFormClassification/',
             err => {
                 if (err) {
-                    this.alert.addAlert(
-                        'danger',
-                        'Unexpected error classifying'
-                    );
+                    this.alert.addAlert('danger', 'Unexpected error classifying');
                 } else {
-                    this.reloadElt(() =>
-                        this.alert.addAlert('success', 'Classification added.')
-                    );
+                    this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }
             }
         );
@@ -144,10 +109,7 @@ export class FormClassificationComponent {
     getChildren(formElements: FormElement[], ids: IdVersion[]) {
         if (formElements) {
             formElements.forEach(formElement => {
-                if (
-                    formElement.elementType === 'section' ||
-                    formElement.elementType === 'form'
-                ) {
+                if (formElement.elementType === 'section' || formElement.elementType === 'form') {
                     this.getChildren(formElement.formElements, ids);
                 } else if (formElement.elementType === 'question') {
                     ids.push({
@@ -195,17 +157,9 @@ export class FormClassificationComponent {
             '/server/classification/removeFormClassification/',
             err => {
                 if (err) {
-                    this.alert.addAlert(
-                        'danger',
-                        'Unexpected error removing classification'
-                    );
+                    this.alert.addAlert('danger', 'Unexpected error removing classification');
                 } else {
-                    this.reloadElt(() =>
-                        this.alert.addAlert(
-                            'success',
-                            'Classification removed.'
-                        )
-                    );
+                    this.reloadElt(() => this.alert.addAlert('success', 'Classification removed.'));
                 }
             }
         );

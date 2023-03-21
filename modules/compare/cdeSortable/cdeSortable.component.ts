@@ -14,21 +14,20 @@ export class CdeSortableComponent {
     @Input() right!: CompareForm;
     @Input() mergeFields!: FormMergeFields;
 
-    constructor(private mergeFormService: MergeFormService) {
-    }
+    constructor(private mergeFormService: MergeFormService) {}
 
     addItem() {
         this.left.questions.push({
             elementType: 'question',
             formElements: [],
             question: {
-                cde: {tinyId: '', name: '', derivationRules: [], ids: []},
+                cde: { tinyId: '', name: '', derivationRules: [], ids: [] },
                 datatype: 'Text',
                 datatypeText: {},
                 unitsOfMeasure: [],
                 uomsAlias: [],
-                uomsValid: []
-            }
+                uomsValid: [],
+            },
         });
         this.mergeFormService.validateQuestions(this.left, this.right, this.mergeFields);
     }

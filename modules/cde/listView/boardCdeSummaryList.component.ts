@@ -5,7 +5,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-board-cde-summary-list',
-    templateUrl: './boardCdeSummaryList.component.html'
+    templateUrl: './boardCdeSummaryList.component.html',
 })
 export class BoardCdeSummaryListComponent implements OnChanges, OnInit {
     @Input() board: any;
@@ -18,15 +18,27 @@ export class BoardCdeSummaryListComponent implements OnChanges, OnInit {
 
     doCheck() {
         // TODO: remove DoCheck when OnChanges inputs is implemented for Dynamic Components
-        if (this.board !== this.boardListService.board) { this.boardListService.board = this.board; }
-        if (this.currentPage !== this.boardListService.currentPage) { this.boardListService.currentPage = this.currentPage; }
-        if (this.totalItems !== this.boardListService.totalItems) { this.boardListService.totalItems = this.totalItems; }
+        if (this.board !== this.boardListService.board) {
+            this.boardListService.board = this.board;
+        }
+        if (this.currentPage !== this.boardListService.currentPage) {
+            this.boardListService.currentPage = this.currentPage;
+        }
+        if (this.totalItems !== this.boardListService.totalItems) {
+            this.boardListService.totalItems = this.totalItems;
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (changes.board) { this.boardListService.board = this.board; }
-        if (changes.currentPage) { this.boardListService.currentPage = this.currentPage; }
-        if (changes.totalItems) { this.boardListService.totalItems = this.totalItems; }
+        if (changes.board) {
+            this.boardListService.board = this.board;
+        }
+        if (changes.currentPage) {
+            this.boardListService.currentPage = this.currentPage;
+        }
+        if (changes.totalItems) {
+            this.boardListService.totalItems = this.totalItems;
+        }
         this.doCheck();
     }
 

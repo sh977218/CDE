@@ -1,14 +1,6 @@
 import { ENTER } from '@angular/cdk/keycodes';
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    OnInit,
-    Output,
-    TemplateRef,
-    ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -43,18 +35,12 @@ import {
     QuestionValueList,
     SkipLogic,
 } from 'shared/form/form.model';
-import {
-    CodeAndSystem,
-    Designation,
-    FormattedValue,
-} from 'shared/models.model';
+import { CodeAndSystem, Designation, FormattedValue } from 'shared/models.model';
 import { fixDatatype } from 'shared/de/dataElement.model';
 import { noop } from 'shared/util';
 
 const ignoreDatatypeArray = ['Dynamic Code List', 'Externally Defined'];
-const dataTypeArray = DATA_TYPE_ARRAY.filter(
-    d => ignoreDatatypeArray.indexOf(d) === -1
-);
+const dataTypeArray = DATA_TYPE_ARRAY.filter(d => ignoreDatatypeArray.indexOf(d) === -1);
 
 @Component({
     selector: 'cde-form-description-question-detail',
@@ -78,8 +64,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             this.ucumService.validateUoms(this.question.question);
         }
         this.questionAnswers = (
-            (this.question.question.datatype === 'Value List' &&
-                this.question.question.answers) ||
+            (this.question.question.datatype === 'Value List' && this.question.question.answers) ||
             []
         ).map(pvGetLabel);
     }
@@ -125,9 +110,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
                 debounceTime(300),
                 distinctUntilChanged(),
                 switchMap(value =>
-                    typeof value !== 'string' || value.length < 3
-                        ? []
-                        : this.ucumService.searchUcum(value)
+                    typeof value !== 'string' || value.length < 3 ? [] : this.ucumService.searchUcum(value)
                 )
             )
             .subscribe(uoms => (this.filteredUoms = uoms));
@@ -135,11 +118,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     defaultToLabel(question: Question) {
         return question.datatype === 'Value List'
-            ? pvGetLabel(
-                  question.answers.filter(
-                      pv => pv.permissibleValue === question.defaultAnswer
-                  )[0]
-              )
+            ? pvGetLabel(question.answers.filter(pv => pv.permissibleValue === question.defaultAnswer)[0])
             : question.defaultAnswer;
     }
 
@@ -156,27 +135,22 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
     onAnswerListChanged() {
         const question = this.question.question as QuestionValueList;
         question.answers = question.cde.permissibleValues.filter(
-            ans =>
-                this.questionAnswers.indexOf(
-                    ans.valueMeaningName || ans.permissibleValue
-                ) >= 0
+            ans => this.questionAnswers.indexOf(ans.valueMeaningName || ans.permissibleValue) >= 0
         );
         this.eltChange.emit();
     }
 
     openEditAnswerModal() {
-        const question: QuestionValueList = this.question
-            .question as QuestionValueList;
+        const question: QuestionValueList = this.question.question as QuestionValueList;
         this.dialog
-            .open<
+            .open<QuestionAnswerEditContentComponent, QuestionAnswerEditContentData, QuestionAnswerEditContentOutput>(
                 QuestionAnswerEditContentComponent,
-                QuestionAnswerEditContentData,
-                QuestionAnswerEditContentOutput
-            >(QuestionAnswerEditContentComponent, {
-                data: {
-                    answers: question.answers,
-                },
-            })
+                {
+                    data: {
+                        answers: question.answers,
+                    },
+                }
+            )
             .afterClosed()
             .subscribe(response => {
                 if (response === 'clear') {
@@ -193,25 +167,20 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     openNameSelect(question: FormQuestion, parent: FormSection) {
         this.dialog
-            .open<
+            .open<SelectQuestionLabelComponent, SelectQuestionLabelData, SelectQuestionLabelOutput>(
                 SelectQuestionLabelComponent,
-                SelectQuestionLabelData,
-                SelectQuestionLabelOutput
-            >(SelectQuestionLabelComponent, {
-                width: '800px',
-                data: {
-                    question,
-                    parent,
-                },
-            })
+                {
+                    width: '800px',
+                    data: {
+                        question,
+                        parent,
+                    },
+                }
+            )
             .afterClosed()
             .subscribe(designation => {
                 if (designation && designation.designation) {
-                    SkipLogicValidateService.checkAndUpdateLabel(
-                        parent,
-                        question.label || '',
-                        designation.designation
-                    );
+                    SkipLogicValidateService.checkAndUpdateLabel(parent, question.label || '', designation.designation);
                     FormDescriptionQuestionDetailComponent.updateRepeatQuestions(
                         this.elt,
                         question.label || '',
@@ -232,10 +201,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if ((value || '').trim()) {
             const idArray = value.trim().split(';');
             if (idArray.length !== 2) {
-                return this.alert.addAlert(
-                    'danger',
-                    'Incorrect Identifier Format'
-                );
+                return this.alert.addAlert('danger', 'Incorrect Identifier Format');
             }
             this.question.question.cde.ids.push({
                 source: idArray[0].trim(),
@@ -255,10 +221,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         this.eltChange.emit();
     }
 
-    addCdeDesignation(
-        designations: Designation[],
-        event: MatChipInputEvent
-    ): void {
+    addCdeDesignation(designations: Designation[], event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
 
@@ -315,8 +278,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     private syncAnswerListItems() {
         if (this.question.question.datatype === 'Value List') {
-            this.answerListItems =
-                this.question.question.cde.permissibleValues.map(pvGetLabel);
+            this.answerListItems = this.question.question.cde.permissibleValues.map(pvGetLabel);
         }
     }
 
@@ -332,13 +294,10 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
 
     uomAddNew() {
         if (
-            !this.question.question.unitsOfMeasure.filter(
-                u => u.code === this.newUom && u.system === this.newUomSystem
-            ).length
+            !this.question.question.unitsOfMeasure.filter(u => u.code === this.newUom && u.system === this.newUomSystem)
+                .length
         ) {
-            this.question.question.unitsOfMeasure.push(
-                new CodeAndSystem(this.newUomSystem, this.newUom)
-            );
+            this.question.question.unitsOfMeasure.push(new CodeAndSystem(this.newUomSystem, this.newUom));
             this.eltChange.emit();
         }
         this.newUom = '';
@@ -353,11 +312,7 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         }
     }
 
-    static updateRepeatQuestions(
-        elt: CdeForm,
-        oldLabel: string,
-        newLabel: string
-    ) {
+    static updateRepeatQuestions(elt: CdeForm, oldLabel: string, newLabel: string) {
         const modifyRepeat = (fe: FormElement) => {
             if (repeatFe(fe) === '=' && repeatFeQuestion(fe) === oldLabel) {
                 fe.repeat = '="' + newLabel + '"';

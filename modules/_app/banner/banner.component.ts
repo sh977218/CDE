@@ -1,11 +1,4 @@
-import {
-    Component,
-    forwardRef,
-    Inject,
-    TemplateRef,
-    ViewChild,
-    ViewEncapsulation,
-} from '@angular/core';
+import { Component, forwardRef, Inject, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -18,7 +11,5 @@ export class BannerComponent {
     @ViewChild('covidBannerContent', { static: true })
     copyDataElementContent!: TemplateRef<any>;
 
-    constructor(
-        @Inject(forwardRef(() => MatDialog)) public dialog: MatDialog
-    ) {}
+    constructor(@Inject(forwardRef(() => MatDialog)) public dialog: MatDialog) {}
 }

@@ -22,24 +22,16 @@ export class RelatedContentComponent implements OnInit {
 
     @ViewChild('tabGroup') tabGroup;
 
-    constructor(
-        private http: HttpClient,
-        private alert: AlertService,
-        private elasticService: ElasticService
-    ) {}
+    constructor(private http: HttpClient, private alert: AlertService, private elasticService: ElasticService) {}
 
     ngOnInit(): void {
         this.dataSets = this.elt.dataSets;
-        this.http
-            .get<{ cdes: MoreLikeThisDataElement[] }>(
-                `/server/de/moreLike/${this.elt.tinyId}`
-            )
-            .subscribe(
-                response => {
-                    this.mltCdes = response.cdes;
-                },
-                () => this.alert.addAlert('error', 'Unable to retrieve MLT')
-            );
+        this.http.get<{ cdes: MoreLikeThisDataElement[] }>(`/server/de/moreLike/${this.elt.tinyId}`).subscribe(
+            response => {
+                this.mltCdes = response.cdes;
+            },
+            () => this.alert.addAlert('error', 'Unable to retrieve MLT')
+        );
 
         const tinyId = this.elt.tinyId;
         const searchSettings = new SearchSettings();

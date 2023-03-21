@@ -12,15 +12,17 @@ export class DailyUsageComponent {
     entryLimit: number = 50;
     dailyUsage?: DailyUsage[];
 
-    constructor(
-        private http: HttpClient
-    ) {}
+    constructor(private http: HttpClient) {}
 
     generate() {
         this.http.get<DailyUsage[]>('/server/log/dailyUsageReportLogs').subscribe(res => {
             this.dailyUsage = res;
             this.dailyUsage.forEach(record => {
-                record.daysAgo = DailyUsageComponent.generateDaysAgo(record._id.year, record._id.month, record._id.dayOfMonth);
+                record.daysAgo = DailyUsageComponent.generateDaysAgo(
+                    record._id.year,
+                    record._id.month,
+                    record._id.dayOfMonth
+                );
             });
             this.dailyUsage.sort((u1, u2) => u1.daysAgo - u2.daysAgo);
         });
@@ -29,7 +31,7 @@ export class DailyUsageComponent {
     lookupUsername(dailyUsage: DailyUsage[], ip: string) {
         this.http.get<any>('/server/siteAdmin/usernamesByIp/' + ip).subscribe(usernames => {
             if (usernames.length === 0) {
-                usernames = [{username: 'Anonymous'}];
+                usernames = [{ username: 'Anonymous' }];
             }
             dailyUsage.forEach(d => {
                 if (d._id.ip === ip) {

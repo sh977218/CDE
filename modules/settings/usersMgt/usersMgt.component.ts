@@ -13,34 +13,42 @@ type FullUser = User & {
 
 @Component({
     selector: 'cde-users-mgt',
-    templateUrl: './usersMgt.component.html'
+    templateUrl: './usersMgt.component.html',
 })
 export class UsersMgtComponent {
     foundUsers: FullUser[] = [];
-    search: { username: User | string } = {username: ''};
+    search: { username: User | string } = { username: '' };
     rolesEnum = rolesEnum;
 
-    constructor(private alert: AlertService,
-                private http: HttpClient,
-                public dialog: MatDialog,
-                public userService: UserService) {
-    }
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public dialog: MatDialog,
+        public userService: UserService
+    ) {}
 
     openNewUserModal() {
-        this.dialog.open(CreateUserModalComponent, {width: '800px'}).afterClosed().subscribe(username => {
-            if (username) {
-                this.http.post('/server/user/addUser', {username}, {responseType: 'text'}).subscribe(
-                    () => this.alert.addAlert('success', 'User created'),
-                    () => this.alert.addAlert('danger', 'Cannot create user. Does it already exist?')
-                );
-            }
-        });
+        this.dialog
+            .open(CreateUserModalComponent, { width: '800px' })
+            .afterClosed()
+            .subscribe(username => {
+                if (username) {
+                    this.http.post('/server/user/addUser', { username }, { responseType: 'text' }).subscribe(
+                        () => this.alert.addAlert('success', 'User created'),
+                        () => this.alert.addAlert('danger', 'Cannot create user. Does it already exist?')
+                    );
+                }
+            });
     }
 
     searchUsers() {
-        this.http.get<FullUser[]>('/server/user/searchUsers/'
-            + (typeof (this.search.username) === 'object' && this.search.username.username || this.search.username)
-        ).subscribe(users => this.foundUsers = users);
+        this.http
+            .get<FullUser[]>(
+                '/server/user/searchUsers/' +
+                    ((typeof this.search.username === 'object' && this.search.username.username) ||
+                        this.search.username)
+            )
+            .subscribe(users => (this.foundUsers = users));
     }
 
     updateAvatar(user: User) {
@@ -48,6 +56,8 @@ export class UsersMgtComponent {
     }
 
     updateRoles(user: User) {
-        this.http.post('/server/user/updateUserRoles', user).subscribe(() => this.alert.addAlert('success', 'Roles saved.'));
+        this.http
+            .post('/server/user/updateUserRoles', user)
+            .subscribe(() => this.alert.addAlert('success', 'Roles saved.'));
     }
 }

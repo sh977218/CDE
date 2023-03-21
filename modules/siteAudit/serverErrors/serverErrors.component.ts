@@ -6,15 +6,14 @@ import { PageEvent } from '@angular/material/paginator';
 @Component({
     selector: 'cde-server-errors',
     templateUrl: './serverErrors.component.html',
-    styles: []
+    styles: [],
 })
 export class ServerErrorsComponent {
     currentPage: number = 0;
     records: any[] = [];
     badInput = false;
 
-    constructor(private http: HttpClient,
-                private alert: AlertService) {
+    constructor(private http: HttpClient, private alert: AlertService) {
         this.gotoPage();
     }
 
@@ -22,10 +21,9 @@ export class ServerErrorsComponent {
         const pagination = {
             skip: this.currentPage * 50,
             badInput: checked,
-            limit: 50
-        }
+            limit: 50,
+        };
         this.loadErrorByPagination(pagination);
-
     }
 
     gotoPage(event?: PageEvent) {
@@ -36,14 +34,17 @@ export class ServerErrorsComponent {
         const pagination = {
             skip: this.currentPage * 50,
             badInput: this.badInput,
-            limit: 50
-        }
+            limit: 50,
+        };
         this.loadErrorByPagination(pagination);
     }
 
     loadErrorByPagination(pagination: any) {
-        this.http.post<any[]>('/server/log/serverErrors', pagination).subscribe(response => {
-            this.records = response;
-        }, err => this.alert.httpErrorMessageAlert(err));
+        this.http.post<any[]>('/server/log/serverErrors', pagination).subscribe(
+            response => {
+                this.records = response;
+            },
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 }

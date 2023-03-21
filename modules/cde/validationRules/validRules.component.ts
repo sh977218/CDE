@@ -2,7 +2,11 @@ import { Component, Input } from '@angular/core';
 import { Dictionary } from 'async';
 import { cdePassingRule, getStatusRules, RegistrationValidatorService } from 'non-core/registrationValidator.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { StatusValidationRules, StatusValidationRulesByOrg, StatusValidationRulesByOrgReg } from 'shared/organization/organization';
+import {
+    StatusValidationRules,
+    StatusValidationRulesByOrg,
+    StatusValidationRulesByOrgReg,
+} from 'shared/organization/organization';
 
 interface RuleResult {
     name: string;
@@ -20,7 +24,7 @@ interface ValidRulesPromise {
 }
 @Component({
     selector: 'cde-valid-rules',
-    templateUrl: './validRules.component.html'
+    templateUrl: './validRules.component.html',
 })
 export class ValidRulesComponent {
     @Input() set elt(elt: DataElement) {
@@ -29,23 +33,25 @@ export class ValidRulesComponent {
         this.results = {};
         for (const regStatus in this.cdeStatusRules) {
             if (this.cdeStatusRules.hasOwnProperty(regStatus)) {
-                const resultReg: Dictionary<ValidRulesPromise[]> = this.results[regStatus] = {};
+                const resultReg: Dictionary<ValidRulesPromise[]> = (this.results[regStatus] = {});
                 for (const orgName in this.cdeStatusRules[regStatus]) {
                     if (this.cdeStatusRules[regStatus].hasOwnProperty(orgName)) {
-                        resultReg[orgName] = this.cdeStatusRules[regStatus][orgName].map((rule: StatusValidationRules) => {
-                            const result: ValidRulesPromise = {
-                                name: rule.ruleName,
-                                result: undefined,
-                                resultPromise: cdePassingRule(this._elt, rule),
-                            };
+                        resultReg[orgName] = this.cdeStatusRules[regStatus][orgName].map(
+                            (rule: StatusValidationRules) => {
+                                const result: ValidRulesPromise = {
+                                    name: rule.ruleName,
+                                    result: undefined,
+                                    resultPromise: cdePassingRule(this._elt, rule),
+                                };
 
-                            function populateResult(data: string) {
-                                return result.result = data;
+                                function populateResult(data: string) {
+                                    return (result.result = data);
+                                }
+
+                                result.resultPromise = result.resultPromise.then(populateResult, populateResult);
+                                return result;
                             }
-
-                            result.resultPromise = result.resultPromise.then(populateResult, populateResult);
-                            return result;
-                        });
+                        );
                     }
                 }
             }
@@ -59,8 +65,7 @@ export class ValidRulesComponent {
     keys = Object.keys;
     results: RuleResultByOrgReg = {};
 
-    constructor(private registrationValidatorService: RegistrationValidatorService) {
-    }
+    constructor(private registrationValidatorService: RegistrationValidatorService) {}
 
     hasRules() {
         return this.showStatus(this.cdeStatusRules);

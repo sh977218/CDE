@@ -6,11 +6,7 @@ import { DeleteClassificationModalComponent } from 'adminItem/classification/del
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { cumulative } from 'shared/array';
-import {
-    Classification,
-    ClassificationElement,
-    Item,
-} from 'shared/models.model';
+import { Classification, ClassificationElement, Item } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 
@@ -38,11 +34,9 @@ export class ClassificationViewComponent {
         private orgHelperService: OrgHelperService
     ) {
         this.orgHelperService.then(() => (this.orgHelperLoaded = true), noop);
-        this.breakpointObserver
-            .observe(['(min-width: 768px)'])
-            .subscribe(state => {
-                this.isMdSize = state.matches;
-            });
+        this.breakpointObserver.observe(['(min-width: 768px)']).subscribe(state => {
+            this.isMdSize = state.matches;
+        });
     }
 
     getClassification2ColumnHeight(): string {
@@ -72,9 +66,7 @@ export class ClassificationViewComponent {
         return cumulative(
             this.elt.classification.map(c =>
                 this.showWorkingGroups(c)
-                    ? countElements(c.elements) * linkHeight +
-                      sectionEmptyHeight +
-                      sectionGapHeight
+                    ? countElements(c.elements) * linkHeight + sectionEmptyHeight + sectionGapHeight
                     : 0
             ),
             (acc, sectionHeight) => acc + sectionHeight,
@@ -86,11 +78,7 @@ export class ClassificationViewComponent {
         return '/' + this.elt.elementType + '/search';
     }
 
-    openDeleteClassificationModal(
-        node: ClassificationElement,
-        deleteOrgName: string,
-        path: string
-    ) {
+    openDeleteClassificationModal(node: ClassificationElement, deleteOrgName: string, path: string) {
         this.dialog
             .open(DeleteClassificationModalComponent, {
                 data: node.name,
@@ -108,9 +96,8 @@ export class ClassificationViewComponent {
 
     showWorkingGroups(classification: Classification) {
         return this.orgHelperLoaded
-            ? this.orgHelperService.showWorkingGroup(
-                  classification.stewardOrg.name
-              ) || isSiteAdmin(this.userService.user)
+            ? this.orgHelperService.showWorkingGroup(classification.stewardOrg.name) ||
+                  isSiteAdmin(this.userService.user)
             : false;
     }
 }

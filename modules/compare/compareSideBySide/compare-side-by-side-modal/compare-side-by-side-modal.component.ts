@@ -2,11 +2,16 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormElement, FormElementsContainer, QuestionValueList } from 'shared/form/form.model';
 import {
-    Concept, DataElement, DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
+    Concept,
+    DataElement,
+    DatatypeContainerDate,
+    DatatypeContainerDynamicList,
+    DatatypeContainerExternal,
     DatatypeContainerNumber,
-    DatatypeContainerText, DatatypeContainerTime,
+    DatatypeContainerText,
+    DatatypeContainerTime,
     DatatypeContainerValueList,
-    ValueDomainValueList
+    ValueDomainValueList,
 } from 'shared/de/dataElement.model';
 import { Cb } from 'shared/models.model';
 import { isDataElement, ITEM_MAP } from 'shared/item';
@@ -20,21 +25,20 @@ import { CompareItem } from 'compare/compareSideBySide/compare-item';
 import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 import { CompareForm } from 'compare/compareSideBySide/compare-form';
 
-
 interface CompareOption<T> {
     displayAs: {
-        data: Data[],
-        display?: boolean,
-        label: string,
-        property: string,
+        data: Data[];
+        display?: boolean;
+        label: string;
+        property: string;
     };
-    fullMatches: { left: T, right: T }[];
+    fullMatches: { left: T; right: T }[];
     fullMatchFn: (a: T, b: T) => boolean;
-    leftNotMatches: { left: T, right: T }[];
+    leftNotMatches: { left: T; right: T }[];
     notMatchFn: (a: T, b: T) => boolean;
-    partialMatches: { left: T, right: T, diff: {} }[];
+    partialMatches: { left: T; right: T; diff: {} }[];
     partialMatchFn: (a: T, b: T) => string[];
-    rightNotMatches: { left: T, right: T }[];
+    rightNotMatches: { left: T; right: T }[];
 }
 
 interface Data {
@@ -46,32 +50,34 @@ interface Data {
 
 @Component({
     templateUrl: './compare-side-by-side-modal.component.html',
-    styles: [`
-      .fullMatch {
-        background-color: rgba(223, 240, 216, .79);
-        margin: 2px 0;
-      }
+    styles: [
+        `
+            .fullMatch {
+                background-color: rgba(223, 240, 216, 0.79);
+                margin: 2px 0;
+            }
 
-      .partialMatch {
-        background-color: rgba(240, 225, 53, .79);
-        margin: 2px 0;
-      }
+            .partialMatch {
+                background-color: rgba(240, 225, 53, 0.79);
+                margin: 2px 0;
+            }
 
-      .notMatch {
-        background-color: rgba(242, 217, 217, .5);
-        margin: 2px 0;
-      }
+            .notMatch {
+                background-color: rgba(242, 217, 217, 0.5);
+                margin: 2px 0;
+            }
 
-      ins {
-        color: black;
-        background: #bbffbb;
-      }
+            ins {
+                color: black;
+                background: #bbffbb;
+            }
 
-      del {
-        color: black;
-        background: #ffbbbb;
-      }
-    `]
+            del {
+                color: black;
+                background: #ffbbbb;
+            }
+        `,
+    ],
 })
 export class CompareSideBySideModalComponent {
     options: CompareOption<any>[] = [];
@@ -82,79 +88,81 @@ export class CompareSideBySideModalComponent {
     canMergeForm = false;
     canMergeDataElement = false;
 
-    constructor(private http: HttpClient,
-                @Inject(MAT_DIALOG_DATA) public selectedDEs: CompareItem[] = [],
-                public isAllowedModel: IsAllowedService,
-                private alert: AlertService,) {
-        this.doCompare(selectedDEs[0], selectedDEs[1], () => {
-        });
+    constructor(
+        private alert: AlertService,
+        private http: HttpClient,
+        public isAllowedModel: IsAllowedService,
+        @Inject(MAT_DIALOG_DATA) public selectedDEs: CompareItem[] = []
+    ) {
+        this.doCompare(selectedDEs[0], selectedDEs[1], () => {});
     }
 
-
-    doneMerge(event: { left: CompareItem, right: CompareItem }) {
-        this.doCompare(this.left = event.left, this.right = event.right, () => {
-        });
+    doneMerge(event: { left: CompareItem; right: CompareItem }) {
+        this.doCompare((this.left = event.left), (this.right = event.right), () => {});
     }
 
     doCompare(l: CompareItem, r: CompareItem, cb: Cb) {
         const leftObservable = this.http.get<CompareItem>(ITEM_MAP[l.elementType].api + l.tinyId);
         const rightObservable = this.http.get<CompareItem>(ITEM_MAP[r.elementType].api + r.tinyId);
-        forkJoin([leftObservable, rightObservable]).subscribe((results) => {
-            this.left = results[0] as CompareItem;
-            this.right = results[1] as CompareItem;
-            if (!isDataElement(this.left)) {
-                this.left.questions = this.flatFormQuestions(this.left);
-            }
-            if (!isDataElement(this.right)) {
-                this.right.questions = this.flatFormQuestions(this.right);
-            }
-            this.getOptions(this.left, this.right);
-            this.options.forEach(option => {
-                let l = get(this.left, option.displayAs.property);
-                let r = get(this.right, option.displayAs.property);
-                if (!l) {
-                    l = [];
+        forkJoin([leftObservable, rightObservable]).subscribe(
+            results => {
+                this.left = results[0] as CompareItem;
+                this.right = results[1] as CompareItem;
+                if (!isDataElement(this.left)) {
+                    this.left.questions = this.flatFormQuestions(this.left);
                 }
-                if (!r) {
-                    r = [];
+                if (!isDataElement(this.right)) {
+                    this.right.questions = this.flatFormQuestions(this.right);
                 }
-                if (typeof l !== 'object') {
-                    l = [{data: l}];
-                }
-                if (!isArray(l)) {
-                    l = [l];
-                }
-                if (typeof r !== 'object') {
-                    r = [{data: r}];
-                }
-                if (!isArray(r)) {
-                    r = [r];
-                }
-                intersectionWith(l, r, (a: any, b: any) => {
-                    if (option.fullMatchFn(a, b)) {
-                        option.displayAs.display = true;
-                        option.fullMatches.push({left: a, right: b});
-                        return true;
+                this.getOptions(this.left, this.right);
+                this.options.forEach(option => {
+                    let l = get(this.left, option.displayAs.property);
+                    let r = get(this.right, option.displayAs.property);
+                    if (!l) {
+                        l = [];
                     }
-                    return false;
-                });
-                intersectionWith(l, r, (a: any, b: any) => {
-                    const partialMatchDiff = option.partialMatchFn(a, b);
-                    if (partialMatchDiff.length > 0) {
-                        option.displayAs.display = true;
-                        option.partialMatches.push({left: a, right: b, diff: partialMatchDiff});
-                        return true;
+                    if (!r) {
+                        r = [];
                     }
-                    return false;
+                    if (typeof l !== 'object') {
+                        l = [{ data: l }];
+                    }
+                    if (!isArray(l)) {
+                        l = [l];
+                    }
+                    if (typeof r !== 'object') {
+                        r = [{ data: r }];
+                    }
+                    if (!isArray(r)) {
+                        r = [r];
+                    }
+                    intersectionWith(l, r, (a: any, b: any) => {
+                        if (option.fullMatchFn(a, b)) {
+                            option.displayAs.display = true;
+                            option.fullMatches.push({ left: a, right: b });
+                            return true;
+                        }
+                        return false;
+                    });
+                    intersectionWith(l, r, (a: any, b: any) => {
+                        const partialMatchDiff = option.partialMatchFn(a, b);
+                        if (partialMatchDiff.length > 0) {
+                            option.displayAs.display = true;
+                            option.partialMatches.push({ left: a, right: b, diff: partialMatchDiff });
+                            return true;
+                        }
+                        return false;
+                    });
+                    option.leftNotMatches = differenceWith(l, r, option.notMatchFn);
+                    option.rightNotMatches = differenceWith(r, l, option.notMatchFn);
+                    if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0) {
+                        option.displayAs.display = true;
+                    }
                 });
-                option.leftNotMatches = differenceWith(l, r, option.notMatchFn);
-                option.rightNotMatches = differenceWith(r, l, option.notMatchFn);
-                if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0) {
-                    option.displayAs.display = true;
-                }
-            });
-            cb();
-        }, err => this.alert.httpErrorMessageAlert(err));
+                cb();
+            },
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     flatFormQuestions(fe: FormElementsContainer): CompareQuestion[] {
@@ -179,7 +187,7 @@ export class CompareSideBySideModalComponent {
                 displayAs: {
                     label: 'Steward',
                     property: 'stewardOrg.name',
-                    data: [{label: '', property: 'data'}]
+                    data: [{ label: '', property: 'data' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -187,13 +195,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['stewardOrg']['name']>,
             {
                 displayAs: {
                     label: 'Status',
                     property: 'registrationState.registrationStatus',
-                    data: [{label: '', property: 'data'}]
+                    data: [{ label: '', property: 'data' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -201,16 +209,16 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['registrationState']['registrationStatus']>,
             {
                 displayAs: {
                     label: 'Designation',
                     property: 'designations',
                     data: [
-                        {label: 'Designation', property: 'designation'},
-                        {label: 'Tags', property: 'tags'}
-                    ]
+                        { label: 'Designation', property: 'designation' },
+                        { label: 'Tags', property: 'tags' },
+                    ],
                 },
                 fullMatchFn: (a, b) => isEqual(a.designation, b.designation),
                 fullMatches: [],
@@ -226,16 +234,16 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.designation, b.designation),
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['designations'][number]>,
             {
                 displayAs: {
                     label: 'Definition',
                     property: 'definitions',
                     data: [
-                        {label: 'Definition', property: 'definition'},
-                        {label: 'Tags', property: 'tags'}
-                    ]
+                        { label: 'Definition', property: 'definition' },
+                        { label: 'Tags', property: 'tags' },
+                    ],
                 },
                 fullMatchFn: (a, b) => isEqual(a.definition, b.definition),
                 fullMatches: [],
@@ -251,19 +259,20 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.definition, b.definition),
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['definitions'][number]>,
             {
                 displayAs: {
                     label: 'Identifiers',
                     property: 'ids',
                     data: [
-                        {label: 'Source', property: 'source'},
-                        {label: 'Id', property: 'id'},
-                        {label: 'Version', property: 'version'}
-                    ]
+                        { label: 'Source', property: 'source' },
+                        { label: 'Id', property: 'id' },
+                        { label: 'Version', property: 'version' },
+                    ],
                 },
-                fullMatchFn: (a, b) => isEqual(a.source, b.source) && isEqual(a.id, b.id) && isEqual(a.version, b.version),
+                fullMatchFn: (a, b) =>
+                    isEqual(a.source, b.source) && isEqual(a.id, b.id) && isEqual(a.version, b.version),
                 fullMatches: [],
                 partialMatchFn: (a, b) => {
                     const diff = [];
@@ -280,15 +289,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.source, b.source),
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['ids'][number]>,
             {
                 displayAs: {
                     label: 'Sources',
                     property: 'sources',
-                    data: [
-                        {label: 'Name', property: 'sourceName'}
-                    ]
+                    data: [{ label: 'Name', property: 'sourceName' }],
                 },
                 fullMatchFn: (a, b) => isEqual(a.sourceName, b.sourceName),
                 fullMatches: [],
@@ -296,20 +303,20 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.sourceName, b.sourceName),
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['sources'][number]>,
             {
                 displayAs: {
                     label: 'Reference Documents',
                     property: 'referenceDocuments',
                     data: [
-                        {label: 'Title', property: 'title'},
-                        {label: 'URI', property: 'uri'},
-                        {label: 'Document', property: 'document'},
-                        {label: 'Document Type', property: 'docType'},
-                        {label: 'Provider Org', property: 'providerOrg'},
-                        {label: 'Language Code', property: 'languageCode'}
-                    ]
+                        { label: 'Title', property: 'title' },
+                        { label: 'URI', property: 'uri' },
+                        { label: 'Document', property: 'document' },
+                        { label: 'Document Type', property: 'docType' },
+                        { label: 'Provider Org', property: 'providerOrg' },
+                        { label: 'Language Code', property: 'languageCode' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -337,18 +344,18 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.document, b.document),
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<CompareItem['referenceDocuments'][number]>,
             {
                 displayAs: {
                     label: 'Properties',
                     property: 'properties',
                     data: [
-                        {label: 'Key', property: 'key'},
-                        {label: 'Value', property: 'value'},
-                        {label: 'Source', property: 'source'},
-                        {label: 'Value Format', property: 'valueFormat'}
-                    ]
+                        { label: 'Key', property: 'key' },
+                        { label: 'Value', property: 'value' },
+                        { label: 'Source', property: 'source' },
+                        { label: 'Value Format', property: 'valueFormat' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -367,8 +374,8 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: (a, b) => isEqual(a.key, b.key),
                 leftNotMatches: [],
-                rightNotMatches: []
-            } as CompareOption<CompareItem['properties'][number]>
+                rightNotMatches: [],
+            } as CompareOption<CompareItem['properties'][number]>,
         ];
         const dataElementOption: CompareOption<any>[] = [
             {
@@ -376,10 +383,10 @@ export class CompareSideBySideModalComponent {
                     label: 'Data Element Concept',
                     property: 'dataElementConcept.concepts',
                     data: [
-                        {label: 'Name', property: 'name'},
-                        {label: 'Origin', property: 'origin'},
-                        {label: 'Origin Id', property: 'originId'}
-                    ]
+                        { label: 'Name', property: 'name' },
+                        { label: 'Origin', property: 'origin' },
+                        { label: 'Origin Id', property: 'originId' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -387,16 +394,17 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<Concept>,
             {
                 displayAs: {
                     label: 'Object Class Concept',
                     property: 'objectClass.concepts',
-                    data: [{label: 'Name', property: 'name'},
-                        {label: 'Origin', property: 'origin'},
-                        {label: 'Origin Id', property: 'originId'}
-                    ]
+                    data: [
+                        { label: 'Name', property: 'name' },
+                        { label: 'Origin', property: 'origin' },
+                        { label: 'Origin Id', property: 'originId' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -404,16 +412,17 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DataElement['objectClass']['concepts'][number]>,
             {
                 displayAs: {
                     label: 'Property Concept',
                     property: 'property.concepts',
-                    data: [{label: 'Name', property: 'name'},
-                        {label: 'Origin', property: 'origin'},
-                        {label: 'Origin Id', property: 'originId'}
-                    ]
+                    data: [
+                        { label: 'Name', property: 'name' },
+                        { label: 'Origin', property: 'origin' },
+                        { label: 'Origin Id', property: 'originId' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -421,15 +430,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DataElement['property']['concepts'][number]>,
             {
                 displayAs: {
                     label: 'Unit of Measure',
                     property: 'valueDomain.uom',
-                    data: [
-                        {label: '', property: 'data'},
-                    ]
+                    data: [{ label: '', property: 'data' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -437,15 +444,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DataElement['valueDomain']['uom']>,
             {
                 displayAs: {
                     label: 'Data Type',
                     property: 'valueDomain.datatype',
-                    data: [
-                        {label: '', property: 'data'},
-                    ]
+                    data: [{ label: '', property: 'data' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -453,15 +458,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DataElement['valueDomain']['datatype']>,
             {
                 displayAs: {
                     label: 'Data Type Value List',
                     property: 'valueDomain.datatypeValueList',
-                    data: [
-                        {label: 'Data Type', property: 'datatype'}
-                    ]
+                    data: [{ label: 'Data Type', property: 'datatype' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -469,18 +472,18 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerValueList['datatypeValueList']>,
             {
                 displayAs: {
                     label: 'Permissible Values',
                     property: 'valueDomain.permissibleValues',
                     data: [
-                        {label: 'Code Value', property: 'permissibleValue'},
-                        {label: 'Code Name', property: 'valueMeaningName'},
-                        {label: 'Code', property: 'valueMeaningCode'},
-                        {label: 'Code System', property: 'codeSystemName'}
-                    ]
+                        { label: 'Code Value', property: 'permissibleValue' },
+                        { label: 'Code Name', property: 'valueMeaningName' },
+                        { label: 'Code', property: 'valueMeaningCode' },
+                        { label: 'Code System', property: 'codeSystemName' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -488,17 +491,17 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<ValueDomainValueList['permissibleValues'][number]>,
             {
                 displayAs: {
                     label: 'Data Type Number',
                     property: 'valueDomain.datatypeNumber',
                     data: [
-                        {label: 'Minimum Value', property: 'minValue'},
-                        {label: 'Maximum Value', property: 'maxValue'},
-                        {label: 'Precision', property: 'precision'}
-                    ]
+                        { label: 'Minimum Value', property: 'minValue' },
+                        { label: 'Maximum Value', property: 'maxValue' },
+                        { label: 'Precision', property: 'precision' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -506,18 +509,18 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerNumber['datatypeNumber']>,
             {
                 displayAs: {
                     label: 'Data Type Text',
                     property: 'valueDomain.datatypeText',
                     data: [
-                        {label: 'Minimum Length', property: 'minLength'},
-                        {label: 'Maximum Length', property: 'maxLength'},
-                        {label: 'Regular Expression', property: 'regex'},
-                        {label: 'Rule', property: 'rule'}
-                    ]
+                        { label: 'Minimum Length', property: 'minLength' },
+                        { label: 'Maximum Length', property: 'maxLength' },
+                        { label: 'Regular Expression', property: 'regex' },
+                        { label: 'Rule', property: 'rule' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -525,15 +528,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerText['datatypeText']>,
             {
                 displayAs: {
                     label: 'Data Type Date',
                     property: 'valueDomain.datatypeDate',
-                    data: [
-                        {label: 'Format', property: 'format'}
-                    ]
+                    data: [{ label: 'Format', property: 'format' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -541,15 +542,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerDate['datatypeDate']>,
             {
                 displayAs: {
                     label: 'Data Type Code',
                     property: 'valueDomain.datatypeDynamicCodeList',
-                    data: [
-                        {label: 'System', property: 'system'}
-                    ]
+                    data: [{ label: 'System', property: 'system' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -557,15 +556,13 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerDynamicList['datatypeDynamicCodeList']>,
             {
                 displayAs: {
                     label: 'Data Type Time',
                     property: 'valueDomain.datatypeTime',
-                    data: [
-                        {label: 'Format', property: 'format'}
-                    ]
+                    data: [{ label: 'Format', property: 'format' }],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -573,17 +570,17 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
+                rightNotMatches: [],
             } as CompareOption<DatatypeContainerTime['datatypeTime']>,
             {
                 displayAs: {
                     label: 'Data Type Externally Defined',
                     property: 'valueDomain.datatypeExternallyDefined',
                     data: [
-                        {label: 'Link', property: 'link'},
-                        {label: 'Description', property: 'description'},
-                        {label: 'Description Format', property: 'descriptionFormat'}
-                    ]
+                        { label: 'Link', property: 'link' },
+                        { label: 'Description', property: 'description' },
+                        { label: 'Description Format', property: 'descriptionFormat' },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -591,8 +588,8 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
-            } as CompareOption<DatatypeContainerExternal['datatypeExternallyDefined']>
+                rightNotMatches: [],
+            } as CompareOption<DatatypeContainerExternal['datatypeExternallyDefined']>,
         ];
         const formOption: CompareOption<any>[] = [
             {
@@ -600,16 +597,19 @@ export class CompareSideBySideModalComponent {
                     label: 'Questions',
                     property: 'questions',
                     data: [
-                        {label: 'Label', property: 'label'},
-                        {label: 'Data Type', property: 'question.datatype'},
-                        {label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId='},
-                        {label: 'Unit of Measure', property: 'question.unitsOfMeasure'},
+                        { label: 'Label', property: 'label' },
+                        { label: 'Data Type', property: 'question.datatype' },
+                        { label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId=' },
+                        { label: 'Unit of Measure', property: 'question.unitsOfMeasure' },
                         {
-                            label: 'Answer', property: 'question.answers', properties: {
-                                label: 'Permissible Value', property: 'permissibleValue'
-                            }
-                        }
-                    ]
+                            label: 'Answer',
+                            property: 'question.answers',
+                            properties: {
+                                label: 'Permissible Value',
+                                property: 'permissibleValue',
+                            },
+                        },
+                    ],
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
@@ -625,7 +625,12 @@ export class CompareSideBySideModalComponent {
                         if (!isEqual(a.question.unitsOfMeasure, b.question.unitsOfMeasure)) {
                             diff.push('question.unitsOfMeasure');
                         }
-                        if (!isEqual((a.question as QuestionValueList).answers, (b.question as QuestionValueList).answers)) {
+                        if (
+                            !isEqual(
+                                (a.question as QuestionValueList).answers,
+                                (b.question as QuestionValueList).answers
+                            )
+                        ) {
                             diff.push('question.answers');
                         }
                     }
@@ -634,8 +639,8 @@ export class CompareSideBySideModalComponent {
                 partialMatches: [],
                 notMatchFn: isEqual,
                 leftNotMatches: [],
-                rightNotMatches: []
-            } as CompareOption<CompareForm['questions'][number]>
+                rightNotMatches: [],
+            } as CompareOption<CompareForm['questions'][number]>,
         ];
         let isDataElement = false;
         let isForm = false;
@@ -649,10 +654,9 @@ export class CompareSideBySideModalComponent {
             this.options = commonOption.concat(formOption);
             isForm = true;
         }
-        this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) &&
-            this.isAllowedModel.isAllowed(right);
-        this.canMergeDataElement = isDataElement && this.isAllowedModel.isAllowed(left) &&
-            this.isAllowedModel.isAllowed(right);
+        this.canMergeForm = isForm && this.isAllowedModel.isAllowed(left) && this.isAllowedModel.isAllowed(right);
+        this.canMergeDataElement =
+            isDataElement && this.isAllowedModel.isAllowed(left) && this.isAllowedModel.isAllowed(right);
     }
 
     getValue(o: any, d: Data): string | undefined {

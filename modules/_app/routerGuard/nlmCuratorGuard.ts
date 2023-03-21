@@ -15,7 +15,7 @@ import { hasRole } from 'shared/security/authorizationShared';
 export class NlmCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
@@ -31,16 +31,19 @@ export class NlmCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkLogin(): Promise<boolean> {
-        return this.userService.then(user => {
-            if (hasRole(user, 'NlmCurator')) {
-                return true;
-            } else {
-                this.router.navigate(['/home']);
+        return this.userService.then(
+            user => {
+                if (hasRole(user, 'NlmCurator')) {
+                    return true;
+                } else {
+                    this.router.navigate(['/home']);
+                    return false;
+                }
+            },
+            () => {
+                this.router.navigate(['/login']);
                 return false;
             }
-        }, () => {
-            this.router.navigate(['/login']);
-            return false;
-        });
+        );
     }
 }

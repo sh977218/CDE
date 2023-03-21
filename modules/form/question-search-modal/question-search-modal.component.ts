@@ -1,6 +1,4 @@
-import {
-    AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Inject, Output, ViewChild
-} from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EventEmitter, Inject, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { DataElement } from 'shared/de/dataElement.model';
@@ -9,7 +7,7 @@ import { Designation } from 'shared/models.model';
 
 @Component({
     templateUrl: './question-search-modal.component.html',
-    providers: [DeCompletionService]
+    providers: [DeCompletionService],
 })
 export class QuestionSearchModalComponent implements AfterViewChecked {
     @ViewChild('searchElement') searchElement: ElementRef;
@@ -17,10 +15,12 @@ export class QuestionSearchModalComponent implements AfterViewChecked {
     newDataElement = new DataElement();
     questionModelMode = 'search';
 
-    constructor(public http: HttpClient,
-                @Inject(MAT_DIALOG_DATA) public data,
-                private dialogRef: MatDialogRef<QuestionSearchModalComponent>,
-                public deCompletionService: DeCompletionService) {
+    constructor(
+        public http: HttpClient,
+        @Inject(MAT_DIALOG_DATA) public data,
+        private dialogRef: MatDialogRef<QuestionSearchModalComponent>,
+        public deCompletionService: DeCompletionService
+    ) {
         this.newDataElement.designations.push(new Designation('', ['Question Text']));
         this.deCompletionService.suggestedCdes = [];
         if (data.questionModelMode) {
@@ -31,7 +31,6 @@ export class QuestionSearchModalComponent implements AfterViewChecked {
     addQuestionFromSearch(de: DataElement) {
         this.selectedQuestion.emit(de);
     }
-
 
     createNewDataElement(newCde: DataElement = this.newDataElement) {
         this.selectedQuestion.emit(newCde);
@@ -45,6 +44,4 @@ export class QuestionSearchModalComponent implements AfterViewChecked {
             }
         }, 0);
     }
-
-
 }

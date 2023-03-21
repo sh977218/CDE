@@ -11,20 +11,20 @@ export class CompareHistoryContentComponent {
     older: Item;
     filter = {
         reorder: {
-            select: true
+            select: true,
         },
         add: {
-            select: true
+            select: true,
         },
         remove: {
-            select: true
+            select: true,
         },
         edited: {
-            select: true
-        }
+            select: true,
+        },
     };
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: { newer: Item, older: Item }) {
+    constructor(@Inject(MAT_DIALOG_DATA) public data: { newer: Item; older: Item }) {
         this.newer = data.newer;
         this.older = data.older;
     }

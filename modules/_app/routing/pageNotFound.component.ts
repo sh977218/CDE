@@ -9,7 +9,6 @@ import { Component } from '@angular/core';
             <p>The page may be temporarily unavailable, moved, or no longer available.</p>
             <em>Please check the url. Broken links can be reported using reporting tool at the bottom of the page.</em>
         </div>
-    `
+    `,
 })
-export class PageNotFoundComponent {
-}
+export class PageNotFoundComponent {}

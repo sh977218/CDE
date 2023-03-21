@@ -10,7 +10,7 @@ export type QuestionAnswerEditContentOutput = PermissibleValue[] | 'clear' | und
 
 @Component({
     templateUrl: './questionAnswerEditContent.component.html',
-    providers: []
+    providers: [],
 })
 export class QuestionAnswerEditContentComponent {
     answers: PermissibleValue[];

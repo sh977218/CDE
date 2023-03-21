@@ -7,20 +7,16 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cde-derivation-rules',
-    templateUrl: './derivationRules.component.html'
+    templateUrl: './derivationRules.component.html',
 })
 export class DerivationRulesComponent implements OnChanges {
     @Input() canEdit!: boolean;
-    @Input() elt!: DataElement & { derivationOutputs: { ruleName: string, cde: DataElement }[] };
+    @Input() elt!: DataElement & { derivationOutputs: { ruleName: string; cde: DataElement }[] };
     @Output() eltChange = new EventEmitter();
 
     previousCdeId!: string;
 
-    constructor(
-        private http: HttpClient,
-        public dialog: MatDialog,
-    ) {
-    }
+    constructor(private http: HttpClient, public dialog: MatDialog) {}
 
     ngOnChanges() {
         if (this.elt._id !== this.previousCdeId) {
@@ -40,7 +36,7 @@ export class DerivationRulesComponent implements OnChanges {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
-                            this.elt.derivationOutputs.push({ruleName: derRule.name, cde: outputCde});
+                            this.elt.derivationOutputs.push({ ruleName: derRule.name, cde: outputCde });
                         }
                     });
                 });
@@ -55,7 +51,6 @@ export class DerivationRulesComponent implements OnChanges {
         return dr.fullCdes.filter((item, index) => index < 8);
     }
 
-
     removeDerivationRule(index: number) {
         this.elt.derivationRules.splice(index, 1);
         this.eltChange.emit();
@@ -65,7 +60,9 @@ export class DerivationRulesComponent implements OnChanges {
         if (this.elt.derivationRules) {
             this.elt.derivationRules.forEach((dr: DerivationRule) => {
                 if (dr.inputs[0] !== null) {
-                    this.http.post<DataElement[]>('/server/de/byTinyIdList/', dr.inputs).subscribe(data => dr.fullCdes = data);
+                    this.http
+                        .post<DataElement[]>('/server/de/byTinyIdList/', dr.inputs)
+                        .subscribe(data => (dr.fullCdes = data));
                 }
             });
         }

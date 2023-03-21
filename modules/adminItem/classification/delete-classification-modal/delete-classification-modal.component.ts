@@ -5,7 +5,5 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     templateUrl: './delete-classification-modal.component.html',
 })
 export class DeleteClassificationModalComponent {
-    constructor(@Inject(MAT_DIALOG_DATA) public deleteClassification: string) {
-
-    }
+    constructor(@Inject(MAT_DIALOG_DATA) public deleteClassification: string) {}
 }

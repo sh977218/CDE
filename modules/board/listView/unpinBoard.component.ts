@@ -8,30 +8,49 @@ import { Elt } from 'shared/models.model';
 @Component({
     selector: 'cde-unpin-board',
     template: `
-        <mat-icon svgIcon="thumb_tack" id="unpin_{{eltIndex}}" class="fake-button" role="button" tabindex="0"
-                  (click)="unpin()" title="Unpin from Board" style="transform: rotate(90deg)"> </mat-icon>
+        <mat-icon
+            svgIcon="thumb_tack"
+            id="unpin_{{ eltIndex }}"
+            class="fake-button"
+            role="button"
+            tabindex="0"
+            (click)="unpin()"
+            title="Unpin from Board"
+            style="transform: rotate(90deg)"
+        >
+        </mat-icon>
     `,
 })
 export class UnpinBoardComponent {
     @Input() elt!: Elt;
     @Input() eltIndex!: number;
 
-    constructor(private alert: AlertService,
-                private boardListService: BoardListService,
-                private http: HttpClient,
-                public userService: UserService) {
-    }
+    constructor(
+        private alert: AlertService,
+        private boardListService: BoardListService,
+        private http: HttpClient,
+        public userService: UserService
+    ) {}
 
     unpin() {
-        this.http.post('/server/board/deletePin/', {
-            boardId: this.boardListService.board.id,
-            tinyId: this.elt.tinyId
-        }, {responseType: 'text'}).subscribe(() => {
-            this.alert.addAlert('success', 'Unpinned.');
-            this.boardListService.reload.emit();
-        }, err => {
-            this.alert.httpErrorMessageAlert(err);
-            this.boardListService.reload.emit();
-        });
+        this.http
+            .post(
+                '/server/board/deletePin/',
+                {
+                    boardId: this.boardListService.board.id,
+                    tinyId: this.elt.tinyId,
+                },
+                { responseType: 'text' }
+            )
+            .subscribe(
+                () => {
+                    this.alert.addAlert('success', 'Unpinned.');
+                    this.boardListService.reload.emit();
+                },
+                err => {
+                    this.alert.httpErrorMessageAlert(err);
+                    this.boardListService.reload.emit();
+                }
+            );
     }
 }

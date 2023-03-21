@@ -16,9 +16,7 @@ export class PropertiesComponent {
     @Output() eltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
 
-    constructor(public dialog: MatDialog,
-                private alert: AlertService,
-                private orgHelperService: OrgHelperService) {
+    constructor(public dialog: MatDialog, private alert: AlertService, private orgHelperService: OrgHelperService) {
         this.orgHelperService.then(orgsDetailedInfo => {
             if (this.elt.stewardOrg.name) {
                 this.orgPropertyKeys = orgsDetailedInfo[this.elt.stewardOrg.name]?.propertyKeys || [];
@@ -28,11 +26,14 @@ export class PropertiesComponent {
 
     openNewPropertyModal() {
         if (this.orgPropertyKeys.length === 0) {
-            this.alert.addAlert('danger',
-                'No valid property keys present, have an Org Admin go to Org Management > List Management to add one');
+            this.alert.addAlert(
+                'danger',
+                'No valid property keys present, have an Org Admin go to Org Management > List Management to add one'
+            );
         } else {
             const data = this.orgPropertyKeys;
-            this.dialog.open(AddPropertyModalComponent, {width: '800px', data})
+            this.dialog
+                .open(AddPropertyModalComponent, { width: '800px', data })
                 .afterClosed()
                 .subscribe(newProperty => {
                     if (newProperty) {

@@ -7,7 +7,7 @@ import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { UserSearchSettings } from 'shared/models.model';
 
 @Component({
-    template: ''
+    template: '',
 })
 export abstract class TableViewPreferencesComponent {
     @Output() changed = new EventEmitter();
@@ -16,12 +16,15 @@ export abstract class TableViewPreferencesComponent {
     searchSettings: UserSearchSettings;
     placeHolder = 'Optional: select identifiers to include (default: all)';
 
-    constructor(@Inject(MAT_DIALOG_DATA) data: {},
-                private alert: AlertService,
-                public esService: ElasticService,
-                private http: HttpClient) {
-        this.http.get<IdSourcesResponse>('/server/system/idSources')
-            .subscribe(idSources => this.identifierSources = idSources.map(x => x._id));
+    constructor(
+        @Inject(MAT_DIALOG_DATA) data: {},
+        private alert: AlertService,
+        public esService: ElasticService,
+        private http: HttpClient
+    ) {
+        this.http
+            .get<IdSourcesResponse>('/server/system/idSources')
+            .subscribe(idSources => (this.identifierSources = idSources.map(x => x._id)));
         this.searchSettings = this.esService.searchSettings;
     }
 

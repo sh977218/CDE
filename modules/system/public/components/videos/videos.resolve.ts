@@ -7,15 +7,14 @@ import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class VideosResolve implements Resolve<Observable<Article>> {
-    constructor(private router: Router,
-                public http: HttpClient) {
-    }
+    constructor(private router: Router, public http: HttpClient) {}
 
     resolve() {
-        return this.http.get<Article>('/server/article/videosAndIframe')
-            .pipe(catchError(() => {
+        return this.http.get<Article>('/server/article/videosAndIframe').pipe(
+            catchError(() => {
                 this.router.navigate(['/404']);
                 return EMPTY;
-            }));
+            })
+        );
     }
 }

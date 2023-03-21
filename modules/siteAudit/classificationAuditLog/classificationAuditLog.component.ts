@@ -6,7 +6,7 @@ import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-classification-audit-log',
-    templateUrl: './classificationAuditLog.component.html'
+    templateUrl: './classificationAuditLog.component.html',
 })
 export class ClassificationAuditLogComponent {
     currentPage: number = 0;
@@ -21,11 +21,13 @@ export class ClassificationAuditLogComponent {
         if (event) {
             this.currentPage = event.pageIndex;
         }
-        this.http.post<ClassificationAudit[]>('/server/system/getClassificationAuditLog', {
-            skip: this.currentPage * this.pageSize,
-            limit: this.pageSize
-        }).subscribe(response => {
-            this.records = response;
-        }, noop);
+        this.http
+            .post<ClassificationAudit[]>('/server/system/getClassificationAuditLog', {
+                skip: this.currentPage * this.pageSize,
+                limit: this.pageSize,
+            })
+            .subscribe(response => {
+                this.records = response;
+            }, noop);
     }
 }

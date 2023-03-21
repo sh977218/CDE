@@ -25,16 +25,17 @@ export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;
     @Output() closeOutput = new EventEmitter<void>();
     @Output() dismissOutput = new EventEmitter<void>();
-    @ViewChild('classifyItemComponent', {static: true}) classifyItemComponent!: ClassifyItemComponent;
+    @ViewChild('classifyItemComponent', { static: true }) classifyItemComponent!: ClassifyItemComponent;
 
-    constructor(private alert: AlertService,
-                public deCompletionService: DeCompletionService,
-                public isAllowedModel: IsAllowedService,
-                private http: HttpClient,
-                private localStorageService: LocalStorageService,
-                private router: Router,
-                public userService: UserService) {
-    }
+    constructor(
+        private alert: AlertService,
+        public deCompletionService: DeCompletionService,
+        public isAllowedModel: IsAllowedService,
+        private http: HttpClient,
+        private localStorageService: LocalStorageService,
+        private router: Router,
+        public userService: UserService
+    ) {}
 
     ngOnInit() {
         if (!this.elt) {
@@ -50,7 +51,7 @@ export class CreateDataElementComponent implements OnInit {
         this.updateClassificationLocalStorage({
             categories: event.classificationArray,
             eltId: this.elt._id,
-            orgName: event.selectedOrg
+            orgName: event.selectedOrg,
         });
     }
 
@@ -85,11 +86,13 @@ export class CreateDataElementComponent implements OnInit {
     }
 
     createDataElement() {
-        this.http.post<DataElement>('/server/de', this.elt)
-            .subscribe(res => {
+        this.http.post<DataElement>('/server/de', this.elt).subscribe(
+            res => {
                 this.closeOutput.emit();
-                this.router.navigate(['/deView'], {queryParams: {tinyId: res.tinyId}});
-            }, () => this.alert.addAlert('danger', 'Unexpected error creating CDE'));
+                this.router.navigate(['/deView'], { queryParams: { tinyId: res.tinyId } });
+            },
+            () => this.alert.addAlert('danger', 'Unexpected error creating CDE')
+        );
     }
 
     openClassifyItemModal() {
@@ -121,7 +124,11 @@ export class CreateDataElementComponent implements OnInit {
         }
         if (elt.classification) {
             if (elt.classification.length) {
-                if (!elt.classification.some(oneClassification => oneClassification.stewardOrg.name === elt.stewardOrg.name)) {
+                if (
+                    !elt.classification.some(
+                        oneClassification => oneClassification.stewardOrg.name === elt.stewardOrg.name
+                    )
+                ) {
                     return 'Please select at least one classification owned by ' + elt.stewardOrg.name;
                 }
             } else {

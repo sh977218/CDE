@@ -13,9 +13,7 @@ export class SourcesComponent {
 
     @Input() set elt(e: Item) {
         e.sources.forEach((s: any) => {
-            const url = `/server/${deOrForm(e.elementType)}/originalSource/${
-                s.sourceName
-            }/${e.tinyId}`;
+            const url = `/server/${deOrForm(e.elementType)}/originalSource/${s.sourceName}/${e.tinyId}`;
             this.http.head(url).subscribe(
                 () => (this.sourceUrls[s.sourceName] = url),
                 err => delete this.sourceUrls[s.sourceName]

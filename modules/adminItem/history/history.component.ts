@@ -54,11 +54,7 @@ export class HistoryComponent {
                 }
                 this.collapseList();
             },
-            err =>
-                this.alert.httpErrorMessageAlert(
-                    err,
-                    'Error retrieving history:'
-                )
+            err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:')
         );
     }
 
@@ -104,26 +100,19 @@ export class HistoryComponent {
                 .filter(pe => pe.selected && !pe.tinyId)
                 .map(priorElt => {
                     const url =
-                        ITEM_MAP[priorElt.elementType][
-                            priorElt.isDraft ? 'apiDraftById' : 'apiById'
-                        ] + priorElt._id;
+                        ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
                     return this.http
                         .get<History>(url)
                         .toPromise()
                         .then(res => {
-                            res.url =
-                                ITEM_MAP[res.elementType].viewById + res._id;
+                            res.url = ITEM_MAP[res.elementType].viewById + res._id;
                             res.selected = true;
-                            this.priorElementsFull[
-                                this.priorElementsFull.indexOf(priorElt)
-                            ] = res;
+                            this.priorElementsFull[this.priorElementsFull.indexOf(priorElt)] = res;
                         });
                 })
         ).then(
             () => {
-                const twoSelected = this.priorElementsFull.filter(
-                    p => p.selected
-                );
+                const twoSelected = this.priorElementsFull.filter(p => p.selected);
                 const data = {
                     newer: twoSelected[0],
                     older: twoSelected[1],
@@ -133,11 +122,7 @@ export class HistoryComponent {
                     data,
                 });
             },
-            err =>
-                this.alert.addAlert(
-                    'danger',
-                    'Error open history compare modal.' + err
-                )
+            err => this.alert.addAlert('danger', 'Error open history compare modal.' + err)
         );
     }
 

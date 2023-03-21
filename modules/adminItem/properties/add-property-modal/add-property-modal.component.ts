@@ -6,10 +6,7 @@ import { Property } from 'shared/models.model';
     templateUrl: './add-property-modal.component.html',
 })
 export class AddPropertyModalComponent {
-
     newProperty = new Property();
 
-    constructor(@Inject(MAT_DIALOG_DATA) public orgPropertyKeys: string[]) {
-    }
-
+    constructor(@Inject(MAT_DIALOG_DATA) public orgPropertyKeys: string[]) {}
 }

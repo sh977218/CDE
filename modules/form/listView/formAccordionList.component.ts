@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CdeForm } from 'shared/form/form.model';
 import { Elt, ModuleItem } from 'shared/models.model';
 
 @Component({
-    templateUrl: './formAccordionList.component.html'
+    templateUrl: './formAccordionList.component.html',
 })
 export class FormAccordionListComponent {
     @Input() addMode: string = '';
@@ -12,9 +12,6 @@ export class FormAccordionListComponent {
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<CdeForm>();
 
-    module:ModuleItem = 'form';
+    module: ModuleItem = 'form';
     Elt = Elt;
-
-    constructor() {
-    }
 }

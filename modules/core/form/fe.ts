@@ -66,7 +66,12 @@ export function getFormScoreQuestions(form: FormElementsContainer): FormQuestion
 
 export function getFormSkipLogicQuestions(form: FormElementsContainer): FormQuestion[] {
     const questions: FormQuestion[] = [];
-    iterateFeSync(form, undefined, undefined, q => q.skipLogic && q.skipLogic.condition.length > 0 && questions.push(q));
+    iterateFeSync(
+        form,
+        undefined,
+        undefined,
+        q => q.skipLogic && q.skipLogic.condition.length > 0 && questions.push(q)
+    );
     return questions;
 }
 
@@ -79,8 +84,10 @@ export function getFormQuestionsAsQuestionCde(form: FormElementsContainer): Ques
 }
 
 export function questionAnswered(q: FormQuestion): boolean {
-    return typeof (q.question.answer) !== 'undefined'
-        && !(Array.isArray(q.question.answer) && q.question.answer.length === 0);
+    return (
+        typeof q.question.answer !== 'undefined' &&
+        !(Array.isArray(q.question.answer) && q.question.answer.length === 0)
+    );
 }
 
 export function repeatFe(fe: FormElement): '' | '=' | 'F' | 'N' {

@@ -1,12 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    TemplateRef,
-    ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
@@ -42,28 +35,19 @@ export class IdentifiersComponent {
     idsLinks: string[] = [];
     idSourcesPromise!: Promise<IdSource[]>;
 
-    constructor(
-        private alert: AlertService,
-        public dialog: MatDialog,
-        private http: HttpClient
-    ) {}
+    constructor(private alert: AlertService, public dialog: MatDialog, private http: HttpClient) {}
 
     addLink(source: IdSource, id: CdeId) {
         this.idsLinks.push(
             IdentifiersComponent.linkWithId(
                 id,
-                source &&
-                    (isCdeForm(this.elt)
-                        ? source.linkTemplateForm
-                        : source.linkTemplateDe)
+                source && (isCdeForm(this.elt) ? source.linkTemplateForm : source.linkTemplateDe)
             )
         );
     }
 
     getIdSource(id: CdeId) {
-        return this.getIdSources().then(
-            sources => sources.filter(source => source._id === id.source)[0]
-        );
+        return this.getIdSources().then(sources => sources.filter(source => source._id === id.source)[0]);
     }
 
     getIdSources(): Promise<IdSource[]> {
@@ -93,9 +77,7 @@ export class IdentifiersComponent {
             .afterClosed()
             .subscribe(newIdentifier => {
                 if (newIdentifier) {
-                    this.getIdSource(newIdentifier).then(source =>
-                        this.addLink(source, newIdentifier)
-                    );
+                    this.getIdSource(newIdentifier).then(source => this.addLink(source, newIdentifier));
                     this.elt.ids.push(newIdentifier);
                     this.eltChange.emit();
                 }
@@ -103,8 +85,6 @@ export class IdentifiersComponent {
     }
 
     static linkWithId(id: CdeId, link = '') {
-        return link
-            .replace('{{id}}', id.id || '')
-            .replace('{{version}}', id.version || '');
+        return link.replace('{{id}}', id.id || '').replace('{{version}}', id.version || '');
     }
 }

@@ -19,10 +19,7 @@ export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
         return this.checkIE();
     }
 
-    canActivateChild(
-        route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot
-    ) {
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         return this.canActivate(route, state);
     }
 

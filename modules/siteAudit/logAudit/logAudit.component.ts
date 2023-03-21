@@ -7,11 +7,13 @@ import { AuditLog, AuditLogResponse } from 'shared/log/audit';
 @Component({
     selector: 'cde-log-audit',
     templateUrl: './logAudit.component.html',
-    styles: [`
-        .fa.fa-fw.fa-sort {
-            color: lightgrey;
-        }
-    `]
+    styles: [
+        `
+            .fa.fa-fw.fa-sort {
+                color: lightgrey;
+            }
+        `,
+    ],
 })
 export class LogAuditComponent {
     currentPage: number = 0;
@@ -20,9 +22,9 @@ export class LogAuditComponent {
     fromDate: any;
     totalItems?: number;
     toDate: any;
-    sortingBy: any = {date: 'desc'};
+    sortingBy: any = { date: 'desc' };
     currentQuery = new Subscription();
-    sortMap: {[field: string]: {title: string, property: string}} = {
+    sortMap: { [field: string]: { title: string; property: string } } = {
         date: {
             title: 'Date',
             property: 'date',
@@ -46,7 +48,7 @@ export class LogAuditComponent {
         respTime: {
             title: 'Resp. Time',
             property: 'responseTime',
-        }
+        },
     };
     propertiesArray = ['date', 'ip', 'url', 'method', 'status', 'respTime'];
 
@@ -59,28 +61,30 @@ export class LogAuditComponent {
 
         this.currentQuery.unsubscribe();
 
-        this.currentQuery = this.http.post<AuditLogResponse>('/server/log/httpLogs', {
-            currentPage: this.currentPage,
-            ipAddress: this.ipAddress,
-            totalItems: this.totalItems,
-            fromDate: this.fromDate,
-            toDate: this.toDate,
-            sort: this.sortingBy
-        } as AuditLog).subscribe(res => {
-            if (res.totalItems) {
-                this.totalItems = res.totalItems;
-            }
-            this.gridLogEvents = res.logs.map((log: any) => {
-                return {
-                    date: new Date(log.date).toLocaleString(),
-                    ip: log.remoteAddr,
-                    url: log.url,
-                    method: log.method,
-                    status: log.httpStatus,
-                    respTime: log.responseTime
-                };
+        this.currentQuery = this.http
+            .post<AuditLogResponse>('/server/log/httpLogs', {
+                currentPage: this.currentPage,
+                ipAddress: this.ipAddress,
+                totalItems: this.totalItems,
+                fromDate: this.fromDate,
+                toDate: this.toDate,
+                sort: this.sortingBy,
+            } as AuditLog)
+            .subscribe(res => {
+                if (res.totalItems) {
+                    this.totalItems = res.totalItems;
+                }
+                this.gridLogEvents = res.logs.map((log: any) => {
+                    return {
+                        date: new Date(log.date).toLocaleString(),
+                        ip: log.remoteAddr,
+                        url: log.url,
+                        method: log.method,
+                        status: log.httpStatus,
+                        respTime: log.responseTime,
+                    };
+                });
             });
-        });
     }
 
     sort(p: string) {

@@ -9,14 +9,14 @@ import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
 import { Comment } from 'shared/models.model';
 
-type CommentWithOrgName = Comment & {organizationName: string} & Dictionary<any>;
+type CommentWithOrgName = Comment & { organizationName: string } & Dictionary<any>;
 
 @Component({
-    templateUrl: './comments.component.html'
+    templateUrl: './comments.component.html',
 })
 export class CommentsComponent {
-    @ViewChild('commentTable', { read: MatSort, static: true}) commentSort!: MatSort;
-    @ViewChild('commentPage', {static: true}) commentPaginator!: MatPaginator;
+    @ViewChild('commentTable', { read: MatSort, static: true }) commentSort!: MatSort;
+    @ViewChild('commentPage', { static: true }) commentPaginator!: MatPaginator;
     commentColumns: string[] = ['created', 'text', 'type', 'user', 'organizationName'];
     commentTableData!: MatTableDataSource<CommentWithOrgName>;
     commentUrl!: string;
@@ -25,9 +25,7 @@ export class CommentsComponent {
     selectedOrganization = '';
     title = 'Comments';
 
-    constructor(protected route: ActivatedRoute,
-                private alert: AlertService,
-                private http: HttpClient) {
+    constructor(protected route: ActivatedRoute, private alert: AlertService, private http: HttpClient) {
         this.route.data.subscribe((data: Data) => {
             this.title = data.title;
             this.commentUrl = data.commentsUrl;
@@ -36,33 +34,37 @@ export class CommentsComponent {
     }
 
     getComments(orgName?: string) {
-        this.http.get<CommentWithOrgName[]>(this.commentUrl + 0 + '/-1' + (orgName ? '/' + orgName : '')).subscribe(comments => {
-            if (!this.commentUrl) {
-                return;
-            }
-
-            this.commentTableData = new MatTableDataSource(comments);
-            setTimeout(() => {
-                this.commentTableData.sort = this.commentSort;
-                this.commentTableData.paginator = this.commentPaginator;
-            }, 0);
-            this.commentTableData.filterPredicate = (data: CommentWithOrgName, filter: string) =>
-                this.selectedOrganization === 'all organizations' || this.selectedOrganization === data.organizationName;
-            this.commentTableData.sortingDataAccessor = (data: CommentWithOrgName, sortHeaderId: string) => {
-                switch (sortHeaderId) {
-                    case 'type':
-                        return data.element.eltType;
-                    case 'user':
-                        return data.user.username;
-                    default:
-                        return data[sortHeaderId];
+        this.http.get<CommentWithOrgName[]>(this.commentUrl + 0 + '/-1' + (orgName ? '/' + orgName : '')).subscribe(
+            comments => {
+                if (!this.commentUrl) {
+                    return;
                 }
-            };
 
-            const organizationSet = new Set<string>();
-            comments.forEach(comment => organizationSet.add(comment.organizationName));
-            this.organizationNames = Array.from(organizationSet.values());
-        }, err => this.alert.httpErrorMessageAlert(err));
+                this.commentTableData = new MatTableDataSource(comments);
+                setTimeout(() => {
+                    this.commentTableData.sort = this.commentSort;
+                    this.commentTableData.paginator = this.commentPaginator;
+                }, 0);
+                this.commentTableData.filterPredicate = (data: CommentWithOrgName, filter: string) =>
+                    this.selectedOrganization === 'all organizations' ||
+                    this.selectedOrganization === data.organizationName;
+                this.commentTableData.sortingDataAccessor = (data: CommentWithOrgName, sortHeaderId: string) => {
+                    switch (sortHeaderId) {
+                        case 'type':
+                            return data.element.eltType;
+                        case 'user':
+                            return data.user.username;
+                        default:
+                            return data[sortHeaderId];
+                    }
+                };
+
+                const organizationSet = new Set<string>();
+                comments.forEach(comment => organizationSet.add(comment.organizationName));
+                this.organizationNames = Array.from(organizationSet.values());
+            },
+            err => this.alert.httpErrorMessageAlert(err)
+        );
     }
 
     onFilter() {

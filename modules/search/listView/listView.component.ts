@@ -1,6 +1,14 @@
 import {
-    Component, ComponentFactoryResolver, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
-    ViewChild, ViewContainerRef
+    Component,
+    ComponentFactoryResolver,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild,
+    ViewContainerRef,
 } from '@angular/core';
 import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.component';
 import { BoardFormSummaryListComponent } from 'form/listView/boardFormSummaryList.component';
@@ -15,7 +23,7 @@ import { TableListComponent } from 'search/listView/tableList.component';
 
 @Component({
     selector: 'cde-list-view',
-    templateUrl: './listView.component.html'
+    templateUrl: './listView.component.html',
 })
 export class ListViewComponent implements OnChanges, OnInit {
     @Input() board?: any = null;
@@ -28,14 +36,12 @@ export class ListViewComponent implements OnChanges, OnInit {
     @Input() totalItems = 0;
     @Output() add = new EventEmitter<Item>();
     @Output() listViewChange = new EventEmitter<string>();
-    @ViewChild('viewContainer', {read: ViewContainerRef, static: true}) viewContainer!: ViewContainerRef;
+    @ViewChild('viewContainer', { read: ViewContainerRef, static: true }) viewContainer!: ViewContainerRef;
     private _listView?: ListTypes;
     viewsMap!: Map<string, any>;
     viewComponentRef: any;
 
-    constructor(private _componentFactoryResolver: ComponentFactoryResolver,
-                private esService: ElasticService) {
-    }
+    constructor(private _componentFactoryResolver: ComponentFactoryResolver, private esService: ElasticService) {}
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.elts && this.viewComponentRef && this.viewComponentRef.instance) {
@@ -70,14 +76,21 @@ export class ListViewComponent implements OnChanges, OnInit {
             }
         }
 
-        if (changes.listView) { this.setListView(this.listView); }
+        if (changes.listView) {
+            this.setListView(this.listView);
+        }
     }
 
     ngOnInit() {
         if (!this._listView) {
             setTimeout(() => {
-                if (!this.setListView(window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '')
-                    + this.module + '-searchViewType'])) {
+                if (
+                    !this.setListView(
+                        window.localStorage[
+                            'nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType'
+                        ]
+                    )
+                ) {
                     this.setListView(this.esService.getDefaultSearchView());
                 }
             }, 0);
@@ -85,7 +98,9 @@ export class ListViewComponent implements OnChanges, OnInit {
     }
 
     render() {
-        if (this.embedded) { this._listView = 'accordion'; }
+        if (this.embedded) {
+            this._listView = 'accordion';
+        }
         const view = this.viewsMap.get(this._listView as string);
         const viewFactory = this._componentFactoryResolver.resolveComponentFactory(view);
         this.viewContainer.clear();
@@ -94,7 +109,9 @@ export class ListViewComponent implements OnChanges, OnInit {
         if (this._listView === 'accordion') {
             this.viewComponentRef.instance.location = this.location;
             this.viewComponentRef.instance.openInNewTab = true;
-            if (this.embedded) { this.viewComponentRef.instance.addMode = 0; }
+            if (this.embedded) {
+                this.viewComponentRef.instance.addMode = 0;
+            }
             this.viewComponentRef.instance.add.subscribe((elt: Item) => this.add.emit(elt));
         } else if (this.location === 'board' && this._listView !== 'table') {
             this.viewComponentRef.instance.board = this.board;
@@ -112,8 +129,9 @@ export class ListViewComponent implements OnChanges, OnInit {
         if (viewType && viewType !== this._listView && ListViewComponent.RESULTVIEWS.indexOf(viewType) > -1) {
             this._listView = viewType;
             if (this._listView === 'summary' || this._listView === 'table') {
-                window.localStorage['nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType']
-                    = this._listView;
+                window.localStorage[
+                    'nlmcde.' + (this.location ? this.location + '-' : '') + this.module + '-searchViewType'
+                ] = this._listView;
             }
             this.render();
             this.listViewChange.emit(this._listView);

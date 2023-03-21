@@ -18,7 +18,6 @@ export class CdeAccordionListComponent {
     Elt = Elt;
 
     constructor(private userService: UserService) {
-
         this.userService.then(user => {
             this.user = user;
         }, noop);

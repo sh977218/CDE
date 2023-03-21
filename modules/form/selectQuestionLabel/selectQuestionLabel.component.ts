@@ -15,17 +15,19 @@ export interface SelectQuestionLabelData {
 export type SelectQuestionLabelOutput = Designation | null | undefined;
 
 @Component({
-    templateUrl: 'selectQuestionLabel.component.html'
+    templateUrl: 'selectQuestionLabel.component.html',
 })
 export class SelectQuestionLabelComponent {
     cde?: DataElement;
     question: Question;
     section: FormSection;
 
-    constructor(private http: HttpClient,
-                private alert: AlertService,
-                public dialogRef: MatDialogRef<SelectQuestionLabelComponent, SelectQuestionLabelOutput>,
-                @Inject(MAT_DIALOG_DATA) data: SelectQuestionLabelData) {
+    constructor(
+        private http: HttpClient,
+        private alert: AlertService,
+        public dialogRef: MatDialogRef<SelectQuestionLabelComponent, SelectQuestionLabelOutput>,
+        @Inject(MAT_DIALOG_DATA) data: SelectQuestionLabelData
+    ) {
         this.question = data.question.question;
         this.section = data.parent;
         if (!this.question.cde.tinyId) {
@@ -38,7 +40,7 @@ export class SelectQuestionLabelComponent {
             url += '/version/' + this.question.cde.version;
         }
         this.http.get<DataElement>(url).subscribe(
-            res => this.cde = res,
+            res => (this.cde = res),
             () => {
                 this.alert.addAlert('danger', 'Error loading CDE.');
                 this.dialogRef.close();
