@@ -1,7 +1,7 @@
 import 'server/globals';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { PermissibleValue, PermissibleValueCodeSystem } from 'shared/models.model';
-import {readFile, utils} from 'xlsx';
+import { readFile, utils } from 'xlsx';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -54,8 +54,7 @@ function cleanUpRows(rows: Row[]) {
 
 export function parseArray(text: string): string[] {
     if (!text) {
-        console.error('column missing');
-        process.exit(1);
+        return null;
     }
     return text.split('|').map(t => t.trim()).filter(t => t);
 }
