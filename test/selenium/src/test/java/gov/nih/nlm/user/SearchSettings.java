@@ -75,7 +75,7 @@ public class SearchSettings extends NlmCdeBaseTest {
         goToSearchSettings();
         clickElement(By.id("viewPublishOnlyButton"));
         closeAlert("Saved");
-        hangon(1);
+        hangon(5);
         noDrafts();
 
         logout();

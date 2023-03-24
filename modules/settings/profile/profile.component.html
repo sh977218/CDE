@@ -10,7 +10,7 @@
         <dt>E-mail:</dt>
         <dd id="user_email">
             <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
-                             (modelChange)="userService.save()"></cde-inline-edit>
+                             (modelChange)="userService.save({email: user.email})"></cde-inline-edit>
         </dd>
     </ng-container>
     <ng-container *ngIf="user.orgEditor.length">

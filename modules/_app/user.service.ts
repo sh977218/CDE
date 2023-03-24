@@ -132,11 +132,12 @@ export class UserService {
         }
     }
 
-    save() {
-        this.http.post('/server/user/', this.user).subscribe(
+    save(incrementalUpdate: Partial<User>) {
+        this.http.post('/server/user/', incrementalUpdate).subscribe(
             () => {
-                this.reload();
-                this.alert.addAlert('success', 'Saved');
+                this.reload(() => {
+                    this.alert.addAlert('success', 'Saved');
+                });
             },
             err => this.alert.httpErrorMessageAlert(err)
         );

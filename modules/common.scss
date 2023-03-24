@@ -104,6 +104,7 @@ th {
 }
 
 $containerPadding: 16px;
+$containerPaddingLarge: 2 * $containerPadding;
 $scrollbarWidth: 18px;
 
 .container, .container-fluid {
@@ -127,15 +128,15 @@ $scrollbarWidth: 18px;
 
   @media (min-width: $screenMd) {
     & {
-      max-width: 1000px + 2 * 2 * $containerPadding;
+      max-width: 1200px + 2 * $containerPaddingLarge;
 
       .content {
-        padding: 2 * $containerPadding;
+        padding: $containerPaddingLarge;
       }
     }
     &.mat-sidenav-container {
       .content {
-        padding: 2 * $containerPadding 2 * $containerPadding 2 * $containerPadding 0;
+        padding: $containerPaddingLarge $containerPaddingLarge $containerPaddingLarge 0;
       }
     }
   }
