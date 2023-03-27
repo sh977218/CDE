@@ -199,17 +199,21 @@ button[mat-icon-button] {
 }
 
 mat-tab-group {
-  .mat-tab-body-content {
+  mat-tab-header {
+    .button, .button.light {
+      border-radius: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+
+    *[role=tab] .mdc-tab__text-label {
+      color: $nlmColorLightest;
+    }
+  }
+
+  mat-tab-body {
     border: 1px solid $nlmColorPrimary
-  }
-
-  .button {
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  .mat-tab-nav-bar, .mat-tab-header {
-    border: 0;
   }
 }
 
