@@ -3,8 +3,9 @@ import {
     getCell,
     parsePermissibleValueArray,
     parseValueDefinitionArray,
-    parseValueMeaningCodeArray,
+    parseConceptIdArray,
     parseCodeSystemName,
+    parseColumn,
     REQUIRED_FIELDS,
     SPELL_CHECK_FIELDS,
     CSV_HEADER_MAP
@@ -21,7 +22,16 @@ import * as XLSX from 'xlsx';
 import * as spellChecker from 'simple-spellchecker';
 import { validationWhitelistModel } from 'server/loader/schema';
 
-export function validatePermissibleValues(pvs: string[], valueDefs: string[], valueCodes: string[], name: string) {
+const validConceptSystems = ['UMLS', 'NCI Thesaurus'];
+const validCodeSystems = ['LOINC', 'SNOMEDCT_US'];
+
+export function validatePermissibleValues(
+    pvs: string[],
+    valueDefs: string[],
+    conceptIds: string[],
+    conceptSource: string[],
+    valueMeaningCodes: string[],
+    codeSystem: string[]) {
     const output: string[] = [];
 
     if (pvs.length === 0) {
@@ -32,11 +42,35 @@ export function validatePermissibleValues(pvs: string[], valueDefs: string[], va
         output.push('Data type is: Value List but no Value Meaning Definitions were provided.');
     }
 
-    if (valueCodes.length === 0) {
+    if (conceptIds.length === 0) {
         output.push('Data type is: Value List but no Value Meaning Terminology Concept Identifiers were provided.');
     }
 
-    if (valueDefs.length !== pvs.length || valueCodes.length !== pvs.length) {
+    if (conceptSource.length === 0) {
+        output.push('Data type is: Value List but no Permissible Value (PV) Terminology Sources were provided.');
+    }
+
+    conceptSource.forEach((v) => {
+       if(!validConceptSystems.includes(v)){
+            output.push(`Invalid concept system: ${v}`);
+       }
+    });
+
+    if (valueMeaningCodes.length === 0) {
+        output.push('Data type is: Value List but no Codes for Permissible Values were provided.');
+    }
+
+    if (codeSystem.length === 0) {
+        output.push('Data type is: Value List but no Permissible Value Code Systems were provided.');
+    }
+
+    codeSystem.forEach((v) => {
+        if(!validCodeSystems.includes(v)){
+            output.push(`Invalid code system: ${v}`);
+        }
+    });
+
+    if(!Array.from(arguments).every((v,i,arr) => v.length === arr[0].length)){
         output.push('Mismatch between amount of permissible values and amount of codes and/or value definitions');
     }
 
@@ -107,26 +141,45 @@ export async function runValidationOnLoadCSV(csvFile: string) {
 
             // Validate PVs
             if (datatype === 'Value List') {
-                const pvArray = parsePermissibleValueArray(row);
-                const valueDefArray = parseValueDefinitionArray(row);
-                const valueMeaningArray = parseValueMeaningCodeArray(row);
-                const valueMeaningCodeSystem: PermissibleValueCodeSystem = parseCodeSystemName(getCell(row, 'Permissible Value (PV) Terminology Sources').split('|')[0]);
+                const pvArray = parseColumn(row, 'permissibleValues');
+                const valueDefArray = parseColumn(row, 'permissibleValueDefs');
 
-                currentLogs.push(...validatePermissibleValues(pvArray, valueDefArray, valueMeaningArray, title));
+                const conceptIdArray = parseColumn(row, 'conceptIds');
+                let conceptSource = parseColumn(row, 'conceptSource');
 
-                if (!valueMeaningCodeSystem || !permissibleValueCodeSystems.includes(valueMeaningCodeSystem)) {
-                    currentLogs.push(`Data type is: '${datatype}' but no valid Value Meaning Terminology Source was provided.`);
+                if(conceptSource.length === 1) {
+                    conceptSource = Array(pvArray.length).fill(conceptSource[0]);
                 }
+                conceptSource = conceptSource.map((v) => parseCodeSystemName(v));
+
+                const valueMeaningCodeArray = parseColumn(row, 'permissibleValueCodes');
+                let codeSystemName = parseColumn(row, 'codeSystem');
+
+                if(codeSystemName.length === 1) {
+                    codeSystemName = Array(pvArray.length).fill(codeSystemName[0]);
+                }
+                codeSystemName = codeSystemName.map((v) => parseCodeSystemName(v));
+
+                currentLogs.push(...validatePermissibleValues(
+                    pvArray,
+                    valueDefArray,
+                    conceptIdArray,
+                    conceptSource,
+                    valueMeaningCodeArray,
+                    codeSystemName
+                    )
+                );
 
                 const valueDomain = {
                     datatype: 'Value List',
                     uom: '',
                     permissibleValues: pvArray.map((value, i) => ({
                         permissibleValue: value,
-                        valueMeaningName: value,
-                        valueMeaningCode: valueMeaningArray[i],
-                        valueMeaningDefinition: valueDefArray[i] ? valueDefArray[i].split('|')[0].trim() : '',
-                        codeSystemName: valueMeaningCodeSystem
+                        valueMeaningDefinition: valueDefArray[i],
+                        valueMeaningCode: valueMeaningCodeArray[i],
+                        codeSystemName: codeSystemName[i],
+                        conceptId: conceptIdArray[i],
+                        conceptSource: conceptSource[i]
                     })) as PermissibleValue[]
                 };
 

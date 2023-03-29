@@ -11,7 +11,13 @@ export const CSV_HEADER_MAP: Record<string, string> = {
     codeSystemName: 'Value Code System',
     valueMeaningDefinition: 'Permissible Value (PV) Definitions',
     origin: 'DEC Concept Terminology Source',
-    originId: 'Data Element Concept (DEC) Identifier'
+    originId: 'Data Element Concept (DEC) Identifier',
+    permissibleValues: 'Permissible Value (PV) Labels',
+    permissibleValueDefs: 'Permissible Value (PV) Definitions',
+    conceptIds: 'Permissible Value (PV) \nConcept Identifiers',
+    conceptSource: 'Permissible Value (PV) Terminology Sources',
+    permissibleValueCodes: 'Codes for Permissible Value',
+    codeSystem: 'Permissible Value \nCode Systems'
 };
 
 export const REQUIRED_FIELDS: string[] = [
@@ -84,8 +90,14 @@ export function parseValueDefinitionArray(row: Record<string,string>) {
         .filter(t => t);
 }
 
-export function parseValueMeaningCodeArray(row: Record<string,string>) {
+export function parseConceptIdArray(row: Record<string,string>) {
     return getCell(row, 'Permissible Value (PV) \nConcept Identifiers').split('|')
+        .map(t => t.trim())
+        .filter(t => t);
+}
+
+export function parseColumn(row: Record<string,string>, header: string) {
+    return getCell(row, header).split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
