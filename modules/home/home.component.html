@@ -14,7 +14,8 @@
                         [class.active]="searchType === 'endorsedCde'"
                         (click)="searchType = 'endorsedCde'">
                     <img src="/assets/img/endorsedRibbonIcon.png"
-                         style="height: 20px; vertical-align: text-top">
+                         style="height: 20px; vertical-align: text-top"
+                         alt="Endorsed Ribbon">
                     Search NIH-Endorsed CDEs
                 </button>
                 <button class="button"
@@ -34,7 +35,7 @@
                            [placeholder]="isMobile ? 'Search by topic, keyword, or org...' : 'Search by topic, keyword, or organization'"
                            [(ngModel)]="cdeSearchTerm" required/>
                 </label>
-                <button class="button icon" (click)="search()">
+                <button class="button icon" aria-label="Search" (click)="search()">
                     <mat-icon id="search.submit">search</mat-icon>
                 </button>
             </div>
@@ -49,7 +50,7 @@
                 <mat-menu #searchMenu="matMenu">
                     <button mat-menu-item [class.active]="searchType === 'endorsedCde'"
                             (click)="searchType = 'endorsedCde'">
-                        <img src="/assets/img/endorsedRibbonIcon.png" style="height: 20px">
+                        <img src="/assets/img/endorsedRibbonIcon.png" alt="Endorsed Ribbon" style="height: 20px">
                         <span>Search NIH-Endorsed CDEs</span>
                     </button>
                     <button mat-menu-item [class.active]="searchType === 'cde'" (click)="searchType = 'cde'">
@@ -66,7 +67,8 @@
                     <a routerLink="/guides" fragment="nih-endorsement-and-submissions">established criteria</a>.
                     They are designated with a gold ribbon.
                     <img src="/assets/img/endorsedRibbonIcon.png"
-                         style="height: 20px; vertical-align: text-top">
+                         style="height: 20px; vertical-align: text-top"
+                         alt="Endorsed Ribbon">
                 </ng-container>
                 <ng-container *ngIf="searchType === 'cde'">
                     CDEs in the Repository have been submitted by NIH recognized bodies.
@@ -88,28 +90,31 @@
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'explore'"
                     (click)="featureSelected = 'explore'">
-                <img src="/assets/homepage/ExploreIcon.png">
+                <img src="/assets/homepage/ExploreIcon.png"
+                     alt="Magnifying Glass">
                 Explore
             </button>
-            <img *ngIf="featureSelected === 'explore'" class="pointer-icon" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'explore'" class="pointer-icon" src="/assets/homepage/Arrow.png" alt="Down Arrow">
         </div>
         <div id="learnButton">
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'learn'"
                     (click)="featureSelected = 'learn'">
-                <img src="/assets/homepage/LearnIcon.png">
+                <img src="/assets/homepage/LearnIcon.png"
+                     alt="Learn">
                 Learn
             </button>
-            <img *ngIf="featureSelected === 'learn'" class="pointer-icon" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'learn'" class="pointer-icon" src="/assets/homepage/Arrow.png" alt="Down Arrow">
         </div>
         <div id="submitButton">
             <button class="button menuButton1"
                     [class.active]="featureSelected === 'submit'"
                     (click)="featureSelected = 'submit'">
-                <img src="/assets/homepage/SubmitIcon.png">
+                <img src="/assets/homepage/SubmitIcon.png"
+                     alt="Submit">
                 Submit
             </button>
-            <img *ngIf="featureSelected === 'submit'" class="pointer-icon" src="/assets/homepage/Arrow.png">
+            <img *ngIf="featureSelected === 'submit'" class="pointer-icon" src="/assets/homepage/Arrow.png" alt="Down Arrow">
         </div>
         <div *ngIf="featureSelected === 'explore'" class="featureCard" style="order: 4">
             <h2>Explore CDEs and Forms</h2>
