@@ -16,7 +16,11 @@ export type AuthenticatedRequest = {
     username: string,
 } & Request;
 
-const dummyUser = Object.freeze({}); // soft authenticated, read permission only, no permissions from a real user
+const dummyUser = Object.freeze({
+    orgAdmin: [],
+    orgCurator: [],
+    orgEditor: [],
+}); // soft authenticated, read permission only, no permissions from a real user
 
 passport.serializeUser((user: User, done: CbError1) => {
     done(null, user._id);

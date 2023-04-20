@@ -391,10 +391,6 @@ export function regStatusFilter(user: User | undefined, settings: SearchSettings
     );
 }
 
-export function isSearch(settings: SearchSettingsElastic) {
-    return settings && (settings.searchTerm || settings.selectedOrg);
-}
-
 const searchTemplate: { [key: string]: any } = {
     cde: {
         index: config.elastic.index.name,

@@ -1,5 +1,6 @@
 package gov.nih.nlm.cde.test.api;
 
+import gov.nih.nlm.cde.test.MiscTests;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import io.restassured.http.ContentType;
 import org.testng.Assert;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 
-public class CdeApiSearch extends NlmCdeBaseTest {
+public class CdeApiSearch extends MiscTests {
     String searchUrl = baseUrl + "/api/de/search";
 
     @Test
@@ -23,7 +24,27 @@ public class CdeApiSearch extends NlmCdeBaseTest {
         Assert.assertFalse(resp.contains("primaryNameCopy"));
         Assert.assertFalse(resp.contains("flatClassifications"));
 
+        Assert.assertFalse(resp.contains("LA6270-8"));
+        Assert.assertFalse(resp.contains("LA10066-1"));
+        Assert.assertTrue(resp.contains("Login to see the value."));
+    }
 
+    @Test
+    public void cdeApiSearchTermSearchUmls() {
+        String apikey = checkTicketValid();
+
+        String resp = given().contentType(ContentType.JSON)
+                .queryParam("apiKey", apikey)
+                .body("{\"searchTerm\": \"race\"}")
+                .post(searchUrl).asString();
+        Assert.assertTrue(resp.contains("\"resultsTotal\":19,"));
+        Assert.assertTrue(resp.contains("\"permissibleValue\":\"African-North\""));
+        Assert.assertFalse(resp.contains("primaryNameCopy"));
+        Assert.assertFalse(resp.contains("flatClassifications"));
+
+        Assert.assertTrue(resp.contains("LA6270-8"));
+        Assert.assertTrue(resp.contains("LA10066-1"));
+        Assert.assertFalse(resp.contains("Login to see the value."));
     }
 
     @Test

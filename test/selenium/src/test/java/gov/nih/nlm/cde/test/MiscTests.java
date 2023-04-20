@@ -49,7 +49,7 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void checkTicketValid() {
+    public String checkTicketValid() {
         String apikey = "64c6db1d-70ef-4f65-b952-c3296cffe8bb";
 
         String notAuthenticatedResponse = get(baseUrl + "/de/7yXnzmPgZ").asString();
@@ -59,6 +59,8 @@ public class MiscTests extends NlmCdeBaseTest {
         String authenticatedResponse = given().queryParam("apiKey", apikey).get(baseUrl + "/de/7yXnzmPgZ").asString();
         Assert.assertFalse(authenticatedResponse.contains("Login to see the value."));
         Assert.assertTrue(authenticatedResponse.contains("LA22878-5"));
+
+        return apikey;
     }
 
     @Test

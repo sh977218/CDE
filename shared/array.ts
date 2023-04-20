@@ -18,8 +18,8 @@ export function addToArray<T>(arr: T[], elem: T): boolean {
     return false;
 }
 
-export function concat<T>(...lists: T[][]): T[] { // concat [] with type
-    return ([] as T[]).concat(...lists);
+export function concat<T>(...lists: T[][]): T[] { // concat [] with type, T[] run-time=null-protected compile-time=strict
+    return ([] as T[]).concat(...lists.filter(arr => Array.isArray(arr)));
 }
 
 export function cumulative<T, U>(array: U[],

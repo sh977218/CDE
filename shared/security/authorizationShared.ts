@@ -272,7 +272,7 @@ export function hasRolePrivilege(user: User | undefined, privilege: RolePrivileg
     if (!user || !privilege) {
         return false;
     }
-    return user.roles ? user.roles.some(role => rolePrivileges[role][privilege]) : false;
+    return Array.isArray(user.roles) ? user.roles.some(role => rolePrivileges[role][privilege]) : false;
 }
 
 /**
@@ -298,7 +298,7 @@ export function hasRole(user: User | undefined, role: UserRole | undefined): boo
     if (isSiteAdmin(user)) {
         return true;
     }
-    return user.roles ? user.roles.indexOf(role) > -1 : false;
+    return Array.isArray(user.roles) ? user.roles.indexOf(role) > -1 : false;
 }
 
 /**
