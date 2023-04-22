@@ -2,9 +2,14 @@ package gov.nih.nlm.user;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.time.Duration;
 
 public class SearchSettings extends NlmCdeBaseTest {
 
@@ -62,7 +67,8 @@ public class SearchSettings extends NlmCdeBaseTest {
         noDrafts();
 
         goToSearchSettings();
-        clickElement(By.id("viewPublishAndDraftButton"));
+        driver.findElement(By.xpath("//*[@id='viewPublishAndDraftButton']//input")).click();
+        hangon(5);
         closeAlert("Saved");
         drafts();
 
@@ -73,7 +79,9 @@ public class SearchSettings extends NlmCdeBaseTest {
         drafts();
 
         goToSearchSettings();
-        clickElement(By.id("viewPublishOnlyButton"));
+        driver.findElement(By.xpath("//*[@id='viewPublishOnlyButton']//input")).click();
+        hangon(5);
+
         closeAlert("Saved");
         hangon(5);
         noDrafts();
