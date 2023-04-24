@@ -94,3 +94,7 @@ Thumbs.db
 
 phenxLocal.txt
 phenxQA.txt
+test-results
+playwright-report
+playwright/.cache
+coverage-e2e

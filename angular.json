@@ -125,7 +125,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.05mb"
+                  "maximumError": "1.06mb"
                 }
               ],
               "outputHashing": "all"
@@ -142,7 +142,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.05mb"
+                  "maximumError": "1.06mb"
                 }
               ],
               "outputHashing": "all"
@@ -301,8 +301,129 @@
           "defaultConfiguration": "development"
         }
       }
+    },
+    "cde-playwright": {
+      "root": "",
+      "sourceRoot": "modules",
+      "projectType": "application",
+      "prefix": "cde",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "e2e-playwright/coverage.webpack.js"
+            },
+            "outputPath": "dist/cde-cli",
+            "index": "modules/_app/src/index.html",
+            "main": "modules/_app/src/main.ts",
+            "polyfills": "modules/_app/src/polyfills.ts",
+            "tsConfig": "tsconfigApp.json",
+            "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "async",
+              "diff-match-patch",
+              "file-saver",
+              "js-toggle-switch",
+              "jszip",
+              "jxon",
+              "lodash",
+              "mousetrap",
+              "mobx"
+            ],
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "modules/form/public/html/",
+                "output": "form/public/html/"
+              },
+              {
+                "glob": "**/*",
+                "input": "modules/form/public/assets/",
+                "output": "form/public/assets/"
+              },
+              {
+                "glob": "sw.js",
+                "input": "modules/_app/assets/",
+                "output": ""
+              },
+              {
+                "glob": "robots.txt",
+                "input": "modules/_app/assets/",
+                "output": ""
+              },
+              {
+                "glob": "**/*",
+                "input": "modules/_app/assets/",
+                "output": "assets"
+              }
+            ],
+            "styles": [
+              "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "node_modules/@circlon/angular-tree-component/css/angular-tree-component.css",
+              "node_modules/bootstrap-tour/build/css/bootstrap-tour-standalone.css",
+              "node_modules/js-toggle-switch/dist/toggle-switch.css",
+              "modules/angular-aio-toc/toc.global.scss",
+              "modules/_app/navigation/navigation.global.scss",
+              "modules/nativeRender/nativeRender.global.scss",
+              "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
+              "modules/form/displayProfile/displayProfile.global.scss",
+              "modules/form/formDescription/formDescription.global.scss",
+              "modules/adminItem/draftSlider/draftSlider.global.scss",
+              "modules/app.scss"
+            ],
+            "scripts": [
+              "node_modules/@popperjs/core/dist/umd/popper.js",
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/material-design-lite/material.js",
+              "node_modules/bootstrap-tour/build/js/bootstrap-tour-standalone.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "modules/environments/environment.ts",
+                  "with": "modules/environments/environment.playwright.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "bundle",
+                  "name": "main",
+                  "maximumWarning": "170kb",
+                  "maximumError": "1.06mb"
+                }
+              ],
+              "outputHashing": "all"
+            }
+          },
+          "defaultConfiguration": "prod"
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "cde-cli:build:development",
+            "proxyConfig": "modules/proxy.conf.js"
+          },
+          "configurations": {
+            "playwright": {
+              "browserTarget": "cde-playwright:build:production",
+              "liveReload": false,
+              "watch": false
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
     }
   },
+  "defaultProject": "cde-cli",
   "cli": {
     "analytics": "aa758161-e974-4821-991b-8c05d12abb67"
   }

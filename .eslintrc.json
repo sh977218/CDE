@@ -42,7 +42,8 @@
         }],
         "@typescript-eslint/no-unused-expressions": "warn",
         "@typescript-eslint/no-loop-func": "warn",
-        "@typescript-eslint/no-redeclare": "off"
+        "@typescript-eslint/no-redeclare": "off",
+        "@typescript-eslint/no-useless-constructor": "off"
       }
     }
   ]

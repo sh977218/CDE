@@ -108,11 +108,12 @@
                     <mat-icon>settings</mat-icon>
                 </button>
                 <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
-                        routerLink="/login">
+                        test-automation-id="login_link" routerLink="/login">
                     <span>Sign In</span>
                 </button>
                 <ng-template #loggedInButton>
                     <button #userButton mat-button id="username_link"
+                            test-automation-id="logged-in-username"
                             [class.active]="isActiveUserMenu()"
                             [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
                             (mouseenter)="menuEnter(minorBar, userMenuTrigger, loginMenu)"

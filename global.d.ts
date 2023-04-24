@@ -8,4 +8,10 @@ declare global {
         }
         type User = UserDocument
     }
+
+    namespace PlaywrightTest {
+        interface Matchers<R> {
+            trimmedToBe(a: string): R;
+        }
+    }
 }

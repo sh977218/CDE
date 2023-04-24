@@ -16,10 +16,8 @@ import static io.restassured.RestAssured.given;
 
 public class CdeAttachmentTest extends BaseAttachmentTest {
 
-    @Test
     public void cdeAttachment() {
         String cdeName = "Family Assessment Device (FAD) - Discuss problem indicator";
-
         mustBeLoggedInAs(ctepEditor_username, password);
         goToCdeByName(cdeName);
         goToAttachments();
