@@ -96,5 +96,8 @@ phenxLocal.txt
 phenxQA.txt
 test-results
 playwright-report
+e2e-playwright/.nyc_output
+e2e-playwright/playwright-report
+e2e-playwright/playwright-report-a11y
 playwright/.cache
 coverage-e2e

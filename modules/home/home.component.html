@@ -1,8 +1,8 @@
 <div class="searchBox">
     <div class="displayBox">
-        <div class="hero">
+        <h1 class="hero">
             Use of CDEs Supports the NIH Data Management and Sharing Policy
-        </div>
+        </h1>
         <div class="subtitle">
             Common data elements (CDEs) help researchers share and combine datasets, meet funding requirements, and save
             time. <a routerLink="/nihDataSharing" style="text-decoration: underline">Learn More...</a>
@@ -43,7 +43,8 @@
                 <div class="note text-center" style="margin: 1rem 0">within</div>
                 <button class="button" style="width: 100%" [matMenuTriggerFor]="searchMenu">
                     <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
-                         style="height: 20px; vertical-align: text-top">
+                         style="height: 20px; vertical-align: text-top"
+                         alt="Endorsed Ribbon">
                     {{getSearchLabel(searchType)}}
                     <mat-icon style="float: right">arrow_drop_down</mat-icon>
                 </button>
@@ -211,5 +212,5 @@
             </footer>
         </div>
     </div>
-    <mat-icon *ngIf="canEdit()" class="fake-button" role="button" tabindex="0" routerLink="/home/edit">edit</mat-icon>
+    <mat-icon *ngIf="canEdit()" class="fake-button" role="button" routerLink="/home/edit">edit</mat-icon>
 </div>

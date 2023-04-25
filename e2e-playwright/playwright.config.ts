@@ -41,9 +41,9 @@ const config: PlaywrightTestConfig = defineConfig({
     /* Opt out of parallel tests on CI. */
     workers: process.env.CI ? 8 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: process.env.a11y ? '' : [
-        ['html', {outputFile: 'playwright-report/report-html.html'}],
-        ['junit', {outputFile: 'playwright-report/report-junit.xml'}],
+    reporter: [
+        ['html', {outputFolder: `playwright-report${process.env.a11y ? '-a11y' : ''}`}],
+        ['junit', {outputFile: `playwright-report${process.env.a11y ? '-a11y' : ''}/report-junit.xml`}],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
     outputDir: 'playwright-report/test-results',

@@ -37,7 +37,7 @@
     "esfix": "eslint --fix",
     "playwright": "playwright test -c e2e-playwright --project=CDE-Chromium",
     "playwright-a11y": "playwright test -c e2e-playwright --project=CDE-Chromium-a11y",
-    "playwright-debug": "playwright test -c e2e-playwright --headed --project=CDE-Chromium --grep @smoke",
+    "playwright-debug": "playwright test -c e2e-playwright --headed --grep @smoke",
     "start:playwright": "ng s cde-playwright -c playwright"
   },
   "engines": {
