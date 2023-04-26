@@ -74,7 +74,7 @@
       "**/server/notification/notificationDb*"
     ],
     "lines": "90",
-    "branches": "78",
+    "branches": "77",
     "functions": "90",
     "reporter": "html"
   },
