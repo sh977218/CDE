@@ -4,6 +4,7 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import { AioTocViewMenuPo } from '../pages/aio-toc-view-menu.po';
 import { BasePagePo } from '../pages/base-page.po';
+import { SearchPagePo } from '../pages/search-page.po';
 
 async function codeCoverage(page) {
     const coverage: string = await page.evaluate(
@@ -19,7 +20,8 @@ async function codeCoverage(page) {
 
 const test = baseTest.extend<{
     basePage: BasePagePo,
-    aioTocViewMenuPo: AioTocViewMenuPo
+    aioTocViewMenuPo: AioTocViewMenuPo,
+    searchPage: SearchPagePo
 }>({
         basePage: async ({page}, use) => {
             await use(new BasePagePo(page))
@@ -29,6 +31,10 @@ const test = baseTest.extend<{
             await use(new AioTocViewMenuPo(page))
             await codeCoverage(page);
         },
+        searchPage: async ({page}, use) => {
+        await use(new SearchPagePo(page))
+        await codeCoverage(page);
+    },
     }
 )
 

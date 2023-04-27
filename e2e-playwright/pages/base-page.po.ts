@@ -26,11 +26,11 @@ export class BasePagePo {
 
     async goToForm(tinyId) {
         await this.page.goto(`/formView?tinyId=${tinyId}`);
-        return this.page.getByText('ON THIS PAGE').isVisible();
+        await this.page.waitForSelector(`text=ON THIS PAGE`,{state:'visible'});
     }
     async goToCde(tinyId) {
         await this.page.goto(`/deView?tinyId=${tinyId}`);
-        return this.page.getByText('ON THIS PAGE').isVisible();
+        await this.page.waitForSelector(`text=ON THIS PAGE`,{state:'visible'});
     }
     get navMenu() {
         return this.page.locator(`aio-toc`)
@@ -63,7 +63,12 @@ export class BasePagePo {
 
     async goToHome() {
         await this.page.goto('/home');
-        return this.page.getByText('Use Common Data Elements for More FAIR Research Data').isVisible();
+        await this.page.waitForSelector(`text=Use of CDEs Supports the NIH Data Management and Sharing Policy`,{state:'visible'});
+    }
+
+    async goToSearch(module){
+        await this.page.goto(`/${module}/search`);
+        await this.page.waitForSelector(`text=Enter a phrase/text or explore`,{state:'visible'});
     }
 
     get searchBar() {

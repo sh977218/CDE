@@ -723,11 +723,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     resetFilters() {
-        const endorsed = this.searchSettings.nihEndorsed;
-        const org = this.searchSettings.selectedOrg;
         this.searchSettings = new SearchSettings(this.searchSettings.q);
-        this.searchSettings.nihEndorsed = endorsed;
-        this.searchSettings.selectedOrg = org;
+        if (this._searchType === 'endorsedCde') {
+            this._searchType = 'cde';
+        }
         this.doSearch();
     }
 

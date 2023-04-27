@@ -170,7 +170,7 @@
             <div class="searchFilterTitle">REFINE {{module === 'cde' ? 'CDE' : 'FORM'}} RESULTS</div>
             <div *ngIf="module === 'cde'">
                 <label class="input-hover">
-                    <input type="checkbox" class="checkbox"
+                    <input id="nihEndorsedCheckbox" type="checkbox" class="checkbox"
                            [(ngModel)]="searchSettings.nihEndorsed"
                            (ngModelChange)="addNihEndorsedFilter($event)"/>
                     NIH-Endorsed
