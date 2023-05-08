@@ -61,10 +61,10 @@
             </div>
         </article>
     </article>
-    <footer class="noPrint">
+    <div class="noPrint">
         <a title="Delete" href="javascript:void(0);"
            (click)="nativeFe.formElement.metadataTags.splice(i, 1)"><i class="material-icons">delete_outline</i></a>
-    </footer>
+    </div>
 </section>
 <section *ngIf="nativeFe.metadataTagsNew === 'DI' || nativeFe.metadataTagsNew === 'UDI'" class="metadata-item">
     <article>
@@ -78,8 +78,8 @@
         <div><a *ngIf="metadataSearchResult === null" style="color: red"
                 href="javascript:void(0);">Device Identifier(DI) Not Found</a></div>
     </article>
-    <footer class="noPrint">
+    <div class="noPrint">
         <a title="Delete" href="javascript:void(0);"
            (click)="nativeFe.metadataTagsNew = undefined"><i class="material-icons">delete_outline</i></a>
-    </footer>
+    </div>
 </section>

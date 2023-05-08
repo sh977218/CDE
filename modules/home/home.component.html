@@ -203,13 +203,13 @@
             <section *ngIf="card.image?.fileId" style="text-align: center">
                 <img [src]="getCardImage(card.image)">
             </section>
-            <header>
+            <div>
                 <h2>{{card.title}}</h2>
-            </header>
+            </div>
             <div class="body" [innerHTML]="card.body"></div>
-            <footer>
+            <div>
                 <a *ngFor="let b of card.buttons" class="button" [href]="b.link" target="_blank">{{b.title}}</a>
-            </footer>
+            </div>
         </div>
     </div>
     <mat-icon *ngIf="canEdit()" class="fake-button" role="button" routerLink="/home/edit">edit</mat-icon>

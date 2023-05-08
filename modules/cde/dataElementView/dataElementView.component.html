@@ -27,7 +27,7 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <main *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
-                    <header>
+                    <div>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is archived. You can
@@ -61,7 +61,7 @@
                                 <li *ngFor="let error of validationErrors">{{error.message}}</li>
                             </ul>
                         </div>
-                    </header>
+                    </div>
                     <nav class="noPrint">
                         <button id="addToBoard" class="button light" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
                                 module="cde">

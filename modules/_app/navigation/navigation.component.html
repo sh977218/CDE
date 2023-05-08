@@ -1,4 +1,4 @@
-<header class="app-toolbar">
+<div class="app-toolbar">
     <uswds-banner *ngIf="!isMobile"></uswds-banner>
     <cde-ie-banner></cde-ie-banner>
     <mat-toolbar *ngIf="showHeader" class="noPrint">
@@ -141,7 +141,7 @@
             </button>
         </mat-toolbar-row>
     </mat-toolbar>
-</header>
+</div>
 <mat-sidenav-container style="display: flex; flex-direction: column; flex-grow: 1" hasBackdrop="false">
     <mat-sidenav style="width: 192px" #sidenav mode="over" position="end" fixedInViewport="true"
                  [fixedTopGap]="isMobile ? 30 : 52.4" [fixedBottomGap]="0">

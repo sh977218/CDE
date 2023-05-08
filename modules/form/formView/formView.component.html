@@ -36,7 +36,7 @@
                              src="/assets/img/endorsedRibbon.svg">
                         Form: {{elt?.designations[0]?.designation}}
                     </h1>
-                    <header>
+                    <div>
                         <div *ngIf="elt.isBundle" class="bundle-box">
                             <mat-icon fill="1">error_circle_rounded</mat-icon>
                             <b>This form is a bundle.</b> Bundles are indivisible. They are not considered valid and reliable if not used in their entirety, as intended.
@@ -78,7 +78,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </header>
+                    </div>
                     <nav>
                         <button tourAnchor="export" id="export" class="button" title="Export"
                                 #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu">
