@@ -22,12 +22,14 @@ let expectedContent = {
     cdeTinyIdSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server',
-        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute',
+        'Could not find component',
     ],
     cdeTinyIdVersionSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server',
-        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute',
+        'Could not find component'
     ],
     cdeTruncatePlainPropertiesTest: '*', // ckeditor
     cdeTruncateRichPropertiesTest: '*', // ckeditor
@@ -62,12 +64,14 @@ let expectedContent = {
     formTinyIdSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server',
-        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute',
+        'Could not find component'
     ],
     formTinyIdVersionSwaggerApi: [
         'docs/swagger-ui-bundle.js 51:49866 "Could not find component"',
         'Unable to get the Swagger UI URL from the server',
-        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can remove its sandboxing'
+        'An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute',
+        'Could not find component'
     ],
     formTruncateRichPropertiesTest: '*', // ckeditor
     importVsacValues: "with a status of 500",
