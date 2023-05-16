@@ -40,8 +40,10 @@ public class LoincWidgetTest extends NlmCdeBaseTest {
 
         // @TODO
         // re-enable after Loinc supports the new format for instructions
+/*
         textPresent("Instructions for section 1");
         textPresent("Instructions for Priod BMSCT");
+*/
 
         switchTabAndClose(0);
     }
