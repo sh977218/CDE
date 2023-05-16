@@ -21,7 +21,7 @@ public class ResourcesPage extends BaseAttachmentTest {
         clickElement(By.cssSelector(".cke_button__source"));
         findElement(By.cssSelector("textarea.cke_source")).sendKeys(resourceText);
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;" +
-                "https://www.feedforall.com/sample.xml" + "&lt;/rss-feed&gt;</p>\n");
+                "https://www.nibib.nih.gov/rss" + "&lt;/rss-feed&gt;</p>\n");
 
         // one with no URL
         findElement(By.cssSelector("textarea.cke_source")).sendKeys("\n<p>&lt;rss-feed&gt;&lt;/rss-feed&gt;</p>\n");
