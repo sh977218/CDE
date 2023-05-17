@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { assertUnreachable } from 'shared/models.model';
 
-type inputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
+type InputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 
 @Component({
     selector: 'cde-inline-edit',
@@ -19,7 +19,7 @@ export class InlineEditComponent {
     get model() {
         return this._model;
     }
-    @Input() inputType: inputTypes = 'text';
+    @Input() inputType: InputTypes = 'text';
     @Input() selectOptions = [];
     @Input() isAllowed = false;
     @Input() linkSource!: string;
