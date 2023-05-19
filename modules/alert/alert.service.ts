@@ -24,18 +24,12 @@ export class AlertService {
     constructor(private snackBar: MatSnackBar) {}
 
     addAlert(type: string, message: string) {
-        let config = { duration: this.alertTime };
-        if (type === 'danger') {
-            config = { duration: 0 };
-        }
+        const config = { duration: type === 'danger' ? 0 : this.alertTime };
         this.snackBar.open(message, 'Dismiss', config);
     }
 
     addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any) {
-        let config = { duration: this.alertTime };
-        if (type === 'danger') {
-            config = { duration: 0 };
-        }
+        const config = { duration: type === 'danger' ? 0 : this.alertTime };
         this.snackBar.openFromComponent(component, {
             ...config,
             data,

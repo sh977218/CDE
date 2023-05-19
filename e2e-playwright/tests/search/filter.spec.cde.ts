@@ -3,9 +3,9 @@ import user from '../../data/user';
 import { expect } from '@playwright/test';
 
 test.describe(`Search Filter`, async () => {
-    test(`Clear all filters`, async ({basePage, searchPage}) => {
+    test(`Clear all filters`, async ({basePage, searchPage, navigationMenu}) => {
         await basePage.goToSearch('cde');
-        await basePage.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(user.nlm.username, user.nlm.password);
         await searchPage.browseOrg('CTEP').click();
         await searchPage.addClassificationFilter('CATEGORY').click();
         await expect(searchPage.findSearchPageText('AdEERS')).toBeVisible();

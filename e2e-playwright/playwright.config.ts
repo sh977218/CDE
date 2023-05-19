@@ -46,7 +46,7 @@ const config: PlaywrightTestConfig = defineConfig({
         ['junit', {outputFile: `playwright-report${process.env.a11y ? '-a11y' : ''}/report-junit.xml`}],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-    outputDir: 'playwright-report/test-results',
+    outputDir: 'test-results',
 
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {

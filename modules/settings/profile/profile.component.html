@@ -9,7 +9,7 @@
         </dd>
         <dt>E-mail:</dt>
         <dd id="user_email">
-            <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
+            <cde-inline-edit id="emailEdit" data-testid="edit-user-email" [(model)]="user.email" inputType="email" [isAllowed]="true"
                              (modelChange)="userService.save({email: user.email})"></cde-inline-edit>
         </dd>
     </ng-container>

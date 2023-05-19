@@ -37,7 +37,7 @@
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                         <ng-container
                                 *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">
-                            <button class="navBarButton" mat-button [id]="menuItem.id"
+                            <button class="navBarButton" mat-button [id]="menuItem.id" [attr.data-testid]="menuItem.id"
                                     [class.active]="sectionActive === menuItem.section"
                                     [routerLink]="menuItem.link || ''" [queryParams]="menuItem.queryParams || null">
                                 {{menuItem.label || menuItem.labelFn()}}
@@ -108,12 +108,12 @@
                     <mat-icon>settings</mat-icon>
                 </button>
                 <button mat-button *ngIf="!userService.user; else loggedInButton" id="login_link"
-                        test-automation-id="login_link" routerLink="/login">
+                        data-testid="login_link" routerLink="/login">
                     <span>Sign In</span>
                 </button>
                 <ng-template #loggedInButton>
                     <button #userButton mat-button id="username_link"
-                            test-automation-id="logged-in-username"
+                            data-testid="logged-in-username"
                             [class.active]="isActiveUserMenu()"
                             [matMenuTriggerFor]="loginMenu" #userMenuTrigger="matMenuTrigger"
                             (mouseenter)="menuEnter(minorBar, userMenuTrigger, loginMenu)"
@@ -123,15 +123,17 @@
                     <mat-menu #loginMenu="matMenu">
                         <div (mouseenter)="menu1Enter(minorBar)"
                              (mouseleave)="menu1Leave(minorBar, userMenuTrigger, userButton)">
-                            <button mat-menu-item routerLink="/settings/profile"
+                            <button mat-menu-item routerLink="/settings/profile" data-testid="user_settings"
                                     id="user_settings">{{isSiteAdmin(userService.user) ? 'Settings' : 'Profile'}}</button>
                             <button mat-menu-item *ngIf="canClassify(userService.user)"
+                                    data-testid="user_classification"
                                     routerLink="/classificationManagement">Classifications
                             </button>
                             <button mat-menu-item *ngIf="isOrgAuthority(userService.user)" routerLink="/siteAudit"
+                                    data-testid="user_audit"
                                     id="user_audit">Audit
                             </button>
-                            <button mat-menu-item (click)="logout()">Log Out</button>
+                            <button mat-menu-item (click)="logout()" data-testid="user_logout">Log Out</button>
                         </div>
                     </mat-menu>
                 </ng-template>
@@ -172,7 +174,8 @@
                             <ng-container *ngFor="let child of menuItem.children">
                                 <ng-container *ngIf="!child.condition || child.condition()">
                                     <ng-container *ngIf="child.label === 'Contact Us'; else mobileMenuItemStandard">
-                                        <a mat-menu-item style="margin-left: 16px;" [id]="'mobile_' + child.id" [href]="child.link"
+                                        <a mat-menu-item style="margin-left: 16px;" [id]="'mobile_' + child.id"
+                                           [href]="child.link"
                                            target="_blank" rel="noopener noreferrer"
                                         >
                                             Contact Us
@@ -181,7 +184,8 @@
                                     <ng-template #mobileMenuItemStandard>
                                         <ng-container
                                                 *ngIf="!child.children || !child.children.length; else mobileMenuWithChildren">
-                                            <button mat-menu-item style="margin-left: 16px;" [routerLink]="child.link || ''"
+                                            <button mat-menu-item style="margin-left: 16px;"
+                                                    [routerLink]="child.link || ''"
                                                     [queryParams]="child.queryParams || null"
                                                     (click)="sidenav.close()">
                                                 {{child.label || child.labelFn()}}

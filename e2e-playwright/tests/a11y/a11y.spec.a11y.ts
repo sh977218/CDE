@@ -5,7 +5,7 @@ import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
 
 test.describe(`a11y`, async () => {
-    test(`Home page @smoke`, async ({page, basePage}) => {
+    test(`Home page`, async ({page, basePage}) => {
         await basePage.goToHome();
     })
 

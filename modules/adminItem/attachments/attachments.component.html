@@ -8,7 +8,7 @@
 <ng-template #displayAttachments>
     <div class="attachment">
         <ng-container *ngFor="let attachment of elt.attachments; let i = index">
-            <div test-automation-id="attachmentDiv" id="attachment_{{i}}" class="boxed-div">
+            <div data-testid="attachmentDiv" id="attachment_{{i}}" class="boxed-div">
                 <div>
                     <label>Filename:</label>
                     <div>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div>
-                        <mat-icon test-automation-id="removeAttachmentButton" id="removeAttachment-{{i}}" class="fake-button" role="button" tabindex="0"
+                        <mat-icon data-testid="removeAttachmentButton" id="removeAttachment-{{i}}" class="fake-button" role="button" tabindex="0"
                                   title="Remove" (click)="removeAttachment.emit(i)">delete_outline
                         </mat-icon>
                         <button class="button small mL" (click)="copyUrl(attachment)">

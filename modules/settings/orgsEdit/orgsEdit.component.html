@@ -1,20 +1,20 @@
 <h1>My Organizations</h1>
 <form class="stack" #newOrgForm="ngForm">
     <mat-form-field>
-        <input matInput name="newOrgName" placeholder="Organization Name" [(ngModel)]="newOrg.name" required>
+        <input matInput name="newOrgName" data-testid="new-organization-name" placeholder="Organization Name" [(ngModel)]="newOrg.name" required>
     </mat-form-field>
     <mat-form-field>
-        <input matInput name="newOrgLongName" placeholder="Organization Long Name" [(ngModel)]="newOrg.longName">
+        <input matInput name="newOrgLongName" data-testid="new-organization-long-name" placeholder="Organization Long Name" [(ngModel)]="newOrg.longName">
     </mat-form-field>
     <mat-form-field>
-        <select matNativeControl id="newOrgWorkingGroup" name="wgOf" [(ngModel)]="newOrg.workingGroupOf">
+        <select matNativeControl id="newOrgWorkingGroup" data-testid="new-organization-working-group" name="wgOf" [(ngModel)]="newOrg.workingGroupOf">
             <option value="">Working Group Of</option>
             <option *ngFor="let o of orgs">{{o.name}}</option>
         </select>
     </mat-form-field>
 
     <button type="submit" id="addOrg" class="button" (click)="addOrg()"
-            [disabled]="!newOrgForm.form.valid">Add Organization
+            [disabled]="!newOrgForm.form.valid" data-testid="add-organization-submit">Add Organization
     </button>
 </form>
 <table class="table table-border table-responsive">
@@ -29,48 +29,47 @@
         <th>Working Group Of:</th>
         <th>HTML Overview:</th>
     </tr>
-    <tr *ngFor="let c of orgs">
-        <td id="orgName-{{c.name}}">{{c.name}}</td>
-        <td>
+    <tr *ngFor="let c of orgs" date-testid="managed-organization">
+        <td id="orgName-{{c.name}}" data-testid="organization-name">{{c.name}}</td>
+        <td data-testid="organization-long-name">
             <cde-inline-edit id="orgLongName-{{c.name}}" [(model)]="c.longName"
                              [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
+        <td data-testid="organization-mail-address">
             <cde-inline-edit id="orgMailAddress-{{c.name}}" [(model)]="c.mailAddress"
                              [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
+        <td data-testid="organization-email-address">
             <cde-inline-edit id="orgEmailAddress-{{c.name}}" [(model)]="c.emailAddress"
                              [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
+        <td data-testid="organization-phone-number">
             <cde-inline-edit id="orgPhoneNumber-{{c.name}}" [(model)]="c.phoneNumber"
                              [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
+        <td data-testid="organization-uri">
             <cde-inline-edit id="orgUri-{{c.name}}" [(model)]="c.uri" [isAllowed]="true"
                              (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
+        <td data-testid="organization-extra-info">
             <cde-inline-edit id="orgExtra-{{c.name}}" [(model)]="c.extraInfo" [isAllowed]="true"
                              (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
-        <td>
-        <span *ngIf="editWG[c.name]">
-            <select style="width: 120px" class="form-control" [(ngModel)]="editWG[c.name].tempWG">
-                <option></option>
-                <option *ngFor="let o of orgs">{{o.name}}</option>
-            </select>
-            <mat-icon (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
-            <mat-icon (click)="editWG[c.name] = null">cancel</mat-icon>
-        </span>
+        <td data-testid="organization-working-group">
+            <span *ngIf="editWG[c.name]">
+                <select style="width: 120px" class="form-control" [(ngModel)]="editWG[c.name].tempWG">
+                    <option></option>
+                    <option *ngFor="let o of orgs">{{o.name}}</option>
+                </select>
+                <mat-icon (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
+                <mat-icon (click)="editWG[c.name] = null">cancel</mat-icon>
+            </span>
             <span *ngIf="!editWG[c.name]">
-            <mat-icon title="Edit WG" role="link"
-                      (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon>
-                {{c.workingGroupOf}}
-        </span>
+            <mat-icon title="Edit WG" role="link" (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon>
+            {{c.workingGroupOf}}
+            </span>
         </td>
-        <td>
+        <td data-testid="organization-overview-html">
             <cde-inline-area-edit id="orgHtmlOverview-{{c.name}}"
                                   [(model)]="c.htmlOverview" [isAllowed]="true"
                                   (modelChange)="updateOrg(c)"></cde-inline-area-edit>

@@ -9,21 +9,6 @@ export class BasePagePo {
         this.page = page
     }
 
-    async login(username, password) {
-        const context = this.page.context();
-        await this.page.locator(`[test-automation-id="login_link"]`).click();
-        const [loginPage] = await Promise.all([
-            context.waitForEvent('page'),
-            this.page.locator(`[test-automation-id="open-login-page"]`).click()
-        ])
-        await loginPage.locator(`[name="username"]`).fill(username);
-        await loginPage.locator(`[name="password"]`).fill(password);
-        await loginPage.locator(`[id="loginSubmitBtn"]`).click();
-        await this.page.waitForSelector(`[test-automation-id="logged-in-username"]`, {
-            state: 'visible'
-        })
-    }
-
     async goToForm(tinyId) {
         await this.page.goto(`/formView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`,{state:'visible'});
@@ -49,16 +34,16 @@ export class BasePagePo {
 
     async uploadAttachment(filePath) {
         await this.page.setInputFiles(`[id="fileToUpload"]`, filePath);
-        await this.page.waitForSelector(`[test-automation-id="attachmentDiv"]`, {state: 'visible'})
+        await this.page.waitForSelector(`[data-testid="attachmentDiv"]`, {state: 'visible'})
     }
 
     async removeAttachment(attachmentLocator: Locator) {
-        await attachmentLocator.locator(`[test-automation-id="removeAttachmentButton"]`).click();
-        await this.page.waitForSelector(`[test-automation-id="attachmentDiv"]`, {state: 'detached'})
+        await attachmentLocator.getByTestId(`removeAttachmentButton`).click();
+        await this.page.waitForSelector(`[data-testid="attachmentDiv"]`, {state: 'detached'})
     }
 
     get attachments() {
-        return this.page.locator(`[test-automation-id="attachmentDiv"]`)
+        return this.page.getByTestId(`attachmentDiv`)
     }
 
     async goToHome() {

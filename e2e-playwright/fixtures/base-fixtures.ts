@@ -6,6 +6,8 @@ import { AioTocViewMenuPo } from '../pages/aio-toc-view-menu.po';
 import { BasePagePo } from '../pages/base-page.po';
 import { SearchPagePo } from '../pages/search-page.po';
 
+import { NavigationMenuPo } from '../pages/navigation-menu.po';
+
 async function codeCoverage(page) {
     const coverage: string = await page.evaluate(
         'JSON.stringify(window.__coverage__);'
@@ -21,6 +23,7 @@ async function codeCoverage(page) {
 const test = baseTest.extend<{
     basePage: BasePagePo,
     aioTocViewMenuPo: AioTocViewMenuPo,
+    navigationMenu: NavigationMenuPo,
     searchPage: SearchPagePo
 }>({
         basePage: async ({page}, use) => {
@@ -29,6 +32,10 @@ const test = baseTest.extend<{
         },
         aioTocViewMenuPo: async ({page}, use) => {
             await use(new AioTocViewMenuPo(page))
+            await codeCoverage(page);
+        },
+        navigationMenu: async ({page}, use) => {
+            await use(new NavigationMenuPo(page))
             await codeCoverage(page);
         },
         searchPage: async ({page}, use) => {

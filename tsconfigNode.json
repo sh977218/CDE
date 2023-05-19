@@ -39,6 +39,7 @@
     "modules",
     "node_modules",
     "protractor",
-    "test"
+    "test",
+    "e2e-playwright"
   ]
 }
