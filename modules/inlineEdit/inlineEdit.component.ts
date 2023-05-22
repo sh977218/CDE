@@ -6,6 +6,7 @@ type InputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 @Component({
     selector: 'cde-inline-edit',
     templateUrl: './inlineEdit.component.html',
+    styleUrls: ['./inlineEdit.component.scss'],
 })
 export class InlineEditComponent {
     private _model!: string;
@@ -24,7 +25,6 @@ export class InlineEditComponent {
     @Input() isAllowed = false;
     @Input() linkSource!: string;
     @Output() modelChange = new EventEmitter<string>();
-    INPUT_TYPE_ARRAY = ['text', 'email'];
     editMode = false;
     value!: string;
 

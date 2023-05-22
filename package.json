@@ -33,7 +33,7 @@
     "ts": "npx ts-node -P tsconfigNode.json",
     "buildNodeIngester": "cross-env bash ./buildNodeIngester.sh",
     "lint": "ng lint cde-cli",
-    "format": "prettier -w ./modules/**/*.ts",
+    "format": "prettier -w ./{modules,e2e-playwright}/**/*.ts",
     "esfix": "eslint --fix",
     "playwright": "playwright test -c e2e-playwright --project=CDE-Chromium",
     "playwright-a11y": "playwright test -c e2e-playwright --project=CDE-Chromium-a11y",

@@ -5,11 +5,11 @@ import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
 
 test.describe(`a11y`, async () => {
-    test(`Home page`, async ({page, basePage}) => {
+    test(`Home page`, async ({basePage}) => {
         await basePage.goToHome();
     })
 
-    test(`Cde page`, async ({page, basePage}) => {
+    test(`Cde page`, async ({basePage}) => {
         const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
         await basePage.goToCde(cdeTinyId[cdeName]);
     })

@@ -1,39 +1,49 @@
-<span>
-    <span *ngIf="!editMode">
-        <a *ngIf="isAllowed" title="Edit" href="javascript:void(0);" (click)="edit()">
+<form *ngIf="editMode else viewMode;" #inlineForm="ngForm" (ngSubmit)="save()">
+    <ng-container *ngIf="inputType.toLowerCase() === 'text'">
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="text" autocomplete="off" [(ngModel)]="value" />
+    </ng-container>
+    <ng-container *ngIf="inputType.toLowerCase() === 'email'">
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="email" autocomplete="off" [(ngModel)]="value"/>
+    </ng-container>
+    <ng-container *ngIf="inputType.toLowerCase() === 'date'">
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="date" autocomplete="off" [(ngModel)]="value"/>
+    </ng-container>
+    <ng-container *ngIf="inputType.toLowerCase() === 'number'">
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="number" autocomplete="off" [(ngModel)]="value"/>
+    </ng-container>
+    <ng-container *ngIf="inputType.toLowerCase() === 'select'">
+        <select class="form-control" data-testid="inline-edit-select" [(ngModel)]="value" name="inlineSelect">
+            <option *ngFor="let selectOption of selectOptions;let i =index;" [selected]="selectOption === value">
+                {{selectOption}}
+            </option>
+        </select>
+    </ng-container>
+    <ng-container data-testid="inline-edit-input" *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
+        <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
+    </ng-container>
+    <div class="actions">
+        <button type="button" class="button small fail" (click)="discard()">
+            <mat-icon>cancel</mat-icon>
+            Discard
+        </button>
+        <button type="submit" class="button small success" data-testid="inline-edit-submit"
+                [disabled]="!inlineForm.form.valid">
+            <mat-icon>check</mat-icon>
+            Confirm
+        </button>
+    </div>
+</form>
+<ng-template #viewMode>
+    <div class="non-edit">
+        <a *ngIf="isAllowed" title="Edit" href="javascript:void(0);" (click)="edit()" class="edit-icon" data-testid="inline-edit-icon">
             <mat-icon>edit</mat-icon>
         </a>
         <span *ngIf="!linkSource">
-            <span *ngIf="isNotNA(value); else NAvalue">{{value}}</span>
-            <ng-template #NAvalue><span></span></ng-template>
-        </span>
-        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
+        <span *ngIf="isNotNA(value); else naValue">{{value}}</span>
+        <ng-template #naValue>
+            <span></span>
+        </ng-template>
     </span>
-    <form *ngIf="editMode" #inlineForm="ngForm" (ngSubmit)="save()">
-        <ng-container *ngIf="INPUT_TYPE_ARRAY.indexOf(inputType.toLowerCase()) > -1">
-            <input class="form-control" name="inlineInput" [type]="inputType.toLowerCase()" autocomplete="off"
-                   [(ngModel)]="value" [email]="value && inputType.toLowerCase() === 'email' || null"/>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'date'">
-            <input class="form-control" name="inlineInput" type="date" autocomplete="off" [(ngModel)]="value"/>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'number'">
-            <input class="form-control" name="inlineInput" type="number" autocomplete="off" [(ngModel)]="value"/>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'select'">
-            <select class="form-control" [(ngModel)]="value" name="inlineSelect">
-                <option *ngFor="let selectOption of selectOptions;let i =index;" [selected]="selectOption === value">
-                    {{selectOption}}
-                </option>
-            </select>
-        </ng-container>
-        <ng-container *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
-            <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
-        </ng-container>
-        <div class="actions">
-            <button type="button" class="button small fail" (click)="discard()"><mat-icon>cancel</mat-icon>Discard</button>
-            <button type="submit" class="button small success"
-                    [disabled]="!inlineForm.form.valid"><mat-icon>check</mat-icon>Confirm</button>
-        </div>
-    </form>
-</span>
+        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
+    </div>
+</ng-template>

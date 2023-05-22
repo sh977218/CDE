@@ -12,11 +12,11 @@ test.describe(`Attachment`, async () => {
         test(`Anonymous user`, async ({basePage}) => {
             expect(await basePage.uploadMoreFile.isVisible()).toBeFalsy();
         })
-        test(`Logged in user`, async ({basePage, aioTocViewMenuPo, navigationMenu}) => {
+        test(`Logged in user`, async ({basePage, aioTocViewMenu, navigationMenu}) => {
             await navigationMenu.login(user.nlm.username, user.nlm.password);
-            await aioTocViewMenuPo.goToAttachments();
+            await aioTocViewMenu.goToAttachments();
             await basePage.uploadAttachment(`./e2e-playwright/assets/glass.jpg`);
-            const attachmentLocator = basePage.attachments.first();
+            const attachmentLocator = basePage.attachments().first();
             expect(await attachmentLocator.isVisible()).toBeTruthy();
             await basePage.removeAttachment(attachmentLocator);
             expect(await attachmentLocator.isVisible()).toBeFalsy();

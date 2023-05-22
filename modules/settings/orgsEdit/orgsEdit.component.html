@@ -29,7 +29,7 @@
         <th>Working Group Of:</th>
         <th>HTML Overview:</th>
     </tr>
-    <tr *ngFor="let c of orgs" date-testid="managed-organization">
+    <tr *ngFor="let c of orgs" data-testid="managed-organization">
         <td id="orgName-{{c.name}}" data-testid="organization-name">{{c.name}}</td>
         <td data-testid="organization-long-name">
             <cde-inline-edit id="orgLongName-{{c.name}}" [(model)]="c.longName"
@@ -56,18 +56,9 @@
                              (modelChange)="updateOrg(c)"></cde-inline-edit>
         </td>
         <td data-testid="organization-working-group">
-            <span *ngIf="editWG[c.name]">
-                <select style="width: 120px" class="form-control" [(ngModel)]="editWG[c.name].tempWG">
-                    <option></option>
-                    <option *ngFor="let o of orgs">{{o.name}}</option>
-                </select>
-                <mat-icon (click)="c.workingGroupOf = editWG[c.name].tempWG; updateOrg(c); editWG[c.name] = null">check</mat-icon>&nbsp;&nbsp;
-                <mat-icon (click)="editWG[c.name] = null">cancel</mat-icon>
-            </span>
-            <span *ngIf="!editWG[c.name]">
-            <mat-icon title="Edit WG" role="link" (click)="editWG[c.name] = {tempWG: c.workingGroupOf}">edit</mat-icon>
-            {{c.workingGroupOf}}
-            </span>
+            <cde-inline-select-edit [value]="c.workingGroupOf" [selectOptions]="orgsOptions"
+                                    (save)="c.workingGroupOf = $event; updateOrg(c)" [isAllowed]="true">
+            </cde-inline-select-edit>
         </td>
         <td data-testid="organization-overview-html">
             <cde-inline-area-edit id="orgHtmlOverview-{{c.name}}"

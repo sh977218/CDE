@@ -10,14 +10,18 @@ import { noop } from 'shared/util';
 @Component({
     selector: 'cde-orgs-edit',
     templateUrl: 'orgsEdit.component.html',
+    styleUrls: ['orgsEdit.component.scss'],
 })
 export class OrgsEditComponent implements OnInit {
-    editWG: any = {};
     newOrg: any = {};
     orgs?: Organization[];
 
     ngOnInit() {
         this.getOrgs();
+    }
+
+    get orgsOptions() {
+        return this.orgs.map(o => o.name);
     }
 
     constructor(private alert: AlertService, private http: HttpClient, private orgHelperService: OrgHelperService) {}

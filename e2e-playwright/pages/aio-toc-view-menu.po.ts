@@ -1,19 +1,19 @@
 import { Page } from '@playwright/test';
 
 export class AioTocViewMenuPo {
-
     protected page: Page;
 
     constructor(page: Page) {
-        this.page = page
+        this.page = page;
     }
 
     goToHistory() {
-        return this.page.getByText('History').click()
+        return this.page.getByText('History').click();
     }
 
     goToAttachments() {
-        return this.page.locator(`[title="Attachments"]`).click()
+        return this.page.locator(`[title="Attachments"]`).click();
     }
+
 
 }

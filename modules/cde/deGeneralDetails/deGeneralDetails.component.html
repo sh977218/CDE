@@ -48,7 +48,7 @@
 
     <div>
         <dt>Origin:</dt>
-        <dd>
+        <dd data-testid="origin">
             <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
                              (modelChange)="eltChange.emit();">addNew
             </cde-inline-edit>

@@ -8,8 +8,8 @@
             {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="user.quota"> MB</span>
         </dd>
         <dt>E-mail:</dt>
-        <dd id="user_email">
-            <cde-inline-edit id="emailEdit" data-testid="edit-user-email" [(model)]="user.email" inputType="email" [isAllowed]="true"
+        <dd id="user_email" data-testid="edit-user-email">
+            <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
                              (modelChange)="userService.save({email: user.email})"></cde-inline-edit>
         </dd>
     </ng-container>

@@ -41,18 +41,22 @@
     <dd>
         <input type="checkbox" class="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
                id="isCopyrighted" title="copyrighted" (change)="eltChange.emit();"/>
-        <div *ngIf="elt.isCopyrighted">
-            Statement:
+        <div *ngIf="elt.isCopyrighted" class="copyrightContainer">
+            <div class="copyrightDiv">
+                <label>Statement:</label>
             <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
                              [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
-            Authority:
+            </div>
+            <div class="copyrightDiv">
+                <label>Authority:</label>
             <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
                              [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
+            </div>
         </div>
     </dd>
 
     <dt>Origin:</dt>
-    <dd>
+    <dd data-testid="origin">
         <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
                          (modelChange)="eltChange.emit()"></cde-inline-edit>
     </dd>

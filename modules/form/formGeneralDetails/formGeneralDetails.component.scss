@@ -1,0 +1,14 @@
+.copyrightContainer {
+  display: flex;
+  flex-direction: column;
+
+  .copyrightDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    label {
+      margin-right: 5px;
+    }
+  }
+}

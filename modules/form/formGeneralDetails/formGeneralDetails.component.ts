@@ -10,6 +10,7 @@ import { FormViewComponent } from 'form/formView/formView.component';
 @Component({
     selector: 'cde-form-general-details[elt]',
     templateUrl: './formGeneralDetails.component.html',
+    styleUrls: ['./formGeneralDetails.component.scss'],
 })
 export class FormGeneralDetailsComponent {
     @Input() set elt(e: CdeForm) {
