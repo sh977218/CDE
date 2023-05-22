@@ -1,14 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { DataElement } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-datasets',
     templateUrl: './datasets.component.html',
 })
-export class DatasetsComponent implements OnInit {
-    @Input() public elt: any;
-    dataSets;
-
-    ngOnInit(): void {
-        this.dataSets = this.elt.dataSets;
-    }
+export class DatasetsComponent {
+    @Input() public elt!: DataElement;
 }

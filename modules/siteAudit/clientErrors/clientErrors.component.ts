@@ -5,15 +5,28 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
 
+export interface ClientError {
+    message: string;
+    date: Date | number;
+    origin: string;
+    name: string;
+    stack: string;
+    userAgent: string;
+    url: string;
+    username: string;
+    ip: string;
+
+    agent: string;
+}
+
 @Component({
     selector: 'cde-client-errors',
     templateUrl: './clientErrors.component.html',
 })
 export class ClientErrorsComponent {
     currentPage: number = 0;
-    records: any = [];
-    filteredRecords = [];
-    error;
+    records: ClientError[] = [];
+    filteredRecords: ClientError[] = [];
     browserInclude: { [browser: string]: boolean } = {
         chrome: true,
         firefox: true,
@@ -31,7 +44,7 @@ export class ClientErrorsComponent {
         }
 
         this.http
-            .post('/server/log/clientErrors', {
+            .post<ClientError[]>('/server/log/clientErrors', {
                 skip: this.currentPage * 50,
                 limit: 50,
             })
@@ -50,9 +63,8 @@ export class ClientErrorsComponent {
             );
     }
 
-    openErrorDetailModal(error) {
-        const data = error;
-        this.dialog.open(ClientErrorDetailModalComponent, { width: '800px', data });
+    openErrorDetailModal(error: ClientError) {
+        this.dialog.open(ClientErrorDetailModalComponent, { width: '800px', data: error });
     }
 
     filter() {

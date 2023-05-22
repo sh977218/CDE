@@ -41,7 +41,7 @@ export class NewPermissibleValueModalComponent {
         this.newPermissibleValue.valueMeaningName = term.name;
         this.newPermissibleValue.valueMeaningCode = term.ui;
         this.newPermissibleValue.codeSystemName = 'UMLS';
-        if (!this.newPermissibleValue.permissibleValue) {
+        if (!this.newPermissibleValue.permissibleValue && term.name) {
             this.newPermissibleValue.permissibleValue = term.name;
         }
     }

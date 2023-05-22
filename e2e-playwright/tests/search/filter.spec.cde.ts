@@ -1,6 +1,6 @@
+import { expect } from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
-import { expect } from '@playwright/test';
 
 test.describe(`Search Filter`, async () => {
     test(`Clear all filters`, async ({basePage, searchPage, navigationMenu}) => {

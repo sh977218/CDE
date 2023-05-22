@@ -6,6 +6,7 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": false,
+    "strict": true,
     "types": []
   },
   "files": [

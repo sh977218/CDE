@@ -1,11 +1,13 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MoreLikeThisDataElement } from 'cde/mlt/moreLikeThis.component';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlertService } from 'alert/alert.service';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ElasticService } from '_app/elastic.service';
+import { AlertService } from 'alert/alert.service';
+import { MoreLikeThisDataElement } from 'cde/mlt/moreLikeThis.component';
+import { DataElement, DataSet } from 'shared/de/dataElement.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 import { SearchSettings } from 'shared/search/search.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';
-import { CdeFormElastic } from 'shared/form/form.model';
 
 @Component({
     selector: 'cde-related-content',
@@ -13,14 +15,12 @@ import { CdeFormElastic } from 'shared/form/form.model';
     styleUrls: ['./related-content.component.scss'],
 })
 export class RelatedContentComponent implements OnInit {
-    @Input() elt;
-    dataSets = [];
-    mltCdes = [];
+    @Input() elt!: DataElement;
+    @ViewChild('tabGroup') tabGroup!: ElementRef<MatTabGroup>;
+    dataSets: DataSet[] = [];
+    defaultTabIndex: number = 0;
+    mltCdes: MoreLikeThisDataElement[] = [];
     linkedForms: CdeFormElastic[] = [];
-
-    defaultTabIndex = 0;
-
-    @ViewChild('tabGroup') tabGroup;
 
     constructor(private http: HttpClient, private alert: AlertService, private elasticService: ElasticService) {}
 
@@ -48,7 +48,7 @@ export class RelatedContentComponent implements OnInit {
         );
     }
 
-    tabChanged(e) {
+    tabChanged(e: number) {
         this.defaultTabIndex = e;
     }
 }

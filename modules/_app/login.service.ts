@@ -8,7 +8,7 @@ import { AlertService } from 'alert/alert.service';
 @Injectable()
 export class LoginService {
     federatedUrl: string = '';
-    lastRoute: UrlTree;
+    lastRoute!: UrlTree;
     loginWindow: Window | null = null;
 
     constructor(
@@ -35,7 +35,7 @@ export class LoginService {
             const url = this.lastRoute.toString();
             this.router.navigate([url], {
                 queryParams,
-                fragment,
+                fragment: fragment || undefined,
             });
         });
     }

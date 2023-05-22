@@ -24,7 +24,7 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Observable } from 'rxjs';
-import { assertUnreachable, Cb, Cb1, Comment, Elt } from 'shared/models.model';
+import { assertUnreachable, Cb, Cb1, Comment, Elt, Item } from 'shared/models.model';
 import {
     DataElement,
     DatatypeContainerDate,
@@ -68,7 +68,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     commentMode?: boolean;
     currentTab = 'preview_tab';
     dialogRef?: MatDialogRef<TemplateRef<any>>;
-    draftSaving?: Promise<void>;
+    draftSaving?: Promise<CdeFormDraft>;
     exportToTab: boolean = false;
     formInput!: Dictionary<string>;
     hasComments = false;
@@ -281,31 +281,31 @@ export class FormViewComponent implements OnInit, OnDestroy {
     openCopyElementModal(elt: CdeFormDraft) {
         const eltCopy = deepCopyElt(elt);
         filterClassificationPerUser(eltCopy, this.userService.userOrgs);
-        const data = eltCopy;
-        this.dialog.open(CopyFormModalComponent, { width: '1200px', data });
+        this.dialog.open(CopyFormModalComponent, { width: '1200px', data: eltCopy });
     }
 
     openFormCdesModal(elt: CdeFormDraft) {
-        const data = formQuestions(elt);
-        this.dialog.open(FormCdesModalComponent, { width: '800px', data });
+        this.dialog.open(FormCdesModalComponent, { width: '800px', data: formQuestions(elt) });
     }
 
     getFormCdes(elt: CdeFormDraft) {
         return formCdes(elt);
     }
 
-    openSaveModal() {
-        this.validate(this.elt, () => {
+    openSaveModal(elt: CdeFormDraft) {
+        this.validate(elt, () => {
             if (this.validationErrors.length) {
                 this.alert.addAlert('danger', 'Please fix all errors before publishing');
             } else {
-                const data = this.elt;
                 this.dialog
-                    .open(SaveModalComponent, { width: '500', data })
+                    .open<SaveModalComponent, Item, boolean | undefined>(SaveModalComponent, {
+                        width: '500',
+                        data: elt,
+                    })
                     .afterClosed()
                     .subscribe(result => {
                         if (result) {
-                            this.saveDraft(this.elt).then(() => this.saveForm(this.elt));
+                            this.saveDraft(elt).then(() => this.saveForm(elt));
                         }
                     });
             }
@@ -333,13 +333,13 @@ export class FormViewComponent implements OnInit, OnDestroy {
         });
     }
 
-    openDeleteDraftModal() {
+    openDeleteDraftModal(elt: CdeFormDraft) {
         this.dialog
-            .open(DeleteDraftModalComponent, { width: '500' })
+            .open<DeleteDraftModalComponent, void, boolean | undefined>(DeleteDraftModalComponent, { width: '500' })
             .afterClosed()
             .subscribe(result => {
                 if (result) {
-                    this.formViewService.removeDraft(this.elt).subscribe(
+                    this.formViewService.removeDraft(elt).subscribe(
                         () => this.loadElt(() => (this.hasDrafts = false)),
                         err => this.alert.httpErrorMessageAlert(err)
                     );
@@ -347,7 +347,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             });
     }
 
-    saveDraft(elt: CdeFormDraft): Promise<void> {
+    saveDraft(elt: CdeFormDraft): Promise<CdeFormDraft> {
         if (!elt.isDraft) {
             elt.changeNote = '';
         }
@@ -374,6 +374,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     setTimeout(() => {
                         this.savingText = '';
                     }, 3000);
+                    return elt;
                 },
                 err => {
                     this.draftSaving = undefined;
@@ -491,8 +492,8 @@ export class FormViewComponent implements OnInit, OnDestroy {
         }
     }
 
-    filterReferenceDocument() {
-        return this.elt.referenceDocuments.filter(rd => !!rd.document);
+    filterReferenceDocument(elt: CdeFormDraft) {
+        return elt.referenceDocuments.filter(rd => !!rd.document);
     }
 
     validate(elt: CdeFormDraft, cb: Cb = noop): void {

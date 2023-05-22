@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import { Router } from '@angular/router';
-import { assertUnreachable } from 'shared/models.model';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
+import { concat } from 'shared/array';
+import { Concept, DataElement } from 'shared/de/dataElement.model';
+import { assertUnreachable } from 'shared/models.model';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 
@@ -20,7 +21,7 @@ interface Config {
     templateUrl: './concepts.component.html',
 })
 export class ConceptsComponent {
-    @Input() public elt: any;
+    @Input() public elt!: DataElement;
     @Input() public canEdit = false;
     @Output() eltChange = new EventEmitter();
     conceptConfigurations: Config[] = [
@@ -46,7 +47,7 @@ export class ConceptsComponent {
 
     constructor(public dialog: MatDialog, private router: Router) {}
 
-    addNewConcept(newConcept) {
+    addNewConcept(newConcept: Concept) {
         if (!this.elt.dataElementConcept) {
             this.elt.dataElementConcept = {};
         }
@@ -69,9 +70,17 @@ export class ConceptsComponent {
         this.eltChange.emit();
     }
 
+    getAllConcepts(): Concept[] {
+        return concat(
+            this.elt.dataElementConcept?.concepts || [],
+            this.elt.objectClass.concepts,
+            this.elt.property.concepts
+        );
+    }
+
     openNewConceptModal() {
         this.dialog
-            .open(AddConceptModalComponent, { width: '800px' })
+            .open<AddConceptModalComponent, {}, Concept>(AddConceptModalComponent, { width: '800px' })
             .afterClosed()
             .subscribe(newConcept => {
                 if (newConcept) {
@@ -81,7 +90,7 @@ export class ConceptsComponent {
     }
 
     dataElementConceptRemoveConcept(index: number) {
-        this.elt.dataElementConcept.concepts.splice(index, 1);
+        this.elt.dataElementConcept?.concepts?.splice(index, 1);
         this.eltChange.emit();
     }
 

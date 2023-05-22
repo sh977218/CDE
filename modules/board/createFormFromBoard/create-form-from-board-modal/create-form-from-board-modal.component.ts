@@ -1,11 +1,11 @@
-import { Component, Inject } from '@angular/core';
-import { BoardDe, Definition, Designation } from 'shared/models.model';
-import { CdeForm, FormSection } from 'shared/form/form.model';
-import { DataElement } from 'shared/de/dataElement.model';
-import { convertCdeToQuestion } from 'nativeRender/form.service';
-import { AlertService } from 'alert/alert.service';
 import { HttpClient } from '@angular/common/http';
+import { Component, Inject } from '@angular/core';
+import { Board, BoardDe, Definition, Designation } from 'shared/models.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AlertService } from 'alert/alert.service';
+import { convertCdeToQuestion } from 'nativeRender/form.service';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm, FormSection } from 'shared/form/form.model';
 
 @Component({
     templateUrl: './create-form-from-board-modal.component.html',
@@ -14,7 +14,7 @@ export class CreateFormFromBoardModalComponent {
     elt: CdeForm = new CdeForm();
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public board,
+        @Inject(MAT_DIALOG_DATA) public board: Board,
         public dialogRef: MatDialogRef<CreateFormFromBoardModalComponent>,
         private alert: AlertService,
         private http: HttpClient

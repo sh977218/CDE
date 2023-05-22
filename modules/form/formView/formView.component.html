@@ -215,12 +215,12 @@
                         </button>
                         <ng-container *ngIf="elt.isDraft">
                             <button id="deleteDraftBtn" class="button fail" title="Delete Draft" data-testid="delete-draft"
-                                    (click)="openDeleteDraftModal()">
+                                    (click)="openDeleteDraftModal(elt)">
                                 <mat-icon>delete</mat-icon>
                                 <span class="button-label">Delete Draft</span>
                             </button>
                             <button id="openSave" class="button success" title="Publish" data-testid="publish-draft"
-                                    (click)="openSaveModal()" [disabled]="savingText === 'Saving...'">
+                                    (click)="openSaveModal(elt)" [disabled]="savingText === 'Saving...'">
                                 <mat-icon>publish</mat-icon>
                                 <span class="button-label">Publish</span>
                             </button>
@@ -256,7 +256,7 @@
                             <cde-display-profile [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-display-profile>
                         </section>
-                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
+                        <section *ngIf="filterReferenceDocument(elt).length || canEdit()" id="reference-documents-div">
                             <cde-related-document [elt]="elt" [canEdit]="canEdit()" (eltChange)="saveDraftVoid(elt)">
                             </cde-related-document>
                         </section>

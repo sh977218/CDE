@@ -27,11 +27,9 @@ export class DeGeneralDetailsComponent {
     }
 
     getQuestionText() {
-        let designations = this.elt.designations;
-
         return (
-            designations.find(d => d.tags.indexOf('Preferred Question Text') > -1)?.designation ||
-            designations.find(d => d.tags.indexOf('Question Text') > -1)?.designation ||
+            this.elt.designations.find(d => d.tags && d.tags.indexOf('Preferred Question Text') > -1)?.designation ||
+            this.elt.designations.find(d => d.tags && d.tags.indexOf('Question Text') > -1)?.designation ||
             ''
         );
     }

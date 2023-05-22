@@ -3,10 +3,11 @@ import { Question } from 'shared/form/form.model';
 import { copyValueDomain } from 'shared/datatype';
 import { Dictionary } from 'async';
 
-export class Concept {
+export interface Concept {
     name?: string;
-    origin?: string;
+    origin: string;
     originId?: string;
+    type: string;
 }
 
 export class Concepts {

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-
-type Concept = { name?: string; originId?: string; origin: string; type: string };
+import { Concept } from 'shared/de/dataElement.model';
 
 @Component({
     templateUrl: './add-concept-modal.component.html',

@@ -218,7 +218,7 @@ export function noopSync(dummy: FormElement, pass: any): any {
     return pass;
 }
 
-export function iterateFormElements(fe: any = {}, option: any = {}, cb?: any): void {
+export function iterateFormElements(fe: FormElementsContainer, option: any = {}, cb?: any): void {
     if (!fe.formElements) {
         fe.formElements = [];
     }

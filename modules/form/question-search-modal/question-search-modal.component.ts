@@ -10,14 +10,14 @@ import { Designation } from 'shared/models.model';
     providers: [DeCompletionService],
 })
 export class QuestionSearchModalComponent implements AfterViewChecked {
-    @ViewChild('searchElement') searchElement: ElementRef;
+    @ViewChild('searchElement') searchElement!: ElementRef;
     @Output() selectedQuestion = new EventEmitter();
     newDataElement = new DataElement();
     questionModelMode = 'search';
 
     constructor(
         public http: HttpClient,
-        @Inject(MAT_DIALOG_DATA) public data,
+        @Inject(MAT_DIALOG_DATA) public data: { questionModelMode: string },
         private dialogRef: MatDialogRef<QuestionSearchModalComponent>,
         public deCompletionService: DeCompletionService
     ) {

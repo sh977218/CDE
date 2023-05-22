@@ -1,4 +1,4 @@
-import { test as baseTest } from '@playwright/test';
+import { Page, test as baseTest } from '@playwright/test';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
@@ -20,7 +20,7 @@ import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
 
-async function codeCoverage(page) {
+async function codeCoverage(page: Page) {
     const coverage: string = await page.evaluate('JSON.stringify(window.__coverage__);');
     const name = randomBytes(32).toString('hex');
     if (coverage) {

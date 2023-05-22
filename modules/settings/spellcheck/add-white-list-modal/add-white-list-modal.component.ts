@@ -40,7 +40,7 @@ export class AddWhiteListModalComponent {
         }
 
         // Clear the input value
-        event.chipInput!.clear();
+        event.chipInput.clear();
     }
 
     remove(term: string) {

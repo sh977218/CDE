@@ -20,8 +20,8 @@ export class OrgsEditComponent implements OnInit {
         this.getOrgs();
     }
 
-    get orgsOptions() {
-        return this.orgs.map(o => o.name);
+    get orgsOptions(): string[] | undefined {
+        return this.orgs?.map(o => o.name);
     }
 
     constructor(private alert: AlertService, private http: HttpClient, private orgHelperService: OrgHelperService) {}

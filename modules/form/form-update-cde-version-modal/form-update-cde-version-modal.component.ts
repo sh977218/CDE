@@ -15,11 +15,11 @@ export class FormUpdateCdeVersionModalComponent {
         newQuestion: {},
     };
 
-    constructor(@Inject(MAT_DIALOG_DATA) public question) {
+    constructor(@Inject(MAT_DIALOG_DATA) public question: FormQuestion) {
         this.fetchQuestion(question);
     }
 
-    fetchQuestion(question) {
+    fetchQuestion(question: FormQuestion) {
         DataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
             const oldVersion = question.question.cde.version ? question.question.cde.version : '';
             DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {

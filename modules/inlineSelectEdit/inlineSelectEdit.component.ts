@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class InlineSelectEditComponent {
     @Input() value: string = 'N/A';
-    @Input() selectOptions = [];
+    @Input() selectOptions: string[] = [];
     @Input() isAllowed = false;
     @Output() save = new EventEmitter<string>();
     @Input() cdeTooltip = '';

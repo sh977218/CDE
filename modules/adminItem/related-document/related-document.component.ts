@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import { DataElement } from 'shared/de/dataElement.model';
 import { MatDialog } from '@angular/material/dialog';
 import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add-related-document-modal/add-related-document-modal.component';
+import { Item } from 'shared/models.model';
 
 @Component({
     selector: 'cde-related-document',
@@ -10,7 +9,7 @@ import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add
 })
 export class RelatedDocumentComponent {
     @Input() canEdit = false;
-    @Input() elt!: DataElement;
+    @Input() elt!: Item;
     @Output() eltChange = new EventEmitter();
 
     constructor(private dialog: MatDialog) {}

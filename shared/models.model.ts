@@ -456,7 +456,7 @@ export class Designation {
     designation: string;
     tags?: string[];
 
-    constructor(designation = '', tags=[]) {
+    constructor(designation = '', tags: string[] = []) {
         this.designation = designation;
         this.tags = tags;
     }

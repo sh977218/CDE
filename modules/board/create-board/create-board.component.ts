@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
-import { Item } from 'shared/models.model';
+import { Board, Item, ModuleItem } from 'shared/models.model';
 import { CreateBoardModalComponent } from 'board/create-board/create-board-modal.component';
 import { MyBoardsService } from 'board/myBoards.service';
 import { AlertService } from 'alert/alert.service';
@@ -12,9 +12,8 @@ import { AlertService } from 'alert/alert.service';
 })
 export class CreateBoardComponent {
     @Input() elts: Item[] = [];
-
-    @Input() module;
-    newBoard: any;
+    @Input() module!: ModuleItem;
+    newBoard?: Partial<Board>;
 
     constructor(
         public dialog: MatDialog,
@@ -30,6 +29,7 @@ export class CreateBoardComponent {
                 tinyId: e.tinyId,
                 name: e.designations[0].designation,
                 type: this.module,
+                pinnedDate: new Date(),
             })),
         };
 

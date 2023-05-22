@@ -19,7 +19,7 @@ export class SearchPagePo {
         return this.page.locator(`[id="regstatus-${filter}"]`);
     }
 
-    addDataTypeFilter(filter) {
+    addDataTypeFilter(filter: string) {
         return this.page.locator(`[id="datatype-${filter}"]`);
     }
 

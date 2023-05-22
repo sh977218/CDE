@@ -7,17 +7,19 @@ import {
     Board,
     ElasticQueryResponseAggregationBucket,
     ElasticQueryResponseAggregations,
-    ItemElastic,
     ModuleItem,
 } from 'shared/models.model';
 import { noop } from 'shared/util';
 import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { AlertService } from 'alert/alert.service';
 import { MAX_PINS } from 'shared/constants';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Injectable()
 export class MyBoardsService {
-    boards?: any[];
+    boards?: Board[];
     filter: BoardFilter & {
         shareStatus: ElasticQueryResponseAggregationBucket[];
         sortDirection: 'asc' | 'desc';
@@ -46,7 +48,7 @@ export class MyBoardsService {
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
         this.http
-            .post<ElasticQueryResponseAggregations<ItemElastic>>('/server/board/myBoards', this.filter)
+            .post<ElasticQueryResponseAggregations<Board>>('/server/board/myBoards', this.filter)
             .subscribe(res => {
                 if (res.hits) {
                     this.boards = res.hits.hits.map(h => {
@@ -87,7 +89,7 @@ export class MyBoardsService {
         setTimeout(() => this.loadMyBoards(undefined, cb), 2000);
     }
 
-    createDefaultBoard(module) {
+    createDefaultBoard(module: ModuleItem) {
         const name = `${module === 'cde' ? 'CDE' : 'Form'} Board 1`;
         const defaultBoard = {
             type: module,
@@ -99,11 +101,13 @@ export class MyBoardsService {
         return this.http.post<Board>('/server/board', defaultBoard);
     }
 
-    addToDefaultBoard(module, eltsToPin) {
-        this.addToBoard(this.boards[0], module, eltsToPin);
+    addToDefaultBoard(module: ModuleItem, eltsToPin: DataElement[] | CdeForm[]) {
+        if (this.boards?.[0]) {
+            this.addToBoard(this.boards[0], module, eltsToPin);
+        }
     }
 
-    addAllToBoard(board, module, elasticsearchPinQuery) {
+    addAllToBoard(board: Board, module: ModuleItem, elasticsearchPinQuery: SearchSettingsElastic) {
         const data = {
             query: elasticsearchPinQuery,
             boardId: board._id,
@@ -138,14 +142,14 @@ export class MyBoardsService {
         });
     }
 
-    addToBoard(board, module, eltsToPin) {
+    addToBoard(board: Board, module: ModuleItem, eltsToPin: DataElement[] | CdeForm[]) {
         return this.http.put('/server/board/pinToBoard/', {
             boardId: board._id,
             tinyIdList: eltsToPin.map(e => e.tinyId),
             type: module,
         });
     }
-    createBoard(board) {
+    createBoard(board: Board) {
         return this.http.post('/server/board', board, { responseType: 'text' });
     }
 }

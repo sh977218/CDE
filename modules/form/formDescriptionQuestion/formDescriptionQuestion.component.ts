@@ -71,10 +71,13 @@ export class FormDescriptionQuestionComponent implements OnInit {
         this.stageElt.emit();
     }
 
-    openUpdateCdeVersionModal(currentQuestion) {
+    openUpdateCdeVersionModal(currentQuestion: FormQuestion) {
         const data = currentQuestion;
         this.dialog
-            .open(FormUpdateCdeVersionModalComponent, { width: '1000px', data })
+            .open<FormUpdateCdeVersionModalComponent, FormQuestion, FormQuestion>(FormUpdateCdeVersionModalComponent, {
+                width: '1000px',
+                data,
+            })
             .afterClosed()
             .subscribe(newQuestion => {
                 if (newQuestion) {

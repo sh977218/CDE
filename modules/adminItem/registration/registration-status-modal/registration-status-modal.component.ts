@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { administrativeStatuses, CurationStatus, RegistrationState } from 'shared/models.model';
+import { administrativeStatuses, CurationStatus, Item, RegistrationState } from 'shared/models.model';
 import { statusList } from 'shared/regStatusShared';
 import { noop } from 'shared/util';
 import { cloneDeep } from 'lodash';
@@ -18,7 +18,7 @@ export class RegistrationStatusModalComponent {
 
     constructor(
         private http: HttpClient,
-        @Inject(MAT_DIALOG_DATA) public data: any,
+        @Inject(MAT_DIALOG_DATA) public data: Item,
         public dialog: MatDialog,
         public userService: UserService
     ) {

@@ -437,7 +437,7 @@ export class PermissibleValueComponent {
             });
     }
 
-    addNewPermissibleValue(vd: ValueDomainValueList, newPermissibleValue) {
+    addNewPermissibleValue(vd: ValueDomainValueList, newPermissibleValue: PermissibleValue) {
         this.removeSourceSelection();
         vd.permissibleValues.push(newPermissibleValue);
         this.runManualValidation();

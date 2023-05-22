@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertService } from 'alert/alert.service';
-import { DataElement } from 'shared/de/dataElement.model';
 import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
-import { noop } from 'shared/util';
+import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { Item, Property } from 'shared/models.model';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-properties',
@@ -12,7 +12,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 })
 export class PropertiesComponent {
     @Input() canEdit = false;
-    @Input() elt!: DataElement & { properties: { edit?: boolean }[] };
+    @Input() elt!: Item & { properties?: { edit?: boolean }[] };
     @Output() eltChange = new EventEmitter();
     orgPropertyKeys: string[] = [];
 
@@ -30,18 +30,20 @@ export class PropertiesComponent {
                 'danger',
                 'No valid property keys present, have an Org Admin go to Org Management > List Management to add one'
             );
-        } else {
-            const data = this.orgPropertyKeys;
-            this.dialog
-                .open(AddPropertyModalComponent, { width: '800px', data })
-                .afterClosed()
-                .subscribe(newProperty => {
-                    if (newProperty) {
-                        this.elt.properties.push(newProperty);
-                        this.eltChange.emit();
-                    }
-                });
+            return;
         }
+        this.dialog
+            .open<AddPropertyModalComponent, string[], Property>(AddPropertyModalComponent, {
+                width: '800px',
+                data: this.orgPropertyKeys,
+            })
+            .afterClosed()
+            .subscribe(newProperty => {
+                if (newProperty) {
+                    this.elt.properties.push(newProperty);
+                    this.eltChange.emit();
+                }
+            });
     }
 
     removePropertyByIndex(index: number) {

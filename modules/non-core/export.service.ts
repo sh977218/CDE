@@ -90,11 +90,12 @@ export class ExportService {
                             );
                             interArr.forEach(matchId => {
                                 const foundCdes = result.filter(c => c.tinyId === matchId.tinyId);
-                                foundCdes.forEach((c: DataElementElastic) => {
-                                    if (c.linkedForms) {
-                                        (c as any).linkedForms = c.linkedForms + ', ' + esForm.tinyId;
+                                foundCdes.forEach((c: ItemElastic) => {
+                                    if ((c as DataElementElastic).linkedForms) {
+                                        (c as any).linkedForms =
+                                            (c as DataElementElastic).linkedForms + ', ' + esForm.tinyId;
                                     } else {
-                                        c.linkedForms = esForm.tinyId;
+                                        (c as DataElementElastic).linkedForms = esForm.tinyId;
                                     }
                                 });
                             });
@@ -202,11 +203,12 @@ export class ExportService {
                     },
                     xml: (result: ItemElastic[]) => {
                         const zip = new JSZip();
-                        result.forEach((oneElt: DataElementElastic) => {
-                            if (oneElt.linkedForms) {
-                                (oneElt.linkedForms as any).Preferred_Standard =
-                                    oneElt.linkedForms['Preferred Standard'];
-                                delete oneElt.linkedForms['Preferred Standard'];
+                        result.forEach((oneElt: ItemElastic) => {
+                            if ((oneElt as DataElementElastic).linkedForms) {
+                                ((oneElt as DataElementElastic).linkedForms as any).Preferred_Standard = (
+                                    oneElt as DataElementElastic
+                                ).linkedForms['Preferred Standard'];
+                                delete (oneElt as any).linkedForms['Preferred Standard'];
                             }
                             const rootElement = module === 'cde' ? 'dataElement' : 'element';
                             zip.file(oneElt.tinyId + '.xml', JXON.jsToString({ [rootElement]: oneElt }));

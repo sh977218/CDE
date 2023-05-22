@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MyBoardsService } from 'board/myBoards.service';
 import { UserService } from '_app/user.service';
-import { ModuleItem } from 'shared/models.model';
+import { MyBoardsService } from 'board/myBoards.service';
+import { Board, ModuleItem } from 'shared/models.model';
 
 @Component({
     templateUrl: './pin-to-board-modal.component.html',
@@ -17,7 +17,7 @@ export class PinToBoardModalComponent {
         this.myBoardsSvc.loadMyBoards(module);
     }
 
-    selectBoard(board) {
+    selectBoard(board: Board) {
         this.dialogRef.close(board);
     }
 }

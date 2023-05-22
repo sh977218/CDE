@@ -71,9 +71,11 @@ export class IdentifiersComponent {
     }
 
     openNewIdentifierModal() {
-        const data = this.getIdSources();
         this.dialog
-            .open(AddIdentifierModalComponent, { width: '800px', data })
+            .open<AddIdentifierModalComponent, Promise<IdSource[]>, CdeId>(AddIdentifierModalComponent, {
+                width: '800px',
+                data: this.getIdSources(),
+            })
             .afterClosed()
             .subscribe(newIdentifier => {
                 if (newIdentifier) {

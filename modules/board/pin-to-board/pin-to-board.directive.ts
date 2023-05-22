@@ -1,14 +1,16 @@
-import { Directive, HostListener, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Directive, HostListener, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-
-import { Board, ModuleItem } from 'shared/models.model';
-import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { MyBoardsService } from 'board/myBoards.service';
 import { PinToBoardLogInModalComponent } from 'board/pin-to-board/pin-to-board-log-in-modal/pin-to-board-log-in-modal.component';
-import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/pin-to-board-modal.component';
+import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
+import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
+import { Board, ModuleItem } from 'shared/models.model';
+import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Directive({
     selector: '[pinToBoard]',
@@ -16,9 +18,9 @@ import { PinToBoardModalComponent } from 'board/pin-to-board/pin-to-board-modal/
 })
 export class PinToBoardDirective {
     @Input() module: ModuleItem = 'cde';
-    @Input() eltsToPin? = [];
+    @Input() eltsToPin: DataElement[] | CdeForm[] = [];
     @Input() width? = '800px';
-    @Input() elasticsearchPinQuery?;
+    @Input() elasticsearchPinQuery?: SearchSettingsElastic;
 
     constructor(
         private http: HttpClient,
@@ -32,7 +34,7 @@ export class PinToBoardDirective {
         const module = this.module;
         if (this.userService.user) {
             this.myBoardService.loadMyBoards(module, () => {
-                if (this.myBoardService.boards.length === 0) {
+                if (this.myBoardService.boards?.length === 0) {
                     const newBoardName = `${module === 'cde' ? 'CDE' : 'Form'} Board 1`;
                     const newBoard = {
                         type: module,
@@ -46,7 +48,8 @@ export class PinToBoardDirective {
                             this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
                                 () => {
                                     this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                        message: this.eltsToPin.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
+                                        message:
+                                            this.eltsToPin?.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                         boardId: board._id,
                                         boardName: 'New Board',
                                     });
@@ -56,12 +59,12 @@ export class PinToBoardDirective {
                         },
                         err => this.alert.httpErrorMessageAlert(err)
                     );
-                } else if (this.myBoardService.boards.length === 1) {
+                } else if (this.myBoardService.boards?.length === 1) {
                     const board = this.myBoardService.boards[0];
                     this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
                         () => {
                             this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
-                                message: this.eltsToPin.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
+                                message: this.eltsToPin?.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                 boardId: board._id,
                                 boardName: board.name,
                             });
@@ -75,12 +78,12 @@ export class PinToBoardDirective {
                         .afterClosed()
                         .subscribe(board => {
                             if (board) {
-                                if (this.eltsToPin.length) {
+                                if (this.eltsToPin?.length) {
                                     this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
                                         () => {
                                             this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
                                                 message:
-                                                    this.eltsToPin.length === 1
+                                                    this.eltsToPin?.length === 1
                                                         ? 'Pinned to '
                                                         : 'All elements pinned to ',
                                                 boardId: board._id,

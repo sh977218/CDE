@@ -16,7 +16,7 @@ import { cloneDeep } from 'lodash';
     ],
 })
 export class EditWhiteListModalComponent {
-    oldTerms = [];
+    oldTerms: string[] = [];
     addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
@@ -33,7 +33,7 @@ export class EditWhiteListModalComponent {
         }
 
         // Clear the input value
-        event.chipInput!.clear();
+        event.chipInput.clear();
     }
 
     remove(term: string) {

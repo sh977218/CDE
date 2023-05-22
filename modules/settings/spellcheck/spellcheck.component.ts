@@ -45,8 +45,7 @@ export class SpellCheckComponent {
     currentErrorPage: string[] = [];
     pageIndex = 0;
     pageSize = 10;
-
-    selectedWhiteList: ValidationWhitelist;
+    selectedWhiteList: ValidationWhitelist | null = null;
 
     constructor(private alert: AlertService, private http: HttpClient, public dialog: MatDialog) {
         this.getWhiteLists();
@@ -68,7 +67,7 @@ export class SpellCheckComponent {
     }
 
     whiteListSelectedErrors() {
-        if (this.selectedErrors.size > 0) {
+        if (this.selectedErrors.size > 0 && this.selectedWhiteList) {
             this.selectedWhiteList.terms = this.selectedWhiteList.terms.concat(Array.from(this.selectedErrors));
             this.updateWhiteList(this.selectedWhiteList, res => {
                 this.selectedErrors.clear();
@@ -82,8 +81,8 @@ export class SpellCheckComponent {
         }
     }
 
-    updateWhiteList(whiteList, cb?) {
-        this.http.post<any>('/server/loader/updatewhitelist', whiteList).subscribe(
+    updateWhiteList(whiteList: ValidationWhitelist, cb?: (res: { terms: string[] }) => void) {
+        this.http.post<{ terms: string[] }>('/server/loader/updatewhitelist', whiteList).subscribe(
             res => {
                 if (res) {
                     this.alert.addAlert('success', 'Whitelist updated');
@@ -143,9 +142,11 @@ export class SpellCheckComponent {
     }
 
     openCopyWhitelistModal() {
-        const data = this.selectedWhiteList;
         this.dialog
-            .open(AddWhiteListModalComponent, { width: '800px', data })
+            .open<AddWhiteListModalComponent, ValidationWhitelist, ValidationWhitelist>(AddWhiteListModalComponent, {
+                width: '800px',
+                data: this.selectedWhiteList,
+            })
             .afterClosed()
             .subscribe(newWhiteList => {
                 if (newWhiteList) {
@@ -155,7 +156,7 @@ export class SpellCheckComponent {
             });
     }
 
-    addNewWhiteList(newWhiteList) {
+    addNewWhiteList(newWhiteList: ValidationWhitelist) {
         this.http.post('/server/loader/addNewWhitelist', newWhiteList, { responseType: 'text' }).subscribe(
             () => this.alert.addAlert('success', 'New Whitelist added'),
             () => this.alert.addAlert('danger', 'Cannot create new whitelist. Does it already exist?')
@@ -179,14 +180,19 @@ export class SpellCheckComponent {
             .afterClosed()
             .subscribe(res => {
                 if (res) {
-                    this.deleteWhiteList(this.selectedWhiteList.collectionName);
-                    _remove(this.whiteList, o => o.collectionName === this.selectedWhiteList.collectionName);
-                    this.selectedWhiteList = null;
+                    if (this.selectedWhiteList) {
+                        if (this.selectedWhiteList.collectionName) {
+                            this.deleteWhiteList(this.selectedWhiteList.collectionName);
+                        }
+                        const selectedWhiteList = this.selectedWhiteList;
+                        _remove(this.whiteList, o => o.collectionName === selectedWhiteList.collectionName);
+                        this.selectedWhiteList = null;
+                    }
                 }
             });
     }
 
-    deleteWhiteList(collectionName) {
+    deleteWhiteList(collectionName: string) {
         this.http.delete(`/server/loader/deletewhitelist/${collectionName}`).subscribe(
             () => this.alert.addAlert('success', 'Whitelist deleted'),
             err => this.alert.addAlert('danger', `Could not remove whitelist. ${err} `)

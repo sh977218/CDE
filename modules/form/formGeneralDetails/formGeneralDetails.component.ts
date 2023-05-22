@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { OrgHelperService } from 'non-core/orgHelper.service';
-import { CdeForm } from 'shared/form/form.model';
-import { canBundle } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
 import { bundleCreate, bundleDestroy } from 'form/formServices';
 import { FormViewComponent } from 'form/formView/formView.component';
+import { OrgHelperService } from 'non-core/orgHelper.service';
+import { CdeForm, CopyrightURL } from 'shared/form/form.model';
+import { canBundle } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-general-details[elt]',
@@ -55,7 +55,7 @@ export class FormGeneralDetailsComponent {
         bundleDestroy(form.tinyId).then(elt => this.eltReloaded.emit(elt));
     }
 
-    trackByUrl(index, url) {
+    trackByUrl(index: number, url: CopyrightURL) {
         return url.url;
     }
 }

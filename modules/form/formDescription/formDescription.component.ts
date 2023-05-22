@@ -31,11 +31,11 @@ export class FormDescriptionComponent implements OnInit {
     @ViewChild(TreeComponent) tree!: TreeComponent;
     dragActive: boolean = false;
     elt: CdeForm;
-    formElementEditing: { formElement?: FormElement; formElements?: FormElement[]; index?: number } = {};
+    formElementEditing: { formElement?: FormElement; formElements?: FormElement[]; index: number } = { index: NaN };
     isMobile: boolean = false;
     isModalOpen: boolean = false;
     missingCdes: string[] = [];
-    topSpacing: number;
+    topSpacing?: number;
     treeOptions: ITreeOptions = {
         allowDrag: (element: TreeNode) =>
             !FormDescriptionComponent.isSubForm(element) ||
@@ -240,7 +240,7 @@ export class FormDescriptionComponent implements OnInit {
         setTimeout(scrollTo, 0, id);
     }
 
-    setCurrentEditing(formElements: FormElement[], formElement: FormElement, index: number) {
+    setCurrentEditing(formElements: FormElement[] | undefined, formElement: FormElement | undefined, index: number) {
         if (isEmpty(this.formElementEditing.formElement)) {
             this.formElementEditing = {
                 formElement,
@@ -249,9 +249,11 @@ export class FormDescriptionComponent implements OnInit {
             };
         } else {
             if (this.formElementEditing.formElement === formElement) {
-                this.formElementEditing = {};
+                this.formElementEditing = { index: NaN };
             } else {
-                this.formElementEditing.formElement.edit = false;
+                if (this.formElementEditing.formElement) {
+                    this.formElementEditing.formElement.edit = false;
+                }
                 this.formElementEditing = {
                     formElement,
                     formElements,

@@ -1,8 +1,8 @@
 import { isScore, iterateFeSync, iterateFeSyncOptions, noopSkipSync } from 'shared/form/fe';
 import { FormElement, FormElementsContainer, FormQuestion, Question, QuestionCde } from 'shared/form/form.model';
 
-export function formQuestions(elt: FormElementsContainer): any[] {
-    const formElements: any[] = [];
+export function formQuestions(elt: FormElementsContainer): FormQuestion[] {
+    const formElements: FormQuestion[] = [];
     iterateFeSync(elt, undefined, undefined, fe => {
         formElements.push(fe);
     });

@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Output, EventEmitter, Inject } from '@angular/core';
 import { isEqual } from 'lodash';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { AlertService } from 'alert/alert.service';
 import { iterateFormElements } from 'shared/form/fe';
 import { FormQuestionDraft } from 'shared/form/form.model';
 import { ITEM_MAP } from 'shared/item';
-import { Cb } from 'shared/models.model';
+import { Cb, Item } from 'shared/models.model';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 type NewQuestion = FormQuestionDraft['question'] & {
     isCollapsed?: boolean;
@@ -32,14 +32,14 @@ export class SaveModalComponent {
 
     constructor(
         public http: HttpClient,
-        @Inject(MAT_DIALOG_DATA) public elt: any,
+        @Inject(MAT_DIALOG_DATA) public elt: Item,
         public dialog: MatDialog,
         private alert: AlertService
     ) {
         this.newVersionVersionUnicity();
         if (this.elt.elementType === 'form' && this.elt.isDraft) {
             iterateFormElements(
-                this.elt.elt,
+                this.elt,
                 {
                     async: true,
                     questionCb: (fe: FormQuestionDraft, cb?: Cb) => {

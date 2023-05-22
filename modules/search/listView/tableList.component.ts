@@ -49,7 +49,7 @@ class Heading {
     text: string;
     tooltip: string;
 
-    constructor(text) {
+    constructor(text: string) {
         this.text = text;
         this.tooltip = toolTipMap.get(text) || '';
     }
@@ -445,7 +445,7 @@ export class TableListComponent implements OnInit {
             if (tableSetup.numQuestions) {
                 row.push({
                     css: 'numQuestions',
-                    value: (e as CdeFormElastic).numQuestions,
+                    value: (e as CdeFormElastic).numQuestions + '',
                 });
             }
             if (tableSetup.source) {

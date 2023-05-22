@@ -7,11 +7,11 @@ import { ClientLog } from '_app/client-log.module';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
-    clientLog: ClientLog;
+    clientLog!: ClientLog;
 
     constructor(private injector: Injector) {}
 
-    handleError(error) {
+    handleError(error: Error & { status?: number }) {
         const logService = this.injector.get(PublishLogService);
         const location = this.injector.get(LocationStrategy);
         const url = location instanceof PathLocationStrategy ? location.path() : '';

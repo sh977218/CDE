@@ -13,7 +13,7 @@ import { AlertService } from 'alert/alert.service';
     templateUrl: './board-overview.component.html',
 })
 export class BoardOverviewComponent implements OnInit {
-    @Input() board: any;
+    @Input() board!: Board;
     @Output() headerClicked = new EventEmitter();
     boardTitle = 'CDE(s)';
     canEdit = false;
@@ -29,7 +29,7 @@ export class BoardOverviewComponent implements OnInit {
     ngOnInit(): void {
         if (this.board) {
             this.boardTitle = this.board.type === 'form' ? 'Form(s)' : 'CDE(s)';
-            this.canEdit = this.board.owner.username === this.userService.user.username;
+            this.canEdit = this.board.owner.username === this.userService.user?.username;
         }
     }
 

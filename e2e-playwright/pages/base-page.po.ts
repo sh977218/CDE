@@ -41,7 +41,7 @@ export class BasePagePo {
         return this.page.locator(`[for="fileToUpload"]`);
     }
 
-    async uploadAttachment(filePath) {
+    async uploadAttachment(filePath: string) {
         await this.page.setInputFiles(`[id="fileToUpload"]`, filePath);
         await this.page.waitForSelector(`[data-testid="attachmentDiv"]`, { state: 'visible' });
     }

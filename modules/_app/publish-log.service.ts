@@ -6,8 +6,6 @@ import { ClientLog } from '_app/client-log.module';
     providedIn: 'root',
 })
 export class PublishLogService {
-    previousLogMsg: ClientLog;
-
     constructor(private logger: NGXLogger) {}
 
     log(logMsg: ClientLog) {

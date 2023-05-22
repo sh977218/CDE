@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { forwardRef, Inject, Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import { DataElement } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic, ElasticElement } from 'shared/de/dataElement.model';
 import { deOrForm } from 'shared/elt/elt';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import {
     ItemElastic,
     UserSearchSettings,
@@ -196,13 +196,16 @@ export class ElasticService implements OnDestroy {
     static highlightPrimaryDefinitionCopy(cde: ItemElastic) {
         const primaryDefinitionCopyHighlight = cde.highlight?.primaryDefinitionCopy;
         if (!primaryDefinitionCopyHighlight) {
-            if (cde.primaryDefinitionCopy.length > 200) {
+            if (cde.primaryDefinitionCopy && cde.primaryDefinitionCopy.length > 200) {
                 cde.primaryDefinitionCopy = cde.primaryDefinitionCopy.substring(0, 200) + ' [...]';
             }
         }
     }
 
-    static highlightOne(field: string, cde: ItemElastic) {
+    static highlightOne(field: keyof DataElementElastic, cde: DataElementElastic): void;
+    static highlightOne(field: keyof CdeFormElastic, cde: CdeFormElastic): void;
+    static highlightOne(field: string, cde: ElasticElement & { [k: string]: any }): void;
+    static highlightOne(field: string, cde: ElasticElement & { [k: string]: any }): void {
         if (!cde.highlight) {
             return;
         }

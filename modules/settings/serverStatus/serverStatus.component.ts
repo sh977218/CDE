@@ -16,7 +16,7 @@ import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-rein
     ],
 })
 export class ServerStatusComponent {
-    esIndices: any;
+    esIndices!: { name: string; indexName: string; count: number; totalCount: number }[];
     indexToReindex!: number;
     isDone: boolean = false;
     linkedForms: { total: number; done: number } = { total: 0, done: 0 };
@@ -61,14 +61,19 @@ export class ServerStatusComponent {
         });
     }
 
-    openConfirmReindexModal(index) {
+    openConfirmReindexModal(index: number) {
         this.esIndices[index].count = 0;
-        const data = {
-            index,
-            indexName: this.esIndices[index].indexName,
-        };
         this.dialog
-            .open(ConfirmReindexModalComponent, { width: '800px', data })
+            .open<ConfirmReindexModalComponent, { index: number; indexName: string }, boolean | undefined>(
+                ConfirmReindexModalComponent,
+                {
+                    width: '800px',
+                    data: {
+                        index,
+                        indexName: this.esIndices[index].indexName,
+                    },
+                }
+            )
             .afterClosed()
             .subscribe(result => {
                 if (result) {
@@ -94,7 +99,7 @@ export class ServerStatusComponent {
         }, 1000);
     }
 
-    syncLinkedFormWithCdeTinyId(tinyId) {
+    syncLinkedFormWithCdeTinyId(tinyId: string) {
         this.http.post('/server/syncLinkedFormWithTinyId', { tinyId }).subscribe(
             (res: any) => {
                 this.alert.addAlert('success', 'done indexing ' + tinyId);

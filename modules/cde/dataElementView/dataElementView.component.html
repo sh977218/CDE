@@ -119,12 +119,12 @@
                         </button>
                         <ng-container *ngIf="elt.isDraft">
                             <button id="deleteDraftBtn" class="button fail" title="Delete Draft" data-testid="delete-draft"
-                                    (click)="openDeleteDraftModal()">
+                                    (click)="openDeleteDraftModal(elt)">
                                 <mat-icon>delete</mat-icon>
                                 <span class="button-label"> Delete Draft</span>
                             </button>
                             <button id="openSave" class="button success" title="Publish" data-testid="publish-draft"
-                                    (click)="openSaveModal()">
+                                    (click)="openSaveModal(elt)">
                                 <mat-icon>publish</mat-icon>
                                 <span class="button-label"> Publish</span>
                             </button>
@@ -190,7 +190,7 @@
                             <cde-derivation-rules [canEdit]="canEdit()" [elt]="elt"
                                                   (eltChange)="saveDraftVoid(elt)"></cde-derivation-rules>
                         </section>
-                        <section *ngIf="filterReferenceDocument().length || canEdit()" id="reference-documents-div">
+                        <section *ngIf="filterReferenceDocument(elt).length || canEdit()" id="reference-documents-div">
                             <cde-related-document [elt]="elt" [canEdit]="canEdit()"
                                                   (eltChange)="saveDraftVoid(elt)"></cde-related-document>
                         </section>
@@ -205,7 +205,7 @@
                                              (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
                         <section id="related-content">
-                            <cde-related-content [elt]="elt" [canEdit]="canEdit()"></cde-related-content>
+                            <cde-related-content [elt]="elt"></cde-related-content>
                         </section>
                         <section id="submission-info">
                             <h2 class="sectionDetailSubtitle">Submission Information</h2>

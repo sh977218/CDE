@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CdeId } from 'shared/models.model';
+import { CdeId, IdSource } from 'shared/models.model';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -8,5 +8,5 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class AddIdentifierModalComponent {
     newIdentifier: CdeId = new CdeId();
 
-    constructor(@Inject(MAT_DIALOG_DATA) public idSources) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public idSources: Promise<IdSource[]>) {}
 }

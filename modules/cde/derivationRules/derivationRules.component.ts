@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class DerivationRulesComponent implements OnChanges {
     @Input() canEdit!: boolean;
-    @Input() elt!: DataElement & { derivationOutputs: { ruleName: string; cde: DataElement }[] };
+    @Input() elt!: DataElement & { derivationOutputs?: { ruleName: string; cde: DataElement }[] };
     @Output() eltChange = new EventEmitter();
 
     previousCdeId!: string;
@@ -36,7 +36,7 @@ export class DerivationRulesComponent implements OnChanges {
                 result.forEach(outputCde => {
                     outputCde.derivationRules.forEach(derRule => {
                         if (derRule.inputs.indexOf(this.elt.tinyId) > -1) {
-                            this.elt.derivationOutputs.push({ ruleName: derRule.name, cde: outputCde });
+                            this.elt.derivationOutputs?.push({ ruleName: derRule.name, cde: outputCde });
                         }
                     });
                 });

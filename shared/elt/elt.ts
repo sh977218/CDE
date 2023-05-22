@@ -1,8 +1,12 @@
+import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Elt, Item, ItemElastic, ModuleItem } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
 
-export function deepCopyElt(elt: Elt) {
+export function deepCopyElt(elt: DataElement): DataElement;
+export function deepCopyElt(elt: CdeForm): CdeForm
+export function deepCopyElt(elt: Item): Item;
+export function deepCopyElt(elt: Item): Item {
     const eltCopy = copyDeep(elt);
     eltCopy.registrationState.administrativeNote = 'Copy of: ' + elt.tinyId;
     delete (eltCopy as any).tinyId;

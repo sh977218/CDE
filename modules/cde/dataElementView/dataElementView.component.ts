@@ -28,7 +28,7 @@ import { Observable } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
-import { Cb1, Comment, Elt } from 'shared/models.model';
+import { Cb1, Comment, Elt, Item } from 'shared/models.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { WINDOW } from 'window.service';
@@ -45,7 +45,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     currentTab = 'general_tab';
     dialogRef?: MatDialogRef<TemplateRef<any>>;
     displayStatusWarning?: boolean;
-    draftSaving?: Promise<void>;
+    draftSaving?: Promise<DataElement>;
     exportToTab: boolean = false;
     hasDrafts = false;
     hasPrivilegeForOrg = hasPrivilegeForOrg;
@@ -212,17 +212,16 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         this.isMobile = window.innerWidth < 768; // size md
     }
 
-    openSaveModal() {
+    openSaveModal(elt: DataElement) {
         if (this.validationErrors.length) {
             this.alert.addAlert('danger', 'Please fix all errors before publishing');
         } else {
-            const data = this.elt;
             this.dialog
-                .open(SaveModalComponent, { width: '500', data })
+                .open<SaveModalComponent, Item, boolean | undefined>(SaveModalComponent, { width: '500', data: elt })
                 .afterClosed()
                 .subscribe(result => {
                     if (result) {
-                        this.saveDraft(this.elt).then(() => this.saveDataElement(this.elt));
+                        this.saveDraft(elt).then(newDraft => this.saveDataElement(newDraft));
                     }
                 });
         }
@@ -231,10 +230,9 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
     openCopyElementModal(elt: DataElement) {
         const eltCopy = deepCopyElt(elt);
         filterClassificationPerUser(eltCopy, this.userService.userOrgs);
-        const data = eltCopy;
         this.dialog.open(CopyDataElementModalComponent, {
             width: '1200px',
-            data,
+            data: eltCopy,
         });
     }
 
@@ -292,13 +290,13 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
         }
     }
 
-    openDeleteDraftModal() {
+    openDeleteDraftModal(elt: DataElement) {
         this.dialog
-            .open(DeleteDraftModalComponent, { width: '500' })
+            .open<DeleteDraftModalComponent, void, boolean | undefined>(DeleteDraftModalComponent, { width: '500' })
             .afterClosed()
             .subscribe(result => {
                 if (result) {
-                    this.deViewService.removeDraft(this.elt).subscribe(
+                    this.deViewService.removeDraft(elt).subscribe(
                         () => this.loadElt(() => (this.hasDrafts = false)),
                         err => this.alert.httpErrorMessageAlert(err)
                     );
@@ -306,7 +304,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             });
     }
 
-    saveDraft(elt: DataElement): Promise<void> {
+    saveDraft(elt: DataElement): Promise<DataElement> {
         if (!elt.isDraft) {
             elt.changeNote = '';
         }
@@ -318,7 +316,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             return this.draftSaving;
         }
         return (this.draftSaving = this.http
-            .put<DataElement>('/server/de/draft/' + elt.tinyId, this.elt)
+            .put<DataElement>('/server/de/draft/' + elt.tinyId, elt)
             .toPromise()
             .then(
                 newElt => {
@@ -334,6 +332,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     setTimeout(() => {
                         this.savingText = '';
                     }, 3000);
+                    return newElt;
                 },
                 err => {
                     this.draftSaving = undefined;
@@ -344,8 +343,8 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             ));
     }
 
-    filterReferenceDocument() {
-        return this.elt.referenceDocuments.filter(rd => !!rd.document);
+    filterReferenceDocument(elt: DataElement) {
+        return elt.referenceDocuments.filter(rd => !!rd.document);
     }
 
     saveDraftVoid(elt: DataElement): void {
