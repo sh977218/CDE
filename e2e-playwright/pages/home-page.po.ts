@@ -6,5 +6,4 @@ export class HomePagePo {
     constructor(page: Page) {
         this.page = page;
     }
-
 }

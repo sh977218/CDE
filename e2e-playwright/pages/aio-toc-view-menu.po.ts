@@ -14,6 +14,4 @@ export class AioTocViewMenuPo {
     goToAttachments() {
         return this.page.locator(`[title="Attachments"]`).click();
     }
-
-
 }

@@ -27,8 +27,8 @@ export class BasePagePo {
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }
     /* Generate Details */
-    origin(){
-        return this.page.getByTestId('origin')
+    origin() {
+        return this.page.getByTestId('origin');
     }
     /* Generate Details */
 

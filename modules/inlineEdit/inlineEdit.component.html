@@ -3,7 +3,7 @@
         <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="text" autocomplete="off" [(ngModel)]="value" />
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'email'">
-        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="email" autocomplete="off" [(ngModel)]="value"/>
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="email" autocomplete="off" [(ngModel)]="value" [email]="true"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'date'">
         <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="date" autocomplete="off" [(ngModel)]="value"/>

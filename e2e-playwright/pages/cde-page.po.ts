@@ -5,5 +5,4 @@ export class CdePagePo extends BasePagePo {
     constructor(page: Page) {
         super(page);
     }
-
 }
