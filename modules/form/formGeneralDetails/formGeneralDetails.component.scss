@@ -11,4 +11,24 @@
       margin-right: 5px;
     }
   }
+
+  .copyright-urls {
+    display: flex;
+    flex-direction: column;
+
+    ul {
+      margin:0;
+      padding: 0;
+    }
+
+    .copyright-url {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .url-valid {
+        margin: 0 5px;
+      }
+    }
+  }
 }

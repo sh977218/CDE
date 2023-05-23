@@ -204,7 +204,24 @@
               "type": "string"
             },
             "text": {
-              "type": ["string", "null"]
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string"
+                  },
+                  "valid": {
+                    "type": "boolean"
+                  }
+                }
+              }
             }
           },
           "title": "copyright",
@@ -302,7 +319,9 @@
         },
         "formElements": {
           "type": "array",
-          "items": { "$ref": "#/definitions/formElement" }
+          "items": {
+            "$ref": "#/definitions/formElement"
+          }
         },
         "isCopyrighted": {
           "type": "boolean"

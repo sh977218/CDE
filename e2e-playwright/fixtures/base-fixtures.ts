@@ -12,6 +12,9 @@ import { SnackBarPo } from '../pages/snack-bar.po';
 import { InlineEditPo } from '../pages/inline-edit.po';
 import { NavigationMenuPo } from '../pages/navigation-menu.po';
 
+// Modal
+import { SaveModalPo } from '../pages/save-modal.po';
+
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
@@ -32,6 +35,7 @@ const test = baseTest.extend<{
     homePage: HomePagePo;
     cdePage: CdePagePo;
     formPage: FormPagePo;
+    saveModal: SaveModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
     searchPage: SearchPagePo;
@@ -55,6 +59,10 @@ const test = baseTest.extend<{
     },
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
+        await codeCoverage(page);
+    },
+    saveModal: async ({ page }, use) => {
+        await use(new SaveModalPo(page));
         await codeCoverage(page);
     },
     aioTocViewMenu: async ({ page }, use) => {

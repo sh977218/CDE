@@ -214,12 +214,12 @@
                             <span class="button-label">Discuss</span>
                         </button>
                         <ng-container *ngIf="elt.isDraft">
-                            <button id="deleteDraftBtn" class="button fail" title="Delete Draft"
+                            <button id="deleteDraftBtn" class="button fail" title="Delete Draft" data-testid="delete-draft"
                                     (click)="openDeleteDraftModal()">
                                 <mat-icon>delete</mat-icon>
                                 <span class="button-label">Delete Draft</span>
                             </button>
-                            <button id="openSave" class="button success" title="Publish"
+                            <button id="openSave" class="button success" title="Publish" data-testid="publish-draft"
                                     (click)="openSaveModal()" [disabled]="savingText === 'Saving...'">
                                 <mat-icon>publish</mat-icon>
                                 <span class="button-label">Publish</span>

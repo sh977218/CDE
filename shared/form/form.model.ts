@@ -25,6 +25,7 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
     copyright?: { // mutable
         authority?: string,
         text?: string,
+        urls: CopyrightURL[]
     };
     displayProfiles: DisplayProfile[] = []; // mutable
     elementType: 'form' = 'form';
@@ -44,7 +45,9 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
         Elt.validate(elt);
 
         if (elt.isCopyrighted && !elt.copyright) {
-            elt.copyright = {};
+            elt.copyright = {
+                urls: []
+            };
         }
 
         elt.displayProfiles.forEach(dp => {
@@ -159,6 +162,12 @@ export interface CdeFormElastic extends CdeForm, ElasticElement { // all volatil
     cdeTinyIds: string[];
     numQuestions?: number;
 }
+
+export class CopyrightURL {
+    url = '';
+    valid = false;
+}
+
 
 export class DisplayProfile {
     _id!: ObjectId; // TODO: remove

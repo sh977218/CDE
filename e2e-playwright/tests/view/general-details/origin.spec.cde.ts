@@ -20,10 +20,10 @@ test.describe(`Edit Origin`, async () => {
         await editOrigin(cdePage, inlineEdit);
     })
 
-    test(`Form page`, async ({cdePage, navigationMenu, inlineEdit}) => {
+    test(`Form page`, async ({formPage, navigationMenu, inlineEdit}) => {
         const formName = 'Measures of Gas Exchange';
-        await cdePage.goToForm(formTinyId[formName]);
+        await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
-        await editOrigin(cdePage, inlineEdit);
+        await editOrigin(formPage, inlineEdit);
     })
 })

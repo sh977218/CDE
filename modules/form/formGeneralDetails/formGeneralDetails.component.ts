@@ -54,4 +54,8 @@ export class FormGeneralDetailsComponent {
     unbundle(form: CdeForm) {
         bundleDestroy(form.tinyId).then(elt => this.eltReloaded.emit(elt));
     }
+
+    trackByUrl(index, url) {
+        return url.url;
+    }
 }

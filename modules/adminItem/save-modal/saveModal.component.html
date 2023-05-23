@@ -75,6 +75,7 @@
         <div class="form-group">
             <label for="newVersion">Choose a new version</label>
             <input id="newVersion" name="newVersion" #newVersion="ngModel" class="form-control"
+                   data-testid="new-version-input"
                    [(ngModel)]="elt.version" pattern="^[A-z0-9-=.]+$"
                    (ngModelChange)="onVersionNumberChanged($event);"/>
             <div *ngIf="newVersion.errors && (newVersion.dirty || newVersion.touched)" class="help-inline">
@@ -89,7 +90,7 @@
     </mat-dialog-content>
     <mat-dialog-actions>
         <button id="cancelSaveBtn" class="button fail" [mat-dialog-close]>Cancel</button>
-        <button id="confirmSaveBtn" class="button" [mat-dialog-close]="true"
+        <button id="confirmSaveBtn" class="button" [mat-dialog-close]="true" data-testid="save-modal"
                 [disabled]="!updateElementForm.form.valid || (!overrideVersion && duplicatedVersion)">Save
         </button>
     </mat-dialog-actions>

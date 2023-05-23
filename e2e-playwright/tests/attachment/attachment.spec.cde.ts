@@ -5,9 +5,9 @@ import { expect } from '@playwright/test';
 
 test.describe(`Attachment`, async () => {
     test.describe(`CDE page`, async () => {
-        test.beforeEach(async ({basePage,}) => {
+        test.beforeEach(async ({cdePage,}) => {
             const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
-            await basePage.goToCde(cdeTinyId[cdeName]);
+            await cdePage.goToCde(cdeTinyId[cdeName]);
         })
         test(`Anonymous user`, async ({basePage}) => {
             expect(await basePage.uploadMoreFile.isVisible()).toBeFalsy();

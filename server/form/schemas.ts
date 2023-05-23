@@ -133,6 +133,11 @@ for (let i = 0; i < config.modules.forms.sectionLevels; i++) {
     innerFormEltSchema = getFormElementJson([innerFormEltSchema]);
 }
 
+const copyrightUrlSchema = new Schema({
+    url: {type: StringType},
+    valid: {type: Boolean, default: false}
+})
+
 export const formJson = {
     elementType: {type: StringType, default: 'form', enum: ['form']},
     nihEndorsed: {type: Boolean, default: false},
@@ -212,7 +217,11 @@ export const formJson = {
     noRenderAllowed: Boolean,
     copyright: {
         authority: StringType,
-        text: {type: StringType, default: ''}
+        text: {type: StringType, default: ''},
+        urls: {
+            type: [copyrightUrlSchema],
+            default: []
+        }
     },
     formElements: [innerFormEltSchema],
     displayProfiles: [displayProfileSchema],

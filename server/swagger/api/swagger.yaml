@@ -373,6 +373,11 @@ definitions:
           text:
             type: "string"
             example: "to be printed with permission only"
+          urls:
+            type: "array"
+            items:
+              type: "string"
+              example: "www.nih.gov"
       created:
         type: "string"
         format: "date-time"

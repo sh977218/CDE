@@ -39,20 +39,50 @@
 
     <dt>Copyrighted:</dt>
     <dd>
-        <input type="checkbox" class="checkbox" [(ngModel)]="elt.isCopyrighted" [disabled]="!canEdit"
-               id="isCopyrighted" title="copyrighted" (change)="eltChange.emit();"/>
-        <div *ngIf="elt.isCopyrighted" class="copyrightContainer">
-            <div class="copyrightDiv">
-                <label>Statement:</label>
-            <cde-inline-edit id="formCopyrightText" [(model)]="elt.copyright.text"
-                             [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
+        <input *ngIf="canEdit" type="checkbox" class="checkbox" [(ngModel)]="elt.isCopyrighted"
+               id="isCopyrighted" data-testid="copyright-checkbox" title="copyrighted" (change)="eltChange.emit();"/>
+        <div *ngIf="elt.isCopyrighted; else notCopyrightedTemp" class="copyrightContainer">
+            Yes, this material is licensed, copyrighted, or otherwise restricted
+            <div class="copyrightDiv" data-testid="copyright-statement">
+                <label *ngIf="elt.copyright.text || canEdit">Statement:</label>
+                <cde-inline-edit [(model)]="elt.copyright.text"
+                                 [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
             </div>
-            <div class="copyrightDiv">
-                <label>Authority:</label>
-            <cde-inline-edit id="formCopyrightAuthority" [(model)]="elt.copyright.authority"
-                             [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
+            <div class="copyrightDiv" data-testid="copyright-authority">
+                <label *ngIf="elt.copyright.authority || canEdit">Authority:</label>
+                <cde-inline-edit [(model)]="elt.copyright.authority"
+                                 [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
+            </div>
+            <div class="copyright-urls">
+                <div>
+                    <label *ngIf="canEdit">URLs: </label>
+                    <a data-testid="copyright-url-add">
+                        <mat-icon *ngIf="canEdit" (click)="elt.copyright.urls.push({url: '', valid: false})">add
+                        </mat-icon>
+                    </a>
+                </div>
+                <ul *ngIf="elt.copyright?.urls.length">
+                    <li *ngFor="let url of elt.copyright.urls;let index=i; trackBy: trackByUrl" class="copyright-url"
+                        [ngStyle]="{'align-items': canEdit? 'baseline' : 'center'}" data-testid="copyright-url">
+                        <cde-inline-edit [(model)]="url.url" [linkSource]="url.url"
+                                         [isAllowed]="canEdit" (modelChange)="eltChange.emit();">
+                        </cde-inline-edit>
+                        <label *ngIf="canEdit" class="url-valid">
+                            <input type="checkbox" class="checkbox" [(ngModel)]="url.valid" title="copyrighted"
+                                   (change)="eltChange.emit();"/>
+                            Valid?
+                        </label>
+                        <a *ngIf="canEdit" aria-label="Delete"
+                           (click)="elt.copyright.urls.splice(index, 1); eltChange.emit(); ">
+                            <mat-icon>delete</mat-icon>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
+        <ng-template #notCopyrightedTemp>
+            <div>No, this material is freely available, without restriction</div>
+        </ng-template>
     </dd>
 
     <dt>Origin:</dt>

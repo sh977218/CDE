@@ -6,6 +6,7 @@ export class BasePagePo {
     constructor(page: Page) {
         this.page = page;
     }
+
     async goToHome() {
         await this.page.goto('/home');
         await this.page.waitForSelector(`text=Use of CDEs Supports the NIH Data Management and Sharing Policy`, {
@@ -18,17 +19,20 @@ export class BasePagePo {
         await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });
     }
 
-    async goToForm(tinyId) {
-        await this.page.goto(`/formView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
+    publishDraft() {
+        return this.page.getByTestId(`publish-draft`);
     }
-    async goToCde(tinyId) {
-        await this.page.goto(`/deView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
+    deleteDraft() {
+        return this.page.getByTestId(`delete-draft`);
     }
+
     /* Generate Details */
     origin() {
         return this.page.getByTestId('origin');
+    }
+
+    copyright() {
+        return this.page.getByTestId('copyright-checkbox');
     }
     /* Generate Details */
 
