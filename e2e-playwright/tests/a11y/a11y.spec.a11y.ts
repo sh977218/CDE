@@ -30,7 +30,7 @@ test.describe(`a11y`, async () => {
                 `);
             })
             if (testInfo.title.includes('Home page')) {
-                expect(result.violations.length).toBeLessThanOrEqual(4);
+                expect(result.violations.length).toBeLessThanOrEqual(2);
             } else {
                 expect(result.violations.length).toBeLessThanOrEqual(12);
             }
