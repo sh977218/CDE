@@ -198,24 +198,27 @@ button[mat-icon-button] {
   }
 }
 
-mat-tab-group {
-  mat-tab-header {
-    .button, .button.light {
-      border-radius: 0;
-      margin-bottom: 0;
-      padding-bottom: 0;
-      padding-top: 0;
+cde-related-content{
+  mat-tab-group {
+    mat-tab-header {
+      .button, .button.light {
+        border-radius: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+      }
+
+      *[role=tab] .mdc-tab__text-label {
+        color: $nlmColorLightest;
+      }
     }
 
-    *[role=tab] .mdc-tab__text-label {
-      color: $nlmColorLightest;
+    mat-tab-body {
+      border: 1px solid $nlmColorPrimary
     }
-  }
-
-  mat-tab-body {
-    border: 1px solid $nlmColorPrimary
   }
 }
+
 
 .mat-ripple.mat-tab-label.mat-focus-indicator.mat-tab-label.ng-star-inserted {
   opacity: 1;

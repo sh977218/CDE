@@ -34,7 +34,7 @@ export class RemoveOrgClassificationDialogComponent {
 /** Match string with a given string */
 export function stringMatchValidator(nameToBeMatched: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-        const isMatched = nameToBeMatched === control.value;
+        const isMatched = nameToBeMatched.trim() === control.value.trim();
         return !isMatched ? { notMatch: { value: control.value } } : null;
     };
 }
