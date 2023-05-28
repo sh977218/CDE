@@ -30,7 +30,7 @@ public class RemoveOrgClassificationTest extends BaseClassificationTest {
         textNotPresent("NINDS (34");
         openAuditClassification("NINDS > Domain > Participant/Subject Characteristics");
         String body = findElement(By.cssSelector("body")).getText();
-        Assert.assertTrue(body.contains("10+ elements") || body.contains("942 elements"));
+        Assert.assertTrue(body.contains("10+ cdes") || body.contains("942 elements"));
         textPresent("delete NINDS > Domain > Participant/Subject Characteristics");
     }
 }

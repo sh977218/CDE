@@ -33,7 +33,7 @@ public class RenameOrgClassificationTest extends BaseClassificationTest {
         openAuditClassification("NINDS > Domain > Protocol Experience");
         textPresent("rename NINDS > Domain > Protocol Experience to Protocol Experiencies");
         String body = findElement(By.cssSelector("body")).getText();
-        Assert.assertTrue(body.contains("10+ elements") || body.contains("1281 elements"));
+        Assert.assertTrue(body.contains("10+ cdes") || body.contains("1281 elements"));
     }
 
 }
