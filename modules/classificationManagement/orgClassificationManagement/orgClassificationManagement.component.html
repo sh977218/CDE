@@ -2,16 +2,17 @@
     <h1>Manage Classifications</h1>
     <mat-form-field class="w-75" appearance="fill">
         <mat-select [formControl]="selectedOrg" (selectionChange)="orgChanged($event)" id="selectOrgMatSelect"
+                    data-testid="manage-organization-select"
                     placeholder="Start by choosing your Organization">
             <mat-option *ngFor="let o of orgs" [value]="o.name">{{o.name}}</mat-option>
         </mat-select>
     </mat-form-field>
     <button id="updateOrgBtn" class="button" (click)="updateOrganization()">Update</button>
-    <div class="boxed-div" style="overflow: hidden" *ngIf="selectedOrg.value">
+    <div class="boxed-div" style="overflow: hidden" *ngIf="selectedOrg.value" data-testid="organization-classification-container">
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
                 <ng-container *ngIf="node.expandable; else expandableButton">
-                    <button mat-icon-button matTreeNodeToggle
+                    <button mat-icon-button matTreeNodeToggle data-testid="tree-node-toggler"
                             [attr.aria-label]="'Toggle ' + node.name">
                         <mat-icon class="mat-icon-rtl-mirror">
                             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -21,7 +22,7 @@
                 <ng-template #expandableButton>
                     <button mat-icon-button disabled></button>
                 </ng-template>
-                <a [id]="getHtmlId(node)" target="_blank"
+                <a [id]="getHtmlId(node)" data-testid="tree-node-text" target="_blank"
                    [routerLink]="['/cde/search']" [queryParams]="getSearchParam(node)">{{node.name}}</a>
                 <ng-container *ngIf="isOrgAdmin()">
                     <button mat-icon-button title="Add Child Classification" [id]="getAddClassificationRootButtonId()"
@@ -30,26 +31,26 @@
                         <mat-icon>subdirectory_arrow_left</mat-icon>
                     </button><small *ngIf="treeControl.getLevel(node) === 0">Add Child Classification</small>
                     <button mat-icon-button [matMenuTriggerFor]="actionMenuNode" aria-label="actions"
-                            *ngIf="treeControl.getLevel(node) !== 0">
+                            *ngIf="treeControl.getLevel(node) !== 0" data-testid="tree-node-menu-button">
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #actionMenuNode="matMenu">
-                        <button mat-menu-item title="Add Child Classification"
+                        <button mat-menu-item title="Add Child Classification" data-testid="tree-node-menu-option"
                                 (click)="openAddChildClassificationModal(node);">
                             <mat-icon>subdirectory_arrow_left</mat-icon>
                             Add Child Classification
                         </button>
-                        <button mat-menu-item title="Remove Classification"
+                        <button mat-menu-item title="Remove Classification" data-testid="tree-node-menu-option"
                                 (click)="openDeleteClassificationModal(node);">
                             <mat-icon>delete_outline</mat-icon>
                             Remove
                         </button>
-                        <button mat-menu-item title="Edit Classification"
+                        <button mat-menu-item title="Edit Classification" data-testid="tree-node-menu-option"
                                 (click)="openRenameClassificationModal(node);">
                             <mat-icon>edit</mat-icon>
                             Edit
                         </button>
-                        <button mat-menu-item title="Reclassify"
+                        <button mat-menu-item title="Reclassify" data-testid="tree-node-menu-option"
                                 (click)="openReclassificationModal(node);">
                             <mat-icon>transform</mat-icon>
                             Reclassify

@@ -7,7 +7,7 @@ export class NavigationMenuPo {
         this.page = page;
     }
 
-    async login(username, password) {
+    async login(username: string, password: string) {
         const context = this.page.context();
         await this.page.getByTestId(`login_link`).click();
         const [loginPage] = await Promise.all([
@@ -26,5 +26,27 @@ export class NavigationMenuPo {
         await this.page.getByTestId('logged-in-username').hover();
         await this.page.getByTestId('user_settings').click();
         await this.page.waitForSelector('cde-profile', { state: 'visible' });
+    }
+
+    async gotoClassification() {
+        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('user_classification').click();
+        await this.page.getByText('Manage Classifications').isVisible();
+    }
+
+    async gotoAudit() {
+        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('user_audit').click();
+        await this.page
+            .getByText('Logs', {
+                exact: true,
+            })
+            .isVisible();
+    }
+
+    async logout() {
+        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('user_logout').click();
+        await this.page.getByText('Our sign in process has changed.').isVisible();
     }
 }

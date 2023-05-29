@@ -15,7 +15,6 @@ test.describe(`Profile`, async () => {
         await inlineEdit.inputField(userEmailLocator).fill('me@me.com');
         await inlineEdit.submitButton(userEmailLocator).click();
         await snackBar.checkAlert('Saved');
-        await snackBar.dismissAlert();
     })
 
 });

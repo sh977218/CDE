@@ -12,13 +12,20 @@ import { SnackBarPo } from '../pages/snack-bar.po';
 import { InlineEditPo } from '../pages/inline-edit.po';
 import { NavigationMenuPo } from '../pages/navigation-menu.po';
 
-// Modal
+// Modals
 import { SaveModalPo } from '../pages/save-modal.po';
 
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
+
+// Manage classification page
+import { ManageClassificationPo } from '../pages/manage-classifications/manage-classification.po';
+
+// Audit page
+import { AuditTabPo } from '../pages/audit/audit-tab.po';
+import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
 
 async function codeCoverage(page: Page) {
     const coverage: string = await page.evaluate('JSON.stringify(window.__coverage__);');
@@ -41,6 +48,9 @@ const test = baseTest.extend<{
     searchPage: SearchPagePo;
     snackBar: SnackBarPo;
     inlineEdit: InlineEditPo;
+    auditTab: AuditTabPo;
+    classificationAuditPage: ClassificationAuditPagePo;
+    manageClassificationPage: ManageClassificationPo;
     settingMenu: SettingMenuPo;
     profilePage: ProfilePagePo;
     manageOrganizationsPage: ManageOrganizationsPo;
@@ -83,6 +93,18 @@ const test = baseTest.extend<{
     },
     inlineEdit: async ({ page }, use) => {
         await use(new InlineEditPo(page));
+        await codeCoverage(page);
+    },
+    manageClassificationPage: async ({ page }, use) => {
+        await use(new ManageClassificationPo(page));
+        await codeCoverage(page);
+    },
+    auditTab: async ({ page }, use) => {
+        await use(new AuditTabPo(page));
+        await codeCoverage(page);
+    },
+    classificationAuditPage: async ({ page }, use) => {
+        await use(new ClassificationAuditPagePo(page));
         await codeCoverage(page);
     },
     settingMenu: async ({ page }, use) => {

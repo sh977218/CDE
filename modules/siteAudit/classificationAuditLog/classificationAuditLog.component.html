@@ -1,8 +1,8 @@
 <mat-accordion>
-    <mat-expansion-panel *ngFor="let edit of records">
-        <mat-expansion-panel-header>
+    <mat-expansion-panel *ngFor="let edit of records" data-testid="classification-audit-record">
+        <mat-expansion-panel-header data-testid="classification-audit-header">
             <mat-panel-title>
-                <span>
+                <span data-testid="classification-audit-title">
                     <ng-container *ngIf="edit.elements.length === 1">{{edit.elements[0].name}}</ng-container>
                     <ng-container *ngIf="edit.elements.length === 10">10+ {{edit.elements[0].eltType}}s</ng-container>
                     <ng-container *ngIf="edit.elements.length > 1 && edit.elements.length < 10">{{edit.elements.length}} {{edit.elements[0].eltType}}s</ng-container>
@@ -45,7 +45,7 @@
                 <dd>{{edit.elements[0].status}}</dd>
             </ng-container>
             <dt>Classification</dt>
-            <dd>
+            <dd data-testid="classification-audit-description">
                 {{edit.action | cdeCamelCaseToHuman}} <span class="text-danger">{{edit.path.join(" > ")}}</span>
                 <span *ngIf="edit.action === 'rename'"> to </span> <span class='text-danger'>{{edit.newname}}</span>
             </dd>

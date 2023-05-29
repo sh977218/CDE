@@ -31,7 +31,6 @@ test.describe(`My organization`, async () => {
         await manageOrganizationsPage.newOrganizationWorkingGroup().selectOption(newOrganization.orgWorkingGroup);
         await manageOrganizationsPage.newOrganizationSubmit().click();
         await snackBar.checkAlert('Saved');
-        await snackBar.dismissAlert();
 
         const managedOrganizationsLocator = manageOrganizationsPage.managedOrganizations(newOrganization.orgName);
 
@@ -47,7 +46,6 @@ test.describe(`My organization`, async () => {
         await inlineEdit.inputField(organizationMailAddressLocator).fill(newOrganization.orgMailAddress);
         await inlineEdit.submitButton(organizationMailAddressLocator).click();
         await snackBar.checkAlert('Saved');
-        await snackBar.dismissAlert();
         await expect(manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator)).toBeVisible();
 
     })

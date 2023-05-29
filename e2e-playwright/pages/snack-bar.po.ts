@@ -15,9 +15,7 @@ export class SnackBarPo {
             .locator('.mat-mdc-snack-bar-label')
             .innerText();
         await test.expect(alertText).toBe(text);
-    }
-
-    async dismissAlert() {
         await this.page.locator('mat-snack-bar-container').locator('button').click();
+        await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
     }
 }

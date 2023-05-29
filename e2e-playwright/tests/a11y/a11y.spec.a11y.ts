@@ -9,12 +9,12 @@ test.describe(`a11y`, async () => {
         await basePage.goToHome();
     })
 
-    test(`Cde page`, async ({cdePage}) => {
+    test(`Cde view page`, async ({cdePage}) => {
         const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
         await cdePage.goToCde(cdeTinyId[cdeName]);
     })
 
-    test(`Form page`, async ({formPage}) => {
+    test(`Form view page`, async ({formPage}) => {
         const formName = 'AED Resistance Log';
         await formPage.goToForm(formTinyId[formName]);
     })

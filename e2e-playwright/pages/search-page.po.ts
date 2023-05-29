@@ -7,51 +7,69 @@ export class SearchPagePo {
         this.page = page;
     }
 
-    browseOrg(org: string): Locator {
-        return this.page.locator(`[id="browseOrg-${org}"]`);
+    async browseOrganization(organization: string) {
+        await this.page
+            .locator(`[data-testid="browse-org"]`, {
+                has: this.page.locator(`text=${organization}`),
+            })
+            .click();
+        await this.page.waitForSelector(`text=${organization}`);
     }
 
-    addClassificationFilter(filter: string): Locator {
-        return this.page.locator(`[id="classif-${filter}"]`);
+    classificationFilter(classificationText: string, classificationNumber: number | string = 0): Locator {
+        const classificationLocator = this.page
+            .getByTestId(`classification-filter`)
+            .locator('[data-testid="classification-text"]', {
+                has: this.page.locator(`text="${classificationText}"`),
+            });
+        return classificationNumber
+            ? classificationLocator.locator('[data-testid="classification-text"]', {
+                  has: this.page.locator(`text="${'' + classificationNumber}"`),
+              })
+            : classificationLocator;
     }
 
-    addRegStatusFilter(filter: string) {
-        return this.page.locator(`[id="regstatus-${filter}"]`);
-    }
-
-    addDataTypeFilter(filter: string) {
-        return this.page.locator(`[id="datatype-${filter}"]`);
+    classificationFilterSelected(classificationText: string, alt: boolean = false): Locator {
+        return this.page
+            .getByTestId(`classification-${alt ? 'alt-' : ''}filter-selected`)
+            .locator('[data-testid="classification-text"]', {
+                has: this.page.locator(`text="${classificationText}"`),
+            });
     }
 
     altClassificationFilterModeToggle(): Locator {
         return this.page.locator(`[id="altClassificationFilterModeToggle"]`);
     }
 
-    regStatusFilterSelected(id: string): Locator {
-        return this.page.locator(`[id="regstatus-${id}"]`);
+    registrationStatusFilter(status: string): Locator {
+        return this.page
+            .locator(`[data-testid='registration-status-filter']`, {
+                has: this.page.locator(`text=${status}`),
+            })
+            .locator('input');
     }
 
-    dataTypeFilterSelected(id: string): Locator {
-        return this.page.locator(`[id="datatype-${id}"]`);
+    dataTypeFilter(datatype: string): Locator {
+        return this.page
+            .locator(`[data-testid='datatype-filter']`, {
+                has: this.page.locator(`text=${datatype}`),
+            })
+            .locator('input');
     }
 
-    classificationFilterSelected(id: string, state: boolean): Locator {
-        if (state)
-            return this.page.locator(
-                `xpath=//*[@id='classif-${id}' and (contains(@class, 'treeParent') or contains(@class, 'treeCurrent'))]`
-            );
-        else return this.page.locator(`xpath=//*[@id='classif-${id}' and contains(@class, 'treeChild')]`);
-    }
-
-    nihEndorsedToggle(): Locator {
-        return this.page.locator(`[id="nihEndorsedCheckbox"]`);
+    nihEndorsedCheckbox(): Locator {
+        return this.page.getByTestId(`nihEndorsedCheckbox`);
     }
 
     clearAllFilters(): Locator {
-        return this.page.locator(`[class="clearAllPill"]`);
+        return this.page.getByTestId(`class-all-filters`);
     }
 
-    findSearchPageText(text: string): Locator {
-        return this.page.getByText(text);
+    searchQueryInput(): Locator {
+        return this.page.getByTestId(`search-query-input`);
+    }
+
+    searchSubmitButton(): Locator {
+        return this.page.getByTestId(`search-submit-button`);
     }
 }
