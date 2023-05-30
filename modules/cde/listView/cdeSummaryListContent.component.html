@@ -1,20 +1,18 @@
-<h2 style="margin-top: 8px">
-    <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView" (selectChange)="selectChange.emit($event)"
-                         class="summaryHeading">
-        <span class="summary-list-before">
-            <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
-                 src="/assets/img/endorsedRibbon.svg"
-                 matTooltipClass="cdeTooltip"
-                 matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
+<cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView" (selectChange)="selectChange.emit($event)"
+                     class="summaryHeading">
+    <span class="summary-list-before">
+        <img *ngIf="elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
+             src="/assets/img/endorsedRibbon.svg"
+             matTooltipClass="cdeTooltip"
+             matTooltip="NIH has endorsed collections of CDEs that meet established criteria. They are designated with a gold ribbon.">
+    </span>
+    <span class="summary-list-after" style="margin-left: 5px; float:right;">
+        <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
+        <span id="pinToBoard_{{eltIndex}}" class="fake-link cdePinIcon" pinToBoard title="Pin to Board" [eltsToPin]="[elt]" [module]="elt.elementType">
+            <mat-icon>push_pin</mat-icon>
         </span>
-        <span class="summary-list-after" style="margin-left: 5px; float:right;">
-            <cde-pin-board [elt]="elt" [eltIndex]="eltIndex" [module]="module"></cde-pin-board>
-            <mat-icon id="pinToBoard_{{eltIndex}}" class="fake-link cdePinIcon" svgIcon="pin" pinToBoard
-                      title="Pin to Board" [eltsToPin]="[elt]" [module]="elt.elementType" style="padding: 0 5px 5px 5px;">
-            </mat-icon>
-        </span>
-    </cde-summary-heading>
-</h2>
+    </span>
+</cde-summary-heading>
 
 <div class="contentLayout">
     <span [innerHtml]="elt.primaryDefinitionCopy"></span>

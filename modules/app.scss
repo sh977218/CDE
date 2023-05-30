@@ -105,8 +105,17 @@ fieldset {
 .cdePinIcon {
   border: solid 2px #32629599;
   border-radius: 3px;
-  height: 30px !important;
-  width: 30px !important;
+  height: 32px;
+  width: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    transform: rotate(30deg)
+  }
+
 }
 
 .displayInlineBlock {

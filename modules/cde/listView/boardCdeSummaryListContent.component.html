@@ -1,14 +1,14 @@
-<cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView">
-        <span class="summary-list-before">
-            <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" class="checkbox" style="margin-right: .5rem"
-                   [(ngModel)]="elt.checked"/>
-            <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
-                           [currentPage]="boardListService.currentPage"
-                           [totalItems]="boardListService.totalItems"></cde-list-sort>
-        </span>
-        <span class="summary-list-after">
-            <cde-unpin-board [elt]="elt" [eltIndex]="eltIndex"></cde-unpin-board>
-        </span>
+<cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView" class="summaryHeading">
+    <span class="summary-list-before">
+        <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" class="checkbox" style="margin-right: .5rem"
+               [(ngModel)]="elt.checked"/>
+        <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
+                       [currentPage]="boardListService.currentPage"
+                       [totalItems]="boardListService.totalItems"></cde-list-sort>
+    </span>
+    <span class="summary-list-after">
+        <cde-unpin-board [elt]="elt" [eltIndex]="eltIndex"></cde-unpin-board>
+    </span>
 </cde-summary-heading>
 <div class="boardDeSummary">
     <div>

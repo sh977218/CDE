@@ -241,7 +241,6 @@ h1 {
 h2 {
   @extend body;
   @include h2;
-  margin-bottom: .5rem;
 
   .mat-icon {
     @include h2;
@@ -1323,18 +1322,24 @@ table.table-striped tbody tr:nth-of-type(odd) {
 }
 
 .summaryHeading {
+  margin: 0.5rem 0;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
 
-  @media (max-width: 500px) {
-    flex-direction: column-reverse;
+  .summary-list-before {
+    display: flex;
+    align-items: center;
   }
-}
 
-.summary-list-after {
-  @media (max-width: 500px) {
-    margin-left: 0 !important;
+  h2 {
+    word-break: break-all;
+    margin-right: 0.5rem;
+  }
+
+  .summary-list-after {
+    display: flex;
+    align-items: center;
   }
 }
 

@@ -21,8 +21,10 @@
                     <td *ngFor="let prop of row" [class]="prop.css">
                         <ng-container [ngSwitch]="prop.css">
                             <ng-container *ngSwitchCase="'pin'">
-                                <mat-icon class="fake-link cdePinIcon" svgIcon="pin" pinToBoard [eltsToPin]="[prop.elt]"
-                                          id="pinToBoard_{{eltIndex}}" [module]="prop.elt.elementType"></mat-icon>
+                                <span class="fake-link cdePinIcon" pinToBoard [eltsToPin]="[prop.elt]"
+                                      id="pinToBoard_{{eltIndex}}" [module]="prop.elt.elementType">
+                                    <mat-icon>push_pin</mat-icon>
+                                </span>
                             </ng-container>
                             <ng-container *ngSwitchCase="'nihEndorsed'">
                                 <img *ngIf="prop.elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
