@@ -57,5 +57,9 @@ export class BasePagePo {
         return this.page.getByTestId(`attachmentDiv`);
     }
 
+    getHeading(section: string): Locator {
+        return this.page.getByRole('heading', { name: section });
+    }
+
     /* Attachment */
 }

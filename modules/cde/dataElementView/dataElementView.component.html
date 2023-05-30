@@ -176,7 +176,7 @@
                             <cde-concepts [elt]="elt" [canEdit]="canEdit()"
                                           (eltChange)="saveDraftVoid(elt)"></cde-concepts>
                         </section>
-                        <section *ngIf="elt.ids.length || canEdit()" id="identifiers-div">
+                        <section id="identifiers-div">
                             <cde-identifiers [elt]="elt" [canEdit]="canEdit()"
                                              (eltChange)="saveDraftVoid(elt)">
                             </cde-identifiers>

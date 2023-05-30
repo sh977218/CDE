@@ -6,7 +6,7 @@ export class CdePagePo extends BasePagePo {
         super(page);
     }
 
-    async goToCde(tinyId) {
+    async goToCde(tinyId: string) {
         await this.page.goto(`/deView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }

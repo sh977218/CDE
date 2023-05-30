@@ -6,7 +6,7 @@ export class FormPagePo extends BasePagePo {
         super(page);
     }
 
-    async goToForm(tinyId) {
+    async goToForm(tinyId: string) {
         await this.page.goto(`/formView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }

@@ -11,7 +11,6 @@ public class CdeEmptySubsectionTest extends NlmCdeBaseTest {
             "Classification",
             "Related Documents",
             "Properties",
-            "Identifiers",
             "Attachments",
             "History",
             "Rules",
