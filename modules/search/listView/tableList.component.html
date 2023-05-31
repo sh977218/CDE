@@ -28,7 +28,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'nihEndorsed'">
                                 <img *ngIf="prop.elt.nihEndorsed" aria-label="nihEndorsed" height="38" width="30"
-                                     src="/assets/img/endorsedRibbonIcon.png">
+                                     src="/assets/img/endorsedRibbonIcon.png" alt="Endorsed Ribbon">
                             </ng-container>
                             <ng-container *ngSwitchCase="'name'">
                                 <a routerLink="/{{prop.elt.elementType==='cde'?'de':'form'}}View"

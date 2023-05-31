@@ -19,6 +19,26 @@ test.describe(`a11y`, async () => {
         await formPage.goToForm(formTinyId[formName]);
     })
 
+    test(`CDE search page`, async ({page, cdePage, searchPage}) => {
+        await cdePage.goToSearch('cde');
+        await searchPage.browseOrganization('caBIG');
+        await searchPage.classificationFilter('caDSR');
+        await searchPage.nihEndorsedCheckbox().check();
+        await searchPage.registrationStatusFilter('Qualified').click();
+        await searchPage.dataTypeFilter('Date').click();
+        await page.getByText('results. Sorted by relevance.').isVisible();
+    })
+
+    test(`Form search page`, async ({page, formPage, searchPage}) => {
+        await formPage.goToSearch('form');
+        await searchPage.browseOrganization('PROMIS / Neuro-QOL');
+        await searchPage.classificationFilter('PROMIS Instruments');
+        await searchPage.classificationFilter('Adult Short Forms');
+        await searchPage.classificationFilter('Social Health');
+        await searchPage.registrationStatusFilter('Qualified').click();
+        await page.getByText('results. Sorted by relevance.').isVisible();
+    })
+
     test.afterEach(async ({basePage, page}, testInfo) => {
         await test.step(`Run axe check`, async () => {
             const axe = new AxeBuilder({page})
@@ -31,6 +51,8 @@ test.describe(`a11y`, async () => {
             })
             if (testInfo.title.includes('Home page')) {
                 expect(result.violations.length).toBeLessThanOrEqual(2);
+            } else if (testInfo.title.includes('search page')) {
+                expect(result.violations.length).toBeLessThanOrEqual(4);
             } else {
                 expect(result.violations.length).toBeLessThanOrEqual(12);
             }

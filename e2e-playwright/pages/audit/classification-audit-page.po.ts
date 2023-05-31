@@ -17,9 +17,10 @@ export class ClassificationAuditPagePo {
 
     async openClassificationAudit(locator: Locator) {
         await locator.click();
+        await this.page.waitForTimeout(1000);
         await locator.locator(`.mat-expansion-panel-content`)
             .getByTestId(`classification-audit-description`).waitFor({
-                state: 'attached'
+                state: 'visible'
             })
     }
 

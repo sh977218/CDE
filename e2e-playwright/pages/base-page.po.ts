@@ -14,7 +14,7 @@ export class BasePagePo {
         });
     }
 
-    async goToSearch(module) {
+    async goToSearch(module: string) {
         await this.page.goto(`/${module}/search`);
         await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });
     }
@@ -22,6 +22,7 @@ export class BasePagePo {
     publishDraft() {
         return this.page.getByTestId(`publish-draft`);
     }
+
     deleteDraft() {
         return this.page.getByTestId(`delete-draft`);
     }
@@ -34,6 +35,7 @@ export class BasePagePo {
     copyright() {
         return this.page.getByTestId('copyright-checkbox');
     }
+
     /* Generate Details */
 
     /* Attachment */
@@ -54,5 +56,6 @@ export class BasePagePo {
     attachments() {
         return this.page.getByTestId(`attachmentDiv`);
     }
+
     /* Attachment */
 }
