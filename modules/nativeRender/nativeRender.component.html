@@ -1,12 +1,12 @@
 <h1 *ngIf="showTitle && nrs.vm?.designations[0]?.designation"
     [textContent]="nrs.vm?.designations[0]?.designation"></h1>
 
-<form *ngIf="!endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal">
+<form *ngIf="!endpointUrl && nrs.vm" name="sectionLabel" class="form-horizontal">
     <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF
                                   || nrs.skipLogicService.evalSkipLogic(undefined, nrs.vm, nrs)"
                         [formElement]="nrs.vm"></cde-native-section>
 </form>
-<form ngNoForm #formData *ngIf="endpointUrl && nrs.vm" name="sectionLabel" role="form" class="form-horizontal"
+<form ngNoForm #formData *ngIf="endpointUrl && nrs.vm" name="sectionLabel"class="form-horizontal"
       [action]="getEndpointUrl()" method="post">
 
     <cde-native-section *ngIf="nrs.nativeRenderType !== NRS.SHOW_IF

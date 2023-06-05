@@ -1,9 +1,9 @@
 <mat-chip-list *ngIf="!canEdit" aria-label="Tags">
-    <mat-chip *ngFor="let tag of tags">{{tag}}</mat-chip>
+    <mat-chip [aria-label]="tag" *ngFor="let tag of tags">{{tag}}</mat-chip>
 </mat-chip-list>
 <mat-form-field *ngIf="canEdit" class="w-100">
     <mat-chip-list #chipList aria-label="Tags">
-        <mat-chip *ngFor="let tag of tags" [selectable]="false" [removable]="true" (removed)="remove(tag)">
+        <mat-chip *ngFor="let tag of tags" [selectable]="false" [removable]="true" (removed)="remove(tag)" [aria-label]="tag">
             {{tag}}
             <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>

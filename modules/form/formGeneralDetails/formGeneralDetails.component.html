@@ -1,5 +1,5 @@
 <h2>General Details</h2>
-<dl id="general-details" class="cde-property">
+<dl class="cde-property">
     <dt>Name:</dt>
     <dd itemprop="name">
         {{elt.designations[0].designation}}
@@ -93,8 +93,8 @@
 
     <dt>Disallow Rendering:</dt>
     <dd>
-        <input type="checkbox" class="checkbox" [(ngModel)]="elt.noRenderAllowed" [disabled]="!canEdit"
-               id="disallowRendering" title="disallow rendering" (change)="eltChange.emit();"/>
+        <input type="checkbox" class="checkbox" [(ngModel)]="elt.noRenderAllowed" aria-label="disallowRendering"
+               [disabled]="!canEdit" id="disallowRendering" title="disallow rendering" (change)="eltChange.emit();"/>
     </dd>
 
     <dt>Version:</dt>

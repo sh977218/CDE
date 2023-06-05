@@ -204,10 +204,10 @@
                                              (setDefault)="setDefault(elt, $event)"
                                              (upload)="upload(elt, $event);"></cde-attachments>
                         </section>
-                        <section id="related-content">
+                        <section id="related-content-div">
                             <cde-related-content [elt]="elt"></cde-related-content>
                         </section>
-                        <section id="submission-info">
+                        <section id="submission-info-div">
                             <h2 class="sectionDetailSubtitle">Submission Information</h2>
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                             <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"

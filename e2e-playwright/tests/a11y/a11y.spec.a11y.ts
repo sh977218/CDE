@@ -9,12 +9,12 @@ test.describe(`a11y`, async () => {
         await basePage.goToHome();
     })
 
-    test(`Cde view page`, async ({cdePage}) => {
+    test(`CDE view page`, async ({page, cdePage, searchPage}) => {
         const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
         await cdePage.goToCde(cdeTinyId[cdeName]);
     })
 
-    test(`Form view page`, async ({formPage}) => {
+    test(`Form view page`, async ({page, formPage, searchPage}) => {
         const formName = 'AED Resistance Log';
         await formPage.goToForm(formTinyId[formName]);
     })
@@ -53,6 +53,8 @@ test.describe(`a11y`, async () => {
                 expect(result.violations.length).toBeLessThanOrEqual(2);
             } else if (testInfo.title.includes('search page')) {
                 expect(result.violations.length).toBeLessThanOrEqual(4);
+            } else if (testInfo.title.includes('view page')) {
+                expect(result.violations.length).toBeLessThanOrEqual(2);
             } else {
                 expect(result.violations.length).toBeLessThanOrEqual(12);
             }

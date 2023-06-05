@@ -9,14 +9,7 @@ import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
 @Component({
     selector: 'cde-tag',
     templateUrl: './tag.component.html',
-    styles: [
-        `
-            .mat-chip.mat-standard-chip .mat-chip-remove {
-                color: rgba(0, 0, 0, 0.87);
-                opacity: 0.65;
-            }
-        `,
-    ],
+    styleUrls: ['./tag.component.scss'],
 })
 export class TagComponent {
     @Input() tags: string[] = [];

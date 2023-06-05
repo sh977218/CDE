@@ -235,7 +235,7 @@
                         <section id="preview-div">
                             <cde-native-render-full [elt]="elt" [canEdit]="canEdit()"></cde-native-render-full>
                         </section>
-                        <section>
+                        <section id="general-details-div">
                             <cde-form-general-details [elt]="elt" [canEdit]="canEdit()" (eltReloaded)="eltLoaded($event)"
                                                       (eltChange)="saveDraftVoid(elt)">
                             </cde-form-general-details>

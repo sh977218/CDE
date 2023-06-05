@@ -2180,7 +2180,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected String xpathDtValue = "/following-sibling::dd[1]";
 
     protected String xpathGeneralDetailsProperty() {
-        return "//dl[@id='general-details']/dt";
+        return "//h2[@id='general-details']/following-sibling::dl/dt";
     }
 
     protected String xpathMatAutocomplete = "//*[contains(@id,'mat-autocomplete-')]";
