@@ -26,7 +26,7 @@
                 </div>
             </mat-sidenav>
             <mat-sidenav-content>
-                <main *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
+                <div *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
                     <div>
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
@@ -216,7 +216,7 @@
                                          [canEdit]="canEdit()"></cde-history>
                         </section>
                     </article>
-                </main>
+                </div>
             </mat-sidenav-content>
         </mat-sidenav-container>
     </mat-sidenav-content>

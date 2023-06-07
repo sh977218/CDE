@@ -49,14 +49,15 @@ test.describe(`a11y`, async () => {
                 ${JSON.stringify(violation, null, 4)}
                 `);
             })
-            if (testInfo.title.includes('Home page')) {
-                expect(result.violations.length).toBeLessThanOrEqual(2);
+            if (testInfo.title.includes('view page')) {
+                // color-contrast
+                expect(result.violations.length).toBeLessThanOrEqual(1);
             } else if (testInfo.title.includes('search page')) {
-                expect(result.violations.length).toBeLessThanOrEqual(4);
-            } else if (testInfo.title.includes('view page')) {
+                // page-has-heading-one
+                // color-contrast
                 expect(result.violations.length).toBeLessThanOrEqual(2);
             } else {
-                expect(result.violations.length).toBeLessThanOrEqual(12);
+                expect(result.violations.length).toBeLessThanOrEqual(0);
             }
         })
     })
