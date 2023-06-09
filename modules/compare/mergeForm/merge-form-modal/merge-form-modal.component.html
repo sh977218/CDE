@@ -135,7 +135,7 @@
                 [value]="(mergeFormService.numMergedQuestions / mergeFormService.maxNumberQuestions) * 100">
         </mat-progress-bar>
     </div>
-    <button id="cancelMergeFormBtn" class="button secondary" >
+    <button id="cancelMergeFormBtn" class="button secondary" (click)="dialogRef.close()">
         {{doneMerge ? 'Close' : 'Cancel'}}
     </button>
     <button *ngIf="!finishMerge && !mergeFormService.error.error"
