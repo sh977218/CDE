@@ -1051,6 +1051,10 @@ h3, h4, h5, h6 {
   grid-template-columns: 1fr 1fr;
   gap: 5px;
 
+  span {
+    word-break: break-word;
+  }
+
   > * {
     min-width: 0;
     width: 100%;

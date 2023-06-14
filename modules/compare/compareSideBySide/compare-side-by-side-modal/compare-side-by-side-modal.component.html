@@ -1,3 +1,9 @@
+<h3 mat-dialog-title>Compare results</h3>
+<mat-dialog-actions class="result-filter">
+    <mat-checkbox class="fullMatch" [(ngModel)]="fullMatched">full Matched</mat-checkbox>
+    <mat-checkbox class="partialMatch" [(ngModel)]="partialMatched">Partial Matched</mat-checkbox>
+    <mat-checkbox class="notMatch" [(ngModel)]="notMatched">Not Matched</mat-checkbox>
+</mat-dialog-actions>
 <mat-dialog-content>
     <div class="splitHalf">
         <div class="leftObj">
@@ -26,9 +32,10 @@
         </div>
     </div>
     <ng-container *ngFor="let option of options">
-        <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}">
+        <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}" class="{{option.displayAs.label}}">
             <div style="overflow: hidden">
                 <strong>{{option.displayAs.label}}</strong>
+                <ng-container *ngIf="fullMatched">
                 <div *ngFor="let fullMatch of option.fullMatches" class="splitHalf">
                     <div class="noLeftPadding">
                         <div class="fullMatch">
@@ -47,6 +54,9 @@
                         </div>
                     </div>
                 </div>
+                </ng-container>
+                <ng-container *ngIf="partialMatched">
+
                 <div *ngFor="let partialMatch of option.partialMatches" class="splitHalf">
                     <div class="noLeftPadding">
                         <div class="partialMatch">
@@ -67,6 +77,9 @@
                         </div>
                     </div>
                 </div>
+                </ng-container>
+                <ng-container *ngIf="notMatched">
+
                 <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="splitHalf">
                     <div class="noLeftPadding">
                         <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
@@ -85,6 +98,7 @@
                         </div>
                     </div>
                 </div>
+                </ng-container>
             </div>
         </div>
     </ng-container>

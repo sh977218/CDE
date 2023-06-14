@@ -1,6 +1,6 @@
 <div cdkDropList (cdkDropListDropped)="drop($event)">
     <ng-container *ngFor="let question of left.questions; let i = index">
-        <div cdkDrag id="leftQuestion_{{i}}" class="questionToken boxed-div"
+        <div cdkDrag id="leftQuestion_{{i}}" class="questionToken boxed-div" data-testid="left-question"
              title="{{question.isRetired?'CDE is Retired':''}}"
              [ngClass]="{'bgGreen': question.question.info && question.question.info.match, 'bgRed': question.question.info && question.question.info.error}">
             <mat-icon id="removeLeftQuestion_{{i}}" class="right fake-button" role="button"

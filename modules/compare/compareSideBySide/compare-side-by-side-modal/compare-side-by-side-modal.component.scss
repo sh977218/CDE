@@ -1,0 +1,47 @@
+.fullMatch {
+  background-color: rgba(223, 240, 216, 0.79);
+  margin: 2px 0;
+}
+
+.partialMatch {
+  background-color: rgba(240, 225, 53, 0.79);
+  margin: 2px 0;
+}
+
+.notMatch {
+  background-color: rgba(242, 217, 217, 0.5);
+  margin: 2px 0;
+}
+
+ins {
+  color: black;
+  background: #bbffbb;
+}
+
+del {
+  color: black;
+  background: #ffbbbb;
+}
+
+.result-filter {
+  justify-content: center;
+
+  mat-checkbox {
+    margin: 0 12px;
+
+    .mdc-form-field {
+      label {
+        margin: 0;
+      }
+    }
+  }
+}
+
+.Questions {
+  .splitHalf {
+    .notMatch {
+      height: 200px;
+      overflow-y: auto;
+    }
+  }
+}

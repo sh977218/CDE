@@ -1,9 +1,10 @@
 <div class="container">
     <div class="content">
-        <h1>My Boards
-            <cde-create-board></cde-create-board>
+        <div style="display: flex; align-items: center;">
+            <h1 style="margin-right: 10px;">My Boards</h1>
             <mat-icon *ngIf="myBoardsSvc.reloading" class="spin">autorenew</mat-icon>
-        </h1>
+            <cde-create-board></cde-create-board>
+        </div>
         <hr/>
         <div *ngIf="!userService.user">
             <div>

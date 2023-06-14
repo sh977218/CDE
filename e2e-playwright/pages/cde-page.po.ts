@@ -10,4 +10,8 @@ export class CdePagePo extends BasePagePo {
         await this.page.goto(`/deView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }
+
+    alerts() {
+        return this.page.getByTestId(`data-element-view-alert`);
+    }
 }

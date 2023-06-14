@@ -7,6 +7,8 @@ import { BasePagePo } from '../pages/base-page.po';
 import { HomePagePo } from '../pages/home-page.po';
 import { CdePagePo } from '../pages/cde-page.po';
 import { FormPagePo } from '../pages/form-page.po';
+import { MyBoardPagePo } from '../pages/board/my-board-page.po';
+import { BoardPagePo } from '../pages/board/board-page.po';
 import { SearchPagePo } from '../pages/search-page.po';
 import { SnackBarPo } from '../pages/snack-bar.po';
 import { InlineEditPo } from '../pages/inline-edit.po';
@@ -42,6 +44,8 @@ const test = baseTest.extend<{
     homePage: HomePagePo;
     cdePage: CdePagePo;
     formPage: FormPagePo;
+    myBoardPage: MyBoardPagePo;
+    boardPage: BoardPagePo;
     saveModal: SaveModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
@@ -69,6 +73,14 @@ const test = baseTest.extend<{
     },
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
+        await codeCoverage(page);
+    },
+    myBoardPage: async ({ page }, use) => {
+        await use(new MyBoardPagePo(page));
+        await codeCoverage(page);
+    },
+    boardPage: async ({ page }, use) => {
+        await use(new BoardPagePo(page));
         await codeCoverage(page);
     },
     saveModal: async ({ page }, use) => {

@@ -49,4 +49,9 @@ export class NavigationMenuPo {
         await this.page.getByTestId('user_logout').click();
         await this.page.getByText('Our sign in process has changed.').isVisible();
     }
+
+    async gotoMyBoard() {
+        await this.page.getByTestId('myBoardsLink').click();
+        return this.page.waitForSelector('h1', { state: 'visible' });
+    }
 }

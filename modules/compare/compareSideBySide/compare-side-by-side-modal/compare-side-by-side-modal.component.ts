@@ -16,7 +16,7 @@ import {
 import { Cb } from 'shared/models.model';
 import { isDataElement, ITEM_MAP } from 'shared/item';
 import { forkJoin } from 'rxjs';
-import { differenceWith, get, intersectionWith, isArray, isEmpty, isEqual } from 'lodash';
+import { cloneDeep, differenceWith, get, intersectionWith, isArray, isEmpty, isEqual, remove } from 'lodash';
 import { copyDeep } from 'shared/util';
 import { HttpClient } from '@angular/common/http';
 import { IsAllowedService } from 'non-core/isAllowed.service';
@@ -24,6 +24,7 @@ import { AlertService } from 'alert/alert.service';
 import { CompareItem } from 'compare/compareSideBySide/compare-item';
 import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 import { CompareForm } from 'compare/compareSideBySide/compare-form';
+import { tap } from 'rxjs/operators';
 
 interface CompareOption<T> {
     displayAs: {
@@ -50,34 +51,7 @@ interface Data {
 
 @Component({
     templateUrl: './compare-side-by-side-modal.component.html',
-    styles: [
-        `
-            .fullMatch {
-                background-color: rgba(223, 240, 216, 0.79);
-                margin: 2px 0;
-            }
-
-            .partialMatch {
-                background-color: rgba(240, 225, 53, 0.79);
-                margin: 2px 0;
-            }
-
-            .notMatch {
-                background-color: rgba(242, 217, 217, 0.5);
-                margin: 2px 0;
-            }
-
-            ins {
-                color: black;
-                background: #bbffbb;
-            }
-
-            del {
-                color: black;
-                background: #ffbbbb;
-            }
-        `,
-    ],
+    styleUrls: ['./compare-side-by-side-modal.component.scss'],
 })
 export class CompareSideBySideModalComponent {
     options: CompareOption<any>[] = [];
@@ -87,6 +61,10 @@ export class CompareSideBySideModalComponent {
     right?: CompareItem;
     canMergeForm = false;
     canMergeDataElement = false;
+
+    fullMatched = true;
+    partialMatched = true;
+    notMatched = true;
 
     constructor(
         private alert: AlertService,
@@ -104,65 +82,98 @@ export class CompareSideBySideModalComponent {
     doCompare(l: CompareItem, r: CompareItem, cb: Cb) {
         const leftObservable = this.http.get<CompareItem>(ITEM_MAP[l.elementType].api + l.tinyId);
         const rightObservable = this.http.get<CompareItem>(ITEM_MAP[r.elementType].api + r.tinyId);
-        forkJoin([leftObservable, rightObservable]).subscribe(
-            results => {
-                this.left = results[0] as CompareItem;
-                this.right = results[1] as CompareItem;
-                if (!isDataElement(this.left)) {
-                    this.left.questions = this.flatFormQuestions(this.left);
-                }
-                if (!isDataElement(this.right)) {
-                    this.right.questions = this.flatFormQuestions(this.right);
-                }
-                this.getOptions(this.left, this.right);
-                this.options.forEach(option => {
-                    let l = get(this.left, option.displayAs.property);
-                    let r = get(this.right, option.displayAs.property);
-                    if (!l) {
-                        l = [];
+        forkJoin([leftObservable, rightObservable])
+            .pipe(
+                tap(results => {
+                    const cloneResults = cloneDeep(results);
+                    this.left = cloneResults[0] as CompareItem;
+                    this.right = cloneResults[1] as CompareItem;
+                    if (!isDataElement(this.left)) {
+                        this.left.questions = this.flatFormQuestions(this.left);
                     }
-                    if (!r) {
-                        r = [];
+                    if (!isDataElement(this.right)) {
+                        this.right.questions = this.flatFormQuestions(this.right);
                     }
-                    if (typeof l !== 'object') {
-                        l = [{ data: l }];
+                    return results;
+                })
+            )
+            .subscribe(
+                results => {
+                    const left = results[0] as CompareItem;
+                    const right = results[1] as CompareItem;
+                    if (!isDataElement(left)) {
+                        left.questions = this.flatFormQuestions(left);
                     }
-                    if (!isArray(l)) {
-                        l = [l];
+                    if (!isDataElement(right)) {
+                        right.questions = this.flatFormQuestions(right);
                     }
-                    if (typeof r !== 'object') {
-                        r = [{ data: r }];
-                    }
-                    if (!isArray(r)) {
-                        r = [r];
-                    }
-                    intersectionWith(l, r, (a: any, b: any) => {
-                        if (option.fullMatchFn(a, b)) {
-                            option.displayAs.display = true;
-                            option.fullMatches.push({ left: a, right: b });
-                            return true;
+
+                    this.getOptions(left, right);
+                    this.options.forEach(option => {
+                        let l = get(left, option.displayAs.property) || [];
+                        let r = get(right, option.displayAs.property) || [];
+                        if (typeof l !== 'object') {
+                            l = [{ data: l }];
                         }
-                        return false;
-                    });
-                    intersectionWith(l, r, (a: any, b: any) => {
-                        const partialMatchDiff = option.partialMatchFn(a, b);
-                        if (partialMatchDiff.length > 0) {
-                            option.displayAs.display = true;
-                            option.partialMatches.push({ left: a, right: b, diff: partialMatchDiff });
-                            return true;
+                        if (!isArray(l)) {
+                            l = [l];
                         }
-                        return false;
+                        if (typeof r !== 'object') {
+                            r = [{ data: r }];
+                        }
+                        if (!isArray(r)) {
+                            r = [r];
+                        }
+
+                        const leftMatchedItemsToBeRemoved: any[] = [];
+                        const rightMatchedItemsToBeRemoved: any[] = [];
+                        intersectionWith(l, r, (a: any, b: any) => {
+                            if (option.fullMatchFn(a, b)) {
+                                option.displayAs.display = true;
+                                option.fullMatches.push({ left: a, right: b });
+                                leftMatchedItemsToBeRemoved.push(a);
+                                rightMatchedItemsToBeRemoved.push(b);
+                                return true;
+                            }
+                            return false;
+                        });
+                        leftMatchedItemsToBeRemoved.forEach((a: any) => {
+                            remove(l, o => isEqual(o, a));
+                        });
+                        rightMatchedItemsToBeRemoved.forEach((b: any) => {
+                            remove(r, o => isEqual(o, b));
+                        });
+
+                        const leftPartialMatchedItemsToBeRemoved: any[] = [];
+                        const rightPartialMatchedItemsToBeRemoved: any[] = [];
+                        intersectionWith(l, r, (a: any, b: any) => {
+                            const partialMatchDiff = option.partialMatchFn(a, b);
+                            if (partialMatchDiff.length > 0) {
+                                option.displayAs.display = true;
+                                option.partialMatches.push({ left: a, right: b, diff: partialMatchDiff });
+                                leftPartialMatchedItemsToBeRemoved.push(a);
+                                rightPartialMatchedItemsToBeRemoved.push(b);
+                                return true;
+                            }
+                            return false;
+                        });
+                        leftPartialMatchedItemsToBeRemoved.forEach((a: any) => {
+                            remove(l, o => isEqual(o, a));
+                        });
+                        rightPartialMatchedItemsToBeRemoved.forEach((b: any) => {
+                            remove(r, o => isEqual(o, b));
+                        });
+
+                        option.leftNotMatches = differenceWith(l, r, option.notMatchFn);
+                        option.rightNotMatches = differenceWith(r, l, option.notMatchFn);
+                        if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0) {
+                            option.displayAs.display = true;
+                        }
                     });
-                    option.leftNotMatches = differenceWith(l, r, option.notMatchFn);
-                    option.rightNotMatches = differenceWith(r, l, option.notMatchFn);
-                    if (option.leftNotMatches.length > 0 || option.rightNotMatches.length > 0) {
-                        option.displayAs.display = true;
-                    }
-                });
-                cb();
-            },
-            err => this.alert.httpErrorMessageAlert(err)
-        );
+                    cb();
+                },
+                err => this.alert.httpErrorMessageAlert(err)
+            );
     }
 
     flatFormQuestions(fe: FormElementsContainer): CompareQuestion[] {
@@ -287,7 +298,7 @@ export class CompareSideBySideModalComponent {
                     return diff;
                 },
                 partialMatches: [],
-                notMatchFn: (a, b) => isEqual(a.source, b.source),
+                notMatchFn: (a, b) => !isEqual(a.source, b.source),
                 leftNotMatches: [],
                 rightNotMatches: [],
             } as CompareOption<CompareItem['ids'][number]>,
@@ -600,6 +611,7 @@ export class CompareSideBySideModalComponent {
                         { label: 'Label', property: 'label' },
                         { label: 'Data Type', property: 'question.datatype' },
                         { label: 'CDE', property: 'question.cde.tinyId', url: '/deView?tinyId=' },
+                        { label: 'CDE version', property: 'question.cde.version' },
                         { label: 'Unit of Measure', property: 'question.unitsOfMeasure' },
                         {
                             label: 'Answer',
@@ -613,9 +625,12 @@ export class CompareSideBySideModalComponent {
                 },
                 fullMatchFn: isEqual,
                 fullMatches: [],
-                partialMatchFn: (a, b) => {
+                partialMatchFn: (a: any, b: any) => {
                     const diff = [];
                     if (!isEqual(a, b) && isEqual(a.question.cde.tinyId, b.question.cde.tinyId)) {
+                        if (!isEqual(a.question.cde.version, b.question.cde.version)) {
+                            diff.push('question.cde.version');
+                        }
                         if (!isEqual(a.label, b.label)) {
                             diff.push('label');
                         }

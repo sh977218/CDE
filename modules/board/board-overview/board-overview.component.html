@@ -1,7 +1,7 @@
 <ng-container *ngIf="board">
     <mat-card [id]="board.name">
         <mat-card-title class="stretchBar fake-button" role="button" tabindex="0" (click)="clickHeader(board);">
-            <span class="fake-link shrink grow" [id]="'viewBoard_'+board.name"> {{board.name}}</span>
+            <span class="fake-link shrink grow" [id]="'viewBoard_'+board.name" data-testid="board-title"> {{board.name}}</span>
         </mat-card-title>
         <mat-card-content>
             <span class="numElement">{{board.pins.length + ' '}}</span>{{boardTitle}}

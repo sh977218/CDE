@@ -27,7 +27,7 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <div *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
-                    <div>
+                    <div data-testid="data-element-view-alert">
                         <div *ngIf="elt.archived" class="alert alert-warning" role="alert">
                             <mat-icon>warning</mat-icon>
                             <strong>Warning:</strong> this data element is archived. You can

@@ -94,7 +94,7 @@
                               [disabled]="!mergeFormService.error.ownTargetForm">
                     Classifications
                 </mat-checkbox>
-                <mat-checkbox [(ngModel)]="mergeFields.cde.retireCde" id="retireCde" style="margin-top: 1rem"
+                <mat-checkbox [(ngModel)]="mergeFields.cde.retireCde" id="retireCde" data-testid="retire-cde-checkbox" style="margin-top: 1rem"
                               [disabled]="!mergeFormService.error.ownTargetForm">
                     Retire CDE?
                 </mat-checkbox>
@@ -127,7 +127,7 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger">
+    <div *ngIf="mergeFormService.error.error" id="mergeFormErrorDiv" class="alert alert-danger" data-testid="merge-form-error">
         {{mergeFormService.error.error}}
     </div>
     <div *ngIf="showProgressBar" class="w-100">
@@ -135,12 +135,13 @@
                 [value]="(mergeFormService.numMergedQuestions / mergeFormService.maxNumberQuestions) * 100">
         </mat-progress-bar>
     </div>
-    <button id="cancelMergeFormBtn" class="button secondary" (click)="dialogRef.close()">
+    <button id="cancelMergeFormBtn" class="button secondary" (click)="dialogRef.close()" data-testid="close-merge-form-btn">
         {{doneMerge ? 'Close' : 'Cancel'}}
     </button>
     <button *ngIf="!finishMerge && !mergeFormService.error.error"
             id="mergeFormBtn" class="button fail"
-            (click)="doMerge();dialogRef.close()">
+            data-testid="merge-form-button"
+            (click)="doMerge();">
         Merge
     </button>
 </mat-dialog-actions>
