@@ -53,9 +53,8 @@ test.describe(`a11y`, async () => {
                 // color-contrast
                 expect(result.violations.length).toBeLessThanOrEqual(1);
             } else if (testInfo.title.includes('search page')) {
-                // page-has-heading-one
                 // color-contrast
-                expect(result.violations.length).toBeLessThanOrEqual(2);
+                expect(result.violations.length).toBeLessThanOrEqual(1);
             } else {
                 expect(result.violations.length).toBeLessThanOrEqual(0);
             }

@@ -315,6 +315,7 @@
     <div class="content searchResultsView">
         <ng-container *ngIf="elts.length > 0 && aggregations; else noResults">
             <ng-container *ngIf="isSearched(); else welcomePage">
+                <h1>{{module | uppercase}} Search Results</h1>
                 <div class="searchResultBar" style="margin-bottom: 1rem">
                     <div>
                         <button *ngIf="totalItems > 0" class="button light secondary searchHamburger"
