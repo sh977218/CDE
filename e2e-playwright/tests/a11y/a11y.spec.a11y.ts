@@ -49,15 +49,7 @@ test.describe(`a11y`, async () => {
                 ${JSON.stringify(violation, null, 4)}
                 `);
             })
-            if (testInfo.title.includes('view page')) {
-                // color-contrast
-                expect(result.violations.length).toBeLessThanOrEqual(1);
-            } else if (testInfo.title.includes('search page')) {
-                // color-contrast
-                expect(result.violations.length).toBeLessThanOrEqual(1);
-            } else {
-                expect(result.violations.length).toBeLessThanOrEqual(0);
-            }
+            expect(result.violations.length).toBeLessThanOrEqual(0);
         })
     })
 })

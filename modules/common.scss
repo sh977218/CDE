@@ -1314,7 +1314,7 @@ table.table-striped tbody tr:nth-of-type(odd) {
   align-content: center;
 
   dt {
-    color: rgba($nlmDarkGray, 0.6);
+    color: rgba($nlmDarkGray, 1);
     font-weight: normal;
     margin-bottom: 5px;
   }
@@ -1348,7 +1348,7 @@ table.table-striped tbody tr:nth-of-type(odd) {
 }
 
 .summaryLabel {
-  color: rgba($nlmDarkGray, 0.6);
+  color: rgba($nlmDarkGray, 1);
   font-weight: normal;
 }
 
