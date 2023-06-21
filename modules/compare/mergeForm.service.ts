@@ -85,7 +85,7 @@ export class MergeFormService {
         this.error.ownSourceForm = this.isAllowedModel.isAllowed(left);
         this.error.ownTargetForm = this.isAllowedModel.isAllowed(right);
         if (fields.questions && left.questions.length > right.questions.length) {
-            this.error.error = 'Form merge from has too many questions';
+            this.error.error = 'Left form has too many questions';
             return this.error;
         }
         left.questions.forEach((leftQuestion: any, i: number) => {
