@@ -908,6 +908,12 @@ definitions:
           tinyId:
             type: "string"
             example: "Qd4_a8FZqrX"
+      mergedTo:
+        type: "object"
+        properties:
+          tinyId:
+            type: "string"
+            example: "Qd4_a8FZqrX"
       unresolvedIssue:
         type: "string"
         example: "none"

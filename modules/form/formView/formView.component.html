@@ -27,7 +27,7 @@
             </mat-sidenav>
             <mat-sidenav-content>
                 <div *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
-                    <h1 id="top-of-page" style="display: inline">
+                    <h1 id="top-of-page" data-testid="form-view-title" style="display: inline">
                         <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
                                           (isDraftChange)="$event?loadElt():loadPublished()"
                                           [hidden]="!hasDraftsAndLoggedIn(elt)">
@@ -36,7 +36,7 @@
                              src="/assets/img/endorsedRibbon.svg">
                         Form: {{elt?.designations[0]?.designation}}
                     </h1>
-                    <div>
+                    <div data-testid="form-view-alert">
                         <div *ngIf="elt.isBundle" class="bundle-box">
                             <mat-icon fill="1">error_circle_rounded</mat-icon>
                             <b>This form is a bundle.</b> Bundles are indivisible. They are not considered valid and reliable if not used in their entirety, as intended.
@@ -51,8 +51,10 @@
                         <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
                              role="alert">
                             <mat-icon>warning</mat-icon>
-                            <strong>Warning:</strong> this form is retired.
-                            <a *ngIf="elt.registrationState.replacedBy" href="javascript:void(0);"
+                            <strong>Warning:</strong> This form is retired.
+                            <a data-testid="form-view-mergeTo-link" *ngIf="elt.registrationState.mergedTo"
+                               routerLink="/formView" [queryParams]="{tinyId: elt.registrationState.mergedTo.tinyId}">Merged to {{elt.registrationState.mergedTo.tinyId}}</a>
+                            <a *ngIf="elt.registrationState.replacedBy"
                                routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
                         </div>
                         <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"

@@ -641,6 +641,9 @@ export class RegistrationState {
     replacedBy?: {
         tinyId?: string,
     };
+    mergedTo?: {
+        tinyId?: string,
+    };
     unresolvedIssue?: string;
     untilDate?: Date;
 }

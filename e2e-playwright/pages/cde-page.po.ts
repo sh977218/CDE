@@ -1,5 +1,5 @@
 import { BasePagePo } from '../pages/base-page.po';
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 export class CdePagePo extends BasePagePo {
     constructor(page: Page) {
@@ -9,6 +9,14 @@ export class CdePagePo extends BasePagePo {
     async goToCde(tinyId: string) {
         await this.page.goto(`/deView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
+    }
+
+    cdeTitle(): Locator {
+        return this.page.getByTestId('data-element-view-title');
+    }
+
+    mergeToLink(): Locator {
+        return this.page.getByTestId('data-element-view-mergeTo-link');
     }
 
     alerts() {

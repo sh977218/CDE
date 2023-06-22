@@ -61,6 +61,8 @@ export async function doMerge(tinyIdFrom: string, tinyIdTo: string, fields: DeMe
     if (fields.retireCde) {
         cdeFrom.changeNote = 'Merged to tinyId ' + cdeTo.tinyId;
         cdeFrom.registrationState.registrationStatus = 'Retired';
+        cdeFrom.registrationState.administrativeNote = `Merged to tinyId: ${cdeTo.tinyId}`;
+        cdeFrom.registrationState.mergedTo = { tinyId: cdeTo.tinyId };
     }
     cdeTo.changeNote = 'Merged from tinyId ' + cdeFrom.tinyId;
     return {

@@ -1,5 +1,5 @@
 import { BasePagePo } from '../pages/base-page.po';
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 
 export class FormPagePo extends BasePagePo {
     constructor(page: Page) {
@@ -9,6 +9,18 @@ export class FormPagePo extends BasePagePo {
     async goToForm(tinyId: string) {
         await this.page.goto(`/formView?tinyId=${tinyId}`);
         await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
+    }
+
+    alerts(): Locator {
+        return this.page.getByTestId(`form-view-alert`);
+    }
+
+    mergeToLink(): Locator {
+        return this.page.getByTestId('form-view-mergeTo-link');
+    }
+
+    formTitle(): Locator {
+        return this.page.getByTestId('form-view-title');
     }
 
     /* Generate Details */

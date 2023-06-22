@@ -1,6 +1,8 @@
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 import cdeTinyId from '../../data/cde-tinyId';
+import formTinyId from '../../data/form-tinyId';
+import { expect } from '@playwright/test';
 
 test.describe(`Merge form`, async () => {
     test.describe(`Own form`, async () => {
@@ -26,7 +28,7 @@ test.describe(`Merge form`, async () => {
             await boardPage.closeMergeFormButton().click();
         })
 
-        test(`Merge and retire CDEs`, async ({myBoardPage, boardPage, cdePage, snackBar}) => {
+        test(`Merge and retire CDEs`, async ({myBoardPage, boardPage, cdePage, formPage, snackBar}) => {
             await myBoardPage.boardTitle('MergeFormRetire').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();
@@ -36,9 +38,16 @@ test.describe(`Merge form`, async () => {
             for (const l of await boardPage.leftQuestions().all()) {
                 await test.expect(await l.innerText()).toContain('Retired');
             }
+            const formName = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
+            await formPage.goToForm(formTinyId[formName]);
+            await test.expect(await formPage.alerts().innerText()).toContain(`This form is retired.`);
+            await formPage.mergeToLink().click();
+            await test.expect(formPage.formTitle()).toContainText('Patient Health Questionnaire - 9 (PHQ-9) Depression Scale');
             const cdeName = `Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]`;
             await cdePage.goToCde(cdeTinyId[cdeName]);
-            await test.expect(await cdePage.alerts().innerText()).toContain(`this data element is retired.`);
+            await test.expect(await cdePage.alerts().innerText()).toContain(`This data element is retired.`);
+            await cdePage.mergeToLink().click();
+            await test.expect(cdePage.cdeTitle()).toContainText('Sleep impairment score');
 
         })
     })

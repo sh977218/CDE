@@ -38,7 +38,9 @@
                         <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
                              role="alert">
                             <mat-icon>warning</mat-icon>
-                            <strong>Warning:</strong> this data element is retired.
+                            <strong>Warning:</strong> This data element is retired.
+                            <a data-testid="data-element-view-mergeTo-link" *ngIf="elt.registrationState.mergedTo"
+                               routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.mergedTo.tinyId}">Merged to {{elt.registrationState.mergedTo.tinyId}}</a>
                             <a *ngIf="elt.registrationState.replacedBy" routerLink="/deView" href="javascript:void(0);"
                                [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
                         </div>
@@ -145,7 +147,7 @@
                     </nav>
                     <article>
                         <section>
-                            <h1>
+                            <h1 data-testid="data-element-view-title">
                                 <cde-draft-slider style="margin-right: .5rem" [(isDraft)]="elt.isDraft"
                                                   (isDraftChange)="$event?loadElt():loadPublished()"
                                                   [hidden]="!hasDrafts"></cde-draft-slider>

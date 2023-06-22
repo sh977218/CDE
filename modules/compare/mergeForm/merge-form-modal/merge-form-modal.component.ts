@@ -105,6 +105,8 @@ export class MergeFormModalComponent {
                     this.source.changeNote = 'Merge to tinyId ' + this.destination.tinyId;
                     if (this.isAllowedModel.isAllowed(this.source)) {
                         this.source.registrationState.registrationStatus = 'Retired';
+                        this.source.registrationState.administrativeNote = `Merged to tinyId: ${this.destination.tinyId}`;
+                        this.source.registrationState.mergedTo = { tinyId: this.destination.tinyId };
                     }
                     this.mergeFormService.saveForm({
                         form: this.source,

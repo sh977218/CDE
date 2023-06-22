@@ -124,6 +124,7 @@ export const registrationStateSchema = new Schema({
         description: 'Relative standing of CDE as it relates to steward\'s administrative workflow'
     },
     replacedBy: {tinyId: {type: StringType, description: 'tinyId of replacement CDE'}},
+    mergedTo: {tinyId: {type: StringType, description: 'tinyId CDE was merged to'}}
 }, {_id: false});
 
 export const propertySchema = new Schema({
