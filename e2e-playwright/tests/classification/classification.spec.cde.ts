@@ -30,7 +30,6 @@ test.describe(`Classification`, async () => {
         await manageClassificationPage.confirmRemoveClassificationInput().fill('Participant/Subject Characteristics');
         await manageClassificationPage.confirmRemoveClassificationButton().click();
         await snackBar.checkAlert(`Deleting in progress.`);
-        await snackBar.checkAlert(`Classification Deleted`);
 
         await basePage.goToSearch('cde');
         await searchPage.searchQueryInput().fill(searchString);

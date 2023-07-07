@@ -28,6 +28,7 @@ import { ManageClassificationPo } from '../pages/manage-classifications/manage-c
 // Audit page
 import { AuditTabPo } from '../pages/audit/audit-tab.po';
 import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
+import { ConsoleMessage } from 'playwright-core';
 
 async function codeCoverage(page: Page) {
     const coverage: string = await page.evaluate('JSON.stringify(window.__coverage__);');
@@ -59,78 +60,92 @@ const test = baseTest.extend<{
     profilePage: ProfilePagePo;
     manageOrganizationsPage: ManageOrganizationsPo;
 }>({
-    basePage: async ({ page }, use) => {
+    basePage: async ({page}, use) => {
         await use(new BasePagePo(page));
-        await codeCoverage(page);
     },
-    homePage: async ({ page }, use) => {
+    homePage: async ({page}, use) => {
         await use(new HomePagePo(page));
-        await codeCoverage(page);
     },
-    cdePage: async ({ page }, use) => {
+    cdePage: async ({page}, use) => {
         await use(new CdePagePo(page));
-        await codeCoverage(page);
     },
-    formPage: async ({ page }, use) => {
+    formPage: async ({page}, use) => {
         await use(new FormPagePo(page));
-        await codeCoverage(page);
     },
-    myBoardPage: async ({ page }, use) => {
+    myBoardPage: async ({page}, use) => {
         await use(new MyBoardPagePo(page));
-        await codeCoverage(page);
     },
-    boardPage: async ({ page }, use) => {
+    boardPage: async ({page}, use) => {
         await use(new BoardPagePo(page));
-        await codeCoverage(page);
     },
-    saveModal: async ({ page }, use) => {
+    saveModal: async ({page}, use) => {
         await use(new SaveModalPo(page));
-        await codeCoverage(page);
     },
-    aioTocViewMenu: async ({ page }, use) => {
+    aioTocViewMenu: async ({page}, use) => {
         await use(new AioTocViewMenuPo(page));
-        await codeCoverage(page);
     },
-    navigationMenu: async ({ page }, use) => {
+    navigationMenu: async ({page}, use) => {
         await use(new NavigationMenuPo(page));
-        await codeCoverage(page);
     },
-    searchPage: async ({ page }, use) => {
+    searchPage: async ({page}, use) => {
         await use(new SearchPagePo(page));
-        await codeCoverage(page);
     },
-    snackBar: async ({ page }, use) => {
+    snackBar: async ({page}, use) => {
         await use(new SnackBarPo(page));
-        await codeCoverage(page);
     },
-    inlineEdit: async ({ page }, use) => {
+    inlineEdit: async ({page}, use) => {
         await use(new InlineEditPo(page));
-        await codeCoverage(page);
     },
-    manageClassificationPage: async ({ page }, use) => {
+    manageClassificationPage: async ({page}, use) => {
         await use(new ManageClassificationPo(page));
-        await codeCoverage(page);
     },
-    auditTab: async ({ page }, use) => {
+    auditTab: async ({page}, use) => {
         await use(new AuditTabPo(page));
-        await codeCoverage(page);
     },
-    classificationAuditPage: async ({ page }, use) => {
+    classificationAuditPage: async ({page}, use) => {
         await use(new ClassificationAuditPagePo(page));
-        await codeCoverage(page);
     },
-    settingMenu: async ({ page }, use) => {
+    settingMenu: async ({page}, use) => {
         await use(new SettingMenuPo(page));
-        await codeCoverage(page);
     },
-    profilePage: async ({ page }, use) => {
+    profilePage: async ({page}, use) => {
         await use(new ProfilePagePo(page));
-        await codeCoverage(page);
     },
-    manageOrganizationsPage: async ({ page }, use) => {
+    manageOrganizationsPage: async ({page}, use) => {
         await use(new ManageOrganizationsPo(page));
-        await codeCoverage(page);
     },
 });
+
+const ignoredConsoleMessages = [
+    'Failed to load resource: the server responded with a status of 404 (Not Found)',
+    '[webpack-dev-server]',
+    'Angular is running in development mode',
+    'ExpressionChangedAfterItHasBeenCheckedError',
+    '[main.js:'
+]
+
+const consoleMessages: string[] = []
+
+
+test.beforeEach(({page}, testInfo) => {
+    page.on('console', (msg: ConsoleMessage) => {
+        if (msg) {
+            consoleMessages.push(msg.text());
+        }
+    })
+})
+
+test.afterEach(async ({page}) => {
+    await codeCoverage(page);
+})
+
+test.afterAll(async () => {
+    for (const consoleMessage of consoleMessages) {
+        const expectedConsole = ignoredConsoleMessages.find(ignoredConsoleMessage => consoleMessage.indexOf(ignoredConsoleMessage) !== -1);
+        if (!expectedConsole) {
+            throw new Error(`Unexpected console: ${consoleMessage}`)
+        }
+    }
+})
 
 export default test;
