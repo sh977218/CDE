@@ -28,6 +28,10 @@ paths:
           description: "CDE"
           schema:
             $ref: "#/definitions/De"
+        404:
+          description: "Resource Not Found"
+          schema:
+            $ref: "#/definitions/Error"
         default:
           description: "Unexpected error"
           schema:
@@ -55,6 +59,10 @@ paths:
           description: "CDE"
           schema:
             $ref: "#/definitions/De"
+        404:
+          description: "Resource Not Found"
+          schema:
+            $ref: "#/definitions/Error"
         default:
           description: "Unexpected error"
           schema:
@@ -95,6 +103,10 @@ paths:
           description: "CDE Form"
           schema:
             $ref: "#/definitions/Form"
+        404:
+          description: "Resource Not Found"
+          schema:
+            $ref: "#/definitions/Error"
         default:
           description: "Unexpected error"
           schema:
@@ -122,6 +134,10 @@ paths:
           description: "CDE Form"
           schema:
             $ref: "#/definitions/Form"
+        404:
+          description: "Resource Not Found"
+          schema:
+            $ref: "#/definitions/Error"
         default:
           description: "Unexpected error"
           schema:

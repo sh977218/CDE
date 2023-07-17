@@ -10,7 +10,7 @@ import {
     originalSourceByTinyIdSourceName as deOriginalSourceByTinyIdSourceName,
     update, findModifiedElementsSince, derivationByInputs
 } from 'server/cde/mongo-cde';
-import { handleError, respondError } from 'server/errorHandler';
+import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
@@ -55,7 +55,8 @@ export function byTinyId(req: Request, res: Response): Promise<Response> {
     return dbPlugins.dataElement.byTinyId(tinyId)
         .then(item => {
             if (!item) {
-                return res.status(404).send();
+                handleNotFound({req,res})(null, null);
+                return res;
             }
             return sendDataElement(req, res)(item);
         }, respondError({req, res}));
@@ -89,7 +90,8 @@ export function byTinyIdAndVersion(req: Request, res: Response): Promise<Respons
     return dbPlugins.dataElement.byTinyIdAndVersion(tinyId, version)
         .then(dataElement => {
             if (!dataElement) {
-                return res.status(404).send();
+                handleNotFound({req,res})(null, null);
+                return res;
             }
             if (!req.user) {
                 hideProprietaryCodes(dataElement);

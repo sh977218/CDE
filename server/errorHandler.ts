@@ -72,7 +72,7 @@ export function handleNotFound<T>(options?: HandlerOptions,
         }
         if (!arg1) {
             if (options && hasRes(options)) {
-                options.res.status(options.statusCode || 404).send();
+                options.res.status(options.statusCode || 404).send('Resource Not Found');
             }
             return;
         }

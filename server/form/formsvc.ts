@@ -189,7 +189,8 @@ export function byTinyId(req: Request, res: Response) {
     const tinyId = req.params.tinyId;
     return dbPlugins.form.byTinyId(tinyId).then(form => {
         if (!form) {
-            return res.status(404).send();
+            handleNotFound({req,res})(null, null);
+            return res;
         }
         fetchWholeForm(form, handleNotFound(handlerOptions, wholeForm => {
             wipeRenderDisallowed(wholeForm, req.user);
@@ -218,7 +219,8 @@ export function byTinyIdAndVersion(req: Request, res: Response) {
     return dbPlugins.form.byTinyIdAndVersion(tinyId, version)
         .then(form => {
             if (!form) {
-                return res.status(404).send();
+                handleNotFound({req,res})(null, null);
+                return res;
             }
             fetchWholeForm(form, handleNotFound({req, res}, wholeForm => {
                 wipeRenderDisallowed(wholeForm, req.user);
