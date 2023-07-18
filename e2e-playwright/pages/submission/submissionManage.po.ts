@@ -13,8 +13,9 @@ export class SubmissionManagePo extends BasePagePo {
     }
 
     badge(text: string): Locator {
-        return this.page.locator('//*[@role = "button"][contains(@class, "badge-outline-gray")][text()[normalize-space() = "'
-            + text + '"]]');
+        return this.page.locator(
+            '//*[@role = "button"][contains(@class, "badge-outline-gray")][text()[normalize-space() = "' + text + '"]]'
+        );
     }
 
     buttonCreateSubmission(): Locator {
@@ -51,10 +52,18 @@ export class SubmissionManagePo extends BasePagePo {
     }
 
     private async submissionFindIndex(name: string, version: string): Promise<number> {
-        const matches: boolean[] = await Promise.all(await this.tableRows().all().then(rows => rows.slice(1).map(async row => {
-            return await row.locator('.cell').nth(1).textContent() === name
-                && await row.locator('.cell').nth(6).textContent() === version
-        })));
+        const matches: boolean[] = await Promise.all(
+            await this.tableRows()
+                .all()
+                .then(rows =>
+                    rows.slice(1).map(async row => {
+                        return (
+                            (await row.locator('.cell').nth(1).textContent()) === name &&
+                            (await row.locator('.cell').nth(6).textContent()) === version
+                        );
+                    })
+                )
+        );
         const index = matches.indexOf(true);
         if (index === -1) {
             return Promise.reject(`No match for submission name=${name} version=${version}`);
@@ -90,7 +99,8 @@ export class SubmissionManagePo extends BasePagePo {
         return this.page.locator('//*[contains(@class, "headingRow")][text()[normalize-space() = "' + text + '"]]');
     }
 
-    tableRows(): Locator { // includes heading row
+    tableRows(): Locator {
+        // includes heading row
         return this.page.locator('.cellGroup');
     }
 

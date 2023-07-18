@@ -3,7 +3,7 @@ import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
 test.describe(`Search Filter`, async () => {
-    test(`Clear all filters`, async ({page, basePage, searchPage, navigationMenu}) => {
+    test(`Clear all filters`, async ({ page, basePage, searchPage, navigationMenu }) => {
         await basePage.goToSearch('cde');
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await searchPage.browseOrganization('CTEP');
@@ -36,6 +36,5 @@ test.describe(`Search Filter`, async () => {
         await expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeFalsy();
 
         await expect(page.getByText('Search CDEs')).toBeVisible();
-    })
-
+    });
 });

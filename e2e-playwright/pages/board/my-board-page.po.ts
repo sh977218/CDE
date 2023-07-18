@@ -9,9 +9,7 @@ export class MyBoardPagePo {
 
     boardTitle(boardTitle: string): Locator {
         return this.page.locator(`[data-testid="board-title"]`, {
-            has: this.page.locator(`text=${boardTitle}`)
+            has: this.page.locator(`text=${boardTitle}`),
         });
     }
 }
-
-

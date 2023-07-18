@@ -4,14 +4,14 @@ import user from '../../data/user';
 import { button } from '../../pages/util';
 
 test.describe(`Submission Manage`, async () => {
-    test.beforeEach(async ({page, basePage, navigationMenu, submissionManagePage,}) => {
+    test.beforeEach(async ({ page, basePage, navigationMenu, submissionManagePage }) => {
         await basePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoSubmissions();
         await submissionManagePage.isSubmissionManagement();
     });
 
-    test('Filter', async ({page, submissionManagePage}) => {
+    test('Filter', async ({ page, submissionManagePage }) => {
         await button(page, 'Filters').click();
         await button(page, 'Submitting Org').click();
         await page.getByLabel('NINDS').click();
@@ -19,7 +19,7 @@ test.describe(`Submission Manage`, async () => {
         await submissionManagePage.tableResults(2);
     });
 
-    test(`Pagination`, async ({page, basePage, materialPage, submissionManagePage}) => {
+    test(`Pagination`, async ({ page, basePage, materialPage, submissionManagePage }) => {
         await materialPage.paginatorNumberPerPage().click();
         await materialPage.matOption('10').click();
         await page.getByText('1 - 10 of').isVisible();
@@ -28,7 +28,7 @@ test.describe(`Submission Manage`, async () => {
         await page.getByText('g12');
     });
 
-    test('Search', async ({page, submissionManagePage}) => {
+    test('Search', async ({ page, submissionManagePage }) => {
         await page.getByPlaceholder('Enter Search Terms Here').fill('g12');
         await page.getByPlaceholder('Enter Search Terms Here').press('Enter');
         await expect(submissionManagePage.badge('g12')).toBeVisible();
@@ -43,7 +43,7 @@ test.describe(`Submission Manage`, async () => {
         await submissionManagePage.tableResultsAtLeast(10);
     });
 
-    test('Show/Hide Columns', async ({page, basePage, submissionManagePage}) => {
+    test('Show/Hide Columns', async ({ page, basePage, submissionManagePage }) => {
         await expect(submissionManagePage.tableCell('Organization URL')).not.toBeVisible();
         await button(page, 'Show/Hide Columns').click();
         await expect(page.locator('.contentPane')).toContainText('Column Options');
@@ -52,7 +52,7 @@ test.describe(`Submission Manage`, async () => {
         await expect(submissionManagePage.tableCell('https://ninds.gov')).toBeVisible();
     });
 
-    test('Sort Column', async ({page, submissionManagePage}) => {
+    test('Sort Column', async ({ page, submissionManagePage }) => {
         // Collection Title column
         await expect(submissionManagePage.tableRows().nth(1).locator('.cell').nth(1)).toContainText('NINDS');
         await expect(submissionManagePage.tableRows().nth(2).locator('.cell').nth(1)).toContainText('bbb');
@@ -64,7 +64,7 @@ test.describe(`Submission Manage`, async () => {
         await expect(submissionManagePage.tableRows().nth(3).locator('.cell').nth(1)).toContainText('NLM');
     });
 
-    test('View Submission', async ({page, submissionManagePage}) => {
+    test('View Submission', async ({ page, submissionManagePage }) => {
         await submissionManagePage.tableAction(0).click();
         await button(submissionManagePage.tableActionMenu(), 'View').click();
         await page.locator('mat-dialog-container');

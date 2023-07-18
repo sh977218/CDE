@@ -12,7 +12,7 @@ export class BoardPagePo {
     }
 
     openMergeFormModalButton(position = 'left') {
-        return this.page.locator(`.${position}Obj`).getByTestId(`openMergeFormModalBtn`)
+        return this.page.locator(`.${position}Obj`).getByTestId(`openMergeFormModalBtn`);
     }
 
     mergeFormError() {
@@ -35,5 +35,3 @@ export class BoardPagePo {
         return this.page.getByTestId(`left-question`);
     }
 }
-
-

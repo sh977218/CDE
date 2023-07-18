@@ -4,7 +4,7 @@ import { join } from 'path';
 
 async function globalSetup(config: FullConfig) {
     const projectRootFolder = join(__dirname, '..');
-    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), {recursive: true, force: true});
+    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), { recursive: true, force: true });
     await fs.mkdir(join(projectRootFolder, `e2e-playwright/.nyc_output`));
 }
 

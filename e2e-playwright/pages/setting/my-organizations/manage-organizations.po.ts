@@ -4,7 +4,7 @@ export class ManageOrganizationsPo {
     protected page: Page;
 
     constructor(page: Page) {
-        this.page = page
+        this.page = page;
     }
 
     newOrganizationName() {
@@ -20,19 +20,19 @@ export class ManageOrganizationsPo {
     }
 
     newOrganizationSubmit() {
-        return this.page.getByTestId('add-organization-submit')
+        return this.page.getByTestId('add-organization-submit');
     }
 
     managedOrganizations(orgName: string) {
         return this.page.locator('[data-testid="managed-organization"]', {
             has: this.page.locator('[data-testid="organization-name"]', {
-                has: this.page.getByText(orgName, {exact: true})
-            })
-        })
+                has: this.page.getByText(orgName, { exact: true }),
+            }),
+        });
     }
 
     organizationName(locator: Locator) {
-        return locator.getByTestId('organization-name')
+        return locator.getByTestId('organization-name');
     }
 
     organizationLongName(locator: Locator) {
@@ -62,5 +62,4 @@ export class ManageOrganizationsPo {
     organizationWorkingGroup(locator: Locator) {
         return locator.getByTestId('organization-working-group');
     }
-
 }

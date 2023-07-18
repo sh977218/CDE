@@ -4,11 +4,16 @@ import { expect } from '@playwright/test';
 
 test.describe(`Classification`, async () => {
     test(`Remove organization classification`, async ({
-                                                          page, basePage, searchPage, navigationMenu,
-                                                          manageClassificationPage, snackBar, auditTab,
-                                                          classificationAuditPage
-                                                      }) => {
-        const classificationToBeRemoved = `Participant/Subject Characteristics`
+        page,
+        basePage,
+        searchPage,
+        navigationMenu,
+        manageClassificationPage,
+        snackBar,
+        auditTab,
+        classificationAuditPage,
+    }) => {
+        const classificationToBeRemoved = `Participant/Subject Characteristics`;
         const searchString = `classification.elements.elements.name: "${classificationToBeRemoved}"`;
         const classificationArray = ['NINDS', 'Domain', classificationToBeRemoved];
         await basePage.goToSearch('cde');
@@ -45,9 +50,13 @@ test.describe(`Classification`, async () => {
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoAudit();
         await auditTab.classificationAudit().click();
-        const locator = classificationAuditPage.classificationAuditByTitle(`10+ cdes ${classificationArray.join(' > ')}`);
+        const locator = classificationAuditPage.classificationAuditByTitle(
+            `10+ cdes ${classificationArray.join(' > ')}`
+        );
         await classificationAuditPage.openClassificationAudit(locator);
-        await expect(await classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toBe(`delete ${classificationArray.join(' > ')}`);
+        await expect(await classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toBe(
+            `delete ${classificationArray.join(' > ')}`
+        );
         await classificationAuditPage.closeClassificationAuditByTitle(locator);
-    })
+    });
 });

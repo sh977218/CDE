@@ -10,18 +10,18 @@ const newOrganization = {
     orgPhoneNumber: '301-594-1247',
     orgUri: 'www.nih.gov',
     orgWorkingGroup: 'NLM',
-    orgExtraInfo: 'For medical research'
-}
+    orgExtraInfo: 'For medical research',
+};
 
 test.describe(`My organization`, async () => {
     test(`Rename organization`, async ({
-                                                  basePage,
-                                                  snackBar,
-                                                  inlineEdit,
-                                                  settingMenu,
-                                                  navigationMenu,
-                                                  manageOrganizationsPage
-                                              }) => {
+        basePage,
+        snackBar,
+        inlineEdit,
+        settingMenu,
+        navigationMenu,
+        manageOrganizationsPage,
+    }) => {
         await basePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoSettings();
@@ -38,16 +38,16 @@ test.describe(`My organization`, async () => {
         await expect(organizationNameLocator).toBeVisible();
         const organizationLongNameLocator = manageOrganizationsPage.organizationLongName(managedOrganizationsLocator);
         await expect(organizationLongNameLocator).toBeVisible();
-        const organizationWorkingGroupLocator = manageOrganizationsPage.organizationWorkingGroup(managedOrganizationsLocator);
+        const organizationWorkingGroupLocator =
+            manageOrganizationsPage.organizationWorkingGroup(managedOrganizationsLocator);
         await expect(organizationWorkingGroupLocator).toBeVisible();
 
-        const organizationMailAddressLocator = manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator);
+        const organizationMailAddressLocator =
+            manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator);
         await inlineEdit.editIcon(organizationMailAddressLocator).click();
         await inlineEdit.inputField(organizationMailAddressLocator).fill(newOrganization.orgMailAddress);
         await inlineEdit.submitButton(organizationMailAddressLocator).click();
         await snackBar.checkAlert('Saved');
         await expect(manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator)).toBeVisible();
-
-    })
-
+    });
 });

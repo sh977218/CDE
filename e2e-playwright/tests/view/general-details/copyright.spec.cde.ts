@@ -7,7 +7,7 @@ const newAuthority = 'Patent for truth ' + new Date();
 const newUrl = 'https://search.nih.gov/search?commit=Search&query=' + new Date();
 
 test.describe(`Edit Copyright`, async () => {
-    test(`Form page`, async ({formPage, navigationMenu, inlineEdit, saveModal}) => {
+    test(`Form page`, async ({ formPage, navigationMenu, inlineEdit, saveModal }) => {
         const formName = 'Quantitative Sensory Testing (QST)';
         await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -32,5 +32,5 @@ test.describe(`Edit Copyright`, async () => {
 
         await formPage.publishDraft().click();
         await saveModal.newVersion();
-    })
-})
+    });
+});

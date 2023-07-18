@@ -12,7 +12,7 @@ async function globalTeardown(config: FullConfig) {
         reporter: ['lcov', 'json', 'text-summary'],
     });
     await nycInstance.report();
-    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), {recursive: true, force: true});
+    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), { recursive: true, force: true });
 }
 
 export default globalTeardown;

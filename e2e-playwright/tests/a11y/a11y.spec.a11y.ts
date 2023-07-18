@@ -5,21 +5,21 @@ import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
 
 test.describe(`a11y`, async () => {
-    test(`Home page`, async ({basePage}) => {
+    test(`Home page`, async ({ basePage }) => {
         await basePage.goToHome();
-    })
+    });
 
-    test(`CDE view page`, async ({page, cdePage, searchPage}) => {
+    test(`CDE view page`, async ({ page, cdePage, searchPage }) => {
         const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
         await cdePage.goToCde(cdeTinyId[cdeName]);
-    })
+    });
 
-    test(`Form view page`, async ({page, formPage, searchPage}) => {
+    test(`Form view page`, async ({ page, formPage, searchPage }) => {
         const formName = 'AED Resistance Log';
         await formPage.goToForm(formTinyId[formName]);
-    })
+    });
 
-    test(`CDE search page`, async ({page, cdePage, searchPage}) => {
+    test(`CDE search page`, async ({ page, cdePage, searchPage }) => {
         await cdePage.goToSearch('cde');
         await searchPage.browseOrganization('caBIG');
         await searchPage.classificationFilter('caDSR');
@@ -27,9 +27,9 @@ test.describe(`a11y`, async () => {
         await searchPage.registrationStatusFilter('Qualified').click();
         await searchPage.dataTypeFilter('Date').click();
         await page.getByText('results. Sorted by relevance.').isVisible();
-    })
+    });
 
-    test(`Form search page`, async ({page, formPage, searchPage}) => {
+    test(`Form search page`, async ({ page, formPage, searchPage }) => {
         await formPage.goToSearch('form');
         await searchPage.browseOrganization('PROMIS / Neuro-QOL');
         await searchPage.classificationFilter('PROMIS Instruments');
@@ -37,19 +37,19 @@ test.describe(`a11y`, async () => {
         await searchPage.classificationFilter('Social Health');
         await searchPage.registrationStatusFilter('Qualified').click();
         await page.getByText('results. Sorted by relevance.').isVisible();
-    })
+    });
 
-    test.afterEach(async ({basePage, page}, testInfo) => {
+    test.afterEach(async ({ basePage, page }, testInfo) => {
         await test.step(`Run axe check`, async () => {
-            const axe = new AxeBuilder({page})
+            const axe = new AxeBuilder({ page });
             const result = await axe.analyze();
             result.violations.forEach((violation, i) => {
                 console.log(`
                 test name: ${testInfo.title}
                 ${JSON.stringify(violation, null, 4)}
                 `);
-            })
+            });
             expect(result.violations.length).toBeLessThanOrEqual(0);
-        })
-    })
-})
+        });
+    });
+});

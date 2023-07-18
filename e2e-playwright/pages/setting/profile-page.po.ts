@@ -4,11 +4,10 @@ export class ProfilePagePo {
     protected page: Page;
 
     constructor(page: Page) {
-        this.page = page
+        this.page = page;
     }
 
     userEmail() {
-        return this.page.getByTestId('edit-user-email')
+        return this.page.getByTestId('edit-user-email');
     }
-
 }

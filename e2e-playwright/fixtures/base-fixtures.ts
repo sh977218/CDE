@@ -68,52 +68,52 @@ const test = baseTest.extend<{
     submissionEditPage: SubmissionEditPo;
     submissionManagePage: SubmissionManagePo;
 }>({
-    basePage: async ({page}, use) => {
+    basePage: async ({ page }, use) => {
         await use(new BasePagePo(page));
     },
-    homePage: async ({page}, use) => {
+    homePage: async ({ page }, use) => {
         await use(new HomePagePo(page));
     },
-    cdePage: async ({page}, use) => {
+    cdePage: async ({ page }, use) => {
         await use(new CdePagePo(page));
     },
-    formPage: async ({page}, use) => {
+    formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
     },
-    myBoardPage: async ({page}, use) => {
+    myBoardPage: async ({ page }, use) => {
         await use(new MyBoardPagePo(page));
     },
-    boardPage: async ({page}, use) => {
+    boardPage: async ({ page }, use) => {
         await use(new BoardPagePo(page));
     },
-    saveModal: async ({page}, use) => {
+    saveModal: async ({ page }, use) => {
         await use(new SaveModalPo(page));
     },
-    aioTocViewMenu: async ({page}, use) => {
+    aioTocViewMenu: async ({ page }, use) => {
         await use(new AioTocViewMenuPo(page));
     },
-    navigationMenu: async ({page}, use) => {
+    navigationMenu: async ({ page }, use) => {
         await use(new NavigationMenuPo(page));
     },
-    searchPage: async ({page}, use) => {
+    searchPage: async ({ page }, use) => {
         await use(new SearchPagePo(page));
     },
-    snackBar: async ({page}, use) => {
+    snackBar: async ({ page }, use) => {
         await use(new SnackBarPo(page));
     },
-    inlineEdit: async ({page}, use) => {
+    inlineEdit: async ({ page }, use) => {
         await use(new InlineEditPo(page));
     },
-    manageClassificationPage: async ({page}, use) => {
+    manageClassificationPage: async ({ page }, use) => {
         await use(new ManageClassificationPo(page));
     },
-    auditTab: async ({page}, use) => {
+    auditTab: async ({ page }, use) => {
         await use(new AuditTabPo(page));
     },
-    classificationAuditPage: async ({page}, use) => {
+    classificationAuditPage: async ({ page }, use) => {
         await use(new ClassificationAuditPagePo(page));
     },
-    settingMenu: async ({page}, use) => {
+    settingMenu: async ({ page }, use) => {
         await use(new SettingMenuPo(page));
     },
     manageOrganizationsPage: async ({ page }, use) => {
@@ -122,13 +122,13 @@ const test = baseTest.extend<{
     materialPage: async ({ page }, use) => {
         await use(new MaterialPo(page));
     },
-    profilePage: async ({page}, use) => {
+    profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
     },
-    submissionEditPage: async ({page}, use) => {
+    submissionEditPage: async ({ page }, use) => {
         await use(new SubmissionEditPo(page));
     },
-    submissionManagePage: async ({page}, use) => {
+    submissionManagePage: async ({ page }, use) => {
         await use(new SubmissionManagePo(page));
     },
 });
@@ -138,31 +138,32 @@ const ignoredConsoleMessages = [
     '[webpack-dev-server]',
     'Angular is running in development mode',
     'ExpressionChangedAfterItHasBeenCheckedError',
-    '[main.js:'
-]
+    '[main.js:',
+];
 
-const consoleMessages: string[] = []
+const consoleMessages: string[] = [];
 
-
-test.beforeEach(({page}, testInfo) => {
+test.beforeEach(({ page }, testInfo) => {
     page.on('console', (msg: ConsoleMessage) => {
         if (msg) {
             consoleMessages.push(msg.text());
         }
-    })
-})
+    });
+});
 
-test.afterEach(async ({page}) => {
+test.afterEach(async ({ page }) => {
     await codeCoverage(page);
-})
+});
 
 test.afterAll(async () => {
     for (const consoleMessage of consoleMessages) {
-        const expectedConsole = ignoredConsoleMessages.find(ignoredConsoleMessage => consoleMessage.indexOf(ignoredConsoleMessage) !== -1);
+        const expectedConsole = ignoredConsoleMessages.find(
+            ignoredConsoleMessage => consoleMessage.indexOf(ignoredConsoleMessage) !== -1
+        );
         if (!expectedConsole) {
-            throw new Error(`Unexpected console: ${consoleMessage}`)
+            throw new Error(`Unexpected console: ${consoleMessage}`);
         }
     }
-})
+});
 
 export default test;

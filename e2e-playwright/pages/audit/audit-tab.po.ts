@@ -4,15 +4,14 @@ export class AuditTabPo {
     protected page: Page;
 
     constructor(page: Page) {
-        this.page = page
+        this.page = page;
     }
 
     classificationAudit(): Locator {
         return this.page.locator(`[role="tab"]`, {
             has: this.page.locator(`.mdc-tab__content`, {
-                has: this.page.locator(`text=Classification Audit Log`)
-            })
-        })
+                has: this.page.locator(`text=Classification Audit Log`),
+            }),
+        });
     }
-
 }
