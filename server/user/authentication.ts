@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { Strategy as CustomStrategy } from 'passport-custom';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { config } from 'server';
-import { logError } from 'server/log/dbLogger';
+import { logError, recordUserLogin } from 'server/log/dbLogger';
 import { errorLogger } from 'server/system/logging';
 import { CbErr1, CbError1, CbNode, User } from 'shared/models.model';
 import { addUser, updateUserIps, userById, userByName, UserDocument } from 'server/user/userDb';
@@ -191,10 +191,12 @@ export function findAddUserLocally(profile: UserAddProfile, updates: UserUpdateP
                         return;
                     }
                     updateUserAfterLogin(user, updates, (err, newUser) => cb(null, newUser));
+                    recordUserLogin(user, updates.ip);
                 }
             );
         } else {
             updateUserAfterLogin(user, updates, (err, newUser) => cb(null, newUser));
+            recordUserLogin(user, updates.ip);
         }
     });
 }

@@ -14,4 +14,8 @@ export class AuditTabPo {
             }),
         });
     }
+
+    loginRecordsAudit(): Locator {
+        return this.page.locator('[role="tab"]:has-text("Login Records")');
+    }
 }

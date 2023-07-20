@@ -29,6 +29,7 @@ import { ManageClassificationPo } from '../pages/manage-classifications/manage-c
 // Audit page
 import { AuditTabPo } from '../pages/audit/audit-tab.po';
 import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
+import { LoginRecordsAuditPagePo } from '../pages/audit/login-records-audit-page.po';
 import { ConsoleMessage } from 'playwright-core';
 
 // Submission
@@ -60,6 +61,7 @@ const test = baseTest.extend<{
     inlineEdit: InlineEditPo;
     auditTab: AuditTabPo;
     classificationAuditPage: ClassificationAuditPagePo;
+    loginRecordAuditPage: LoginRecordsAuditPagePo;
     manageClassificationPage: ManageClassificationPo;
     manageOrganizationsPage: ManageOrganizationsPo;
     materialPage: MaterialPo;
@@ -112,6 +114,9 @@ const test = baseTest.extend<{
     },
     classificationAuditPage: async ({ page }, use) => {
         await use(new ClassificationAuditPagePo(page));
+    },
+    loginRecordAuditPage: async ({ page }, use) => {
+        await use(new LoginRecordsAuditPagePo(page));
     },
     settingMenu: async ({ page }, use) => {
         await use(new SettingMenuPo(page));

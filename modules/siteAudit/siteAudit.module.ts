@@ -13,6 +13,7 @@ import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
+import { LoginRecordComponent } from 'siteAudit/loginRecords/loginRecord.component';
 import { AppLogComponent } from 'siteAudit/appLogs/appLog.component';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
@@ -55,6 +56,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         DataElementLogComponent,
         FormLogComponent,
         LogAuditComponent,
+        LoginRecordComponent,
         ServerErrorsComponent,
         SiteAuditComponent,
     ],

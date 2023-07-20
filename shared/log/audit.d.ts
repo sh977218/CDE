@@ -24,3 +24,10 @@ export interface LogMessage {
     httpStatus: string;
     referrer: string;
 }
+
+export interface LoginRecord {
+    date: Date,
+    user: string,
+    email?: string,
+    ip: string,
+}

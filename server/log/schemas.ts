@@ -56,3 +56,10 @@ export const clientErrorSchema = new Schema({
     username: StringType,
     ip: StringType
 }, {w: 0, capped: cappedSize} as any);
+
+export const loginSchema = new Schema({
+    date: {type: Date, index: true, default: Date.now},
+    user: StringType,
+    email: StringType,
+    ip: {type: StringType, index: true},
+}, {w: 0} as any);

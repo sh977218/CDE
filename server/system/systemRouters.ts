@@ -19,7 +19,7 @@ import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
 import { version } from 'server/version';
-import { consoleLog } from 'server/log/dbLogger';
+import { consoleLog, loginModel, getUserLoginRecords } from 'server/log/dbLogger';
 import {
     ItemDocument, jobStatus, removeJobStatus, updateJobStatus
 } from 'server/system/mongo-data';
@@ -76,7 +76,7 @@ export function module() {
                 cde.partOfBundles = uniq(union(cde.partOfBundles, [bundle.tinyId]));
             }
         }
-        return await Promise.all([...(cdesToSave.map(c => c.save()))]);
+        return Promise.all([...(cdesToSave.map(c => c.save()))]);
     }, null, true, 'America/New_York', undefined, true).start();
 
     // every sunday at 4:07 AM
@@ -163,6 +163,10 @@ export function module() {
     }, null, true, 'America/New_York', undefined, true).start();
 
     new CronJob('00 30 4 * * *', () => syncLinkedForms(), null, true, 'America/New_York').start();
+
+    new CronJob('0 0 1 * *', () => {
+        loginModel.deleteMany({date: {$lt: new Date((new Date().getTime())-config.database.log.loginRecordRetentionTime)}});
+    },null, true, 'America/New_York', undefined, true).start();
 
     function fileCreatedToday(file: GridFSFile): boolean {
         const today = new Date();
@@ -323,6 +327,10 @@ export function module() {
             await elt.save();
         }
         res.send();
+    });
+
+    router.post('/loginRecords', isSiteAdminMiddleware, async (req, res) => {
+        res.send(await getUserLoginRecords(req.body));
     });
 
     // drafts

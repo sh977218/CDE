@@ -108,7 +108,8 @@
         "maxPoolSize": 20,
         "ssl": false
       },
-      "cappedCollectionSizeMB": 262144000
+      "cappedCollectionSizeMB": 262144000,
+      "loginRecordRetentionTime": 7776000000
     },
     "migration": {
       "db": "migration",

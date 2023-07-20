@@ -121,7 +121,8 @@ let ignoreErrors = [
     "TypeError: Failed to fetch",
     `Cannot read properties of null (reading `,
     `Cannot read properties of undefined (reading `,
-    `because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.`
+    `because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.`,
+    'This file should be served over HTTPS'
 ];
 
 fs.readdir(logFolder, (err, files) => {

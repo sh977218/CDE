@@ -52,4 +52,10 @@
             <cde-client-errors></cde-client-errors>
         </ng-template>
     </mat-tab>
+
+    <mat-tab label="Login Records" *ngIf="isAdmin" index="10">
+        <ng-template matTabContent>
+            <cde-login-records></cde-login-records>
+        </ng-template>
+    </mat-tab>
 </mat-tab-group>

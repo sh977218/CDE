@@ -13,4 +13,8 @@ export default {
         username: 'nlmCurator',
         password: DEFAULT_PASSWORD,
     },
+    loginrecorduser: {
+        username: 'loginrecorduser',
+        password: 'umls',
+    },
 };

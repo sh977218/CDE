@@ -3,12 +3,12 @@ import { Document, Model } from 'mongoose';
 import { config } from 'server';
 import { handleConsoleError } from 'server/errorHandler';
 import {
-    clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema
+    clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema
 } from 'server/log/schemas';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { UserFull } from 'server/user/userDb';
-import { AuditLog, AuditLogResponse, LogMessage, SortOrder } from 'shared/log/audit';
+import { AuditLog, AuditLogResponse, LogMessage, LoginRecord, SortOrder } from 'shared/log/audit';
 import { Cb, CbError, CbError1 } from 'shared/models.model';
 
 export interface ClientError {
@@ -56,6 +56,7 @@ const logModel: Model<Document & LogMessage> = conn.model('DbLogger', logSchema)
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
 const consoleLogModel: Model<Document & ConsoleLog> = conn.model('consoleLogs', consoleLogSchema);
+export const loginModel:  Model<Document & LoginRecord> = conn.model('logins', loginSchema);
 const userAgent = require('useragent');
 
 export function consoleLog(message: string, level: 'debug' | 'error' | 'info' | 'warning' = 'debug') {
@@ -314,5 +315,13 @@ export function usageByDay(callback: CbError1<LogAggregate[]>) {
                 } as any, number: {$sum: 1}, latest: {$max: '$date'}
             }
         }], callback);
+}
+
+export function recordUserLogin(user: UserFull, ip: string){
+    new loginModel({user: user.username, email: user.email, ip}).save();
+}
+
+export function getUserLoginRecords(params: { page: number}) {
+    return loginModel.find({}).sort('-date').skip(params.page * 50).limit(50);
 }
 
