@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { config } from 'server';
 import { loggedInMiddleware, nocacheMiddleware } from 'server/system/authorization';
 import {
-    getAtomsFromUMLS, getSourcePT, searchUmls, umlsCuiFromSrc
+    getAtomsFromUMLS, getSourcePT, umlsCuiFromSrc, umlsServerRequest
 } from 'server/uts/utsSvc';
 import { getValueSet, searchValueSet } from 'server/vsac/vsacSvc';
 
@@ -26,10 +26,12 @@ export function module() {
         );
     });
 
-    router.get('/searchUmls', loggedInMiddleware, (req, res) => {
-        searchUmls(req.query.searchTerm as string).then(
-            result => res.send(result),
-            error => res.status(400).send()
+    router.get('/searchUmls', loggedInMiddleware, (req, res): Promise<Response> => {
+        return umlsServerRequest(
+            `${config.umls.wsHost}/rest/search/current?apiKey=${config.uts.apikey}&string=${req.query.searchTerm}`
+        ).then(
+            info => info ? res.send(info) : res.status(404).send(),
+            err => res.status(400).send()
         );
     });
 

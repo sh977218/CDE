@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { Request, Response, Router } from 'express';
 import { dbPlugins } from 'server';
 import { respondError } from 'server/errorHandler';
-import { getFile, gfs } from 'server/mongo/mongo/gfs';
+import { getFileAndRespond, gfs } from 'server/mongo/mongo/gfs';
 import { isNlmCuratorMiddleware } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
 import { version } from 'server/version';
@@ -123,13 +123,7 @@ export function module() {
     });
 
     router.get('/sitemap.txt', (req, res): Promise<Response> => {
-        return gfs.then(gfs => gfs.find({filename: '/app/sitemap.txt'}).toArray()).then(files => {
-            const file = files[0];
-            if (!file) {
-                return res.status(404).send('File not found.');
-            }
-            return getFile(file._id, res);
-        }, respondError({req, res}));
+        return getFileAndRespond({filename: '/app/sitemap.txt'}, res);
     });
 
     router.get('/tour', (req, res) => res.redirect('/home?tour=yes'));

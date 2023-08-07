@@ -37,9 +37,7 @@ export function ownKeys<T extends {}>(obj?: T): (keyof T)[] {
 }
 
 export function stringToArray<T extends string = string>(arrayString: string, delim = ';'): T[] {
-    return arrayString
-        ? (arrayString.split(delim) as T[])
-        : [];
+    return arrayString ? arrayString.split(delim) as T[] : [];
 }
 
 export function stringCompare(a: string, b: string): number {

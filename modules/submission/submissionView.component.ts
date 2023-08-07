@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { administrativeStatuses } from 'shared/models.model';
+import { VerifySubmissionFileProgress, VerifySubmissionFileReport } from 'shared/boundaryInterfaces/API/submission';
 
 const controlDisabled = [{ value: '', disabled: true }];
 const controlBoolDisabled = [{ value: false, disabled: true }];
@@ -82,6 +83,8 @@ export class SubmissionViewComponent implements OnInit {
         'Incomplete',
         'Retired',
     ];
+    verifySubmissionFileProgress?: VerifySubmissionFileProgress;
+    verifySubmissionFileReport?: VerifySubmissionFileReport;
 
     constructor(
         private alert: AlertService,
@@ -199,4 +202,5 @@ export class SubmissionViewComponent implements OnInit {
     updateNlmCurators() {}
     updateOrgCurators() {}
     updateReviewers() {}
+    verifySubmissionFile() {}
 }

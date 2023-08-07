@@ -10,7 +10,7 @@ import {
 } from 'server/system/authorization';
 import { DataElementDocument, draftsList as deDraftsList } from 'server/cde/mongo-cde';
 import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
-import { addFile, getFile, gfs } from 'server/mongo/mongo/gfs';
+import { addFile, getFileAndRespond, gfs } from 'server/mongo/mongo/gfs';
 import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
@@ -307,7 +307,7 @@ export function module() {
         if (i > -1) {
             fileId = fileId.substr(0, i);
         }
-        getFile(new ObjectId(fileId), res);
+        getFileAndRespond({_id: new ObjectId(fileId)}, res);
     });
 
 

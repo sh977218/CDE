@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { GridFSBucket, GridFSBucketWriteStreamOptions } from 'mongodb';
+import { GridFSBucket, GridFSBucketReadStream, GridFSBucketWriteStreamOptions } from 'mongodb';
 import { config, ObjectId } from 'server';
 import { respondError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
@@ -39,8 +39,15 @@ export function deleteFileById(_id: ObjectId): Promise<void> {
     return gfs.then(gfs => gfs.delete(_id));
 }
 
-export function getFile(_id: ObjectId, res: Response): Promise<Response> {
-    return gfs.then(gfs => gfs.find({_id}).toArray().then(files => {
+export function getFile(query: {_id?: ObjectId, filename?: string}): Promise<GridFSBucketReadStream | null> {
+    return gfs.then(bucket => bucket.find(query).toArray().then(files => {
+        const file = files[0];
+        return file._id ? bucket.openDownloadStream(file._id): null;
+    }));
+}
+
+export function getFileAndRespond(query: {_id?: ObjectId, filename?: string}, res: Response): Promise<Response> {
+    return gfs.then(gfs => gfs.find(query).toArray().then(files => {
         const file = files[0];
         if (!file) {
             return res.status(404).send('File not found.');
@@ -53,6 +60,6 @@ export function getFile(_id: ObjectId, res: Response): Promise<Response> {
         }
         res.header('Accept-Ranges', 'bytes');
         res.header('Content-Length', file.length + '');
-        return gfs.openDownloadStream(_id).pipe(res);
+        return gfs.openDownloadStream(file._id).pipe(res);
     }, respondError({res})));
 }

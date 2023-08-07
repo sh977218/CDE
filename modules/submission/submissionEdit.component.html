@@ -334,24 +334,60 @@
             </label>
             <hr>
             <div class="heading">Uploaded Files</div>
-            <label [class.errorRequired]="errorRequired3('boolWorkbook')">
+            <label for="collectionTemplate">
                 <div>Upload Collection File<span> - Incomplete</span></div>
-                <a>Please use NIH CDE Repository Submission Template <mat-icon>open_in_new</mat-icon></a>
-                <label for="fileWorkbook" class="fileInput">
-                    <button class="button"
+                <a id="collectionTemplate" href="/assets/submission/NIH%20CDE%20Governance%20Submission%20Form%20v2023.03.xlsx">Please use NIH CDE Repository Submission Template <mat-icon>open_in_new</mat-icon></a>
+                <label for="fileWorkbook" class="fileInput" [class.errorRequired]="errorRequired3('boolWorkbook')">
+                    <button class="button" type="button"
                             [disabled]="page3.controls.boolWorkbook.disabled"
                             [class.fail]="errorRequired3('boolWorkbook')"
                             (click)="!page3.controls.boolWorkbook.disabled && openFileDialog('fileWorkbook')">
                         Browse
                     </button>
                     <div class="borderBox" (click)="openAttachment($event, submission.attachmentWorkbook)">{{submission.attachmentWorkbook?.filename}}</div>
+                    <button *ngIf="submission.attachmentWorkbook" class="button" type="button" style="margin-left: 8px; margin-right: 0"
+                            (click)="verifySubmissionFile()">Verify</button>
                 </label>
                 <input id="fileWorkbook" style="display: none"
                        type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                        (change)="attachmentUpload('attachmentWorkbook', $event)">
+                <div *ngIf="verifySubmissionFileProgress" class="contentPane">
+                    <div>
+                        <span style="width: 75px; display: inline-block">Rows:</span>
+                        <progress [value]="verifySubmissionFileProgress.row / verifySubmissionFileProgress.rowTotal * 100" max="100"></progress>
+                        {{verifySubmissionFileProgress.row}} / {{verifySubmissionFileProgress.rowTotal}}
+                    </div>
+                    <div>
+                        <span style="width: 75px; display: inline-block">Codes:</span>
+                        <progress [value]="verifySubmissionFileProgress.code / verifySubmissionFileProgress.codeTotal * 100" max="100"></progress>
+                        {{verifySubmissionFileProgress.code}} / {{verifySubmissionFileProgress.codeTotal}}
+                    </div>
+                    <div>
+                        Data Elements Processed: {{verifySubmissionFileProgress.cde}}
+                    </div>
+                    <div *ngIf="verifySubmissionFileReport">
+                        <h2>DONE</h2>
+                        <div>
+                            Submission: {{verifySubmissionFileReport.data.metadata.name}}
+                        </div>
+                        <div>
+                            Version: {{verifySubmissionFileReport.data.metadata.version}}
+                        </div>
+                        <hr>
+                        <h3>CDEs:</h3>
+                        <div *ngFor="let de of verifySubmissionFileReport.data.dataElements">
+                            <div *ngFor="let designation of de.designations">
+                                {{designation.designation}}
+                            </div>
+                        </div>
+                        <hr>
+                        <h3>CDE Validation Errors:</h3>
+                        <div *ngFor="let e of verifySubmissionFileReport.validationErrors.CDEs">{{e}}</div>
+                    </div>
+                </div>
             </label>
-            <label>
-                <div>Upload Supporting Documentation (optional)</div>
+            <label for="supporting">
+                <div id="supporting">Upload Supporting Documentation (optional)</div>
                 <label for="fileSupporting" class="fileInput">
                     <button class="button"
                             [disabled]="page3.controls.boolSupporting.disabled"

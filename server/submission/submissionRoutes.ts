@@ -1,16 +1,22 @@
+import { EventEmitter } from 'events';
 import { Response, Router } from 'express';
 import {
     canSubmissionReviewMiddleware,
     canSubmissionSubmitMiddleware, loggedInMiddleware
 } from 'server/system/authorization';
-import { config, dbPlugins } from 'server';
-import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
-import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
+import { config, dbPlugins, ObjectId } from 'server';
 import { removeUnusedAttachment, saveFile } from 'server/attachment/attachmentSvc';
 import * as multer from 'multer';
+import { getFile } from 'server/mongo/mongo/gfs';
+import { respondError } from 'server/errorHandler';
+import { processWorkBook } from 'server/submission/submissionSvc';
+import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
+import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
+import { read as readXlsx } from 'xlsx';
 
 export function module() {
     const router = Router();
+    const emitters: Record<string, EventEmitter | null> = {};
 
     router.post('/attach', canSubmissionSubmitMiddleware,
         multer({...config.multer, storage: multer.memoryStorage()}).any(),
@@ -120,6 +126,46 @@ export function module() {
             }
             return res.send(await dbPlugins.submission.deleteOneById(dbSubmission._id));
         });
+    });
+
+    router.post('/validateSubmissionFile', canSubmissionSubmitMiddleware, (req, res) => {
+        return dbPlugins.submission.byId(req.body._id).then(async dbSubmission => {
+            if (!dbSubmission) {
+                return res.status(404).send();
+            }
+            if (!dbSubmission.attachmentWorkbook?.fileId) {
+                return res.status(400).send('No Workbook');
+            }
+            return getFile({_id: new ObjectId(dbSubmission.attachmentWorkbook.fileId)}).then(stream => {
+                if (!stream) {
+                    return res.status(500);
+                }
+                const emitter = emitters[req.body._id] = new EventEmitter();
+                // console.log('store emitter', req.body._id, emitters[req.body._id]);
+                stream.on('data', (data) => {
+                    processWorkBook(readXlsx(data), emitter).then(() => {
+                        // console.log('clear emitter');
+                        setTimeout(() => {
+                            emitters[req.body._id] = null;
+                        }, 5000);
+                    });
+                    emitter.emit('data', res);
+                });
+            });
+        }).catch(respondError({req, res}));
+    });
+
+    router.post('/validateSubmissionFileUpdate', canSubmissionSubmitMiddleware, (req, res) => {
+        // console.log('inbound res');
+        const emitter = emitters[req.body._id];
+        // console.log('get emitter', req.body._id, e);
+        if (emitter === null) {
+            return res.send({});
+        }
+        if (!emitter) {
+            return res.status(404).send();
+        }
+        emitter.emit('data', res);
     });
 
     router.post('/submit', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {

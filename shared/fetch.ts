@@ -3,7 +3,7 @@ import { Response } from 'node-fetch';
 export function isStatus(status: number[]) {
     return (res: Response): Response => {
         if (!status.includes(res.status)) {
-            throw `http status code expected ${status}, got ${res.status}(${res.statusText})`;
+            throw `http status code expected ${status}, got ${res.status}(${res.statusText})` as any;
         }
         return res;
     }
@@ -11,7 +11,7 @@ export function isStatus(status: number[]) {
 
 export function handleErrors(res: Response): Response {
     if (!res.ok) { // status 200-299
-        throw 'http error code ' + res.status + ' ' + res.statusText;
+        throw 'http error code ' + res.status + ' ' + res.statusText as any;
     }
     return res;
 }

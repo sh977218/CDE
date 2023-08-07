@@ -1,13 +1,13 @@
 import { CbRet3 } from 'shared/models.model';
 
 export function delay(ms: number): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
 }
 
 export function delayFulfilled<T>(ms: number): (t: T) => Promise<T> {
-    return (t: T) => new Promise((resolve, reject) => {
+    return (t: T) => new Promise(resolve => {
         setTimeout(resolve, ms, t);
     });
 }
@@ -19,6 +19,14 @@ export function mapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U>, T, number
         ),
         Promise.resolve<U[]>([])
     );
+}
+
+export function nextTick(): Promise<void> {
+    return new Promise(resolve => {
+        process.nextTick(() => {
+            resolve();
+        });
+    });
 }
 
 export async function withRetry<T>(cb: () => Promise<T>, retries: number = 1, waitMs: number = 0): Promise<T> {

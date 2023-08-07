@@ -12,7 +12,11 @@ import { fileInputToFormData, interruptEvent, openUrl } from 'non-core/browser';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { orderedSetAdd } from 'shared/array';
-import { SubmissionAttachResponse } from 'shared/boundaryInterfaces/API/submission';
+import {
+    SubmissionAttachResponse,
+    VerifySubmissionFileProgress,
+    VerifySubmissionFileReport,
+} from 'shared/boundaryInterfaces/API/submission';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { administrativeStatuses } from 'shared/models.model';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
@@ -64,9 +68,11 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
         this._submission = submission;
         this.defaultValues(this.submission);
     }
+
     get submission(): Partial<Submission> {
         return this._submission;
     }
+
     _submission: Partial<Submission> = {};
     allNlmCurators: string[] = [''];
     allOrgCurators: string[] = [''];
@@ -137,6 +143,8 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
         'Incomplete',
         'Retired',
     ];
+    verifySubmissionFileProgress?: VerifySubmissionFileProgress;
+    verifySubmissionFileReport?: VerifySubmissionFileReport;
 
     constructor(
         private route: ActivatedRoute,
@@ -325,6 +333,7 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                     this.page3.controls.boolWorkbook.setValue(true);
                 }
                 this.alert.addAlert('success', 'Attachment Saved');
+                this.verifySubmissionFile();
             });
         }
     }
@@ -444,6 +453,24 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                 _id: this.submission._id,
             },
         });
+    }
+
+    getSubmissionFileUpdate(): Promise<void> {
+        return this.http
+            .post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFileUpdate', {
+                _id: this.submission._id,
+            })
+            .toPromise()
+            .then(progress => this.getSubmissionFileUpdateProgress(progress));
+    }
+
+    getSubmissionFileUpdateProgress(progress: VerifySubmissionFileProgress) {
+        this.verifySubmissionFileProgress = progress;
+        if (progress.report) {
+            this.verifySubmissionFileReport = progress.report;
+        } else {
+            return this.getSubmissionFileUpdate();
+        }
     }
 
     isOrgPocSubmitterPoc(): boolean {
@@ -620,6 +647,17 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                 this.searchCtrlReviewer.setValue(null);
             });
         this.page2.controls.governanceReviewers.markAsTouched();
+    }
+
+    verifySubmissionFile() {
+        this.verifySubmissionFileProgress = undefined;
+        this.verifySubmissionFileReport = undefined;
+        this.http
+            .post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFile', {
+                _id: this.submission._id,
+            })
+            .toPromise()
+            .then(progress => this.getSubmissionFileUpdateProgress(progress));
     }
 }
 
