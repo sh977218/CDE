@@ -20,6 +20,9 @@ import {
 import { schedulingExecutor } from 'shared/scheduling';
 import { utils, WorkBook } from 'xlsx';
 import { delay, mapSeries, nextTick } from 'shared/promise';
+import { validateAgainstUMLS } from 'server/loader/validators';
+
+type ValidationErrors = Record<'CDEs' | 'cover', string[]>;
 
 interface ColumnInformation {
     order: number
@@ -510,7 +513,9 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
                 return;
             }
             await processIds(cdeData);
-            await processPVs(cdeData);
+            if(cdeData.valueDomain?.datatype === 'Value List'){
+                await processPVs(cdeData);
+            }
         }));
 
         return !errors.length;
@@ -527,20 +532,23 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         // }));
     }
 
-    function processPVs(dataElement: Partial<DataElement>) {
-        // return Promise.all(dataElement.valueDomain?.permissibleValues.map(pv => {
-        //     progress.codeTotal++;
-        //     run(() => umlsServerRequest('/...').then(data => {
-        //         progress.code++;
-        //         validationErrors.CDEs.push(`${dataElement.tinyId} ${pv.codeSystemName} ${pv.valueMeaningCode} not found`);
-        //     })).then();
-        // }));
-        if (dataElement.valueDomain?.datatype === 'Value List' && dataElement.valueDomain.permissibleValues) {
-            return Promise.all(dataElement.valueDomain.permissibleValues.map(pv => {
+    async function processPVs(dataElement: Partial<DataElement>) {
+
+        // This would validate all at once but I think it returns after the first error so not all PVs will be checked
+        // await validateAgainstUMLS(dataElement.valueDomain?.permissibleValues);
+
+        // Alternative is to loop, but might end up taking too much time. We could also modify the validatePvs function
+        // but need to be aware of where else in the application this is used
+        if(dataElement.valueDomain?.permissibleValues){
+            return Promise.all(dataElement.valueDomain?.permissibleValues.map(pv => {
                 progress.codeTotal++;
-                return run(() => delay(1000).then(() => {
+                run(() => validateAgainstUMLS([pv]).then(data => {
                     progress.code++;
-                }));
+                    if(data){
+                        const errorMsg = `${dataElement.tinyId} ${pv.codeSystemName} ${pv.valueMeaningCode} UMLS validation error: ${data}`;
+                        validationErrors.CDEs.push(errorMsg);
+                    }
+                })).then();
             }));
         }
     }

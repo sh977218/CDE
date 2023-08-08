@@ -77,7 +77,7 @@ export function validatePermissibleValues(
     return output;
 }
 
-export async function validateAgainstUMLS(pvs: PermissibleValue[], name: string) {
+export async function validateAgainstUMLS(pvs: PermissibleValue[]) {
 
     return validatePvs(pvs).then(
         () => {
@@ -183,7 +183,7 @@ export async function runValidationOnLoadCSV(csvFile: string) {
                     })) as PermissibleValue[]
                 };
 
-                const umlsErrors = await validateAgainstUMLS(valueDomain.permissibleValues, title);
+                const umlsErrors = await validateAgainstUMLS(valueDomain.permissibleValues);
 
                 if (!!umlsErrors) {
                     currentLogs.push(umlsErrors);
