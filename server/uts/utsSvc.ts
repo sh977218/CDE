@@ -46,7 +46,7 @@ function checkForVsacErrorPage(body: string): string {
     return body;
 }
 
-const umlsServerText = serverRequest(config.umls.wsHost).requestText;
+const umlsServerText = serverRequest(config.umls.wsHost, 1, 5, 0).requestText;
 export function umlsServerRequest(path: string): Promise<string> {
     return umlsServerText(path)
         .then(checkForVsacErrorPage, logRejected(''))

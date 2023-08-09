@@ -313,6 +313,14 @@
                 <mat-icon>warning</mat-icon>
                 Please complete all required fields. Missing Fields marked "Incomplete".
             </div>
+            <div *ngIf="page3Submitted && page3.controls.boolWorkbook.value && !page3.controls.boolWorkbookValidation.value" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                Need to run validation for the workbook. Please click the "Validate" button below."
+            </div>
+            <div *ngIf="page3Submitted && page3.controls.boolWorkbook.value && page3.controls.boolWorkbookValidation.value && !page3.controls.boolWorkbookValid.value" class="contentPane alert text-center" style="margin: 5px 16px 24px">
+                <mat-icon>warning</mat-icon>
+                There are blocking errors in the Workbook file. Please see the report below and address.
+            </div>
             <label [class.errorRequired]="errorCustom3('oneLicenseRequired')">
                 <div>Does any part of this submission have license or copyright restrictions?<span> - Incomplete</span></div>
                 <div class="subTitle">Select all that apply.</div>
@@ -337,53 +345,50 @@
             <label for="collectionTemplate">
                 <div>Upload Collection File<span> - Incomplete</span></div>
                 <a id="collectionTemplate" href="/assets/submission/NIH%20CDE%20Governance%20Submission%20Form%20v2023.03.xlsx">Please use NIH CDE Repository Submission Template <mat-icon>open_in_new</mat-icon></a>
-                <label for="fileWorkbook" class="fileInput" [class.errorRequired]="errorRequired3('boolWorkbook')">
+                <label for="fileWorkbook" class="fileInput" [class.errorRequired]="errorRequired3('boolWorkbook') || errorRequired3('boolWorkbookValidation') || errorRequired3('boolWorkbookValid')">
                     <button class="button" type="button"
                             [disabled]="page3.controls.boolWorkbook.disabled"
-                            [class.fail]="errorRequired3('boolWorkbook')"
+                            [class.fail]="errorRequired3('boolWorkbook') || errorRequired3('boolWorkbookValidation') || errorRequired3('boolWorkbookValid')"
                             (click)="!page3.controls.boolWorkbook.disabled && openFileDialog('fileWorkbook')">
                         Browse
                     </button>
                     <div class="borderBox" (click)="openAttachment($event, submission.attachmentWorkbook)">{{submission.attachmentWorkbook?.filename}}</div>
                     <button *ngIf="submission.attachmentWorkbook" class="button" type="button" style="margin-left: 8px; margin-right: 0"
-                            (click)="verifySubmissionFile()">Verify</button>
+                            [disabled]="page3.controls.boolWorkbook.disabled"
+                            [class.fail]="errorRequired3('boolWorkbook') || errorRequired3('boolWorkbookValidation') || errorRequired3('boolWorkbookValid')"
+                            (click)="validateSubmissionFile()">Validate</button>
                 </label>
+                <div *ngIf="page3Submitted && page3.controls.boolWorkbook.value && !page3.controls.boolWorkbookValidation.value" class="fileInput" style="color: #a71d2a">
+                    Need to run validation for the workbook. Please click the "Validate" button above."
+                </div>
+                <div *ngIf="page3Submitted && page3.controls.boolWorkbook.value && page3.controls.boolWorkbookValidation.value && !page3.controls.boolWorkbookValid.value" class="fileInput" style="color: #a71d2a">
+                    There are blocking errors in the Workbook file. Please see the report below and address.
+                </div>
                 <input id="fileWorkbook" style="display: none"
                        type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                        (change)="attachmentUpload('attachmentWorkbook', $event)">
                 <div *ngIf="verifySubmissionFileProgress" class="contentPane">
                     <div>
                         <span style="width: 75px; display: inline-block">Rows:</span>
-                        <progress [value]="verifySubmissionFileProgress.row / verifySubmissionFileProgress.rowTotal * 100" max="100"></progress>
+                        <progress [value]="verifySubmissionFileProgress.row / (verifySubmissionFileProgress.rowTotal || 1) * 100" max="100"></progress>
                         {{verifySubmissionFileProgress.row}} / {{verifySubmissionFileProgress.rowTotal}}
                     </div>
                     <div>
                         <span style="width: 75px; display: inline-block">Codes:</span>
-                        <progress [value]="verifySubmissionFileProgress.code / verifySubmissionFileProgress.codeTotal * 100" max="100"></progress>
+                        <progress [value]="verifySubmissionFileProgress.code / (verifySubmissionFileProgress.codeTotal || 1) * 100" max="100"></progress>
                         {{verifySubmissionFileProgress.code}} / {{verifySubmissionFileProgress.codeTotal}}
                     </div>
                     <div>
                         Data Elements Processed: {{verifySubmissionFileProgress.cde}}
+                        <button *ngIf="verifySubmissionFileReport" type="button" class="fake-link" (click)="downloadCdes()">Download</button>
                     </div>
-                    <div *ngIf="verifySubmissionFileReport">
-                        <h2>DONE</h2>
-                        <div>
-                            Submission: {{verifySubmissionFileReport.data.metadata.name}}
-                        </div>
-                        <div>
-                            Version: {{verifySubmissionFileReport.data.metadata.version}}
-                        </div>
-                        <hr>
-                        <h3>CDEs:</h3>
-                        <div *ngFor="let de of verifySubmissionFileReport.data.dataElements">
-                            <div *ngFor="let designation of de.designations">
-                                {{designation.designation}}
-                            </div>
-                        </div>
-                        <hr>
-                        <h3>CDE Validation Errors:</h3>
-                        <div *ngFor="let e of verifySubmissionFileReport.validationErrors.CDEs">{{e}}</div>
+                    <div *ngIf="verifySubmissionFileReport; else processingWait">
+                        <button type="button" class="button" (click)="downloadReport()">Download Report</button>
+                        <ng-container *ngTemplateOutlet="submissionFileValidationReport"></ng-container>
                     </div>
+                    <ng-template #processingWait>
+                        <div class="loadingEllipsis">Processing</div>
+                    </ng-template>
                 </div>
             </label>
             <label for="supporting">
@@ -512,3 +517,92 @@
         </div>
     </mat-step>
 </mat-stepper>
+
+<ng-template #submissionFileValidationReport>
+    <div>
+        Submission: {{verifySubmissionFileReport.data.metadata.name}}
+    </div>
+    <div>
+        Version: {{verifySubmissionFileReport.data.metadata.version}}
+    </div>
+
+    <hr>
+    <div>
+        <h1>Summary of Errors</h1>
+        <h2>Blocking Errors</h2>
+        <ul>
+            <li>Assistance Required Errors: {{reportCdeManual.length}}</li>
+            <li>Column Heading Errors: {{reportCdeColumn.length}}</li>
+            <li>Length of Arrays Errors: {{reportCdeLength.length}}</li>
+            <li>Required Field Errors: {{reportCdeRequired.length}}</li>
+            <li>Workbook Template Errors: {{reportCdeTemplate.length}}</li>
+        </ul>
+        <h2>Non-Blocking Errors</h2>
+        <ul>
+            <li>Code Validation Errors: {{reportCdeCodes.length}}</li>
+            <li>Extra Unused Data Errors: {{reportCdeExtra.length}}</li>
+            <li>Spellcheck Errors: {{reportCdeSpellcheck.length}}</li>
+            <li>Unimplemented Feature Errors: {{reportCdeUnimplemented.length}}</li>
+        </ul>
+    </div>
+
+    <hr>
+    <h1>Blocking Errors:</h1>
+    <div *ngIf="reportCdeManual.length">
+        <h2>Assistance Required Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeManual">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeColumn.length">
+        <h2>Column Heading Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeColumn">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeLength.length">
+        <h2>Length of Arrays Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeLength">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeRequired.length">
+        <h2>Required Fields Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeRequired">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeTemplate.length">
+        <h2>Workbook Template Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeTemplate">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+
+    <hr>
+    <h1>Non-Blocking Errors:</h1>
+    <div *ngIf="reportCdeCodes.length">
+        <h2>Code Validation Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeCodes">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeExtra.length">
+        <h2>Extra Unused Data Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeExtra">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeSpellcheck.length">
+        <h2>Spellcheck Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeSpellcheck">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+    <div *ngIf="reportCdeUnimplemented.length">
+        <h2>Unimplemented Feature Errors</h2>
+        <ul>
+            <li *ngFor="let e of reportCdeUnimplemented">Row {{e.row}}: {{e.message}}</li>
+        </ul>
+    </div>
+</ng-template>

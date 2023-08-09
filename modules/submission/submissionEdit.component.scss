@@ -102,3 +102,22 @@ label {
     width: 100%;
   }
 }
+
+.loadingEllipsis {
+  font-size: 30px;
+}
+
+.loadingEllipsis:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026";
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}

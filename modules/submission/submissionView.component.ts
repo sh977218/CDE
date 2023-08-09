@@ -65,6 +65,8 @@ export class SubmissionViewComponent implements OnInit {
         licenseCost: FormControl<boolean>;
         licenseTraining: FormControl<boolean>;
         boolWorkbook: FormControl<boolean>;
+        boolWorkbookValid: FormControl<boolean>;
+        boolWorkbookValidation: FormControl<boolean>;
         boolSupporting: FormControl<boolean>;
     }>;
     page3Submitted: boolean = false;
@@ -128,6 +130,8 @@ export class SubmissionViewComponent implements OnInit {
             licenseCost: controlBoolDisabled,
             licenseTraining: controlBoolDisabled,
             boolWorkbook: controlBoolDisabled,
+            boolWorkbookValid: controlBoolDisabled,
+            boolWorkbookValidation: controlBoolDisabled,
             boolSupporting: controlBoolDisabled,
         });
 
@@ -202,5 +206,5 @@ export class SubmissionViewComponent implements OnInit {
     updateNlmCurators() {}
     updateOrgCurators() {}
     updateReviewers() {}
-    verifySubmissionFile() {}
+    validateSubmissionFile() {}
 }

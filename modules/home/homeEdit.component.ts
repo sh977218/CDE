@@ -15,6 +15,7 @@ import {
     HomepagePutResponse,
 } from 'shared/boundaryInterfaces/API/system';
 import { HomePageDraft, UpdateCard } from 'shared/singleton.model';
+import { isString } from 'shared/util';
 
 @Component({
     templateUrl: './homeEdit.component.html',
@@ -270,8 +271,4 @@ export class HomeEditComponent {
     waitTimeInMinutes(timestampExpire: number) {
         return Math.round((timestampExpire - Date.now()) / 60000);
     }
-}
-
-function isString(s: string | undefined): s is string {
-    return !!s;
 }

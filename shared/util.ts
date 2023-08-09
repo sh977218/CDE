@@ -29,6 +29,10 @@ export function decamelize(str: string = '', sep: string = ' '): string {
         .toLowerCase();
 }
 
+export function isString(s: string | undefined): s is string {
+    return !!s;
+}
+
 export function noop(...args: any[]): void {
 }
 

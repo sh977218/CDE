@@ -7,6 +7,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { saveAs } from 'file-saver';
 import { httpErrorMessage } from 'non-core/angularHelper';
 import { fileInputToFormData, interruptEvent, openUrl } from 'non-core/browser';
 import { Observable } from 'rxjs';
@@ -19,11 +20,16 @@ import {
 } from 'shared/boundaryInterfaces/API/submission';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { joinCb } from 'shared/callback';
-import { administrativeStatuses, User } from 'shared/models.model';
+import { administrativeStatuses, assertUnreachable, User } from 'shared/models.model';
+import { ErrorTypes } from 'shared/node/io/excel';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 
 // type SubmissionTemplate = Omit<Submission, '_id' | 'endorsed' | 'dateModified' | 'dateSubmitted' | 'numberCdes' | 'submitterId'>;
+interface ReportCategory {
+    row: number;
+    message: string;
+}
 
 const messages: Record<string, Record<string, string>> = {
     name: {
@@ -123,10 +129,21 @@ export class SubmissionEditComponent implements OnDestroy {
         licenseOther: FormControl<boolean>;
         licenseInformation: FormControl<string>;
         boolWorkbook: FormControl<boolean>;
+        boolWorkbookValid: FormControl<boolean>;
+        boolWorkbookValidation: FormControl<boolean>;
         boolSupporting: FormControl<boolean>;
     }>;
     page3Submitted: boolean = false;
     page4Submitted: boolean = false;
+    reportCdeCodes: ReportCategory[] = [];
+    reportCdeColumn: ReportCategory[] = [];
+    reportCdeExtra: ReportCategory[] = [];
+    reportCdeLength: ReportCategory[] = [];
+    reportCdeManual: ReportCategory[] = [];
+    reportCdeRequired: ReportCategory[] = [];
+    reportCdeSpellcheck: ReportCategory[] = [];
+    reportCdeTemplate: ReportCategory[] = [];
+    reportCdeUnimplemented: ReportCategory[] = [];
     searchCtrlNlmCurator = new FormControl('');
     searchCtrlOrgCurator = new FormControl('');
     searchCtrlReviewer = new FormControl('');
@@ -238,6 +255,8 @@ export class SubmissionEditComponent implements OnDestroy {
                 licenseOther: [false],
                 licenseInformation: ['', [Validators.required, Validators.minLength(3)]],
                 boolWorkbook: [false, Validators.requiredTrue],
+                boolWorkbookValid: [false, Validators.requiredTrue],
+                boolWorkbookValidation: [false, Validators.requiredTrue],
                 boolSupporting: [false],
             },
             {
@@ -339,7 +358,7 @@ export class SubmissionEditComponent implements OnDestroy {
                     this.page3.controls.boolWorkbook.setValue(true);
                 }
                 this.alert.addAlert('success', 'Attachment Saved');
-                this.verifySubmissionFile();
+                this.validateSubmissionFile();
             });
         }
     }
@@ -363,10 +382,62 @@ export class SubmissionEditComponent implements OnDestroy {
         this.page3.patchValue({
             boolSupporting: !!this.submission.attachmentSupporting,
             boolWorkbook: !!this.submission.attachmentWorkbook,
+            boolWorkbookValid: false,
+            boolWorkbookValidation: false,
         });
         this.page1.markAsUntouched();
         this.page2.markAsUntouched();
         this.page3.markAsUntouched();
+    }
+
+    createCategorizedReport() {
+        this.reportCdeCodes.length = 0;
+        this.reportCdeColumn.length = 0;
+        this.reportCdeExtra.length = 0;
+        this.reportCdeLength.length = 0;
+        this.reportCdeManual.length = 0;
+        this.reportCdeRequired.length = 0;
+        this.reportCdeSpellcheck.length = 0;
+        this.reportCdeTemplate.length = 0;
+        this.reportCdeUnimplemented.length = 0;
+        if (!this.verifySubmissionFileReport) {
+            return;
+        }
+        this.verifySubmissionFileReport.validationErrors.CDEs.forEach(errorLog => {
+            const errorMessageParts = errorLog.split(':');
+            const errorRow: number = parseInt(errorMessageParts[1], 10);
+            const errorType = errorMessageParts[2] as ErrorTypes;
+            const errorMessage = errorMessageParts.slice(3).join(':');
+            this.errorTypeToReportCategory(errorType).push({ row: errorRow, message: errorMessage });
+        });
+        this.page3.controls.boolWorkbookValid.setValue(
+            !this.reportCdeManual.length && !this.reportCdeLength.length && !this.reportCdeRequired.length
+        );
+    }
+
+    errorTypeToReportCategory(errorType: ErrorTypes): ReportCategory[] {
+        switch (errorType) {
+            case 'Code':
+                return this.reportCdeCodes;
+            case 'Column Heading':
+                return this.reportCdeColumn;
+            case 'Extra':
+                return this.reportCdeExtra;
+            case 'Length':
+                return this.reportCdeLength;
+            case 'Manual Intervention':
+                return this.reportCdeManual;
+            case 'Required':
+                return this.reportCdeRequired;
+            case 'Spellcheck':
+                return this.reportCdeSpellcheck;
+            case 'Template':
+                return this.reportCdeTemplate;
+            case 'Unimplemented':
+                return this.reportCdeUnimplemented;
+            default:
+                throw assertUnreachable(errorType);
+        }
     }
 
     defaultValues(submission: Partial<Submission>) {
@@ -388,6 +459,100 @@ export class SubmissionEditComponent implements OnDestroy {
         if (!submission.submitterEmail) {
             submission.submitterEmail = this.userService.user?.email || '';
         }
+    }
+
+    downloadCdes() {
+        let report = '';
+        this.verifySubmissionFileReport?.data.dataElements.forEach(de => {
+            report += '\t' + JSON.stringify(de) + '\n';
+        });
+        const blob = new Blob([report], {
+            type: 'text/text',
+        });
+        saveAs(blob, 'SubmissionDataElements.txt');
+        this.alert.addAlert('success', 'Data Elements saved. Check downloaded files.');
+    }
+
+    downloadReport() {
+        let report = 'Row numbers are based on Workbook.\n\n';
+
+        report += `Submission: ${this.verifySubmissionFileReport?.data.metadata.name}\n`;
+        report += `Version: ${this.verifySubmissionFileReport?.data.metadata.version}\n`;
+        report += '\n';
+
+        report += 'Blocking Errors\n';
+        if (this.reportCdeManual.length) {
+            report += 'Assistance Required Errors\n';
+            for (const e of this.reportCdeManual) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeColumn.length) {
+            report += 'Column Heading Errors\n';
+            for (const e of this.reportCdeColumn) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeLength.length) {
+            report += 'Length of Arrays Errors\n';
+            for (const e of this.reportCdeLength) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeRequired.length) {
+            report += 'Required Fields Errors\n';
+            for (const e of this.reportCdeRequired) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeTemplate.length) {
+            report += 'Workbook Template Errors\n';
+            for (const e of this.reportCdeTemplate) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        report += '\n';
+
+        report += 'Non-Blocking Errors\n';
+        if (this.reportCdeCodes.length) {
+            report += 'Code Validation Errors\n';
+            for (const e of this.reportCdeCodes) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeExtra.length) {
+            report += 'Extra Unused Errors\n';
+            for (const e of this.reportCdeExtra) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeSpellcheck.length) {
+            report += 'Spellcheck Errors\n';
+            for (const e of this.reportCdeSpellcheck) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+        if (this.reportCdeUnimplemented.length) {
+            report += 'Unimplemented Feature Errors\n';
+            for (const e of this.reportCdeUnimplemented) {
+                report += `\tRow ${e.row}: ${e.message}\n`;
+            }
+            report += '\n';
+        }
+
+        const blob = new Blob([report], {
+            type: 'text/text',
+        });
+        saveAs(blob, 'SubmissionValidation.txt');
+        this.alert.addAlert('success', 'Report saved. Check downloaded files.');
     }
 
     errorCustom3(code: string): boolean | undefined {
@@ -470,6 +635,8 @@ export class SubmissionEditComponent implements OnDestroy {
         this.verifySubmissionFileProgress = progress;
         if (progress.report) {
             this.verifySubmissionFileReport = progress.report;
+            this.page3.controls.boolWorkbookValidation.setValue(true);
+            this.createCategorizedReport();
         } else {
             return this.getSubmissionFileUpdate();
         }
@@ -500,6 +667,7 @@ export class SubmissionEditComponent implements OnDestroy {
     openAttachment(event: Event, attachment?: SubmissionAttachment) {
         if (attachment) {
             openUrl(window.location.origin + '/server/system/data/' + attachment.fileId, event, true);
+            this.alert.addAlert('success', 'File downloaded. Check downloaded files.');
         } else {
             interruptEvent(event);
         }
@@ -651,8 +819,14 @@ export class SubmissionEditComponent implements OnDestroy {
         this.page2.controls.governanceReviewers.markAsTouched();
     }
 
-    verifySubmissionFile() {
-        this.verifySubmissionFileProgress = undefined;
+    validateSubmissionFile() {
+        this.verifySubmissionFileProgress = {
+            row: 0,
+            rowTotal: 0,
+            code: 0,
+            codeTotal: 0,
+            cde: 0,
+        };
         this.verifySubmissionFileReport = undefined;
         this.http
             .post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFile', {

@@ -141,13 +141,9 @@ export function module() {
                     return res.status(500);
                 }
                 const emitter = emitters[req.body._id] = new EventEmitter();
-                // console.log('store emitter', req.body._id, emitters[req.body._id]);
                 stream.on('data', (data) => {
                     processWorkBook(readXlsx(data), emitter).then(() => {
-                        // console.log('clear emitter');
-                        setTimeout(() => {
-                            emitters[req.body._id] = null;
-                        }, 5000);
+                        emitters[req.body._id] = null;
                     });
                     emitter.emit('data', res);
                 });
@@ -156,12 +152,7 @@ export function module() {
     });
 
     router.post('/validateSubmissionFileUpdate', canSubmissionSubmitMiddleware, (req, res) => {
-        // console.log('inbound res');
         const emitter = emitters[req.body._id];
-        // console.log('get emitter', req.body._id, e);
-        if (emitter === null) {
-            return res.send({});
-        }
         if (!emitter) {
             return res.status(404).send();
         }
