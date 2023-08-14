@@ -6,24 +6,7 @@
             <cde-create-board></cde-create-board>
         </div>
         <hr/>
-        <div *ngIf="!userService.user">
-            <div>
-                <h2>Sign up for an account</h2>
-            </div>
-            <div>
-                With an account, you will be able to:
-                <ul>
-                    <li>Create Boards and save CDEs and Forms to them</li>
-                    <li>Remember your preferences on all your devices</li>
-                    <li>If approved, become a curator, and view/manage your organization's content</li>
-                </ul>
-                <br>
-                <div style="text-align: center">
-                    <a class="button" routerLink="/login">Sign up or Sign in</a>
-                </div>
-            </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 4fr; padding:10px;">
+        <div *ngIf="userService.user; else loginTemplate" style="display: grid; grid-template-columns: 1fr 4fr; padding:10px;">
             <div style="padding:30px;">
                 <div *ngIf="myBoardsSvc.filter.types?.length > 0">
                     <h4>Type</h4>
@@ -56,5 +39,22 @@
                 </ng-container>
             </div>
         </div>
+        <ng-template #loginTemplate>
+            <div>
+                <h2>Sign up for an account</h2>
+            </div>
+            <div>
+                With an account, you will be able to:
+                <ul>
+                    <li>Create Boards and save CDEs and Forms to them</li>
+                    <li>Remember your preferences on all your devices</li>
+                    <li>If approved, become a curator, and view/manage your organization's content</li>
+                </ul>
+                <br>
+                <div style="text-align: center">
+                    <a class="button" routerLink="/login">Sign up or Sign in</a>
+                </div>
+            </div>
+        </ng-template>
     </div>
 </div>
