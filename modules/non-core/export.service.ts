@@ -156,7 +156,7 @@ export class ExportService {
         exportSettings: ExportRecordSettings,
         cb?: Cb1<ExportRecord[] | undefined>
     ) {
-        if (!this.userService.loggedIn() && (module === 'form' || (module === 'cde' && type === 'validationRules'))) {
+        if (!this.userService.user && (module === 'form' || (module === 'cde' && type === 'validationRules'))) {
             return this.alertService.addAlert('danger', 'Please login to access this feature');
         }
 

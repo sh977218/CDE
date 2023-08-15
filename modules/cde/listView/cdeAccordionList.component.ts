@@ -1,25 +1,32 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { DataElement } from 'shared/de/dataElement.model';
 import { Elt, ModuleItem, User } from 'shared/models.model';
-import { noop } from 'shared/util';
 
 @Component({
     templateUrl: './cdeAccordionList.component.html',
 })
-export class CdeAccordionListComponent {
+export class CdeAccordionListComponent implements OnDestroy {
     @Input() addMode: string = '';
     @Input() location: string = 'null';
     @Input() elts!: DataElement[];
     @Input() openInNewTab = false;
     @Output() add = new EventEmitter<DataElement>();
     module: ModuleItem = 'cde';
-    user!: User;
+    unsubscribeUser?: () => void;
+    user: User | null = null;
     Elt = Elt;
 
     constructor(private userService: UserService) {
-        this.userService.then(user => {
+        this.unsubscribeUser = this.userService.subscribe(user => {
             this.user = user;
-        }, noop);
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
+        }
     }
 }

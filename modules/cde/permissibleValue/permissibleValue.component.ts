@@ -71,7 +71,7 @@ export class PermissibleValueComponent {
     @Input() set elt(v: DataElement) {
         this._elt = v;
         fixDataElement(this.elt);
-        if (this.userService.loggedIn()) {
+        if (this.userService.user) {
             this.loadValueSet();
         }
         this.initSrcOptions();

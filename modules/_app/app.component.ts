@@ -40,26 +40,15 @@ export class CdeAppComponent {
             }
         });
 
-        this.userService.then(
-            user => {},
-            () => {
-                const userService = this.userService;
-                window.addEventListener('message', function receiveMessage(message: MessageEvent) {
-                    if (message.origin === window.ssoServerOrigin && message.data) {
-                        userService.loginViaJwt(message.data);
-                    }
+        this.userService.waitForUser().catch((err?: HttpErrorResponse) => {
+            if (err && err.status === 0 && err.statusText === 'Unknown Error') {
+                this.router.navigate(['/offline'], {
+                    skipLocationChange: true,
                 });
-                this.utsSendMessage('Messages', () => {});
+                return;
             }
-        );
-        this.userService.subscribe(user => {
-            this.userService.catch((err?: HttpErrorResponse) => {
-                if (err && err.status === 0 && err.statusText === 'Unknown Error') {
-                    this.router.navigate(['/offline'], {
-                        skipLocationChange: true,
-                    });
-                }
-            });
+
+            this.attemptSsoLogin();
         });
 
         this.router.events.subscribe(event => {
@@ -101,6 +90,16 @@ export class CdeAppComponent {
                 /* tslint:enable */
             )
         );
+    }
+
+    attemptSsoLogin() {
+        const userService = this.userService;
+        window.addEventListener('message', function receiveMessage(message: MessageEvent) {
+            if (message.origin === window.ssoServerOrigin && message.data) {
+                userService.loginViaJwt(message.data);
+            }
+        });
+        this.utsSendMessage('Messages', () => {});
     }
 
     frameReady() {

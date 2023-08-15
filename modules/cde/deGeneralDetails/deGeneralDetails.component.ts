@@ -1,24 +1,31 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-de-general-details[elt]',
     templateUrl: './deGeneralDetails.component.html',
     styleUrls: ['./deGeneralDetails.component.scss'],
 })
-export class DeGeneralDetailsComponent {
+export class DeGeneralDetailsComponent implements OnDestroy {
     @Input() canEdit: boolean = false;
     @Input() elt!: DataElement;
     @Output() eltChange = new EventEmitter();
+    unsubscribeUser?: () => void;
     userOrgs: string[] = [];
 
     constructor(public orgHelperService: OrgHelperService, public userService: UserService) {
-        this.userService.then(() => {
+        this.unsubscribeUser = this.userService.subscribe(() => {
             this.userOrgs = this.userService.userOrgs;
-        }, noop);
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
+        }
     }
 
     changeStewardOrg(event: string) {

@@ -8,7 +8,6 @@ import { ClassificationService } from 'non-core/classification.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ClassificationClassified, ClassificationClassifier } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
-import { noop } from 'shared/util';
 
 const actionMapping: IActionMapping = {
     mouse: {
@@ -46,11 +45,11 @@ export class ClassifyItemDialogComponent {
         if (this.selectedOrg) {
             this.onChangeOrg(this.selectedOrg);
         } else {
-            this.userService.then(() => {
+            this.userService.waitForUser().then(() => {
                 if (this.userService.userOrgs.length === 1) {
                     this.onChangeOrg(this.userService.userOrgs[0]);
                 }
-            }, noop);
+            });
         }
     }
 

@@ -240,7 +240,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     hasDraftsAndLoggedIn(elt: CdeFormDraft) {
-        if (!this.userService.loggedIn()) {
+        if (!this.userService.user) {
             if (this.hasDrafts) {
                 this.hasDrafts = false;
             }

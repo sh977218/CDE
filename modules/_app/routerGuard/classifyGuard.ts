@@ -31,7 +31,7 @@ export class ClassifyGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkPermission(): Promise<boolean> {
-        return this.userService.then(
+        return this.userService.waitForUser().then(
             user => {
                 if (canClassify(user)) {
                     return true;

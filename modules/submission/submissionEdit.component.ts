@@ -1,6 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -18,8 +18,10 @@ import {
     VerifySubmissionFileReport,
 } from 'shared/boundaryInterfaces/API/submission';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
-import { administrativeStatuses } from 'shared/models.model';
+import { joinCb } from 'shared/callback';
+import { administrativeStatuses, User } from 'shared/models.model';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 // type SubmissionTemplate = Omit<Submission, '_id' | 'endorsed' | 'dateModified' | 'dateSubmitted' | 'numberCdes' | 'submitterId'>;
 
@@ -63,8 +65,8 @@ const validateUrl = Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6}
     templateUrl: './submissionEdit.component.html',
     styleUrls: ['./submissionEdit.component.scss'],
 })
-export class SubmissionEditComponent implements OnInit, OnDestroy {
-    @Input() set submission(submission: Partial<Submission>) {
+export class SubmissionEditComponent implements OnDestroy {
+    set submission(submission: Partial<Submission>) {
         this._submission = submission;
         this.defaultValues(this.submission);
     }
@@ -154,6 +156,35 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
         private router: Router,
         public userService: UserService
     ) {
+        const { cbA: userChange, cbB: idChange } = joinCb(
+            (user: User | null) => {
+                if (!user) {
+                    this.close();
+                }
+                this.userEmail = user?.lastLoginInformation?.email || '';
+                this.userFirstName = user?.lastLoginInformation?.firstName || '';
+                this.userLastName = user?.lastLoginInformation?.lastName || '';
+            },
+            (submissionId: string) => {},
+            (user, submissionId) => {
+                if (submissionId !== this.submission._id) {
+                    this.http
+                        .get<Submission>('/server/submission/' + submissionId)
+                        .toPromise()
+                        .then((s: Submission) => {
+                            this.submission = s;
+                            this.defaultValues(this.submission);
+                            this.copySubmissionToForm();
+                        }, noop);
+                }
+            }
+        );
+        this.route.queryParams.subscribe(() => {
+            if (this.route.snapshot.queryParams._id) {
+                idChange(this.route.snapshot.queryParams._id);
+            }
+        });
+        this.unsubscribeUser = this.userService.subscribe(userChange);
         this.page1 = this.formBuilder.group({
             name: ['', [Validators.required, Validators.minLength(3)]],
             version: ['', Validators.required],
@@ -221,15 +252,6 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                         : null,
             }
         );
-        if (!this.unsubscribeUser) {
-            this.unsubscribeUser = this.userService.subscribe(user => {
-                if (user?.lastLoginInformation) {
-                    this.userEmail = user.lastLoginInformation.email;
-                    this.userFirstName = user.lastLoginInformation.firstName;
-                    this.userLastName = user.lastLoginInformation.lastName;
-                }
-            });
-        }
 
         this.filteredNlmCurators = this.searchCtrlNlmCurator.valueChanges.pipe(
             startWith(null),
@@ -255,22 +277,6 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                     : this.allReviewers.slice()
             )
         );
-    }
-
-    ngOnInit() {
-        this.route.queryParams.subscribe(() => {
-            if (this.route.snapshot.queryParams._id) {
-                this.http
-                    .get<Submission>('/server/submission/' + this.route.snapshot.queryParams._id)
-                    .toPromise()
-                    .then(s => {
-                        this.submission = s;
-                        this.defaultValues(this.submission);
-                        this.copySubmissionToForm();
-                        return s;
-                    });
-            }
-        });
     }
 
     ngOnDestroy() {
@@ -343,26 +349,24 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
     }
 
     copySubmissionToForm() {
-        this.userService.then(() => {
-            if (!canSubmissionReview(this.userService.user)) {
-                if (!this.submission.administrativeStatus) {
-                    this.submission.administrativeStatus = 'Not Endorsed';
-                }
-                if (!this.submission.registrationStatus) {
-                    this.submission.registrationStatus = 'Incomplete';
-                }
+        if (!canSubmissionReview(this.userService.user)) {
+            if (!this.submission.administrativeStatus) {
+                this.submission.administrativeStatus = 'Not Endorsed';
             }
-            this.page1.patchValue(this.submission);
-            this.page2.patchValue(this.submission);
-            this.page3.patchValue(this.submission);
-            this.page3.patchValue({
-                boolSupporting: !!this.submission.attachmentSupporting,
-                boolWorkbook: !!this.submission.attachmentWorkbook,
-            });
-            this.page1.markAsUntouched();
-            this.page2.markAsUntouched();
-            this.page3.markAsUntouched();
+            if (!this.submission.registrationStatus) {
+                this.submission.registrationStatus = 'Incomplete';
+            }
+        }
+        this.page1.patchValue(this.submission);
+        this.page2.patchValue(this.submission);
+        this.page3.patchValue(this.submission);
+        this.page3.patchValue({
+            boolSupporting: !!this.submission.attachmentSupporting,
+            boolWorkbook: !!this.submission.attachmentWorkbook,
         });
+        this.page1.markAsUntouched();
+        this.page2.markAsUntouched();
+        this.page3.markAsUntouched();
     }
 
     defaultValues(submission: Partial<Submission>) {
@@ -382,9 +386,7 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
             submission.nihInitiative = '';
         }
         if (!submission.submitterEmail) {
-            this.userService.then(() => {
-                submission.submitterEmail = this.userService.user?.email || '';
-            });
+            submission.submitterEmail = this.userService.user?.email || '';
         }
     }
 
@@ -545,7 +547,7 @@ export class SubmissionEditComponent implements OnInit, OnDestroy {
                 s => {
                     this.submission = s;
                     this.forwardToExisting();
-                    this.copySubmissionToForm();
+                    // this.copySubmissionToForm();
                     return s;
                 },
                 (err: HttpErrorResponse) => {

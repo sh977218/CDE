@@ -31,7 +31,7 @@ export class OrgCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkLogin(): Promise<boolean> {
-        return this.userService.then(
+        return this.userService.waitForUser().then(
             user => {
                 if (isOrgCurator(user)) {
                     return true;

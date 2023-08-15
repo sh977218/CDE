@@ -1,17 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { bundleCreate, bundleDestroy } from 'form/formServices';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm, CopyrightURL } from 'shared/form/form.model';
 import { canBundle } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-form-general-details[elt]',
     templateUrl: './formGeneralDetails.component.html',
     styleUrls: ['./formGeneralDetails.component.scss'],
 })
-export class FormGeneralDetailsComponent {
+export class FormGeneralDetailsComponent implements OnDestroy {
     @Input() set elt(e: CdeForm) {
         this._elt = e;
     }
@@ -29,12 +28,20 @@ export class FormGeneralDetailsComponent {
         multiple: false,
         tags: true,
     };
+    unsubscribeUser?: () => void;
     userOrgs: string[] = [];
 
     constructor(public orgHelperService: OrgHelperService, public userService: UserService) {
-        this.userService.then(() => {
+        this.unsubscribeUser = this.userService.subscribe(() => {
             this.userOrgs = this.userService.userOrgs;
-        }, noop);
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
+        }
     }
 
     changeStewardOrg(event: string) {

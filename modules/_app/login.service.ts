@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable, NgZone } from '@angular/core';
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
-import { environment } from 'environments/environment';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class LoginService {
@@ -27,7 +27,7 @@ export class LoginService {
     }
 
     loggedIn() {
-        this.userService.reload(() => {
+        this.userService.reload().then(() => {
             const queryParams = this.lastRoute.queryParams;
             const fragment = this.lastRoute.fragment;
             this.lastRoute.queryParams = {};

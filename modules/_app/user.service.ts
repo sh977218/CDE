@@ -1,10 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
-import { Cb1, CbErr, CbErrorObj, Comment, User } from 'shared/models.model';
+import { Cb1, Comment, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator,
@@ -17,7 +17,6 @@ import {
     isNlmCurator,
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
-import { noop } from 'shared/util';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
 import { removeFromArray } from 'shared/array';
@@ -35,15 +34,21 @@ import { removeFromArray } from 'shared/array';
 })
 export class InactivityLoggedOutComponent {}
 
+/*
+ * 3 ways to get User:
+ *     1. userService.user - synchronous, does not wait for login, used for change detection and code that has already waited
+ *     2. userService.waitForUser - asynchronous Promise, one-time, used for completing actions, can get stale, logged out is rejected
+ *     3. userService.subscribe - asynchronous custom Callback, always up-to-date, need to unsubscribe
+ */
 @Injectable()
 export class UserService {
     private _user?: User | null;
     private listeners: Cb1<User | null>[] = [];
     private mailSubscription?: Subscription;
-    private promise!: Promise<User>;
     userOrgs: string[] = [];
     canViewComment: boolean = false;
     logoutTimeout?: number;
+    private promise!: Promise<User>;
 
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
@@ -58,10 +63,6 @@ export class UserService {
     }
 
     canSeeComment = () => canViewComment(this.user);
-
-    catch(cb: CbErrorObj<HttpErrorResponse>): Promise<any> {
-        return this.promise.catch(cb);
-    }
 
     clear() {
         this._user = undefined;
@@ -79,10 +80,6 @@ export class UserService {
     isSiteAdmin = () => isSiteAdmin(this.user);
     isDocumentEditor = () => canEditArticle(this.user);
 
-    loggedIn(): User | undefined {
-        return this.user;
-    }
-
     loginViaJwt(jwt: string): Promise<User> {
         return this.http
             .post<User>('/server/user/jwt', { jwtToken: jwt })
@@ -90,7 +87,7 @@ export class UserService {
             .then(user => this.processUser(user));
     }
 
-    processUser(user: User | {}): Promise<User> {
+    async processUser(user: User | {}): Promise<User> {
         function isUser(user: User | {}): user is User {
             return !!(user as User).username;
         }
@@ -99,7 +96,7 @@ export class UserService {
             return Promise.reject();
         }
         this._user = UserService.validate(user);
-        this.setOrganizations();
+        await this.setOrganizations();
         if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
             this._user.searchSettings.defaultSearchView = 'summary';
         }
@@ -107,18 +104,17 @@ export class UserService {
         if (this.isSiteAdmin()) {
             this.notificationService.updateErrorNumber();
         }
-        return Promise.resolve(user);
+        return user;
     }
 
-    reload(cb = noop): void {
-        this.promise = this.http
+    reload(): Promise<User> {
+        return (this.promise = this.http
             .get<User | {}>('/server/user/')
             .toPromise()
-            .then(user => this.reloadFrom(user));
-        this.promise.then(cb, cb);
+            .then(user => this.reloadFrom(user)));
     }
 
-    reloadFrom(user: User | {}): Promise<User> {
+    private reloadFrom(user: User | {}): Promise<User> {
         this.clear();
         const promise = Promise.resolve(user).then(user => this.processUser(user));
         promise.finally(() => {
@@ -129,11 +125,12 @@ export class UserService {
 
     resetInactivityTimeout() {
         clearTimeout(this.logoutTimeout);
-        if (this.loggedIn()) {
+        if (this.user) {
             this.logoutTimeout = window.setTimeout(() => {
-                if (this.loggedIn()) {
-                    this.reload(() => {
-                        if (!this.loggedIn()) {
+                if (this.user) {
+                    this.reload();
+                    this.waitForUser().then(() => {
+                        if (!this.user) {
                             this.dialog.open(InactivityLoggedOutComponent);
                         }
                     });
@@ -160,11 +157,14 @@ export class UserService {
         return this.http.get<User[]>('/server/user/usernames/' + username);
     }
 
-    setOrganizations() {
+    setOrganizations(): Promise<void> {
         if (hasRolePrivilege(this.user, 'universalCreate')) {
-            this.http.get<Organization[]>('/server/orgManagement/managedOrgs').subscribe(orgs => {
-                this.userOrgs = orgs.map(org => org.name);
-            });
+            return this.http
+                .get<Organization[]>('/server/orgManagement/managedOrgs')
+                .toPromise()
+                .then(orgs => {
+                    this.userOrgs = orgs.map(org => org.name);
+                });
         } else {
             this.userOrgs = Array.from(
                 new Set(
@@ -175,6 +175,7 @@ export class UserService {
                     )
                 )
             );
+            return Promise.resolve();
         }
     }
 
@@ -188,12 +189,12 @@ export class UserService {
         };
     }
 
-    then(cb: (user: User) => any, errorCb?: CbErr): Promise<any> {
-        return this.promise.then(cb, errorCb);
-    }
-
     get user(): User | undefined {
         return this._user || undefined;
+    }
+
+    waitForUser(): Promise<User> {
+        return this.promise;
     }
 
     static validate(user: User): User {

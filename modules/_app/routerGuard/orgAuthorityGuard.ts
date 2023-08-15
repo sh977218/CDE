@@ -31,7 +31,7 @@ export class OrgAuthorityGuard implements CanActivate, CanActivateChild, CanLoad
     }
 
     checkLogin(): Promise<boolean> {
-        return this.userService.then(
+        return this.userService.waitForUser().then(
             user => {
                 if (isOrgAuthority(user)) {
                     return true;

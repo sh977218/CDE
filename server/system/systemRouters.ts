@@ -286,7 +286,7 @@ export function module() {
         req.session.destroy(() => {
             (req.logout as any)((err: any) => {
                 res.clearCookie('connect.sid');
-                res.redirect('/login');
+                res.redirect('/server/system/login');
             });
         });
     });

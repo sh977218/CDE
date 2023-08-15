@@ -22,6 +22,7 @@ import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
 import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
+import { noop } from 'shared/util';
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -275,7 +276,7 @@ export class NavigationComponent {
 
     logout() {
         const refreshAndLogin = () => {
-            this.userService.reload();
+            this.userService.reload().then(noop, noop);
             this.loginSvc.goToLogin();
         };
         this.app.ssoLogout(() => {});

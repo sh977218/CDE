@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
 
 @Component({
     selector: 'cde-site-audit',
     templateUrl: './siteAudit.component.html',
 })
-export class SiteAuditComponent implements OnInit {
+export class SiteAuditComponent implements OnDestroy, OnInit {
     isAdmin = false;
     tabIndex = 0;
+    unsubscribeUser?: () => void;
 
     constructor(public userService: UserService, private route: ActivatedRoute) {
-        this.userService.then(user => (this.isAdmin = isSiteAdmin(user)), noop);
+        this.unsubscribeUser = this.userService.subscribe(user => (this.isAdmin = isSiteAdmin(user || undefined)));
     }
 
     ngOnInit(): void {
@@ -25,6 +25,13 @@ export class SiteAuditComponent implements OnInit {
             if (tab === 'clientErrors') {
                 this.tabIndex = 8;
             }
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
         }
     }
 }

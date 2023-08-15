@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
@@ -7,7 +7,6 @@ import { concat, deduplicate, orderedSetAdd, sortFirst } from 'shared/array';
 import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 import { administrativeStatuses, curationStatus } from 'shared/models.model';
 import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
 import { SubmissionViewComponent } from 'submission/submissionView.component';
 
 interface ShowColumns {
@@ -133,7 +132,7 @@ const showColumnsNone: Readonly<ShowColumns> = Object.freeze({
     templateUrl: './submissionManagement.component.html',
     styleUrls: ['./submissionManagement.component.scss'],
 })
-export class SubmissionManagementComponent {
+export class SubmissionManagementComponent implements OnDestroy {
     adminStatuses = concat(administrativeStatuses as readonly string[] as string[]).sort();
     collectionTitles: string[] = [];
     regStatus = concat(curationStatus as readonly string[] as string[]).sort();
@@ -160,6 +159,7 @@ export class SubmissionManagementComponent {
     sortReverse: boolean = false;
     submissions: Submission[] = [];
     submittingOrgs: string[] = [];
+    unsubscribeUser?: () => void;
 
     constructor(
         private alert: AlertService,
@@ -167,7 +167,14 @@ export class SubmissionManagementComponent {
         private dialog: MatDialog,
         private userService: UserService
     ) {
-        this.userService.then(user => this.reload(), noop);
+        this.unsubscribeUser = this.userService.subscribe(() => this.reload());
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
+        }
     }
 
     approve(submission: Submission) {

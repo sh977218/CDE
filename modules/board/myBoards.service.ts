@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { Dictionary } from 'async';
 import { BoardFilter } from 'shared/board/board.model';
@@ -18,7 +18,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Injectable()
-export class MyBoardsService {
+export class MyBoardsService implements OnDestroy {
     boards?: Board[];
     filter: BoardFilter & {
         shareStatus: ElasticQueryResponseAggregationBucket[];
@@ -36,20 +36,46 @@ export class MyBoardsService {
         types: [],
     };
     reloading = false;
+    unsubscribeUser?: () => void;
 
     constructor(private http: HttpClient, private alert: AlertService, private userService: UserService) {
-        if (userService.user) {
-            this.loadMyBoards();
+        this.unsubscribeUser = this.userService.subscribe(user => {
+            if (user) {
+                this.loadMyBoards();
+            } else {
+                this.clear();
+            }
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.unsubscribeUser) {
+            this.unsubscribeUser();
+            this.unsubscribeUser = undefined;
         }
+    }
+
+    clear() {
+        this.boards = undefined;
+        this.filter = {
+            selectedShareStatus: [],
+            selectedTags: [],
+            selectedTypes: [],
+            shareStatus: [],
+            sortBy: 'createdDate',
+            sortDirection: 'desc',
+            suggestTags: [],
+            tags: [],
+            types: [],
+        };
     }
 
     loadMyBoards(type?: ModuleItem, cb = noop) {
         this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
         this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http
-            .post<ElasticQueryResponseAggregations<Board>>('/server/board/myBoards', this.filter)
-            .subscribe(res => {
+        this.http.post<ElasticQueryResponseAggregations<Board>>('/server/board/myBoards', this.filter).subscribe(
+            res => {
                 if (res.hits) {
                     this.boards = res.hits.hits.map(h => {
                         h._source._id = h._id;
@@ -71,7 +97,12 @@ export class MyBoardsService {
                 }
                 this.sortBoardList(type);
                 cb();
-            }, cb);
+            },
+            () => {
+                this.clear();
+                cb();
+            }
+        );
     }
 
     sortBoardList(type?: ModuleItem) {

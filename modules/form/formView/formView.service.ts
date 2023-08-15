@@ -15,7 +15,7 @@ export class FormViewService {
             return this.fetchEltPublishedForEditing(queryParams);
         }
         return this.fetchEltPublishedForEditing(queryParams).then(elt => {
-            return this.userService.then(
+            return this.userService.waitForUser().then(
                 user => {
                     if (!canEditCuratedItem(user, elt)) {
                         return elt;

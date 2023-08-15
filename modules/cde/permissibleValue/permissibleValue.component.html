@@ -162,9 +162,9 @@
             <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"
                    style="margin-right: 2px"
                    [(ngModel)]="SOURCES[source].selected"
-                   [disabled]="SOURCES[source].disabled && !userService.loggedIn()"
+                   [disabled]="SOURCES[source].disabled && !userService.user"
                    (ngModelChange)="lookupAsSource(elt.valueDomain, source)"> {{source}} Codes
-            <span *ngIf="!userService.loggedIn() && SOURCES[source].disabled"> (Login to enable)</span>
+            <span *ngIf="!userService.user && SOURCES[source].disabled"> (Login to enable)</span>
         </label>
     </div>
     <ng-template #noPvs>
@@ -311,7 +311,7 @@
     </div>
 
     <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>
-    <div *ngIf="userService.loggedIn()">
+    <div *ngIf="userService.user">
         <div *ngIf="!editMode">
             <button *ngIf="canEdit" id="updateOIDBtn" class="button light" (click)="editMode=true">Update O.I.D</button>
             <button *ngIf="canEdit && vsacMappingExists()" id="removeVSButton" class="button light fail"
@@ -355,7 +355,7 @@
             </td>
         </tr>
     </table>
-    <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
+    <div *ngIf="vsacMappingExists() && !userService.user">Please log in to see VSAC mapping.</div>
     <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button"
             (click)="addAllVsac(elt.valueDomain)">
         <mat-icon id="addAllVsac">add</mat-icon>

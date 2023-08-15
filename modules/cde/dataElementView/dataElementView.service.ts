@@ -15,7 +15,7 @@ export class DataElementViewService {
             return this.fetchPublished(queryParams);
         }
         return this.fetchPublished(queryParams).then(elt => {
-            return this.userService.then(
+            return this.userService.waitForUser().then(
                 user => {
                     if (!canEditCuratedItem(user, elt)) {
                         return elt;

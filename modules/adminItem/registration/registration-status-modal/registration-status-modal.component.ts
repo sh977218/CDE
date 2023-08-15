@@ -1,11 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { administrativeStatuses, CurationStatus, Item, RegistrationState } from 'shared/models.model';
-import { statusList } from 'shared/regStatusShared';
-import { noop } from 'shared/util';
-import { cloneDeep } from 'lodash';
-import { HttpClient } from '@angular/common/http';
 import { UserService } from '_app/user.service';
+import { cloneDeep } from 'lodash';
+import { administrativeStatuses, CurationStatus, Item, RegistrationState } from 'shared/models.model';
+import { Organization } from 'shared/organization/organization';
+import { statusList } from 'shared/regStatusShared';
 
 @Component({
     templateUrl: './registration-status-modal.component.html',
@@ -28,9 +28,9 @@ export class RegistrationStatusModalComponent {
         if (elt.classification && elt.classification.some(cl => cl.stewardOrg.name !== 'TEST')) {
             this.validRegStatuses.push('Candidate');
             this.http
-                .get<any>('/server/orgManagement/org/' + encodeURIComponent(elt.stewardOrg.name || ''))
+                .get<Organization>('/server/orgManagement/org/' + encodeURIComponent(elt.stewardOrg.name || ''))
                 .subscribe(res => {
-                    this.userService.catch(noop).then(user => {
+                    this.userService.waitForUser().then(user => {
                         if (!res.workingGroupOf || res.workingGroupOf.length < 1) {
                             this.validRegStatuses = this.validRegStatuses.concat(['Recorded', 'Qualified']);
                             if (user && user.siteAdmin) {

@@ -341,17 +341,20 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     private filterOutWorkingGroups(cb: Cb1<string | void>) {
-        this.userService.catch(noop).then(user => {
-            this.orgHelperService.then(() => {
-                if (this.aggregations) {
-                    (this.aggregations.orgs.buckets as any) = this.aggregations.orgs.orgs.buckets.filter(
-                        (bucket: ElasticQueryResponseAggregationBucket) =>
-                            this.orgHelperService.showWorkingGroup(bucket.key) || isSiteAdmin(user)
-                    );
-                }
-                cb();
-            }, cb);
-        });
+        this.userService
+            .waitForUser()
+            .catch(noop)
+            .then(user => {
+                this.orgHelperService.then(() => {
+                    if (this.aggregations) {
+                        (this.aggregations.orgs.buckets as any) = this.aggregations.orgs.orgs.buckets.filter(
+                            (bucket: ElasticQueryResponseAggregationBucket) =>
+                                this.orgHelperService.showWorkingGroup(bucket.key) || (!!user && isSiteAdmin(user))
+                        );
+                    }
+                    cb();
+                }, cb);
+            });
     }
 
     generateSearchForTerm(pageNumber = 0): Params {

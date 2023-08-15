@@ -32,7 +32,7 @@ export class LoggedInGuard implements CanActivate, CanActivateChild, CanLoad {
 
     checkLogin(): Promise<boolean> {
         this.userService.reload();
-        return this.userService.then(
+        return this.userService.waitForUser().then(
             () => true,
             () => {
                 this.router.navigate(['/login']);

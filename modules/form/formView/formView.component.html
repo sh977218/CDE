@@ -92,7 +92,7 @@
                             <mat-icon>arrow_drop_down</mat-icon>
                         </button>
                         <mat-menu #exportMenu>
-                            <ng-container *ngIf="userService.loggedIn(); else exportNotLoggedIn">
+                            <ng-container *ngIf="userService.user; else exportNotLoggedIn">
                                 <a mat-menu-item *ngIf="exportToTab; else exportFileJson" class="no-link"
                                    href="/server/form/byId/{{elt._id}}" target="_blank"
                                    rel="noopener noreferrer">
@@ -184,7 +184,7 @@
                                 </ng-template>
                             </ng-container>
                             <ng-template #exportNotLoggedIn>
-                                <a mat-menu-item *ngIf="!userService.loggedIn()" class="no-link" routerLink="/login">
+                                <a mat-menu-item *ngIf="!userService.user" class="no-link" routerLink="/login">
                                     Please login to export forms.
                                 </a>
                             </ng-template>
@@ -194,7 +194,7 @@
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="button-label">Add to Board</span>
                         </button>
-                        <button *ngIf="!elt.noRenderAllowed && userService.loggedIn()" id="pinAllCdes" class="button" title="Pin CDEs"
+                        <button *ngIf="!elt.noRenderAllowed && userService.user" id="pinAllCdes" class="button" title="Pin CDEs"
                                 pinToBoard [eltsToPin]="getFormCdes(elt)">
                             <mat-icon>add_shopping_cart</mat-icon>
                             <span class="button-label">Pin CDEs</span>

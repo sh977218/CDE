@@ -31,7 +31,7 @@ export class NlmCuratorGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     checkLogin(): Promise<boolean> {
-        return this.userService.then(
+        return this.userService.waitForUser().then(
             user => {
                 if (hasRole(user, 'NlmCurator')) {
                     return true;

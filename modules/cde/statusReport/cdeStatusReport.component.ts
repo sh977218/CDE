@@ -30,7 +30,7 @@ export class CdeStatusReportComponent implements OnInit {
 
     ngOnInit() {
         this.orgSvc.then(() => {
-            this.userSvc.then(
+            this.userSvc.waitForUser().then(
                 () => {
                     this.exportSvc.exportSearchResults(
                         'validationRules',
