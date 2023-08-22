@@ -50,11 +50,14 @@
                         <div *ngIf="elt.registrationState.registrationStatus==='Retired'" class="alert alert-warning"
                              role="alert">
                             <mat-icon>warning</mat-icon>
-                            <strong>Warning:</strong> This form is retired.
-                            <a data-testid="form-view-mergeTo-link" *ngIf="elt.registrationState.mergedTo"
-                               routerLink="/formView" [queryParams]="{tinyId: elt.registrationState.mergedTo.tinyId}">Merged to {{elt.registrationState.mergedTo.tinyId}}</a>
-                            <a *ngIf="elt.registrationState.replacedBy"
-                               routerLink="/deView" [queryParams]="{tinyId: elt.registrationState.replacedBy.tinyId}">Replacement</a>
+                            <ng-container *ngIf="elt.registrationState.mergedTo?.tinyId; else currentFormTemplate">
+                                <strong>Warning:</strong> This form version is no longer current. The most current version of this form is available here:
+                                <a data-testid="form-view-mergeTo-link"
+                                   routerLink="/formView" [queryParams]="{tinyId: elt.registrationState.mergedTo.tinyId}">{{currentVersionFormName}}</a>
+                            </ng-container>
+                            <ng-template #currentFormTemplate>
+                                <strong>Warning:</strong> This form is retired.
+                            </ng-template>
                         </div>
                         <div *ngIf="elt.registrationState.administrativeStatus==='Retire Candidate'"
                              class="alert alert-warning" role="alert">

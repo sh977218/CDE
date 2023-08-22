@@ -17,6 +17,7 @@ import { NavigationMenuPo } from '../pages/navigation-menu.po';
 
 // Modals
 import { SaveModalPo } from '../pages/save-modal.po';
+import { UpdateRegistrationStatusModalPo } from '../pages/update-registration-status-modal.po';
 
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
@@ -54,6 +55,7 @@ const test = baseTest.extend<{
     myBoardPage: MyBoardPagePo;
     boardPage: BoardPagePo;
     saveModal: SaveModalPo;
+    updateRegistrationStatusModal: UpdateRegistrationStatusModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
     searchPage: SearchPagePo;
@@ -90,6 +92,9 @@ const test = baseTest.extend<{
     },
     saveModal: async ({ page }, use) => {
         await use(new SaveModalPo(page));
+    },
+    updateRegistrationStatusModal: async ({ page }, use) => {
+        await use(new UpdateRegistrationStatusModalPo(page));
     },
     aioTocViewMenu: async ({ page }, use) => {
         await use(new AioTocViewMenuPo(page));

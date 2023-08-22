@@ -2,26 +2,28 @@
 <form #regForm="ngForm">
     <mat-dialog-content>
         <div>
-            <div class="alert-warning">{{helpMessage}}</div>
+            <div class="alert-warning" data-testid="helper-message">{{helpMessage}}</div>
             <label class="form-group d-block">
                 Registration Status
-                <select class="form-control" name="newRegistrationStatus"
+                <select class="form-control" name="newRegistrationStatus" data-testid="registration-status-select"
                         [(ngModel)]="registrationState.registrationStatus" (ngModelChange)="setHelpMessage($event)">
                     <option *ngFor="let s of validRegStatuses" value="{{s}}">{{s}}</option>
                 </select>
             </label>
             <label class="form-group d-block">
                 Effective Date
-                <input type="date" class="form-control" name="newEffectiveDate"
+                <input type="date" class="form-control" name="newEffectiveDate" data-testid="effective-date-input"
                        [(ngModel)]="registrationState.effectiveDate">
             </label>
             <label class="form-group d-block">
                 Until Date
-                <input type="date" class="form-control" name="newUntilDate" [(ngModel)]="registrationState.untilDate">
+                <input type="date" class="form-control" name="newUntilDate" [(ngModel)]="registrationState.untilDate"
+                       data-testid="until-date-input">
             </label>
             <label class="form-group d-block">
                 Administrative Status
                 <select class="form-control" name="newAdministrativeStatus"
+                        data-testid="administrative-status-select"
                         [(ngModel)]="registrationState.administrativeStatus">
                     <option *ngFor="let adminStatus of validAdminStatus"
                             value="{{adminStatus}}">{{adminStatus}}</option>
@@ -30,18 +32,21 @@
             <label class="form-group d-block">
                 Administrative Note
                 <textarea class="form-control" name="newAdministrativeNote" placeholder="Optional Administrative Note"
+                          data-testid="administrative-note-textarea"
                           [(ngModel)]="registrationState.administrativeNote"></textarea>
             </label>
             <label class="form-group d-block">
                 Unresolved Issue
                 <textarea class="form-control" name="newUnresolvedIssue" placeholder="Optional Unresolved Issue Note"
+                          test-dataid="unresolved-issue-textarea"
                           [(ngModel)]="registrationState.unresolvedIssue"></textarea>
             </label>
         </div>
     </mat-dialog-content>
     <mat-dialog-actions>
-        <button class="button fail" [mat-dialog-close]>Cancel</button>
-        <button type="submit" class="button" [mat-dialog-close]="registrationState" [disabled]="!regForm.form.valid">
+        <button class="button fail" [mat-dialog-close] data-testid="cancel-registration-status-button">Cancel</button>
+        <button type="submit" class="button" [mat-dialog-close]="registrationState" [disabled]="!regForm.form.valid"
+                data-testid="save-registration-status-button">
             Save
         </button>
     </mat-dialog-actions>

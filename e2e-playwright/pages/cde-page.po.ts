@@ -8,7 +8,7 @@ export class CdePagePo extends BasePagePo {
 
     async goToCde(tinyId: string) {
         await this.page.goto(`/deView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, {state: 'visible'});
+        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }
 
     cdeTitle(): Locator {
@@ -24,13 +24,15 @@ export class CdePagePo extends BasePagePo {
     }
 
     permissibleValueSynonymsCheckbox(source: string) {
-        return this.page.locator(`[data-testid="displayCode"]`, {
-            hasText: source
-        }).locator('input')
+        return this.page
+            .locator(`[data-testid="displayCode"]`, {
+                hasText: source,
+            })
+            .locator('input');
     }
 
     permissibleValueSynonymsTds(tableRow: Locator, source: string) {
-        return tableRow.locator(`[data-testid="${source.toLowerCase()}"]`)
+        return tableRow.locator(`[data-testid="${source.toLowerCase()}"]`);
     }
 
     permissibleValueTableRows() {

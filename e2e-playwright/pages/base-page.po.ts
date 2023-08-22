@@ -40,6 +40,10 @@ export class BasePagePo {
         return this.page.getByTestId('copyright-checkbox');
     }
 
+    editRegistrationStatusButton() {
+        return this.page.getByTestId('edit-registration-status-button');
+    }
+
     /* Generate Details */
 
     /* Attachment */

@@ -2,7 +2,7 @@
     <h3 (click)="canEdit && openRegStatusUpdate()"
         [style.cursor]="canEdit ? 'pointer' : 'auto'"
         class="cdeRegStatusTitle">Status
-        <button *ngIf="canEdit" class="button light" title="Edit Status">
+        <button *ngIf="canEdit" class="button light" title="Edit Status" data-testid="edit-registration-status-button">
             <mat-icon>edit</mat-icon>
             Edit
         </button>

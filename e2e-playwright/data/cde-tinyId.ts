@@ -5,5 +5,7 @@ export default {
     'Ethnic Group Category Text': 'fVAUW8Ot5Mo',
     'First Name of Participant': '_QB98GZyzeX',
     'Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]': 'm1xj2YMI1X',
-    'Race Category Text': 'CK8F0tHZ5wp'
+    'Race Category Text': 'CK8F0tHZ5wp',
+    'Cde Status Test': 'Lx1dejs0w',
+    UnclassifiedCDE: 'mkH_UGXEw',
 };

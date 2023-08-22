@@ -46,6 +46,7 @@ import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIte
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
+import { map } from 'rxjs/operators';
 
 export class LocatableError {
     id?: string;
@@ -82,6 +83,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
     missingCdes: string[] = [];
     validationErrors: LocatableError[] = [];
     isMobile = false;
+    currentVersionFormName = '';
 
     constructor(
         private alert: AlertService,
@@ -216,6 +218,9 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     this.viewReady();
                 }, 0);
             });
+            if (this._elt.registrationState.registrationStatus === 'Retired') {
+                this.loadCurrentVersionFormName();
+            }
             this.validate(elt);
             cb(elt);
         }
@@ -486,6 +491,18 @@ export class FormViewComponent implements OnInit, OnDestroy {
 
     filterReferenceDocument(elt: CdeFormDraft) {
         return elt.referenceDocuments.filter(rd => !!rd.document);
+    }
+
+    loadCurrentVersionFormName() {
+        const tinyId = this._elt?.registrationState.mergedTo?.tinyId
+            ? this._elt?.registrationState.mergedTo.tinyId
+            : this._elt?.tinyId;
+        if (tinyId) {
+            this.http
+                .get(`/server/form/forEdit/${tinyId}`)
+                .pipe(map((f: any) => f?.designations[0].designation))
+                .subscribe(fName => (this.currentVersionFormName = fName));
+        }
     }
 
     validate(elt: CdeFormDraft, cb: Cb = noop): void {

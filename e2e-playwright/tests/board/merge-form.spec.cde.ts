@@ -2,7 +2,6 @@ import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
-import { expect } from '@playwright/test';
 
 test.describe(`Merge form`, async () => {
     test.describe(`Own form`, async () => {
@@ -40,7 +39,7 @@ test.describe(`Merge form`, async () => {
             }
             const formName = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
             await formPage.goToForm(formTinyId[formName]);
-            await test.expect(await formPage.alerts().innerText()).toContain(`This form is retired.`);
+            await test.expect(await formPage.alerts().innerText()).toContain(`This form version is no longer current. The most current version of this form is available here:`);
             await formPage.mergeToLink().click();
             await test
                 .expect(formPage.formTitle())

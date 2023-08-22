@@ -45,8 +45,7 @@ export class RegistrationStatusModalComponent {
                 });
         } else {
             this.helpMessage =
-                'Elements that are not classified (or only classified by TEST ' +
-                'can only have Incomplete or Retired status';
+                'Elements that are not classified (or only classified by TEST can only have Incomplete or Retired status';
         }
     }
 
