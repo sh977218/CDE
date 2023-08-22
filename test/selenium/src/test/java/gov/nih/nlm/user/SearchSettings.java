@@ -12,19 +12,6 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 
 public class SearchSettings extends NlmCdeBaseTest {
-
-    @Test
-    public void retiredTest() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToCdeSearch();
-        clickElement(By.id("search_by_classification_CTEP"));
-        textNotPresent("Retired");
-        goToSearchPreferences();
-        clickElement(By.id("includeRetired"));
-        clickElement(By.xpath("//button[contains(.,'Save')]"));
-        textPresent("Retired");
-    }
-
     @Test
     public void searchDrafts() {
         // ACRIN org Curator

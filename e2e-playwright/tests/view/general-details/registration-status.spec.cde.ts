@@ -7,7 +7,7 @@ import { editRegistrationStatus } from '../../utility/edit-registration-status';
 const retiredStatus = 'Retired';
 
 test.describe(`Edit registration status`, async () => {
-    test.describe(`Should not allow change status on unclassified`, async () => {
+    test.describe(`unclassified only see 2 status`, async () => {
         test(`CDE page`, async ({cdePage, navigationMenu}) => {
             const cdeName = 'UnclassifiedCDE';
             await cdePage.goToCde(cdeTinyId[cdeName]);

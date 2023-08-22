@@ -10,6 +10,10 @@ export class NavigationMenuPo {
         this.matPage = new MaterialPo(page);
     }
 
+    searchPreferencesButton(){
+        return this.page.getByTestId('search-preferences');
+    }
+
     async login(username: string, password: string) {
         const context = this.page.context();
         await this.page.getByTestId(`login_link`).click();
@@ -62,4 +66,5 @@ export class NavigationMenuPo {
         await this.page.locator('#createEltLink').hover();
         await this.matPage.matMenuItem('Collection').click();
     }
+
 }

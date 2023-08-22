@@ -4,7 +4,7 @@
             <mat-icon>search</mat-icon>
             Search Results
         </h1>
-        <label *ngIf="isOrgAuthority(userService.user)" id="includeRetired">
+        <label *ngIf="isOrgAuthority(userService.user)" data-testid="include-retired">
             <input type="checkbox" [(ngModel)]="esService.includeRetired">
             Include Retired Content (this session only)
         </label>
@@ -57,7 +57,7 @@
                 <mat-icon>cancel</mat-icon>
                 Cancel
             </button>
-            <button class="button success" type="button" (click)="saveSettings()">
+            <button class="button success" type="button" (click)="saveSettings()" data-testid="save-search-preferences-button">
                 <mat-icon>check</mat-icon>
                 Save
             </button>
