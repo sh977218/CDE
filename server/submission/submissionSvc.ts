@@ -29,6 +29,7 @@ import { mapSeries, nextTick } from 'shared/promise';
 import { isString } from 'shared/util';
 import { umlsPvFilter } from 'shared/de/umls';
 import { CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode } from 'server/uts/utsSvc';
+import * as spellChecker from 'simple-spellchecker';
 
 interface ColumnInformation {
     order: number
@@ -391,6 +392,17 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
     }
 };
 
+const spellCheckColumns = [
+    {
+        prop: 'designations',
+        subProps: ['designation']
+    },
+    {
+        prop: 'definitions',
+        subProps: ['definition']
+    }
+];
+
 Object.keys(excelCdeColumns).forEach((key, i) => {
     const columnInfo = excelCdeColumns[key];
     if (columnInfo.order !== i) {
@@ -550,6 +562,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             if(de.valueDomain?.datatype === 'Value List') {
                 await processPVs(withError, de);
             }
+            spellcheckDe(withError, de);
         }
 
         await Promise.all(deProcessing);
@@ -656,6 +669,39 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             .finally(() => progress.code++);
     }
 
+    function spellcheckDe(withError: WithError, dataElement: Partial<DataElement>){
+        const dictionary = spellChecker.getDictionarySync('en-US');
+        for (const field of spellCheckColumns) {
+            const prop: keyof DataElement = field.prop as keyof DataElement;
+            let values = dataElement[prop];
+
+            if(Array.isArray(values)){
+                values = values.map((v) => {
+                    let subProp = v;
+                    if(field.subProps.length > 0){
+                        field.subProps.forEach((sp) => {
+                            if(subProp?.[sp]){
+                                subProp = subProp[sp];
+                            }
+                        });
+                    }
+                    return subProp;
+                });
+            }
+
+            if (!!values) {
+                const terms = values.join(' ').replace(/([\s*'|—="!…:_.,;(){}–\-`?/\[\]]+)/g, '§sep§').split('§sep§');
+                for (let term of terms) {
+                    if (!/\d/.test(term) && term.toUpperCase() !== term) {
+                        term = term.trim().toLowerCase();
+                        if (!dictionary.spellCheck(term)) {
+                            withError('Spellcheck', `${term} is misspelled in ${field.prop} property`);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 function getColumnPositions(headerRow: Row): string[] {
