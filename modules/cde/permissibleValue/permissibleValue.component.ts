@@ -326,11 +326,12 @@ export class PermissibleValueComponent {
                                 this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise()
                             );
                             if (srcResult.result.length > 0) {
+                                const sortedResult = srcResult.result.sort((a: any, b: any) =>
+                                    a.name.localeCompare(b.name)
+                                );
                                 this.SOURCES[src].codes[code] = {
-                                    code: srcResult.result[0].code.substr(
-                                        srcResult.result[0].code.lastIndexOf('/') + 1
-                                    ),
-                                    meaning: srcResult.result[0].name,
+                                    code: sortedResult[0].code.substr(sortedResult[0].code.lastIndexOf('/') + 1),
+                                    meaning: sortedResult[0].name,
                                 };
                             }
                         } catch (e) {
