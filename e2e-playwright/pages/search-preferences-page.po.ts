@@ -8,14 +8,10 @@ export class SearchPreferencesPagePo {
     }
 
     searchPreferencesCheckbox() {
-        return this.page
-            .getByTestId(`include-retired`).locator('input');
+        return this.page.getByTestId(`include-retired`).locator('input');
     }
 
     saveButton() {
         return this.page.getByTestId(`save-search-preferences-button`);
     }
-
 }
-
-

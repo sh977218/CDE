@@ -10,7 +10,7 @@ export class NavigationMenuPo {
         this.matPage = new MaterialPo(page);
     }
 
-    searchPreferencesButton(){
+    searchPreferencesButton() {
         return this.page.getByTestId('search-preferences');
     }
 
@@ -66,5 +66,4 @@ export class NavigationMenuPo {
         await this.page.locator('#createEltLink').hover();
         await this.matPage.matMenuItem('Collection').click();
     }
-
 }

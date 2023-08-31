@@ -14,6 +14,7 @@ import {
     isSiteAdmin,
     canViewComment,
     canEditArticle,
+    isNlmCurator,
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { noop } from 'shared/util';
@@ -74,6 +75,7 @@ export class UserService {
     isOrgCurator = () => isOrgCurator(this.user);
     isOrgAdmin = () => isOrgAdmin(this.user);
     isOrgAuthority = () => isOrgAuthority(this.user);
+    isNlmCurator = () => isNlmCurator(this.user);
     isSiteAdmin = () => isSiteAdmin(this.user);
     isDocumentEditor = () => canEditArticle(this.user);
 

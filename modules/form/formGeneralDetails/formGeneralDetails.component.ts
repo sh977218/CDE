@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { bundleCreate, bundleDestroy } from 'form/formServices';
-import { FormViewComponent } from 'form/formView/formView.component';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm, CopyrightURL } from 'shared/form/form.model';
 import { canBundle } from 'shared/security/authorizationShared';
@@ -32,11 +31,7 @@ export class FormGeneralDetailsComponent {
     };
     userOrgs: string[] = [];
 
-    constructor(
-        private formViewComponent: FormViewComponent,
-        public orgHelperService: OrgHelperService,
-        public userService: UserService
-    ) {
+    constructor(public orgHelperService: OrgHelperService, public userService: UserService) {
         this.userService.then(() => {
             this.userOrgs = this.userService.userOrgs;
         }, noop);

@@ -72,4 +72,8 @@ export class SearchPagePo {
     searchSubmitButton(): Locator {
         return this.page.getByTestId(`search-submit-button`);
     }
+
+    searchAutoCompleteOptions(): Locator {
+        return this.page.getByTestId(`search-auto-complete-option`);
+    }
 }

@@ -21,8 +21,8 @@
                     <mat-icon>search</mat-icon>
                 </button>
             </div>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
-                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)" >
+                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option" data-testid="search-auto-complete-option">
                     {{ option }}
                 </mat-option>
             </mat-autocomplete>

@@ -440,3 +440,10 @@ nih-cde:empty + .loading {
 
 /* END Font Awesome wrench */
 
+/* BEGIN override uswds style */
+//button:not([disabled]):focus {
+//  outline: 0 !important;
+//  outline-offset: 0;
+//}
+
+/* END override uswds style */

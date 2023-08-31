@@ -15,6 +15,10 @@ export class FormPagePo extends BasePagePo {
         return this.page.getByTestId(`form-view-alert`);
     }
 
+    disallowRenderingText() {
+        return this.page.getByTestId(`disallow-rendering-text`);
+    }
+
     mergeToLink(): Locator {
         return this.page.getByTestId('form-view-mergeTo-link');
     }
@@ -42,6 +46,10 @@ export class FormPagePo extends BasePagePo {
 
     copyrightUrl() {
         return this.page.getByTestId('copyright-url');
+    }
+
+    disallowRenderingCheckbox() {
+        return this.page.getByTestId(`disallowRendering-checkbox`);
     }
 
     /* Generate Details */

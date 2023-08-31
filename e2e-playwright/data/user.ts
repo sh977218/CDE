@@ -21,8 +21,8 @@ export default {
         username: 'loginrecorduser',
         password: 'umls',
     },
-    regularUser:{
-        username:'reguser',
+    regularUser: {
+        username: 'reguser',
         password: DEFAULT_PASSWORD,
-    }
+    },
 };

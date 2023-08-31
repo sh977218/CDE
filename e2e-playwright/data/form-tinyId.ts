@@ -5,4 +5,6 @@ export default {
     'PHQ-9 quick depression assessment panel [Reported.PHQ]': 'mJsGoMU1m',
     'Form Status Test': 'msdewe4e24kjsd',
     UnclassifiedForm: '71m0HfXEv',
+    'Short Form 36-Item Health Survey (SF-36)': '712ArJSHYl',
+    'Disallow render form': 'Yztitl7Ri',
 };

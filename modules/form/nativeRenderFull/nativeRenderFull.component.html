@@ -40,8 +40,9 @@
     </ng-container>
 </div>
 <div class="noGridPadSmall">
-    <div *ngIf="elt.noRenderAllowed"
-         class="text-center">Rendering has been disabled for this form.
+    <div *ngIf="elt.noRenderAllowed" class="alert alert-info" data-testid="disallow-rendering-text" role="alert">
+        <mat-icon fill="1">info</mat-icon>
+        We do not have permission to display this form due to copyright/licensing restrictions. For more information, see the Copyright section below.
     </div>
     <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" style="max-width: 600px; margin: auto">
         This form is empty. Form Editors can add content to this form by navigating
