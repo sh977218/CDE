@@ -42,9 +42,11 @@
         <input *ngIf="canEdit" type="checkbox" class="checkbox" [(ngModel)]="elt.isCopyrighted"
                id="isCopyrighted" data-testid="copyright-checkbox" title="copyrighted" (change)="eltChange.emit();"/>
         <div *ngIf="elt.isCopyrighted; else notCopyrightedTemp" class="copyrightContainer">
-            Yes, this form is licensed, copyrighted, or otherwise restricted, and we do not have permission to display it.
             <div class="copyrightDiv" data-testid="copyright-statement">
-                <label *ngIf="elt.copyright.text || canEdit">Statement:</label>
+                <div>
+                    <label *ngIf="elt.copyright.text || canEdit">Statement: </label>
+                    <span>Yes, this form is licensed, copyrighted, or otherwise restricted, and we do not have permission to display it.</span>
+                </div>
                 <cde-inline-edit [(model)]="elt.copyright.text"
                                  [isAllowed]="canEdit" (modelChange)="eltChange.emit();"></cde-inline-edit>
             </div>
