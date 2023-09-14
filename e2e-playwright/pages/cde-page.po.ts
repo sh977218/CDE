@@ -23,6 +23,10 @@ export class CdePagePo extends BasePagePo {
         return this.page.getByTestId(`data-element-view-alert`);
     }
 
+    addToBoard() {
+        return this.page.locator(`[id="addToBoard"]`);
+    }
+
     permissibleValueSynonymsCheckbox(source: string) {
         return this.page
             .locator(`[data-testid="displayCode"]`, {

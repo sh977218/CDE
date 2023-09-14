@@ -1,17 +1,16 @@
 <h1 mat-dialog-title>Sign up for an account</h1>
-<mat-dialog-content>
+<mat-dialog-content data-testid="pinBoardLoginModal">
     With an account, you will be able to:
     <ul>
-        <li>Create Boards and attach CDEs to them</li>
+        <li>Create Boards and save CDEs and Forms to them</li>
         <li>Remember your preferences on all your devices</li>
-        <li>Comment on CDEs and Forms</li>
-        <li>Become a curator and create your own CDEs and Forms</li>
+        <li>If approved, become a curator, and view/manage your organization's contents</li>
     </ul>
     <br>
     <div style="text-align: center">
-        <a class="button" [mat-dialog-close] routerLink="/login">Sign up or Sign in</a>
+        <a data-testid="pinBoardLoginBtn" class="button" [mat-dialog-close] routerLink="/login">Sign up or Sign in</a>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button class="button secondary" [mat-dialog-close]>Cancel</button>
+    <button data-testid="pinBoardCloseBtn" class="button secondary" [mat-dialog-close]>Cancel</button>
 </mat-dialog-actions>

@@ -76,4 +76,32 @@ export class SearchPagePo {
     searchAutoCompleteOptions(): Locator {
         return this.page.getByTestId(`search-auto-complete-option`);
     }
+
+    goToElt(index: number): Locator {
+        return this.page.locator(`[id="linkToElt_${index}"]`);
+    }
+
+    pinElement(index: number): Locator {
+        return this.page.locator(`[id="pinToBoard_${index}"]`);
+    }
+
+    pinAll(): Locator {
+        return this.page.locator(`[id="pinAll"]`);
+    }
+
+    pinBoardModal(): Locator {
+        return this.page.getByTestId(`pinBoardLoginModal`);
+    }
+
+    pinBoardModalMessage(): Locator {
+        return this.pinBoardModal().locator('ul li');
+    }
+
+    pinBoardModalButton(): Locator {
+        return this.pinBoardModal().getByTestId(`pinBoardLoginBtn`);
+    }
+
+    pinBoardModalClose(): Locator {
+        return this.page.getByTestId(`pinBoardCloseBtn`);
+    }
 }
