@@ -157,7 +157,8 @@
 <ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
     <h3>Permissible Value</h3>
     <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>
-        <label *ngFor="let source of SOURCES_KEYS" class="hand-cursor" style="display: inline-block; margin-left: 50px" data-testid="displayCode">
+        <label *ngFor="let source of SOURCES_KEYS" class="hand-cursor" style="display: inline-block; margin-left: 50px"
+               data-testid="displayCode">
             <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"
                    style="margin-right: 2px"
                    [(ngModel)]="SOURCES[source].selected"
@@ -170,9 +171,10 @@
         <p>No Permissible Values</p>
     </ng-template>
     <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs">
-        <table id="pvTable" data-testid="pvTable" class="table table-bordered table-condensed table-striped table-responsive">
+        <table id="pvTable" data-testid="pvTable"
+               class="table table-bordered table-condensed table-striped table-responsive">
             <thead>
-                <tr>
+            <tr>
                 <th>PV Labels</th>
                 <th>PV Definitions</th>
                 <th>PV Concept Identifiers</th>
@@ -187,7 +189,7 @@
             </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
+            <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
                 <td id="pvValue_{{i}}">
                     <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit();"></cde-inline-edit>
@@ -201,30 +203,38 @@
                 <td id="pvConceptSource_{{i}}">{{pv.conceptSource}}</td>
                 <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
                 <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
-                <td *ngIf="SOURCES['UMLS'].selected" id="codeAsUMLS_{{i}}" data-testid="umls">
-                    {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.code}}
-                </td>
-                <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}" data-testid="umls">
-                    {{SOURCES['UMLS'].codes[pv.valueMeaningCode]?.meaning}}
-                </td>
-                <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="codeAsNCI_{{i}}" data-testid="nci">
-                    {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.code}}
-                </td>
-                <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}" data-testid="nci">
-                    {{SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode]?.meaning}}
-                </td>
-                <td *ngIf="SOURCES['LOINC'].selected" id="codeAsLNC_{{i}}" data-testid="loinc">
-                    {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.code}}
-                </td>
-                <td *ngIf="SOURCES['LOINC'].selected" id="nameAsLNC_{{i}}" data-testid="loinc">
-                    {{SOURCES['LOINC'].codes[pv.valueMeaningCode]?.meaning}}
-                </td>
-                <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="codeAsSCT_{{i}}" data-testid="snomedct">
-                    {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.code}}
-                </td>
-                <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}" data-testid="snomedct">
-                    {{SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode]?.meaning}}
-                </td>
+                <ng-container *ngIf="SOURCES['UMLS'].selected">
+                    <td id="codeAsUMLS_{{i}}" data-testid="umls">
+                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}" data-testid="umls">
+                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['NCI Thesaurus'].selected">
+                    <td id="codeAsNCI_{{i}}" data-testid="nci">
+                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}" data-testid="nci">
+                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['LOINC'].selected">
+                    <td id="codeAsLNC_{{i}}" data-testid="loinc">
+                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
+                    </td>
+                    <td id="nameAsLNC_{{i}}" data-testid="loinc">
+                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['SNOMEDCT US'].selected">
+                    <td id="codeAsSCT_{{i}}" data-testid="snomedct">
+                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}" data-testid="snomedct">
+                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                    </td>
+                </ng-container>
                 <td id="pvAction_{{i}}" *ngIf="canEdit">
                     <ng-container *ngIf="pv.notValid">
                         <mat-icon id="pv-{{i}}-notValid">warning</mat-icon>
@@ -248,7 +258,8 @@
                 <mat-icon>add</mat-icon>
                 Add Permissible Value
             </button>
-            <button id="removeAllPermissibleValueBtn" class="button light fail" (click)="removeAllPermissibleValues(elt.valueDomain)">
+            <button id="removeAllPermissibleValueBtn" class="button light fail"
+                    (click)="removeAllPermissibleValues(elt.valueDomain)">
                 <mat-icon>delete_outline</mat-icon>
                 Remove All Values
             </button>
@@ -338,12 +349,15 @@
                 <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
             </td>
             <td>
-                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(elt.valueDomain, con)">add</mat-icon>
+                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(elt.valueDomain, con)">
+                    add
+                </mat-icon>
             </td>
         </tr>
     </table>
     <div *ngIf="vsacMappingExists() && !userService.loggedIn()">Please log in to see VSAC mapping.</div>
-    <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button" (click)="addAllVsac(elt.valueDomain)">
+    <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button"
+            (click)="addAllVsac(elt.valueDomain)">
         <mat-icon id="addAllVsac">add</mat-icon>
         Import Missing Values
     </button>

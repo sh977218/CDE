@@ -9,13 +9,14 @@ import { AlertService } from 'alert/alert.service';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
+import { mapSeries, withRetry } from 'shared/promise';
 import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
 import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
 
 interface Source {
     source: string;
     termType: 'PT' | 'LA';
-    codes: Dictionary<{ code: string; meaning: string }>;
+    codes: Dictionary<{ code: string; meaning: string }[]>;
     selected: boolean;
     disabled: boolean;
 }
@@ -158,10 +159,12 @@ export class PermissibleValueComponent {
                                 source.codes = {};
                             }
                             if (!source.codes[code]) {
-                                source.codes[code] = {
-                                    code: '',
-                                    meaning: 'Retrieving...',
-                                };
+                                source.codes[code] = [
+                                    {
+                                        code: '',
+                                        meaning: 'Retrieving...',
+                                    },
+                                ];
                             }
                         } else {
                             this.alert.addAlert('danger', 'Unknown source in pv code ' + code);
@@ -254,91 +257,97 @@ export class PermissibleValueComponent {
             this.dupCodesForSameSrc(vd, src);
         }
         const targetSource = this.SOURCES[src].source;
-        vd.permissibleValues.forEach(async pv => {
+        mapSeries(vd.permissibleValues, async (pv, i, pvs) => {
             const code: string = pv.valueMeaningCode || '';
             let source: string = '';
-            this.SOURCES[src].codes[code] = {
-                code: '',
-                meaning: 'Retrieving...',
-            };
+            this.SOURCES[src].codes[code] = [
+                {
+                    code: '',
+                    meaning: 'Retrieving...',
+                },
+            ];
             if (pv.codeSystemName && this.SOURCES[pv.codeSystemName]) {
                 source = this.SOURCES[pv.codeSystemName].source;
             }
             if (code && source) {
                 if (src === 'UMLS' && source === 'UMLS') {
-                    this.SOURCES[src].codes[code] = {
-                        code,
-                        meaning: pv.valueMeaningName || '',
-                    };
+                    this.SOURCES[src].codes[code] = [
+                        {
+                            code,
+                            meaning: pv.valueMeaningName || '',
+                        },
+                    ];
                 } else if (src === 'UMLS') {
-                    const res = await this.http
-                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
-                        .toPromise()
-                        .catch(() => this.alert.addAlert('danger', 'Error query UMLS.'));
-                    if (res?.result?.results?.length > 0) {
-                        res.result.results.forEach((r: any) => {
-                            this.SOURCES[src].codes[code] = {
-                                code: r.ui,
-                                meaning: r.name,
-                            };
-                        });
-                    } else {
-                        this.SOURCES[src].codes[code] = {
-                            code: '',
-                            meaning: '',
-                        };
-                    }
+                    await withRetry(() =>
+                        this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise()
+                    ).then(
+                        res => {
+                            this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
+                                return {
+                                    code: r.ui,
+                                    meaning: r.name,
+                                };
+                            });
+                        },
+                        () => this.alert.addAlert('danger', 'Error query UMLS.')
+                    );
                 } else if (source === 'UMLS') {
-                    const res = await this.http
-                        .get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
-                        .toPromise()
-                        .catch(() => this.alert.addAlert('danger', 'Error query UMLS.'));
-                    let l = [];
-                    if (res && res.result) {
-                        l = res.result.filter((r: any) => r.termType === this.SOURCES[src].termType);
-                    }
-                    if (l[0]) {
-                        this.SOURCES[src].codes[code] = {
-                            code: l[0].ui,
-                            meaning: l[0].name,
-                        };
-                    } else {
-                        this.SOURCES[src].codes[code] = {
-                            code: '',
-                            meaning: '',
-                        };
-                    }
+                    await withRetry(() =>
+                        this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`).toPromise()
+                    ).then(
+                        res => {
+                            this.SOURCES[src].codes[code] = res.result
+                                .filter((r: any) => r.termType === this.SOURCES[src].termType)
+                                .map((r: any) => {
+                                    return {
+                                        code: r.ui,
+                                        meaning: r.name,
+                                    };
+                                });
+                        },
+                        () => this.alert.addAlert('danger', 'Error query UMLS.')
+                    );
                 } else {
-                    const umlsResult = await this.http
-                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
-                        .toPromise();
+                    const umlsResult = await withRetry(() =>
+                        this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise()
+                    );
                     if (umlsResult?.result?.results?.length > 0) {
                         const umlsCui = umlsResult.result.results[0].ui;
-                        const srcResult = await this.http
-                            .get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`)
-                            .toPromise();
-                        if (srcResult.result.length > 0) {
-                            const sortedResult = srcResult.result.sort((a: any, b: any) =>
-                                a.name.localeCompare(b.name)
+                        try {
+                            const srcResult = await withRetry(() =>
+                                this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise()
                             );
-                            this.SOURCES[src].codes[code] = {
-                                code: sortedResult[0].code.substr(sortedResult[0].code.lastIndexOf('/') + 1),
-                                meaning: sortedResult[0].name,
-                            };
+                            if (srcResult.result.length > 0) {
+                                const sortedResult = srcResult.result.sort((a: any, b: any) =>
+                                    a.name.localeCompare(b.name)
+                                );
+                                this.SOURCES[src].codes[code] = sortedResult.map((r: any) => {
+                                    return {
+                                        code: r.code.substring(r.code.lastIndexOf('/') + 1),
+                                        meaning: r.name,
+                                    };
+                                });
+                            }
+                        } catch (e) {
+                            // UMLS return html instead of status 404! :)
                         }
                     }
-                    if (!this.SOURCES[src].codes[code].code) {
-                        this.SOURCES[src].codes[code] = {
-                            code: '',
-                            meaning: '',
-                        };
+                    if (!this.SOURCES[src].codes[code]) {
+                        this.SOURCES[src].codes[code] = [
+                            {
+                                code: '',
+                                meaning: '',
+                            },
+                        ];
                     }
                 }
             } else {
-                this.SOURCES[src].codes[code] = {
-                    code: '',
-                    meaning: '',
-                };
+                this.SOURCES[src].codes[code] = [
+                    {
+                        code: '',
+                        meaning: '',
+                    },
+                ];
             }
         });
     }

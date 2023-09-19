@@ -25,12 +25,16 @@ test.describe(`Codes with synonyms`, async () => {
             const tableRows = cdePage.permissibleValueTableRows();
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'NCI'))
                 .toHaveText(['C41259', 'American Indian or Alaska Native']);
+            await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'NCI'))
+                .toHaveText(['C41260', 'Asian']);
         });
         test(`Code from UMLS`, async ({basePage, cdePage, navigationMenu}) => {
             await cdePage.permissibleValueSynonymsCheckbox('UMLS').check();
             const tableRows = cdePage.permissibleValueTableRows();
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'UMLS'))
                 .toHaveText(['C1515945', 'American Indian or Alaska Native']);
+            await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'UMLS'))
+                .toHaveText(['C0078988', 'Asians']);
         });
 
     })
@@ -42,13 +46,17 @@ test.describe(`Codes with synonyms`, async () => {
             await cdePage.permissibleValueSynonymsCheckbox('LOINC').check();
             const tableRows = cdePage.permissibleValueTableRows();
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'LOINC'))
-                .toHaveText(['LA6155-1', 'American Indian or Alaska Native']);
+                .toHaveText(['LA6155-1 | LA16817-1', 'American Indian or Alaska Native | Native american']);
+            await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'LOINC'))
+                .toHaveText(['LA6156-9', 'Asian']);
         });
         test(`Code from SNOMEDCT`, async ({basePage, cdePage, navigationMenu}) => {
             await cdePage.permissibleValueSynonymsCheckbox('SNOMEDCT').check();
             const tableRows = cdePage.permissibleValueTableRows();
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'SNOMEDCT'))
                 .toHaveText(['413490006', 'American Indian or Alaska native']);
+            await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'SNOMEDCT'))
+                .toHaveText(['413582008 | 414978006', 'Asian race | Oriental']);
         });
 
     })
