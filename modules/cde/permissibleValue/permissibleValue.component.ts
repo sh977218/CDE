@@ -9,7 +9,7 @@ import { AlertService } from 'alert/alert.service';
 import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList } from 'shared/de/dataElement.model';
 import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
 import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
-import { mapSeries, withRetry } from 'shared/promise';
+import { mapSeries } from 'shared/promise';
 import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
 import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
 
@@ -278,74 +278,104 @@ export class PermissibleValueComponent {
                         },
                     ];
                 } else if (src === 'UMLS') {
-                    await withRetry(() =>
-                        this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise()
-                    ).then(
-                        res => {
-                            this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
-                                return {
-                                    code: r.ui,
-                                    meaning: r.name,
-                                };
-                            });
-                        },
-                        () => this.alert.addAlert('danger', 'Error query UMLS.')
-                    );
-                } else if (source === 'UMLS') {
-                    await withRetry(() =>
-                        this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`).toPromise()
-                    ).then(
-                        res => {
-                            this.SOURCES[src].codes[code] = res.result
-                                .filter((r: any) => r.termType === this.SOURCES[src].termType)
-                                .map((r: any) => {
+                    this.http
+                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
+                        .toPromise()
+                        .then(
+                            res => {
+                                this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
                                     return {
                                         code: r.ui,
                                         meaning: r.name,
                                     };
                                 });
-                        },
-                        () => this.alert.addAlert('danger', 'Error query UMLS.')
-                    );
-                } else {
-                    const umlsResult = await withRetry(() =>
-                        this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`).toPromise()
-                    );
-                    if (umlsResult?.result?.results?.length > 0) {
-                        const umlsCui = umlsResult.result.results[0].ui;
-                        try {
-                            const srcResult = await withRetry(() =>
-                                this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`).toPromise()
-                            );
-                            if (srcResult.result.length > 0) {
-                                const sortedResult = srcResult.result.sort((a: any, b: any) =>
-                                    a.name.localeCompare(b.name)
-                                );
-                                this.SOURCES[src].codes[code] = sortedResult.map((r: any) => {
-                                    return {
-                                        code: r.code.substring(r.code.lastIndexOf('/') + 1),
-                                        meaning: r.name,
-                                    };
-                                });
-                            }
-                        } catch (e) {
-                            // UMLS return html instead of status 404! :)
-                        }
-                    }
-                    if (!this.SOURCES[src].codes[code]) {
-                        this.SOURCES[src].codes[code] = [
-                            {
-                                code: '',
-                                meaning: '',
                             },
-                        ];
-                    }
+                            () => this.alert.addAlert('danger', 'Error query UMLS.')
+                        );
+                } else if (source === 'UMLS') {
+                    this.http
+                        .get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
+                        .toPromise()
+                        .then(
+                            res => {
+                                this.SOURCES[src].codes[code] = res.result
+                                    .filter((r: any) => r.termType === this.SOURCES[src].termType)
+                                    .map((r: any) => {
+                                        return {
+                                            code: r.ui,
+                                            meaning: r.name,
+                                        };
+                                    });
+                            },
+                            () => {
+                                this.SOURCES[src].codes[code] = [
+                                    {
+                                        code: 'Error looking up synonyms. Please try again later.',
+                                        meaning: '',
+                                    },
+                                ];
+                                this.alert.addAlert('danger', 'Error query UMLS.');
+                            }
+                        );
+                } else {
+                    this.http
+                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
+                        .toPromise()
+                        .then(
+                            umlsResult => {
+                                if (umlsResult?.result?.results?.length > 0) {
+                                    const umlsCui = umlsResult.result.results[0].ui;
+                                    this.http
+                                        .get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`)
+                                        .toPromise()
+                                        .then(
+                                            srcResult => {
+                                                if (srcResult?.result.length > 0) {
+                                                    const sortedResult = srcResult.result.sort((a: any, b: any) =>
+                                                        a.name.localeCompare(b.name)
+                                                    );
+                                                    this.SOURCES[src].codes[code] = sortedResult.map((r: any) => {
+                                                        return {
+                                                            code: r.code.substring(r.code.lastIndexOf('/') + 1),
+                                                            meaning: r.name,
+                                                        };
+                                                    });
+                                                } else {
+                                                    this.SOURCES[src].codes[code] = [
+                                                        {
+                                                            code: 'No code synonyms found',
+                                                            meaning: 'No code synonyms found',
+                                                        },
+                                                    ];
+                                                }
+                                            },
+                                            () => {
+                                                this.SOURCES[src].codes[code] = [
+                                                    {
+                                                        code: 'Error looking up synonyms. Please try again later.',
+                                                        meaning: 'Error looking up synonyms. Please try again later.',
+                                                    },
+                                                ];
+                                            }
+                                        );
+                                }
+                            },
+                            () => {
+                                this.SOURCES[src].codes[code] = [
+                                    {
+                                        code: 'Error looking up synonyms. Please try again later.',
+                                        meaning: '',
+                                    },
+                                ];
+                                this.alert.addAlert('danger', 'Error query UMLS.');
+                            }
+                        );
                 }
             } else {
                 this.SOURCES[src].codes[code] = [
                     {
-                        code: '',
-                        meaning: '',
+                        code: 'No code synonyms found',
+                        meaning: 'No code synonyms found',
                     },
                 ];
             }

@@ -5,7 +5,6 @@ import {
     getAtomsFromUMLS, getSourcePT, searchUmls, umlsCuiFromSrc
 } from 'server/uts/utsSvc';
 import { getValueSet, searchValueSet } from 'server/vsac/vsacSvc';
-import { parseString } from 'xml2js';
 
 export function module() {
     const router = Router();

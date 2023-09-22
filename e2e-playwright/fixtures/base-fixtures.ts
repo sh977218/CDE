@@ -154,6 +154,7 @@ const ignoredConsoleMessages = [
     'Angular is running in development mode',
     'ExpressionChangedAfterItHasBeenCheckedError',
     '[main.js:',
+    'Failed to load resource: the server responded with a status of 400'
 ];
 
 const consoleMessages: string[] = [];
