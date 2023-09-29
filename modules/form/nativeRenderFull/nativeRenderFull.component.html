@@ -1,7 +1,8 @@
-<h2>Preview</h2>
-<div class="noGridPadLarge">
+<h2 *ngIf="!elt.noRenderAllowed">Preview</h2>
+<div class="noGridPadLarge" *ngIf="!elt.noRenderAllowed">
     <span class="dropdown">
-        <button id="selectRenderButton" class="button" #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="optionsMenu">
+        <button id="selectRenderButton" class="button" #exportMenuTrigger="matMenuTrigger"
+                [matMenuTriggerFor]="optionsMenu">
             Options <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #optionsMenu>
@@ -14,7 +15,8 @@
                     attr.data-url="/assets/lform/lformsRender.html?tinyId={{elt.tinyId}}"
                     onclick="window.open(this.getAttribute('data-url'),'_blank')">
                 LHC-Forms
-                (Provided by <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank" rel="noopener noreferrer"
+                (Provided by <a href="https://lhncbc.nlm.nih.gov/project/lforms" target="_blank"
+                                rel="noopener noreferrer"
                                 (click)="$event.stopPropagation(); exportMenuTrigger.closeMenu()">LHNCBC</a>)
             </button>
             <button mat-menu-item id="printableLogicCb" (click)="overridePrintable = !overridePrintable">
@@ -30,7 +32,8 @@
     </button>
     <ng-container *ngIf="elt.displayProfiles?.length > 0">
         <button id="select_display_profile" class="button light" [matMenuTriggerFor]="dpMenu">
-            Display Profile: {{selectedProfileName}} <mat-icon>arrow_drop_down</mat-icon>
+            Display Profile: {{selectedProfileName}}
+            <mat-icon>arrow_drop_down</mat-icon>
         </button>
         <mat-menu #dpMenu>
             <button *ngFor="let p of elt.displayProfiles; index as i" mat-menu-item
@@ -42,7 +45,8 @@
 <div class="noGridPadSmall">
     <div *ngIf="elt.noRenderAllowed" class="alert alert-info" data-testid="disallow-rendering-text" role="alert">
         <mat-icon fill="1">info</mat-icon>
-        We do not have permission to display this form due to copyright/licensing restrictions. For more information, see the Copyright section below.
+        We do not have permission to display this form due to copyright/licensing restrictions. For more information,
+        see the Copyright section below.
     </div>
     <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" style="max-width: 600px; margin: auto">
         This form is empty. Form Editors can add content to this form by navigating

@@ -85,7 +85,8 @@
                     </div>
                     <nav>
                         <button tourAnchor="export" id="export" class="button" title="Export"
-                                #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu">
+                                #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu"
+                                *ngIf="!elt.noRenderAllowed">
                             <mat-icon>play_for_work</mat-icon>
                             <span class="button-label"> Export </span>
                             <mat-icon>arrow_drop_down</mat-icon>
@@ -189,22 +190,22 @@
                             </ng-template>
                         </mat-menu>
                         <button id="addToBoard" class="button" title="Add to Board" pinToBoard [eltsToPin]="[elt]"
-                                module="form">
+                                module="form" *ngIf="!elt.noRenderAllowed">
                             <mat-icon svgIcon="thumb_tack"></mat-icon>
                             <span class="button-label">Add to Board</span>
                         </button>
-                        <button *ngIf="userService.loggedIn()" id="pinAllCdes" class="button" title="Pin CDEs"
+                        <button *ngIf="!elt.noRenderAllowed && userService.loggedIn()" id="pinAllCdes" class="button" title="Pin CDEs"
                                 pinToBoard [eltsToPin]="getFormCdes(elt)">
                             <mat-icon>add_shopping_cart</mat-icon>
                             <span class="button-label">Pin CDEs</span>
                         </button>
-                        <button *ngIf="hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
+                        <button *ngIf="!elt.noRenderAllowed && hasPrivilegeForOrg(userService.user, 'create', elt.stewardOrg.name)"
                                 id="copyFormBtn" class="button" title="Copy Form"
                                 (click)="openCopyElementModal(elt)">
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label">Copy</span>
                         </button>
-                        <button id="cdeListBtn" class="button" title="List CDEs"
+                        <button id="cdeListBtn" class="button" title="List CDEs" *ngIf="!elt.noRenderAllowed"
                                 (click)="openFormCdesModal(elt)">
                             <mat-icon>list</mat-icon>
                             <span class="button-label">CDEs</span>
