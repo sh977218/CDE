@@ -27,8 +27,8 @@ import { noop } from 'shared/util';
 
 // type SubmissionTemplate = Omit<Submission, '_id' | 'endorsed' | 'dateModified' | 'dateSubmitted' | 'numberCdes' | 'submitterId'>;
 interface ReportCategory {
-    row: number;
     message: string;
+    rows: (number | string)[];
 }
 
 const messages: Record<string, Record<string, string>> = {
@@ -137,13 +137,16 @@ export class SubmissionEditComponent implements OnDestroy {
     page4Submitted: boolean = false;
     reportCdeCodes: ReportCategory[] = [];
     reportCdeColumn: ReportCategory[] = [];
+    reportCdeColumnExtra: string[] = [];
+    reportCdeColumnOptional: string[] = [];
+    reportCdeColumnRequired: string[] = [];
     reportCdeExtra: ReportCategory[] = [];
     reportCdeLength: ReportCategory[] = [];
     reportCdeManual: ReportCategory[] = [];
     reportCdeRequired: ReportCategory[] = [];
     reportCdeSpellcheck: ReportCategory[] = [];
+    reportCdeSuggestion: ReportCategory[] = [];
     reportCdeTemplate: ReportCategory[] = [];
-    reportCdeUnimplemented: ReportCategory[] = [];
     searchCtrlNlmCurator = new FormControl('');
     searchCtrlOrgCurator = new FormControl('');
     searchCtrlReviewer = new FormControl('');
@@ -236,14 +239,8 @@ export class SubmissionEditComponent implements OnDestroy {
             organizationPocMi: ['', Validators.maxLength(2)],
             organizationPocLast: ['', Validators.required],
             organizationCurators: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
-            governanceReviewers: [
-                { value: [] as string[], disabled: !canSubmissionReview(this.userService.user) },
-                Validators.required,
-            ],
-            nlmCurators: [
-                { value: [] as string[], disabled: !canSubmissionReview(this.userService.user) },
-                Validators.required,
-            ],
+            governanceReviewers: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
+            nlmCurators: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
         });
         this.page3 = this.formBuilder.group(
             {
@@ -302,6 +299,16 @@ export class SubmissionEditComponent implements OnDestroy {
         if (this.unsubscribeUser) {
             this.unsubscribeUser();
             this.unsubscribeUser = undefined;
+        }
+    }
+
+    addCategorizedReportError(errorType: ErrorTypes, errorMessage: string, errorRow: number | string) {
+        const reportCategory = this.errorTypeToReportCategory(errorType);
+        const reportCategoryByMessage = reportCategory.find(r => r.message === errorMessage);
+        if (reportCategoryByMessage) {
+            orderedSetAdd(reportCategoryByMessage.rows, errorRow);
+        } else {
+            reportCategory.push({ message: errorMessage, rows: [errorRow] });
         }
     }
 
@@ -399,20 +406,42 @@ export class SubmissionEditComponent implements OnDestroy {
         this.reportCdeRequired.length = 0;
         this.reportCdeSpellcheck.length = 0;
         this.reportCdeTemplate.length = 0;
-        this.reportCdeUnimplemented.length = 0;
         if (!this.verifySubmissionFileReport) {
             return;
         }
         this.verifySubmissionFileReport.validationErrors.CDEs.forEach(errorLog => {
             const errorMessageParts = errorLog.split(':');
-            const errorRow: number = parseInt(errorMessageParts[1], 10);
+            const errorRow = errorMessageParts[1];
             const errorType = errorMessageParts[2] as ErrorTypes;
             const errorMessage = errorMessageParts.slice(3).join(':');
-            this.errorTypeToReportCategory(errorType).push({ row: errorRow, message: errorMessage });
+            this.addCategorizedReportError(errorType, errorMessage, errorRow);
         });
+        this.createHeadingColumnReport();
         this.page3.controls.boolWorkbookValid.setValue(
             !this.reportCdeManual.length && !this.reportCdeLength.length && !this.reportCdeRequired.length
         );
+    }
+
+    createHeadingColumnReport() {
+        this.reportCdeColumnExtra.length = 0;
+        this.reportCdeColumnOptional.length = 0;
+        this.reportCdeColumnRequired.length = 0;
+        this.reportCdeColumn.forEach(m => {
+            let match = /Worksheet Column "(.*)" is incorrect. Please remove to continue\./.exec(m.message);
+            if (match && match.length > 1) {
+                this.reportCdeColumnExtra.push(match[1]);
+            }
+            match = /Optional Column "(.*)" not used yet in the worksheet. This is okay\./.exec(m.message);
+            if (match && match.length > 1) {
+                this.reportCdeColumnOptional.push(match[1]);
+            }
+            match = /Required Column "(.*)" was not found in the worksheet. Add this column to continue\./.exec(
+                m.message
+            );
+            if (match && match.length > 1) {
+                this.reportCdeColumnRequired.push(match[1]);
+            }
+        });
     }
 
     errorTypeToReportCategory(errorType: ErrorTypes): ReportCategory[] {
@@ -431,10 +460,10 @@ export class SubmissionEditComponent implements OnDestroy {
                 return this.reportCdeRequired;
             case 'Spellcheck':
                 return this.reportCdeSpellcheck;
+            case 'Suggestion':
+                return this.reportCdeSuggestion;
             case 'Template':
                 return this.reportCdeTemplate;
-            case 'Unimplemented':
-                return this.reportCdeUnimplemented;
             default:
                 throw assertUnreachable(errorType);
         }
@@ -461,10 +490,17 @@ export class SubmissionEditComponent implements OnDestroy {
         }
     }
 
+    displayError(e: ReportCategory) {
+        return `${e.message} Row(s) ${e.rows.join(', ')}`;
+    }
+
     downloadCdes() {
         let report = '';
         this.verifySubmissionFileReport?.data.dataElements.forEach(de => {
             report += '\t' + JSON.stringify(de) + '\n';
+        });
+        this.verifySubmissionFileReport?.data.forms.forEach(form => {
+            report += '\t' + JSON.stringify(form) + '\n';
         });
         const blob = new Blob([report], {
             type: 'text/text',
@@ -474,78 +510,119 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     downloadReport() {
-        let report = 'Row numbers are based on Workbook.\n\n';
+        let report = '';
 
-        report += `Submission: ${this.verifySubmissionFileReport?.data.metadata.name}\n`;
-        report += `Version: ${this.verifySubmissionFileReport?.data.metadata.version}\n`;
-        report += '\n';
+        function addLine(str: string): void {
+            report += str + '\n';
+        }
 
-        report += 'Blocking Errors\n';
+        addLine('Row numbers are based on the Workbook.');
+        addLine('');
+
+        addLine(`Submission: ${this.verifySubmissionFileReport?.data.metadata.name}`);
+        addLine(`Version: ${this.verifySubmissionFileReport?.data.metadata.version}`);
+        addLine('');
+
+        addLine('Critical Errors');
+        addLine(
+            this.reportCdeManual.length ||
+                this.reportCdeColumn.length ||
+                this.reportCdeLength.length ||
+                this.reportCdeRequired.length ||
+                this.reportCdeTemplate.length
+                ? 'These must be fixed before your submission can be accepted for review.'
+                : '\tNo critical errors found.'
+        );
+        addLine('');
         if (this.reportCdeManual.length) {
-            report += 'Assistance Required Errors\n';
+            addLine('Assistance Required');
             for (const e of this.reportCdeManual) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
         if (this.reportCdeColumn.length) {
-            report += 'Column Heading Errors\n';
-            for (const e of this.reportCdeColumn) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+            addLine('Column Heading');
+            addLine('Incorrect Worksheet Column Headings: (Please remove columns to continue.)');
+            for (const e of this.reportCdeColumnExtra) {
+                addLine(`\t${e}`);
             }
-            report += '\n';
+            if (this.reportCdeColumnRequired.length) {
+                addLine('Required Column Heading missing the worksheet: (Add these columns to continue.)');
+                for (const e of this.reportCdeColumnRequired) {
+                    addLine(`\t${e}`);
+                }
+            }
+            if (this.reportCdeColumnOptional.length) {
+                addLine('Optional Column Headings not used yet: (For your reference.)');
+                for (const e of this.reportCdeColumnOptional) {
+                    addLine(`\t${e}`);
+                }
+            }
+            addLine('');
         }
         if (this.reportCdeLength.length) {
-            report += 'Length of Arrays Errors\n';
+            addLine('Length of Lists');
             for (const e of this.reportCdeLength) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
         if (this.reportCdeRequired.length) {
-            report += 'Required Fields Errors\n';
+            addLine('Required Field');
             for (const e of this.reportCdeRequired) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
         if (this.reportCdeTemplate.length) {
-            report += 'Workbook Template Errors\n';
+            addLine('Workbook Template');
             for (const e of this.reportCdeTemplate) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
-        report += '\n';
 
-        report += 'Non-Blocking Errors\n';
+        addLine('');
+        addLine('');
+
+        addLine('Suggestions to Review');
+        addLine(
+            this.reportCdeCodes.length ||
+                this.reportCdeExtra.length ||
+                this.reportCdeSpellcheck.length ||
+                this.reportCdeSuggestion.length
+                ? 'These items were marked for your review.'
+                : '\tNo suggestions to review.'
+        );
+        addLine('');
         if (this.reportCdeCodes.length) {
-            report += 'Code Validation Errors\n';
+            addLine('Code Validation');
             for (const e of this.reportCdeCodes) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
         if (this.reportCdeExtra.length) {
-            report += 'Extra Unused Errors\n';
+            addLine('Extra Unused Data');
             for (const e of this.reportCdeExtra) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
         if (this.reportCdeSpellcheck.length) {
-            report += 'Spellcheck Errors\n';
+            addLine('Spellcheck');
             for (const e of this.reportCdeSpellcheck) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
-        if (this.reportCdeUnimplemented.length) {
-            report += 'Unimplemented Feature Errors\n';
-            for (const e of this.reportCdeUnimplemented) {
-                report += `\tRow ${e.row}: ${e.message}\n`;
+        if (this.reportCdeSuggestion.length) {
+            addLine('Other Suggestions');
+            for (const e of this.reportCdeSuggestion) {
+                addLine(`\t${this.displayError(e)}`);
             }
-            report += '\n';
+            addLine('');
         }
 
         const blob = new Blob([report], {
@@ -715,7 +792,6 @@ export class SubmissionEditComponent implements OnDestroy {
                 s => {
                     this.submission = s;
                     this.forwardToExisting();
-                    // this.copySubmissionToForm();
                     return s;
                 },
                 (err: HttpErrorResponse) => {

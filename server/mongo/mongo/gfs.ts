@@ -36,13 +36,24 @@ export function addFile(file: FileCreateInfo, streamDescription: GridFSBucketWri
 }
 
 export function deleteFileById(_id: ObjectId): Promise<void> {
-    return gfs.then(gfs => gfs.delete(_id));
+    return exists({_id}).then(found => {
+        if (found) {
+            return gfs.then(bucket => bucket.delete(_id));
+        }
+    });
+}
+
+export function exists(query: {_id?: ObjectId, filename?: string}): Promise<boolean> {
+    return gfs.then(bucket => bucket.find(query).toArray().then(files => {
+        const file = files[0];
+        return !!file?._id;
+    }));
 }
 
 export function getFile(query: {_id?: ObjectId, filename?: string}): Promise<GridFSBucketReadStream | null> {
     return gfs.then(bucket => bucket.find(query).toArray().then(files => {
         const file = files[0];
-        return file._id ? bucket.openDownloadStream(file._id): null;
+        return file?._id ? bucket.openDownloadStream(file._id): null;
     }));
 }
 

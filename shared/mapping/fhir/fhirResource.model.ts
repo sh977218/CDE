@@ -43,7 +43,7 @@ export class FhirAnnotation extends FhirElementBase {
 }
 
 export type FhirAppointment = any;
-export type FhirAttachement = any;
+export type FhirAttachment = any;
 
 export class FhirBundle {
     //// searchset from api
@@ -320,7 +320,7 @@ export class FhirQuestionnaireItem extends FhirBackboneElement {
     code?: FhirCoding[];
     definition?: FhirUri;
     enableWhen?: FhirQuestionnaireItemEnableWhen[];
-    initialAttachment?: FhirAttachement;
+    initialAttachment?: FhirAttachment;
     initialBoolean?: boolean;
     initialCoding?: FhirCoding;
     initialDate?: FhirDate;
@@ -347,7 +347,7 @@ export class FhirQuestionnaireItem extends FhirBackboneElement {
 
 export class FhirQuestionnaireItemEnableWhen extends FhirBackboneElement {
     [key: string]: any;
-    answerAttachment?: FhirAttachement;
+    answerAttachment?: FhirAttachment;
     answerBoolean?: boolean;
     answerCoding?: FhirCoding;
     answerDate?: FhirDate;
@@ -398,7 +398,7 @@ export class FhirQuestionnaireResponseItem extends FhirBackboneElement {
 }
 
 export class FhirQuestionnaireResponseItemAnswer extends FhirBackboneElement {
-    valueAttachment?: FhirAttachement;
+    valueAttachment?: FhirAttachment;
     valueBoolean?: boolean;
     valueCoding?: FhirCoding;
     valueDate?: FhirDate;

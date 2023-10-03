@@ -1,10 +1,7 @@
 import { Dictionary } from 'async';
-import { Agent } from 'https';
-import fetch from 'node-fetch';
+import { RequestInit } from 'node-fetch';
 import { config } from 'server';
 import { respondError } from 'server/errorHandler';
-import { consoleLog } from 'server/log/dbLogger';
-import { handleErrors, isStatus, text } from 'shared/fetch';
 import { serverRequest } from 'shared/scheduling';
 
 export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
@@ -23,9 +20,6 @@ export const CDE_SYSTEM_TO_UMLS_SYSTEM_MAP: Dictionary<string> = {
     'SNOMED CT': '',
     SNOMEDCT: '',
 };
-const httpsAgent = new Agent({
-    rejectUnauthorized: false,
-});
 const ttys: Dictionary<string> = {
     LNC: 'LA',
     NCI: 'PT',
@@ -34,7 +28,7 @@ const ttys: Dictionary<string> = {
 
 function logRejected(message: string) {
     return (error: Error) => {
-        consoleLog(`UMLS failed: ${message} ${error}`);
+        respondError({details: 'UMLS failed: ' + message})(error);
         throw error;
     };
 }
@@ -47,58 +41,41 @@ function checkForVsacErrorPage(body: string): string {
 }
 
 const umlsServerText = serverRequest(config.umls.wsHost, 1, 5, 0).requestText;
-export function umlsServerRequest(path: string): Promise<string> {
-    return umlsServerText(path)
-        .then(checkForVsacErrorPage, logRejected(''))
+export function umlsServerRequestText(path: string, options?: RequestInit, okStatuses?: number[]): Promise<string> {
+    return umlsServerText(path, options, okStatuses)
+        .then(checkForVsacErrorPage)
         .catch(logRejected(`${config.umls.wsHost + path}`));
 }
 
 export function getSourcePT(cui: string, src: string): Promise<string> {
-    return fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&apiKey=${config.uts.apikey}`, {
-                agent: httpsAgent,
-            })
-            .then(handleErrors)
-            .then(isStatus([200]))
-            .catch(logRejected('reject getSourcePT'))
-        .then(isStatus([200]))
-        .then(text)
-        .then(checkForVsacErrorPage, logRejected('get src PT from umls ERROR ' + `${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&ticket=TTT`));
+    return umlsServerRequestText(
+        `/rest/content/current/CUI/${cui}/atoms?sabs=${src}&ttys=${ttys[src]}&apiKey=${config.uts.apikey}`
+    );
 }
 
 export function getAtomsFromUMLS(cui: string, src: string): Promise<string> {
-    return fetch(`${config.umls.wsHost}/rest/content/current/CUI/${cui}/atoms?sabs=${src}&pageSize=500&apiKey=${config.uts.apikey}`, {
-                agent: httpsAgent,
-            })
-            .then(handleErrors)
-            .then(isStatus([200]))
-            .catch(logRejected('reject getAtomsFromUMLS'))
-        .then(text)
-        .then(checkForVsacErrorPage, logRejected('get atoms from umls ERROR'));
-}
-
-export function umlsCuiFromSrc(id: string, src: string): Promise<string> {
-    return fetch(`${config.umls.wsHost}/rest/search/current?string=${id}&searchType=exact`
-                + `&inputType=sourceUi&sabs=${src}&includeObsolete=true&includeSuppressible=true&apiKey=${config.uts.apikey}`, {
-                agent: httpsAgent,
-            })
-            .then(handleErrors)
-            .then(isStatus([200]))
-            .catch(logRejected('reject umlsCuiFromSrc'))
-        .then(text)
-        .then(checkForVsacErrorPage, logRejected('get cui from src ERROR'));
+    return umlsServerRequestText(
+        `/rest/content/current/CUI/${cui}/atoms?sabs=${src}&pageSize=500&apiKey=${config.uts.apikey}`
+    );
 }
 
 export function searchBySystemAndCode(system: string, code: string): Promise<string> {
-    return fetch(config.umls.wsHost + '/rest/content/current/source/' + system + '/' + code + '/atoms?apiKey=' + config.uts.apikey, {
-                agent: httpsAgent,
-            })
-            .then(handleErrors)
-            .then(isStatus([200]))
-            .catch(logRejected('reject searchBySystemAndCode'))
-        .then(text)
-        .then(checkForVsacErrorPage, (err: Error) => {
-            respondError({details: 'searchBySystemAndCode ' + config.umls.wsHost + '/rest/content/current/source/'
-                    + system + '/' + code + '/atoms?ticket=TTT'})(err);
-            throw err;
-        });
+    // if system === 'UMLS', use `/content/current/CUI/${code}?apiKey=` possibly with '/atoms'
+    // error on doc.suppressible || doc.obsolete
+    // else
+    return umlsServerRequestText(
+        `/rest/content/current/source/${system}/${code}/atoms?apiKey=${config.uts.apikey}`,
+        {},
+        [200, 404]
+    );
+}
+
+export function searchUmls(term: string): Promise<string> {
+    return umlsServerRequestText(`/rest/search/current?apiKey=${config.uts.apikey}&string=${term}`);
+}
+
+export function umlsCuiFromSrc(id: string, src: string): Promise<string> {
+    return umlsServerRequestText(
+        `/rest/search/current?string=${id}&searchType=exact&inputType=sourceUi&sabs=${src}&includeObsolete=true&includeSuppressible=true&apiKey=${config.uts.apikey}`
+    );
 }

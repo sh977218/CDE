@@ -1,6 +1,7 @@
 import { CellObject, WorkBook, WorkSheet } from 'xlsx';
 
-export type ErrorTypes = 'Code' | 'Column Heading' | 'Extra' | 'Length' | 'Manual Intervention' | 'Required' | 'Spellcheck' | 'Template' | 'Unimplemented';
+export type ErrorTypes = 'Code' | 'Column Heading' | 'Extra' | 'Length' | 'Manual Intervention' | 'Required' | 'Spellcheck'
+    | 'Suggestion' | 'Template';
 export type ExcelValue = CellObject | string | number | boolean | Date | null | undefined;
 export type Expectations = Record<number, string>; // columns mapped to text that is supposed to be in the cell
 export type Row = ExcelValue[];
@@ -22,14 +23,14 @@ export function combineLines(value: ExcelValue): ExcelValue {
         : value;
 }
 
-export function expectFormTemplate(withError: WithError, row: Row, expect?: Expectations): void {
+export function expectFormTemplate(withError: WithError, row: Row, expect?: Expectations, message?: string): void {
     if (!expect) {
         return;
     }
     (Object.keys(expect) as unknown as number[]).forEach(column => {
         const expectation = expect[column];
         if (trim(row[column]) !== trim(expectation)) {
-            withError('Template', `Expected: ${expectation} : Found: ${row[column]}`);
+            withError('Template', message || `Expected: ${expectation} : Found: ${row[column]}.`);
         }
     });
 }
@@ -37,20 +38,20 @@ export function expectFormTemplate(withError: WithError, row: Row, expect?: Expe
 export function extractFormValue(withError: WithError, row: Row, readColumn: number, formColumns: number = -1,
                                  expect?: Expectations): ExcelValue {
     if (readColumn < 0) {
-        withError('Template', `read column wrong`);
+        withError('Template', `Read column is wrong.`);
         return null;
     }
     if (readColumn > row.length - 1) {
-        withError('Template', `read column ${readColumn} outside row ${row.length}`);
+        withError('Template', `Read column ${readColumn} outside row ${row.length}.`);
         return null;
     }
     if (formColumns > -1) {
         if (readColumn >= formColumns) {
-            withError('Template', 'read column outside form columns range');
+            withError('Template', 'Read column outside form columns range.');
             return null;
         }
         if (formColumns !== row.length) {
-            withError('Template', `Form expected to have ${formColumns} columns but found ${row.length}`);
+            withError('Template', `Form expected to have ${formColumns} columns but found ${row.length}.`);
             return null;
         }
     }

@@ -6,7 +6,9 @@ import {
     VerifySubmissionFileProgress,
     VerifySubmissionFileReport
 } from 'shared/boundaryInterfaces/API/submission';
+import { keys } from 'shared/builtIn';
 import { DataElement, DataType, fixDatatype, valueDomain } from 'shared/de/dataElement.model';
+import { CdeForm, FormQuestion } from 'shared/form/form.model';
 import {
     Cb,
     Cb1,
@@ -23,19 +25,23 @@ import {
     Row,
     trim, WithError
 } from 'shared/node/io/excel';
-import { schedulingExecutor } from 'shared/scheduling';
-import { utils, WorkBook } from 'xlsx';
 import { mapSeries, nextTick } from 'shared/promise';
-import { isString } from 'shared/util';
-import { umlsPvFilter } from 'shared/de/umls';
+import { schedulingExecutor } from 'shared/scheduling';
+import { isString, noop } from 'shared/util';
 import { CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode } from 'server/uts/utsSvc';
 import * as spellChecker from 'simple-spellchecker';
+import { utils, WorkBook } from 'xlsx';
 
 interface ColumnInformation {
     order: number
     required: boolean,
     value: ExcelValue | null,
-    setValue: (withError: WithError, de: Partial<DataElement>, v: ExcelValue) => void,
+    setValue: (withError: WithError, de: Partial<DataElement>, v: ExcelValue, info: RowInformation) => void,
+}
+
+interface RowInformation {
+    bundled?: boolean;
+    bundleName?: string;
 }
 
 const columnNumber: ColumnInformation[]= [];
@@ -56,7 +62,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         order: 1,
         required: true,
         value: null,
-        setValue: (withError: WithError, de, v) => {
+        setValue: (withError, de, v) => {
             const value = valueAsString(v).toLowerCase();
             let type: DataType = 'Text';
             if (value.includes('value list')) {
@@ -75,15 +81,31 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 type = 'Dynamic Code List';
             } else if (value.includes('external')) {
                 type = 'Externally Defined';
+            } else if (value.includes('text')) {
+                type = 'Text';
+            } else {
+                withError('Required', 'CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL.');
             }
             if (value.includes('other')) {
-                withError('Manual Intervention', 'Datatype "OTHER", assistance has been requested');
+                withError('Manual Intervention', 'Datatype "OTHER", assistance has been requested.');
             }
             if (!de.valueDomain) {
                 de.valueDomain = valueDomain();
             }
             de.valueDomain.datatype = type;
             fixDatatype(de.valueDomain);
+            const name = (de.designations?.[0]?.designation || '').toLowerCase();
+            if (de.valueDomain.datatype !== 'Number' && (
+                name.includes('how many') || name.includes('number of') || name.includes('count of') || name.includes('duration')
+                || name.includes('how often') || name.includes('how long')
+            )) {
+                withError('Suggestion', `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a number.`);
+            }
+            if (de.valueDomain.datatype !== 'Date' && de.valueDomain.datatype !== 'Time' && (
+                name.includes('when') || name.includes('date') || name.includes('time')
+            )) {
+                withError('Suggestion', `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a date or time.`);
+            }
         }
     },
     'CDE Definition': {
@@ -115,7 +137,13 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         setValue: (withError, de, v) => {
             const val = valueAsString(v);
             if (!val) {
+                if (de.valueDomain?.datatype === 'Number') {
+                    withError('Suggestion', 'If CDE Data Type is Number, a unit of measure is usually needed.')
+                }
                 return;
+            }
+            if (de.valueDomain?.datatype !== 'Number') {
+                withError('Suggestion', `If CDE Data Type is ${de.valueDomain?.datatype}, Unit of Measure should be left blank.`)
             }
             if (!de.valueDomain) {
                 de.valueDomain = valueDomain();
@@ -160,12 +188,12 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (!de.dataElementConcept?.concepts?.length) {
-                withError('Required', '"DEC Concept Terminology Source" is required');
+                withError('Required', '"DEC Concept Terminology Source" is required.');
                 return;
             }
             const conceptIds = valueToArray(val);
             if (conceptIds.length !== de.dataElementConcept.concepts.length) {
-                withError('Length', `There are ${de.dataElementConcept.concepts.length} Concept Sources but ${conceptIds.length} Concept Identifiers. Must be the same length`);
+                withError('Length', `There are ${de.dataElementConcept.concepts.length} Concept Sources but ${conceptIds.length} Concept Identifiers. Must be the same count.`);
                 return;
             }
             de.dataElementConcept.concepts.forEach((c, i) => c.originId = conceptIds[i] || undefined);
@@ -187,13 +215,13 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         order: 9,
         required: false,
         value: null,
-        setValue: (withError, de, v) => {
+        setValue: (withError, de, v, info) => {
             const val = valueAsString(v);
             if (!val) {
                 return;
             }
             if (val === 'Composite' || val === 'Bundled Set of Questions') {
-                withError('Unimplemented', `${val} is not implemented.`);
+                info.bundled = true;
             }
         }
     },
@@ -201,12 +229,18 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         order: 10,
         required: false,
         value: null,
-        setValue: (withError, de, v) => {
+        setValue: (withError, de, v, info) => {
             const val = valueAsString(v);
             if (!val) {
+                if (info.bundled) {
+                    withError('Required', 'For "CDE Type" of "Composite" or "Bundled Set of Questions", "Name of Bundle" is required.');
+                }
                 return;
             }
-            withError('Unimplemented', `Bundle Name is not implemented`);
+            if (!info.bundled) {
+                withError('Required', 'If a "Name of Bundle" is given, then "CDE Type" is required.');
+            }
+            info.bundleName = val;
         }
     },
     'Permissible Value (PV) Labels': { // (by combining values in separate rows from original submission)
@@ -217,15 +251,18 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             const val = valueAsString(v);
             if (!val) {
                 if (de.valueDomain?.datatype === 'Value List') {
-                    withError('Required', 'Type Value List but no Permissible Value provided');
+                    withError('Required', 'CDE Data Type is Value List, but Permissible Value Labels are missing.');
                 }
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value`);
+                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value should be left blank. Please review datatype.`);
                 return;
             }
             de.valueDomain.permissibleValues = valueToArray(val).map(pv => ({permissibleValue: pv, valueMeaningName: pv}));
+            if (de.valueDomain.permissibleValues.length === 1) {
+                withError('Length', 'CDE Data Type is Value List, but only one Permissible Value Label was provided.');
+            }
         }
     },
     'Permissible Value (PV) Definitions': {
@@ -236,12 +273,12 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             const val = valueAsString(v);
             if (!val) {
                 if (de.valueDomain?.datatype === 'Value List') {
-                    withError('Required', 'Type Value List but no Permissible Value Definitions provided');
+                    withError('Required', 'CDE Data Type is Value List, but Permissible Value Definitions are missing.');
                 }
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value Definition`);
+                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Definition should be left blank. Please review datatype.`);
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -249,7 +286,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Definitions. Must be the same length.`);
+                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Definitions. Must be the same count.`);
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -267,7 +304,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value Concept Code`);
+                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Code should be left blank. Please review datatype.`);
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -275,7 +312,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Concept Identifiers. Must be the same length.`);
+                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Concept Identifiers. Must be the same count.`);
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -293,7 +330,8 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value Concept Source`);
+                withError('Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Source should be left blank. Please review datatype.`);
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -301,7 +339,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Terminology Sources. Must be the same length.`);
+                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Terminology Sources. Must be the same count.`);
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -319,7 +357,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value Code`);
+                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code should be left blank. Please review datatype.`);
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -327,7 +365,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                withError('Length', `The are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Codes. Must be the same length.`);
+                withError('Length', `The are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Codes. Must be the same count.`);
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -345,7 +383,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `Type ${de.valueDomain?.datatype} should not have a Permissible Value Code System`);
+                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code System should be left blank. Please review datatype.`);
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -353,7 +391,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Code Systems. Must be the same length.`);
+                withError('Length', `There are ${de.valueDomain.permissibleValues.length} PV Labels but ${valArray.length} PV Code Systems. Must be the same count.`);
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -361,7 +399,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 if (permissibleValueCodeSystems.includes(codeSystem)) {
                     pv.codeSystemName = codeSystem;
                 } else {
-                    withError('Code', `PV code system "${codeSystem}" is not recognized`);
+                    withError('Code', `PV code system "${codeSystem}" is not recognized.`);
                 }
             });
         }
@@ -387,7 +425,10 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             if (!val) {
                 return;
             }
-            withError('Unimplemented', 'Keywords/Tags is not implemented');
+            if (!de.properties) {
+                de.properties = []
+            }
+            de.properties.push({key: 'CDE Tags', value: val});
         }
     }
 };
@@ -423,7 +464,8 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             name: null,
             version: null,
         },
-        dataElements: []
+        dataElements: [],
+        forms: [],
     };
     const progress: VerifySubmissionFileProgress = {
         row: 0,
@@ -432,7 +474,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         code: 0,
         codeTotal: 0
     };
-    const {run: execute} = schedulingExecutor(10, 0);
+    const {run: execute} = schedulingExecutor(100, 0); // limit total server resources used
     let browserTimer: number = 0;
     let closeoutPromiseResolve: Cb | void;
     let updateHandler: Cb1<true | void> | void;
@@ -484,7 +526,8 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, {header: 1, defval: null});
         let row = 0;
 
-        expectFormTemplate(withError(row), rows[row++], {7: 'v.2023.03'});
+        expectFormTemplate(withError(row), rows[row++], {7: 'v.2023.03'},
+            'Submission does not use the current submission template (version v.2023.03). No action is needed from you, but our team may contact you if additional information is required. The current version can always be found in the NLM Common Data Elements Team, in the General channel, under Files, in the CDE_Governance folder.');
         expectFormTemplate(withError(row), rows[row++], {1: 'CDE Governance Submission Cover Sheet'});
         row++;
         row++;
@@ -537,22 +580,46 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         expectFormTemplate(withError(2), rows[1], {0: 'Required', 1: 'Required'});
 
         if (!valueAsString(rows[2][0]).startsWith('A unique and unambiguous label to help users')) {
-            withError(3)('Template', 'Description Row is missing');
+            withError(3)('Template', 'Description Row is missing.');
             return !errors.length;
         }
 
         progress.row += 3;
         const deProcessing: Promise<void>[] = [];
-        await mapSeries(rows.slice(3), (row, i) => nextTick().then(() => {
-            const withErrorRow = withError(i + 4);
+        const labelsMap: Record<string, number[]> = {};
+        await mapSeries(rows.slice(3), (row, i) => nextTick().then(() => { // sync processing one at a time
+            const rowNumber = i + 4;
+            const withErrorRow = withError(rowNumber);
             progress.row++;
-            const de = storeCdeData(withErrorRow, row);
+            const info: RowInformation = {};
+            const de = storeCdeData(withErrorRow, row, info);
             if (de) {
                 progress.cde++;
                 data.dataElements.push(de);
-                deProcessing.push(processDe(withErrorRow, de))
+
+                if (info.bundleName) {
+                    bundle(data.forms, info.bundleName, de);
+                }
+
+                const label = de.designations?.[0].designation;
+                if (label) {
+                    const m = labelsMap[label];
+                    if (m) {
+                        m.push(rowNumber);
+                    } else {
+                        labelsMap[label] = [rowNumber];
+                    }
+                }
+
+                deProcessing.push(processDe(withErrorRow, de)); // async, no wait
             }
         }));
+        Object.keys(labelsMap).forEach(label => {
+            const m = labelsMap[label];
+            if (m.length > 1) {
+                withError('(' + m.join(', ') + ')')('Suggestion', 'In most cases, Preferred Question Text should be unique. Duplicates were found.');
+            }
+        });
 
         async function processDe(withError: WithError, de: Partial<DataElement>) {
             if (!de) {
@@ -582,13 +649,6 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
     }
 
     async function processPVs(withError: WithError, dataElement: Partial<DataElement>) {
-        // return Promise.all(dataElement.valueDomain?.permissibleValues.map(pv => {
-        //     progress.codeTotal++;
-        //     execute(() => umlsServerRequest('/...').then(data => {
-        //         progress.code++;
-        //         validationErrors.CDEs.push(`${dataElement.tinyId} ${pv.codeSystemName} ${pv.valueMeaningCode} not found`);
-        //     })).then();
-        // }));
         if (dataElement.valueDomain?.datatype === 'Value List' && dataElement.valueDomain?.permissibleValues) {
             return Promise.all(dataElement.valueDomain.permissibleValues.map(pv => validateCodes(withError, pv)));
         }
@@ -598,7 +658,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         return Promise.all([
             validateCode(withError, pv.codeSystemName, pv.valueMeaningCode, pv.valueMeaningName),
             validateCode(withError, pv.conceptSource, pv.conceptId, null)
-        ]).then();
+        ]).then(noop, noop);
     }
 
     function validateCode(withError: WithError, system?: string, code?: string, name?: string | null): Promise<void> {
@@ -622,22 +682,27 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             return Promise.resolve();
         }
 
-        progress.codeTotal++;
-        return mapSeries(
-            umlsCodes,
-            (c, i) => execute(() => searchBySystemAndCode(umlsSystems[i] || umlsSystems[0], trim(c)).then(
-                dataRes => {
-                    if (!dataRes || dataRes.startsWith('<html')) {
-                        return [];
-                    }
-                    const response = JSON.parse(dataRes);
-                    if (!Array.isArray(response.result)) {
-                        return [];
-                    }
-                    return (response.result as any[]).map(r => r.name as string);
-                },
-                err => []
-            ))
+        return Promise.all(
+            umlsCodes.map((c, i) => {
+                progress.codeTotal++;
+                return execute(() => searchBySystemAndCode(umlsSystems[i] || umlsSystems[0], trim(c)).then(
+                    dataRes => {
+                        progress.code++;
+                        if (!dataRes || dataRes.startsWith('<html')) {
+                            return [];
+                        }
+                        const response = JSON.parse(dataRes);
+                        if (!Array.isArray(response.result)) {
+                            return [];
+                        }
+                        return (response.result as any[]).map(r => r.name as string);
+                    },
+                    err => {
+                        progress.code++;
+                        throw err;
+                    })
+                );
+            })
         ).then(
             results => {
                 function match(results: string[][], name: string): boolean {
@@ -659,14 +724,13 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
                     return;
                 }
                 if (!name || !match(results, name.toLowerCase())) {
-                    withError('Code',`UMLS validation for ${system}/${code} "${results.join()}" does not match "${name}"`);
+                    withError('Code',`UMLS validation for ${system}/${code} "${results.join()}" does not match "${name}".`);
                 }
             },
             err => {
-                withError('Code', `UMLS validation for ${system}/${code} failed with error: ${err}`)
+                withError('Code', `UMLS validation for ${system}/${code} failed with error: ${err}.`);
             }
-        )
-            .finally(() => progress.code++);
+        );
     }
 
     function spellcheckDe(withError: WithError, dataElement: Partial<DataElement>){
@@ -695,7 +759,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
                     if (!/\d/.test(term) && term.toUpperCase() !== term) {
                         term = term.trim().toLowerCase();
                         if (!dictionary.spellCheck(term)) {
-                            withError('Spellcheck', `${term} is misspelled in ${field.prop} property`);
+                            withError('Spellcheck', `"${term}" is misspelled in "${field.prop}" property.`);
                         }
                     }
                 }
@@ -704,18 +768,57 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
     }
 }
 
+function bundle(forms: Partial<CdeForm>[], name: string, de: Partial<DataElement>) {
+    let form = forms.find(form => form.designations?.[0].designation === name);
+    if (!form) {
+        form = {formElements: [], designations: [{designation: name}]};
+        forms.push(form);
+    }
+    if (!form.formElements) {
+        form.formElements = [];
+    }
+
+    const q = new FormQuestion();
+    q.label = q.question.cde.name = de.designations?.[0] ? de.designations[0].designation : '';
+    q.question.datatype = de.valueDomain?.datatype || 'Text';
+
+    form.formElements.push(q);
+}
+
 function getColumnPositions(headerRow: Row): string[] {
-    return headerRow.map((h, i) => {
+    const expectedColumns: string[] = [];
+    const optionalColumns: string[] = [];
+    keys(excelCdeColumns).forEach(column => {
+        if (excelCdeColumns[column].required) {
+            expectedColumns.push(column);
+        } else {
+            optionalColumns.push(column);
+        }
+    })
+    const errors = headerRow.map((h, i) => {
         const heading = combineLines(valueAsString(h));
         const headingMatch = excelCdeColumns[heading];
         if (!headingMatch) {
-            return `"${heading}" not found`;
+            return `Worksheet Column "${heading}" is incorrect. Please remove to continue.`;
         }
         columnNumber[i] = headingMatch;
-    }).filter(isString);
+        let match = expectedColumns.indexOf(heading);
+        if (match > -1) {
+            expectedColumns.splice(match, 1);
+        }
+        match = optionalColumns.indexOf(heading);
+        if (match > -1) {
+            optionalColumns.splice(match, 1);
+        }
+    })
+        .filter(isString)
+        .concat(expectedColumns.map(columnHeading => `Required Column "${columnHeading}" was not found in the worksheet. Add this column to continue.`));
+    return errors.length
+        ? errors.concat(optionalColumns.map(columnHeading => `Optional Column "${columnHeading}" not used yet in the worksheet. This is okay.`))
+        : errors;
 }
 
-function storeCdeData(withError: WithError, row: Row): Partial<DataElement> | null {
+function storeCdeData(withError: WithError, row: Row, info: RowInformation): Partial<DataElement> | null {
     if (row.length < 19) {
         withError('Template', `Row length ${row.length} is less than the required 19 columns.`);
         return null;
@@ -730,17 +833,17 @@ function storeCdeData(withError: WithError, row: Row): Partial<DataElement> | nu
         const value = cellValue(cell);
         const columnInformation = columnNumber[i];
         if (!columnInformation) {
-            withError('Template',`column ${i} is missing`);
+            withError('Template',`column ${i} is missing.`);
             return;
         }
         if (columnInformation.required && value === null) {
-            withError('Required', `Column ${i}: Required but no value provided`);
+            withError('Required', `Column ${i}: Required but no value provided.`);
         }
         columnInformation.value = value;
     });
     const de: Partial<DataElement> = {};
     excelCdeColumnsOrdered.forEach(columnInfo => {
-        columnInfo.setValue(withError, de, columnInfo.value);
+        columnInfo.setValue(withError, de, columnInfo.value, info);
     });
     return de;
 }

@@ -1,7 +1,8 @@
 import { Agent } from 'https';
 import fetch, { RequestInit } from 'node-fetch';
-import { handleErrors, isStatus, json, text } from 'shared/fetch';
+import { isStatus, json, text } from 'shared/fetch';
 import { delay, withRetry } from 'shared/promise';
+import { noop } from 'shared/util';
 
 const httpsAgent = new Agent({
     rejectUnauthorized: false,
@@ -11,7 +12,7 @@ const httpsAgent = new Agent({
 export function schedulingExecutor(parallel = 5, rpm = 10) {
     const workers: (()=>void)[] = [];
     const idleWorkers: (()=>void)[] = [];
-    const reqQueue: (()=>void)[] = [];
+    const reqQueue: (()=>Promise<any>)[] = [];
     const throttle = throttler(rpm);
     let idleListener: Promise<void> | null = null;
     let idleListenerResolve: (()=>void) | null = null;
@@ -25,7 +26,7 @@ export function schedulingExecutor(parallel = 5, rpm = 10) {
             const req = reqQueue.shift();
             if (req) {
                 await throttle();
-                await req();
+                await req().catch(noop);
                 run(); // continue running
             } else {
                 idleWorkers.push(run); // suspend
@@ -76,16 +77,18 @@ export function throttler(rpm: number): () => Promise<void> {
 
 export function serverRequest(url: string, retries = 1, parallel = 5, rpm = 10) {
     const {run} = schedulingExecutor(parallel, rpm);
-    function send(path: string, fetchOptions: RequestInit) {
+    function send(path: string, fetchOptions: RequestInit, okStatuses?: number[]) {
         if (/^https:\/\//i.test(url)) {
             fetchOptions.agent = httpsAgent;
         }
-        return withRetry(() => fetch(url + path, fetchOptions), retries)
-            .then(handleErrors)
-            .then(isStatus([200]));
+        return withRetry(() => fetch(url + path, fetchOptions).then(isStatus(okStatuses || [200])), retries);
     }
     return {
-        requestJson: <T>(path: string, options: RequestInit): Promise<T> => run(() => send(path, options).then(res => json<T>(res))),
-        requestText: (path: string): Promise<string> => run(() => send(path, {}).then(res => text(res))),
+        requestJson: <T>(path: string, options: RequestInit, okStatuses?: number[]): Promise<T | null> => run(() =>
+            send(path, options, okStatuses).then(res => res.ok ? json<T>(res) : null)
+        ),
+        requestText: (path: string, options?: RequestInit, okStatuses?: number[]): Promise<string> => run(() =>
+            send(path, options || {}, okStatuses).then(res => res.ok ? text(res) : '')
+        ),
     };
 }

@@ -1,5 +1,6 @@
 import { SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { DataElement } from 'shared/de/dataElement.model';
+import { CdeForm } from 'shared/form/form.model';
 
 type SubmissionAttachResponse = SubmissionAttachment;
 type ValidationErrors = Record<'CDEs' | 'cover', string[]>;
@@ -9,7 +10,8 @@ interface LoadData {
         name: string | null;
         version: string | null;
     };
-    dataElements: Partial<DataElement | null>[]
+    dataElements: Partial<DataElement | null>[],
+    forms: Partial<CdeForm>[],
 }
 
 interface VerifySubmissionFileProgress {

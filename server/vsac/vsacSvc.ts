@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { config } from 'server';
 import { consoleLog } from 'server/log/dbLogger';
-import { handleErrors, isStatus, json, text } from 'shared/fetch';
+import { isStatus, json, text } from 'shared/fetch';
 import { toBase64 } from 'shared/node/nodeUtil';
 
 type CodeSystem = {system: string, version: string, url: string};

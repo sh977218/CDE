@@ -3,6 +3,10 @@ import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 import { button } from '../../pages/util';
 
+function bannerErrorMessage(text: string) {
+    return "//*[contains(@class, 'alert')][text()[normalize-space()='" + text + "']]";
+}
+
 test.describe.configure({ retries: 0 }); // no retries for edits
 
 test.describe(`Submission Edit`, async () => {
@@ -68,7 +72,7 @@ test.describe(`Submission Edit`, async () => {
         await page.getByLabel('Other').check();
         await page.getByLabel('Licensing/Copyright Description - Incomplete').first().fill('Praise CI');
         await basePage.locate('//label[contains(., "Upload Collection File - Incomplete")]');
-        // attach workbook
+        // attach good workbook
         // await button(page, 'Next').nth(2).click();
 
         await page.locator('mat-step-header').nth(3).click();
@@ -76,8 +80,9 @@ test.describe(`Submission Edit`, async () => {
         // Page 4
         await button(page, 'Submit').click();
         await basePage.locate(
-            `//*[contains(@class, 'alert')][text()[normalize-space()='Please complete all required fields on page 3. Missing Fields marked "Incomplete".']]`
+            bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
         );
+
         await basePage.locate('//dt[contains(.,"License")]/following-sibling::dd[contains(., "Other")]');
     });
 
@@ -87,5 +92,41 @@ test.describe(`Submission Edit`, async () => {
         await button(page, 'Save').first().click();
         await submissionManagePage.isSubmissionManagementCurator();
         await submissionManagePage.submissionEdit('nlm', '1.1');
+    });
+
+    test('Validate', async ({ page, basePage, snackBar, submissionManagePage }) => {
+        await submissionManagePage.submissionEdit('NLM', '1');
+        await page.locator('mat-step-header').nth(2).click();
+        await page.setInputFiles('[id="fileWorkbook"]', './e2e-playwright/assets/ScHARe CDE Governance Submission Form 2023-07-25 for dev team.xlsx');
+        await snackBar.checkAlert('Attachment Saved');
+        await button(page, 'Download Report').click();
+        await snackBar.checkAlert('Report saved. Check downloaded files.');
+
+        await basePage.locate('//h1[text()="Summary of Errors"]');
+        await basePage.locate('//h2[text()="Critical Errors"]');
+        await basePage.locate('//li[text()="Length of Lists: 12"]');
+        await basePage.locate('//li[text()="Required Field: 1"]');
+        await basePage.locate('//h1[text()="Critical Errors:"]');
+        await basePage.locate('//h2[text()="Length of Lists"]');
+        await basePage.locate(
+            '//li[text()="There are 7 PV Labels but 8 PV Definitions. Must be the same count. Row(s) 12"]'
+        );
+        await basePage.locate('//h2[text()="Required Fields"]');
+        await basePage.locate(
+            '//li[text()="CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL. Row(s) 5"]'
+        );
+
+        await button(page, 'Next').nth(2).click();
+        await basePage.locate(
+            bannerErrorMessage(
+                'There are blocking errors in the Workbook file. Please see the report below and address.'
+            )
+        );
+
+        await page.locator('mat-step-header').nth(3).click();
+        await button(page, 'Submit').click();
+        await basePage.locate(
+            bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
+        );
     });
 });

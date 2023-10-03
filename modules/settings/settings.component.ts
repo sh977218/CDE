@@ -2,7 +2,6 @@ import { Component, HostListener, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { canSubmissionReview } from 'shared/security/authorizationShared';
 
 @Component({
     templateUrl: './settings.component.html',
@@ -10,7 +9,6 @@ import { canSubmissionReview } from 'shared/security/authorizationShared';
 })
 export class SettingsComponent {
     @ViewChild('drawer', { static: true }) drawer!: MatSidenav;
-    canSubmissionReview = canSubmissionReview;
     isMobile: boolean = window.innerWidth < 576;
     opened: boolean = true;
 
