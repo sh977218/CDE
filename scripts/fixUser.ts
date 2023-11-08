@@ -1,3 +1,4 @@
+import 'server/globals';
 import { Model } from 'mongoose';
 import { userModel, UserDocument } from 'server/user/userDb';
 
@@ -10,9 +11,8 @@ async function doOneCollection(collection: Model<UserDocument>) {
     const cursor = collection.find(cond).cursor();
     return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
-        if (Array.isArray(modelObj.roles)) {
-            model.roles = modelObj.roles.filter((r: any) => r !== 'AttachmentReviewer');
-        }
+        const createdDate = modelObj._id.getTimestamp();
+        model.createdDate = createdDate;
         await model.save();
     });
 }

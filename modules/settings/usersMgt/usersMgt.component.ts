@@ -9,6 +9,7 @@ import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/cr
 type FullUser = User & {
     lastLogin: string;
     knownIPs: string;
+    createdDate: Date;
 };
 
 @Component({

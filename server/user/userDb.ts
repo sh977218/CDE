@@ -22,6 +22,7 @@ export interface CommentNotification {
 
 export interface UserFull extends User {
     commentNotifications: CommentNotification[];
+    createdDate: Date;
     lastLogin: Date | number;
     lockCounter: number;
     knownIPs: string[];
@@ -56,6 +57,10 @@ const userSchema = new Schema({
     commentNotifications: [commentNotificationSchema],
     email: StringType,
     password: StringType,
+    createdDate: {
+        type: Date,
+        default: new Date()
+    },
     lastLogin: Date,
     lastLoginInformation: {
         email: StringType,
