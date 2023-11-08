@@ -48,7 +48,7 @@
                            [required]="q.fe.question.required"
                            [disabled]="!q.fe.question.editable"/>
                     <span [textContent]="NRS.getPvLabel(a)"></span>
-                    <span class="native-value" *ngIf="nrs.profile.displayValues"
+                    <span class="native-value" data-testid="native-value" *ngIf="nrs.profile.displayValues"
                           [textContent]="NRS.getPvDisplayValue(a)"></span>
                 </label>
                 <div *ngIf="q.fe.question.required && !NRS.answeredValueListAnswer(nrs.elt.formInput[ni + q.name])">
@@ -67,7 +67,7 @@
                            [required]="q.fe.question.required"
                            [disabled]="!q.fe.question.editable"/>
                     <span [textContent]="NRS.getPvLabel(a)"></span>
-                    <span class="native-value" *ngIf="nrs.profile.displayValues"
+                    <span class="native-value" data-testid="native-value" *ngIf="nrs.profile.displayValues"
                           [textContent]="NRS.getPvDisplayValue(a)"></span>
                 </label>
                 <div *ngIf="q.fe.question.required && !NRS.answeredValueListAnswer(nrs.elt.formInput[ni + q.name], true)">

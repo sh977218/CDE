@@ -2,12 +2,13 @@
 <div *ngIf="dPVMs.length === 0">
     There are no Display Profiles.
 </div>
-<mat-card *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}">
+<mat-card *ngFor="let dPVM of dPVMs; index as index" id="profile_{{index}}" data-testid="display-profile">
     <mat-card-header>
-        <mat-card-title>
+        <mat-card-title data-testid="display-profile-header">
             <h3>
                 {{dPVM.profile.name}}
                 <cde-delete-with-confirm *ngIf="canEdit" (click)="interruptEvent($event)"
+                                         data-testid="delete-display-profile"
                                          (deleted)="removeDisplayProfile(index)">
                 </cde-delete-with-confirm>
             </h3>
@@ -29,33 +30,39 @@
                         <section class="displayProfileSettings">
                             <label>
                                 Default Value
-                                <select class="form-control" [disabled]="!canEdit"
+                                <select class="form-control" [disabled]="!canEdit" data-testid="display-profile-style"
                                         [(ngModel)]="dPVM.profile.displayType" (ngModelChange)="setDisplayType(dPVM)">
                                     <option value="Follow-up">Print (Follow-up style)</option>
                                     <option value="Dynamic">Digital (Dynamic style)</option>
                                 </select>
                             </label>
                             <mat-checkbox id="displayAsMatrix_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-as-matrix"
                                           [(ngModel)]="dPVM.profile.sectionsAsMatrix"
                                           (change)="eltChange.emit()">Sections as matrices
                             </mat-checkbox>
                             <mat-checkbox id="displayValues_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-values"
                                           [(ngModel)]="dPVM.profile.displayValues"
                                           (change)="eltChange.emit()">Display answer values
                             </mat-checkbox>
                             <mat-checkbox id="displayInstructions_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-instructions"
                                           [(ngModel)]="dPVM.profile.displayInstructions"
                                           (change)="eltChange.emit()">Display Instructions
                             </mat-checkbox>
                             <mat-checkbox id="displayCopyright_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-copyright"
                                           [(ngModel)]="dPVM.profile.displayCopyright"
                                           (change)="eltChange.emit()">Display Copyright
                             </mat-checkbox>
                             <mat-checkbox id="displayNumbering_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-question-number"
                                           [(ngModel)]="dPVM.profile.displayNumbering"
                                           (change)="eltChange.emit()">Display Question Numbers
                             </mat-checkbox>
                             <mat-checkbox id="displayInvisible_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-invisible-questions"
                                           [(ngModel)]="dPVM.profile.displayInvisible"
                                           (change)="eltChange.emit()">Display Invisible Questions
                             </mat-checkbox>
@@ -75,6 +82,7 @@
                                 <mat-hint>(Use # in place of number. Ex: "#." for "1.")</mat-hint>
                             </mat-form-field>
                             <mat-checkbox id="displayMetadataDevice_{{index}}" [disabled]="!canEdit"
+                                          data-testid="display-profile-display-metadata-device"
                                           [(ngModel)]="dPVM.profile.metadata.device"
                                           (change)="eltChange.emit()">Display Metadata Device
                             </mat-checkbox>
@@ -171,7 +179,7 @@
         </div>
     </mat-card-content>
 </mat-card>
-<button *ngIf="canEdit" class="button mT" (click)="addProfile()">
+<button *ngIf="canEdit" class="button mT" (click)="addProfile()" data-testid="add-profile-button">
     <mat-icon>add</mat-icon>
     Add Profile
 </button>

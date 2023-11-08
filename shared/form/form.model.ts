@@ -176,7 +176,7 @@ export class DisplayProfile {
     displayInstructions = true;
     displayInvisible = false;
     displayNumbering = true;
-    displayType: DisplayType = 'Follow-up';
+    displayType: DisplayType ;
     displayValues = false;
     metadata: { device?: boolean } = {};
     name: string;
@@ -185,8 +185,9 @@ export class DisplayProfile {
     sectionsAsMatrix = true;
     unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
 
-    constructor(name = '') {
+    constructor(name = '',displayType='Follow-up' as DisplayType) {
         this.name = name;
+        this.displayType = displayType
     }
 }
 

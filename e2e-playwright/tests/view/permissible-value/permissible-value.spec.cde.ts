@@ -44,13 +44,13 @@ test.describe(`Codes with synonyms`, async () => {
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'UMLS'))
                 .toHaveText(['C1515945', 'American Indian or Alaska Native'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'UMLS'))
-                .toHaveText(['C0078988', 'Asians'], {timeout: 10000});
+                .toHaveText(['C5779849', 'Asian race (racial group)'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(2), 'UMLS'))
                 .toHaveText(['C0007457', 'Caucasian'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(3), 'UMLS'))
                 .toHaveText(['C5441680', 'Black or African American'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(4), 'UMLS'))
-                .toHaveText(['C1706613', 'Not Stated'], {timeout: 10000});
+                .toHaveText(['C1706613', 'Not Reported'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(5), 'UMLS'))
                 .toHaveText(['C0439673', 'Unknown'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(6), 'UMLS'))
@@ -82,7 +82,7 @@ test.describe(`Codes with synonyms`, async () => {
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.first(), 'SNOMEDCT'))
                 .toHaveText(['413490006', 'American Indian or Alaska native'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(1), 'SNOMEDCT'))
-                .toHaveText(['413582008 | 414978006', 'Asian race | Oriental'], {timeout: 10000});
+                .toHaveText(['413582008', 'Asian race'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(2), 'SNOMEDCT'))
                 .toHaveText(['413773004', 'Caucasian'], {timeout: 10000});
             await test.expect(cdePage.permissibleValueSynonymsTds(tableRows.nth(5), 'SNOMEDCT'))

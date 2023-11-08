@@ -1,6 +1,5 @@
 package gov.nih.nlm.form.test;
 
-import gov.nih.nlm.form.test.displayProfile.DisplayProfile;
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;
@@ -197,22 +196,6 @@ public class BaseFormTest extends NlmCdeBaseTest {
             textPresent("IOException");
         }
         return builder.toString();
-    }
-
-    protected void createDisplayProfile(DisplayProfile displayProfile) {
-        createDisplayProfile(
-                displayProfile.displayProfileIndex,
-                displayProfile.displayProfileName,
-                displayProfile.displayAsMatrix,
-                displayProfile.displayAnswerValue,
-                displayProfile.displayInstruction,
-                displayProfile.displayQuestionNumber,
-                displayProfile.displayProfileType,
-                displayProfile.numberOfColumn,
-                displayProfile.displayInvisible,
-                displayProfile.answerDropdownLimit,
-                displayProfile.displayMetadataDevice
-        );
     }
 
     protected void createDisplayProfile(int index, String name, boolean matrix, boolean displayValues, boolean instructions,

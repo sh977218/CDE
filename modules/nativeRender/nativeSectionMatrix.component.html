@@ -38,7 +38,7 @@
                            [required]="q.question.required"
                            [disabled]="!q.question.editable"/>
                 </ng-template>
-                <span class="native-value">{{nrs.profile.displayValues ? NRS.getPvDisplayValue(pv) : '&nbsp;'}}</span>
+                <span class="native-value" data-testid="native-value">{{nrs.profile.displayValues ? NRS.getPvDisplayValue(pv) : '&nbsp;'}}</span>
             </td>
         </tr>
         <tr *ngIf="q.question.required" style="display: table-row;border-top: hidden;"

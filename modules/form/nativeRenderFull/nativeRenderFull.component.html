@@ -31,7 +31,7 @@
         Edit
     </button>
     <ng-container *ngIf="elt.displayProfiles?.length > 0">
-        <button id="select_display_profile" class="button light" [matMenuTriggerFor]="dpMenu">
+        <button id="select_display_profile" class="button light" [matMenuTriggerFor]="dpMenu" data-testid="display_profile_select">
             Display Profile: {{selectedProfileName}}
             <mat-icon>arrow_drop_down</mat-icon>
         </button>
