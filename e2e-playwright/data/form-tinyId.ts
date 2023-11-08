@@ -8,8 +8,8 @@ export default {
     'Short Form 36-Item Health Survey (SF-36)': '712ArJSHYl',
     'Disallow render form': 'Yztitl7Ri',
     'Multiple Select Display Profile Test': 'QktaN3OFL4',
-    'Answer Value Display Profile Test':'QktaN3OFL2',
-    'Metadata Device Display Profile Test':'QktaN3OFL3',
-    'Matrix Display Profile Test':'QktaN3OFL1',
-    'PROMIS SF v1.1 - Anger 5a':'mk8PNndtLg',
+    'Answer Value Display Profile Test': 'QktaN3OFL2',
+    'Metadata Device Display Profile Test': 'QktaN3OFL3',
+    'Matrix Display Profile Test': 'QktaN3OFL1',
+    'PROMIS SF v1.1 - Anger 5a': 'mk8PNndtLg',
 };

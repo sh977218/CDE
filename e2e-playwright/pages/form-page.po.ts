@@ -8,7 +8,7 @@ export class FormPagePo extends BasePagePo {
 
     async goToForm(tinyId: string) {
         await this.page.goto(`/formView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, {state: 'visible'});
+        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
     }
 
     alerts(): Locator {
@@ -56,11 +56,11 @@ export class FormPagePo extends BasePagePo {
 
     /* Display Profile */
     addDisplayProfileButton() {
-        return this.page.getByTestId('add-profile-button')
+        return this.page.getByTestId('add-profile-button');
     }
 
     displayProfileContainer() {
-        return this.page.getByTestId('display-profile')
+        return this.page.getByTestId('display-profile');
     }
 
     displayProfileHeading() {
@@ -68,7 +68,7 @@ export class FormPagePo extends BasePagePo {
     }
 
     displayProfileDeleteButton(displayProfileLocator: Locator) {
-        return displayProfileLocator.getByTestId('delete-display-profile')
+        return displayProfileLocator.getByTestId('delete-display-profile');
     }
 
     displayProfileConfirmButton(displayProfileLocator: Locator) {
@@ -76,61 +76,60 @@ export class FormPagePo extends BasePagePo {
     }
 
     displayProfileStyleSelect(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId('display-profile-style')
+        return displayProfileContainerLocator.getByTestId('display-profile-style');
     }
 
     displayProfileDisplayAsMatrixCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-as-matrix`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-as-matrix`).locator('input');
     }
 
     displayProfileDisplayValuesCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-values`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-values`).locator('input');
     }
 
     displayProfileDisplayInstructionsCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-instructions`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-instructions`).locator('input');
     }
 
     displayProfileDisplayCopyrightCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-copyright`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-copyright`).locator('input');
     }
 
     displayProfileDisplayQuestionNumberCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-question-number`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-question-number`).locator('input');
     }
 
     displayProfileDisplayInvisibleQuestionsCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-invisible-questions`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-invisible-questions`).locator('input');
     }
 
     displayProfileDisplayDisplayMetadataDeviceCheckbox(displayProfileContainerLocator: Locator) {
-        return displayProfileContainerLocator.getByTestId(`display-profile-display-metadata-device`).locator('input')
+        return displayProfileContainerLocator.getByTestId(`display-profile-display-metadata-device`).locator('input');
     }
 
-    previewAnswerValue(){
-        return this.page.getByTestId('preview-div').getByTestId('native-value')
+    previewAnswerValue() {
+        return this.page.getByTestId('preview-div').getByTestId('native-value');
     }
-    displayProfileAnswerValue(){
-        return this.displayProfileContainer().first().getByTestId('native-value')
+    displayProfileAnswerValue() {
+        return this.displayProfileContainer().first().getByTestId('native-value');
     }
-    previewMetaDeviceAddButton(){
-        return this.page.getByTestId('preview-div').getByTestId('meta-device-add-button')
+    previewMetaDeviceAddButton() {
+        return this.page.getByTestId('preview-div').getByTestId('meta-device-add-button');
     }
-    displayProfileMetaDeviceAddButton(){
-        return this.displayProfileContainer().first().getByTestId('meta-device-add-button')
-    }
-
-    previewMatrixCheckbox(){
-        return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='checkbox']`)
-    }
-    previewMatrixRadio(){
-        return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='radio']`)
+    displayProfileMetaDeviceAddButton() {
+        return this.displayProfileContainer().first().getByTestId('meta-device-add-button');
     }
 
-    displayProfileSelect(){
+    previewMatrixCheckbox() {
+        return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='checkbox']`);
+    }
+    previewMatrixRadio() {
+        return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='radio']`);
+    }
+
+    displayProfileSelect() {
         return this.page.getByTestId('display_profile_select');
     }
 
     /* Display Profile */
-
 }
