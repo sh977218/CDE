@@ -1,0 +1,42 @@
+button.close {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+}
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+  cursor: pointer;
+}
+
+.close {
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .5;
+
+  &:hover {
+    color: #000;
+    text-decoration: none;
+
+    &:not(:disabled) {
+      opacity: .75;
+    }
+  }
+}
+
+.closed {
+  margin-top: -85px;
+  transition: visibility 0.5s, margin-top 0.5s linear;
+  visibility: collapse;
+}
+
+#block-bean-emergency-message {
+  background-color: #be2c2c;
+  color: #FFF;
+  padding: 10px;
+  text-align: center;
+  color: black;
+}

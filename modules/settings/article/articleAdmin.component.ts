@@ -5,17 +5,24 @@ import { AlertService } from 'alert/alert.service';
 import { fileInputToFormData } from 'non-core/browser';
 import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
 import { Article } from 'shared/article/article.model';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
     selector: 'cde-article-admin',
     templateUrl: './articleAdmin.component.html',
+    styleUrls: ['./articleAdmin.component.scss'],
 })
 export class ArticleAdminComponent {
     article!: Partial<Article>;
-    articles = ['whatsNew', 'contactUs', 'videos', 'guides', 'about', 'resources', 'nihDataSharing'];
+    articles = ['whatsNew', 'contactUs', 'videos', 'guides', 'about', 'resources', 'nihDataSharing', 'shutdownBanner'];
     selectedKey?: string;
 
     constructor(private http: HttpClient, public dialog: MatDialog, private alertSvc: AlertService) {}
+
+    onShutDownToggleChange(event: MatSlideToggleChange) {
+        this.article.active = event.checked;
+        this.save();
+    }
 
     save() {
         this.http.post('/server/article/' + this.selectedKey, this.article).subscribe(

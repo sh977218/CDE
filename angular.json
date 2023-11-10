@@ -140,7 +140,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.13mb"
+                  "maximumError": "1.14mb"
                 }
               ],
               "outputHashing": "all"
@@ -157,7 +157,7 @@
                   "type": "bundle",
                   "name": "main",
                   "maximumWarning": "170kb",
-                  "maximumError": "1.13mb"
+                  "maximumError": "1.14mb"
                 }
               ],
               "outputHashing": "all"

@@ -6,5 +6,6 @@ export const articleSchema = new Schema({
     body: String,
     created: {type: Date, default: new Date()},
     updated: {type: Date, default: new Date()},
+    active: {type: Boolean, default: false},
     attachments: [attachmentSchema]
 }, {});

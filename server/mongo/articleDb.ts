@@ -53,10 +53,12 @@ class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleD
     update(article: Article): Promise<Article> {
         return this.model.findOneAndUpdate(
             {key: article.key},
-            {$set: {body: article.body, updated: new Date()}},
+            {$set: {body: article.body, updated: new Date(), active: article.active}},
             {upsert: true, new: true}
         )
-            .then(newArticle => newArticle.toObject<Article>())
+            .then(newArticle => {
+                return newArticle.toObject<Article>();
+            })
             .then(article => (this.hooks.save.post as (a: Article) => PromiseOrValue<Article>)(article)); // TODO: TypeScript/issues/37181
     }
 }

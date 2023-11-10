@@ -8,4 +8,5 @@ export interface Article {
     created?: Date;
     attachments: Attachment[];
     rssFeeds?: string[];
+    active: boolean;
 }

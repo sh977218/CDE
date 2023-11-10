@@ -10,6 +10,14 @@ export class NavigationMenuPo {
         this.matPage = new MaterialPo(page);
     }
 
+    shutdownBanner() {
+        return this.page.getByTestId(`shutdown-banner-container`);
+    }
+
+    shutdownBannerCloseButton() {
+        return this.page.getByTestId('banner-close-button');
+    }
+
     searchPreferencesButton() {
         return this.page.getByTestId('search-preferences');
     }
@@ -65,5 +73,10 @@ export class NavigationMenuPo {
     async gotoSubmissions() {
         await this.page.locator('#createEltLink').hover();
         await this.matPage.matMenuItem('Collection').click();
+    }
+
+    async gotoArticle() {
+        await this.page.locator('#articles').click();
+        return this.page.waitForSelector('h1', { state: 'visible' });
     }
 }

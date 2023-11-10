@@ -23,6 +23,7 @@ import { UpdateRegistrationStatusModalPo } from '../pages/update-registration-st
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
+import { ArticlePagePo } from '../pages/setting/article-page.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
 
 // Manage classification page
@@ -70,6 +71,7 @@ const test = baseTest.extend<{
     manageOrganizationsPage: ManageOrganizationsPo;
     materialPage: MaterialPo;
     profilePage: ProfilePagePo;
+    articlePage: ArticlePagePo;
     settingMenu: SettingMenuPo;
     submissionEditPage: SubmissionEditPo;
     submissionManagePage: SubmissionManagePo;
@@ -139,6 +141,9 @@ const test = baseTest.extend<{
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
+    },
+    articlePage: async ({ page }, use) => {
+        await use(new ArticlePagePo(page));
     },
     submissionEditPage: async ({ page }, use) => {
         await use(new SubmissionEditPo(page));

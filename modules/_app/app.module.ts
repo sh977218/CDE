@@ -23,6 +23,7 @@ import { environment } from 'environments/environment';
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { BackForwardService } from '_app/backForward.service';
+import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
 import { IEBannerComponent } from '_app/banner/ieBanner.component';
 import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { ElasticService } from '_app/elastic.service';
@@ -74,6 +75,7 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         NotificationDialogComponent,
         LoginFederatedComponent,
         IEBannerComponent,
+        ShutdownBannerComponent,
         InactivityLoggedOutComponent,
         NavigationComponent,
         TruncateLongNamePipe,
