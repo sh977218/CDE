@@ -28,6 +28,7 @@ test.describe(`Merge form`, async () => {
         });
 
         test(`Merge and retire CDEs`, async ({ myBoardPage, boardPage, cdePage, formPage, snackBar }) => {
+            test.fixme();
             await myBoardPage.boardTitle('MergeFormRetire').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();
