@@ -3,6 +3,7 @@ import * as Parser from 'rss-parser';
 import { dbPlugins } from 'server';
 import { Article } from 'shared/article/article.model';
 import { canEditArticleMiddleware } from 'server/system/authorization';
+import * as cors from 'cors';
 
 const parser = new Parser();
 require('express-async-errors');
@@ -10,7 +11,11 @@ require('express-async-errors');
 export function module() {
     const router = Router();
 
-    ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about', 'nihDataSharing', 'shutdownBanner'].forEach(a => {
+    router.options('/shutdownBanner', cors()); // <-- enable pre-flight request for GET.
+
+    router.get('/shutdownBanner', cors(), async (req, res) => res.send(await dbPlugins.article.byKey('shutdownBanner')));
+
+    ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about', 'nihDataSharing'].forEach(a => {
         router.get('/' + a, async (req, res): Promise<Response> => {
             return res.send(await dbPlugins.article.byKey(a));
         });
