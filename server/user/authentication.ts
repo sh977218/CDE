@@ -180,6 +180,7 @@ export function findAddUserLocally(profile: UserAddProfile, updates: UserUpdateP
                     orgCurator: [],
                     orgEditor: [],
                     commentNotifications: [],
+                    createdDate: new Date(),
                     lastLogin: 0,
                     lockCounter: 0,
                     knownIPs: [],

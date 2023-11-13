@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Query } from 'mongoose';
-import { config } from 'server';
+import { config, ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 import { CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
@@ -21,6 +21,7 @@ export interface CommentNotification {
 }
 
 export interface UserFull extends User {
+    _id: ObjectId;
     commentNotifications: CommentNotification[];
     createdDate: Date;
     lastLogin: Date | number;
@@ -122,7 +123,7 @@ export const userRefSchema = {
     _id: Schema.Types.ObjectId,
     username: {type: StringType, index: true}
 };
-export type UserDocument = Document & UserFull;
+export type UserDocument = Document<ObjectId, {}, UserFull> & UserFull;
 export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = {password: 0};
@@ -132,7 +133,7 @@ export function addUser(user: Omit<UserFull, '_id'>, callback: CbError1<UserDocu
     new userModel(user).save(callback);
 }
 
-export function updateUserIps(userId: string, ips: string[], lastLoginInformation: UserFull['lastLoginInformation'],
+export function updateUserIps(userId: ObjectId, ips: string[], lastLoginInformation: UserFull['lastLoginInformation'],
                               callback: CbError1<UserDocument | null>): void {
     userModel.findByIdAndUpdate(userId, {
         lockCounter: 0,

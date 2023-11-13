@@ -210,8 +210,26 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
             de.tinyId = val;
         }
     },
-    'CDE Type': {
+    'Other Identifier(s)': {
         order: 9,
+        required: false,
+        value: null,
+        setValue: (withError, de, v) => {
+            const val = valueAsString(v);
+            if (!val) {
+                return;
+            }
+            if (!de.ids) {
+                de.ids = [];
+            }
+            const ids = valueToArray(val);
+            ids.forEach(id => {
+                de.ids?.push({id});
+            });
+        }
+    },
+    'CDE Type': {
+        order: 10,
         required: false,
         value: null,
         setValue: (withError, de, v, info) => {
@@ -225,7 +243,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Name of Bundle': {
-        order: 10,
+        order: 11,
         required: false,
         value: null,
         setValue: (withError, de, v, info) => {
@@ -243,7 +261,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Permissible Value (PV) Labels': { // (by combining values in separate rows from original submission)
-        order: 11,
+        order: 12,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -265,7 +283,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Permissible Value (PV) Definitions': {
-        order: 12,
+        order: 13,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -294,7 +312,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Permissible Value (PV) Concept Identifiers': {
-        order: 13,
+        order: 14,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -320,7 +338,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         },
     },
     'Permissible Value (PV) Terminology Sources': {
-        order: 14,
+        order: 15,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -347,7 +365,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Codes for Permissible Value': {
-        order: 15,
+        order: 16,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -373,7 +391,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Permissible Value Code Systems': {
-        order: 16,
+        order: 17,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -404,7 +422,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     References: {
-        order: 17,
+        order: 18,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -416,7 +434,7 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
         }
     },
     'Keywords/Tags': {
-        order: 18,
+        order: 19,
         required: false,
         value: null,
         setValue: (withError, de, v) => {
@@ -595,7 +613,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             return !errors.length;
         }
 
-        expectFormTemplate(withError(2), rows[1], {0: 'Required', 1: 'Required'});
+        expectFormTemplate(withError(2), rows[1], {0: 'Required', 1: 'Conditionally Required'});
 
         if (!valueAsString(rows[2][0]).startsWith('A unique and unambiguous label to help users')) {
             withError(3)('Template', 'Description Row is missing.');

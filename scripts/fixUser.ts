@@ -1,19 +1,17 @@
 import 'server/globals';
-import { Model } from 'mongoose';
-import { userModel, UserDocument } from 'server/user/userDb';
+import { userModel } from 'server/user/userDb';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doOneCollection(collection: Model<UserDocument>) {
+async function doOneCollection(collection: typeof userModel) {
     const cond = {};
     const cursor = collection.find(cond).cursor();
-    return cursor.eachAsync(async model => {
-        const modelObj = model.toObject();
-        const createdDate = modelObj._id.getTimestamp();
-        model.createdDate = createdDate;
-        await model.save();
+    return cursor.eachAsync(async doc => {
+        const user = doc.toObject();
+        doc.createdDate = user._id.getTimestamp();
+        await doc.save();
     });
 }
 
