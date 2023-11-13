@@ -1,11 +1,11 @@
 <ng-container *ngIf="shutdownBannerContent$ | async as shutdownBannerContent">
-    <div *ngIf="shutdownBannerContent.active && !bannerClosed" data-testid="shutdown-banner-container">
-        <button class="close" title="Close" style="padding:5px;" (click)="bannerClosed = true"
-        data-testid="banner-close-button">
-            <span aria-hidden="true">&times;</span>
+    <div class="shutdown-banner-container" *ngIf="shutdownBannerContent.active && !bannerClosed" data-testid="shutdown-banner-container">
+        <button class="close" title="Close" (click)="bannerClosed = true"
+                data-testid="banner-close-button">
+            <span>&times;</span>
         </button>
-        <div id="block-bean-emergency-message" class="block block--bean emergency-message block--bean-emergency-message"
-             [innerHTML]="shutdownBannerContent.body">
+        <div class="message-container">
+            <div [innerHTML]="shutdownBannerContent.body" ></div>
         </div>
     </div>
 </ng-container>
