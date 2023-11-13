@@ -44,7 +44,6 @@ interface RowInformation {
     bundleName?: string;
 }
 
-const columnNumber: ColumnInformation[]= [];
 const excelCdeColumnsOrdered: ColumnInformation[] = [];
 const excelCdeColumns: Record<string, ColumnInformation> = {
     'CDE Name': {
@@ -426,12 +425,29 @@ const excelCdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (!de.properties) {
-                de.properties = []
+                de.properties = [];
             }
             de.properties.push({key: 'CDE Tags', value: val});
         }
     }
 };
+function propertyColumnInformation(propertyName: string): ColumnInformation {
+    return {
+        order: -1,
+        required: false,
+        value: null,
+        setValue: (withError, de, v) => {
+            const val = valueAsString(v);
+            if (!val) {
+                return;
+            }
+            if (!de.properties) {
+                de.properties = [];
+            }
+            de.properties.push({key: propertyName, value: val})
+        }
+    };
+}
 
 const spellCheckColumns = [
     {
@@ -455,6 +471,8 @@ Object.keys(excelCdeColumns).forEach((key, i) => {
 export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
     Promise<VerifySubmissionFileReport> {
     let res: Response | null = null;
+    const additionalColumnsOrdered: ColumnInformation[] = [];
+    const columnNumber: ColumnInformation[]= [];
     const validationErrors: ValidationErrors = {
         cover: [],
         CDEs: [],
@@ -571,7 +589,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
         const rows = utils.sheet_to_json<Row>(cdesSheet, {header: 1, defval: null});
         progress.rowTotal += rows.length;
 
-        const columnErrors = getColumnPositions(rows[0]);
+        const columnErrors = getColumnPositions(rows[0], columnNumber, additionalColumnsOrdered);
         if (columnErrors.length) {
             columnErrors.forEach(message => withError(1)('Column Heading', message));
             return !errors.length;
@@ -592,7 +610,7 @@ export function processWorkBook(wb: WorkBook, progressResponses?: EventEmitter):
             const withErrorRow = withError(rowNumber);
             progress.row++;
             const info: RowInformation = {};
-            const de = storeCdeData(withErrorRow, row, info);
+            const de = storeCdeData(withErrorRow, row, info, columnNumber, additionalColumnsOrdered);
             if (de) {
                 progress.cde++;
                 data.dataElements.push(de);
@@ -785,7 +803,7 @@ function bundle(forms: Partial<CdeForm>[], name: string, de: Partial<DataElement
     form.formElements.push(q);
 }
 
-function getColumnPositions(headerRow: Row): string[] {
+function getColumnPositions(headerRow: Row, columnNumber: ColumnInformation[], additionalColumnsOrdered: ColumnInformation[]): string[] {
     const expectedColumns: string[] = [];
     const optionalColumns: string[] = [];
     keys(excelCdeColumns).forEach(column => {
@@ -797,9 +815,15 @@ function getColumnPositions(headerRow: Row): string[] {
     })
     const errors = headerRow.map((h, i) => {
         const heading = combineLines(valueAsString(h));
-        const headingMatch = excelCdeColumns[heading];
+        let headingMatch = excelCdeColumns[heading];
         if (!headingMatch) {
-            return `Worksheet Column "${heading}" is incorrect. Please remove to continue.`;
+            if (heading.startsWith('Property:')) {
+                const propertyName = heading.substring(9).trim();
+                headingMatch = propertyColumnInformation(propertyName);
+                additionalColumnsOrdered.push(headingMatch);
+            } else {
+                return `Worksheet Column "${heading}" is incorrect. Please remove to continue.`;
+            }
         }
         columnNumber[i] = headingMatch;
         let match = expectedColumns.indexOf(heading);
@@ -818,7 +842,8 @@ function getColumnPositions(headerRow: Row): string[] {
         : errors;
 }
 
-function storeCdeData(withError: WithError, row: Row, info: RowInformation): Partial<DataElement> | null {
+function storeCdeData(withError: WithError, row: Row, info: RowInformation, columnNumber: ColumnInformation[],
+                      additionalColumnsOrdered: ColumnInformation[]): Partial<DataElement> | null {
     if (row.length < 19) {
         withError('Template', `Row length ${row.length} is less than the required 19 columns.`);
         return null;
@@ -843,6 +868,9 @@ function storeCdeData(withError: WithError, row: Row, info: RowInformation): Par
     });
     const de: Partial<DataElement> = {};
     excelCdeColumnsOrdered.forEach(columnInfo => {
+        columnInfo.setValue(withError, de, columnInfo.value, info);
+    });
+    additionalColumnsOrdered.forEach(columnInfo => {
         columnInfo.setValue(withError, de, columnInfo.value, info);
     });
     return de;
