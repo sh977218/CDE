@@ -281,7 +281,6 @@
     "ngx-ui-tour-md-menu": "10.5.0",
     "nodemon": "^2.0.7",
     "optimize-js-plugin": "^0.0.4",
-    "playwright": "^1.32.3",
     "prettier": "^2.7.1",
     "reflect-metadata": "^0.1.13",
     "rollup": "^1.32.1",

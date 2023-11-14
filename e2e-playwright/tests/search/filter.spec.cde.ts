@@ -20,8 +20,8 @@ test.describe(`Search Filter`, async () => {
 
         await expect(searchPage.classificationFilterSelected('CTEP', true)).toBeVisible();
         await expect(searchPage.classificationFilterSelected('DISEASE', true)).toBeVisible();
-        await expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeTruthy();
-        await expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeTruthy();
+         expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeTruthy();
+         expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeTruthy();
 
         await expect(page.getByText('4 results')).toBeVisible();
 
@@ -32,8 +32,8 @@ test.describe(`Search Filter`, async () => {
         await searchPage.clearAllFilters().click();
 
         await expect(searchPage.classificationFilterSelected('CTEP')).toBeHidden();
-        await expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeFalsy();
-        await expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeFalsy();
+         expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeFalsy();
+         expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeFalsy();
 
         await expect(page.getByText('Search CDEs')).toBeVisible();
     });

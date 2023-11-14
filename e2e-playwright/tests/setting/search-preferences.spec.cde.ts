@@ -1,3 +1,4 @@
+import {expect} from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
@@ -15,7 +16,7 @@ test.describe(`search preferences`, async () => {
         })
 
         test.afterEach(async ({navigationMenu}) => {
-            await test.expect(navigationMenu.searchPreferencesButton()).toBeHidden();
+            await expect(navigationMenu.searchPreferencesButton()).toBeHidden();
         })
     });
 
@@ -31,7 +32,7 @@ test.describe(`search preferences`, async () => {
         })
 
         test.afterEach(async ({navigationMenu}) => {
-            await test.expect(navigationMenu.searchPreferencesButton()).toBeVisible();
+            await expect(navigationMenu.searchPreferencesButton()).toBeVisible();
         })
 
     })

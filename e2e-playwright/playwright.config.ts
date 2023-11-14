@@ -1,22 +1,5 @@
 import { expect, defineConfig, devices, PlaywrightTestConfig } from '@playwright/test';
 
-expect.extend({
-    trimmedToBe(received: string, expected: string) {
-        const pass = received.trim() === expected;
-        if (pass) {
-            return {
-                message: () => 'passed',
-                pass: true,
-            };
-        } else {
-            return {
-                message: () => 'failed',
-                pass: false,
-            };
-        }
-    },
-});
-
 const config: PlaywrightTestConfig = defineConfig({
     testDir: './tests',
     testMatch: ['/*.spec.ts'],
@@ -30,7 +13,7 @@ const config: PlaywrightTestConfig = defineConfig({
          * Maximum time expect() should wait for the condition to be met.
          * For example in `await expect(locator).toHaveText();`
          */
-        timeout: 5000,
+        timeout: 20 * 1000,
     },
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -42,8 +25,8 @@ const config: PlaywrightTestConfig = defineConfig({
     workers: process.env.CI ? 8 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { outputFolder: `playwright-report${process.env.a11y ? '-a11y' : ''}` }],
-        ['junit', { outputFile: `playwright-report${process.env.a11y ? '-a11y' : ''}/report-junit.xml` }],
+        ['html', {outputFolder: `playwright-report${process.env.a11y ? '-a11y' : ''}`}],
+        ['junit', {outputFile: `playwright-report${process.env.a11y ? '-a11y' : ''}/report-junit.xml`}],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
     outputDir: 'test-results',
@@ -65,13 +48,13 @@ const config: PlaywrightTestConfig = defineConfig({
     projects: [
         {
             name: 'CDE-Chromium',
-            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            use: {...devices['Desktop Chrome'], ignoreHTTPSErrors: true},
             testMatch: /.*.spec.cde.ts/,
             fullyParallel: true,
         },
         {
             name: 'CDE-Chromium-a11y',
-            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            use: {...devices['Desktop Chrome'], ignoreHTTPSErrors: true},
             testMatch: /.*.spec.a11y.ts/,
             fullyParallel: true,
         },

@@ -1,6 +1,6 @@
+import { expect } from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
-import { expect } from '@playwright/test';
 
 test.describe(`Classification`, async () => {
     test(`Remove organization classification`, async ({
@@ -54,7 +54,7 @@ test.describe(`Classification`, async () => {
             `10+ cdes ${classificationArray.join(' > ')}`
         );
         await classificationAuditPage.openClassificationAudit(locator);
-        await expect(await classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toBe(
+        await expect( classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toHaveText(
             `delete ${classificationArray.join(' > ')}`
         );
         await classificationAuditPage.closeClassificationAuditByTitle(locator);

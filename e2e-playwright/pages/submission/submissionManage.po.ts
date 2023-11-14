@@ -31,17 +31,17 @@ export class SubmissionManagePo extends BasePagePo {
     }
 
     async isSubmissionManagement() {
-        await this.locate('//h1[text()="NLM Organizational Authority Dashboard"]');
+        await expect(this.page.locator('//h1[text()="NLM Organizational Authority Dashboard"]')).toBeVisible();
         await this.page.locator('//h2[contains(.," Collections")]').waitFor();
         await this.tableResultsAtLeast(10);
-        await expect(await this.tableCell('NINDS').count()).toBeGreaterThanOrEqual(1);
+        expect(await this.tableCell('NINDS').count()).toBeGreaterThanOrEqual(1);
     }
 
     async isSubmissionManagementCurator() {
-        await this.locate('//h1[text()="NLM Organizational Authority Dashboard"]');
+        await expect(this.page.locator('//h1[text()="NLM Organizational Authority Dashboard"]')).toBeVisible();
         await this.page.locator('//h2[contains(.," Collections")]').waitFor();
         await this.tableResultsAtLeast(2);
-        await expect(await this.tableCell('NLM').count()).toBeGreaterThanOrEqual(1);
+        expect(await this.tableCell('NLM').count()).toBeGreaterThanOrEqual(1);
     }
 
     async submissionEdit(name: string, version: string) {

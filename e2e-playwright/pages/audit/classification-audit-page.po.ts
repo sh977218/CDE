@@ -28,7 +28,7 @@ export class ClassificationAuditPagePo {
         await this.page.waitForSelector(`.mat-expansion-panel-content`, { state: 'hidden' });
     }
 
-    classificationAuditDescriptionByTitle(locator: Locator): Promise<string> {
-        return locator.getByTestId(`classification-audit-description`).innerText();
+    classificationAuditDescriptionByTitle(locator: Locator): Locator {
+        return locator.getByTestId(`classification-audit-description`);
     }
 }

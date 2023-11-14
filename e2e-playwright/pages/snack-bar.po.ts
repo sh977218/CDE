@@ -1,5 +1,4 @@
-import { Page } from '@playwright/test';
-import test from '../fixtures/base-fixtures';
+import { Page, expect } from '@playwright/test';
 
 export class SnackBarPo {
     protected page: Page;
@@ -9,12 +8,12 @@ export class SnackBarPo {
     }
 
     async checkAlert(text: string) {
-        const alertText = await this.page
+        const alertText = this.page
             .locator('mat-snack-bar-container')
             .locator('simple-snack-bar')
             .locator('.mat-mdc-snack-bar-label');
-        await test.expect(alertText).toHaveText(text);
+        await expect(alertText).toHaveText(text, {timeout: 30 * 1000});
         await this.page.locator('mat-snack-bar-container').locator('button').click();
-        await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
+        await this.page.waitForSelector(`mat-snack-bar-container`, {state: 'hidden'});
     }
 }

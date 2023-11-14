@@ -38,7 +38,7 @@ test.describe(`Submission Edit`, async () => {
 
         // Page 2
         await button(page, 'Next').nth(1).click();
-        expect(await page.locator('.alert').textContent()).toContain(
+        await        expect( page.locator('.alert')).toContainText(
             'Please complete all required fields. Missing Fields marked "Incomplete".'
         );
 
@@ -47,7 +47,7 @@ test.describe(`Submission Edit`, async () => {
         await page.getByLabel('First Name - Incomplete').first().fill('Continuous');
         await page.getByLabel('Last Name - Incomplete').first().fill('Integration');
 
-        await basePage.locate('//label[contains(., "Organization POC Email - Incomplete")]');
+        await expect(page.locator('//label[contains(., "Organization POC Email - Incomplete")]')).toBeVisible();
         await page.getByLabel('Same as the Submitter POC').check();
         await page.getByLabel('Organization URL - Incomplete').fill('ci.cde.nlm.nih.gov');
 
@@ -62,16 +62,16 @@ test.describe(`Submission Edit`, async () => {
 
         // Page 3
         await button(page, 'Next').nth(2).click();
-        expect(await page.locator('.alert').textContent()).toContain(
+        await expect( page.locator('.alert')).toContainText(
             'Please complete all required fields. Missing Fields marked "Incomplete".'
         );
 
-        await basePage.locate(
+        await expect(page.locator(
             '//label[contains(., "Does any part of this submission have license or copyright restrictions? - Incomplete")]'
-        );
+        )).toBeVisible();
         await page.getByLabel('Other').check();
         await page.getByLabel('Licensing/Copyright Description - Incomplete').first().fill('Praise CI');
-        await basePage.locate('//label[contains(., "Upload Collection File - Incomplete")]');
+        await expect(page.locator('//label[contains(., "Upload Collection File - Incomplete")]')).toBeVisible();
         // attach good workbook
         // await button(page, 'Next').nth(2).click();
 
@@ -79,11 +79,11 @@ test.describe(`Submission Edit`, async () => {
 
         // Page 4
         await button(page, 'Submit').click();
-        await basePage.locate(
+        await expect(page.locator(
             bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
-        );
+        )).toBeVisible();
 
-        await basePage.locate('//dt[contains(.,"License")]/following-sibling::dd[contains(., "Other")]');
+        await expect(page.locator('//dt[contains(.,"License")]/following-sibling::dd[contains(., "Other")]')).toBeVisible();
     });
 
     test('Edit', async ({ page, snackBar, submissionManagePage }) => {
@@ -102,31 +102,31 @@ test.describe(`Submission Edit`, async () => {
         await button(page, 'Download Report').click();
         await snackBar.checkAlert('Report saved. Check downloaded files.');
 
-        await basePage.locate('//h1[text()="Summary of Errors"]');
-        await basePage.locate('//h2[text()="Critical Errors"]');
-        await basePage.locate('//li[text()="Length of Lists: 12"]');
-        await basePage.locate('//li[text()="Required Field: 1"]');
-        await basePage.locate('//h1[text()="Critical Errors:"]');
-        await basePage.locate('//h2[text()="Length of Lists"]');
-        await basePage.locate(
+        await expect(page.locator('//h1[text()="Summary of Errors"]')).toBeVisible();
+        await expect(page.locator('//h2[text()="Critical Errors"]')).toBeVisible();
+        await expect(page.locator('//li[text()="Length of Lists: 12"]')).toBeVisible();
+        await expect(page.locator('//li[text()="Required Field: 1"]')).toBeVisible();
+        await expect(page.locator('//h1[text()="Critical Errors:"]')).toBeVisible();
+        await expect(page.locator('//h2[text()="Length of Lists"]')).toBeVisible();
+        await expect(page.locator(
             '//li[text()="There are 7 PV Labels but 8 PV Definitions. Must be the same count. Row(s) 12"]'
-        );
-        await basePage.locate('//h2[text()="Required Fields"]');
-        await basePage.locate(
+        )).toBeVisible();
+        await expect(page.locator('//h2[text()="Required Fields"]')).toBeVisible();
+        await expect(page.locator(
             '//li[text()="CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL. Row(s) 5"]'
-        );
+        )).toBeVisible();
 
         await button(page, 'Next').nth(2).click();
-        await basePage.locate(
+        await expect(page.locator(
             bannerErrorMessage(
                 'There are blocking errors in the Workbook file. Please see the report below and address.'
             )
-        );
+        )).toBeVisible();
 
         await page.locator('mat-step-header').nth(3).click();
         await button(page, 'Submit').click();
-        await basePage.locate(
+        await expect(page.locator(
             bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
-        );
+        )).toBeVisible();
     });
 });

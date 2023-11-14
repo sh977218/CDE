@@ -13,7 +13,7 @@ test.describe(`Login Records`, async () => {
         await navigationMenu.gotoAudit();
         await auditTab.loginRecordsAudit().click();
         await expect(
-            await loginRecordAuditPage.findLoginRecordByUser(user.loginrecorduser.username).first()
+            loginRecordAuditPage.findLoginRecordByUser(user.loginrecorduser.username).first()
         ).toContainText(timestamp);
     });
 });

@@ -1,3 +1,4 @@
+import {expect} from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
@@ -5,7 +6,7 @@ test.describe(`Banner`, async () => {
     test(`Shutdown banner`, async ({basePage, snackBar, navigationMenu, materialPage, articlePage}) => {
         await test.step(`'Shutdown banner' not there`, async () => {
             await basePage.goToHome();
-            await test.expect(navigationMenu.shutdownBanner()).toBeHidden();
+            await expect(navigationMenu.shutdownBanner()).toBeHidden();
         })
 
         await test.step(`Toggle on 'Shutdown banner'`, async () => {
@@ -20,9 +21,9 @@ test.describe(`Banner`, async () => {
 
         await test.step(`'Shutdown banner' is there`, async () => {
             await basePage.goToHome();
-            await test.expect(navigationMenu.shutdownBanner()).toBeVisible();
+            await expect(navigationMenu.shutdownBanner()).toBeVisible();
             await navigationMenu.shutdownBannerCloseButton().click();
-            await test.expect(navigationMenu.shutdownBanner()).toBeHidden();
+            await expect(navigationMenu.shutdownBanner()).toBeHidden();
         })
 
         await test.step(`Toggle off 'Shutdown banner'`, async () => {
@@ -36,7 +37,7 @@ test.describe(`Banner`, async () => {
 
         await test.step(`'Shutdown banner' not there`, async () => {
             await basePage.goToHome();
-            await test.expect(navigationMenu.shutdownBanner()).toBeHidden();
+            await expect(navigationMenu.shutdownBanner()).toBeHidden();
         })
     })
 })

@@ -25,7 +25,7 @@ test.describe(`Submission Manage`, async () => {
         await page.getByText('1 - 10 of').isVisible();
         await expect(submissionManagePage.tableCell('g12')).toHaveCount(0);
         await materialPage.paginatorNext().click();
-        await page.getByText('g12');
+        await expect(page.getByText('g12')).toBeVisible();
     });
 
     test('Search', async ({ page, submissionManagePage }) => {
@@ -67,7 +67,7 @@ test.describe(`Submission Manage`, async () => {
     test('View Submission', async ({ page, submissionManagePage }) => {
         await submissionManagePage.tableAction(0).click();
         await button(submissionManagePage.tableActionMenu(), 'View').click();
-        await page.locator('mat-dialog-container');
+        await expect(page.locator('mat-dialog-container')).toBeVisible();
         await expect(page.getByPlaceholder('Ex. Topic Collection 1')).toHaveValue('NINDS');
         await expect(page.getByPlaceholder('Ex. Topic Collection 1')).toBeDisabled();
         await expect(button(page, 'Save')).toHaveCount(0);
