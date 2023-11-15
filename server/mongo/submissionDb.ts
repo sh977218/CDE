@@ -46,10 +46,6 @@ class SubmissionDbMongo extends BaseDb<Submission, ObjectId> implements Submissi
         return super.count(query);
     }
 
-    countByUser(userId: string): Promise<number> {
-        return this.count({'owner.userId': userId});
-    }
-
     deleteOneById(_id: ObjectId): Promise<void> {
         return super.deleteOneById(_id);
     }

@@ -14,18 +14,22 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
-
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { TocModule } from 'angular-aio-toc/toc.module';
 import { BoardModule } from 'board/board.module';
+import { PinToBoardModule } from 'board/pin-to-board.module';
 import { CdeModule } from 'cde/cde.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
 import { ConceptsComponent } from 'cde/concepts/concepts.component';
+import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
+import { CopyDataElementModalComponent } from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 import { DataElementViewService } from 'cde/dataElementView/dataElementView.service';
 import { DataElementViewComponent } from 'cde/dataElementView/dataElementView.component';
 import { DerivationRulesComponent } from 'cde/derivationRules/derivationRules.component';
 import { CdeClassificationComponent } from 'cde/cdeClassification/cdeClassification.component';
 import { DeGeneralDetailsComponent } from 'cde/deGeneralDetails/deGeneralDetails.component';
+import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
+import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
 import { PermissibleValueComponent } from 'cde/permissibleValue/permissibleValue.component';
 import { ValidRulesComponent } from 'cde/validationRules/validRules.component';
 import { CompareModule } from 'compare/compare.module';
@@ -34,15 +38,10 @@ import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { FormSearchModule } from 'form/formSearch.module';
+import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { WINDOW_PROVIDERS } from 'window.service';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
-import { PinToBoardModule } from 'board/pin-to-board.module';
-import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-concept-modal.component';
-import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
-import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
-import { CopyDataElementModalComponent } from 'cde/dataElementView/copy-data-element-modal/copy-data-element-modal.component';
 
 const appRoutes: Routes = [{ path: '', component: DataElementViewComponent }];
 
@@ -60,7 +59,6 @@ const appRoutes: Routes = [{ path: '', component: DataElementViewComponent }];
         MatSidenavModule,
         MatToolbarModule,
         MatTooltipModule,
-
         ScrollingModule,
         RouterModule.forChild(appRoutes),
         // non-core

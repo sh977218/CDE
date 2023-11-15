@@ -351,7 +351,7 @@
               <div *ngIf="s.licenseTraining">Proprietary -- Training Required</div>
               <div *ngIf="s.licenseOther">Other</div>
             </div>
-            <div *ngIf="showColumn.licenseInformation" class="cell">{{s.licenseInformation}}</div>
+            <div *ngIf="showColumn.licenseInformation" class="cell">{{s?.licenseInformation}}</div>
             <div *ngIf="showColumn.attachmentWorkbook" class="cell">{{s.attachmentWorkbook?.filename}}</div>
             <div *ngIf="showColumn.attachmentSupporting" class="cell">{{s.attachmentSupporting?.filename}}</div>
           </div>
@@ -363,15 +363,11 @@
                 <button class="button small light" (click)="view(s)">View</button>
                 <button class="button small light" routerLink="/collection/edit" [queryParams]="{_id: s._id}">Edit</button>
                 <button class="button small">Change Status</button>
-                <span class="fake-link" role="link" tabindex="0">
+                <span class="fake-link" role="link" tabindex="0" (click)="openAttachment(s.attachmentWorkbook.fileId)">
                   <i>Download Submission</i>
                   <mat-icon style="margin-left: 3px">download</mat-icon>
                 </span>
                 <ng-container *ngIf="canReview()">
-                  <mat-icon *ngIf="!s.endorsed" title="Approve" class="fake-button" role="button" tabindex="0" style="color: green"
-                            (click)="approve(s)">thumb_up</mat-icon>
-                  <mat-icon *ngIf="!s.endorsed" title="Decline" class="fake-button" role="button" tabindex="0" style="color: darkred"
-                            (click)="decline(s)">thumb_down</mat-icon>
                   <cde-delete-with-confirm *ngIf="!s.endorsed" (deleted)="delete(s)"></cde-delete-with-confirm>
                 </ng-container>
               </div>

@@ -1,4 +1,4 @@
-import { AdministrativeStatus, CurationStatus, ObjectId, RegistrationState } from 'shared/models.model';
+import { AdministrativeStatus, CurationStatus, ObjectId, RegistrationState, UserRef } from 'shared/models.model';
 
 interface Submission {
     _id: ObjectId;
@@ -12,6 +12,15 @@ interface Submission {
     dateSubmitted: string;
     endorsed: boolean;
     governanceReviewers: string[];
+    history?: {
+        date: string,
+        user?: UserRef,
+        action?: 'Endorse' | 'Governance Reject' | 'NLM Curator Approve' | 'NLM Curator Reject' | 'Submitter Submit',
+        comment?: {
+            user: UserRef,
+            message: string,
+        }[],
+    }[];
     licenseAttribution: boolean;
     licenseCost: boolean;
     licenseInformation: string;
@@ -54,7 +63,6 @@ export interface SubmissionDb {
     byNameAndVersion(name: string, version: string): Promise<Submission | null>;
     byKey(key: string): Promise<Submission | null>;
     count(query: any): Promise<number>;
-    countByUser(userId: string): Promise<number>;
     deleteOneById(_id: ObjectId): Promise<void>;
     query(query: any): Promise<Submission[]>;
     save(submission: Submission): Promise<Submission>;

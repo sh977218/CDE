@@ -1,0 +1,252 @@
+<h2 class="sectionDetailSubtitle">Data Type Details</h2>
+<dl class="cde-property">
+    <dt>Data Type:</dt>
+    <dd itemprop="datatype">
+        {{elt.valueDomain.datatype}}
+    </dd>
+
+    <ng-container *ngIf="elt.valueDomain.definition">
+        <dt>Instructions:</dt>
+        <dd itemprop="instructions">
+            {{elt.valueDomain.definition}}
+        </dd>
+    </ng-container>
+
+    <ng-container *ngIf="elt.valueDomain.ids?.length > 0">
+        <dt>Ids:</dt>
+        <dd itemprop="identifiers">
+            <div *ngFor="let id of elt.valueDomain.ids">
+                {{id.source}}: {{id.id}}
+                <ng-container *ngIf="id.version">, version: {{id.version}}</ng-container>
+            </div>
+        </dd>
+    </ng-container>
+
+    <ng-container [ngSwitch]="elt.valueDomain.datatype">
+        <ng-container *ngSwitchCase="'Value List'">
+        </ng-container>
+        <ng-container *ngSwitchCase="'Date'">
+            <dt>Precision:</dt>
+            <dd>
+                {{elt.valueDomain.datatypeDate.precision}}
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Number'">
+            <dt>Minimum Value:</dt>
+            <dd itemprop="datatypeNumberMin">
+                <cde-inline-view [value]="elt.valueDomain.datatypeNumber.minValue" inputType="number"></cde-inline-view>
+            </dd>
+
+            <dt>Maximum Value:</dt>
+            <dd itemprop="datatypeNumberMax">
+                <cde-inline-view [value]="elt.valueDomain.datatypeNumber.maxValue" inputType="number"></cde-inline-view>
+            </dd>
+
+            <dt>Precision:</dt>
+            <dd itemprop="datatypeNumberPrecision">
+                <cde-inline-view [value]="elt.valueDomain.datatypeNumber.precision"></cde-inline-view>
+            </dd>
+            <dt>Unit of Measure:</dt>
+            <dd itemprop="uom">
+                <cde-inline-view [value]="elt.valueDomain.uom"></cde-inline-view>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Text'">
+            <dt>Minimum Length:</dt>
+            <dd itemprop="datatypeTextMin">
+                <cde-inline-view [value]="elt.valueDomain.datatypeText.minLength" inputType="number"></cde-inline-view>
+            </dd>
+
+            <dt>Maximum Length:</dt>
+            <dd itemprop="datatypeTextMax">
+                <cde-inline-view [value]="elt.valueDomain.datatypeText.maxLength" inputType="number"></cde-inline-view>
+            </dd>
+
+            <dt>Regular Expression:</dt>
+            <dd itemprop="datatypeTextRegex">
+                <cde-inline-view [value]="elt.valueDomain.datatypeText.regex"></cde-inline-view>
+            </dd>
+
+            <dt>Free Text Rule:</dt>
+            <dd itemprop="datatypeTextRule">
+                <cde-inline-view [value]="elt.valueDomain.datatypeText.rule"></cde-inline-view>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'File'">
+            <dt>File:</dt>
+            <dd></dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Geo Location'">
+            <dt>Location:</dt>
+            <dd></dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Time'">
+            <dt>Time:</dt>
+            <dd></dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Dynamic Code List'">
+            <dt>System:</dt>
+            <dd style="display: flex">
+                <span class="w-50">{{elt.valueDomain.datatypeDynamicCodeList.system}}</span>
+                <span class="w-50">{{elt.valueDomain.datatypeDynamicCodeList.code}}</span>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Externally Defined'">
+            <dt>Link:</dt>
+            <dd itemprop="datatypeExternallyDefinedLink">
+                <cde-inline-view [value]="elt.valueDomain.datatypeExternallyDefined.link"
+                                 [linkSource]="elt.valueDomain.datatypeExternallyDefined.link"></cde-inline-view>
+            </dd>
+
+            <dt>Description:</dt>
+            <dd itemprop="datatypeExternallyDefinedDescription">
+                <cde-inline-area-edit [(model)]="elt.valueDomain.datatypeExternallyDefined.description"
+                                      [isAllowed]="false"
+                                      [(defFormat)]="elt.valueDomain.datatypeExternallyDefined.descriptionFormat"></cde-inline-area-edit>
+            </dd>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <div style="font-size: large; color: red">Unknown Type. Will be treated as text.</div>
+        </ng-container>
+    </ng-container>
+</dl>
+<ng-container *ngIf="elt.valueDomain.datatype === 'Value List'">
+    <h3>Permissible Value</h3>
+<!--    <div *ngIf="containsKnownSystem">The list below includes codes with synonyms, you can also view them as:<br>-->
+<!--        <label *ngFor="let source of SOURCES_KEYS" class="hand-cursor" style="display: inline-block; margin-left: 50px"-->
+<!--               data-testid="displayCode">-->
+<!--            <input id="display{{SOURCES[source].source}}Codes" title="{{source}}" type="checkbox" class="checkbox"-->
+<!--                   style="margin-right: 2px"-->
+<!--                   [(ngModel)]="SOURCES[source].selected"-->
+<!--                   [disabled]="SOURCES[source].disabled && !userService.user"-->
+<!--                   (ngModelChange)="lookupAsSource(elt.valueDomain, source)"> {{source}} Codes-->
+<!--            <span *ngIf="!userService.user && SOURCES[source].disabled"> (Login to enable)</span>-->
+<!--        </label>-->
+<!--    </div>-->
+    <ng-template #noPvs>
+        <p>No Permissible Values</p>
+    </ng-template>
+    <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs">
+        <table id="pvTable" data-testid="pvTable"
+               class="table table-bordered table-condensed table-striped table-responsive">
+            <thead>
+            <tr>
+                <th>PV Labels</th>
+                <th>PV Definitions</th>
+                <th>PV Concept Identifiers</th>
+                <th>PV Terminology Sources</th>
+                <th>Codes for PVs</th>
+                <th>PV Code Systems</th>
+                <th *ngIf="SOURCES['UMLS'].selected" colspan="2">UMLS</th>
+                <th *ngIf="SOURCES['NCI Thesaurus'].selected" colspan="2">NCI Thesaurus</th>
+                <th *ngIf="SOURCES['LOINC'].selected" colspan="2">LOINC</th>
+                <th *ngIf="SOURCES['SNOMEDCT US'].selected" colspan="2">SNOMEDCT US</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let pv of elt.valueDomain.permissibleValues; index as i" id="pv_{{i}}">
+                <td id="pvValue_{{i}}">
+                    <cde-inline-view [value]="pv.permissibleValue"></cde-inline-view>
+                </td>
+                <td id="pvMeaningDefinition_{{i}}">
+                    <cde-inline-view [value]="pv.valueMeaningDefinition"></cde-inline-view>
+                </td>
+                <td id="pvConceptId_{{i}}">{{pv.conceptId}}</td>
+                <td id="pvConceptSource_{{i}}">{{pv.conceptSource}}</td>
+                <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
+                <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
+                <ng-container *ngIf="SOURCES['UMLS'].selected">
+                    <td id="codeAsUMLS_{{i}}" data-testid="umls">
+                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}" data-testid="umls">
+                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['NCI Thesaurus'].selected">
+                    <td id="codeAsNCI_{{i}}" data-testid="nci">
+                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}" data-testid="nci">
+                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['LOINC'].selected">
+                    <td id="codeAsLNC_{{i}}" data-testid="loinc">
+                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
+                    </td>
+                    <td id="nameAsLNC_{{i}}" data-testid="loinc">
+                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="SOURCES['SNOMEDCT US'].selected">
+                    <td id="codeAsSCT_{{i}}" data-testid="snomedct">
+                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                    </td>
+                    <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}" data-testid="snomedct">
+                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                    </td>
+                </ng-container>
+            </tr>
+            </tbody>
+        </table>
+    </ng-container>
+
+<!--    <ng-container *ngIf="umlsValidationLoading">-->
+<!--        <ng-container>-->
+<!--            <mat-icon class="spin">autorenew</mat-icon>-->
+<!--            Validating permissible values against UMLS-->
+<!--        </ng-container>-->
+<!--    </ng-container>-->
+
+<!--    <ng-container *ngIf="!umlsValidationLoading" [ngSwitch]="umlsValidationResults">-->
+<!--        <ng-container *ngSwitchCase="undefined">-->
+<!--        </ng-container>-->
+<!--        <ng-container *ngSwitchCase="''">-->
+<!--            <mat-icon class="text-success">check</mat-icon>-->
+<!--            UMLS Validation Passed-->
+<!--        </ng-container>-->
+<!--        <ng-container *ngSwitchDefault>-->
+<!--            <mat-icon class="text-danger">cancel</mat-icon>-->
+<!--            {{ umlsValidationResults }}-->
+<!--        </ng-container>-->
+<!--    </ng-container>-->
+
+<!--    <h3>VSAC Value Set</h3>-->
+<!--    <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>-->
+<!--    <div *ngIf="vsacMappingExists()">-->
+<!--        <dl class="cde-property">-->
+<!--            <dt>Value Set Name:</dt>-->
+<!--            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>-->
+<!--            <dt>Value Set ID:</dt>-->
+<!--            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.id}}</dd>-->
+<!--            <dt>Value Set Version:</dt>-->
+<!--            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.version}}</dd>-->
+<!--        </dl>-->
+<!--    </div>-->
+
+<!--    <div *ngIf="!vsacMappingExists()">No Value Set specified.</div>-->
+
+<!--    <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">-->
+<!--        <tr>-->
+<!--            <th>Code Name</th>-->
+<!--            <th>Code</th>-->
+<!--            <th>Code System</th>-->
+<!--            <th id="validation">Match</th>-->
+<!--        </tr>-->
+<!--        <tr *ngFor="let con of vsacValueSet; let i = index;">-->
+<!--            <td>{{con.displayName}}</td>-->
+<!--            <td>{{con.code}}</td>-->
+<!--            <td>{{con.codeSystemName}}</td>-->
+<!--            <td>-->
+<!--                <mat-icon *ngIf="con.isValid" class="text-success" id="vset-{{i}}-valid">check</mat-icon>-->
+<!--                <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <mat-icon *ngIf="!isVsInPv(con)" id="addVsacValue_{{i}}" (click)="addVsacValue(elt.valueDomain, con)">-->
+<!--                    add-->
+<!--                </mat-icon>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
+</ng-container>

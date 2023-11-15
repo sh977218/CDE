@@ -104,7 +104,7 @@ test.describe(`Submission Edit`, async () => {
 
         await expect(page.locator('//h1[text()="Summary of Errors"]')).toBeVisible();
         await expect(page.locator('//h2[text()="Critical Errors"]')).toBeVisible();
-        await expect(page.locator('//li[text()="Length of Lists: 12"]')).toBeVisible();
+        await expect(page.locator('//li[text()="Length of Lists: 14"]')).toBeVisible();
         await expect(page.locator('//li[text()="Required Field: 1"]')).toBeVisible();
         await expect(page.locator('//h1[text()="Critical Errors:"]')).toBeVisible();
         await expect(page.locator('//h2[text()="Length of Lists"]')).toBeVisible();

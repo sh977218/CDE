@@ -12,7 +12,7 @@ import { httpErrorMessage } from 'non-core/angularHelper';
 import { fileInputToFormData, interruptEvent, openUrl } from 'non-core/browser';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { orderedSetAdd } from 'shared/array';
+import { concat, orderedSetAdd } from 'shared/array';
 import {
     SubmissionAttachResponse,
     VerifySubmissionFileProgress,
@@ -20,12 +20,22 @@ import {
 } from 'shared/boundaryInterfaces/API/submission';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { joinCb } from 'shared/callback';
-import { administrativeStatuses, assertUnreachable, User } from 'shared/models.model';
+import { administrativeStatuses, assertUnreachable, Item, User } from 'shared/models.model';
 import { ErrorTypes } from 'shared/node/io/excel';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
+import { Concept, DataElement } from 'shared/de/dataElement.model';
+import { CopyrightURL } from 'shared/form/form.model';
 
 // type SubmissionTemplate = Omit<Submission, '_id' | 'endorsed' | 'dateModified' | 'dateSubmitted' | 'numberCdes' | 'submitterId'>;
+type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
+interface Config {
+    type: ConceptTypes;
+    details: {
+        display: string;
+        path: string;
+    };
+}
 interface ReportCategory {
     message: string;
     rows: (number | string)[];
@@ -86,10 +96,32 @@ export class SubmissionEditComponent implements OnDestroy {
     allOrgCurators: string[] = [''];
     allReviewers: string[] = [''];
     canSave: boolean = true;
-    canSubmissionReview = canSubmissionReview;
+    canReview: boolean = false;
+    conceptConfigurations: Config[] = [
+        {
+            type: 'dataElementConcept',
+            details: {
+                display: 'Data Element Concept',
+                path: 'dataElementConcept.concepts.name',
+            },
+        },
+        {
+            type: 'objectClass',
+            details: {
+                display: 'Object Class',
+                path: 'objectClass.concepts.name',
+            },
+        },
+        {
+            type: 'property',
+            details: { display: 'Property', path: 'property.concepts.name' },
+        },
+    ];
     filteredNlmCurators: Observable<string[]>;
     filteredOrgCurators: Observable<string[]>;
     filteredReviewers: Observable<string[]>;
+    manuallyUncheckedOrg: boolean = false;
+    manuallyUncheckedSubmitter: boolean = false;
     page1: FormGroup<{
         additionalInformation: FormControl<string>;
         administrativeStatus: FormControl<string>;
@@ -181,6 +213,7 @@ export class SubmissionEditComponent implements OnDestroy {
                 if (!user) {
                     this.close();
                 }
+                this.canReview = canSubmissionReview(user || undefined);
                 this.userEmail = user?.lastLoginInformation?.email || '';
                 this.userFirstName = user?.lastLoginInformation?.firstName || '';
                 this.userLastName = user?.lastLoginInformation?.lastName || '';
@@ -213,14 +246,8 @@ export class SubmissionEditComponent implements OnDestroy {
             nihInitiative: ['', Validators.required],
             nihInitiativeBranch: [''],
             additionalInformation: [''],
-            administrativeStatus: [
-                { value: 'Not Endorsed', disabled: !canSubmissionReview(this.userService.user) },
-                Validators.required,
-            ],
-            registrationStatus: [
-                { value: 'Incomplete', disabled: !canSubmissionReview(this.userService.user) },
-                Validators.required,
-            ],
+            administrativeStatus: [{ value: 'Not Endorsed', disabled: !this.canReview }, Validators.required],
+            registrationStatus: [{ value: 'Incomplete', disabled: !this.canReview }, Validators.required],
         });
         this.page2 = this.formBuilder.group({
             submitterEmail: [
@@ -238,9 +265,9 @@ export class SubmissionEditComponent implements OnDestroy {
             organizationPocFirst: ['', Validators.required],
             organizationPocMi: ['', Validators.maxLength(2)],
             organizationPocLast: ['', Validators.required],
-            organizationCurators: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
-            governanceReviewers: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
-            nlmCurators: [{ value: [] as string[], disabled: !canSubmissionReview(this.userService.user) }],
+            organizationCurators: [{ value: [] as string[], disabled: !this.canReview }],
+            governanceReviewers: [{ value: [] as string[], disabled: !this.canReview }],
+            nlmCurators: [{ value: [] as string[], disabled: !this.canReview }],
         });
         this.page3 = this.formBuilder.group(
             {
@@ -250,7 +277,7 @@ export class SubmissionEditComponent implements OnDestroy {
                 licenseCost: [false],
                 licenseTraining: [false],
                 licenseOther: [false],
-                licenseInformation: ['', [Validators.required, Validators.minLength(3)]],
+                licenseInformation: ['', [Validators.minLength(3)]],
                 boolWorkbook: [false, Validators.requiredTrue],
                 boolWorkbookValid: [false, Validators.requiredTrue],
                 boolWorkbookValidation: [false, Validators.requiredTrue],
@@ -375,7 +402,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     copySubmissionToForm() {
-        if (!canSubmissionReview(this.userService.user)) {
+        if (!this.canReview) {
             if (!this.submission.administrativeStatus) {
                 this.submission.administrativeStatus = 'Not Endorsed';
             }
@@ -409,6 +436,9 @@ export class SubmissionEditComponent implements OnDestroy {
         if (!this.verifySubmissionFileReport) {
             return;
         }
+        this.verifySubmissionFileReport.validationErrors.cover.forEach(errorLog => {
+            this.addCategorizedReportError('Template', errorLog, 'on cover page');
+        });
         this.verifySubmissionFileReport.validationErrors.CDEs.forEach(errorLog => {
             const errorMessageParts = errorLog.split(':');
             const errorRow = errorMessageParts[1];
@@ -592,7 +622,7 @@ export class SubmissionEditComponent implements OnDestroy {
                 this.reportCdeExtra.length ||
                 this.reportCdeSpellcheck.length ||
                 this.reportCdeSuggestion.length
-                ? 'These items were marked for your review.'
+                ? 'These items were marked for your review. No need to fix any of these to continue.'
                 : '\tNo suggestions to review.'
         );
         addLine('');
@@ -610,16 +640,16 @@ export class SubmissionEditComponent implements OnDestroy {
             }
             addLine('');
         }
-        if (this.reportCdeSpellcheck.length) {
-            addLine('Spellcheck');
-            for (const e of this.reportCdeSpellcheck) {
+        if (this.reportCdeSuggestion.length) {
+            addLine('More Suggestions');
+            for (const e of this.reportCdeSuggestion) {
                 addLine(`\t${this.displayError(e)}`);
             }
             addLine('');
         }
-        if (this.reportCdeSuggestion.length) {
-            addLine('Other Suggestions');
-            for (const e of this.reportCdeSuggestion) {
+        if (this.reportCdeSpellcheck.length) {
+            addLine('Spellcheck');
+            for (const e of this.reportCdeSpellcheck) {
                 addLine(`\t${this.displayError(e)}`);
             }
             addLine('');
@@ -630,6 +660,21 @@ export class SubmissionEditComponent implements OnDestroy {
         });
         saveAs(blob, 'SubmissionValidation.txt');
         this.alert.addAlert('success', 'Report saved. Check downloaded files.');
+    }
+
+    endorse() {
+        if (this.page1.invalid || this.page2.invalid || this.page3.invalid) {
+            this.page1Submitted = true;
+            this.page2Submitted = true;
+            this.page3Submitted = true;
+            this.page4Submitted = true;
+            return;
+        }
+        this.save()
+            .then(() => this.http.post('/server/submission/endorse', { _id: this.submission._id }).toPromise())
+            .then(() => this.alert.addAlert('info', 'Endorsed'))
+            .then(() => this.close())
+            .catch(err => this.alert.addAlert('error', httpErrorMessage(err)));
     }
 
     errorCustom3(code: string): boolean | undefined {
@@ -688,6 +733,10 @@ export class SubmissionEditComponent implements OnDestroy {
         );
     }
 
+    deGetAllConcepts(de: DataElement): Concept[] {
+        return concat(de.dataElementConcept?.concepts || [], de.objectClass.concepts, de.property.concepts);
+    }
+
     forwardToExisting() {
         if (this.route.snapshot.queryParams._id) {
             return;
@@ -697,6 +746,14 @@ export class SubmissionEditComponent implements OnDestroy {
                 _id: this.submission._id,
             },
         });
+    }
+
+    getQuestionText(elt: Item): string {
+        return (
+            elt.designations.find(d => d.tags && d.tags.indexOf('Preferred Question Text') > -1)?.designation ||
+            elt.designations.find(d => d.tags && d.tags.indexOf('Question Text') > -1)?.designation ||
+            ''
+        );
     }
 
     getSubmissionFileUpdate(): Promise<void> {
@@ -755,6 +812,12 @@ export class SubmissionEditComponent implements OnDestroy {
         if (open) {
             open.click();
         }
+    }
+
+    relatedCdes(concept: string, config: Config) {
+        this.router.navigate(['/cde/search'], {
+            queryParams: { q: config.details.path + ':"' + concept + '"' },
+        });
     }
 
     removeNlmCurator(username: string) {
@@ -830,6 +893,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     setOrgPocFromSubmitterPoc() {
+        this.manuallyUncheckedOrg = false;
         this.page2.controls.organizationEmail.setValue(this.page2.controls.submitterEmail.value);
         this.page2.controls.organizationPocTitle.setValue(this.page2.controls.submitterNameTitle.value);
         this.page2.controls.organizationPocFirst.setValue(this.page2.controls.submitterNameFirst.value);
@@ -838,6 +902,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     setSubmitterPocFromSubmitter() {
+        this.manuallyUncheckedSubmitter = false;
         this.page2.controls.submitterEmail.setValue(this.userEmail);
         this.page2.controls.submitterNameTitle.setValue('');
         this.page2.controls.submitterNameFirst.setValue(this.userFirstName);
@@ -857,6 +922,10 @@ export class SubmissionEditComponent implements OnDestroy {
             .then(() => this.http.post('/server/submission/submit', { _id: this.submission._id }).toPromise())
             .then(() => this.alert.addAlert('info', 'Submitted'))
             .then(() => this.close());
+    }
+
+    trackByUrl(index: number, url: CopyrightURL) {
+        return url.url;
     }
 
     updateNlmCurators() {

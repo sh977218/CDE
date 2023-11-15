@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { assertUnreachable } from 'shared/models.model';
 
 type InputTypes = 'date' | 'email' | 'number' | 'select' | 'text' | 'textArea';
 
@@ -35,21 +34,6 @@ export class InlineEditComponent {
 
     edit() {
         this.editMode = true;
-    }
-
-    isNotNA(value: any): boolean {
-        switch (this.inputType) {
-            case 'number':
-                return !isNaN(value);
-            case 'date':
-            case 'email':
-            case 'select':
-            case 'text':
-            case 'textArea':
-                return !!value;
-            default:
-                throw assertUnreachable(this.inputType);
-        }
     }
 
     save() {

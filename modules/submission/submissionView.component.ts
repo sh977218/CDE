@@ -22,6 +22,7 @@ const controlArrayDisabled = [{ value: [] as string[], disabled: true }];
 })
 export class SubmissionViewComponent implements OnInit {
     @Input() submission: Partial<Submission> = {};
+    canReview: boolean = false;
     canSave: boolean = false;
     filteredNlmCurators: Observable<string[]>;
     filteredOrgCurators: Observable<string[]>;
@@ -162,6 +163,8 @@ export class SubmissionViewComponent implements OnInit {
         this.page1.patchValue(this.submission);
         this.page2.patchValue(this.submission);
     }
+
+    endorse() {}
 
     errorCustom3(code: string): boolean | undefined {
         return false;

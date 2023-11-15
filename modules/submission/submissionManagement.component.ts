@@ -285,6 +285,10 @@ export class SubmissionManagementComponent implements OnDestroy {
             });
     }
 
+    openAttachment(fileId: string) {
+        window.open(window.location.origin + '/server/system/data/' + fileId);
+    }
+
     pageChange(page?: number, pageSize?: number) {
         if (typeof page === 'number') {
             this.page = page;

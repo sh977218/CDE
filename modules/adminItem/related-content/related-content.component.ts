@@ -10,7 +10,7 @@ import { SearchSettings } from 'shared/search/search.model';
 import { ElasticQueryResponseForm } from 'shared/models.model';
 
 @Component({
-    selector: 'cde-related-content',
+    selector: 'cde-related-content[elt]',
     templateUrl: './related-content.component.html',
     styleUrls: ['./related-content.component.scss'],
 })

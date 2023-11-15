@@ -189,7 +189,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let pv of elt.valueDomain.permissibleValues; let i=index" id="pv_{{i}}">
+            <tr *ngFor="let pv of elt.valueDomain.permissibleValues; index as i" id="pv_{{i}}">
                 <td id="pvValue_{{i}}">
                     <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit();"></cde-inline-edit>

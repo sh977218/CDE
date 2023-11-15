@@ -59,14 +59,14 @@ async function doOneCollection(model: Model<CdeFormDocument>) {
     };
     const cursor = model.find(cond).cursor();
     let count = 0;
-    return cursor.eachAsync(async model => {
-        const modelObj = model.toObject();
-        model.formElements = await fixFormElements(modelObj);
-        await model.save().catch(error => {
+    return cursor.eachAsync(async doc => {
+        const form: CdeForm = doc.toObject();
+        doc.formElements = await fixFormElements(form);
+        await doc.save().catch(error => {
             console.log(`await model.save() Error ${error}`);
         });
         count++;
-        console.log(modelObj.elementType + ' count: ' + count);
+        console.log(form.elementType + ' count: ' + count);
     });
 }
 
