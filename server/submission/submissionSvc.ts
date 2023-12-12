@@ -476,7 +476,7 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
                     if (!/\d/.test(term) && term.toUpperCase() !== term) {
                         term = term.trim().toLowerCase();
                         if (!dictionary.spellCheck(term)) {
-                            withError('Spellcheck', `"${term}" is misspelled in "${field.prop}" property.`);
+                            withError('Spellcheck', `"${term}" - check spelling of this word in "${field.prop}" property.`);
                         }
                     }
                 }

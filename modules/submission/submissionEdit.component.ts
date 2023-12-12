@@ -573,7 +573,9 @@ export class SubmissionEditComponent implements OnDestroy {
         }
         if (this.reportCdeColumn.length) {
             addLine('Column Heading');
-            addLine('Incorrect Worksheet Column Headings: (Please remove columns to continue.)');
+            addLine(
+                'Incorrect Worksheet Column Headings: Please do not change the column headers, or insert new columns in the middle of the form. If you need to add additional properties, add them to the right of the columns.'
+            );
             for (const e of this.reportCdeColumnExtra) {
                 addLine(`\t${e}`);
             }
@@ -622,7 +624,7 @@ export class SubmissionEditComponent implements OnDestroy {
                 this.reportCdeExtra.length ||
                 this.reportCdeSpellcheck.length ||
                 this.reportCdeSuggestion.length
-                ? 'These items were marked for your review. No need to fix any of these to continue.'
+                ? 'We recommend that you review the following, but you may submit without changing anything.'
                 : '\tNo suggestions to review.'
         );
         addLine('');

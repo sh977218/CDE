@@ -555,7 +555,7 @@
             </ng-template>
             <h2>Suggestions to Review</h2>
             <ng-container *ngIf="reportCdeCodes.length || reportCdeExtra.length || reportCdeSpellcheck.length || reportCdeSuggestion.length; else noSuggestions">
-                <div>These items were marked for your review. No need to fix any of these to continue.</div>
+                <div>We recommend that you review the following, but you may submit without changing anything.</div>
                 <ul>
                     <li *ngIf="reportCdeCodes.length">Code Validation: {{reportCdeCodes.length}}</li>
                     <li *ngIf="reportCdeExtra.length">Extra Unused Data: {{reportCdeExtra.length}}</li>
@@ -580,7 +580,7 @@
         </div>
         <div *ngIf="reportCdeColumn.length">
             <h2>Column Heading</h2>
-            <h3>Incorrect Worksheet Column Headings: (Please fix column name or remove column to continue.)</h3>
+            <h3>Incorrect Worksheet Column Headings: Please do not change the column headers, or insert new columns in the middle of the form. If you need to add additional properties, add them to the right of the columns.</h3>
             <ul>
                 <li *ngFor="let e of reportCdeColumnExtra">{{e}}</li>
             </ul>
@@ -620,7 +620,7 @@
     <section *ngIf="reportCdeCodes.length || reportCdeExtra.length || reportCdeSpellcheck.length || reportCdeSuggestion.length">
         <hr>
         <h1>Suggestions to Review:</h1>
-        <p>These items were marked for your review. No need to fix any of these to continue.</p>
+        <p>We recommend that you review the following, but you may submit without changing anything.</p>
         <div *ngIf="reportCdeCodes.length">
             <h2>Code Validation</h2>
             <ul>
