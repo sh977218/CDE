@@ -76,6 +76,7 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
     let workbookVersion: WorkbookVersion | '' = '';
     let cdeColumns: Record<string, ColumnInformation> = {};
     let cdeColumnsOrdered: ColumnInformation[] = [];
+    const dictionary = spellChecker.getDictionarySync('en-US');
     const additionalColumnsOrdered: ColumnInformation[] = [];
     const columnNumber: ColumnInformation[]= [];
     const validationErrors: ValidationErrors = {
@@ -172,12 +173,18 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
 
         if (submissionName && typeof submissionName === 'string') {
             data.metadata.name = submissionName;
+            if (submission.name !== data.metadata.name) {
+                errors.push(`Submission name "${submission.name}" does not match workbook title "${data.metadata.name}"`);
+            }
         } else {
             errors.push('Submission name is required.');
         }
 
         if (submissionVersion && (typeof submissionVersion === 'number' || typeof submissionVersion === 'string')) {
             data.metadata.version = valueAsString(submissionVersion) || null;
+            if (submission.version !== data.metadata.version) {
+                errors.push(`Submission version "${submission.version}" does not match workbook version "${data.metadata.version}"`);
+            }
         } else {
             errors.push('Submission version is required.');
         }
@@ -254,7 +261,7 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
             if(de.valueDomain?.datatype === 'Value List') {
                 await processPVs(withError, de);
             }
-            spellcheckDe(withError, de);
+            spellcheckDe(withError, de, dictionary);
         }
 
         await Promise.all(deProcessing);
@@ -450,14 +457,12 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
         );
     }
 
-    function spellcheckDe(withError: WithError, dataElement: Partial<DataElement>){
-        const dictionary = spellChecker.getDictionarySync('en-US');
+    function spellcheckDe(withError: WithError, dataElement: Partial<DataElement>, dictionary: any) {
         for (const field of spellCheckColumns) {
-            const prop: keyof DataElement = field.prop as keyof DataElement;
-            let values = dataElement[prop];
+            let value = dataElement[field.prop as keyof DataElement];
 
-            if(Array.isArray(values)){
-                values = values.map((v) => {
+            if(Array.isArray(value)){
+                value = value.map((v) => {
                     let subProp = v;
                     if(field.subProps.length > 0){
                         field.subProps.forEach((sp) => {
@@ -467,13 +472,13 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
                         });
                     }
                     return subProp;
-                });
+                }).join(' ');
             }
 
-            if (!!values) {
-                const terms = values.join(' ').replace(/([\s*'|—="!…:_.,;(){}–\-`?/\[\]]+)/g, '§sep§').split('§sep§');
+            if (value) {
+                const terms = value.replace(/([\s*“”‘’'|—="!…:_.,;(){}–\-`?/\[\]]+)/g, '§sep§').split('§sep§');
                 for (let term of terms) {
-                    if (!/\d/.test(term) && term.toUpperCase() !== term) {
+                    if (!/\d/.test(term) && term.toUpperCase() !== term) { // skip if contains number or in ALL CAPS
                         term = term.trim().toLowerCase();
                         if (!dictionary.spellCheck(term)) {
                             withError('Spellcheck', `"${term}" - check spelling of this word in "${field.prop}" property.`);
