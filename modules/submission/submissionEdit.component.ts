@@ -660,7 +660,8 @@ export class SubmissionEditComponent implements OnDestroy {
         const blob = new Blob([report], {
             type: 'text/text',
         });
-        saveAs(blob, 'SubmissionValidation.txt');
+        const time = new Date();
+        saveAs(blob, `CDE_validation_${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}.txt`);
         this.alert.addAlert('success', 'Report saved. Check downloaded files.');
     }
 
