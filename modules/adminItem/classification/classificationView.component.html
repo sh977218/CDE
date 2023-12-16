@@ -21,7 +21,7 @@
            [routerLink]="[getClassifLink()]" [queryParams]="{selectedOrg: c0, classification: path}">
             {{ node.name }}
         </a>
-        <mat-icon *ngIf="isAllowedModel.isAllowed(elt)" [id]="path + '-unclassifyBtn'" title="Remove"
+        <mat-icon *ngIf="isAllowedModel.isAllowed(elt) && confirmDelete.observers.length" [id]="path + '-unclassifyBtn'" title="Remove"
                   class="fake-button" role="button" tabindex="0"
                   (click)="openDeleteClassificationModal(node, c0, path)">delete_outline</mat-icon>
     </div>

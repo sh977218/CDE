@@ -9,10 +9,10 @@ import { removeUnusedAttachment, saveFile } from 'server/attachment/attachmentSv
 import * as multer from 'multer';
 import { getFile } from 'server/mongo/mongo/gfs';
 import { respondError } from 'server/errorHandler';
-import { processWorkBook } from 'server/submission/submissionSvc';
+import { processWorkBook, publishItems } from 'server/submission/submissionSvc';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
-import { read as readXlsx } from 'xlsx';
+import { read as readXlsx, WorkBook } from 'xlsx';
 
 export function module() {
     const router = Router();
@@ -136,17 +136,15 @@ export function module() {
             if (!dbSubmission.attachmentWorkbook?.fileId) {
                 return res.status(400).send('No Workbook');
             }
-            return getFile({_id: new ObjectId(dbSubmission.attachmentWorkbook.fileId)}).then(stream => {
-                if (!stream) {
-                    return res.status(500);
+            getWorkbookFile(dbSubmission.attachmentWorkbook.fileId, (data) => {
+                if (!data) {
+                    return res.status(500).send('attachment missing');
                 }
                 const emitter = emitters[req.body._id] = new EventEmitter();
-                stream.on('data', (data) => {
-                    processWorkBook(readXlsx(data), emitter).then(() => {
-                        emitters[req.body._id] = null;
-                    });
-                    emitter.emit('data', res);
+                processWorkBook(dbSubmission, readXlsx(data), emitter).then(() => {
+                    emitters[req.body._id] = null;
                 });
+                emitter.emit('data', res);
             });
         }).catch(respondError({req, res}));
     });
@@ -176,5 +174,40 @@ export function module() {
         });
     });
 
+    router.post('/endorse', canSubmissionReviewMiddleware, (req, res) => {
+        return dbPlugins.submission.byId(req.body._id).then(async dbSubmission => {
+            if (!dbSubmission) {
+                return res.status(404).send();
+            }
+            if (dbSubmission.endorsed) {
+                return res.status(400).send('Already published.')
+            }
+            if (!dbSubmission.attachmentWorkbook?.fileId) {
+                return res.status(400).send('No Workbook');
+            }
+            getWorkbookFile(dbSubmission.attachmentWorkbook.fileId, (data) => {
+                if (!data) {
+                    return res.status(500).send('attachment missing');
+                }
+                processWorkBook(dbSubmission, readXlsx(data)).then(async report => {
+                    await publishItems(dbSubmission, report, req.user);
+                    dbSubmission.administrativeStatus = 'Published';
+                    dbSubmission.endorsed = true;
+                    return res.send(await dbPlugins.submission.save(dbSubmission))
+                }).catch(err => respondError({req, res})(err));
+            });
+        });
+    });
+
     return router;
+}
+
+function getWorkbookFile(workbookFileId: string, cb: (file?: any) => void): void {
+    getFile({_id: new ObjectId(workbookFileId)}).then(stream => {
+        if (!stream) {
+            cb();
+            return;
+        }
+        stream.on('data', cb);
+    }, () => cb());
 }

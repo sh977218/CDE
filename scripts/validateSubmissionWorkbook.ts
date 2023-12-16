@@ -6,5 +6,5 @@ if (!workBook) {
     console.error('file is missing');
     process.exit(1);
 }
-processWorkBook(workBook)
+processWorkBook({name: 'test'} as any, workBook)
     .then(result => console.log(JSON.stringify(result)));

@@ -100,9 +100,8 @@
             <div class="heading">Submitter Information</div>
             <label *ngIf="canSave">
                 <input type="checkbox" class="checkbox" #submitterCheckbox
-                       [checked]="isSubmitterPocSubmitter()"
-                       (change)="!$event.checked && setSubmitterPocFromSubmitter()"
-                       [disabled]="submitterCheckbox.checked"> I am the Submitter</label>
+                       [checked]="isSubmitterPocSubmitter() && !manuallyUncheckedSubmitter"
+                       (change)="$event.checked ? manuallyUncheckedSubmitter = true : setSubmitterPocFromSubmitter()"> I am the Submitter</label>
             <label class="half" [class.errorRequired]="errorRequired2('submitterEmail') || errorMessage(page2, 'submitterEmail')">
                 <div>Submitter Email<span> - Incomplete</span></div>
                 <input
@@ -161,9 +160,8 @@
             <div class="heading">Organization Information</div>
             <label *ngIf="canSave">
                 <input type="checkbox" class="checkbox" #orgCheckbox
-                       [checked]="isOrgPocSubmitterPoc()"
-                       (change)="!$event.checked && setOrgPocFromSubmitterPoc()"
-                       [disabled]="orgCheckbox.checked"> Same as the Submitter POC</label>
+                       [checked]="isOrgPocSubmitterPoc() && !manuallyUncheckedOrg"
+                       (change)="$event.checked ? manuallyUncheckedOrg = true : setOrgPocFromSubmitterPoc()"> Same as the Submitter POC</label>
             <label class="half" [class.errorRequired]="errorRequired2('organizationEmail') || errorMessage(page2, 'organizationEmail')">
                 <div>Organization POC Email<span> - Incomplete</span></div>
                 <input
@@ -507,13 +505,20 @@
             </div>
             <hr>
             <div class="stepperSection">
+                <ng-container *ngTemplateOutlet="submissionItemsPreview"></ng-container>
+            </div>
+            <hr>
+            <div class="stepperSection">
                 <button matStepperPrevious type="button" class="button">
                     <mat-icon style="margin-left: -.5rem">chevron_left</mat-icon>
                     Back
                 </button>
+<!--                <button (click)="openHistoryDialog()">History</button>-->
+<!--                <button (click)="openCommentDialog()">Comment</button>-->
                 <div style="float: right">
                     <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
-                    <button *ngIf="canSave" type="submit" class="button" (click)="submit()">Submit</button>
+                    <button *ngIf="canSave && !canReview" type="submit" class="button" (click)="submit()">Submit</button>
+                    <button *ngIf="canSave && canReview" type="submit" class="button success" (click)="endorse()">Endorse</button>
                 </div>
             </div>
         </div>
@@ -550,12 +555,12 @@
             </ng-template>
             <h2>Suggestions to Review</h2>
             <ng-container *ngIf="reportCdeCodes.length || reportCdeExtra.length || reportCdeSpellcheck.length || reportCdeSuggestion.length; else noSuggestions">
-                <div>These items were marked for your review.</div>
+                <div>We recommend that you review the following, but you may submit without changing anything.</div>
                 <ul>
                     <li *ngIf="reportCdeCodes.length">Code Validation: {{reportCdeCodes.length}}</li>
                     <li *ngIf="reportCdeExtra.length">Extra Unused Data: {{reportCdeExtra.length}}</li>
+                    <li *ngIf="reportCdeSuggestion.length">More Suggestions: {{reportCdeSuggestion.length}}</li>
                     <li *ngIf="reportCdeSpellcheck.length">Spellcheck: {{reportCdeSpellcheck.length}}</li>
-                    <li *ngIf="reportCdeSuggestion.length">Other Suggestions: {{reportCdeSuggestion.length}}</li>
                 </ul>
             </ng-container>
             <ng-template #noSuggestions>
@@ -575,12 +580,12 @@
         </div>
         <div *ngIf="reportCdeColumn.length">
             <h2>Column Heading</h2>
-            <h3>Incorrect Worksheet Column Headings: (Please remove columns to continue.)</h3>
+            <h3>Incorrect Worksheet Column Headings: Please do not change the column headers, or insert new columns in the middle of the form. If you need to add additional properties, add them to the right of the columns.</h3>
             <ul>
                 <li *ngFor="let e of reportCdeColumnExtra">{{e}}</li>
             </ul>
             <ng-container *ngIf="reportCdeColumnRequired.length">
-                <h3>Required Column Heading missing the worksheet: (Add these columns to continue.)</h3>
+                <h3>Required Column Headings missing from the worksheet: (Add these columns to continue.)</h3>
                 <ul>
                     <li *ngFor="let e of reportCdeColumnRequired">{{e}}</li>
                 </ul>
@@ -615,6 +620,7 @@
     <section *ngIf="reportCdeCodes.length || reportCdeExtra.length || reportCdeSpellcheck.length || reportCdeSuggestion.length">
         <hr>
         <h1>Suggestions to Review:</h1>
+        <p>We recommend that you review the following, but you may submit without changing anything.</p>
         <div *ngIf="reportCdeCodes.length">
             <h2>Code Validation</h2>
             <ul>
@@ -627,17 +633,187 @@
                 <li *ngFor="let e of reportCdeExtra">{{displayError(e)}}</li>
             </ul>
         </div>
+        <div *ngIf="reportCdeSuggestion.length">
+            <h2>More Suggestions</h2>
+            <ul>
+                <li *ngFor="let e of reportCdeSuggestion">{{displayError(e)}}</li>
+            </ul>
+        </div>
         <div *ngIf="reportCdeSpellcheck.length">
             <h2>Spellcheck</h2>
             <ul>
                 <li *ngFor="let e of reportCdeSpellcheck">{{displayError(e)}}</li>
             </ul>
         </div>
-        <div *ngIf="reportCdeSuggestion.length">
-            <h2>Other Suggestions</h2>
-            <ul>
-                <li *ngFor="let e of reportCdeSuggestion">{{displayError(e)}}</li>
-            </ul>
-        </div>
     </section>
+</ng-template>
+
+<ng-template #submissionItemsPreview>
+    <div *ngIf="verifySubmissionFileReport?.data.dataElements">
+        <h2>Data Elements</h2>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let de of verifySubmissionFileReport.data.dataElements">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{de.designations[0].designation}}
+                    </mat-panel-title>
+                    <mat-panel-description></mat-panel-description>
+                </mat-expansion-panel-header>
+                <div *ngIf="de.partOfBundles?.length" class="bundle-box">
+                    <mat-icon fill="1">error_circle_rounded</mat-icon>
+                    <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go
+                    to Form: {{de.partOfBundles.join(', ')}}
+                </div>
+                <dl id="general-details" class="cde-property-column inline-dl">
+                    <div class="flex-column">
+                        <dt>Question Text</dt>
+                        <dd itemprop="name">
+                            <ng-container *ngIf="getQuestionText(de); else noQuestionText">
+                                {{getQuestionText(de)}}
+                            </ng-container>
+                            <ng-template #noQuestionText>
+                                <span style="font-style: italic">Submitter did not provide a Question Text</span>
+                            </ng-template>
+                        </dd>
+                    </div>
+                    <div class="flex-column">
+                        <dt>Definition</dt>
+                        <dd itemprop="description">
+                            <ng-container *ngIf="de.definitions[0]; else noDefinition">
+                                <span *ngIf="de.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{de.definitions[0].definition}}</span>
+                                <ng-template #descriptionHtml>
+                                    <span [innerHtml]="de.definitions[0].definition"></span>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #noDefinition>
+                                <span style="font-style: italic">Submitter did not provide a Definition</span>
+                            </ng-template>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Steward:</dt>
+                        <dd id="stewardOrg" itemprop="steward">
+                            <cde-inline-view [value]="de.stewardOrg.name"></cde-inline-view>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Origin:</dt>
+                        <dd data-testid="origin">
+                            <cde-inline-view id="origin" [value]="de.origin">addNew</cde-inline-view>
+                        </dd>
+                    </div>
+                </dl>
+                <cde-de-readonly-datatype [elt]="de">{{de}}</cde-de-readonly-datatype>
+                <cde-naming [elt]="de"></cde-naming>
+                <h3>Concepts</h3>
+                <ng-template #noConcepts>
+                    <div>
+                        There are no concepts.
+                    </div>
+                </ng-template>
+                <div *ngIf="deGetAllConcepts(de).length > 0; else noConcepts" style="margin-bottom: 16px">
+                    <table class="sectionDetailTable table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Concept Name</th>
+                            <th>Concept Source</th>
+                            <th>Concept ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <ng-container *ngFor="let config of conceptConfigurations">
+                            <tr *ngFor="let concept of de[config.type].concepts; index as i" itemscope
+                                itemtype="https://schema.org/MedicalCode">
+                                <td class="detailTableTdHead">
+                                    <strong>{{config.details.display}}</strong>
+                                </td>
+                                <td class="detailTableTd">
+                                    <span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{i}}"
+                                          itemprop="name" class="fake-link">{{concept.name}}</span>
+                                </td>
+                                <td itemprop="codeSystem" class="detailTableTd">{{concept.origin}}</td>
+                                <td itemprop="codeValue" class="detailTableTd">{{concept.originId}}</td>
+                            </tr>
+                        </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+                <cde-identifiers [elt]="de"></cde-identifiers>
+                <h3 style="margin-top: 16px">Classification</h3>
+                <cde-classification-view [elt]="de"></cde-classification-view>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div *ngIf="verifySubmissionFileReport?.data.forms" style="margin-top: 16px">
+        <h2>Forms</h2>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let elt of verifySubmissionFileReport.data.forms">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{elt.designations[0].designation}}
+                    </mat-panel-title>
+                    <mat-panel-description></mat-panel-description>
+                </mat-expansion-panel-header>
+                <dl class="cde-property">
+                    <ng-container *ngIf="elt.definitions[0]">
+                        <dt>Description:</dt>
+                        <dd itemprop="description">
+                            <span *ngIf="elt.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{elt.definitions[0].definition}}</span>
+                            <ng-template #descriptionHtml>
+                                <span [innerHtml]="elt.definitions[0].definition"></span>
+                            </ng-template>
+                        </dd>
+                    </ng-container>
+
+                    <dt>Is a Bundle:</dt>
+                    <dd>
+                        {{ elt.isBundle ? 'Yes' : 'No' }}
+                    </dd>
+
+                    <dt>Copyrighted:</dt>
+                    <dd>
+                        <div *ngIf="elt.isCopyrighted; else notCopyrightedTemp" class="copyrightContainer">
+                            <div class="copyrightDiv" data-testid="copyright-statement">
+                                <div>
+                                    <label *ngIf="elt.copyright.text">Statement: </label>
+                                    <span>Yes, this form is licensed, copyrighted, or otherwise restricted, and we do not have permission to display it.</span>
+                                </div>
+                                <cde-inline-view [value]="elt.copyright.text"></cde-inline-view>
+                            </div>
+                            <div class="copyrightDiv" data-testid="copyright-authority">
+                                <label *ngIf="elt.copyright.authority">Authority:</label>
+                                <cde-inline-view [value]="elt.copyright.authority"></cde-inline-view>
+                            </div>
+                            <div class="copyright-urls">
+                                <ul *ngIf="elt.copyright?.urls.length">
+                                    <li *ngFor="let url of elt.copyright.urls;let index=i; trackBy: trackByUrl" class="copyright-url"
+                                        [ngStyle]="{'align-items': 'center'}" data-testid="copyright-url">
+                                        <cde-inline-view [value]="url.url" [linkSource]="url.url"></cde-inline-view>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <ng-template #notCopyrightedTemp>
+                            <div>No, this material is freely available, without restriction</div>
+                        </ng-template>
+                    </dd>
+
+                    <dt>Origin:</dt>
+                    <dd data-testid="origin">
+                        <cde-inline-view [value]="elt.origin"></cde-inline-view>
+                    </dd>
+
+                    <dt>Version:</dt>
+                    <dd>{{elt.version}}</dd>
+
+                    <dt>Steward:</dt>
+                    <dd>
+                        <cde-inline-view [value]="elt.stewardOrg.name"></cde-inline-view>
+                    </dd>
+                </dl>
+                <cde-native-render [elt]="elt" [showTitle]="false" [nativeRenderType]="'Follow-up'"></cde-native-render>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
 </ng-template>

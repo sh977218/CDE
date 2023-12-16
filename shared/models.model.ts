@@ -63,11 +63,11 @@ export class CdeId {
     [key: string]: ObjectId | undefined;
 
     _id?: ObjectId;
-    id?: string;
-    source?: string;
+    id: string;
+    source: string;
     version?: string;
 
-    constructor(source?: string, id?: string) {
+    constructor(source: string, id: string) {
         this.source = source;
         this.id = id;
     }

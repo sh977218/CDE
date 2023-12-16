@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
     templateUrl: './add-identifier-modal.component.html',
 })
 export class AddIdentifierModalComponent {
-    newIdentifier: CdeId = new CdeId();
+    newIdentifier: Partial<CdeId> = {};
 
     constructor(@Inject(MAT_DIALOG_DATA) public idSources: Promise<IdSource[]>) {}
 }

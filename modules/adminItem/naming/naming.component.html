@@ -3,7 +3,7 @@
     <div *ngIf="elt.designations.length === 0">
         There are no designations.
     </div>
-    <dl class="cde-property" *ngFor="let designation of elt.designations;let i = index">
+    <dl class="cde-property" *ngFor="let designation of elt.designations; index as i">
         <dt>
             <mat-icon *ngIf="canEdit && !designation.edit && elt.designations.length > 1" title="Delete Designation"
                       id="removeDesignation-{{i}}" class="fake-button" role="button" tabindex="0"

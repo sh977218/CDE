@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { CdeForm } from 'shared/form/form.model';
 import { CdeFormDocument, formModel, formSourceModel } from 'server/form/mongo-form';
 
 process.on('unhandledRejection', (error) => {
@@ -14,18 +15,18 @@ async function doOneCollection(collection: Model<CdeFormDocument>) {
         'ids.source': 'NINDS'
     };
     const cursor = collection.find(cond).cursor();
-    return cursor.eachAsync(async model => {
-        const modelObj = model.toObject();
-        const hasNindsClassif = modelObj.classification.filter((c: any) => c.stewardOrg.name === 'NINDS').length;
+    return cursor.eachAsync(async doc => {
+        const form: CdeForm = doc.toObject();
+        const hasNindsClassif = form.classification.filter((c) => c.stewardOrg.name === 'NINDS').length;
         if (!hasNindsClassif) {
-            modelObj.ids.forEach((id: any) => {
+            form.ids.forEach((id: any) => {
                 if (id.source === 'NINDS') {
                     id.source = 'NHLBI';
                 }
             })
-            model.ids = modelObj.ids;
-            await model.save();
-            console.log(`${modelObj.tinyId} fixed.`);
+            doc.ids = form.ids;
+            await doc.save();
+            console.log(`${form.tinyId} fixed.`);
         }
 
     });

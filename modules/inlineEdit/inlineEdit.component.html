@@ -13,7 +13,7 @@
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'select'">
         <select class="form-control" data-testid="inline-edit-select" [(ngModel)]="value" name="inlineSelect">
-            <option *ngFor="let selectOption of selectOptions;let i =index;" [selected]="selectOption === value">
+            <option *ngFor="let selectOption of selectOptions" [selected]="selectOption === value">
                 {{selectOption}}
             </option>
         </select>
@@ -38,12 +38,6 @@
         <a *ngIf="isAllowed" title="Edit" href="javascript:void(0);" (click)="edit()" class="edit-icon" data-testid="inline-edit-icon">
             <mat-icon>edit</mat-icon>
         </a>
-        <span *ngIf="!linkSource">
-        <span *ngIf="isNotNA(value); else naValue">{{value}}</span>
-        <ng-template #naValue>
-            <span></span>
-        </ng-template>
-    </span>
-        <a *ngIf="linkSource" href="{{linkSource}}" target="_blank" rel="noopener noreferrer">{{value}}</a>
+        <cde-inline-view [value]="value" [linkSource]="linkSource" [inputType]="inputType"></cde-inline-view>
     </div>
 </ng-template>

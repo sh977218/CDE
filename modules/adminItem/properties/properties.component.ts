@@ -7,7 +7,7 @@ import { Item, Property } from 'shared/models.model';
 import { noop } from 'shared/util';
 
 @Component({
-    selector: 'cde-properties',
+    selector: 'cde-properties[elt]',
     templateUrl: './properties.component.html',
 })
 export class PropertiesComponent {

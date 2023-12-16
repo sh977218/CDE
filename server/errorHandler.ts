@@ -93,6 +93,10 @@ export function respondError<T>(options?: T extends Error ? never : HandlerOptio
             if (err.name === 'CastError' && (err as CastError).kind === 'ObjectId') {
                 return options.res.status(400).send('Invalid id');
             }
+            if (err.message === 'validation failed' && Array.isArray((err as any).errors) && (err as any).errors[0].message) {
+                // JSON Schema validation
+                return options.res.status(400).send((err as any).errors[0].message)
+            }
             if (err.name === 'ValidationError') {
                 return options.res.status(422).send(err.message);
             }
