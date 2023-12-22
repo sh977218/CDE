@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Resolve, Router } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 
 @Injectable()
-export class ManagedOrgsResolve implements Resolve<Observable<Organization>> {
+export class ManagedOrgsResolve {
     constructor(private router: Router, private http: HttpClient) {}
 
     resolve() {

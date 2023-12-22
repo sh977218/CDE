@@ -1,18 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import {
-    ActivatedRouteSnapshot,
-    CanActivate,
-    CanActivateChild,
-    CanLoad,
-    Route,
-    Router,
-    RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 @Injectable()
-export class OrgAuthorityGuard implements CanActivate, CanActivateChild, CanLoad {
+export class OrgAuthorityGuard {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => UserService)) private userService: UserService

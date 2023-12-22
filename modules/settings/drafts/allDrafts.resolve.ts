@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router } from '@angular/router';
-import { EMPTY, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DraftsService } from 'settings/drafts/drafts.service';
-import { Article } from 'shared/article/article.model';
 
 @Injectable()
-export class AllDraftsResolve implements Resolve<Observable<Article>> {
+export class AllDraftsResolve {
     constructor(private router: Router, private draftSvc: DraftsService) {}
 
     resolve() {

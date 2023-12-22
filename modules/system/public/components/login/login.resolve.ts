@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router, UrlTree } from '@angular/router';
+import { Router, UrlTree } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { LoginService } from '_app/login.service';
 
 @Injectable()
-export class LoginResolve implements Resolve<Observable<UrlTree>> {
+export class LoginResolve {
     constructor(private router: Router, private loginService: LoginService) {}
 
     resolve(): Observable<UrlTree> {

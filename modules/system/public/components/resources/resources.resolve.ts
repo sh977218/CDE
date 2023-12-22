@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Resolve, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Article } from 'shared/article/article.model';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
-export class ResourceResolve implements Resolve<Observable<Article>> {
+export class ResourceResolve {
     constructor(private router: Router, public http: HttpClient) {}
 
     resolve() {

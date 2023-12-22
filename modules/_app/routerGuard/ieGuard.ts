@@ -1,18 +1,10 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import {
-    ActivatedRouteSnapshot,
-    CanActivate,
-    CanActivateChild,
-    CanLoad,
-    Route,
-    Router,
-    RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot } from '@angular/router';
 
 const isIE = /MSIE|Trident/.test(window.navigator.userAgent);
 
 @Injectable()
-export class IEGuard implements CanActivate, CanActivateChild, CanLoad {
+export class IEGuard {
     constructor(@Inject(forwardRef(() => Router)) private router: Router) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

@@ -1,11 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap } from 'rxjs/operators';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 @Injectable()
-export class FormResolve implements Resolve<Observable<any>> {
+export class FormResolve {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => HttpClient)) private httpClient: HttpClient
