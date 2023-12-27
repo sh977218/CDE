@@ -38,7 +38,7 @@
     "playwright": "playwright test -c e2e-playwright --project=CDE-Chromium",
     "playwright-a11y": "playwright test -c e2e-playwright --project=CDE-Chromium-a11y",
     "playwright-debug": "playwright test -c e2e-playwright --headed --grep @smoke",
-    "start:playwright": "ng s cde-playwright -c playwright"
+    "start:playwright": "ng s cde-cli -c playwright"
   },
   "engines": {
     "node": "16.x",
@@ -150,7 +150,7 @@
     "yesno": "^0.4.0"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^15.0.0-beta.0",
+    "@angular-builders/custom-webpack": "^15.0.0",
     "@angular-devkit/build-angular": "^15.2.1",
     "@angular-eslint/builder": "^15.2.1",
     "@angular-eslint/eslint-plugin": "^15.2.1",
