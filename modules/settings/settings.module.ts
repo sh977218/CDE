@@ -75,12 +75,14 @@ import { EditWhiteListModalComponent } from 'settings/spellcheck/edit-white-list
 import { DeleteWhiteListModalComponent } from 'settings/spellcheck/delete-white-list-modal/delete-white-list-modal.component';
 import { AddWhiteListModalComponent } from 'settings/spellcheck/add-white-list-modal/add-white-list-modal.component';
 import { StewardOrgTransferComponent } from 'settings/stewardOrgTransfer/stewardOrgTransfer.component';
+import { SubmissionWorkbookValidationComponent } from 'settings/submissionWorkbookValidation/submissionWorkbookValidation.component';
 import { TagsManagementComponent } from 'settings/tagsManagement/tagsManagement.component';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
 import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { SubmissionModule } from 'submission/submission.module';
 import { articleGuard } from '_app/routerGuard/articleGuard';
 import { siteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { orgAdminGuard } from '_app/routerGuard/orgAdminGuard';
@@ -240,6 +242,11 @@ const appRoutes: Routes = [
                 canActivate: [orgAuthorityGuard],
                 data: { title: 'Spell Check' },
             },
+            {
+                path: 'submissionWorkbookValidation',
+                component: SubmissionWorkbookValidationComponent,
+                data: { title: 'Submission Workbook Validation' },
+            },
         ],
     },
 ];
@@ -299,6 +306,7 @@ const appRoutes: Routes = [
         CdeSearchModule,
         FormSearchModule,
         SearchModule,
+        SubmissionModule,
         UsernameAutocompleteModule,
     ],
     declarations: [
@@ -310,6 +318,7 @@ const appRoutes: Routes = [
         IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,
+        SubmissionWorkbookValidationComponent,
         EditWhiteListModalComponent,
         DeleteWhiteListModalComponent,
         AddWhiteListModalComponent,

@@ -1,0 +1,28 @@
+<div *ngIf="r.report?.data.dataElements">
+    <h2>CDEs<small>&emsp;Click to preview each CDE as it will appear in the Repository.</small></h2>
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let de of r.report.data.dataElements">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{de.designations[0].designation}}<small *ngIf="de.partOfBundles?.length">&ensp;(part of a bundle)</small>
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            <cde-de-readonly [de]="de"></cde-de-readonly>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>
+<div *ngIf="r.report?.data.forms" style="margin-top: 16px">
+    <h2>Bundles<small>&emsp;Bundles are sets of CDEs that must be used together, in order to be considered valid and reliable. Click to preview each bundle.</small></h2>
+    <mat-accordion>
+        <mat-expansion-panel *ngFor="let form of r.report.data.forms">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{form.designations[0].designation}}
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
+            <cde-form-readonly [form]="form"></cde-form-readonly>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

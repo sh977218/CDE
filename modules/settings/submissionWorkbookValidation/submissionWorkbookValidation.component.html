@@ -1,0 +1,27 @@
+<h1>Submission Workbook Validation</h1>
+
+<div>
+    <p>Validate an Excel Workbook</p>
+    <label for="fileToValidate">
+        <button class="button" (click)="openFileDialog('fileToValidate')" [disabled]="fileValidating || fileDownloading">
+            <mat-icon>cloud_upload</mat-icon>
+            Upload XLSX file
+        </button>
+    </label>
+    <ng-container *ngIf="fileValidating">
+        <ng-container>
+            <mat-icon style="vertical-align: middle" class="spin">autorenew</mat-icon> Validating...
+        </ng-container>
+    </ng-container>
+    <input id="fileToValidate" style="display: none" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+           (change)="validateWorkbook($event)">
+</div>
+
+<div *ngIf="r.report">
+    <cde-submission-workbook-validation-report></cde-submission-workbook-validation-report>
+    <section>
+        <hr>
+        <h1>Preview:</h1>
+        <cde-submission-preview></cde-submission-preview>
+    </section>
+</div>

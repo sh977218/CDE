@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
+import test from '../../fixtures/base-fixtures';
+import { checkSubmissionValidationReport } from '../../pages/submission/submissionEdit.po';
 import { button } from '../../pages/util';
 
 function bannerErrorMessage(text: string) {
@@ -108,25 +109,7 @@ test.describe(`Submission Edit`, async () => {
             './e2e-playwright/assets/ScHARe CDE Governance Submission Form 2023-07-25 for dev team.xlsx'
         );
         await materialPage.checkAlert('Attachment Saved');
-        await button(page, 'Download Report').click();
-        await materialPage.checkAlert('Report saved. Check downloaded files.');
-
-        await expect(page.locator('//h1[text()="Summary of Errors"]')).toBeVisible();
-        await expect(page.locator('//h2[text()="Critical Errors"]')).toBeVisible();
-        await expect(page.locator('//li[text()="Length of Lists: 14"]')).toBeVisible();
-        await expect(page.locator('//li[text()="Required Field: 1"]')).toBeVisible();
-        await expect(page.locator('//h1[text()="Critical Errors:"]')).toBeVisible();
-        await expect(page.locator('//h2[text()="Length of Lists"]')).toBeVisible();
-        await expect(
-            page.locator('//li[text()="There are 7 PV Labels but 8 PV Definitions. Must be the same count. Row(s) 12"]')
-        ).toBeVisible();
-        await expect(page.locator('//h2[text()="Required Fields"]')).toBeVisible();
-        await expect(
-            page.locator(
-                '//li[text()="CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL. Row(s) 5"]'
-            )
-        ).toBeVisible();
-
+        await checkSubmissionValidationReport(page, materialPage);
         await button(page, 'Next').nth(2).click();
         await expect(
             page.locator(

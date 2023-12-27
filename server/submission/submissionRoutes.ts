@@ -12,7 +12,7 @@ import { respondError } from 'server/errorHandler';
 import { processWorkBook, publishItems } from 'server/submission/submissionSvc';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
-import { read as readXlsx, WorkBook } from 'xlsx';
+import { read as readXlsx } from 'xlsx';
 
 export function module() {
     const router = Router();
@@ -124,6 +124,14 @@ export function module() {
             if (dbSubmission.endorsed) {
                 return res.status(400).send('Already published.')
             }
+            let fileId = dbSubmission?.attachmentWorkbook?.fileId
+            if (fileId) {
+                await removeUnusedAttachment(fileId);
+            }
+            fileId = dbSubmission?.attachmentSupporting?.fileId
+            if (fileId) {
+                await removeUnusedAttachment(fileId);
+            }
             return res.send(await dbPlugins.submission.deleteOneById(dbSubmission._id));
         });
     });
@@ -202,7 +210,7 @@ export function module() {
     return router;
 }
 
-function getWorkbookFile(workbookFileId: string, cb: (file?: any) => void): void {
+function getWorkbookFile(workbookFileId: string, cb: (file?: Buffer) => void): void {
     getFile({_id: new ObjectId(workbookFileId)}).then(stream => {
         if (!stream) {
             cb();

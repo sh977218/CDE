@@ -1,0 +1,58 @@
+<dl class="cde-property">
+    <ng-container *ngIf="form.definitions[0]">
+        <dt>Description:</dt>
+        <dd itemprop="description">
+            <span *ngIf="form.definitions[0].definitionFormat !== 'html'; else descriptionHtml">{{form.definitions[0].definition}}</span>
+            <ng-template #descriptionHtml>
+                <span [innerHtml]="form.definitions[0].definition"></span>
+            </ng-template>
+        </dd>
+    </ng-container>
+
+    <dt>Is a Bundle:</dt>
+    <dd>
+        {{ form.isBundle ? 'Yes' : 'No' }}
+    </dd>
+
+    <dt>Copyrighted:</dt>
+    <dd>
+        <div *ngIf="form.isCopyrighted; else notCopyrightedTemp" class="copyrightContainer">
+            <div class="copyrightDiv" data-testid="copyright-statement">
+                <div>
+                    <label *ngIf="form.copyright.text">Statement: </label>
+                    <span>Yes, this form is licensed, copyrighted, or otherwise restricted, and we do not have permission to display it.</span>
+                </div>
+                <cde-inline-view [value]="form.copyright.text"></cde-inline-view>
+            </div>
+            <div class="copyrightDiv" data-testid="copyright-authority">
+                <label *ngIf="form.copyright.authority">Authority:</label>
+                <cde-inline-view [value]="form.copyright.authority"></cde-inline-view>
+            </div>
+            <div class="copyright-urls">
+                <ul *ngIf="form.copyright?.urls.length">
+                    <li *ngFor="let url of form.copyright.urls;let index=i; trackBy: trackByUrl" class="copyright-url"
+                        [ngStyle]="{'align-items': 'center'}" data-testid="copyright-url">
+                        <cde-inline-view [value]="url.url" [linkSource]="url.url"></cde-inline-view>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ng-template #notCopyrightedTemp>
+            <div>No, this material is freely available, without restriction</div>
+        </ng-template>
+    </dd>
+
+    <dt>Origin:</dt>
+    <dd data-testid="origin">
+        <cde-inline-view [value]="form.origin"></cde-inline-view>
+    </dd>
+
+    <dt>Version:</dt>
+    <dd>{{form.version}}</dd>
+
+    <dt>Steward:</dt>
+    <dd>
+        <cde-inline-view [value]="form.stewardOrg.name"></cde-inline-view>
+    </dd>
+</dl>
+<cde-native-render [elt]="form" [showTitle]="false" [nativeRenderType]="'Follow-up'"></cde-native-render>

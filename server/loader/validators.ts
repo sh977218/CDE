@@ -113,7 +113,7 @@ function checkRequiredFields(row: Record<string, string>) {
     return output;
 }
 
-export async function runValidationOnLoadCSV(csvFile: string) {
+export async function runValidationOnLoadCSV(csvFile: Buffer) {
     const workbook = XLSX.read(csvFile);
     const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const fileErrors = [] as string[];

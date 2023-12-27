@@ -47,6 +47,7 @@ class SubmissionDbMongo extends BaseDb<Submission, ObjectId> implements Submissi
     }
 
     deleteOneById(_id: ObjectId): Promise<void> {
+        // caller deletes attachments
         return super.deleteOneById(_id);
     }
 

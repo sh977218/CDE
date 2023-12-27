@@ -17,8 +17,10 @@ import { ClassificationViewComponent } from 'adminItem/classification/classifica
 import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
+import { DeReadOnlyComponent } from 'adminItem/deReadOnly/deReadOnly.component';
 import { DeReadOnlyDataTypeComponent } from 'adminItem/deReadOnly/deReadOnlyDataType.component';
 import { DraftSliderComponent } from 'adminItem/draftSlider/draftSlider.component';
+import { FormReadOnlyComponent } from 'adminItem/formReadOnly/formReadOnly.component';
 import { HistoryComponent } from 'adminItem/history/history.component';
 import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
 import { IdentifiersComponent } from 'adminItem/identfifiers/identifiers.component';
@@ -50,6 +52,7 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 @NgModule({
     imports: [
@@ -58,6 +61,15 @@ import { TagModule } from 'tag/tag.module';
         FormsModule,
         RouterModule,
         TreeModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatIconModule,
+        MatTabsModule,
+        MatCardModule,
+        TourMatMenuModule,
+        MatCheckboxModule,
+        MatDividerModule,
+        MatExpansionModule,
         // non-core
         NonCoreModule,
         // internal
@@ -69,16 +81,8 @@ import { TagModule } from 'tag/tag.module';
         InlineAreaEditModule,
         InlineSelectEditModule,
         InlineViewModule,
+        NativeRenderModule,
         TagModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatIconModule,
-        MatTabsModule,
-        MatCardModule,
-        TourMatMenuModule,
-        MatCheckboxModule,
-        MatDividerModule,
-        MatExpansionModule,
     ],
     declarations: [
         AttachmentsComponent,
@@ -86,7 +90,9 @@ import { TagModule } from 'tag/tag.module';
         DeleteClassificationModalComponent,
         ClassifyItemComponent,
         ClassifyItemDialogComponent,
+        DeReadOnlyComponent,
         DeReadOnlyDataTypeComponent,
+        FormReadOnlyComponent,
         NewDefinitionComponent,
         NewDesignationComponent,
         DraftSliderComponent,
@@ -113,7 +119,10 @@ import { TagModule } from 'tag/tag.module';
         AttachmentsComponent,
         ClassificationViewComponent,
         ClassifyItemComponent,
+        DeReadOnlyComponent,
+        DeReadOnlyDataTypeComponent,
         DraftSliderComponent,
+        FormReadOnlyComponent,
         IdentifiersComponent,
         LinkedFormsComponent,
         HistoryComponent,
@@ -124,7 +133,6 @@ import { TagModule } from 'tag/tag.module';
         SourcesComponent,
         RelatedDocumentComponent,
         RelatedContentComponent,
-        DeReadOnlyDataTypeComponent,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

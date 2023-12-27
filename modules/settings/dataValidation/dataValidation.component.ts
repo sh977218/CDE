@@ -5,7 +5,6 @@ import { saveAs } from 'file-saver';
 import { PageEvent } from '@angular/material/paginator';
 
 @Component({
-    selector: 'cde-data-validation',
     templateUrl: './dataValidation.component.html',
 })
 export class DataValidationComponent {

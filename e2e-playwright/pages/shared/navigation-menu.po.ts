@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { MaterialPo } from './material.po';
+import { listItem, tag } from '../util';
 
 export class NavigationMenuPo {
     protected page: Page;
@@ -41,6 +42,11 @@ export class NavigationMenuPo {
         await this.page.getByTestId('logged-in-username').click();
         await this.page.getByTestId('user_settings').click();
         await this.page.waitForSelector('cde-profile', { state: 'visible' });
+    }
+
+    async gotoSettingsSubmissionWorkbookValidation() {
+        await listItem(this.page, 'Submission Workbook Validation').click();
+        await tag(this.page, 'h1', 'Submission Workbook Validation').waitFor();
     }
 
     async gotoClassification() {

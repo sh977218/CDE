@@ -10,7 +10,8 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { administrativeStatuses } from 'shared/models.model';
-import { VerifySubmissionFileProgress, VerifySubmissionFileReport } from 'shared/boundaryInterfaces/API/submission';
+import { VerifySubmissionFileProgress } from 'shared/boundaryInterfaces/API/submission';
+import { SubmissionWorkbookValidationReportService } from 'submission/submissionWorkbookValidationReport.service';
 
 const controlDisabled = [{ value: '', disabled: true }];
 const controlBoolDisabled = [{ value: false, disabled: true }];
@@ -87,12 +88,12 @@ export class SubmissionViewComponent implements OnInit {
         'Retired',
     ];
     verifySubmissionFileProgress?: VerifySubmissionFileProgress;
-    verifySubmissionFileReport?: VerifySubmissionFileReport;
 
     constructor(
         private alert: AlertService,
         public dialogRef: MatDialogRef<SubmissionViewComponent, void>,
-        private formBuilder: NonNullableFormBuilder
+        private formBuilder: NonNullableFormBuilder,
+        public r: SubmissionWorkbookValidationReportService
     ) {
         this.page1 = this.formBuilder.group({
             name: controlDisabled,

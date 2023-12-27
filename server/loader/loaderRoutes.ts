@@ -10,6 +10,8 @@ import {
 } from 'server/loader/validators';
 
 import * as multer from 'multer';
+import { processWorkBook } from 'server/submission/submissionSvc';
+import { read as readXlsx } from 'xlsx';
 
 export function module() {
     const router = Router();
@@ -24,6 +26,19 @@ export function module() {
         }
         const fileBuffer = (req.files as any)[0].buffer;
         const reportOutput = await runValidationOnLoadCSV(fileBuffer);
+        res.send(reportOutput);
+    });
+
+    router.post('/validateSubmissionWorkbookLoad', multer({
+        ...config.multer,
+        storage: multer.memoryStorage()
+    }).any(), async (req, res) => {
+        if (!req.files) {
+            res.status(400).send('No file uploaded for validation');
+            return;
+        }
+        const fileBuffer = (req.files as any)[0].buffer;
+        const reportOutput = await processWorkBook({} as any, readXlsx(fileBuffer));
         res.send(reportOutput);
     });
 

@@ -5,7 +5,6 @@ import { expect, Locator, Page } from '@playwright/test';
 export class SubmissionManagePo {
     private readonly page: Page;
     submissionEditPo: SubmissionEditPo;
-    xmlTableRow = '//';
 
     constructor(page: Page) {
         this.page = page;
