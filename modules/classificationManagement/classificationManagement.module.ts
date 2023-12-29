@@ -12,7 +12,6 @@ import { TreeModule } from '@circlon/angular-tree-component';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { OrgClassificationManagementComponent } from 'classificationManagement/orgClassificationManagement/orgClassificationManagement.component';
 import { MatTreeModule } from '@angular/material/tree';
-import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
 import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
@@ -26,7 +25,6 @@ const appRoutes: Routes = [
         resolve: {
             orgs: ManagedOrgsResolve,
         },
-        canLoad: [OrgAdminGuard],
         data: { title: 'Org Classification Management' },
     },
 ];

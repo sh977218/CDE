@@ -25,4 +25,8 @@ export default {
         username: 'reguser',
         password: DEFAULT_PASSWORD,
     },
+    ctepOnlyEditor: {
+        username: 'ctepOnlyEditor',
+        password: DEFAULT_PASSWORD,
+    }
 };

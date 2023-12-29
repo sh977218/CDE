@@ -56,7 +56,7 @@ const appRoutes: Routes = [
             import('classificationManagement/classificationManagement.module').then(
                 m => m.ClassificationManagementModule
             ),
-        canLoad: [ClassifyGuard],
+        canActivate: [ClassifyGuard],
         data: { title: 'Manage Classification', preload: false },
     },
     {
@@ -90,7 +90,7 @@ const appRoutes: Routes = [
         resolve: {
             form: FormResolve,
         },
-        canLoad: [LoggedInGuard],
+        canActivate: [LoggedInGuard],
         data: { title: 'Form Edit' },
     },
     {
@@ -102,7 +102,7 @@ const appRoutes: Routes = [
     {
         path: 'login',
         loadChildren: () => import('system/public/login.module').then(m => m.LoginModule),
-        canLoad: [IEGuard],
+        canActivate: [IEGuard],
         data: { title: 'Login', preload: false },
     },
     {
@@ -128,7 +128,7 @@ const appRoutes: Routes = [
     {
         path: 'settings',
         loadChildren: () => import('settings/settings.module').then(m => m.SettingsModule),
-        canLoad: [LoggedInGuard],
+        canActivate: [LoggedInGuard],
         data: { title: 'Settings', preload: false },
     },
     {
@@ -154,13 +154,13 @@ const appRoutes: Routes = [
     {
         path: 'searchPreferences',
         loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
-        canLoad: [LoggedInGuard],
+        canActivate: [LoggedInGuard],
         data: { title: 'Search Preferences', preload: false },
     },
     {
         path: 'siteAudit',
         loadChildren: () => import('siteAudit/siteAudit.module').then(m => m.SiteAuditModule),
-        canLoad: [OrgAuthorityGuard],
+        canActivate: [OrgAuthorityGuard],
         data: { title: 'Audit', preload: false },
     },
     { path: '', redirectTo: '/home', pathMatch: 'full' },

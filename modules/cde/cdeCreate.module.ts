@@ -15,7 +15,7 @@ const appRoutes: Routes = [
     {
         path: '',
         component: CreateDataElementComponent,
-        canLoad: [LoggedInGuard],
+        canActivate: [LoggedInGuard],
     },
 ];
 

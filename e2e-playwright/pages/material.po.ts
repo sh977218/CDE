@@ -22,4 +22,20 @@ export class MaterialPo {
     paginatorNumberPerPage(): Locator {
         return this.page.locator('mat-paginator mat-select');
     }
+
+    matArrayLeft() {
+        return this.page.locator(`//mat-icon[normalize-space() = 'subdirectory_arrow_left']`);
+    }
+
+    matEdit() {
+        return this.page.locator(`//mat-icon[normalize-space() = 'edit']`);
+    }
+
+    matDelete() {
+        return this.page.locator(`//mat-icon[normalize-space() = 'delete_outline']`);
+    }
+
+    matTransform() {
+        return this.page.locator(`//mat-icon[normalize-space() = 'transform']`);
+    }
 }
