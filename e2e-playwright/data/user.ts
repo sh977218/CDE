@@ -28,5 +28,5 @@ export default {
     ctepOnlyEditor: {
         username: 'ctepOnlyEditor',
         password: DEFAULT_PASSWORD,
-    }
+    },
 };
