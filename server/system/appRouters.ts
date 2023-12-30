@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import { Request, Response, Router } from 'express';
 import { dbPlugins } from 'server';
-import { respondError } from 'server/errorHandler';
-import { getFileAndRespond, gfs } from 'server/mongo/mongo/gfs';
+import { getFileAndRespond } from 'server/mongo/mongo/gfs';
 import { isNlmCuratorMiddleware } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
 import { version } from 'server/version';

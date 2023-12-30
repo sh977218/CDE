@@ -1,18 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClassifyGuard } from '_app/routerGuard/classifyGuard';
 import { OfflineComponent } from '_app/routing/offline.component';
 import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
-import { IEGuard } from '_app/routerGuard/ieGuard';
-import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
-import { NlmCuratorGuard } from '_app/routerGuard/nlmCuratorGuard';
-import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
-import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
-import { OrgCuratorGuard } from '_app/routerGuard/orgCuratorGuard';
-import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { FormResolve } from 'form/formDescription/form.resolve';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
-import { ArticleGuard } from '_app/routerGuard/articleGuard';
+import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { classifyGuard } from '_app/routerGuard/classifyGuard';
+import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 
 const appRoutes: Routes = [
     {
@@ -56,7 +50,7 @@ const appRoutes: Routes = [
             import('classificationManagement/classificationManagement.module').then(
                 m => m.ClassificationManagementModule
             ),
-        canActivate: [ClassifyGuard],
+        canActivate: [classifyGuard],
         data: { title: 'Manage Classification', preload: false },
     },
     {
@@ -90,7 +84,7 @@ const appRoutes: Routes = [
         resolve: {
             form: FormResolve,
         },
-        canActivate: [LoggedInGuard],
+        canActivate: [loggedInGuard],
         data: { title: 'Form Edit' },
     },
     {
@@ -102,7 +96,6 @@ const appRoutes: Routes = [
     {
         path: 'login',
         loadChildren: () => import('system/public/login.module').then(m => m.LoginModule),
-        canActivate: [IEGuard],
         data: { title: 'Login', preload: false },
     },
     {
@@ -128,7 +121,7 @@ const appRoutes: Routes = [
     {
         path: 'settings',
         loadChildren: () => import('settings/settings.module').then(m => m.SettingsModule),
-        canActivate: [LoggedInGuard],
+        canActivate: [loggedInGuard],
         data: { title: 'Settings', preload: false },
     },
     {
@@ -154,13 +147,13 @@ const appRoutes: Routes = [
     {
         path: 'searchPreferences',
         loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
-        canActivate: [LoggedInGuard],
+        canActivate: [loggedInGuard],
         data: { title: 'Search Preferences', preload: false },
     },
     {
         path: 'siteAudit',
         loadChildren: () => import('siteAudit/siteAudit.module').then(m => m.SiteAuditModule),
-        canActivate: [OrgAuthorityGuard],
+        canActivate: [orgAuthorityGuard],
         data: { title: 'Audit', preload: false },
     },
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -180,17 +173,7 @@ const appRoutes: Routes = [
         }),
     ],
     declarations: [OfflineComponent, PageNotFoundComponent],
-    providers: [
-        ClassifyGuard,
-        IEGuard,
-        LoggedInGuard,
-        NlmCuratorGuard,
-        OrgAdminGuard,
-        OrgAuthorityGuard,
-        OrgCuratorGuard,
-        SiteAdminGuard,
-        ArticleGuard,
-    ],
+    providers: [],
     exports: [RouterModule],
 })
 export class CdeAppRoutingModule {}

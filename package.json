@@ -26,6 +26,7 @@
     "gulpTs": "npx ts-node -P tsconfigNode.json ./node_modules/gulp/bin/gulp.js --gulpfile gulpfile.ts",
     "gulpJs": "npx gulp --gulpfile ./buildNode/gulpfile.js",
     "start": "npm run startJs",
+    "start:coverage": "ng s cde-cli -c coverage",
     "startJs": "node ./buildNode/server/app.js",
     "startJsWithBuild": "npm run buildNode && npm start",
     "startTs": "npx ts-node -P tsconfigNode.json server/app.ts",
@@ -37,8 +38,7 @@
     "esfix": "eslint --fix",
     "playwright": "playwright test -c e2e-playwright --project=CDE-Chromium",
     "playwright-a11y": "playwright test -c e2e-playwright --project=CDE-Chromium-a11y",
-    "playwright-debug": "playwright test -c e2e-playwright --headed --grep @smoke",
-    "start:playwright": "ng s cde-cli -c playwright"
+    "playwright-debug": "playwright test -c e2e-playwright --headed --grep @smoke"
   },
   "engines": {
     "node": "16.x",

@@ -3,9 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { CreateFormComponent } from 'adminItem/createForm/createForm.component';
 
-import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
 
-const appRoutes: Routes = [{ path: '', component: CreateFormComponent, canActivate: [LoggedInGuard] }];
+const appRoutes: Routes = [{ path: '', component: CreateFormComponent, canActivate: [loggedInGuard] }];
 
 @NgModule({
     imports: [

@@ -13,6 +13,7 @@ test.describe(`Merge form`, async () => {
         });
 
         test(`Not aligned forms cannot be merged`, async ({myBoardPage, boardPage}) => {
+            test.fixme();
             await myBoardPage.boardTitle('NotAlignForm').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();

@@ -62,7 +62,7 @@ const config: PlaywrightTestConfig = defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.a11y ? 'npm run devApp' : 'npm run start:playwright',
+        command: process.env.a11y ? 'npm run devApp' : 'npm run start:coverage',
         port: 4200,
         timeout: 150 * 1000,
         reuseExistingServer: true,

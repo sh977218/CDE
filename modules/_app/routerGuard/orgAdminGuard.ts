@@ -1,42 +1,20 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot } from '@angular/router';
-
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
+import { map } from 'rxjs/operators';
 
-@Injectable()
-export class OrgAdminGuard {
-    constructor(
-        @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) private userService: UserService
-    ) {}
-
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        return this.checkLogin();
-    }
-
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        return this.canActivate(route, state);
-    }
-
-    canLoad(route: Route): Promise<boolean> {
-        return this.checkLogin();
-    }
-
-    checkLogin(): Promise<boolean> {
-        return this.userService.waitForUser().then(
-            user => {
-                if (isOrgAdmin(user)) {
-                    return true;
-                } else {
-                    this.router.navigate(['/home']);
-                    return false;
-                }
-            },
-            () => {
-                this.router.navigate(['/login']);
+export const orgAdminGuard: CanActivateFn = () => {
+    const router = inject(Router);
+    const userService: UserService = inject(UserService);
+    return userService.user$.pipe(
+        map(user => {
+            if (isOrgAdmin(user)) {
+                return true;
+            } else {
+                router.navigate(['/login']);
                 return false;
             }
-        );
-    }
-}
+        })
+    );
+};

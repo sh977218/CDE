@@ -37,11 +37,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule, Routes } from '@angular/router';
-import { ArticleGuard } from '_app/routerGuard/articleGuard';
-import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
-import { OrgAdminGuard } from '_app/routerGuard/orgAdminGuard';
-import { OrgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
-import { SiteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';
@@ -86,43 +81,41 @@ import { UsersMgtComponent } from 'settings/usersMgt/usersMgt.component';
 import { ViewingHistoryComponent } from 'settings/viewingHistory/viewingHistory.component';
 import { TagModule } from 'tag/tag.module';
 import { UsernameAutocompleteModule } from 'usernameAutocomplete/usernameAutocomplete.module';
+import { articleGuard } from '_app/routerGuard/articleGuard';
+import { siteAdminGuard } from '_app/routerGuard/siteAdminGuard';
+import { orgAdminGuard } from '_app/routerGuard/orgAdminGuard';
+import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 
 const appRoutes: Routes = [
     {
         path: '',
         component: SettingsComponent,
-        canActivate: [LoggedInGuard],
         children: [
             // All User Can Access
             {
                 path: 'profile',
                 component: ProfileComponent,
-                canActivate: [LoggedInGuard],
                 data: { title: 'Profile' },
             },
             {
                 path: 'search',
                 component: SearchSettingsComponent,
-                canActivate: [LoggedInGuard],
                 data: { title: 'Search Settings' },
             },
             {
                 path: 'viewingHistory',
                 component: ViewingHistoryComponent,
-                canActivate: [LoggedInGuard],
                 data: { title: 'Viewing History' },
             },
             {
                 path: 'myDrafts',
                 component: DraftsComponent,
                 resolve: { drafts: MyDraftsResolve },
-                canActivate: [LoggedInGuard],
                 data: { title: 'My Drafts' },
             },
             {
                 path: 'myComments',
                 component: CommentsComponent,
-                canActivate: [LoggedInGuard],
                 data: {
                     title: 'My Comments',
                     commentsUrl: '/server/discuss/myComments/',
@@ -132,38 +125,36 @@ const appRoutes: Routes = [
             {
                 path: 'orgAdmin',
                 component: OrgAdminComponent,
-                canActivate: [OrgAdminGuard],
+                canActivate: [orgAdminGuard],
                 data: { title: 'Org Admin' },
             },
             {
                 path: 'orgCurator',
                 component: OrgCuratorComponent,
-                canActivate: [OrgAdminGuard],
+                canActivate: [orgAdminGuard],
                 data: { title: 'Org Curator' },
             },
             {
                 path: 'orgEditor',
                 component: OrgEditorComponent,
-                canActivate: [OrgAdminGuard],
+                canActivate: [orgAdminGuard],
                 data: { title: 'Org Editor' },
             },
             {
                 path: 'stewardOrgTransfer',
                 component: StewardOrgTransferComponent,
-                canActivate: [OrgAdminGuard],
+                canActivate: [orgAdminGuard],
                 data: { title: 'Steward Org Transfer' },
             },
             {
                 path: 'myOrgDrafts',
                 component: DraftsComponent,
                 resolve: { drafts: MyOrgDraftsResolve },
-                canActivate: [LoggedInGuard],
                 data: { title: "My Organizations' Drafts" },
             },
             {
                 path: 'myOrgComments',
                 component: CommentsComponent,
-                canActivate: [LoggedInGuard],
                 data: {
                     title: "My Organizations' Comments",
                     commentsUrl: '/server/discuss/orgComments/',
@@ -172,21 +163,21 @@ const appRoutes: Routes = [
             {
                 path: 'tagsManagement',
                 component: TagsManagementComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 resolve: { managedOrgs: ManagedOrgsResolve },
                 data: { title: 'Tags Management' },
             },
             {
                 path: 'propertiesManagement',
                 component: PropertiesManagementComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 resolve: { managedOrgs: ManagedOrgsResolve },
                 data: { title: 'Properties Management' },
             },
             {
                 path: 'orgsEdit',
                 component: OrgsEditComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 data: { title: 'Organizations' },
             },
 
@@ -194,19 +185,19 @@ const appRoutes: Routes = [
             {
                 path: 'siteAdmins',
                 component: EditSiteAdminsComponent,
-                canActivate: [SiteAdminGuard],
+                canActivate: [siteAdminGuard],
                 data: { title: 'Site Admins' },
             },
             {
                 path: 'users',
                 component: UsersMgtComponent,
-                canActivate: [OrgAdminGuard],
+                canActivate: [orgAdminGuard],
                 data: { title: 'Users' },
             },
             {
                 path: 'allComments',
                 component: CommentsComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 data: {
                     title: 'All Comments',
                     commentsUrl: '/server/discuss/allComments/',
@@ -216,37 +207,37 @@ const appRoutes: Routes = [
                 path: 'allDrafts',
                 component: DraftsComponent,
                 resolve: { drafts: AllDraftsResolve },
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 data: { title: 'All Drafts' },
             },
             {
                 path: 'serverStatus',
                 component: ServerStatusComponent,
-                canActivate: [SiteAdminGuard],
+                canActivate: [siteAdminGuard],
                 data: { title: 'Server Status' },
             },
             {
                 path: 'articles',
                 component: ArticleAdminComponent,
-                canActivate: [ArticleGuard],
+                canActivate: [articleGuard],
                 data: { title: 'Articles' },
             },
             {
                 path: 'idSources',
                 component: IdSourcesComponent,
-                canActivate: [SiteAdminGuard],
+                canActivate: [siteAdminGuard],
                 data: { title: 'Id Sources' },
             },
             {
                 path: 'dataValidation',
                 component: DataValidationComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 data: { title: 'Data Validation' },
             },
             {
                 path: 'spellCheck',
                 component: SpellCheckComponent,
-                canActivate: [OrgAuthorityGuard],
+                canActivate: [orgAuthorityGuard],
                 data: { title: 'Spell Check' },
             },
         ],

@@ -7,15 +7,15 @@ import { AdminItemModule } from 'adminItem/adminItem.module';
 import { CdeModule } from 'cde/cde.module';
 import { CreateDataElementComponent } from 'cde/createDataElement/createDataElement.component';
 
-import { LoggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
 
 const appRoutes: Routes = [
     {
         path: '',
         component: CreateDataElementComponent,
-        canActivate: [LoggedInGuard],
+        canActivate: [loggedInGuard],
     },
 ];
 

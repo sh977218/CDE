@@ -1,41 +1,21 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Route, Router, RouterStateSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { canClassify } from 'shared/security/authorizationShared';
+import { map } from 'rxjs/operators';
 
-@Injectable()
-export class ClassifyGuard {
-    constructor(
-        @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) private userService: UserService
-    ) {}
+export const classifyGuard: CanActivateFn = () => {
+    const router = inject(Router);
+    const userService: UserService = inject(UserService);
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        return this.checkPermission();
-    }
-
-    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-        return this.canActivate(route, state);
-    }
-
-    canLoad(route: Route): Promise<boolean> {
-        return this.checkPermission();
-    }
-
-    checkPermission(): Promise<boolean> {
-        return this.userService.waitForUser().then(
-            user => {
-                if (canClassify(user)) {
-                    return true;
-                } else {
-                    this.router.navigate(['/home']);
-                    return false;
-                }
-            },
-            () => {
-                this.router.navigate(['/login']);
+    return userService.user$.pipe(
+        map(user => {
+            if (canClassify(user)) {
+                return true;
+            } else {
+                router.navigate(['/login']);
                 return false;
             }
-        );
-    }
-}
+        })
+    );
+};

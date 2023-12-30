@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, Comment, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
@@ -20,6 +20,8 @@ import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'sha
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
 import { removeFromArray } from 'shared/array';
+import { isEmpty } from 'lodash';
+import { map } from 'rxjs/operators';
 
 @Component({
     template: `
@@ -42,13 +44,22 @@ export class InactivityLoggedOutComponent {}
  */
 @Injectable()
 export class UserService {
-    private _user?: User | null;
+    private _user: User | undefined = undefined;
+
+    private _user$ = new BehaviorSubject<User | undefined>(undefined);
+    user$ = this._user$.pipe(
+        map(user => {
+            if (isEmpty(user)) return undefined;
+            else return user;
+        })
+    );
+
     private listeners: Cb1<User | null>[] = [];
     private mailSubscription?: Subscription;
     userOrgs: string[] = [];
     canViewComment: boolean = false;
     logoutTimeout?: number;
-    private promise!: Promise<User>;
+    private promise!: Promise<User | undefined>;
 
     constructor(
         @Inject(forwardRef(() => AlertService)) private alert: AlertService,
@@ -66,6 +77,7 @@ export class UserService {
 
     clear() {
         this._user = undefined;
+        this._user$.next(undefined);
         this.userOrgs.length = 0;
         if (this.mailSubscription) {
             this.mailSubscription.unsubscribe();
@@ -87,12 +99,15 @@ export class UserService {
             .then(user => this.processUser(user));
     }
 
-    async processUser(user: User | {}): Promise<User> {
-        function isUser(user: User | {}): user is User {
+    async processUser(user: User | undefined): Promise<User> {
+        function isUser(user: User): user is User {
             return !!(user as User).username;
         }
+
+        this._user$.next(user);
+
         if (!user || !isUser(user)) {
-            this._user = null;
+            this._user = undefined;
             return Promise.reject();
         }
         this._user = UserService.validate(user);
@@ -107,14 +122,16 @@ export class UserService {
         return user;
     }
 
-    reload(): Promise<User> {
+    reload(): Promise<User | undefined> {
         return (this.promise = this.http
-            .get<User | {}>('/server/user/')
+            .get<User>('/server/user/')
             .toPromise()
-            .then(user => this.reloadFrom(user)));
+            .then(user => {
+                return this.reloadFrom(user);
+            }));
     }
 
-    private reloadFrom(user: User | {}): Promise<User> {
+    private reloadFrom(user: User): Promise<User> {
         this.clear();
         const promise = Promise.resolve(user).then(user => this.processUser(user));
         promise.finally(() => {
@@ -193,7 +210,7 @@ export class UserService {
         return this._user || undefined;
     }
 
-    waitForUser(): Promise<User> {
+    waitForUser(): Promise<User | undefined> {
         return this.promise;
     }
 

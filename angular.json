@@ -267,7 +267,7 @@
             "development": {
               "browserTarget": "cde-cli:build:development"
             },
-            "playwright":{
+            "coverage":{
               "browserTarget": "cde-cli:coverage",
               "liveReload": true,
               "watch": true
@@ -418,8 +418,7 @@
       }
     }
   },
-  "defaultProject": "cde-cli",
   "cli": {
-    "analytics": "aa758161-e974-4821-991b-8c05d12abb67"
+    "analytics": false
   }
 }
