@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BoardOverviewComponent } from 'board/board-overview/board-overview.component';
-import { CreateBoardModule } from 'board/create-board.module';
 import { BoardOverviewEditModalComponent } from 'board/board-overview/board-overview-edit-modal/board-overview-edit-modal.component';
 import { BoardOverviewDeleteModalComponent } from 'board/board-overview/board-overview-delete-modal/board-overview-delete-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -14,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TagModule } from 'tag/tag.module';
 import { MatInputModule } from '@angular/material/input';
+import { CreateBoardComponent } from 'board/create-board/create-board.component';
 
 @NgModule({
     imports: [
@@ -29,7 +29,7 @@ import { MatInputModule } from '@angular/material/input';
         MatCardModule,
         MatFormFieldModule,
         MatButtonToggleModule,
-        CreateBoardModule,
+        CreateBoardComponent,
         TagModule,
     ],
     declarations: [BoardOverviewComponent, BoardOverviewEditModalComponent, BoardOverviewDeleteModalComponent],

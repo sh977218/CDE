@@ -1,8 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     templateUrl: './create-board-modal.component.html',
+    imports: [NgSwitch, FormsModule, NgSwitchCase, NgSwitchDefault, MatDialogModule],
+    standalone: true,
 })
 export class CreateBoardModalComponent {
     newBoard;

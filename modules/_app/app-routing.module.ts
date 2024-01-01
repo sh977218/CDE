@@ -25,7 +25,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'board/:boardId',
-        loadChildren: () => import('board/boardView.module').then(m => m.BoardViewModule),
+        loadComponent: () => import('board/boardView/boardView.component').then(c => c.BoardViewComponent),
         data: { title: 'Board View', preload: false },
     },
     {
@@ -105,7 +105,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'myBoards',
-        loadChildren: () => import('board/myBoards.module').then(m => m.MyBoardsModule),
+        loadComponent: () => import('board/myBoards/myBoards.component').then(c => c.MyBoardsComponent),
         data: { title: 'My Boards', preload: false },
     },
     {

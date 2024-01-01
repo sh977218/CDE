@@ -1,6 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { SearchModule } from 'search/search.module';
+import { CompareModule } from 'compare/compare.module';
+import { BoardModule } from 'board/board.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { ElasticService } from '_app/elastic.service';
@@ -21,6 +27,8 @@ export interface BoardQuery {
 
 @Component({
     templateUrl: './boardView.component.html',
+    imports: [NgIf, MatIconModule, SearchModule, CompareModule, BoardModule, MatPaginatorModule, AdminItemModule],
+    standalone: true,
 })
 export class BoardViewComponent implements OnInit, OnDestroy {
     @ViewChild('classifyCdesModal', { static: true }) classifyCdesModal!: ClassifyItemComponent;

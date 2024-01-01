@@ -13,12 +13,12 @@ import { ListSortComponent } from 'board/listView/listSort.component';
 import { UnpinBoardComponent } from 'board/listView/unpinBoard.component';
 import { MyBoardsService } from 'board/myBoards.service';
 import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
-import { CreateBoardModule } from 'board/create-board.module';
 import { BoardOverviewModule } from 'board/board-overview.module';
 import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
+import { CreateBoardComponent } from 'board/create-board/create-board.component';
 
 @NgModule({
     imports: [
@@ -35,7 +35,7 @@ import { TagModule } from 'tag/tag.module';
         // internal
         SearchModule,
         AdminItemModule,
-        CreateBoardModule,
+        CreateBoardComponent,
         BoardOverviewModule,
         TagModule,
     ],
