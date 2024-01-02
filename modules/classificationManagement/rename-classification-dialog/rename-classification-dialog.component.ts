@@ -1,11 +1,15 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ReactiveFormsModule, UntypedFormControl, Validators } from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
+import { MatInputModule } from '@angular/material/input';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'rename-classification-dialog',
     templateUrl: './rename-classification-dialog.component.html',
+    imports: [MatDialogModule, MatInputModule, ReactiveFormsModule, NgIf],
+    standalone: true,
 })
 export class RenameClassificationDialogComponent {
     newClassificationName = new UntypedFormControl('', [Validators.required]);

@@ -1,11 +1,22 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, UntypedFormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+    AbstractControl,
+    ReactiveFormsModule,
+    UntypedFormControl,
+    ValidationErrors,
+    ValidatorFn,
+    Validators,
+} from '@angular/forms';
 import { DialogData } from 'classificationManagement/dialog-data';
+import { MatInputModule } from '@angular/material/input';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'remove-org-classification-dialog',
     templateUrl: './remove-org-classification-dialog.component.html',
+    imports: [MatDialogModule, MatInputModule, ReactiveFormsModule, NgIf],
+    standalone: true,
 })
 export class RemoveOrgClassificationDialogComponent {
     userTyped = new UntypedFormControl('');

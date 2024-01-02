@@ -7,6 +7,8 @@ import { LoginFederatedComponent } from '_app/loginFederated.component';
 import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
 import { classifyGuard } from '_app/routerGuard/classifyGuard';
 import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
+import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
+import { ClassificationService } from 'non-core/classification.service';
 
 const appRoutes: Routes = [
     {
@@ -46,12 +48,15 @@ const appRoutes: Routes = [
     { path: 'cde', redirectTo: '/cde/search', pathMatch: 'full' },
     {
         path: 'classificationManagement',
-        loadChildren: () =>
-            import('classificationManagement/classificationManagement.module').then(
-                m => m.ClassificationManagementModule
+        loadComponent: () =>
+            import('classificationManagement/orgClassificationManagement/orgClassificationManagement.component').then(
+                c => c.OrgClassificationManagementComponent
             ),
+        resolve: {
+            orgs: ManagedOrgsResolve,
+        },
         canActivate: [classifyGuard],
-        data: { title: 'Manage Classification', preload: false },
+        data: { title: 'Manage Org Classification', preload: false },
     },
     {
         path: 'collection',
@@ -173,7 +178,7 @@ const appRoutes: Routes = [
         }),
     ],
     declarations: [OfflineComponent, PageNotFoundComponent],
-    providers: [],
+    providers: [ManagedOrgsResolve, ClassificationService],
     exports: [RouterModule],
 })
 export class CdeAppRoutingModule {}

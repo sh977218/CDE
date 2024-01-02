@@ -1,14 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { map } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { UntypedFormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Cb } from 'shared/models.model';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
@@ -22,10 +27,25 @@ import { SearchQueryParameter } from 'classificationManagement/search-query-para
 import { isOrgAdmin } from 'shared/security/authorizationShared';
 import { UserService } from '_app/user.service';
 import { RemoveOrgClassificationDialogComponent } from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
     styleUrls: ['./orgClassificationManagement.component.scss'],
+    imports: [
+        MatInputModule,
+        MatSelectModule,
+        MatTreeModule,
+        MatIconModule,
+        RouterLink,
+        NgIf,
+        MatMenuModule,
+        ReactiveFormsModule,
+        NgForOf,
+        MatButtonModule,
+    ],
+    providers: [ClassificationDatabase],
+    standalone: true,
 })
 export class OrgClassificationManagementComponent {
     @ViewChild('reclassifyComponent', { static: true })
