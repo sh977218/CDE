@@ -12,6 +12,15 @@ import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSyste
 import { mapSeries } from 'shared/promise';
 import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
 import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
+import { MatInputModule } from '@angular/material/input';
+import { NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { NonCoreModule } from 'non-core/noncore.module';
+import { MatIconModule } from '@angular/material/icon';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 interface Source {
     source: string;
@@ -64,6 +73,22 @@ const SOURCES: Record<PermissibleValueCodeSystem, Source> = {
     selector: 'cde-permissible-value',
     templateUrl: './permissibleValue.component.html',
     styleUrls: ['./permissibleValue.component.scss'],
+    imports: [
+        MatInputModule,
+        NgIf,
+        MatSelectModule,
+        NgForOf,
+        NgSwitch,
+        NgSwitchCase,
+        FormsModule,
+        InlineEditModule,
+        InlineAreaEditModule,
+        NgSwitchDefault,
+        NonCoreModule,
+        MatIconModule,
+        SortableArrayModule,
+    ],
+    standalone: true,
 })
 export class PermissibleValueComponent {
     @Input() canEdit!: boolean;

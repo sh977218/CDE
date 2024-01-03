@@ -10,10 +10,15 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
 import { Cb, ClassificationClassified } from 'shared/models.model';
 import { canClassify } from 'shared/security/authorizationShared';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'cde-cde-classification',
     templateUrl: './cdeClassification.component.html',
+    imports: [AdminItemModule, MatIconModule, NgIf],
+    standalone: true,
 })
 export class CdeClassificationComponent {
     @Input() elt!: DataElement;

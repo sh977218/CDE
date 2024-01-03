@@ -45,6 +45,8 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
+import { CdeSearchComponent } from 'cde/search/cdeSearch.component';
+import { DeCompletionComponent } from '../cde/completion/deCompletion.component';
 
 const appRoutes: Routes = [{ path: '', component: FormDescriptionComponent }];
 
@@ -89,6 +91,8 @@ const appRoutes: Routes = [{ path: '', component: FormDescriptionComponent }];
         TagModule,
         DeleteWithConfirmModule,
         SortableArrayModule,
+        CdeSearchComponent,
+        DeCompletionComponent,
     ],
     declarations: [
         FormDescriptionComponent,

@@ -4,9 +4,14 @@ import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/
 import { EMPTY, Subject } from 'rxjs';
 import { PermissibleValue } from 'shared/models.model';
 import { UmlsTerm } from 'cde/permissibleValue/umls-term';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
     templateUrl: './new-permissible-value-modal.component.html',
+    imports: [MatDialogModule, FormsModule, NgIf, NgForOf],
+    standalone: true,
 })
 export class NewPermissibleValueModalComponent {
     newPermissibleValue: PermissibleValue = new PermissibleValue();

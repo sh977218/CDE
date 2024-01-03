@@ -4,10 +4,15 @@ import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core
 import { DerivationRule } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { MatDialog } from '@angular/material/dialog';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'cde-derivation-rules',
     templateUrl: './derivationRules.component.html',
+    standalone: true,
+    imports: [NgIf, NgForOf, MatIconModule, RouterLink],
 })
 export class DerivationRulesComponent implements OnChanges {
     @Input() canEdit!: boolean;

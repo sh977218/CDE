@@ -10,11 +10,40 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { SearchBaseComponent } from 'search/searchBase.component';
 import { DataElement } from 'shared/de/dataElement.model';
+import { MatMenuModule } from '@angular/material/menu';
+import { NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { SearchModule } from 'search/search.module';
+import { PinToBoardModule } from 'board/pin-to-board.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
 
 @Component({
     selector: 'cde-cde-search',
     styleUrls: ['../../search/searchBase.component.scss'],
     templateUrl: '../../search/searchBase.component.html',
+    imports: [
+        MatMenuModule,
+        NgIf,
+        FormsModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatTooltipModule,
+        NgForOf,
+        TourAnchorMatMenuDirective,
+        SearchModule,
+        UpperCasePipe,
+        PinToBoardModule,
+        MatInputModule,
+        MatPaginatorModule,
+    ],
+    providers: [ExportService, RegistrationValidatorService],
+    standalone: true,
 })
 export class CdeSearchComponent extends SearchBaseComponent {
     @Output() add = new EventEmitter<DataElement>();

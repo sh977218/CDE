@@ -14,12 +14,19 @@ import { findSteward, removeCategory } from 'shared/classification/classificatio
 import { DataElement } from 'shared/de/dataElement.model';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { DeCompletionComponent } from 'cde/completion/deCompletion.component';
 
 @Component({
     selector: 'cde-create-data-element',
     templateUrl: './createDataElement.component.html',
     styleUrls: ['./createDataElement.component.scss'],
     providers: [DeCompletionService],
+    imports: [FormsModule, MatIconModule, AdminItemModule, UpperCasePipe, NgIf, NgForOf, DeCompletionComponent],
+    standalone: true,
 })
 export class CreateDataElementComponent implements OnInit {
     @Input() elt!: DataElement;

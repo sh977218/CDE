@@ -40,6 +40,7 @@ import { LoginFederatedComponent } from '_app/loginFederated.component';
 import { CdeTourService } from '_app/cdeTour.service';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 import { GlobalErrorHandler } from '_app/global-error-handler';
+import { MyBoardsService } from 'board/myBoards.service';
 
 @NgModule({
     imports: [
@@ -91,6 +92,7 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
         UserService,
         OrgHelperService,
         CdeTourService,
+        MyBoardsService,
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
     ],
     exports: [],

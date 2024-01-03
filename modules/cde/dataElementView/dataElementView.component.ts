@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
@@ -32,13 +32,67 @@ import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import { Cb1, Comment, Elt, Item } from 'shared/models.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
-import { WINDOW } from 'window.service';
+import { WINDOW, WINDOW_PROVIDERS } from 'window.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DatePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { TocModule } from 'angular-aio-toc/toc.module';
+import { DiscussModule } from 'discuss/discuss.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
+import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { DeGeneralDetailsComponent } from 'cde/deGeneralDetails/deGeneralDetails.component';
+import { PermissibleValueComponent } from 'cde/permissibleValue/permissibleValue.component';
+import { ConceptsComponent } from 'cde/concepts/concepts.component';
+import { DerivationRulesComponent } from 'cde/derivationRules/derivationRules.component';
+import { CdeClassificationComponent } from 'cde/cdeClassification/cdeClassification.component';
+import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
+import { MyBoardsService } from 'board/myBoards.service';
+import { ClassificationService } from 'non-core/classification.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
 
 @Component({
     selector: 'cde-data-element-view',
     templateUrl: 'dataElementView.component.html',
     styleUrls: ['./view.style.scss'],
-    providers: [TocService],
+    providers: [
+        TocService,
+        DataElementViewService,
+        MyBoardsService,
+        ClassificationService,
+        IsAllowedService,
+        ExportService,
+        RegistrationValidatorService,
+        OrgHelperService,
+        WINDOW_PROVIDERS,
+    ],
+    imports: [
+        MatProgressSpinnerModule,
+        NgIf,
+        MatSidenavModule,
+        TocModule,
+        DiscussModule,
+        MatIconModule,
+        RouterLink,
+        NgForOf,
+        MatMenuModule,
+        PinToBoardModule,
+        NgTemplateOutlet,
+        TourAnchorMatMenuDirective,
+        NgClass,
+        MatTooltipModule,
+        DatePipe,
+        AdminItemModule,
+        DeGeneralDetailsComponent,
+        PermissibleValueComponent,
+        ConceptsComponent,
+        DerivationRulesComponent,
+        CdeClassificationComponent,
+    ],
+    standalone: true,
 })
 export class DataElementViewComponent implements OnDestroy, OnInit {
     _elt?: DataElement;

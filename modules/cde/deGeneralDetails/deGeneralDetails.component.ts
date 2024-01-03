@@ -2,11 +2,16 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core
 import { UserService } from '_app/user.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { DataElement } from 'shared/de/dataElement.model';
+import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'cde-de-general-details[elt]',
     templateUrl: './deGeneralDetails.component.html',
     styleUrls: ['./deGeneralDetails.component.scss'],
+    imports: [InlineSelectEditModule, InlineEditModule, NgIf],
+    standalone: true,
 })
 export class DeGeneralDetailsComponent implements OnDestroy {
     @Input() canEdit: boolean = false;

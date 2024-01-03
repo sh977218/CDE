@@ -37,7 +37,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'cde/search',
-        loadChildren: () => import('cde/cdeSearchEntry.module').then(m => m.CdeSearchEntryModule),
+        loadComponent: () => import('cde/search/cdeSearch.component').then(c => c.CdeSearchComponent),
         data: { title: 'Data Element Search', preload: false },
     },
     {
@@ -65,7 +65,9 @@ const appRoutes: Routes = [
     },
     {
         path: 'createCde',
-        loadChildren: () => import('cde/cdeCreate.module').then(m => m.CdeCreateModule),
+        loadComponent: () =>
+            import('cde/createDataElement/createDataElement.component').then(c => c.CreateDataElementComponent),
+        canActivate: [loggedInGuard],
         data: { title: 'Create Data Element', preload: false },
     },
     {
@@ -75,7 +77,8 @@ const appRoutes: Routes = [
     },
     {
         path: 'deView',
-        loadChildren: () => import('cde/cdeView.module').then(m => m.CdeViewModule),
+        loadComponent: () =>
+            import('cde/dataElementView/dataElementView.component').then(c => c.DataElementViewComponent),
         data: { title: 'Data Element View', preload: false },
     },
     {

@@ -5,6 +5,9 @@ import { AddConceptModalComponent } from 'cde/concepts/add-concept-modal/add-con
 import { concat } from 'shared/array';
 import { Concept, DataElement } from 'shared/de/dataElement.model';
 import { assertUnreachable } from 'shared/models.model';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 
@@ -19,6 +22,8 @@ interface Config {
 @Component({
     selector: 'cde-concepts',
     templateUrl: './concepts.component.html',
+    imports: [NgIf, NgForOf, MatIconModule, SortableArrayModule],
+    standalone: true,
 })
 export class ConceptsComponent {
     @Input() public elt!: DataElement;

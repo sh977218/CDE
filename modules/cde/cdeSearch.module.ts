@@ -8,7 +8,6 @@ import { CdeModule } from 'cde/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.component';
 import { BoardCdeSummaryListContentComponent } from 'cde/listView/boardCdeSummaryListContent.component';
 import { CdeSummaryListContentComponent } from 'cde/listView/cdeSummaryListContent.component';
-import { CdeSearchComponent } from 'cde/search/cdeSearch.component';
 import { SearchModule } from 'search/search.module';
 import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cdeTableViewPreferencesComponent';
 import { TagModule } from 'tag/tag.module';
@@ -62,11 +61,10 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
     declarations: [
         BoardCdeSummaryListComponent,
         BoardCdeSummaryListContentComponent,
-        CdeSearchComponent,
         CdeSummaryListContentComponent,
         CdeTableViewPreferencesComponent,
     ],
-    exports: [CdeSearchComponent],
+    exports: [],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

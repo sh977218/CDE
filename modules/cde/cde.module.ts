@@ -8,8 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { BoardModule } from 'board/board.module';
-import { DeCompletionComponent } from 'cde/completion/deCompletion.component';
-import { CreateDataElementComponent } from 'cde/createDataElement/createDataElement.component';
 import { CdeAccordionListComponent } from 'cde/listView/cdeAccordionList.component';
 import { CdeGeneralDetailsComponent } from 'cde/summary/cdeGeneralDetails.component';
 import { ValueDomainSummaryComponent } from 'cde/summary/valueDomainSummary.component';
@@ -34,20 +32,8 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         DiscussModule,
         SearchModule,
     ],
-    declarations: [
-        CdeAccordionListComponent,
-        CdeGeneralDetailsComponent,
-        CreateDataElementComponent,
-        DeCompletionComponent,
-        ValueDomainSummaryComponent,
-    ],
-    exports: [
-        CdeAccordionListComponent,
-        CdeGeneralDetailsComponent,
-        CreateDataElementComponent,
-        DeCompletionComponent,
-        ValueDomainSummaryComponent,
-    ],
+    declarations: [CdeAccordionListComponent, CdeGeneralDetailsComponent, ValueDomainSummaryComponent],
+    exports: [CdeAccordionListComponent, CdeGeneralDetailsComponent, ValueDomainSummaryComponent],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
