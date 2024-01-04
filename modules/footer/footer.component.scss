@@ -1,0 +1,17 @@
+@import '../theme';
+
+footer {
+  background-color: $nlmBlue;
+
+  * {
+    font-size: 16px;
+    color: white;
+  }
+
+  .social-media-container {
+    img {
+      background-color: $nlmBlue;
+      margin: 0.2rem;
+    }
+  }
+}

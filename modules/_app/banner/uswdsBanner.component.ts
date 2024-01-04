@@ -10,5 +10,6 @@ import { Component } from '@angular/core';
     selector: 'uswds-banner',
     templateUrl: './uswdsBanner.component.html',
     styleUrls: ['./uswdsBanner.component.scss'],
+    standalone: true,
 })
 export class UswdsBannerComponent {}

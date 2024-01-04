@@ -74,7 +74,8 @@
               "modules/form/formDescription/formDescription.global.scss",
               "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
               "modules/nativeRender/nativeRender.global.scss",
-              "modules/submission/submissionEdit.component.global.scss"
+              "modules/submission/submissionEdit.component.global.scss",
+              "modules/styles.scss"
             ],
             "scripts": [
               "node_modules/@popperjs/core/dist/umd/popper.js",

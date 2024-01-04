@@ -208,93 +208,9 @@
     <mat-sidenav-content [id]="scrollContent() ? 'scrollRoot' : undefined" [class.scrollContent]="scrollContent()"
                          style="display: flex; flex-direction: column; flex-grow: 1">
         <router-outlet></router-outlet>
-        <ng-container *ngTemplateOutlet="cdeFooter"></ng-container>
+        <cde-footer></cde-footer>
+        <uswds-banner *ngIf="isMobile"></uswds-banner>
         <div style="display: flex"></div>
     </mat-sidenav-content>
 </mat-sidenav-container>
-
-<ng-template #cdeFooter>
-    <footer>
-        <mat-toolbar class="footer noPrint">
-            <mat-toolbar-row class="cde-nav-minor">
-                <div style="display: none">Hidden Text Ensures 100% SEO. Thank you!</div>
-                <div class="sub-footer">
-                    <div>
-                        <p>
-                            <a href="https://www.nlm.nih.gov/socialmedia/index.html"
-                               target="_blank" rel="noopener noreferrer">Follow NLM</a>
-                        </p>
-                        <div>
-                            <ul class="social_media">
-                                <li>
-                                    <a href="https://www.facebook.com/nationallibraryofmedicine">
-                                        <img src="/assets/img/Facebook.png" style="height: 2em"
-                                             alt="Facebook"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://twitter.com/NLM_NIH">
-                                        <img src="/assets/img/Twitter.png" style="height: 2em"
-                                             alt="Twitter"/>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.youtube.com/user/NLMNIH">
-                                        <img src="/assets/img/YouTube.png" style="height: 2em"
-                                             alt="YouTube">
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div></div>
-                    <div>
-                        <div>National Library of Medicine</div>
-                        <span class="address">8600 Rockville Pike, </span>
-                        <span class="address">Bethesda, MD 20894</span>
-                    </div>
-                    <div>
-                        <div></div>
-                        <div>
-                            <a href="https://support.nlm.nih.gov/?from=https://cde.nlm.nih.gov/"
-                               target="_blank" rel="noopener noreferrer">Help</a>
-                        </div>
-                        <div>
-                            <a href="https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office"
-                               target="_blank" rel="noopener noreferrer">FOIA</a>
-                        </div>
-                        <div>
-                            <a href="https://www.nlm.nih.gov/web_policies.html"
-                               target="_blank" rel="noopener noreferrer">Web Policies</a>
-                        </div>
-                        <div>
-                            <a href="https://www.nlm.nih.gov/careers/careers.html"
-                               target="_blank" rel="noopener noreferrer">Careers</a>
-                        </div>
-                        <div>
-                            <a href="https://www.nlm.nih.gov/accessibility.html"
-                               target="_blank" rel="noopener noreferrer">Accessibility</a>
-                        </div>
-                        <div>
-                            <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html"
-                               target="_blank" rel="noopener noreferrer">HHS Vulnerability Disclosure</a>
-                        </div>
-                    </div>
-                </div>
-            </mat-toolbar-row>
-            <mat-toolbar-row class="cde-nav-major">
-                <div style="margin: auto">
-                    <a href="https://www.nlm.nih.gov/" target="_blank" rel="noopener noreferrer">NLM</a>
-                    |
-                    <a href="http://www.nih.gov/" target="_blank" rel="noopener noreferrer">NIH</a>
-                    |
-                    <a href="http://www.hhs.gov/" target="_blank" rel="noopener noreferrer">HHS</a>
-                    |
-                    <a href="http://www.usa.gov/" target="_blank" rel="noopener noreferrer">USA.gov</a>
-                </div>
-            </mat-toolbar-row>
-        </mat-toolbar>
-        <uswds-banner *ngIf="isMobile"></uswds-banner>
-    </footer>
-</ng-template>
 <notification-dialog></notification-dialog>

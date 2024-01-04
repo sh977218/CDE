@@ -25,7 +25,6 @@ import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { BackForwardService } from '_app/backForward.service';
 import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
 import { IEBannerComponent } from '_app/banner/ieBanner.component';
-import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { ElasticService } from '_app/elastic.service';
 import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
@@ -40,6 +39,8 @@ import { LoginFederatedComponent } from '_app/loginFederated.component';
 import { CdeTourService } from '_app/cdeTour.service';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 import { GlobalErrorHandler } from '_app/global-error-handler';
+import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
+import { FooterComponent } from 'footer/footer.component';
 import { MyBoardsService } from 'board/myBoards.service';
 
 @NgModule({
@@ -70,6 +71,8 @@ import { MyBoardsService } from 'board/myBoards.service';
             serverLogLevel: NgxLoggerLevel.ERROR,
             serverLoggingUrl: '/server/log/clientExceptionLogs',
         }),
+        UswdsBannerComponent,
+        FooterComponent,
     ],
     declarations: [
         CdeAppComponent,
@@ -80,7 +83,6 @@ import { MyBoardsService } from 'board/myBoards.service';
         InactivityLoggedOutComponent,
         NavigationComponent,
         TruncateLongNamePipe,
-        UswdsBannerComponent,
     ],
     providers: [
         FormResolve,
