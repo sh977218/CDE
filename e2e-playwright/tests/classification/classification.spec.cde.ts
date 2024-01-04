@@ -9,7 +9,7 @@ test.describe(`Classification`, async () => {
         searchPage,
         navigationMenu,
         manageClassificationPage,
-        snackBar,
+        materialPage,
         auditTab,
         classificationAuditPage,
     }) => {
@@ -34,7 +34,7 @@ test.describe(`Classification`, async () => {
         await manageClassificationPage.classificationOption('Remove').click();
         await manageClassificationPage.confirmRemoveClassificationInput().fill('Participant/Subject Characteristics');
         await manageClassificationPage.confirmRemoveClassificationButton().click();
-        await snackBar.checkAlert(`Deleting in progress.`);
+        await materialPage.checkAlert(`Deleting in progress.`);
 
         await basePage.goToSearch('cde');
         await searchPage.searchQueryInput().fill(searchString);
@@ -54,7 +54,7 @@ test.describe(`Classification`, async () => {
             `10+ cdes ${classificationArray.join(' > ')}`
         );
         await classificationAuditPage.openClassificationAudit(locator);
-        await expect( classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toHaveText(
+        await expect(classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toHaveText(
             `delete ${classificationArray.join(' > ')}`
         );
         await classificationAuditPage.closeClassificationAuditByTitle(locator);

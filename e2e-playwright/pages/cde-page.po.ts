@@ -27,6 +27,14 @@ export class CdePagePo extends BasePagePo {
         return this.page.locator(`[id="addToBoard"]`);
     }
 
+    addPermissibleValueButton() {
+        return this.page.getByTestId('openAddPermissibleValueModelBtn');
+    }
+
+    valueMeaningNameInput() {
+        return this.page.getByTestId('valueMeaningNameInput');
+    }
+
     permissibleValueSynonymsCheckbox(source: string) {
         return this.page
             .locator(`[data-testid="displayCode"]`, {

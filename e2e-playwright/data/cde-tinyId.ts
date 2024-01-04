@@ -8,4 +8,5 @@ export default {
     'Race Category Text': 'CK8F0tHZ5wp',
     'Cde Status Test': 'Lx1dejs0w',
     UnclassifiedCDE: 'mkH_UGXEw',
+    'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator': 'NuQwuCAZrz5',
 };

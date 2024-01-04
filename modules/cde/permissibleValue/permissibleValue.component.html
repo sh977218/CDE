@@ -254,6 +254,7 @@
     <div>
         <ng-container *ngIf="canEdit">
             <button id="openAddPermissibleValueModelBtn" class="button light success"
+                    data-testid="openAddPermissibleValueModelBtn"
                     (click)="openNewPermissibleValueModal(elt.valueDomain)">
                 <mat-icon>add</mat-icon>
                 Add Permissible Value

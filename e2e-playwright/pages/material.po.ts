@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class MaterialPo {
     protected page: Page;
@@ -37,5 +37,19 @@ export class MaterialPo {
 
     matTransform() {
         return this.page.locator(`//mat-icon[normalize-space() = 'transform']`);
+    }
+
+    matDialog() {
+        return this.page.locator(`mat-dialog-container`);
+    }
+
+    async checkAlert(text: string) {
+        const alertText = this.page
+            .locator('mat-snack-bar-container')
+            .locator('simple-snack-bar')
+            .locator('.mat-mdc-snack-bar-label');
+        await expect(alertText).toHaveText(text, { timeout: 30 * 1000 });
+        await this.page.locator('mat-snack-bar-container').locator('button').click();
+        await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
     }
 }

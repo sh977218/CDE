@@ -6,13 +6,13 @@ import formTinyId from '../../data/form-tinyId';
 
 test.describe(`Merge form`, async () => {
     test.describe(`Own form`, async () => {
-        test.beforeEach(async ({basePage, navigationMenu}) => {
+        test.beforeEach(async ({ basePage, navigationMenu }) => {
             await basePage.goToHome();
             await navigationMenu.login(user.nlm.username, user.nlm.password);
             await navigationMenu.gotoMyBoard();
         });
 
-        test(`Not aligned forms cannot be merged`, async ({myBoardPage, boardPage}) => {
+        test(`Not aligned forms cannot be merged`, async ({ myBoardPage, boardPage }) => {
             test.fixme();
             await myBoardPage.boardTitle('NotAlignForm').click();
             await boardPage.compareButton().click();
@@ -21,7 +21,7 @@ test.describe(`Merge form`, async () => {
             await boardPage.closeMergeFormButton().click();
         });
 
-        test(`Left form has more questions cannot be merged`, async ({myBoardPage, boardPage}) => {
+        test(`Left form has more questions cannot be merged`, async ({ myBoardPage, boardPage }) => {
             await myBoardPage.boardTitle('SourceFormMoreQuestions').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();
@@ -29,20 +29,22 @@ test.describe(`Merge form`, async () => {
             await boardPage.closeMergeFormButton().click();
         });
 
-        test(`Merge and retire CDEs`, async ({myBoardPage, boardPage, cdePage, formPage, snackBar}) => {
+        test(`Merge and retire CDEs`, async ({ materialPage, myBoardPage, boardPage, cdePage, formPage }) => {
             test.fixme();
             await myBoardPage.boardTitle('MergeFormRetire').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();
             await boardPage.retireCdeCheckbox().check();
             await boardPage.mergeFormButton().click();
-            await snackBar.checkAlert('Form merged');
+            await materialPage.checkAlert('Form merged');
             for (const l of await boardPage.leftQuestions().all()) {
                 await expect(l).toContainText('Retired');
             }
             const formName = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
             await formPage.goToForm(formTinyId[formName]);
-            await expect(formPage.alerts()).toContainText(`This form version is no longer current. The most current version of this form is available here:`);
+            await expect(formPage.alerts()).toContainText(
+                `This form version is no longer current. The most current version of this form is available here:`
+            );
             await formPage.mergeToLink().click();
             await test
                 .expect(formPage.formTitle())
@@ -55,7 +57,7 @@ test.describe(`Merge form`, async () => {
         });
     });
 
-    test(`Not own form`, async ({basePage, navigationMenu, myBoardPage, boardPage}) => {
+    test(`Not own form`, async ({ basePage, navigationMenu, myBoardPage, boardPage }) => {
         await basePage.goToHome();
         await navigationMenu.login(user.ninds.username, user.ninds.password);
         await navigationMenu.gotoMyBoard();

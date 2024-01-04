@@ -12,7 +12,6 @@ import { MaterialPo } from '../pages/material.po';
 import { BoardPagePo } from '../pages/board/board-page.po';
 import { SearchPagePo } from '../pages/search-page.po';
 import { SearchPreferencesPagePo } from '../pages/search-preferences-page.po';
-import { SnackBarPo } from '../pages/snack-bar.po';
 import { InlineEditPo } from '../pages/inline-edit.po';
 import { NavigationMenuPo } from '../pages/navigation-menu.po';
 
@@ -62,7 +61,6 @@ const test = baseTest.extend<{
     navigationMenu: NavigationMenuPo;
     searchPage: SearchPagePo;
     searchPreferencesPage: SearchPreferencesPagePo;
-    snackBar: SnackBarPo;
     inlineEdit: InlineEditPo;
     auditTab: AuditTabPo;
     classificationAuditPage: ClassificationAuditPagePo;
@@ -111,9 +109,6 @@ const test = baseTest.extend<{
     },
     searchPreferencesPage: async ({ page }, use) => {
         await use(new SearchPreferencesPagePo(page));
-    },
-    snackBar: async ({ page }, use) => {
-        await use(new SnackBarPo(page));
     },
     inlineEdit: async ({ page }, use) => {
         await use(new InlineEditPo(page));

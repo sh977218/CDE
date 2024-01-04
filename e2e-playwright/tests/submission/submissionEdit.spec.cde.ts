@@ -17,7 +17,7 @@ test.describe(`Submission Edit`, async () => {
         await submissionManagePage.isSubmissionManagementCurator();
     });
 
-    test('Create', async ({ page, basePage, materialPage, snackBar, submissionManagePage, submissionEditPage }) => {
+    test('Create', async ({ page, basePage, materialPage, submissionManagePage, submissionEditPage }) => {
         await submissionManagePage.submissionNew();
 
         // Page 1
@@ -33,12 +33,12 @@ test.describe(`Submission Edit`, async () => {
         await page.getByLabel('NIH ICO or NIH Wide Initiative - Incomplete').fill('CI');
 
         await button(page, 'Next').first().click();
-        await snackBar.checkAlert('Progress Saved');
+        await materialPage.checkAlert('Progress Saved');
         submissionEditPage.isEdit();
 
         // Page 2
         await button(page, 'Next').nth(1).click();
-        await        expect( page.locator('.alert')).toContainText(
+        await expect(page.locator('.alert')).toContainText(
             'Please complete all required fields. Missing Fields marked "Incomplete".'
         );
 
@@ -58,17 +58,19 @@ test.describe(`Submission Edit`, async () => {
         await materialPage.matOption('governanceUser').click();
 
         await button(page, 'Next').nth(1).click();
-        await snackBar.checkAlert('Progress Saved');
+        await materialPage.checkAlert('Progress Saved');
 
         // Page 3
         await button(page, 'Next').nth(2).click();
-        await expect( page.locator('.alert')).toContainText(
+        await expect(page.locator('.alert')).toContainText(
             'Please complete all required fields. Missing Fields marked "Incomplete".'
         );
 
-        await expect(page.locator(
-            '//label[contains(., "Does any part of this submission have license or copyright restrictions? - Incomplete")]'
-        )).toBeVisible();
+        await expect(
+            page.locator(
+                '//label[contains(., "Does any part of this submission have license or copyright restrictions? - Incomplete")]'
+            )
+        ).toBeVisible();
         await page.getByLabel('Other').check();
         await page.getByLabel('Licensing/Copyright Description - Incomplete').first().fill('Praise CI');
         await expect(page.locator('//label[contains(., "Upload Collection File - Incomplete")]')).toBeVisible();
@@ -79,14 +81,18 @@ test.describe(`Submission Edit`, async () => {
 
         // Page 4
         await button(page, 'Submit').click();
-        await expect(page.locator(
-            bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
-        )).toBeVisible();
+        await expect(
+            page.locator(
+                bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
+            )
+        ).toBeVisible();
 
-        await expect(page.locator('//dt[contains(.,"License")]/following-sibling::dd[contains(., "Other")]')).toBeVisible();
+        await expect(
+            page.locator('//dt[contains(.,"License")]/following-sibling::dd[contains(., "Other")]')
+        ).toBeVisible();
     });
 
-    test('Edit', async ({ page, snackBar, submissionManagePage }) => {
+    test('Edit', async ({ page, submissionManagePage }) => {
         await submissionManagePage.submissionEdit('nlm', '1');
         await page.getByLabel('Version Number').fill('1.1');
         await button(page, 'Save').first().click();
@@ -94,13 +100,16 @@ test.describe(`Submission Edit`, async () => {
         await submissionManagePage.submissionEdit('nlm', '1.1');
     });
 
-    test('Validate', async ({ page, basePage, snackBar, submissionManagePage }) => {
+    test('Validate', async ({ page, materialPage, submissionManagePage }) => {
         await submissionManagePage.submissionEdit('NLM', '1');
         await page.locator('mat-step-header').nth(2).click();
-        await page.setInputFiles('[id="fileWorkbook"]', './e2e-playwright/assets/ScHARe CDE Governance Submission Form 2023-07-25 for dev team.xlsx');
-        await snackBar.checkAlert('Attachment Saved');
+        await page.setInputFiles(
+            '[id="fileWorkbook"]',
+            './e2e-playwright/assets/ScHARe CDE Governance Submission Form 2023-07-25 for dev team.xlsx'
+        );
+        await materialPage.checkAlert('Attachment Saved');
         await button(page, 'Download Report').click();
-        await snackBar.checkAlert('Report saved. Check downloaded files.');
+        await materialPage.checkAlert('Report saved. Check downloaded files.');
 
         await expect(page.locator('//h1[text()="Summary of Errors"]')).toBeVisible();
         await expect(page.locator('//h2[text()="Critical Errors"]')).toBeVisible();
@@ -108,25 +117,31 @@ test.describe(`Submission Edit`, async () => {
         await expect(page.locator('//li[text()="Required Field: 1"]')).toBeVisible();
         await expect(page.locator('//h1[text()="Critical Errors:"]')).toBeVisible();
         await expect(page.locator('//h2[text()="Length of Lists"]')).toBeVisible();
-        await expect(page.locator(
-            '//li[text()="There are 7 PV Labels but 8 PV Definitions. Must be the same count. Row(s) 12"]'
-        )).toBeVisible();
+        await expect(
+            page.locator('//li[text()="There are 7 PV Labels but 8 PV Definitions. Must be the same count. Row(s) 12"]')
+        ).toBeVisible();
         await expect(page.locator('//h2[text()="Required Fields"]')).toBeVisible();
-        await expect(page.locator(
-            '//li[text()="CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL. Row(s) 5"]'
-        )).toBeVisible();
+        await expect(
+            page.locator(
+                '//li[text()="CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL. Row(s) 5"]'
+            )
+        ).toBeVisible();
 
         await button(page, 'Next').nth(2).click();
-        await expect(page.locator(
-            bannerErrorMessage(
-                'There are blocking errors in the Workbook file. Please see the report below and address.'
+        await expect(
+            page.locator(
+                bannerErrorMessage(
+                    'There are blocking errors in the Workbook file. Please see the report below and address.'
+                )
             )
-        )).toBeVisible();
+        ).toBeVisible();
 
         await page.locator('mat-step-header').nth(3).click();
         await button(page, 'Submit').click();
-        await expect(page.locator(
-            bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
-        )).toBeVisible();
+        await expect(
+            page.locator(
+                bannerErrorMessage('Please complete all required fields on page 3. Missing Fields marked "Incomplete".')
+            )
+        ).toBeVisible();
     });
 });

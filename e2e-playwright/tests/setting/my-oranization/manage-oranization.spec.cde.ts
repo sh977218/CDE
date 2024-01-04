@@ -16,7 +16,7 @@ const newOrganization = {
 test.describe(`My organization`, async () => {
     test(`Rename organization`, async ({
         basePage,
-        snackBar,
+        materialPage,
         inlineEdit,
         settingMenu,
         navigationMenu,
@@ -30,7 +30,7 @@ test.describe(`My organization`, async () => {
         await manageOrganizationsPage.newOrganizationLongName().fill(newOrganization.orgLongName);
         await manageOrganizationsPage.newOrganizationWorkingGroup().selectOption(newOrganization.orgWorkingGroup);
         await manageOrganizationsPage.newOrganizationSubmit().click();
-        await snackBar.checkAlert('Saved');
+        await materialPage.checkAlert('Saved');
 
         const managedOrganizationsLocator = manageOrganizationsPage.managedOrganizations(newOrganization.orgName);
 
@@ -47,7 +47,7 @@ test.describe(`My organization`, async () => {
         await inlineEdit.editIcon(organizationMailAddressLocator).click();
         await inlineEdit.inputField(organizationMailAddressLocator).fill(newOrganization.orgMailAddress);
         await inlineEdit.submitButton(organizationMailAddressLocator).click();
-        await snackBar.checkAlert('Saved');
+        await materialPage.checkAlert('Saved');
         await expect(manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator)).toBeVisible();
     });
 });

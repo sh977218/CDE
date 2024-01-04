@@ -310,6 +310,9 @@
     "modules/**/*.ts": [
       "npm run esfix",
       "npm run format"
+    ],
+    "e2e-playwright/**/*.ts": [
+      "npm run format"
     ]
   }
 }
