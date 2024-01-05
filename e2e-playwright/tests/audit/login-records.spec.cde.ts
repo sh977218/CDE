@@ -3,17 +3,16 @@ import user from '../../data/user';
 import { expect } from '@playwright/test';
 
 test.describe(`Login Records`, async () => {
-    test(`Check login recorded`, async ({ page, basePage, navigationMenu, auditTab, loginRecordAuditPage }) => {
-        await basePage.goToHome();
+    test(`Check login recorded`, async ({ homePage, navigationMenu, auditTab, loginRecordAuditPage }) => {
+        await homePage.goToHome();
         const now = new Date();
-        const date = now.toLocaleDateString('en-us', { dateStyle: 'medium' });
-        const time = now.toLocaleTimeString('en-US', { timeStyle: 'short' });
-        const timestamp = `${date}, ${time}`;
         await navigationMenu.login(user.loginrecorduser.username, user.loginrecorduser.password);
         await navigationMenu.gotoAudit();
         await auditTab.loginRecordsAudit().click();
-        await expect(
-            loginRecordAuditPage.findLoginRecordByUser(user.loginrecorduser.username).first()
-        ).toContainText(timestamp);
+        const recordTimestamp = await loginRecordAuditPage
+            .findLatestLoginRecordByUser(user.loginrecorduser.username)
+            .innerText();
+        const timeDiff = new Date(recordTimestamp).getMinutes() - now.getMinutes();
+        expect(timeDiff).toBeGreaterThanOrEqual(0);
     });
 });

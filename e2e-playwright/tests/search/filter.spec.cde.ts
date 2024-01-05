@@ -4,7 +4,7 @@ import user from '../../data/user';
 
 test.describe(`Search Filter`, async () => {
     test(`Clear all filters`, async ({ page, basePage, searchPage, navigationMenu }) => {
-        await basePage.goToSearch('cde');
+        await searchPage.goToSearch('cde');
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await searchPage.browseOrganization('CTEP');
         await searchPage.classificationFilter('CATEGORY').click();
@@ -20,8 +20,8 @@ test.describe(`Search Filter`, async () => {
 
         await expect(searchPage.classificationFilterSelected('CTEP', true)).toBeVisible();
         await expect(searchPage.classificationFilterSelected('DISEASE', true)).toBeVisible();
-         expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeTruthy();
-         expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeTruthy();
+        expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeTruthy();
+        expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeTruthy();
 
         await expect(page.getByText('4 results')).toBeVisible();
 
@@ -32,8 +32,8 @@ test.describe(`Search Filter`, async () => {
         await searchPage.clearAllFilters().click();
 
         await expect(searchPage.classificationFilterSelected('CTEP')).toBeHidden();
-         expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeFalsy();
-         expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeFalsy();
+        expect(await searchPage.registrationStatusFilter('Qualified').isChecked()).toBeFalsy();
+        expect(await searchPage.dataTypeFilter('Number').isChecked()).toBeFalsy();
 
         await expect(page.getByText('Search CDEs')).toBeVisible();
     });

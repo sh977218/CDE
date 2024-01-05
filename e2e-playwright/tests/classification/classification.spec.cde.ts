@@ -16,13 +16,13 @@ test.describe(`Classification`, async () => {
         const classificationToBeRemoved = `Participant/Subject Characteristics`;
         const searchString = `classification.elements.elements.name: "${classificationToBeRemoved}"`;
         const classificationArray = ['NINDS', 'Domain', classificationToBeRemoved];
-        await basePage.goToSearch('cde');
+        await searchPage.goToSearch('cde');
         await navigationMenu.login(user.ninds.username, user.ninds.password);
         await searchPage.searchQueryInput().fill(searchString);
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('102 results. Sorted by relevance.')).toBeVisible();
 
-        await basePage.goToSearch('form');
+        await searchPage.goToSearch('form');
         await searchPage.searchQueryInput().fill(searchString);
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('34 results. Sorted by relevance.')).toBeVisible();
@@ -36,12 +36,12 @@ test.describe(`Classification`, async () => {
         await manageClassificationPage.confirmRemoveClassificationButton().click();
         await materialPage.checkAlert(`Deleting in progress.`);
 
-        await basePage.goToSearch('cde');
+        await searchPage.goToSearch('cde');
         await searchPage.searchQueryInput().fill(searchString);
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('102 results. Sorted by relevance.')).toBeHidden();
 
-        await basePage.goToSearch('form');
+        await searchPage.goToSearch('form');
         await searchPage.searchQueryInput().fill(searchString);
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('34 results. Sorted by relevance.')).toBeHidden();

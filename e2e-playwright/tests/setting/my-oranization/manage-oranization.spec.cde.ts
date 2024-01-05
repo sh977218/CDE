@@ -15,14 +15,14 @@ const newOrganization = {
 
 test.describe(`My organization`, async () => {
     test(`Rename organization`, async ({
-        basePage,
+        homePage,
         materialPage,
         inlineEdit,
         settingMenu,
         navigationMenu,
         manageOrganizationsPage,
     }) => {
-        await basePage.goToHome();
+        await homePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoSettings();
         await settingMenu.manageOrganizationsMenu().click();

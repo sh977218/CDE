@@ -3,9 +3,9 @@ import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
 test.describe(`Banner`, async () => {
-    test(`Shutdown banner`, async ({ basePage, navigationMenu, materialPage, articlePage }) => {
+    test(`Shutdown banner`, async ({ homePage, navigationMenu, materialPage, articlePage }) => {
         await test.step(`'Shutdown banner' not there`, async () => {
-            await basePage.goToHome();
+            await homePage.goToHome();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
         });
 
@@ -20,7 +20,7 @@ test.describe(`Banner`, async () => {
         });
 
         await test.step(`'Shutdown banner' is there`, async () => {
-            await basePage.goToHome();
+            await homePage.goToHome();
             await expect(navigationMenu.shutdownBanner()).toBeVisible();
             await navigationMenu.shutdownBannerCloseButton().click();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
@@ -36,7 +36,7 @@ test.describe(`Banner`, async () => {
         });
 
         await test.step(`'Shutdown banner' not there`, async () => {
-            await basePage.goToHome();
+            await homePage.goToHome();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
         });
     });

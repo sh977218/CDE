@@ -7,6 +7,11 @@ export class SearchPagePo {
         this.page = page;
     }
 
+    async goToSearch(module: string) {
+        await this.page.goto(`/${module}/search`);
+        await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });
+    }
+
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {

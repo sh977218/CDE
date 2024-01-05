@@ -6,8 +6,8 @@ import formTinyId from '../../data/form-tinyId';
 
 test.describe(`Merge form`, async () => {
     test.describe(`Own form`, async () => {
-        test.beforeEach(async ({ basePage, navigationMenu }) => {
-            await basePage.goToHome();
+        test.beforeEach(async ({ homePage, navigationMenu }) => {
+            await homePage.goToHome();
             await navigationMenu.login(user.nlm.username, user.nlm.password);
             await navigationMenu.gotoMyBoard();
         });
@@ -57,8 +57,8 @@ test.describe(`Merge form`, async () => {
         });
     });
 
-    test(`Not own form`, async ({ basePage, navigationMenu, myBoardPage, boardPage }) => {
-        await basePage.goToHome();
+    test(`Not own form`, async ({ homePage, navigationMenu, myBoardPage, boardPage }) => {
+        await homePage.goToHome();
         await navigationMenu.login(user.ninds.username, user.ninds.password);
         await navigationMenu.gotoMyBoard();
         await myBoardPage.boardTitle('NoMergeTest').click();

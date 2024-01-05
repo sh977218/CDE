@@ -5,8 +5,8 @@ import formTinyId from '../../../data/form-tinyId';
 import { DisplayProfile } from '../../../src/model/type';
 
 test.describe(`Display profile`, async () => {
-    test(`Form identifiers always visible`, async ({ basePage, formPage, displayProfileSection, navigationMenu }) => {
-        await basePage.goToSearch('form');
+    test(`Form identifiers always visible`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
+        await searchPage.goToSearch('form');
         const formName = 'Multiple Select Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -28,8 +28,8 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(displayProfile.profileName);
     });
 
-    test(`Answer value`, async ({ basePage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
-        await basePage.goToSearch('form');
+    test(`Answer value`, async ({ searchPage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
+        await searchPage.goToSearch('form');
         const formName = 'Answer Value Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -61,8 +61,8 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device`, async ({ basePage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
-        await basePage.goToSearch('form');
+    test(`Meta device`, async ({ searchPage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
+        await searchPage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -94,8 +94,8 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(metadataDeviceDisplayProfile.profileName);
     });
 
-    test(`Matrix`, async ({ basePage, formPage, displayProfileSection, navigationMenu }) => {
-        await basePage.goToSearch('form');
+    test(`Matrix`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
+        await searchPage.goToSearch('form');
         const formName = 'Matrix Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -154,8 +154,8 @@ test.describe(`Display profile`, async () => {
     });
 
     test.describe(`Render display profile`, async () => {
-        test.beforeEach(async ({ page, basePage, formPage, navigationMenu, materialPage }) => {
-            await basePage.goToSearch('form');
+        test.beforeEach(async ({ searchPage, formPage, navigationMenu, materialPage }) => {
+            await searchPage.goToSearch('form');
             const formName = 'PROMIS SF v1.1 - Anger 5a';
             await formPage.goToForm(formTinyId[formName]);
         });

@@ -5,13 +5,13 @@ import { expect } from '@playwright/test';
 test.describe(`Profile`, async () => {
     test(`Edit user email`, async ({
         materialPage,
-        basePage,
+        homePage,
         inlineEdit,
         navigationMenu,
         settingMenu,
         profilePage,
     }) => {
-        await basePage.goToHome();
+        await homePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoSettings();
         await settingMenu.profileMenu().click();

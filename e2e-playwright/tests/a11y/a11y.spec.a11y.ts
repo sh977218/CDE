@@ -5,8 +5,8 @@ import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
 
 test.describe(`a11y`, async () => {
-    test(`Home page`, async ({ basePage }) => {
-        await basePage.goToHome();
+    test(`Home page`, async ({ homePage }) => {
+        await homePage.goToHome();
     });
 
     test(`CDE view page`, async ({ page, cdePage, searchPage }) => {
@@ -20,7 +20,7 @@ test.describe(`a11y`, async () => {
     });
 
     test(`CDE search page`, async ({ page, cdePage, searchPage }) => {
-        await cdePage.goToSearch('cde');
+        await searchPage.goToSearch('cde');
         await searchPage.browseOrganization('caBIG');
         await searchPage.classificationFilter('caDSR');
         await searchPage.nihEndorsedCheckbox().check();
@@ -30,7 +30,7 @@ test.describe(`a11y`, async () => {
     });
 
     test(`Form search page`, async ({ page, formPage, searchPage }) => {
-        await formPage.goToSearch('form');
+        await searchPage.goToSearch('form');
         await searchPage.browseOrganization('PROMIS / Neuro-QOL');
         await searchPage.classificationFilter('PROMIS Instruments');
         await searchPage.classificationFilter('Adult Short Forms');

@@ -7,7 +7,7 @@ export class LoginRecordsAuditPagePo {
         this.page = page;
     }
 
-    findLoginRecordByUser(username: string): Locator {
-        return this.page.locator(`tr:has-text("${username}")`);
+    findLatestLoginRecordByUser(username: string): Locator {
+        return this.page.locator(`tr:has-text("${username}")`).first().locator(`td`).last();
     }
 }

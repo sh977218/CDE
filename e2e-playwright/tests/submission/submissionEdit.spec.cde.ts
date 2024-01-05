@@ -10,8 +10,8 @@ function bannerErrorMessage(text: string) {
 test.describe.configure({ retries: 0 }); // no retries for edits
 
 test.describe(`Submission Edit`, async () => {
-    test.beforeEach(async ({ page, basePage, navigationMenu, submissionManagePage }) => {
-        await basePage.goToHome();
+    test.beforeEach(async ({ page, homePage, navigationMenu, submissionManagePage }) => {
+        await homePage.goToHome();
         await navigationMenu.login(user.nlmCurator.username, user.nlmCurator.password);
         await navigationMenu.gotoSubmissions();
         await submissionManagePage.isSubmissionManagementCurator();
