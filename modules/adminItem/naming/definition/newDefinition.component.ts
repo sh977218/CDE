@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class NewDefinitionComponent {
     @Input() tags = [];
-    newDefinition: Definition = new Definition();
+    newDefinition: Definition = { definition: '', tags: [] };
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.tags = data.tags;

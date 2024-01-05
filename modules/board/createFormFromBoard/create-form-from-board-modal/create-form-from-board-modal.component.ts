@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { Board, BoardDe, Definition, Designation } from 'shared/models.model';
+import { DataElementService } from 'cde/dataElement.service';
+import { Board, BoardDe } from 'shared/models.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { convertCdeToQuestion } from 'nativeRender/form.service';
-import { DataElement } from 'shared/de/dataElement.model';
+import { DataElement, isElasticDataElementClipped } from 'shared/de/dataElement.model';
+import { convertCdeToQuestion } from 'shared/form/fe';
 import { CdeForm, FormSection } from 'shared/form/form.model';
 
 @Component({
@@ -19,20 +20,27 @@ export class CreateFormFromBoardModalComponent {
         private alert: AlertService,
         private http: HttpClient
     ) {
+        const addQuestion = (de: DataElement) => {
+            const q = convertCdeToQuestion(de);
+            if (q) {
+                this.elt.formElements[0].formElements.push(q);
+            }
+        };
         this.http.get<BoardDe>('/server/board/' + board.id + '/0/500').subscribe(
             res => {
                 if (res.elts.length > 0) {
                     this.elt = new CdeForm();
-                    this.elt.classification = [];
-                    this.elt.designations.push(new Designation(board.name));
-                    this.elt.definitions.push(new Definition());
+                    this.elt.designations.push({ designation: board.name });
+                    this.elt.definitions.push({ definition: '', tags: [] });
                     this.elt.formElements.push(new FormSection());
-                    res.elts.forEach((p: DataElement) => {
-                        convertCdeToQuestion(p, q => {
-                            if (q) {
-                                this.elt.formElements[0].formElements.push(q);
-                            }
-                        });
+                    res.elts.forEach(pin => {
+                        if (isElasticDataElementClipped(pin)) {
+                            DataElementService.fetchDe(pin.tinyId, pin.version || '').then(addQuestion, () => {
+                                this.alert.addAlert('danger', pin.tinyId + ' is not found in the database.');
+                            });
+                        } else {
+                            addQuestion(pin);
+                        }
                     });
                 } else {
                     this.alert.addAlert('danger', 'No elements in board.');

@@ -10,7 +10,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
         value: null,
         setValue: (withError, de, v) => {
             if (!de.designations) {
-                de.designations = []
+                de.designations = [];
             }
             de.designations.push({designation: valueAsString(v), tags: []});
         },

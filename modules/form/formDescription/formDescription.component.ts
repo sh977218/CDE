@@ -7,6 +7,7 @@ import { ITreeOptions } from '@circlon/angular-tree-component/lib/defs/api';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { DataElementService } from 'cde/dataElement.service';
 import { areDerivationRulesSatisfied } from 'core/form/fe';
 import { convertFormToSection } from 'core/form/form';
 import { FormSearchModalComponent } from 'form/form-search-modal/form-search-modal.component';
@@ -14,12 +15,12 @@ import { copySectionAnimation } from 'form/formDescription/copySectionAnimation'
 import { QuestionSearchModalComponent } from 'form/question-search-modal/question-search-modal.component';
 import { LocatableError } from 'form/formView/formView.component';
 import { isEmpty } from 'lodash';
-import { convertCdeToQuestion } from 'nativeRender/form.service';
 import { scrollTo, waitRendered } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import { addFormIds, iterateFeSync } from 'shared/form/fe';
+import { addFormIds, convertCdeToQuestion, iterateFeSync } from 'shared/form/fe';
 import { CdeForm, FormElement, FormOrElement, FormSection } from 'shared/form/form.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
+import { isElasticDataElementClipped } from 'shared/de/dataElement.model';
 
 @Component({
     selector: 'cde-form-description',
@@ -102,12 +103,12 @@ export class FormDescriptionComponent implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
+        private alert: AlertService,
         private _hotkeysService: HotkeysService,
         private http: HttpClient,
         private localStorageService: LocalStorageService,
-        public userService: UserService,
-        private alert: AlertService,
-        public matDialog: MatDialog
+        public dialog: MatDialog,
+        public userService: UserService
     ) {
         this.elt = this.route.snapshot.data.form;
         this.addExpanded(this.elt);
@@ -175,7 +176,7 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     openFormSearch() {
-        const diaRef = this.matDialog.open(FormSearchModalComponent, { width: '1200px' });
+        const diaRef = this.dialog.open(FormSearchModalComponent, { width: '1200px' });
         const sub = diaRef.componentInstance.selectedForm.subscribe(form => {
             const inForm = convertFormToSection(form);
             this.addExpanded(inForm);
@@ -187,13 +188,17 @@ export class FormDescriptionComponent implements OnInit {
     }
 
     openQuestionSearch(questionModelMode = 'search') {
-        const diaRef = this.matDialog.open(QuestionSearchModalComponent, {
+        const diaRef = this.dialog.open(QuestionSearchModalComponent, {
             width: '1200px',
             height: '800',
             data: { questionModelMode },
         });
         const sub = diaRef.componentInstance.selectedQuestion.subscribe(de => {
-            convertCdeToQuestion(de, question => {
+            (isElasticDataElementClipped(de)
+                ? DataElementService.fetchDe(de.tinyId, de.version || '')
+                : Promise.resolve(de)
+            ).then(de => {
+                const question = convertCdeToQuestion(de);
                 if (!question) {
                     return;
                 }

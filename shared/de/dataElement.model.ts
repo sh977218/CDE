@@ -346,6 +346,13 @@ export function fixDataElement(elt: DataElement): void {
     fixDatatype(elt.valueDomain);
 }
 
+export function isElasticDataElementClipped(elt: DataElementElastic): boolean {
+    // ElasticSearch only stores the first 10 PVs, retrieve all PVs when have more than 9 PVs
+    return elt.valueDomain.datatype === 'Value List'
+        && elt.valueDomain.permissibleValues
+        && elt.valueDomain.permissibleValues.length > 9;
+}
+
 export function wipeDatatype(elt: DataElement): void {
     if (elt.elementType !== 'cde') {
         return;

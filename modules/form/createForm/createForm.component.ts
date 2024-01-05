@@ -13,7 +13,7 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
 import { CdeForm } from 'shared/form/form.model';
-import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
+import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AdminItemModule } from 'adminItem/adminItem.module';
@@ -42,8 +42,8 @@ export class CreateFormComponent implements OnInit {
         if (!this.elt) {
             this.elt = new CdeForm();
             this.elt.classification = [];
-            this.elt.designations.push(new Designation());
-            this.elt.definitions.push(new Definition());
+            this.elt.designations.push({ designation: '' });
+            this.elt.definitions.push({ definition: '', tags: [] });
         }
     }
 

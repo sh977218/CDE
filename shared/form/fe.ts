@@ -1,8 +1,17 @@
 import { forEachOf, forEachSeries } from 'async';
-import { CbErrorObj } from 'shared/models.model';
+import { CbErrorObj, CodeAndSystem, PermissibleValue } from 'shared/models.model';
 import {
-    FormElement, FormElementGeneric, FormElementsContainer, FormInForm, FormQuestion, FormSection, Question, QuestionValueList,
+    FormElement,
+    FormElementGeneric,
+    FormElementsContainer,
+    FormInForm,
+    FormQuestion,
+    FormQuestionDraft,
+    FormSection,
+    Question, QuestionDate, QuestionDynamicList, QuestionNumber, QuestionText,
+    QuestionValueList,
 } from 'shared/form/form.model';
+import { DataElement } from 'shared/de/dataElement.model';
 
 // async callbacks
 type IterateOptions = any;
@@ -35,6 +44,82 @@ export function addFormIds(parent: FormElementsContainer, parentId = ''): void {
         return fe.feId + '-';
     }
     iterateFeSync(parent, addFeId, addFeId, addFeId, parentId ? parentId + '-' : '');
+}
+
+export function convertCdeToQuestion(de: DataElement): FormQuestionDraft | null {
+    if (!de.valueDomain) {
+        return null;
+    }
+
+    const q: FormQuestionDraft = new FormQuestion() as FormQuestionDraft;
+    q.question.cde.derivationRules = de.derivationRules;
+    q.question.cde.name = de.designations[0]?.designation || '';
+    if (de.tinyId) {
+        q.question.cde.tinyId = de.tinyId;
+    } else {
+        q.question.cde.newCde = {
+            definitions: de.definitions,
+            designations: de.designations,
+        };
+    }
+    q.question.cde.version = de.version;
+    q.question.datatype = de.valueDomain.datatype;
+
+    switch (de.valueDomain.datatype) {
+        case 'Value List':
+            (q.question as QuestionValueList).answers = [];
+            (q.question as QuestionValueList).cde.permissibleValues = [];
+            break;
+        case 'Date':
+            (q.question as QuestionDate).datatypeDate = de.valueDomain.datatypeDate || {};
+            break;
+        case 'Dynamic Code List':
+            (q.question as QuestionDynamicList).datatypeDynamicCodeList = de.valueDomain.datatypeDynamicCodeList || {};
+            break;
+        case 'Geo Location':
+        case 'Time':
+        case 'Externally Defined':
+        case 'File':
+            break;
+        case 'Number':
+            (q.question as QuestionNumber).datatypeNumber = de.valueDomain.datatypeNumber || {};
+            break;
+        case 'Text':
+        default:
+            (q.question as QuestionText).datatypeText = de.valueDomain.datatypeText || {};
+            break;
+    }
+
+    if (de.ids) {
+        q.question.cde.ids = de.ids;
+    }
+    if (de.valueDomain.uom) {
+        q.question.unitsOfMeasure.push(new CodeAndSystem('', de.valueDomain.uom));
+    }
+
+    de.designations.forEach(n => {
+        if (Array.isArray(n.tags) && n.tags.indexOf('Question Text') > -1 && !q.label) {
+            q.label = n.designation;
+        }
+    });
+    if (!q.label) {
+        q.label = de.designations[0]?.designation;
+    }
+
+    function convertPv(question: QuestionValueList, pvs: PermissibleValue[]) {
+        pvs.forEach(pv => {
+            question.answers.push(Object.assign({ formElements: [] }, pv));
+            question.cde.permissibleValues.push(pv);
+        });
+    }
+    if (
+        de.valueDomain.datatype === 'Value List' &&
+        de.valueDomain.permissibleValues &&
+        de.valueDomain.permissibleValues.length > 0
+    ) {
+        convertPv(q.question as QuestionValueList, de.valueDomain.permissibleValues);
+    }
+    return q;
 }
 
 export function flattenFormElement(fe: FormElementsContainer): FormQuestion[] {

@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class NewDesignationComponent {
     @Input() tags = [];
-    newDesignation: Designation = new Designation();
+    newDesignation: Designation = { designation: '' };
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) {
         this.tags = data.tags;

@@ -303,7 +303,7 @@ export abstract class Elt {
     origin?: string;
     properties: Property[] = []; // mutable
     referenceDocuments: ReferenceDocument[] = []; // mutable
-    registrationState: RegistrationState = new RegistrationState();
+    registrationState: RegistrationState = {registrationStatus: 'Incomplete'};
     stewardOrg: {
         name: string,
     } = {name: ''};
@@ -452,25 +452,15 @@ export class FormattedValue {
 
 export type Instruction = FormattedValue;
 
-export class Designation {
+export interface Designation {
     designation: string;
     tags?: string[];
-
-    constructor(designation = '', tags: string[] = []) {
-        this.designation = designation;
-        this.tags = tags;
-    }
 }
 
-export class Definition {
+export interface Definition {
     definition: string;
     definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
-    tags: string[] = [];
-
-    constructor(definition = '') {
-        this.definition = definition;
-        this.tags = [];
-    }
+    tags: string[];
 }
 
 export interface DerivationRule {
@@ -519,9 +509,9 @@ export interface BoardUser {
     username: string;
 }
 
-export type Board = BoardPart & { elts: (DataElement | CdeForm)[] };
-export type BoardDe = BoardPart & { elts: DataElement[] };
-export type BoardForm = BoardPart & { elts: CdeForm[] };
+export type Board = BoardPart & { elts: (DataElementElastic | CdeFormElastic)[] };
+export type BoardDe = BoardPart & { elts: DataElementElastic[] };
+export type BoardForm = BoardPart & { elts: CdeFormElastic[] };
 
 export function isBoard(b: Item | Board): b is Board {
     return !!(b as Board).owner;
@@ -632,11 +622,11 @@ export const administrativeStatuses = [
     'Released'
 ] as const;
 
-export class RegistrationState {
+export interface RegistrationState {
     administrativeNote?: string;
     administrativeStatus?: AdministrativeStatus;
     effectiveDate?: Date;
-    registrationStatus: CurationStatus = 'Incomplete';
+    registrationStatus: CurationStatus;
     registrationStatusSortOrder?: number; // volatile, used by elastic
     replacedBy?: {
         tinyId?: string,

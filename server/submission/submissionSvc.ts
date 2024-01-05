@@ -30,6 +30,7 @@ import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
 import { ColumnInformation, RowInformation, valueAsString } from 'server/submission/submissionShared';
 import { cdeColumns as excelCdeColumns202309, cdeColumnsOrdered as excelCdeColumnsOrdered202309 } from 'server/submission/excel202309';
+import { convertCdeToQuestion } from 'shared/form/fe';
 
 // Workbook Versions:
 //     v.2023.09(LATEST): add 'Other Identifiers'
@@ -336,7 +337,7 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
     }
 
     function storeCdeData(withError: WithError, submission: Submission, row: Row, info: RowInformation, columnNumber: ColumnInformation[],
-                          additionalColumnsOrdered: ColumnInformation[]): Partial<DataElement> | null {
+                          additionalColumnsOrdered: ColumnInformation[]): DataElement | null {
         if (row.length < 19) {
             withError('Template', `Row length ${row.length} is less than the required 19 columns.`);
             return null;
@@ -359,16 +360,13 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
             }
             columnInformation.value = value;
         });
-        const de: Partial<DataElement> = {
-            classification: [{stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]}],
-            dataElementConcept: {concepts: []},
-            ids: [],
-            nihEndorsed: true,
-            objectClass: {concepts: []},
-            property: {concepts: []},
-            registrationState: {registrationStatus: submission.registrationStatus, administrativeStatus: submission.administrativeStatus},
-            stewardOrg: {name: submission.name},
-        };
+        const de: DataElement = new DataElement();
+        de.nihEndorsed = true;
+        de.stewardOrg.name = submission.name;
+        de.classification.push({stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]});
+        de.definitions.push({definition: '', tags: []});
+        de.registrationState.registrationStatus = submission.registrationStatus;
+        de.registrationState.administrativeStatus = submission.administrativeStatus;
         cdeColumnsOrdered.forEach(columnInfo => {
             columnInfo.setValue(withError, de, columnInfo.value, info);
         });
@@ -513,8 +511,6 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
         if (!form) {
             return Promise.resolve(null);
         }
-        form.created = new Date();
-        form.imported = new Date();
         form.formElements?.forEach(fe => {
             if (fe.elementType === 'question' && fe.label) {
                 const deMatches = des.filter(de => de.designations[0].designation === fe.label);
@@ -547,7 +543,7 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
     });
 }
 
-function bundle(submission: Submission, forms: Partial<CdeForm>[], name: string, de: Partial<DataElement>) {
+function bundle(submission: Submission, forms: CdeForm[], name: string, de: DataElement) {
     if (!de.partOfBundles) {
         de.partOfBundles = [];
     }
@@ -555,31 +551,26 @@ function bundle(submission: Submission, forms: Partial<CdeForm>[], name: string,
 
     let form = forms.find(form => form.designations?.[0].designation === name);
     if (!form) {
-        form = {
-            classification: [{stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]}],
-            definitions: [],
-            designations: [{designation: name}],
-            formElements: [],
-            ids: [],
-            isBundle: true,
-            nihEndorsed: true,
-            registrationState: {registrationStatus: submission.registrationStatus, administrativeStatus: submission.administrativeStatus},
-            stewardOrg: {name: submission.name},
-        };
+        form = new CdeForm();
+        form.imported = Date.now();
+        form.isBundle = true;
+        form.nihEndorsed = true;
+        form.stewardOrg.name = submission.name;
+        form.designations.push({designation: name});
+        form.definitions.push({definition: '', tags: []});
+        form.classification.push({stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]});
+        form.registrationState.registrationStatus = submission.registrationStatus;
+        form.registrationState.administrativeStatus = submission.administrativeStatus;
         forms.push(form);
     }
     if (!form.formElements) {
         form.formElements = [];
     }
 
-    const q = new FormQuestion();
-    q.label = q.question.cde.name = de.designations?.[0] ? de.designations[0].designation : '';
-    q.question.datatype = de.valueDomain?.datatype || 'Text';
-    if (de.valueDomain?.datatype === 'Value List') {
-        (q.question as QuestionValueList).answers = de.valueDomain.permissibleValues.concat([]);
+    const q = convertCdeToQuestion(de);
+    if (q) {
+        form.formElements.push(q);
     }
-
-    form.formElements.push(q);
 }
 
 function withErrorCapture(location: string, errors: string[]) {

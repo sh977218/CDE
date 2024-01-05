@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DataElementService } from 'cde/dataElement.service';
-import { convertCdeToQuestion } from 'nativeRender/form.service';
-import { FormQuestion, QuestionValueList } from 'shared/form/form.model';
-import { DataElement } from 'shared/de/dataElement.model';
 import { isEqual, toString } from 'lodash';
+import { DataElement } from 'shared/de/dataElement.model';
+import { convertCdeToQuestion } from 'shared/form/fe';
+import { FormQuestion, QuestionValueList } from 'shared/form/form.model';
 
 @Component({
     templateUrl: './form-update-cde-version-modal.component.html',
@@ -23,13 +23,12 @@ export class FormUpdateCdeVersionModalComponent {
         DataElementService.fetchDe(question.question.cde.tinyId).then(newCde => {
             const oldVersion = question.question.cde.version ? question.question.cde.version : '';
             DataElementService.fetchDe(question.question.cde.tinyId, oldVersion).then(oldCde => {
-                convertCdeToQuestion(newCde, newQuestion => {
-                    if (newQuestion) {
-                        this.doMerge(newQuestion, question, newCde, oldCde);
-                        this.updateCdeVersion.currentQuestion = question;
-                        this.updateCdeVersion.newQuestion = newQuestion;
-                    }
-                });
+                const newQuestion = convertCdeToQuestion(newCde);
+                if (newQuestion) {
+                    this.doMerge(newQuestion, question, newCde, oldCde);
+                    this.updateCdeVersion.currentQuestion = question;
+                    this.updateCdeVersion.newQuestion = newQuestion;
+                }
             });
         });
     }

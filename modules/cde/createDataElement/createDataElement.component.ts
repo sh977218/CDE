@@ -12,7 +12,7 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
 import { DataElement } from 'shared/de/dataElement.model';
-import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
+import { ClassificationClassified, ClassificationHistory } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -47,9 +47,8 @@ export class CreateDataElementComponent implements OnInit {
     ngOnInit() {
         if (!this.elt) {
             this.elt = new DataElement();
-            this.elt.classification = [];
-            this.elt.designations.push(new Designation());
-            this.elt.definitions.push(new Definition());
+            this.elt.designations.push({ designation: '' });
+            this.elt.definitions.push({ definition: '', tags: [] });
         }
     }
 
