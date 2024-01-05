@@ -2,22 +2,22 @@ import { Page, test as baseTest } from '@playwright/test';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import { AioTocViewMenuPo } from '../pages/aio-toc-view-menu.po';
+import { AioTocViewMenuPo } from '../pages/shared/aio-toc-view-menu.po';
 import { BasePagePo } from '../pages/base-page.po';
 import { HomePagePo } from '../pages/home-page.po';
-import { CdePagePo } from '../pages/cde-page.po';
-import { FormPagePo } from '../pages/form-page.po';
+import { CdePagePo } from '../pages/cde/cde-page.po';
+import { FormPagePo } from '../pages/form/form-page.po';
 import { MyBoardPagePo } from '../pages/board/my-board-page.po';
-import { MaterialPo } from '../pages/material.po';
+import { MaterialPo } from '../pages/shared/material.po';
 import { BoardPagePo } from '../pages/board/board-page.po';
-import { SearchPagePo } from '../pages/search-page.po';
+import { SearchPagePo } from '../pages/search/search-page.po';
 import { SearchPreferencesPagePo } from '../pages/search-preferences-page.po';
-import { InlineEditPo } from '../pages/inline-edit.po';
-import { NavigationMenuPo } from '../pages/navigation-menu.po';
+import { InlineEditPo } from '../pages/shared/inline-edit.po';
+import { NavigationMenuPo } from '../pages/shared/navigation-menu.po';
 
 // Modals
-import { SaveModalPo } from '../pages/save-modal.po';
-import { UpdateRegistrationStatusModalPo } from '../pages/update-registration-status-modal.po';
+import { SaveModalPo } from '../pages/shared/save-modal.po';
+import { UpdateRegistrationStatusModalPo } from '../pages/shared/update-registration-status-modal.po';
 
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';

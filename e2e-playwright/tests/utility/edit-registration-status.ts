@@ -1,13 +1,16 @@
-import { UpdateRegistrationStatusModalPo } from '../../pages/update-registration-status-modal.po';
+import { UpdateRegistrationStatusModalPo } from '../../pages/shared/update-registration-status-modal.po';
 
-export async function editRegistrationStatus(updateRegistrationStatusModal: UpdateRegistrationStatusModalPo, {
-    status = '',
-    effectiveDate = '',
-    untilDate = '',
-    administrativeStatus = '',
-    administrativeNote = '',
-    unresolvedIssue = ''
-}) {
+export async function editRegistrationStatus(
+    updateRegistrationStatusModal: UpdateRegistrationStatusModalPo,
+    {
+        status = '',
+        effectiveDate = '',
+        untilDate = '',
+        administrativeStatus = '',
+        administrativeNote = '',
+        unresolvedIssue = '',
+    }
+) {
     if (status) {
         await updateRegistrationStatusModal.registrationStatusSelect().selectOption(status);
     }

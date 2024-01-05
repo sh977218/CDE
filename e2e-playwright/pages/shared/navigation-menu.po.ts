@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { MaterialPo } from '../pages/material.po';
+import { MaterialPo } from './material.po';
 
 export class NavigationMenuPo {
     protected page: Page;

@@ -1,33 +1,23 @@
-import { FormPagePo } from '../../pages/form-page.po';
-import { InlineEditPo } from '../../pages/inline-edit.po';
-import { MaterialPo } from '../../pages/material.po';
+import { FormPagePo } from '../../pages/form/form-page.po';
+import { InlineEditPo } from '../../pages/shared/inline-edit.po';
+import { MaterialPo } from '../../pages/shared/material.po';
+import { DisplayProfile } from '../../src/model/type';
 
-export type DisplayProfile = {
-    profileName: string,
-    styleName: string,
-    numberOfColumn: number,
-    answerDropdownLimit: number,
-    matrix: boolean,
-    displayValues: boolean,
-    instructions: boolean,
-    numbering: boolean,
-    displayInvisibleQuestion: boolean,
-    displayMetadataDevice: boolean,
-}
-
-export const addDisplayProfile = async ({formPage, inlineEdit}: { formPage: FormPagePo, inlineEdit: InlineEditPo },
-                                        {
-                                            profileName,
-                                            styleName,
-                                            numberOfColumn,
-                                            answerDropdownLimit,
-                                            matrix,
-                                            displayValues,
-                                            instructions,
-                                            numbering,
-                                            displayInvisibleQuestion,
-                                            displayMetadataDevice
-                                        }: DisplayProfile) => {
+export const addDisplayProfile = async (
+    { formPage, inlineEdit }: { formPage: FormPagePo; inlineEdit: InlineEditPo },
+    {
+        profileName,
+        styleName,
+        numberOfColumn,
+        answerDropdownLimit,
+        matrix,
+        displayValues,
+        instructions,
+        numbering,
+        displayInvisibleQuestion,
+        displayMetadataDevice,
+    }: DisplayProfile
+) => {
     await formPage.addDisplayProfileButton().click();
     const displayProfileContainerLocator = formPage.displayProfileContainer().first();
     await inlineEdit.editIcon(displayProfileContainerLocator).click();
@@ -53,22 +43,27 @@ export const addDisplayProfile = async ({formPage, inlineEdit}: { formPage: Form
     if (displayMetadataDevice) {
         await formPage.displayProfileDisplayDisplayMetadataDeviceCheckbox(displayProfileContainerLocator).check();
     }
-}
+};
 
-export const deleteDisplayProfile = async ({formPage,}: { formPage: FormPagePo, inlineEdit: InlineEditPo },
-                                           {
-                                               profileName,
-
-                                           }: DisplayProfile) => {
-    const displayProfileLocator = formPage.displayProfileHeading().filter({hasText: profileName});
+export const deleteDisplayProfile = async (
+    { formPage }: { formPage: FormPagePo; inlineEdit: InlineEditPo },
+    { profileName }: DisplayProfile
+) => {
+    const displayProfileLocator = formPage.displayProfileHeading().filter({ hasText: profileName });
     await formPage.displayProfileDeleteButton(displayProfileLocator).click();
     await formPage.displayProfileConfirmButton(displayProfileLocator).click();
-}
+};
 
-export const selectDisplayProfileByName = async ({formPage, materialPage}: {
-    formPage: FormPagePo,
-    materialPage: MaterialPo
-}, profileName: string) => {
+export const selectDisplayProfileByName = async (
+    {
+        formPage,
+        materialPage,
+    }: {
+        formPage: FormPagePo;
+        materialPage: MaterialPo;
+    },
+    profileName: string
+) => {
     await formPage.displayProfileSelect().click();
     await materialPage.matMenuItem(profileName).click();
-}
+};

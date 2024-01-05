@@ -96,6 +96,7 @@ phenxLocal.txt
 phenxQA.txt
 test-results
 playwright-report
+playwright-report-a11y
 e2e-playwright/.nyc_output
 e2e-playwright/playwright-report
 e2e-playwright/playwright-report-a11y

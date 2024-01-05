@@ -1,4 +1,4 @@
-import { BasePagePo } from '../pages/base-page.po';
+import { BasePagePo } from '../base-page.po';
 import { Page, Locator } from '@playwright/test';
 
 export class FormPagePo extends BasePagePo {

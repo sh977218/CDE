@@ -356,11 +356,11 @@
                         </ng-container>
                     </div>
                 </div>
-                <div style="margin-bottom: 1rem" id="searchResultInfoBar">
+                <div style="margin-bottom: 1rem" id="searchResultInfoBar" data-testid="search-result-info-bar">
                     <strong id="searchResultNum">{{totalItems}}</strong> results. Sorted by relevance.
                 </div>
                 <!-- SEARCH RESULTS -->
-                <div id="resultList">
+                <div id="resultList" data-testid="search-result-list">
                     <div id="resultListTour" tourAnchor="resultListTour"></div>
                     <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
                                    (add)="add.emit($event)"></cde-list-view>
