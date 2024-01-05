@@ -1,4 +1,4 @@
-import { Location } from '@angular/common';
+import { Location, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
@@ -14,6 +14,9 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { findSteward, removeCategory } from 'shared/classification/classificationShared';
 import { CdeForm } from 'shared/form/form.model';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { AdminItemModule } from '../../adminItem/adminItem.module';
 
 @Component({
     selector: 'cde-create-form',
@@ -25,6 +28,8 @@ import { ClassificationClassified, ClassificationHistory, Definition, Designatio
             }
         `,
     ],
+    imports: [FormsModule, NgForOf, NgIf, UpperCasePipe, MatIconModule, AdminItemModule],
+    standalone: true,
 })
 export class CreateFormComponent implements OnInit {
     @Input() elt!: CdeForm;

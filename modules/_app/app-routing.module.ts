@@ -72,7 +72,8 @@ const appRoutes: Routes = [
     },
     {
         path: 'createForm',
-        loadChildren: () => import('form/formCreate.module').then(m => m.FormCreateModule),
+        loadComponent: () => import('form/createForm/createForm.component').then(c => c.CreateFormComponent),
+        canActivate: [loggedInGuard],
         data: { title: 'Create Form', preload: false },
     },
     {

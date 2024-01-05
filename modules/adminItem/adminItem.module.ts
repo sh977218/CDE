@@ -16,7 +16,6 @@ import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.com
 import { ClassificationViewComponent } from 'adminItem/classification/classificationView.component';
 import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
-import { CreateFormComponent } from 'adminItem/createForm/createForm.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { DeReadOnlyDataTypeComponent } from 'adminItem/deReadOnly/deReadOnlyDataType.component';
 import { DraftSliderComponent } from 'adminItem/draftSlider/draftSlider.component';
@@ -87,7 +86,6 @@ import { TagModule } from 'tag/tag.module';
         DeleteClassificationModalComponent,
         ClassifyItemComponent,
         ClassifyItemDialogComponent,
-        CreateFormComponent,
         DeReadOnlyDataTypeComponent,
         NewDefinitionComponent,
         NewDesignationComponent,
@@ -115,7 +113,6 @@ import { TagModule } from 'tag/tag.module';
         AttachmentsComponent,
         ClassificationViewComponent,
         ClassifyItemComponent,
-        CreateFormComponent,
         DraftSliderComponent,
         IdentifiersComponent,
         LinkedFormsComponent,

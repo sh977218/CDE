@@ -55,6 +55,7 @@ import { SkipLogicModule } from 'skipLogic/skipLogic.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { WINDOW_PROVIDERS } from 'window.service';
+import { CreateFormComponent } from './createForm/createForm.component';
 
 const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
 
@@ -107,6 +108,7 @@ const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
         MatToolbarModule,
         TocModule,
         TourMatMenuModule,
+        CreateFormComponent,
     ],
     declarations: [
         ArrayListPipe,

@@ -19,6 +19,7 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { TagModule } from 'tag/tag.module';
 import { CreateBoardComponent } from 'board/create-board/create-board.component';
+import { CreateFormComponent } from '../form/createForm/createForm.component';
 
 @NgModule({
     imports: [
@@ -38,6 +39,7 @@ import { CreateBoardComponent } from 'board/create-board/create-board.component'
         CreateBoardComponent,
         BoardOverviewModule,
         TagModule,
+        CreateFormComponent,
     ],
     declarations: [
         CreateFormFromBoardComponent,
