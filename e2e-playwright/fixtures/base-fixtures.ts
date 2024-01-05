@@ -5,8 +5,6 @@ import { join } from 'path';
 import { AioTocViewMenuPo } from '../pages/shared/aio-toc-view-menu.po';
 import { BasePagePo } from '../pages/base-page.po';
 import { HomePagePo } from '../pages/home-page.po';
-import { CdePagePo } from '../pages/cde/cde-page.po';
-import { FormPagePo } from '../pages/form/form-page.po';
 import { MyBoardPagePo } from '../pages/board/my-board-page.po';
 import { MaterialPo } from '../pages/shared/material.po';
 import { BoardPagePo } from '../pages/board/board-page.po';
@@ -18,6 +16,18 @@ import { NavigationMenuPo } from '../pages/shared/navigation-menu.po';
 // Modals
 import { SaveModalPo } from '../pages/shared/save-modal.po';
 import { UpdateRegistrationStatusModalPo } from '../pages/shared/update-registration-status-modal.po';
+
+// CDE page
+import { CdePagePo } from '../pages/cde/cde-page.po';
+import { PermissibleValuePo } from '../pages/cde/permissible-value.po';
+
+// Form page
+import { FormPagePo } from '../pages/form/form-page.po';
+import { DisplayProfilePo } from '../pages/form/display-profile.po';
+
+import { HistoryPo } from '../pages/shared/history.po';
+import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
+import { AttachmentPo } from '../pages/shared/attachment.po';
 
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
@@ -52,10 +62,15 @@ const test = baseTest.extend<{
     basePage: BasePagePo;
     homePage: HomePagePo;
     cdePage: CdePagePo;
+    permissibleValueSection: PermissibleValuePo;
     formPage: FormPagePo;
+    displayProfileSection: DisplayProfilePo;
     myBoardPage: MyBoardPagePo;
     boardPage: BoardPagePo;
     saveModal: SaveModalPo;
+    historySection: HistoryPo;
+    generateDetailsSection: GenerateDetailsPo;
+    attachmentSection: AttachmentPo;
     updateRegistrationStatusModal: UpdateRegistrationStatusModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
@@ -83,8 +98,14 @@ const test = baseTest.extend<{
     cdePage: async ({ page }, use) => {
         await use(new CdePagePo(page));
     },
+    permissibleValueSection: async ({ page }, use) => {
+        await use(new PermissibleValuePo(page));
+    },
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
+    },
+    displayProfileSection: async ({ page, inlineEdit, materialPage }, use) => {
+        await use(new DisplayProfilePo(page, inlineEdit, materialPage));
     },
     myBoardPage: async ({ page }, use) => {
         await use(new MyBoardPagePo(page));
@@ -94,6 +115,15 @@ const test = baseTest.extend<{
     },
     saveModal: async ({ page }, use) => {
         await use(new SaveModalPo(page));
+    },
+    historySection: async ({ page, materialPage }, use) => {
+        await use(new HistoryPo(page, materialPage));
+    },
+    generateDetailsSection: async ({ page, inlineEdit, updateRegistrationStatusModal }, use) => {
+        await use(new GenerateDetailsPo(page, inlineEdit, updateRegistrationStatusModal));
+    },
+    attachmentSection: async ({ page, inlineEdit }, use) => {
+        await use(new AttachmentPo(page, inlineEdit));
     },
     updateRegistrationStatusModal: async ({ page }, use) => {
         await use(new UpdateRegistrationStatusModalPo(page));

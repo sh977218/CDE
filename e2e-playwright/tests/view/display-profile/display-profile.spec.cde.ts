@@ -2,11 +2,10 @@ import { expect } from '@playwright/test';
 import test from '../../../fixtures/base-fixtures';
 import user from '../../../data/user';
 import formTinyId from '../../../data/form-tinyId';
-import { addDisplayProfile, deleteDisplayProfile, selectDisplayProfileByName } from '../../utility/display-profile';
 import { DisplayProfile } from '../../../src/model/type';
 
 test.describe(`Display profile`, async () => {
-    test(`Form identifiers always visible`, async ({ basePage, formPage, navigationMenu, inlineEdit }) => {
+    test(`Form identifiers always visible`, async ({ basePage, formPage, displayProfileSection, navigationMenu }) => {
         await basePage.goToSearch('form');
         const formName = 'Multiple Select Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -25,11 +24,11 @@ test.describe(`Display profile`, async () => {
             displayMetadataDevice: false,
         };
 
-        await addDisplayProfile({ formPage, inlineEdit }, displayProfile);
-        await deleteDisplayProfile({ formPage, inlineEdit }, displayProfile);
+        await displayProfileSection.addDisplayProfile(displayProfile);
+        await displayProfileSection.deleteDisplayProfile(displayProfile.profileName);
     });
 
-    test(`Answer value`, async ({ basePage, formPage, navigationMenu, inlineEdit }) => {
+    test(`Answer value`, async ({ basePage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
         await basePage.goToSearch('form');
         const formName = 'Answer Value Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -48,21 +47,21 @@ test.describe(`Display profile`, async () => {
             displayMetadataDevice: false,
         };
 
-        await addDisplayProfile({ formPage, inlineEdit }, answerValueDisplayProfile);
+        await displayProfileSection.addDisplayProfile(answerValueDisplayProfile);
 
         await formPage.goToForm(formTinyId[formName]);
 
         await test.step(`Preview has answer value`, async () => {
-            expect(await formPage.previewAnswerValue().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.previewAnswerValue().count()).toBeGreaterThanOrEqual(1);
         });
         await test.step(`Display profile has answer value`, async () => {
-            expect(await formPage.displayProfileAnswerValue().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.displayProfileAnswerValue().count()).toBeGreaterThanOrEqual(1);
         });
 
-        await deleteDisplayProfile({ formPage, inlineEdit }, answerValueDisplayProfile);
+        await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device`, async ({ basePage, formPage, navigationMenu, inlineEdit }) => {
+    test(`Meta device`, async ({ basePage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
         await basePage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -81,21 +80,21 @@ test.describe(`Display profile`, async () => {
             displayMetadataDevice: true,
         };
 
-        await addDisplayProfile({ formPage, inlineEdit }, metadataDeviceDisplayProfile);
+        await displayProfileSection.addDisplayProfile(metadataDeviceDisplayProfile);
 
         await formPage.goToForm(formTinyId[formName]);
 
         await test.step(`Preview has meta device`, async () => {
-            expect(await formPage.previewMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.previewMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
         });
         await test.step(`Display profile has meta device`, async () => {
-            expect(await formPage.displayProfileMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.displayProfileMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
         });
 
-        await deleteDisplayProfile({ formPage, inlineEdit }, metadataDeviceDisplayProfile);
+        await displayProfileSection.deleteDisplayProfile(metadataDeviceDisplayProfile.profileName);
     });
 
-    test(`Matrix`, async ({ basePage, formPage, navigationMenu, inlineEdit }) => {
+    test(`Matrix`, async ({ basePage, formPage, displayProfileSection, navigationMenu }) => {
         await basePage.goToSearch('form');
         const formName = 'Matrix Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -114,18 +113,18 @@ test.describe(`Display profile`, async () => {
             displayMetadataDevice: false,
         };
 
-        await addDisplayProfile({ formPage, inlineEdit }, matrixDisplayProfile);
+        await displayProfileSection.addDisplayProfile(matrixDisplayProfile);
 
         await formPage.goToForm(formTinyId[formName]);
 
         await test.step(`Preview has meta device`, async () => {
-            expect(await formPage.previewMatrixCheckbox().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.previewMatrixCheckbox().count()).toBeGreaterThanOrEqual(1);
         });
         await test.step(`Display profile has meta device`, async () => {
-            expect(await formPage.previewMatrixRadio().count()).toBeGreaterThanOrEqual(1);
+            expect(await displayProfileSection.previewMatrixRadio().count()).toBeGreaterThanOrEqual(1);
         });
 
-        await deleteDisplayProfile({ formPage, inlineEdit }, matrixDisplayProfile);
+        await displayProfileSection.deleteDisplayProfile(matrixDisplayProfile.profileName);
 
         const noMatrixDisplayProfile: DisplayProfile = {
             profileName: 'Matrix Display Profile',
@@ -140,18 +139,18 @@ test.describe(`Display profile`, async () => {
             displayMetadataDevice: false,
         };
 
-        await addDisplayProfile({ formPage, inlineEdit }, noMatrixDisplayProfile);
+        await displayProfileSection.addDisplayProfile(noMatrixDisplayProfile);
 
         await formPage.goToForm(formTinyId[formName]);
 
         await test.step(`Preview has no matrix checkbox`, async () => {
-            expect(await formPage.previewMatrixCheckbox().count()).toBe(0);
+            expect(await displayProfileSection.previewMatrixCheckbox().count()).toBe(0);
         });
         await test.step(`Display profile no matrix radio`, async () => {
-            expect(await formPage.previewMatrixRadio().count()).toBe(0);
+            expect(await displayProfileSection.previewMatrixRadio().count()).toBe(0);
         });
 
-        await deleteDisplayProfile({ formPage, inlineEdit }, noMatrixDisplayProfile);
+        await displayProfileSection.deleteDisplayProfile(noMatrixDisplayProfile.profileName);
     });
 
     test.describe(`Render display profile`, async () => {
@@ -180,8 +179,8 @@ test.describe(`Display profile`, async () => {
             await expect(page.getByTestId('preview-div')).not.toHaveText('I was grouchy');
         });
 
-        test(`Verify 'Matrix No Values'`, async ({ page, formPage, materialPage }) => {
-            await selectDisplayProfileByName({ formPage, materialPage }, 'Matrix No Values');
+        test(`Verify 'Matrix No Values'`, async ({ page, displayProfileSection }) => {
+            await displayProfileSection.selectDisplayProfileByName('Matrix No Values');
 
             await expect(
                 page.locator("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")
@@ -194,8 +193,8 @@ test.describe(`Display profile`, async () => {
             await expect(page.getByTestId('preview-div')).toContainText('I was grouchy');
         });
 
-        test(`Verify 'No Matrix No Values'`, async ({ page, formPage, materialPage }) => {
-            await selectDisplayProfileByName({ formPage, materialPage }, 'No Matrix No Values');
+        test(`Verify 'No Matrix No Values'`, async ({ page, displayProfileSection, materialPage }) => {
+            await displayProfileSection.selectDisplayProfileByName('No Matrix No Values');
             await expect(
                 page.locator(`//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']`)
             ).toBeHidden();
@@ -223,8 +222,8 @@ test.describe(`Display profile`, async () => {
             await page.locator(`section.metadata-item button`).click();
         });
 
-        test(`Verify 'No Matrix No Values Wider'`, async ({ page, formPage, materialPage }) => {
-            await selectDisplayProfileByName({ formPage, materialPage }, 'No Matrix No Values Wider');
+        test(`Verify 'No Matrix No Values Wider'`, async ({ page, displayProfileSection }) => {
+            await displayProfileSection.selectDisplayProfileByName('No Matrix No Values Wider');
             expect(
                 (
                     await page
@@ -244,8 +243,8 @@ test.describe(`Display profile`, async () => {
             );
         });
 
-        test(`Verify 'Multiple Select'`, async ({ page, formPage, materialPage }) => {
-            await selectDisplayProfileByName({ formPage, materialPage }, 'Multiple Select');
+        test(`Verify 'Multiple Select'`, async ({ page, displayProfileSection }) => {
+            await displayProfileSection.selectDisplayProfileByName('Multiple Select');
 
             await page.locator("//div[@id='I was irritated more than people knew_0-0']//select").selectOption('Never');
             await page.locator("//div[@id='I was irritated more than people knew_0-0']//select").selectOption('Rarely');

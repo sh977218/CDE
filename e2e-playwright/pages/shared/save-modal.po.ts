@@ -1,5 +1,4 @@
 import { Page } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
 
 export class SaveModalPo {
     protected page: Page;

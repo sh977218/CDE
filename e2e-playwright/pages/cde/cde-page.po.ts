@@ -26,28 +26,4 @@ export class CdePagePo extends BasePagePo {
     addToBoard() {
         return this.page.locator(`[id="addToBoard"]`);
     }
-
-    addPermissibleValueButton() {
-        return this.page.getByTestId('openAddPermissibleValueModelBtn');
-    }
-
-    valueMeaningNameInput() {
-        return this.page.getByTestId('valueMeaningNameInput');
-    }
-
-    permissibleValueSynonymsCheckbox(source: string) {
-        return this.page
-            .locator(`[data-testid="displayCode"]`, {
-                hasText: source,
-            })
-            .locator('input');
-    }
-
-    permissibleValueSynonymsTds(tableRow: Locator, source: string) {
-        return tableRow.locator(`[data-testid="${source.toLowerCase()}"]`);
-    }
-
-    permissibleValueTableRows() {
-        return this.page.locator(`[data-testid="pvTable"] tbody tr`);
-    }
 }

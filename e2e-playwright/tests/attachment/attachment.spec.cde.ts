@@ -9,16 +9,16 @@ test.describe(`Attachment`, async () => {
             const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
             await cdePage.goToCde(cdeTinyId[cdeName]);
         });
-        test(`Anonymous user`, async ({ basePage }) => {
-            expect(await basePage.uploadMoreFile.isVisible()).toBeFalsy();
+        test(`Anonymous user`, async ({ attachmentSection }) => {
+            expect(await attachmentSection.uploadMoreFile.isVisible()).toBeFalsy();
         });
-        test(`Logged in user`, async ({ basePage, aioTocViewMenu, navigationMenu }) => {
+        test(`Logged in user`, async ({ attachmentSection, aioTocViewMenu, navigationMenu }) => {
             await navigationMenu.login(user.nlm.username, user.nlm.password);
             await aioTocViewMenu.goToAttachments();
-            await basePage.uploadAttachment(`./e2e-playwright/assets/glass.jpg`);
-            const attachmentLocator = basePage.attachments().first();
+            await attachmentSection.uploadAttachment(`./e2e-playwright/assets/glass.jpg`);
+            const attachmentLocator = attachmentSection.attachments().first();
             expect(await attachmentLocator.isVisible()).toBeTruthy();
-            await basePage.removeAttachment(attachmentLocator);
+            await attachmentSection.removeAttachment(attachmentLocator);
             expect(await attachmentLocator.isVisible()).toBeFalsy();
         });
     });

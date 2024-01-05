@@ -27,43 +27,7 @@ export class BasePagePo {
         return this.page.getByTestId(`delete-draft`);
     }
 
-    /* Generate Details */
-    origin() {
-        return this.page.getByTestId('origin');
-    }
-
-    copyright() {
-        return this.page.getByTestId('copyright-checkbox');
-    }
-
-    editRegistrationStatusButton() {
-        return this.page.getByTestId('edit-registration-status-button');
-    }
-
-    /* Generate Details */
-
-    /* Attachment */
-    get uploadMoreFile() {
-        return this.page.locator(`[for="fileToUpload"]`);
-    }
-
-    async uploadAttachment(filePath: string) {
-        await this.page.setInputFiles(`[id="fileToUpload"]`, filePath);
-        await this.page.waitForSelector(`[data-testid="attachmentDiv"]`, { state: 'visible' });
-    }
-
-    async removeAttachment(attachmentLocator: Locator) {
-        await attachmentLocator.getByTestId(`removeAttachmentButton`).click();
-        await this.page.waitForSelector(`[data-testid="attachmentDiv"]`, { state: 'detached' });
-    }
-
-    attachments() {
-        return this.page.getByTestId(`attachmentDiv`);
-    }
-
     getHeading(section: string): Locator {
         return this.page.getByRole('heading', { name: section });
     }
-
-    /* Attachment */
 }
