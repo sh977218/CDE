@@ -113,8 +113,8 @@ const test = baseTest.extend<{
     boardPage: async ({ page }, use) => {
         await use(new BoardPagePo(page));
     },
-    saveModal: async ({ page }, use) => {
-        await use(new SaveModalPo(page));
+    saveModal: async ({ page, materialPage }, use) => {
+        await use(new SaveModalPo(page, materialPage));
     },
     historySection: async ({ page, materialPage }, use) => {
         await use(new HistoryPo(page, materialPage));

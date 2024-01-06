@@ -57,9 +57,7 @@ test(`Add UMLS permissible value`, async ({
     });
 
     await test.step(`Publish CDE to new version`, async () => {
-        await cdePage.publishDraft().click();
-        await saveModal.newVersion();
-        await materialPage.checkAlert('Data Element saved.');
+        await saveModal.newVersion('', 'Data Element saved.');
     });
 
     await test.step(`Logout and Verify NCI and UMLS code`, async () => {

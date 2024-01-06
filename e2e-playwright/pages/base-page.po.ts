@@ -7,14 +7,6 @@ export class BasePagePo {
         this.page = page;
     }
 
-    publishDraft() {
-        return this.page.getByTestId(`publish-draft`);
-    }
-
-    deleteDraft() {
-        return this.page.getByTestId(`delete-draft`);
-    }
-
     getHeading(section: string): Locator {
         return this.page.getByRole('heading', { name: section });
     }

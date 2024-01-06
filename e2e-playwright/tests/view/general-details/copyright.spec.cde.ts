@@ -30,7 +30,6 @@ test.describe(`Edit Copyright`, async () => {
         await inlineEdit.inputField(copyrightUrlLocator).fill(newUrl);
         await inlineEdit.submitButton(copyrightUrlLocator).click();
 
-        await formPage.publishDraft().click();
-        await saveModal.newVersion();
+        await saveModal.newVersion('', 'Form saved.');
     });
 });

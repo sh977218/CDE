@@ -1,14 +1,14 @@
-import { BasePagePo } from '../../pages/base-page.po';
 import { button } from '../../pages/util';
 import { SubmissionEditPo } from './submissionEdit.po';
 import { expect, Locator, Page } from '@playwright/test';
 
-export class SubmissionManagePo extends BasePagePo {
+export class SubmissionManagePo {
+    private readonly page: Page;
     submissionEditPo: SubmissionEditPo;
     xmlTableRow = '//';
 
     constructor(page: Page) {
-        super(page);
+        this.page = page;
         this.submissionEditPo = new SubmissionEditPo(page);
     }
 
