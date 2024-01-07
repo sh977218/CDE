@@ -19,7 +19,7 @@ test.describe(`Submission Manage`, async () => {
         await submissionManagePage.tableResults(2);
     });
 
-    test(`Pagination`, async ({ page, basePage, materialPage, submissionManagePage }) => {
+    test(`Pagination`, async ({ page, materialPage, submissionManagePage }) => {
         await materialPage.paginatorNumberPerPage().click();
         await materialPage.matOption('10').click();
         await page.getByText('1 - 10 of').isVisible();
@@ -43,7 +43,7 @@ test.describe(`Submission Manage`, async () => {
         await submissionManagePage.tableResultsAtLeast(10);
     });
 
-    test('Show/Hide Columns', async ({ page, basePage, submissionManagePage }) => {
+    test('Show/Hide Columns', async ({ page, submissionManagePage }) => {
         await expect(submissionManagePage.tableCell('Organization URL')).not.toBeVisible();
         await button(page, 'Show/Hide Columns').click();
         await expect(page.locator('.contentPane')).toContainText('Column Options');

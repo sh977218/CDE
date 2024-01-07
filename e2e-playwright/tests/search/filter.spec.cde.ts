@@ -3,7 +3,7 @@ import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
 test.describe(`Search Filter`, async () => {
-    test(`Clear all filters`, async ({ page, basePage, searchPage, navigationMenu }) => {
+    test(`Clear all filters`, async ({ page, searchPage, navigationMenu }) => {
         await searchPage.goToSearch('cde');
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await searchPage.browseOrganization('CTEP');

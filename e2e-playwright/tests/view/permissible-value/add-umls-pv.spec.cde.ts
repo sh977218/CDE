@@ -10,15 +10,14 @@ test(`Add UMLS permissible value`, async ({
     materialPage,
     cdePage,
     permissibleValueSection,
-    basePage,
 }) => {
     const cdeName = 'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator';
 
     await test.step(`Navigate to CDE and login`, async () => {
         await cdePage.goToCde(cdeTinyId[cdeName]);
         await navigationMenu.login(user.nlm.username, user.nlm.password);
-        await expect(basePage.getHeading('Permissible Value')).toBeVisible();
-        await basePage.getHeading('Permissible Value').scrollIntoViewIfNeeded();
+        await expect(page.getByRole('heading', { name: 'Permissible Value' })).toBeVisible();
+        await page.getByRole('heading', { name: 'Permissible Value' }).scrollIntoViewIfNeeded();
     });
 
     await test.step(`Import PV from UMLS`, async () => {

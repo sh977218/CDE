@@ -17,7 +17,7 @@ test.describe(`Submission Edit`, async () => {
         await submissionManagePage.isSubmissionManagementCurator();
     });
 
-    test('Create', async ({ page, basePage, materialPage, submissionManagePage, submissionEditPage }) => {
+    test('Create', async ({ page, materialPage, submissionManagePage, submissionEditPage }) => {
         await submissionManagePage.submissionNew();
 
         // Page 1

@@ -4,11 +4,11 @@ import cdeTinyId from '../../../data/cde-tinyId';
 import user from '../../../data/user';
 
 test.describe(`Codes with synonyms`, async () => {
-    test.beforeEach(async ({ basePage, cdePage }) => {
+    test.beforeEach(async ({ page, cdePage }) => {
         const cdeName = 'Race Category Text';
         await cdePage.goToCde(cdeTinyId[cdeName]);
-        await expect(basePage.getHeading('Permissible Value')).toBeVisible();
-        await basePage.getHeading('Permissible Value').scrollIntoViewIfNeeded();
+        await expect(page.getByRole('heading', { name: 'Permissible Value' })).toBeVisible();
+        await page.getByRole('heading', { name: 'Permissible Value' }).scrollIntoViewIfNeeded();
     });
 
     test.describe(`Not loggedIn`, async () => {

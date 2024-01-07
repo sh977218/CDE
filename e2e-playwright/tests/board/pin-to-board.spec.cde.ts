@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 
 test.describe(`Pin to board`, async () => {
-    test(`Not logged in`, async ({ basePage, searchPage, cdePage, page }) => {
+    test(`Not logged in`, async ({ searchPage, cdePage, page }) => {
         const loggedOutMessage = [
             'Create Boards and save CDEs and Forms to them',
             'Remember your preferences on all your devices',

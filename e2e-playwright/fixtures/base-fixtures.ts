@@ -3,7 +3,6 @@ import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { AioTocViewMenuPo } from '../pages/shared/aio-toc-view-menu.po';
-import { BasePagePo } from '../pages/base-page.po';
 import { HomePagePo } from '../pages/home-page.po';
 import { MyBoardPagePo } from '../pages/board/my-board-page.po';
 import { MaterialPo } from '../pages/shared/material.po';
@@ -59,7 +58,6 @@ async function codeCoverage(page: Page) {
 }
 
 const test = baseTest.extend<{
-    basePage: BasePagePo;
     homePage: HomePagePo;
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
@@ -89,9 +87,6 @@ const test = baseTest.extend<{
     submissionEditPage: SubmissionEditPo;
     submissionManagePage: SubmissionManagePo;
 }>({
-    basePage: async ({ page }, use) => {
-        await use(new BasePagePo(page));
-    },
     homePage: async ({ page }, use) => {
         await use(new HomePagePo(page));
     },

@@ -1,9 +1,10 @@
-import { BasePagePo } from '../base-page.po';
 import { Page, Locator } from '@playwright/test';
 
-export class FormPagePo extends BasePagePo {
+export class FormPagePo {
+    private readonly page: Page;
+
     constructor(page: Page) {
-        super(page);
+        this.page = page;
     }
 
     async goToForm(tinyId: string) {

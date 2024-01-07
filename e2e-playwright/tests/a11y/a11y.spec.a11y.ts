@@ -39,7 +39,7 @@ test.describe(`a11y`, async () => {
         await page.getByText('results. Sorted by relevance.').isVisible();
     });
 
-    test.afterEach(async ({ basePage, page }, testInfo) => {
+    test.afterEach(async ({ page }, testInfo) => {
         await test.step(`Run axe check`, async () => {
             const axe = new AxeBuilder({ page });
             const result = await axe.analyze();

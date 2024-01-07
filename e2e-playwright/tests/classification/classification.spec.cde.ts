@@ -5,7 +5,6 @@ import user from '../../data/user';
 test.describe(`Classification`, async () => {
     test(`Remove organization classification`, async ({
         page,
-        basePage,
         searchPage,
         navigationMenu,
         manageClassificationPage,

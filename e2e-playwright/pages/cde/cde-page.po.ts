@@ -1,9 +1,10 @@
-import { BasePagePo } from '../base-page.po';
 import { Locator, Page } from '@playwright/test';
 
-export class CdePagePo extends BasePagePo {
+export class CdePagePo {
+    private readonly page: Page;
+
     constructor(page: Page) {
-        super(page);
+        this.page = page;
     }
 
     async goToCde(tinyId: string) {
