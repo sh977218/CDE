@@ -30,7 +30,7 @@ test.describe(`Edit registration status`, async () => {
     });
 
     test.describe(`Should allow change status`, async () => {
-        test(`CDE page`, async ({ cdePage, generateDetailsSection, navigationMenu, updateRegistrationStatusModal }) => {
+        test(`CDE page`, async ({ cdePage, generateDetailsSection, navigationMenu }) => {
             const cdeName = 'Cde Status Test';
             await cdePage.goToCde(cdeTinyId[cdeName]);
             await navigationMenu.login(user.nlm.username, user.nlm.password);
@@ -39,12 +39,7 @@ test.describe(`Edit registration status`, async () => {
             await expect(cdePage.alerts()).toContainText('This data element is retired.');
         });
 
-        test(`Form page`, async ({
-            formPage,
-            generateDetailsSection,
-            navigationMenu,
-            updateRegistrationStatusModal,
-        }) => {
+        test(`Form page`, async ({ formPage, generateDetailsSection, navigationMenu }) => {
             const formName = 'Form Status Test';
             await formPage.goToForm(formTinyId[formName]);
             await navigationMenu.login(user.nlm.username, user.nlm.password);

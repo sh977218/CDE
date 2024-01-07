@@ -4,7 +4,7 @@ import user from '../../data/user';
 import { button } from '../../pages/util';
 
 test.describe(`Submission Manage`, async () => {
-    test.beforeEach(async ({ page, homePage, navigationMenu, submissionManagePage }) => {
+    test.beforeEach(async ({ homePage, navigationMenu, submissionManagePage }) => {
         await homePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoSubmissions();

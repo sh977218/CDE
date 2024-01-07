@@ -28,7 +28,7 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(displayProfile.profileName);
     });
 
-    test(`Answer value`, async ({ searchPage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
+    test(`Answer value`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
         await searchPage.goToSearch('form');
         const formName = 'Answer Value Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -61,7 +61,7 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device`, async ({ searchPage, formPage, displayProfileSection, navigationMenu, inlineEdit }) => {
+    test(`Meta device`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
         await searchPage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -154,7 +154,7 @@ test.describe(`Display profile`, async () => {
     });
 
     test.describe(`Render display profile`, async () => {
-        test.beforeEach(async ({ searchPage, formPage, navigationMenu, materialPage }) => {
+        test.beforeEach(async ({ searchPage, formPage }) => {
             await searchPage.goToSearch('form');
             const formName = 'PROMIS SF v1.1 - Anger 5a';
             await formPage.goToForm(formTinyId[formName]);
@@ -193,7 +193,7 @@ test.describe(`Display profile`, async () => {
             await expect(page.getByTestId('preview-div')).toContainText('I was grouchy');
         });
 
-        test(`Verify 'No Matrix No Values'`, async ({ page, displayProfileSection, materialPage }) => {
+        test(`Verify 'No Matrix No Values'`, async ({ page, displayProfileSection }) => {
             await displayProfileSection.selectDisplayProfileByName('No Matrix No Values');
             await expect(
                 page.locator(`//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']`)

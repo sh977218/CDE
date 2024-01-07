@@ -22,7 +22,7 @@ test.describe(`a11y`, async () => {
     test(`CDE search page`, async ({ page, cdePage, searchPage }) => {
         await searchPage.goToSearch('cde');
         await searchPage.browseOrganization('caBIG');
-        await searchPage.classificationFilter('caDSR');
+        await expect(searchPage.classificationFilter('caDSR')).toBeVisible();
         await searchPage.nihEndorsedCheckbox().check();
         await searchPage.registrationStatusFilter('Qualified').click();
         await searchPage.dataTypeFilter('Date').click();
@@ -32,9 +32,9 @@ test.describe(`a11y`, async () => {
     test(`Form search page`, async ({ page, formPage, searchPage }) => {
         await searchPage.goToSearch('form');
         await searchPage.browseOrganization('PROMIS / Neuro-QOL');
-        await searchPage.classificationFilter('PROMIS Instruments');
-        await searchPage.classificationFilter('Adult Short Forms');
-        await searchPage.classificationFilter('Social Health');
+        await page.getByRole('link', { name: 'PROMIS Instruments' }).click();
+        await page.getByRole('link', { name: 'Adult Short Forms' }).click();
+        await page.getByRole('link', { name: 'Social Health' }).click();
         await searchPage.registrationStatusFilter('Qualified').click();
         await page.getByText('results. Sorted by relevance.').isVisible();
     });
