@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright';
 import cdeTinyId from '../../data/cde-tinyId';
 import formTinyId from '../../data/form-tinyId';
 
-test.describe(`a11y`, async () => {
+test.describe(`@a11y accessibility test`, async () => {
     test(`Home page`, async ({ homePage }) => {
         await homePage.goToHome();
     });

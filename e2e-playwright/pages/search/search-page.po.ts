@@ -12,6 +12,14 @@ export class SearchPagePo {
         await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });
     }
 
+    searchResultList() {
+        return this.page.getByTestId('search-result-list');
+    }
+
+    searchResultInfoBar() {
+        return this.page.getByTestId('search-result-info-bar');
+    }
+
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {

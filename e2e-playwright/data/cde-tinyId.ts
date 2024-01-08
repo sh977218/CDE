@@ -9,4 +9,5 @@ export default {
     'Cde Status Test': 'Lx1dejs0w',
     UnclassifiedCDE: 'mkH_UGXEw',
     'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator': 'NuQwuCAZrz5',
+    'Non-Pathology Findings': 'mJQiShWEW',
 };

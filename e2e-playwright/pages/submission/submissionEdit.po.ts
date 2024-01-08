@@ -3,8 +3,6 @@ import { expect, Page } from '@playwright/test';
 export class SubmissionEditPo {
     private readonly page: Page;
 
-    xmlTableRow = '//';
-
     constructor(page: Page) {
         this.page = page;
     }
