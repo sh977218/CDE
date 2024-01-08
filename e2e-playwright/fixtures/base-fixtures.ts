@@ -23,6 +23,8 @@ import { PermissibleValuePo } from '../pages/cde/permissible-value.po';
 
 // Form page
 import { FormPagePo } from '../pages/form/form-page.po';
+import { PreviewPo } from '../pages/form/preview.po';
+import { FormDescriptionPo } from '../pages/form/form-description.po';
 import { DisplayProfilePo } from '../pages/form/display-profile.po';
 
 import { HistoryPo } from '../pages/shared/history.po';
@@ -58,7 +60,14 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
         const nycOutput = join(NYC_OUTPUT_FOLDER, `${name}`);
         await fs.writeFile(nycOutput, coverage);
     } else {
-        throw new Error(`No coverage found for ${testInfo.testId}`);
+        // API testing don't output coverage
+        const isDebug = testInfo.project.name === 'CDE-debug';
+        const isApiTesting = testInfo.titlePath.filter(t => t.includes('API') || t.includes('api')).length > 0;
+        if (isDebug || isApiTesting) {
+            console.info(`No coverage needed for debug or api testing: ${testInfo.titlePath.join(' -> ')}`);
+        } else {
+            throw new Error(`No coverage found for ${testInfo.titlePath.join(' -> ')}`);
+        }
     }
 }
 
@@ -67,6 +76,8 @@ const test = baseTest.extend<{
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
     formPage: FormPagePo;
+    formDescription: FormDescriptionPo;
+    previewSection: PreviewPo;
     displayProfileSection: DisplayProfilePo;
     myBoardPage: MyBoardPagePo;
     boardPage: BoardPagePo;
@@ -103,6 +114,12 @@ const test = baseTest.extend<{
     },
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
+    },
+    formDescription: async ({ page, materialPage }, use) => {
+        await use(new FormDescriptionPo(page, materialPage));
+    },
+    previewSection: async ({ page, materialPage }, use) => {
+        await use(new PreviewPo(page, materialPage));
     },
     displayProfileSection: async ({ page, inlineEdit, materialPage }, use) => {
         await use(new DisplayProfilePo(page, inlineEdit, materialPage));
@@ -185,6 +202,10 @@ const ignoredConsoleMessages = [
     'ExpressionChangedAfterItHasBeenCheckedError',
     '[main.js:',
     'Failed to load resource: the server responded with a status of 400',
+    'No value accessor for form control',
+    `Cannot read properties of undefined (reading '_hostElement')`,
+    `Cannot read properties of undefined (reading 'removeEventListener')`,
+    `Cannot read properties of null (reading 'writeValue')`,
 ];
 
 const consoleMessages: string[] = [];

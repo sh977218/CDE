@@ -39,8 +39,8 @@ const config: PlaywrightTestConfig = defineConfig({
         baseURL: 'http://localhost:4200',
 
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        trace: process.env.CI ? 'on-first-retry' : 'on',
+        screenshot: process.env.CI ? 'only-on-failure' : 'on',
         video: process.env.CI ? 'on-first-retry' : 'on',
     },
 
@@ -56,6 +56,7 @@ const config: PlaywrightTestConfig = defineConfig({
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
             grep: [/@smoke/, /@debug/],
             fullyParallel: true,
+            retries: 0,
         },
     ],
 

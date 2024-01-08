@@ -8,7 +8,7 @@ export class MaterialPo {
     }
 
     matMenuItem(text: string): Locator {
-        return this.page.locator('//*[@role = "menuitem"][normalize-space() = "' + text + '"]');
+        return this.page.getByRole('menuitem', { name: text, exact: true });
     }
 
     matOption(text: string): Locator {

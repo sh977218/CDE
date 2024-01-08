@@ -70,10 +70,11 @@
                                 Number of Columns: {{dPVM.profile.numberOfColumns}}
                             </label>
                             <mat-slider aria-labelledby="nbOfColumnsValue"
-                                        min="1" max="6" step="1" thumbLabel="true" tickInterval="1"
-                                        [ngModel]="dPVM.profile.numberOfColumns"
-                                        (ngModelChange)="onChange(dPVM.profile,$event)"
-                                        [disabled]="!canEdit"></mat-slider>
+                                        min="1" max="6" step="1"
+                                        [disabled]="!canEdit">
+                                <input matSliderThumb [ngModel]="dPVM.profile.numberOfColumns"
+                                       (ngModelChange)="onChange(dPVM.profile,$event)">
+                            </mat-slider>
                             <mat-form-field>
                                 <input matInput id="displayRepeatFormat_{{index}}" class="form-control"
                                        [disabled]="!canEdit"

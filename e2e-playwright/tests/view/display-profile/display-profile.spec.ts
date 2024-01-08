@@ -179,8 +179,8 @@ test.describe(`Display profile`, async () => {
             await expect(page.getByTestId('preview-div')).not.toHaveText('I was grouchy');
         });
 
-        test(`Verify 'Matrix No Values'`, async ({ page, displayProfileSection }) => {
-            await displayProfileSection.selectDisplayProfileByName('Matrix No Values');
+        test(`Verify 'Matrix No Values'`, async ({ page, previewSection }) => {
+            await previewSection.selectDisplayProfileByName('Matrix No Values');
 
             await expect(
                 page.locator("//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']")
@@ -193,8 +193,8 @@ test.describe(`Display profile`, async () => {
             await expect(page.getByTestId('preview-div')).toContainText('I was grouchy');
         });
 
-        test(`Verify 'No Matrix No Values'`, async ({ page, displayProfileSection }) => {
-            await displayProfileSection.selectDisplayProfileByName('No Matrix No Values');
+        test(`Verify 'No Matrix No Values'`, async ({ page, previewSection }) => {
+            await previewSection.selectDisplayProfileByName('No Matrix No Values');
             await expect(
                 page.locator(`//div[@id='formRenderSection_In the past 7 days']//table//input[@type='radio']`)
             ).toBeHidden();
@@ -222,8 +222,8 @@ test.describe(`Display profile`, async () => {
             await page.locator(`section.metadata-item button`).click();
         });
 
-        test(`Verify 'No Matrix No Values Wider'`, async ({ page, displayProfileSection }) => {
-            await displayProfileSection.selectDisplayProfileByName('No Matrix No Values Wider');
+        test(`Verify 'No Matrix No Values Wider'`, async ({ page, previewSection }) => {
+            await previewSection.selectDisplayProfileByName('No Matrix No Values Wider');
             expect(
                 (
                     await page
@@ -243,8 +243,8 @@ test.describe(`Display profile`, async () => {
             );
         });
 
-        test(`Verify 'Multiple Select'`, async ({ page, displayProfileSection }) => {
-            await displayProfileSection.selectDisplayProfileByName('Multiple Select');
+        test(`Verify 'Multiple Select'`, async ({ page, previewSection }) => {
+            await previewSection.selectDisplayProfileByName('Multiple Select');
 
             await page.locator("//div[@id='I was irritated more than people knew_0-0']//select").selectOption('Never');
             await page.locator("//div[@id='I was irritated more than people knew_0-0']//select").selectOption('Rarely');

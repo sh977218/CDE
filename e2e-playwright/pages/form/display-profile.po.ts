@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { expect, Page, Locator } from '@playwright/test';
 import { DisplayProfile } from '../../src/model/type';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { MaterialPo } from '../shared/material.po';
@@ -69,12 +69,15 @@ export class DisplayProfilePo {
     previewAnswerValue() {
         return this.page.getByTestId('preview-div').getByTestId('native-value');
     }
+
     displayProfileAnswerValue() {
         return this.displayProfileContainer().first().getByTestId('native-value');
     }
+
     previewMetaDeviceAddButton() {
         return this.page.getByTestId('preview-div').getByTestId('meta-device-add-button');
     }
+
     displayProfileMetaDeviceAddButton() {
         return this.displayProfileContainer().first().getByTestId('meta-device-add-button');
     }
@@ -82,12 +85,9 @@ export class DisplayProfilePo {
     previewMatrixCheckbox() {
         return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='checkbox']`);
     }
+
     previewMatrixRadio() {
         return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='radio']`);
-    }
-
-    displayProfileSelect() {
-        return this.page.getByTestId('display_profile_select');
     }
 
     addDisplayProfile = async ({
@@ -103,7 +103,7 @@ export class DisplayProfilePo {
         displayMetadataDevice,
     }: DisplayProfile) => {
         await this.addDisplayProfileButton().click();
-        const displayProfileContainerLocator = this.displayProfileContainer().first();
+        const displayProfileContainerLocator = this.displayProfileContainer().last();
         await this.inlineEdit.editIcon(displayProfileContainerLocator).click();
         await this.inlineEdit.inputField(displayProfileContainerLocator).fill(profileName);
         await this.inlineEdit.submitButton(displayProfileContainerLocator).click();
@@ -133,10 +133,5 @@ export class DisplayProfilePo {
         const displayProfileLocator = this.displayProfileHeading().filter({ hasText: profileName });
         await this.displayProfileDeleteButton(displayProfileLocator).click();
         await this.displayProfileConfirmButton(displayProfileLocator).click();
-    };
-
-    selectDisplayProfileByName = async (profileName: string) => {
-        await this.displayProfileSelect().click();
-        await this.materialPage.matMenuItem(profileName).click();
     };
 }

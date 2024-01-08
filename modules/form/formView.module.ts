@@ -11,7 +11,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatLegacySliderModule } from '@angular/material/legacy-slider';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -56,6 +55,7 @@ import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { WINDOW_PROVIDERS } from 'window.service';
 import { CreateFormComponent } from './createForm/createForm.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
 
@@ -74,7 +74,6 @@ const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
         MatGridListModule,
         MatIconModule,
         MatInputModule,
-        MatLegacySliderModule,
         MatMenuModule,
         MatSelectModule,
         MatTabsModule,
@@ -109,6 +108,7 @@ const appRoutes: Routes = [{ path: '', component: FormViewComponent }];
         TocModule,
         TourMatMenuModule,
         CreateFormComponent,
+        MatSliderModule,
     ],
     declarations: [
         ArrayListPipe,
