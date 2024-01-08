@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
+test.describe.configure({ retries: 0 }); // no retries for edits
 test.describe(`Classification`, async () => {
     test(`Remove organization classification`, async ({
         page,

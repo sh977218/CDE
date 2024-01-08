@@ -35,6 +35,7 @@ export class SaveModalPo {
 
     async newVersion(version: string, alertMessage: string) {
         await this.page.getByTestId(`publish-draft`).click();
+        await this.materialPage.matDialog().waitFor({ state: 'visible' });
         if (!version) {
             const existingVersion = await this.page.getByTestId(`new-version-input`).inputValue();
             if (existingVersion.trim().length) {
@@ -45,6 +46,7 @@ export class SaveModalPo {
         }
         await this.newVersionInput().fill(version);
         await this.saveButton().click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(alertMessage);
     }
 }

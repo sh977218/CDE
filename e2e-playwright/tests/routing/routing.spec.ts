@@ -8,13 +8,13 @@ test.describe(`App Routing`, async () => {
             `formEdit`,
             `settings`,
             `searchPreferences`,
-            `siteAudit`
-        ]
+            `siteAudit`,
+        ];
         for (const loggedInRequiredRoute of loggedInRequiredRoutes) {
-            test(`${loggedInRequiredRoute}`, async ({page}) => {
+            test(`${loggedInRequiredRoute}`, async ({ page }) => {
                 await page.goto(`/${loggedInRequiredRoute}`);
                 await expect(page).toHaveURL('/login');
-            })
+            });
         }
-    })
+    });
 });

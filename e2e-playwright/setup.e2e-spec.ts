@@ -1,11 +1,12 @@
-import { FullConfig } from '@playwright/test';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
-async function globalSetup(config: FullConfig) {
-    const projectRootFolder = join(__dirname, '..');
-    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), { recursive: true, force: true });
-    await fs.mkdir(join(projectRootFolder, `e2e-playwright/.nyc_output`));
+const PROJECT_ROOT_FOLDER = join(__dirname, '..');
+const NYC_OUTPUT_FOLDER = join(PROJECT_ROOT_FOLDER, '.nyc_output');
+
+async function globalSetup() {
+    await fs.rm(NYC_OUTPUT_FOLDER, { recursive: true, force: true });
+    await fs.mkdir(NYC_OUTPUT_FOLDER);
 }
 
 export default globalSetup;

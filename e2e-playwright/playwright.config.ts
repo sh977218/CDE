@@ -2,9 +2,9 @@ import { defineConfig, devices, PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = defineConfig({
     testDir: './tests',
-    testMatch: ['/*.spec.ts'],
-    globalSetup: process.env.a11y ? '' : require.resolve('./setup.e2e-spec'),
-    globalTeardown: process.env.a11y ? '' : require.resolve('./teardown.e2e-spec'),
+    testMatch: ['*spec.ts'],
+    globalSetup: require.resolve('./setup.e2e-spec'),
+    globalTeardown: require.resolve('./teardown.e2e-spec'),
     /* Maximum time one test can run for. */
     timeout: 300 * 1000,
     maxFailures: 10,
@@ -25,8 +25,8 @@ const config: PlaywrightTestConfig = defineConfig({
     workers: process.env.CI ? 8 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { outputFolder: `playwright-report${process.env.a11y ? '-a11y' : ''}` }],
-        ['junit', { outputFile: `playwright-report${process.env.a11y ? '-a11y' : ''}/report-junit.xml` }],
+        ['html', { outputFolder: `playwright-report` }],
+        ['junit', { outputFile: `playwright-report/report-junit.xml` }],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
     outputDir: 'test-results',
@@ -47,22 +47,21 @@ const config: PlaywrightTestConfig = defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'CDE-Chromium',
+            name: 'CDE-e2e',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
-            testMatch: /.*.spec.cde.ts/,
             fullyParallel: true,
         },
         {
-            name: 'CDE-Chromium-a11y',
+            name: 'CDE-debug',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
-            testMatch: /.*.spec.a11y.ts/,
+            grep: [/@smoke/, /@debug/],
             fullyParallel: true,
         },
     ],
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.a11y ? 'npm run devApp' : 'npm run start:coverage',
+        command: 'npm run start:coverage',
         port: 4200,
         timeout: 150 * 1000,
         reuseExistingServer: true,

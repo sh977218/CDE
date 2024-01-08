@@ -1,18 +1,23 @@
-import { FullConfig } from '@playwright/test';
-import { promises as fs } from 'fs';
 import { join } from 'path';
 import NYC from 'nyc';
 
-async function globalTeardown(config: FullConfig) {
-    const projectRootFolder = join(__dirname, '..');
-    const nycInstance = new NYC({
-        cwd: projectRootFolder,
-        tempDir: join(projectRootFolder, `e2e-playwright/.nyc_output`),
-        reportDir: join(projectRootFolder, `e2e-playwright/coverage-e2e`),
-        reporter: ['lcov', 'json', 'text-summary'],
-    });
-    await nycInstance.report();
-    await fs.rm(join(projectRootFolder, `e2e-playwright/.nyc_output`), { recursive: true, force: true });
+const coverageThresholds = require('./coverage-thresholds.json');
+
+const PROJECT_ROOT_FOLDER = join(__dirname, '..');
+
+async function globalTeardown() {
+    try {
+        const nycInstance = new NYC({
+            cwd: PROJECT_ROOT_FOLDER,
+            reportDir: `coverage-e2e`,
+            reporter: ['lcov', 'json', 'text-summary'],
+        });
+        await nycInstance.checkCoverage(coverageThresholds);
+        await nycInstance.report();
+    } catch (e) {
+        // NYC doesn't throw error when coverage is not met. bug
+        throw new Error(`Insufficient playwright code coverage!: ${e}`);
+    }
 }
 
 export default globalTeardown;
