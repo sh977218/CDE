@@ -7,6 +7,17 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
 import { iterateFeSync } from 'shared/form/fe';
 import { CodeAndSystem, DateType } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
+import { MatCardModule } from '@angular/material/card';
+import { NgForOf, NgIf } from '@angular/common';
+import { DeleteWithConfirmModule } from '../../deleteWithConfirm/deleteWithConfirm.module';
+import { InlineEditModule } from '../../inlineEdit/inlineEdit.module';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { NativeRenderModule } from '../../nativeRender/nativeRender.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 
 interface DisplayProfileVM {
     aliases: {
@@ -21,6 +32,21 @@ interface DisplayProfileVM {
     selector: 'cde-display-profile',
     templateUrl: './displayProfile.component.html',
     styleUrls: ['./displayProfile.component.scss'],
+    imports: [
+        MatCardModule,
+        NgIf,
+        DeleteWithConfirmModule,
+        InlineEditModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatSliderModule,
+        MatInputModule,
+        NativeRenderModule,
+        MatIconModule,
+        NgForOf,
+        MatTabsModule,
+    ],
+    standalone: true,
 })
 export class DisplayProfileComponent {
     @Input() set elt(e: CdeForm) {

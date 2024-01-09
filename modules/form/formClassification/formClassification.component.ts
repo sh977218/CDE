@@ -10,10 +10,15 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { Cb, ClassificationClassified, IdVersion, ItemClassification } from 'shared/models.model';
 import { canClassify } from 'shared/security/authorizationShared';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'cde-form-classification',
     templateUrl: './formClassification.component.html',
+    imports: [AdminItemModule, MatIconModule, NgIf],
+    standalone: true,
 })
 export class FormClassificationComponent {
     @Input() elt!: CdeForm;

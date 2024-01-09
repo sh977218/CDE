@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { CdeForm, DisplayProfile } from 'shared/form/form.model';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { NativeRenderModule } from 'nativeRender/nativeRender.module';
 
 @Component({
     selector: 'cde-native-render-full',
@@ -47,6 +52,8 @@ import { CdeForm, DisplayProfile } from 'shared/form/form.model';
             }
         `,
     ],
+    imports: [NgIf, MatMenuModule, MatIconModule, RouterLink, NgForOf, NativeRenderModule],
+    standalone: true,
 })
 export class NativeRenderFullComponent implements OnInit {
     @Input() elt!: CdeForm;

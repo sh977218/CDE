@@ -6,7 +6,7 @@
     <mat-card-header>
         <mat-card-title data-testid="display-profile-header">
             <h3>
-                {{dPVM.profile.name}}
+                {{ dPVM.profile.name }}
                 <cde-delete-with-confirm *ngIf="canEdit" (click)="interruptEvent($event)"
                                          data-testid="delete-display-profile"
                                          (deleted)="removeDisplayProfile(index)">
@@ -67,7 +67,7 @@
                                           (change)="eltChange.emit()">Display Invisible Questions
                             </mat-checkbox>
                             <label id="nbOfColumnsValue">
-                                Number of Columns: {{dPVM.profile.numberOfColumns}}
+                                Number of Columns: {{ dPVM.profile.numberOfColumns }}
                             </label>
                             <mat-slider aria-labelledby="nbOfColumnsValue"
                                         min="1" max="6" step="1"
@@ -127,8 +127,9 @@
                                 <ng-container *ngFor="let u of dPVM.profile.unitsOfMeasureAlias">
                                     <div>
                                         <ng-container *ngIf="u.unitOfMeasure.system">
-                                            {{u.unitOfMeasure.system}}/</ng-container>
-                                        {{u.unitOfMeasure.code}}: {{u.alias}}
+                                            {{ u.unitOfMeasure.system }}/
+                                        </ng-container>
+                                        {{ u.unitOfMeasure.code }}: {{ u.alias }}
                                     </div>
                                 </ng-container>
                                 <div *ngIf="!dPVM.profile.unitsOfMeasureAlias.length" class="w-100 text-center">
@@ -138,12 +139,12 @@
                             <ng-container *ngIf="dPVM.aliases.edit; else displayAliases">
                                 <ng-container *ngFor="let u of uoms">
                                     <div id="alias-{{u.u.system}}-{{u.u.code}}">
-                                        <ng-container *ngIf="u.u.system">{{u.u.system}}/</ng-container>
-                                        {{u.u.code}}:
+                                        <ng-container *ngIf="u.u.system">{{ u.u.system }}/</ng-container>
+                                        {{ u.u.code }}:
                                         <select class="form-control" [disabled]="!canEdit"
                                                 [ngModel]="profileAliasGet(dPVM, u.u)"
                                                 (ngModelChange)="profileAliasSet(dPVM, u.u, $event)">
-                                            <option *ngFor="let option of u.a">{{option}}</option>
+                                            <option *ngFor="let option of u.a">{{ option }}</option>
                                         </select>
                                     </div>
                                 </ng-container>
@@ -167,7 +168,7 @@
                                            type="number" min="0" [disabled]="!canEdit"
                                            placeholder="Multiple choice answer limit"
                                            [(ngModel)]="dPVM.profile.answerDropdownLimit" (change)="eltChange.emit()">
-                                    <mat-hint>(Bottom limit for diplay as drop-down instead of multiple-choice.)
+                                    <mat-hint>(Bottom limit for display as drop-down instead of multiple-choice.)
                                     </mat-hint>
                                 </mat-form-field>
                             </mat-tab>

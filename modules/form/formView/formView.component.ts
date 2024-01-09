@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, TemplateRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
 import { UserService } from '_app/user.service';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
@@ -47,6 +47,25 @@ import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authoriz
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
 import { map } from 'rxjs/operators';
+import { DatePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { TocModule } from 'angular-aio-toc/toc.module';
+import { DiscussModule } from 'discuss/discuss.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { PinToBoardModule } from 'board/pin-to-board.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NativeRenderFullComponent } from 'form/nativeRenderFull/nativeRenderFull.component';
+import { FormGeneralDetailsComponent } from 'form/formGeneralDetails/formGeneralDetails.component';
+import { FormClassificationComponent } from 'form/formClassification/formClassification.component';
+import { DisplayProfileComponent } from 'form/displayProfile/displayProfile.component';
+import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
+import { ClassificationService } from 'non-core/classification.service';
+import { IsAllowedService } from 'non-core/isAllowed.service';
+import { MyBoardsService } from 'board/myBoards.service';
 
 export class LocatableError {
     id?: string;
@@ -62,7 +81,39 @@ export class LocatableError {
     selector: 'cde-form-view',
     templateUrl: 'formView.component.html',
     styleUrls: ['../../cde/dataElementView/view.style.scss'],
-    providers: [TocService],
+    providers: [
+        TocService,
+        ExportService,
+        MyBoardsService,
+        RegistrationValidatorService,
+        FormViewService,
+        UcumService,
+        ClassificationService,
+        IsAllowedService,
+    ],
+    imports: [
+        NgIf,
+        MatProgressSpinnerModule,
+        MatSidenavModule,
+        TocModule,
+        DiscussModule,
+        AdminItemModule,
+        MatIconModule,
+        RouterLink,
+        NgForOf,
+        MatMenuModule,
+        NgTemplateOutlet,
+        PinToBoardModule,
+        NgClass,
+        MatTooltipModule,
+        DatePipe,
+        NativeRenderFullComponent,
+        FormGeneralDetailsComponent,
+        FormClassificationComponent,
+        DisplayProfileComponent,
+        TourAnchorMatMenuDirective,
+    ],
+    standalone: true,
 })
 export class FormViewComponent implements OnInit, OnDestroy {
     _elt?: CdeFormDraft;

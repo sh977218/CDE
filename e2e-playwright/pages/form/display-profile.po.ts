@@ -111,21 +111,35 @@ export class DisplayProfilePo {
         await this.displayProfileStyleSelect(displayProfileContainerLocator).selectOption(styleName);
         if (!matrix) {
             await this.displayProfileDisplayAsMatrixCheckbox(displayProfileContainerLocator).uncheck();
+            await expect(this.displayProfileDisplayAsMatrixCheckbox(displayProfileContainerLocator)).not.toBeChecked();
         }
         if (displayValues) {
             await this.displayProfileDisplayValuesCheckbox(displayProfileContainerLocator).check();
+            await expect(this.displayProfileDisplayValuesCheckbox(displayProfileContainerLocator)).toBeChecked();
         }
         if (!instructions) {
             await this.displayProfileDisplayInstructionsCheckbox(displayProfileContainerLocator).uncheck();
+            await expect(
+                this.displayProfileDisplayInstructionsCheckbox(displayProfileContainerLocator)
+            ).not.toBeChecked();
         }
         if (!numbering) {
             await this.displayProfileDisplayQuestionNumberCheckbox(displayProfileContainerLocator).uncheck();
+            await expect(
+                this.displayProfileDisplayQuestionNumberCheckbox(displayProfileContainerLocator)
+            ).not.toBeChecked();
         }
         if (displayInvisibleQuestion) {
             await this.displayProfileDisplayInvisibleQuestionsCheckbox(displayProfileContainerLocator).check();
+            await expect(
+                this.displayProfileDisplayInvisibleQuestionsCheckbox(displayProfileContainerLocator)
+            ).toBeChecked();
         }
         if (displayMetadataDevice) {
             await this.displayProfileDisplayDisplayMetadataDeviceCheckbox(displayProfileContainerLocator).check();
+            await expect(
+                this.displayProfileDisplayDisplayMetadataDeviceCheckbox(displayProfileContainerLocator)
+            ).toBeChecked();
         }
     };
 

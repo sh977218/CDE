@@ -61,7 +61,7 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
+    test(`Meta device @smoke`, async ({ page, searchPage, formPage, displayProfileSection, navigationMenu }) => {
         await searchPage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);
@@ -82,6 +82,7 @@ test.describe(`Display profile`, async () => {
 
         await displayProfileSection.addDisplayProfile(metadataDeviceDisplayProfile);
 
+        await page.waitForTimeout(5000); // Sometimes the checkbox is not saved.
         await formPage.goToForm(formTinyId[formName]);
 
         await test.step(`Preview has meta device`, async () => {

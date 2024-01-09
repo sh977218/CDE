@@ -38,19 +38,19 @@ export class NavigationMenuPo {
     }
 
     async gotoSettings() {
-        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('logged-in-username').click();
         await this.page.getByTestId('user_settings').click();
         await this.page.waitForSelector('cde-profile', { state: 'visible' });
     }
 
     async gotoClassification() {
-        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('logged-in-username').click();
         await this.page.getByTestId('user_classification').click();
         await this.page.getByText('Manage Classifications').isVisible();
     }
 
     async gotoAudit() {
-        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('logged-in-username').click();
         await this.page.getByTestId('user_audit').click();
         await this.page
             .getByText('Logs', {
@@ -60,7 +60,7 @@ export class NavigationMenuPo {
     }
 
     async logout() {
-        await this.page.getByTestId('logged-in-username').hover();
+        await this.page.getByTestId('logged-in-username').click();
         await this.page.getByTestId('user_logout').click();
         await this.page.getByText('Our sign in process has changed.').isVisible();
     }
@@ -71,7 +71,7 @@ export class NavigationMenuPo {
     }
 
     async gotoSubmissions() {
-        await this.page.locator('#createEltLink').hover();
+        await this.page.locator('#createEltLink').click();
         await this.matPage.matMenuItem('Collection').click();
     }
 

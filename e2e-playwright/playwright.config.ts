@@ -25,8 +25,8 @@ const config: PlaywrightTestConfig = defineConfig({
     workers: process.env.CI ? 8 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { outputFolder: `playwright-report` }],
-        ['junit', { outputFile: `playwright-report/report-junit.xml` }],
+        ['html', { outputFolder: `../playwright-report` }],
+        ['junit', { outputFile: `../playwright-report/report-junit.xml` }],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
     outputDir: 'test-results',

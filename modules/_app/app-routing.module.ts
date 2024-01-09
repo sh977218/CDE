@@ -98,7 +98,7 @@ const appRoutes: Routes = [
     },
     {
         path: 'formView',
-        loadChildren: () => import('form/formView.module').then(m => m.FormViewModule),
+        loadComponent: () => import('form/formView/formView.component').then(c => c.FormViewComponent),
         data: { title: 'Form View', preload: false },
     },
     { path: 'form', redirectTo: '/form/search', pathMatch: 'full' },

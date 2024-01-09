@@ -16,7 +16,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { ClassificationClassified, ClassificationHistory, Definition, Designation } from 'shared/models.model';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { AdminItemModule } from '../../adminItem/adminItem.module';
+import { AdminItemModule } from 'adminItem/adminItem.module';
 
 @Component({
     selector: 'cde-create-form',
