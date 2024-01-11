@@ -5,6 +5,7 @@ import { LoginService } from '_app/login.service';
     selector: 'cde-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    standalone: true,
 })
 export class LoginComponent {
     constructor(public loginService: LoginService) {}

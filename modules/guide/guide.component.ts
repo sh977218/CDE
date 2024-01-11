@@ -9,7 +9,7 @@ import { Article } from 'shared/article/article.model';
 @Component({
     selector: 'cde-guide',
     templateUrl: 'guide.component.html',
-    styleUrls: ['guide.component.scss', '../../../../cde/dataElementView/view.style.scss'],
+    styleUrls: ['guide.component.scss', '../cde/dataElementView/view.style.scss'],
     providers: [TocService],
 })
 export class GuideComponent implements OnDestroy, AfterViewInit {

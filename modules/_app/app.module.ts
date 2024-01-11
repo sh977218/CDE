@@ -42,6 +42,10 @@ import { GlobalErrorHandler } from '_app/global-error-handler';
 import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { FooterComponent } from 'footer/footer.component';
 import { MyBoardsService } from 'board/myBoards.service';
+import { LoginComponent } from '../login/login.component';
+import { LoginResolve } from '../login/login.resolve';
+import { ResourceResolve } from '../resources/resources.resolve';
+import { VideosResolve } from '../videos/videos.resolve';
 
 @NgModule({
     imports: [
@@ -73,6 +77,7 @@ import { MyBoardsService } from 'board/myBoards.service';
         }),
         UswdsBannerComponent,
         FooterComponent,
+        LoginComponent,
     ],
     declarations: [
         CdeAppComponent,
@@ -95,6 +100,9 @@ import { MyBoardsService } from 'board/myBoards.service';
         OrgHelperService,
         CdeTourService,
         MyBoardsService,
+        LoginResolve,
+        ResourceResolve,
+        VideosResolve,
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
     ],
     exports: [],

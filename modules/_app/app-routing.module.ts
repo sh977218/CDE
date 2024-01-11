@@ -9,6 +9,9 @@ import { classifyGuard } from '_app/routerGuard/classifyGuard';
 import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
 import { ClassificationService } from 'non-core/classification.service';
+import { LoginResolve } from '../login/login.resolve';
+import { ResourceResolve } from 'resources/resources.resolve';
+import { VideosResolve } from '../videos/videos.resolve';
 
 const appRoutes: Routes = [
     {
@@ -17,12 +20,12 @@ const appRoutes: Routes = [
     },
     {
         path: 'api',
-        loadChildren: () => import('system/public/documentApi.module').then(m => m.DocumentApiModule),
+        loadComponent: () => import('swagger/swagger.component').then(c => c.SwaggerComponent),
         data: { title: 'API Documentation', preload: false },
     },
     {
         path: 'about',
-        loadChildren: () => import('system/public/about.module').then(m => m.AboutModule),
+        loadComponent: () => import('about/about.component').then(c => c.AboutComponent),
         data: { title: 'About', preload: false },
     },
     {
@@ -104,12 +107,13 @@ const appRoutes: Routes = [
     { path: 'form', redirectTo: '/form/search', pathMatch: 'full' },
     {
         path: 'login',
-        loadChildren: () => import('system/public/login.module').then(m => m.LoginModule),
+        loadComponent: () => import('login/login.component').then(c => c.LoginComponent),
+        resolve: { lastRoute: LoginResolve },
         data: { title: 'Login', preload: false },
     },
     {
         path: 'ieDiscontinued',
-        loadChildren: () => import('system/public/ieDiscontinued.module').then(m => m.IeDiscontinuedModule),
+        loadComponent: () => import('ie-discontinued/ieDiscontinued.component').then(c => c.IeDiscontinuedComponent),
         data: { title: 'Upgrade Browser', preload: false },
     },
     {
@@ -124,7 +128,8 @@ const appRoutes: Routes = [
     },
     {
         path: 'resources',
-        loadChildren: () => import('system/public/resources.module').then(m => m.ResourcesModule),
+        loadComponent: () => import('resources/resources.component').then(c => c.ResourcesComponent),
+        resolve: { resource: ResourceResolve },
         data: { title: 'Resources', preload: false },
     },
     {
@@ -135,27 +140,29 @@ const appRoutes: Routes = [
     },
     {
         path: 'whatsNew',
-        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
+        loadComponent: () => import('article/article.component').then(c => c.ArticleComponent),
         data: { title: `What's New`, article: 'whatsNew', preload: false },
     },
     {
         path: 'nihDataSharing',
-        loadChildren: () => import('system/public/article.module').then(m => m.ArticleModule),
+        loadComponent: () => import('article/article.component').then(c => c.ArticleComponent),
         data: { title: `NIH Data Sharing`, article: 'nihDataSharing', preload: false },
     },
     {
         path: 'guides',
-        loadChildren: () => import('system/public/guide.module').then(m => m.GuideModule),
+        loadComponent: () => import('guide/guide.component').then(c => c.GuideComponent),
         data: { title: 'Guides', preload: false },
     },
     {
         path: 'videos',
-        loadChildren: () => import('system/public/videos.module').then(m => m.VideosModule),
+        loadComponent: () => import('videos/videos.component').then(c => c.VideosComponent),
+        resolve: { videos: VideosResolve },
         data: { title: 'Videos', preload: false },
     },
     {
         path: 'searchPreferences',
-        loadChildren: () => import('system/public/searchPreferences.module').then(m => m.SearchPreferencesModule),
+        loadComponent: () =>
+            import('searchPreferences/searchPreferences.component').then(c => c.SearchPreferencesComponent),
         canActivate: [loggedInGuard],
         data: { title: 'Search Preferences', preload: false },
     },

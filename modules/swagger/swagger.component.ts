@@ -4,6 +4,7 @@ import { AfterViewInit, Component } from '@angular/core';
     selector: 'cde-swagger',
     templateUrl: './swagger.component.html',
     styleUrls: ['./swagger.component.scss'],
+    standalone: true,
 })
 export class SwaggerComponent implements AfterViewInit {
     ngAfterViewInit() {

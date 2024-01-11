@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import {
     ApplicationRef,
     Component,
@@ -11,9 +10,11 @@ import {
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { AlertService } from 'alert/alert.service';
 import { Article } from 'shared/article/article.model';
-import { ResourcesRssComponent } from 'system/public/components/resources/resourcesRss.component';
+import { ResourcesRssComponent } from 'resources/resourcesRss.component';
+import { NgIf } from '@angular/common';
+import { NonCoreModule } from '../non-core/noncore.module';
+import { SafeHtmlPipe } from '../non-core/pipes/safeHtml.pipe';
 
 export class HtmlContainer {
     private attached: boolean = false;
@@ -57,6 +58,8 @@ export class HtmlContainer {
 @Component({
     selector: 'cde-resources',
     templateUrl: './resources.component.html',
+    imports: [NgIf, NonCoreModule, SafeHtmlPipe],
+    standalone: true,
 })
 export class ResourcesComponent implements OnDestroy {
     containers: HtmlContainer[] = [];
@@ -64,10 +67,8 @@ export class ResourcesComponent implements OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private alert: AlertService,
         private appRef: ApplicationRef,
         private componentFactoryResolver: ComponentFactoryResolver,
-        private http: HttpClient,
         private injector: Injector,
         public userService: UserService
     ) {

@@ -6,9 +6,14 @@ import { AlertService } from 'alert/alert.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { UserSearchSettings } from 'shared/models.model';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
     templateUrl: 'searchPreferences.component.html',
+    imports: [MatIconModule, FormsModule, NgIf],
+    standalone: true,
 })
 export class SearchPreferencesComponent implements OnInit {
     exportToTab: string = '';
