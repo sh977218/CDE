@@ -49,7 +49,7 @@ test.describe(`Classification`, async () => {
         await navigationMenu.logout();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await navigationMenu.gotoAudit();
-        await auditTab.classificationAudit().click();
+        await auditTab.classificationAuditLog().click();
         const locator = classificationAuditPage.classificationAuditByTitle(
             `10+ cdes ${classificationArray.join(' > ')}`
         );

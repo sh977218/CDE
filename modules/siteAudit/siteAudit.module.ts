@@ -21,9 +21,9 @@ import { ClientErrorsComponent } from 'siteAudit/clientErrors/clientErrors.compo
 import { DailyUsageComponent } from 'siteAudit/dailyUsage/dailyUsage.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
-import { LogAuditComponent } from 'siteAudit/logAudit/logAudit.component';
 import { ServerErrorsComponent } from 'siteAudit/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
+import { HttpLogComponent } from './http-log/http-log.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -44,6 +44,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         // internal
         CompareModule,
         MatDialogModule,
+        HttpLogComponent,
     ],
     declarations: [
         ActiveBansComponent,
@@ -55,7 +56,6 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         DailyUsageComponent,
         DataElementLogComponent,
         FormLogComponent,
-        LogAuditComponent,
         LoginRecordComponent,
         ServerErrorsComponent,
         SiteAuditComponent,

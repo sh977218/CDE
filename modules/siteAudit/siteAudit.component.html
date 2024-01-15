@@ -1,7 +1,7 @@
 <mat-tab-group [selectedIndex]="tabIndex">
-    <mat-tab label="Logs" index="1" *ngIf="isAdmin">
+    <mat-tab label="Http Logs" index="1" *ngIf="isAdmin">
         <ng-template matTabContent>
-            <cde-log-audit id="auditTab"></cde-log-audit>
+            <cde-http-log></cde-http-log>
         </ng-template>
     </mat-tab>
 

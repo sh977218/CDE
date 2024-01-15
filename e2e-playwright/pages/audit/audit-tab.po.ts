@@ -7,15 +7,39 @@ export class AuditTabPo {
         this.page = page;
     }
 
-    classificationAudit(): Locator {
-        return this.page.locator(`[role="tab"]`, {
-            has: this.page.locator(`.mdc-tab__content`, {
-                has: this.page.locator(`text=Classification Audit Log`),
-            }),
-        });
+    httpLogs(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Http Logs', exact: true });
     }
 
-    loginRecordsAudit(): Locator {
-        return this.page.locator('[role="tab"]:has-text("Login Records")');
+    appLogs(): Locator {
+        return this.page.getByRole(`tab`, { name: 'App Logs', exact: true });
+    }
+    usage(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Usage', exact: true });
+    }
+    cdeAuditLog(): Locator {
+        return this.page.getByRole(`tab`, { name: 'CDE Audit Log', exact: true });
+    }
+
+    formAuditLog(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Form Audit Log', exact: true });
+    }
+
+    classificationAuditLog(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Classification Audit Log', exact: true });
+    }
+
+    activeBans(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Active Bans', exact: true });
+    }
+
+    serverErrors(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Server Errors', exact: true });
+    }
+    clientErrors(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Client Errors', exact: true });
+    }
+    loginRecords(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Login Records', exact: true });
     }
 }

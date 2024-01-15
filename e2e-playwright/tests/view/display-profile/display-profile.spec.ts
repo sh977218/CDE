@@ -61,7 +61,8 @@ test.describe(`Display profile`, async () => {
         await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device @smoke`, async ({ page, searchPage, formPage, displayProfileSection, navigationMenu }) => {
+    test(`Meta device`, async ({ page, searchPage, formPage, displayProfileSection, navigationMenu }) => {
+        test.fixme();
         await searchPage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);

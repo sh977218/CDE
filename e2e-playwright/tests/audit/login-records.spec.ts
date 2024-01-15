@@ -8,7 +8,7 @@ test.describe(`Login Records`, async () => {
         const now = new Date();
         await navigationMenu.login(user.loginrecorduser.username, user.loginrecorduser.password);
         await navigationMenu.gotoAudit();
-        await auditTab.loginRecordsAudit().click();
+        await auditTab.loginRecords().click();
         const recordTimestamp = await loginRecordAuditPage
             .findLatestLoginRecordByUser(user.loginrecorduser.username)
             .innerText();

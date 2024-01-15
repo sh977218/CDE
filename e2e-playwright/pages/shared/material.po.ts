@@ -15,12 +15,41 @@ export class MaterialPo {
         return this.page.locator('//mat-option[normalize-space() = "' + text + '"]');
     }
 
+    matSpinner() {
+        return this.page.locator(`mat-spinner`);
+    }
+
+    matSortHeader(title: string) {
+        return this.page.locator('.mat-sort-header .mat-sort-header-container', {
+            has: this.page.locator(`.mat-sort-header-content`, {
+                hasText: new RegExp(`^${title}$`),
+            }),
+        });
+    }
+
+    matSortedHeader() {
+        return this.page
+            .locator(`.mat-sort-header-container`, {
+                has: this.page.locator(`.mat-sort-header-arrow[style="transform: translateY(0px); opacity: 1;"]`),
+            })
+            .locator('.mat-sort-header-content');
+    }
+
+    async matSortedIndicator() {
+        const style = await this.matSortedHeader().getAttribute('style');
+        return style === 'transform: translateY(0px);' ? 'asc' : 'desc';
+    }
+
     paginatorNext(): Locator {
         return this.page.locator('//button[contains(@class, "mat-mdc-paginator-navigation-next")]');
     }
 
     paginatorNumberPerPage(): Locator {
         return this.page.locator('mat-paginator mat-select');
+    }
+
+    paginatorRangeLabel() {
+        return this.page.locator(`.mat-mdc-paginator-range-label`);
     }
 
     matArrayLeft() {
@@ -41,6 +70,20 @@ export class MaterialPo {
 
     matDialog() {
         return this.page.locator(`mat-dialog-container`);
+    }
+
+    matDatePicker() {
+        return this.page.locator(`mat-datepicker-toggle`).getByRole(`button`);
+    }
+
+    matDatePickerSelectDay(day: number) {
+        return this.page
+            .locator(`mat-month-view table tbody tr`)
+            .getByRole('gridcell')
+            .getByRole('button')
+            .locator(`span`, {
+                has: this.page.locator(`text="${day}"`),
+            });
     }
 
     async checkAlert(text: string) {

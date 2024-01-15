@@ -37,7 +37,7 @@
     "format": "prettier -w ./{modules,e2e-playwright}/**/*.ts",
     "esfix": "eslint --fix",
     "playwright": "playwright test -c e2e-playwright --project=CDE-e2e",
-    "playwright-debug": "playwright test -c e2e-playwright --project=CDE-debug --headed"
+    "playwright-debug": "playwright test -c e2e-playwright --project=CDE-debug --headed --debug"
   },
   "engines": {
     "node": "16.x",
