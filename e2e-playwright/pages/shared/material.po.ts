@@ -27,17 +27,29 @@ export class MaterialPo {
         });
     }
 
+    private matSortedHeaderContainer() {
+        return this.page.locator(`.mat-sort-header-container`, {
+            has: this.page.locator(`.mat-sort-header-arrow[style="transform: translateY(0px); opacity: 1;"]`),
+        });
+    }
+
     matSortedHeader() {
-        return this.page
-            .locator(`.mat-sort-header-container`, {
-                has: this.page.locator(`.mat-sort-header-arrow[style="transform: translateY(0px); opacity: 1;"]`),
-            })
-            .locator('.mat-sort-header-content');
+        return this.matSortedHeaderContainer().locator('.mat-sort-header-content');
     }
 
     async matSortedIndicator() {
-        const style = await this.matSortedHeader().getAttribute('style');
-        return style === 'transform: translateY(0px);' ? 'asc' : 'desc';
+        const style = await this.matSortedHeaderContainer()
+            .locator(`.mat-sort-header-arrow .mat-sort-header-indicator`)
+            .getAttribute('style');
+        const arrowUp = 'transform: translateY(0px);';
+        const arrowDown = 'transform: translateY(10px);';
+        if (style === arrowUp) {
+            return 'asc';
+        } else if (style === arrowDown) {
+            return 'desc';
+        } else {
+            throw new Error(`Unexpect mat sort indicator.`);
+        }
     }
 
     paginatorNext(): Locator {

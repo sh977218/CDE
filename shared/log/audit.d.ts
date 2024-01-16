@@ -17,19 +17,15 @@ export interface HttpLog {
     url: string;
 }
 
-export interface AuditLog {
-    currentPage: number;
-    ipAddress: string;
+export interface AppLogResponse {
+    logs: AppLog[];
     totalItems: number;
-    fromDate: number;
-    toDate: number;
-    sort: {date: SortOrder};
 }
 
-export interface AuditLogResponse {
-    logs: LogMessage[];
-    sort: {date: SortOrder};
-    totalItems?: number;
+export interface AppLog {
+    date: number;
+    message: string;
+    level: 'debug' | 'info' | 'warning' | 'error';
 }
 
 export interface LogMessage {

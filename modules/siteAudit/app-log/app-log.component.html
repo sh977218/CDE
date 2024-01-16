@@ -1,0 +1,52 @@
+<div class="p-5">
+    <form [formGroup]="searchCriteria" class="flex flex-col md:flex-row" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+            <mat-label>Enter a date range</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate formControlName="start" placeholder="Start date">
+                <input matEndDate formControlName="end" placeholder="End date">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"
+                                   data-testid="app-log-date-picker-toggle"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        <button mat-raised-button type="submit" color="primary">Submit</button>
+    </form>
+    <div class="example-container mat-elevation-z8">
+        <div class="loading-shade"
+             *ngIf="isLoadingResults">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <div class="example-table-container">
+            <table mat-table [dataSource]="dataSource$ | async" class="example-table"
+                   matSort matSortActive="date" matSortDisableClear matSortDirection="desc">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                    <td mat-cell *matCellDef="let row">{{ row.date | date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="level">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Level</th>
+                    <td mat-cell *matCellDef="let row">{{ row.level }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="message">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
+                    <td mat-cell *matCellDef="let row">{{ row.message }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr *matNoDataRow>
+                    <td class="mat-cell" colspan="8">
+                        No results found.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <mat-paginator [length]="resultsLength" [pageSize]="50" [pageSizeOptions]="[25, 50, 100]"
+                       aria-label="Select page of Http Logs"></mat-paginator>
+    </div>
+</div>

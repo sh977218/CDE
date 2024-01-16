@@ -1,34 +1,34 @@
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
-test.describe(`Http log`, async () => {
-    test(`search http log`, async ({ page, homePage, navigationMenu, auditTab, materialPage }) => {
+test.describe(`App log`, async () => {
+    test(`search app log`, async ({ page, homePage, navigationMenu, auditTab, materialPage }) => {
         await homePage.goToHome();
         await navigationMenu.login(user.nlm.username, user.nlm.password);
-        await page.route(`/server/log/httpLogs`, async route => {
+        await page.route(`/server/log/appLogs`, async route => {
             await page.waitForTimeout(5000);
             await route.continue();
         });
 
         await test.step(`Trigger default search on landing`, async () => {
             await navigationMenu.gotoAudit();
+            await auditTab.appLogs().click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 50 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');
         });
 
         await test.step(`Search with date range and ip`, async () => {
-            await page.getByLabel('Filter by IP Address').fill('127');
             await materialPage.matDatePicker().click();
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(28).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 50 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');
@@ -39,7 +39,7 @@ test.describe(`Http log`, async () => {
             await materialPage.matOption('100').click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');
@@ -49,19 +49,19 @@ test.describe(`Http log`, async () => {
             await materialPage.paginatorNext().click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`101 – 200 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');
         });
 
-        await test.step(`Sort 'URL' and resets page to '1' sort direction to 'asc'`, async () => {
-            await materialPage.matSortHeader('URL').click();
+        await test.step(`click sort header 'URL' and resets page to '1' sort direction to 'asc'`, async () => {
+            await materialPage.matSortHeader('Level').click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
-            await test.expect(materialPage.matSortedHeader()).toHaveText('URL');
+            await test.expect(materialPage.matSortedHeader()).toHaveText('Level');
             test.expect(await materialPage.matSortedIndicator()).toContain('asc');
         });
 
@@ -69,18 +69,17 @@ test.describe(`Http log`, async () => {
             await materialPage.paginatorNext().click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`101 – 200 of`);
-            await test.expect(materialPage.matSortedHeader()).toHaveText('URL');
+            await test.expect(materialPage.matSortedHeader()).toHaveText('Level');
             test.expect(await materialPage.matSortedIndicator()).toContain('asc');
         });
 
         await test.step(`Search resets page to '1' and sort header to 'Date'`, async () => {
-            await page.getByLabel('Filter by IP Address').fill('127.0.0.1');
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');

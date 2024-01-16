@@ -8,7 +8,7 @@ import {
 import {establishConnection} from 'server/system/connections';
 import {noDbLogger} from 'server/system/noDbLogger';
 import {UserFull} from 'server/user/userDb';
-import {LogMessage, LoginRecord, HttpLog, HttpLogResponse} from 'shared/log/audit';
+import {LogMessage, LoginRecord, HttpLogResponse, AppLog, AppLogResponse} from 'shared/log/audit';
 import {Cb, CbError, CbError1} from 'shared/models.model';
 
 export interface ClientError {
@@ -24,12 +24,6 @@ export interface ClientError {
 }
 
 export type ClientErrorDocument = Document & ClientError;
-
-export interface ConsoleLog {
-    date: number;
-    message: string;
-    level: 'debug' | 'info' | 'warning' | 'error';
-}
 
 export interface ErrorLog {
     message: string;
@@ -55,7 +49,7 @@ const conn = establishConnection(config.database.log);
 const logModel: Model<Document & LogMessage> = conn.model('DbLogger', logSchema);
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
-const consoleLogModel: Model<Document & ConsoleLog> = conn.model('consoleLogs', consoleLogSchema);
+const consoleLogModel: Model<Document & AppLog> = conn.model('consoleLogs', consoleLogSchema);
 export const loginModel: Model<Document & LoginRecord> = conn.model('logins', loginSchema);
 const userAgent = require('useragent');
 
@@ -151,6 +145,39 @@ export function httpLogs(body: {
 }
 
 
+export function appLogs(body: {
+                             currentPage: number,
+                             pageSize: number,
+                             fromDate: Date,
+                             toDate: Date,
+                             sortBy: string,
+                             sortDir: string
+                         },
+                         callback: CbError1<AppLogResponse>) {
+    let currentPage = body.currentPage || 0;
+    let itemsPerPage = body.pageSize || 50;
+    let sortBy = body.sortBy || 'url';
+    let sortDirection = body.sortDir || 'asc';
+    let toDate = body.toDate || new Date()
+    const skip = currentPage * itemsPerPage;
+    const modal = consoleLogModel.find();
+    if (body.fromDate) {
+        modal.where('date').gte(moment(body.fromDate));
+    }
+    modal.where('date').lte(moment(toDate));
+    modal.clone().count((err, totalItems) => {
+        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+            .limit(itemsPerPage)
+            .skip(skip)
+            .exec((err, logs) => {
+                callback(err, {
+                    logs,
+                    totalItems
+                });
+            });
+    });
+}
+
 export function logError(message: ErrorMessage, callback?: Cb) { // all server errors, express and not
     if (!message.date) {
         message.date = new Date();
@@ -220,31 +247,6 @@ export function logClientError(req: Request, done: Cb) {
         }
         done();
     }));
-}
-
-export function appLogs(body: { currentPage: string, fromDate: number, toDate: number },
-                        callback: CbError1<{ logs: (Document & ConsoleLog)[], totalItems: number }>) {
-    let currentPage = 0;
-    if (body.currentPage) {
-        currentPage = parseInt(body.currentPage, 10);
-    }
-    const itemsPerPage = 50;
-    const skip = currentPage * itemsPerPage;
-    const modal = consoleLogModel.find();
-    if (body.fromDate) {
-        modal.where('date').gte(moment(body.fromDate));
-    }
-    if (body.toDate) {
-        modal.where('date').lte(moment(body.toDate));
-    }
-    consoleLogModel.countDocuments({}, undefined, (err, count) => {
-        modal.sort({date: -1}).limit(itemsPerPage).skip(skip).exec((err, logs) => {
-            callback(err, {
-                logs,
-                totalItems: count
-            });
-        });
-    });
 }
 
 export function getClientErrors(params: { limit: number, skip: number }, callback: CbError1<ClientErrorDocument[]>) {

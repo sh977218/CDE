@@ -14,12 +14,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatNativeDateModule } from '@angular/material/core';
 import { catchError, map, pairwise, startWith, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
-import { HttpLog, HttpLogResponse } from 'shared/log/audit';
+import { AppLog, AppLogResponse } from 'shared/log/audit';
 
 @Component({
-    selector: 'cde-http-log',
-    templateUrl: './http-log.component.html',
-    styleUrls: ['./http-log.component.scss'],
+    selector: 'cde-app-log',
+    templateUrl: './app-log.component.html',
+    styleUrls: ['./app-log.component.scss'],
     imports: [
         DatePipe,
         NgIf,
@@ -40,26 +40,16 @@ import { HttpLog, HttpLogResponse } from 'shared/log/audit';
     ],
     standalone: true,
 })
-export class HttpLogComponent implements AfterViewInit {
+export class AppLogComponent implements AfterViewInit {
     searchCriteria = new FormGroup(
         {
             start: new FormControl<Date | null>(null),
             end: new FormControl<Date | null>(null),
-            filterTerm: new FormControl<string | null>(null),
         },
         { updateOn: 'submit' }
     );
 
-    displayedColumns: string[] = [
-        'date',
-        'httpStatus',
-        'level',
-        'method',
-        'referrer',
-        'remoteAddr',
-        'responseTime',
-        'url',
-    ];
+    displayedColumns: string[] = ['date', 'level', 'message'];
 
     resultsLength = 0;
     isLoadingResults = true;
@@ -67,7 +57,7 @@ export class HttpLogComponent implements AfterViewInit {
     @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
-    dataSource$: Observable<HttpLog[]> = new Observable<HttpLog[]>();
+    dataSource$: Observable<AppLog[]> = new Observable<AppLog[]>();
 
     constructor(private _httpClient: HttpClient) {}
 
@@ -101,13 +91,8 @@ export class HttpLogComponent implements AfterViewInit {
         this.searchCriteria.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     }
 
-    onClear() {
-        this.searchCriteria.get('filterTerm')?.reset('', { emitEvent: false });
-    }
-
     searchLogs() {
         const body = {
-            filterTerm: this.searchCriteria.get('filterTerm')?.value,
             fromDate: this.searchCriteria.get('start')?.value,
             toDate: this.searchCriteria.get('end')?.value,
             sortBy: this.sort.active,
@@ -115,7 +100,7 @@ export class HttpLogComponent implements AfterViewInit {
             currentPage: this.paginator.pageIndex,
             pageSize: this.paginator.pageSize,
         };
-        return this._httpClient.post<HttpLogResponse>('/server/log/httpLogs', body).pipe(
+        return this._httpClient.post<AppLogResponse>('/server/log/appLogs', body).pipe(
             tap({
                 complete: () => (this.isLoadingResults = false),
             }),
