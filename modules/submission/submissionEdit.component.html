@@ -390,8 +390,25 @@
                     </ng-template>
                 </div>
             </label>
+            <label for="licenseDocument">
+                <div id="licenseDocument">Upload Supporting License/Copyright Documentation (optional)</div>
+                <label for="fileLicense" class="fileInput">
+                    <button class="button"
+                            [disabled]="page3.controls.boolLicense.disabled"
+                            (click)="!page3.controls.boolLicense.disabled && openFileDialog('fileLicense')">
+                        Browse
+                    </button>
+                    <div class="borderBox" (click)="openAttachment($event, submission.attachmentLicense)">{{submission.attachmentLicense?.filename}}</div>
+                    <button *ngIf="submission.attachmentLicense?.filename" class="button secondary" type="button" style="margin-left: 8px; margin-right: 0"
+                            [disabled]="page3.controls.boolLicense.disabled"
+                            (click)="deleteAttachment('attachmentLicense')">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </label>
+                <input id="fileLicense" style="display: none" type="file" (change)="attachmentUpload('attachmentLicense', $event)">
+            </label>
             <label for="supporting">
-                <div id="supporting">Upload Supporting Documentation (optional)</div>
+                <div id="supporting">Upload Supporting Other Documentation (optional)</div>
                 <label for="fileSupporting" class="fileInput">
                     <button class="button"
                             [disabled]="page3.controls.boolSupporting.disabled"
@@ -399,6 +416,11 @@
                         Browse
                     </button>
                     <div class="borderBox" (click)="openAttachment($event, submission.attachmentSupporting)">{{submission.attachmentSupporting?.filename}}</div>
+                    <button *ngIf="submission.attachmentSupporting?.filename" class="button secondary" type="button" style="margin-left: 8px; margin-right: 0"
+                            [disabled]="page3.controls.boolSupporting.disabled"
+                            (click)="deleteAttachment('attachmentSupporting')">
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 </label>
                 <input id="fileSupporting" style="display: none" type="file" (change)="attachmentUpload('attachmentSupporting', $event)">
             </label>

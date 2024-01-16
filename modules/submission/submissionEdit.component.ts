@@ -15,6 +15,7 @@ import { orderedSetAdd } from 'shared/array';
 import { SubmissionAttachResponse, VerifySubmissionFileProgress } from 'shared/boundaryInterfaces/API/submission';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
 import { joinCb } from 'shared/callback';
+import { SubmissionAttachmentType } from 'shared/loader/submission';
 import { administrativeStatuses, User } from 'shared/models.model';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
@@ -124,6 +125,7 @@ export class SubmissionEditComponent implements OnDestroy {
         boolWorkbook: FormControl<boolean>;
         boolWorkbookValid: FormControl<boolean>;
         boolWorkbookValidation: FormControl<boolean>;
+        boolLicense: FormControl<boolean>;
         boolSupporting: FormControl<boolean>;
     }>;
     page3Submitted: boolean = false;
@@ -174,9 +176,7 @@ export class SubmissionEditComponent implements OnDestroy {
                         .get<Submission>('/server/submission/' + submissionId)
                         .toPromise()
                         .then((s: Submission) => {
-                            this.submission = s;
-                            this.defaultValues(this.submission);
-                            this.copySubmissionToForm();
+                            this.submissionLoaded(s);
                         }, noop);
                 }
             }
@@ -230,6 +230,7 @@ export class SubmissionEditComponent implements OnDestroy {
                 boolWorkbook: [false, Validators.requiredTrue],
                 boolWorkbookValid: [false, Validators.requiredTrue],
                 boolWorkbookValidation: [false, Validators.requiredTrue],
+                boolLicense: [false],
                 boolSupporting: [false],
             },
             {
@@ -305,7 +306,7 @@ export class SubmissionEditComponent implements OnDestroy {
         this.searchCtrlReviewer.setValue(null);
     }
 
-    attachmentUpload(location: 'attachmentWorkbook' | 'attachmentSupporting', event: Event) {
+    attachmentUpload(location: SubmissionAttachmentType, event: Event) {
         if (!this.submission._id) {
             this.alert.addAlert('error', 'Need to save before attaching');
             return;
@@ -324,14 +325,17 @@ export class SubmissionEditComponent implements OnDestroy {
             formData.append('location', location);
             this.http.post<SubmissionAttachResponse>('/server/submission/attach', formData).subscribe(r => {
                 this.submission[location] = r;
+                if (location === 'attachmentLicense') {
+                    this.page3.controls.boolLicense.setValue(true);
+                }
                 if (location === 'attachmentSupporting') {
                     this.page3.controls.boolSupporting.setValue(true);
                 }
                 if (location === 'attachmentWorkbook') {
                     this.page3.controls.boolWorkbook.setValue(true);
+                    this.validateSubmissionFile();
                 }
                 this.alert.addAlert('success', 'Attachment Saved');
-                this.validateSubmissionFile();
             });
         }
     }
@@ -353,6 +357,7 @@ export class SubmissionEditComponent implements OnDestroy {
         this.page2.patchValue(this.submission);
         this.page3.patchValue(this.submission);
         this.page3.patchValue({
+            boolLicense: !!this.submission.attachmentLicense,
             boolSupporting: !!this.submission.attachmentSupporting,
             boolWorkbook: !!this.submission.attachmentWorkbook,
             boolWorkbookValid: false,
@@ -382,6 +387,12 @@ export class SubmissionEditComponent implements OnDestroy {
         if (!submission.submitterEmail) {
             submission.submitterEmail = this.userService.user?.email || '';
         }
+    }
+
+    deleteAttachment(location: Exclude<SubmissionAttachmentType, 'attachmentWorkbook'>) {
+        this.http.post<Submission>('/server/submission/detach', { id: this.submission._id, location }).subscribe(s => {
+            this.submissionLoaded(s);
+        });
     }
 
     endorse() {
@@ -617,6 +628,12 @@ export class SubmissionEditComponent implements OnDestroy {
         this.page2.controls.submitterNameFirst.setValue(this.userFirstName);
         this.page2.controls.submitterNameMi.setValue('');
         this.page2.controls.submitterNameLast.setValue(this.userLastName);
+    }
+
+    submissionLoaded(s: Submission) {
+        this.submission = s;
+        this.defaultValues(this.submission);
+        this.copySubmissionToForm();
     }
 
     submit() {

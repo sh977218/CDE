@@ -184,8 +184,12 @@
               Collection File
             </label>
             <label>
+              <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.attachmentLicense" (ngModelChange)="showColumns()"/>
+              Supporting License/Copyright Documentation
+            </label>
+            <label>
               <input type="checkbox" class="checkbox" [(ngModel)]="showColumn.attachmentSupporting" (ngModelChange)="showColumns()"/>
-              Supporting Documentation
+              Supporting Other Documentation
             </label>
           </div>
         </div>
@@ -313,8 +317,12 @@
             Collection File
             <ng-container *ngTemplateOutlet="sorter; context: {field: 'attachmentWorkbook'}"></ng-container>
           </div>
+          <div *ngIf="showColumn.attachmentLicense" class="headingRow divButton">
+            Supporting License/Copyright Documentation
+            <ng-container *ngTemplateOutlet="sorter; context: {field: 'attachmentLicense'}"></ng-container>
+          </div>
           <div *ngIf="showColumn.attachmentSupporting" class="headingRow divButton">
-            Supporting Documentation
+            Supporting Other Documentation
             <ng-container *ngTemplateOutlet="sorter; context: {field: 'attachmentSupporting'}"></ng-container>
           </div>
         </div> <!-- sticky top bar -->
@@ -353,6 +361,7 @@
             </div>
             <div *ngIf="showColumn.licenseInformation" class="cell">{{s?.licenseInformation}}</div>
             <div *ngIf="showColumn.attachmentWorkbook" class="cell">{{s.attachmentWorkbook?.filename}}</div>
+            <div *ngIf="showColumn.attachmentLicense" class="cell">{{s.attachmentLicense?.filename}}</div>
             <div *ngIf="showColumn.attachmentSupporting" class="cell">{{s.attachmentSupporting?.filename}}</div>
           </div>
           <ng-container *ngIf="i === openIndex">

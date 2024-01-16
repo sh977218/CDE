@@ -1,9 +1,10 @@
-import { AdministrativeStatus, CurationStatus, ObjectId, RegistrationState, UserRef } from 'shared/models.model';
+import { AdministrativeStatus, CurationStatus, ObjectId, UserRef } from 'shared/models.model';
 
 interface Submission {
     _id: ObjectId;
     additionalInformation?: string;
     administrativeStatus: AdministrativeStatus;
+    attachmentLicense?: SubmissionAttachment;
     attachmentSupporting?: SubmissionAttachment;
     attachmentWorkbook?: SubmissionAttachment;
     collectionUrl: string;

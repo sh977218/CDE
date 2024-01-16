@@ -1,16 +1,19 @@
 import { EventEmitter } from 'events';
 import { Response, Router } from 'express';
+import * as multer from 'multer';
 import {
     canSubmissionReviewMiddleware,
     canSubmissionSubmitMiddleware, loggedInMiddleware
 } from 'server/system/authorization';
 import { config, dbPlugins, ObjectId } from 'server';
 import { removeUnusedAttachment, saveFile } from 'server/attachment/attachmentSvc';
-import * as multer from 'multer';
 import { getFile } from 'server/mongo/mongo/gfs';
 import { respondError } from 'server/errorHandler';
+import { orgByName } from 'server/orgManagement/orgDb';
+import { addNewOrg } from 'server/orgManagement/orgSvc';
 import { processWorkBook, publishItems } from 'server/submission/submissionSvc';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
+import { submissionAttachmentType, SubmissionAttachmentType } from 'shared/loader/submission';
 import { canSubmissionReview, canSubmissionSubmit } from 'shared/security/authorizationShared';
 import { read as readXlsx } from 'xlsx';
 
@@ -23,12 +26,12 @@ export function module() {
         async (req, res): Promise<Response> => {
             const newFile = (req.files as any)[0];
             const _id = req.body.id;
-            const location: 'attachmentWorkbook' | 'attachmentSupporting' = req.body.location;
-            if (!_id || !location || !newFile || !['attachmentWorkbook', 'attachmentSupporting'].includes(location)) {
+            const location: SubmissionAttachmentType = req.body.location;
+            if (!_id || !location || !newFile || !submissionAttachmentType.includes(location)) {
                 return Promise.resolve(res.status(400).send('bad request'));
             }
             const submission = await dbPlugins.submission.byId(_id);
-            const fileId = submission?.[location]?.fileId
+            const fileId = submission?.[location]?.fileId;
             if (fileId) {
                 await removeUnusedAttachment(fileId);
             }
@@ -44,6 +47,21 @@ export function module() {
             return res.send(newSubmission?.[location]);
         }
     );
+
+    router.post('/detach', canSubmissionSubmitMiddleware, async (req, res): Promise<Response> => {
+        const _id = req.body.id;
+        const location: SubmissionAttachmentType = req.body.location;
+        const submission = await dbPlugins.submission.byId(_id);
+        const fileId = submission?.[location]?.fileId;
+        if (fileId) {
+            await removeUnusedAttachment(fileId);
+            const newSubmission = await dbPlugins.submission.updatePropertiesById(_id, {
+                [location]: null,
+            });
+            return res.send(newSubmission);
+        }
+        return res.status(404).send();
+    });
 
     router.get('/', loggedInMiddleware, async (req, res): Promise<Response> => {
         const query: any = {};
@@ -199,15 +217,27 @@ export function module() {
                 }
                 processWorkBook(dbSubmission, readXlsx(data)).then(async report => {
                     await publishItems(dbSubmission, report, req.user);
+                    await createOrg(dbSubmission.name);
                     dbSubmission.administrativeStatus = 'Published';
                     dbSubmission.endorsed = true;
-                    return res.send(await dbPlugins.submission.save(dbSubmission))
+                    return res.send(await dbPlugins.submission.save(dbSubmission));
                 }).catch(err => respondError({req, res})(err));
             });
         });
     });
 
     return router;
+}
+
+async function createOrg(name: string) {
+    const foundOrg = await orgByName(name);
+    if (!foundOrg) {
+        await addNewOrg({
+            cdeStatusValidationRules: [],
+            classifications: [],
+            name,
+        });
+    }
 }
 
 function getWorkbookFile(workbookFileId: string, cb: (file?: Buffer) => void): void {

@@ -30,6 +30,7 @@ interface ShowColumns {
     license: boolean;
     licenseInformation: boolean;
     attachmentWorkbook: boolean;
+    attachmentLicense: boolean;
     attachmentSupporting: boolean;
 }
 type SortFields = keyof ShowColumns | 'default';
@@ -56,6 +57,7 @@ const showColumnsSortProperties: Record<SortFields, keyof Submission> = {
     license: 'licensePublic',
     licenseInformation: 'licenseInformation',
     attachmentWorkbook: 'attachmentWorkbook',
+    attachmentLicense: 'attachmentLicense',
     attachmentSupporting: 'attachmentSupporting',
 };
 const showColumnsAll: Readonly<ShowColumns> = Object.freeze({
@@ -79,6 +81,7 @@ const showColumnsAll: Readonly<ShowColumns> = Object.freeze({
     license: true,
     licenseInformation: true,
     attachmentWorkbook: true,
+    attachmentLicense: true,
     attachmentSupporting: true,
 });
 const showColumnsDefault: Readonly<ShowColumns> = Object.freeze({
@@ -102,6 +105,7 @@ const showColumnsDefault: Readonly<ShowColumns> = Object.freeze({
     license: false,
     licenseInformation: false,
     attachmentWorkbook: false,
+    attachmentLicense: false,
     attachmentSupporting: false,
 });
 const showColumnsNone: Readonly<ShowColumns> = Object.freeze({
@@ -125,6 +129,7 @@ const showColumnsNone: Readonly<ShowColumns> = Object.freeze({
     license: false,
     licenseInformation: false,
     attachmentWorkbook: false,
+    attachmentLicense: false,
     attachmentSupporting: false,
 });
 

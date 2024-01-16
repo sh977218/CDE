@@ -51,9 +51,10 @@ export class SubmissionWorkbookValidationReportService {
         if (!this.report) {
             return Promise.reject();
         }
-        this.report.validationErrors.cover.forEach(errorLog => {
-            this.addCategorizedReportError('Template', errorLog, 'on cover page');
-        });
+        // DO NOT DISPLAY COVER PAGE ERRORS CDE-2654
+        // this.report.validationErrors.cover.forEach(errorLog => {
+        //     this.addCategorizedReportError('Template', errorLog, 'on cover page');
+        // });
         this.report.validationErrors.CDEs.forEach(errorLog => {
             const errorMessageParts = errorLog.split(':');
             const errorRow = errorMessageParts[1];

@@ -364,7 +364,6 @@ export function processWorkBook(submission: Submission, wb: WorkBook, progressRe
         de.nihEndorsed = true;
         de.stewardOrg.name = submission.name;
         de.classification.push({stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]});
-        de.definitions.push({definition: '', tags: []});
         de.registrationState.registrationStatus = submission.registrationStatus;
         de.registrationState.administrativeStatus = submission.administrativeStatus;
         cdeColumnsOrdered.forEach(columnInfo => {
@@ -557,7 +556,7 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
         form.nihEndorsed = true;
         form.stewardOrg.name = submission.name;
         form.designations.push({designation: name});
-        form.definitions.push({definition: '', tags: []});
+        form.definitions.push({definition: 'This is a bundle.', tags: []});
         form.classification.push({stewardOrg: {name: submission.name},  elements: [{elements: [], name: submission.version}]});
         form.registrationState.registrationStatus = submission.registrationStatus;
         form.registrationState.administrativeStatus = submission.administrativeStatus;

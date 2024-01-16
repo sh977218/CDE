@@ -19,6 +19,7 @@ export const submissionSchema = new Schema({
     version:  {type: StringType, required: true},
     endorsed: Boolean,
     administrativeStatus:  {type: StringType, required: true},
+    attachmentLicense: submissionAttachmentSchema,
     attachmentSupporting: submissionAttachmentSchema,
     attachmentWorkbook: submissionAttachmentSchema,
     registrationStatus:  {type: StringType, required: true},

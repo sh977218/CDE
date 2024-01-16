@@ -9,6 +9,7 @@ import { interruptEvent, openUrl } from 'non-core/browser';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/submissionDb';
+import { SubmissionAttachmentType } from 'shared/loader/submission';
 import { administrativeStatuses } from 'shared/models.model';
 import { VerifySubmissionFileProgress } from 'shared/boundaryInterfaces/API/submission';
 import { SubmissionWorkbookValidationReportService } from 'submission/submissionWorkbookValidationReport.service';
@@ -69,6 +70,7 @@ export class SubmissionViewComponent implements OnInit {
         boolWorkbook: FormControl<boolean>;
         boolWorkbookValid: FormControl<boolean>;
         boolWorkbookValidation: FormControl<boolean>;
+        boolLicense: FormControl<boolean>;
         boolSupporting: FormControl<boolean>;
     }>;
     page3Submitted: boolean = false;
@@ -134,6 +136,7 @@ export class SubmissionViewComponent implements OnInit {
             boolWorkbook: controlBoolDisabled,
             boolWorkbookValid: controlBoolDisabled,
             boolWorkbookValidation: controlBoolDisabled,
+            boolLicense: controlBoolDisabled,
             boolSupporting: controlBoolDisabled,
         });
 
@@ -158,7 +161,7 @@ export class SubmissionViewComponent implements OnInit {
     addNlmCurator(event: MatChipInputEvent) {}
     addOrgCurator(event: MatChipInputEvent) {}
     addReviewer(event: MatChipInputEvent) {}
-    attachmentUpload(location: 'attachmentWorkbook' | 'attachmentSupporting', event: Event) {}
+    attachmentUpload(location: SubmissionAttachmentType, event: Event) {}
 
     copySubmissionToForm() {
         this.page1.patchValue(this.submission);

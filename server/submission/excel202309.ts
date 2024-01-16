@@ -1,6 +1,6 @@
 import { arrayMismatch, ColumnInformation, valueAsString, valueToArray } from 'server/submission/submissionShared';
 import { DataType, fixDatatype, valueDomain } from 'shared/de/dataElement.model';
-import { PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
+import { PermissibleValueCodeSystem, permissibleValueCodeSystems, ReferenceDocument } from 'shared/models.model';
 
 export const cdeColumnsOrdered: ColumnInformation[] = [];
 export const cdeColumns: Record<string, ColumnInformation> = {
@@ -71,9 +71,9 @@ export const cdeColumns: Record<string, ColumnInformation> = {
         value: null,
         setValue: (withError, de, v) => {
             if (!de.definitions) {
-                de.definitions = []
+                de.definitions = [];
             }
-            de.definitions.push({definition: valueAsString(v), tags: []});
+            de.definitions.push({definition: valueAsString(v) || ' ', tags: []});
         },
     },
     'Preferred Question Text': {
@@ -82,9 +82,9 @@ export const cdeColumns: Record<string, ColumnInformation> = {
         value: null,
         setValue: (withError, de, v) => {
             if (!de.designations) {
-                de.designations = []
+                de.designations = [];
             }
-            de.designations.push({designation: valueAsString(v), tags: ['Preferred Question Text']});
+            de.designations.push({designation: valueAsString(v) || ' ', tags: ['Preferred Question Text']});
         },
     },
     'Unit of Measure': {
@@ -388,7 +388,14 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!val) {
                 return;
             }
-            de.referenceDocuments = valueToArray(val).map(s => ({text: s}));
+            de.referenceDocuments = valueToArray(val).map(s => {
+                const ref: ReferenceDocument = {document: s};
+                const url = s.toLowerCase().split(' ').filter(w => w.startsWith('http'))[0];
+                if (url) {
+                    ref.uri = url;
+                }
+                return ref;
+            });
         }
     },
     'Keywords/Tags': {
