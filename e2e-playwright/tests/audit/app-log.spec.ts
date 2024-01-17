@@ -9,20 +9,12 @@ test.describe(`App log`, async () => {
             await page.waitForTimeout(5000);
             await route.continue();
         });
-
-        await test.step(`Trigger default search on landing`, async () => {
-            await navigationMenu.gotoAudit();
-            await auditTab.appLogs().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
-            await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 50 of`);
-            await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
-            test.expect(await materialPage.matSortedIndicator()).toContain('desc');
-        });
+        await navigationMenu.gotoAudit();
+        await auditTab.appLogs().click();
+        await test.expect(page.locator(`cde-app-log table tbody tr`)).toHaveCount(0);
 
         await test.step(`Search with date range and ip`, async () => {
-            await materialPage.matDatePicker().click();
+            await materialPage.matDatePicker(page.locator(`[data-testid="app-log-date-picker-toggle"]`)).click();
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(28).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
@@ -81,8 +73,8 @@ test.describe(`App log`, async () => {
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
-            await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
-            test.expect(await materialPage.matSortedIndicator()).toContain('desc');
+            await test.expect(materialPage.matSortedHeader()).toHaveText('Level');
+            test.expect(await materialPage.matSortedIndicator()).toContain('asc');
         });
     });
 });

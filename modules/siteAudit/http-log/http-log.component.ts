@@ -9,10 +9,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSort, MatSortHeader, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatNativeDateModule } from '@angular/material/core';
-import { catchError, map, pairwise, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+    catchError,
+    debounceTime,
+    distinctUntilChanged,
+    map,
+    pairwise,
+    startWith,
+    switchMap,
+    tap,
+} from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { HttpLog, HttpLogResponse } from 'shared/log/audit';
 
@@ -62,7 +71,7 @@ export class HttpLogComponent implements AfterViewInit {
     ];
 
     resultsLength = 0;
-    isLoadingResults = true;
+    isLoadingResults = false;
 
     @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort!: MatSort;
@@ -74,26 +83,22 @@ export class HttpLogComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
         this.dataSource$ = merge(
+            this.sort.sortChange,
+            this.paginator.page,
             this.searchCriteria.valueChanges.pipe(
+                debounceTime(150),
+                distinctUntilChanged(),
                 startWith(null),
                 pairwise(),
                 tap({
-                    next: () => {
-                        this.paginator.firstPage();
-                        this.sort.sort({ id: '', start: 'desc', disableClear: false });
-                        this.sort.sort({ id: 'date', start: 'desc', disableClear: false });
-                        (this.sort.sortables.get('date') as MatSortHeader)._setAnimationTransitionState({
-                            toState: 'active',
-                        });
-                    },
+                    next: () => this.paginator.firstPage(),
                 })
-            ),
-            this.paginator.page,
-            this.sort.sortChange
+            )
         ).pipe(
             tap({ next: () => (this.isLoadingResults = true) }),
-            startWith({}),
-            switchMap(() => this.searchLogs())
+            switchMap(res => {
+                return this.searchLogs();
+            })
         );
     }
 

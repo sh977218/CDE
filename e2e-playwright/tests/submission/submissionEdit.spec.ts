@@ -9,6 +9,7 @@ function bannerErrorMessage(text: string) {
 }
 
 test.describe.configure({ retries: 0 }); // no retries for edits
+test.use({ video: 'on', trace: 'on' });
 
 test.describe(`Submission Edit`, async () => {
     test.beforeEach(async ({ page, homePage, navigationMenu, submissionManagePage }) => {

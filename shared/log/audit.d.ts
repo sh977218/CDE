@@ -28,6 +28,12 @@ export interface AppLog {
     level: 'debug' | 'info' | 'warning' | 'error';
 }
 
+export interface DailyUsage {
+    _id: { ip: string, year: number, month: number, day: number };
+    latest: string;
+    hits: number
+}
+
 export interface LogMessage {
     date: number;
     remoteAddr: string;

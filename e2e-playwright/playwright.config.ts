@@ -52,7 +52,7 @@ const config: PlaywrightTestConfig = defineConfig({
             fullyParallel: true,
         },
         {
-            name: 'CDE-debug',
+            name: 'CDE-smokeTest',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
             grep: [/@smoke/, /@debug/],
             fullyParallel: true,

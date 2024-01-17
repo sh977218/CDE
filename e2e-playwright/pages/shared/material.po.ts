@@ -84,8 +84,8 @@ export class MaterialPo {
         return this.page.locator(`mat-dialog-container`);
     }
 
-    matDatePicker() {
-        return this.page.locator(`mat-datepicker-toggle`).getByRole(`button`);
+    matDatePicker(datePickerToggleLocator: Locator) {
+        return datePickerToggleLocator.getByRole(`button`);
     }
 
     matDatePickerSelectDay(day: number) {

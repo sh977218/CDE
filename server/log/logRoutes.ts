@@ -1,11 +1,17 @@
-import { RequestHandler, Router } from 'express';
-import { handleError, handleNotFound } from 'server/errorHandler';
+import {RequestHandler, Router} from 'express';
+import {handleError, handleNotFound} from 'server/errorHandler';
 import {
-    appLogs, getClientErrors, getClientErrorsNumber, getServerErrors, getServerErrorsNumber, httpLogs, logClientError,
-    usageByDay
+    appLogs,
+    getClientErrors,
+    getClientErrorsNumber,
+    getServerErrors,
+    getServerErrorsNumber,
+    httpLogs,
+    logClientError,
+    usageByDay,
 } from 'server/log/dbLogger';
-import { is, parse } from 'useragent';
-import { userModel } from 'server/user/userDb';
+import {is, parse} from 'useragent';
+import {userModel} from 'server/user/userDb';
 
 export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
     const router = Router();
@@ -18,8 +24,9 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
         appLogs(req.body, handleError({req, res}, result => res.send(result)));
     });
 
-    router.get('/dailyUsageReportLogs', roleConfig.superLog, (req, res) => {
-        usageByDay(handleError({req, res}, result => res.send(result)));
+    router.get('/dailyUsageReportLogs/:numberOfDays', roleConfig.superLog, (req, res) => {
+        const numberOfDays = parseInt(req.params.numberOfDays) || 3;
+        usageByDay(numberOfDays, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {

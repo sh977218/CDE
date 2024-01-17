@@ -8,7 +8,7 @@ import {
 import {establishConnection} from 'server/system/connections';
 import {noDbLogger} from 'server/system/noDbLogger';
 import {UserFull} from 'server/user/userDb';
-import {LogMessage, LoginRecord, HttpLogResponse, AppLog, AppLogResponse} from 'shared/log/audit';
+import {LogMessage, LoginRecord, HttpLogResponse, AppLog, AppLogResponse, DailyUsage} from 'shared/log/audit';
 import {Cb, CbError, CbError1} from 'shared/models.model';
 
 export interface ClientError {
@@ -302,15 +302,9 @@ export function getServerErrorsNumber(user: UserFull, callback: (error: Error | 
     logErrorModel.countDocuments(condition).exec(callback);
 }
 
-interface LogAggregate {
-    _id: { ip: string, year: number, month: number, dayOfMonth: number };
-    number: number;
-    latest: number;
-}
-
-export function usageByDay(callback: CbError1<LogAggregate[]>) {
+export function usageByDay(numberOfDays: number = 3, callback: CbError1<DailyUsage[]>) {
     const d = new Date();
-    d.setDate(d.getDate() - 3);
+    d.setDate(d.getDate() - numberOfDays);
     //noinspection JSDuplicatedDeclaration
     logModel.aggregate([
         {$match: {$and: [{date: {$exists: true}}, {date: {$gte: d}}]}},
@@ -320,8 +314,8 @@ export function usageByDay(callback: CbError1<LogAggregate[]>) {
                     ip: '$remoteAddr',
                     year: {$year: '$date'},
                     month: {$month: '$date'},
-                    dayOfMonth: {$dayOfMonth: '$date'}
-                } as any, number: {$sum: 1}, latest: {$max: '$date'}
+                    day: {$dayOfMonth: '$date'}
+                } as any, hits: {$sum: 1}, latestDate: {$max: '$date'}
             }
         }], callback);
 }

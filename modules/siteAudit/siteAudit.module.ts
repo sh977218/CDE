@@ -17,13 +17,13 @@ import { LoginRecordComponent } from 'siteAudit/loginRecords/loginRecord.compone
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
 import { ClientErrorsComponent } from 'siteAudit/clientErrors/clientErrors.component';
-import { DailyUsageComponent } from 'siteAudit/dailyUsage/dailyUsage.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
 import { ServerErrorsComponent } from 'siteAudit/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 import { HttpLogComponent } from './http-log/http-log.component';
 import { AppLogComponent } from './app-log/app-log.component';
+import { DailyUsageComponent } from './daily-usage/daily-usage.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -46,6 +46,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         MatDialogModule,
         HttpLogComponent,
         AppLogComponent,
+        DailyUsageComponent,
     ],
     declarations: [
         ActiveBansComponent,
@@ -53,7 +54,6 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         ClassificationAuditLogComponent,
         ClientErrorsComponent,
         ClientErrorDetailModalComponent,
-        DailyUsageComponent,
         DataElementLogComponent,
         FormLogComponent,
         LoginRecordComponent,

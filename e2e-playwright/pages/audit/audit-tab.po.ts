@@ -14,8 +14,8 @@ export class AuditTabPo {
     appLogs(): Locator {
         return this.page.getByRole(`tab`, { name: 'App Logs', exact: true });
     }
-    usage(): Locator {
-        return this.page.getByRole(`tab`, { name: 'Usage', exact: true });
+    dailyUsage(): Locator {
+        return this.page.getByRole(`tab`, { name: 'Daily Usage', exact: true });
     }
     cdeAuditLog(): Locator {
         return this.page.getByRole(`tab`, { name: 'CDE Audit Log', exact: true });

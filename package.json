@@ -37,7 +37,8 @@
     "format": "prettier -w ./{modules,e2e-playwright}/**/*.ts",
     "esfix": "eslint --fix",
     "playwright": "playwright test -c e2e-playwright --project=CDE-e2e",
-    "playwright-debug": "playwright test -c e2e-playwright --project=CDE-debug --headed --debug"
+    "playwright:smokeTest": "playwright test -c e2e-playwright --project=CDE-smokeTest --headed",
+    "playwright:smokeTest:debug": "playwright test -c e2e-playwright --project=CDE-smokeTest --headed --debug"
   },
   "engines": {
     "node": "16.x",
@@ -187,6 +188,7 @@
     "@types/cron": "^1.7.2",
     "@types/csurf": "^1.11.2",
     "@types/deep-diff": "0.0.31",
+    "date-fns": "^1.30.1",
     "@types/diff-match-patch": "^1.0.32",
     "@types/ejs": "^3.0.4",
     "@types/express-http-proxy": "^1.6.3",

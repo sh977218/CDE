@@ -3,12 +3,12 @@ import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
 
 export class NavigationMenuPo {
-    protected page: Page;
-    protected matPage: MaterialPo;
+    protected readonly page: Page;
+    protected readonly materialPage: MaterialPo;
 
-    constructor(page: Page) {
+    constructor(page: Page, materialPage: MaterialPo) {
         this.page = page;
-        this.matPage = new MaterialPo(page);
+        this.materialPage = materialPage;
     }
 
     shutdownBanner() {
@@ -78,7 +78,7 @@ export class NavigationMenuPo {
 
     async gotoSubmissions() {
         await this.page.locator('#createEltLink').click();
-        await this.matPage.matMenuItem('Collection').click();
+        await this.materialPage.matMenuItem('Collection').click();
     }
 
     async gotoArticle() {

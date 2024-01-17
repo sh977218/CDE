@@ -61,7 +61,7 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
         await fs.writeFile(nycOutput, coverage);
     } else {
         // API testing don't output coverage
-        const isDebug = testInfo.project.name === 'CDE-debug';
+        const isDebug = testInfo.project.name === 'CDE-smokeTest';
         const isApiTesting = testInfo.titlePath.filter(t => t.includes('API') || t.includes('api')).length > 0;
         if (isDebug || isApiTesting) {
             console.info(`No coverage needed for debug or api testing: ${testInfo.titlePath.join(' -> ')}`);
@@ -103,6 +103,9 @@ const test = baseTest.extend<{
     submissionEditPage: SubmissionEditPo;
     submissionManagePage: SubmissionManagePo;
 }>({
+    materialPage: async ({ page }, use) => {
+        await use(new MaterialPo(page));
+    },
     homePage: async ({ page }, use) => {
         await use(new HomePagePo(page));
     },
@@ -148,8 +151,8 @@ const test = baseTest.extend<{
     aioTocViewMenu: async ({ page }, use) => {
         await use(new AioTocViewMenuPo(page));
     },
-    navigationMenu: async ({ page }, use) => {
-        await use(new NavigationMenuPo(page));
+    navigationMenu: async ({ page, materialPage }, use) => {
+        await use(new NavigationMenuPo(page, materialPage));
     },
     searchPage: async ({ page }, use) => {
         await use(new SearchPagePo(page));
@@ -177,9 +180,6 @@ const test = baseTest.extend<{
     },
     manageOrganizationsPage: async ({ page }, use) => {
         await use(new ManageOrganizationsPo(page));
-    },
-    materialPage: async ({ page }, use) => {
-        await use(new MaterialPo(page));
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
