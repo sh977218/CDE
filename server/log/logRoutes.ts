@@ -4,10 +4,9 @@ import {
     appLogs,
     getClientErrors,
     getClientErrorsNumber,
-    getServerErrors,
     getServerErrorsNumber,
     httpLogs,
-    logClientError,
+    logClientError, serverErrors,
     usageByDay,
 } from 'server/log/dbLogger';
 import {is, parse} from 'useragent';
@@ -30,7 +29,7 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        getServerErrors(req.body, handleError({req, res}, result => {
+        serverErrors(req.body, handleError({req, res}, result => {
             res.send(result);
             userModel.findOneAndUpdate(
                 {username: req.user.username},

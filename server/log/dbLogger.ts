@@ -8,7 +8,15 @@ import {
 import {establishConnection} from 'server/system/connections';
 import {noDbLogger} from 'server/system/noDbLogger';
 import {UserFull} from 'server/user/userDb';
-import {LogMessage, LoginRecord, HttpLogResponse, AppLog, AppLogResponse, DailyUsage} from 'shared/log/audit';
+import {
+    LogMessage,
+    LoginRecord,
+    HttpLogResponse,
+    AppLog,
+    AppLogResponse,
+    DailyUsage,
+    ServerErrorResponse
+} from 'shared/log/audit';
 import {Cb, CbError, CbError1} from 'shared/models.model';
 
 export interface ClientError {
@@ -45,13 +53,13 @@ export interface ErrorLog {
 }
 
 const moment = require('moment');
+const userAgent = require('useragent');
 const conn = establishConnection(config.database.log);
 const logModel: Model<Document & LogMessage> = conn.model('DbLogger', logSchema);
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
 const consoleLogModel: Model<Document & AppLog> = conn.model('consoleLogs', consoleLogSchema);
 export const loginModel: Model<Document & LoginRecord> = conn.model('logins', loginSchema);
-const userAgent = require('useragent');
 
 export function consoleLog(message: string, level: 'debug' | 'error' | 'info' | 'warning' = 'debug') {
     // no express errors see dbLogger.log(message)
@@ -105,7 +113,6 @@ interface ErrorMessage {
     stack?: string;
 }
 
-
 export function httpLogs(body: {
                              filterTerm: string,
                              currentPage: number,
@@ -144,16 +151,15 @@ export function httpLogs(body: {
     });
 }
 
-
 export function appLogs(body: {
-                             currentPage: number,
-                             pageSize: number,
-                             fromDate: Date,
-                             toDate: Date,
-                             sortBy: string,
-                             sortDir: string
-                         },
-                         callback: CbError1<AppLogResponse>) {
+                            currentPage: number,
+                            pageSize: number,
+                            fromDate: Date,
+                            toDate: Date,
+                            sortBy: string,
+                            sortDir: string
+                        },
+                        callback: CbError1<AppLogResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
@@ -165,6 +171,43 @@ export function appLogs(body: {
         modal.where('date').gte(moment(body.fromDate));
     }
     modal.where('date').lte(moment(toDate));
+    modal.clone().count((err, totalItems) => {
+        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+            .limit(itemsPerPage)
+            .skip(skip)
+            .exec((err, logs) => {
+                callback(err, {
+                    logs,
+                    totalItems
+                });
+            });
+    });
+}
+
+export function serverErrors(body: {
+                                 includeBadInput: boolean,
+                                 currentPage: number,
+                                 pageSize: number,
+                                 sortBy: string,
+                                 sortDir: string
+                             },
+                             callback: CbError1<ServerErrorResponse>) {
+    let currentPage = body.currentPage || 0;
+    let itemsPerPage = body.pageSize || 50;
+    let sortBy = body.sortBy || 'date';
+    let sortDirection = body.sortDir || 'asc';
+    const skip = currentPage * itemsPerPage;
+    const condition: {
+        [key in string]: {
+            [key in string]: boolean
+        }
+    } = {
+        badInput: {$ne: true}
+    };
+    if (body.includeBadInput) {
+        delete condition.badInput;
+    }
+    const modal = logErrorModel.find(condition);
     modal.clone().count((err, totalItems) => {
         modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
             .limit(itemsPerPage)
@@ -263,36 +306,6 @@ export function getClientErrorsNumber(user: UserFull, callback: (error: Error | 
         ? {date: {$gt: user.notificationDate.clientLogDate}}
         : {};
     clientErrorModel.countDocuments(condition).exec(callback);
-}
-
-export function getServerErrors(params: { limit: number, skip: number, badInput: boolean, excludeOrigin: string[] },
-                                callback: CbError1<(Document & ErrorMessage)[]>) {
-    if (!params.limit) {
-        params.limit = 20;
-    }
-    if (!params.skip) {
-        params.skip = 0;
-    }
-    if (!params.badInput) {
-        params.badInput = false;
-    }
-    const filter: any = {
-        badInput: {
-            $ne: true
-        }
-    };
-    if (params.badInput) {
-        delete filter.badInput;
-    }
-    if (params.excludeOrigin && params.excludeOrigin.length > 0) {
-        filter.origin = {$nin: params.excludeOrigin};
-    }
-    logErrorModel
-        .find(filter)
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
 }
 
 export function getServerErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {

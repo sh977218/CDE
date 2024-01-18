@@ -19,11 +19,11 @@ import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-e
 import { ClientErrorsComponent } from 'siteAudit/clientErrors/clientErrors.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
-import { ServerErrorsComponent } from 'siteAudit/serverErrors/serverErrors.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 import { HttpLogComponent } from './http-log/http-log.component';
 import { AppLogComponent } from './app-log/app-log.component';
 import { DailyUsageComponent } from './daily-usage/daily-usage.component';
+import { ServerErrorComponent } from './server-error/server-error.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -47,6 +47,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         HttpLogComponent,
         AppLogComponent,
         DailyUsageComponent,
+        ServerErrorComponent,
     ],
     declarations: [
         ActiveBansComponent,
@@ -57,7 +58,6 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         DataElementLogComponent,
         FormLogComponent,
         LoginRecordComponent,
-        ServerErrorsComponent,
         SiteAuditComponent,
     ],
     exports: [RouterModule],

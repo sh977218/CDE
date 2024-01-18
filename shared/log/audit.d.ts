@@ -34,6 +34,19 @@ export interface DailyUsage {
     hits: number
 }
 
+export interface ServerErrorResponse{
+    logs: ServerError[];
+    totalItems: number;
+}
+
+export interface ServerError {
+    message: string;
+    origin: string;
+    stack: string;
+    details: string;
+    date: string;
+}
+
 export interface LogMessage {
     date: number;
     remoteAddr: string;
