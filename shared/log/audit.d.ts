@@ -66,18 +66,13 @@ export interface ClientErrorExtraInfo {
     url: string;
 }
 
-export interface LogMessage {
-    date: number;
-    remoteAddr: string;
-    level: string;
-    url: string;
-    method: string;
-    httpStatus: string;
-    referrer: string;
+export interface LoginRecordResponse {
+    logs: LoginRecord[];
+    totalItems: number;
 }
 
 export interface LoginRecord {
-    date: Date,
+    date: string,
     user: string,
     email?: string,
     ip: string,

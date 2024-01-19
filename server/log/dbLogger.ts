@@ -9,14 +9,15 @@ import {establishConnection} from 'server/system/connections';
 import {noDbLogger} from 'server/system/noDbLogger';
 import {UserFull} from 'server/user/userDb';
 import {
-    LogMessage,
-    LoginRecord,
+    HttpLog,
     HttpLogResponse,
     AppLog,
     AppLogResponse,
     DailyUsage,
     ServerErrorResponse,
-    ClientError, ClientErrorResponse
+    ClientError,
+    ClientErrorResponse,
+    LoginRecord
 } from 'shared/log/audit';
 import {Cb, CbError, CbError1} from 'shared/models.model';
 
@@ -44,7 +45,7 @@ export interface ErrorLog {
 const moment = require('moment');
 const userAgent = require('useragent');
 const conn = establishConnection(config.database.log);
-const logModel: Model<Document & LogMessage> = conn.model('DbLogger', logSchema);
+const logModel: Model<Document & HttpLog> = conn.model('DbLogger', logSchema);
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
 const consoleLogModel: Model<Document & AppLog> = conn.model('consoleLogs', consoleLogSchema);
@@ -244,6 +245,26 @@ export function clientErrors(body: {
     });
 }
 
+export async function loginRecord(body: {
+    currentPage: number,
+    pageSize: number,
+    sortBy: string,
+    sortDir: string
+}) {
+    let currentPage = body.currentPage || 0;
+    let itemsPerPage = body.pageSize || 50;
+    let sortBy = body.sortBy || 'url';
+    let sortDirection = body.sortDir || 'asc';
+    const skip = currentPage * itemsPerPage;
+    const modal = loginModel.find();
+    const totalItems = await modal.clone().count();
+    const logs = await modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        .limit(itemsPerPage)
+        .skip(skip)
+        .exec();
+    return {logs, totalItems}
+}
+
 export function logError(message: ErrorMessage, callback?: Cb) { // all server errors, express and not
     if (!message.date) {
         message.date = new Date();
@@ -342,9 +363,5 @@ export function usageByDay(numberOfDays: number = 3, callback: CbError1<DailyUsa
 
 export function recordUserLogin(user: UserFull, ip: string) {
     new loginModel({user: user.username, email: user.email, ip}).save();
-}
-
-export function getUserLoginRecords(params: { page: number }) {
-    return loginModel.find({}).sort('-date').skip(params.page * 50).limit(50);
 }
 

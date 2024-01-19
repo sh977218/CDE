@@ -6,10 +6,13 @@ import {
     getClientErrorsNumber,
     getServerErrorsNumber,
     httpLogs,
-    logClientError, serverErrors,
+    logClientError,
+    loginRecord,
+    serverErrors,
     usageByDay,
 } from 'server/log/dbLogger';
 import {userModel} from 'server/user/userDb';
+import {isSiteAdminMiddleware} from "../system/authorization";
 
 export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
     const router = Router();
@@ -45,6 +48,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
                 {$set: {'notificationDate.clientLogDate': new Date()}},
                 {}).exec();
         }));
+    });
+
+    router.post('/loginRecords', isSiteAdminMiddleware, async (req, res) => {
+        res.send(await loginRecord(req.body));
     });
 
     router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {

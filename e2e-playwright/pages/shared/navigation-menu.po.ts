@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
 
@@ -9,6 +9,37 @@ export class NavigationMenuPo {
     constructor(page: Page, materialPage: MaterialPo) {
         this.page = page;
         this.materialPage = materialPage;
+    }
+
+    private clickUntilMenuShows(buttonLocator: Locator) {
+        return new Promise<void>(async (resolve, reject) => {
+            await buttonLocator.hover();
+            const buttonText = await buttonLocator.innerText();
+            this.materialPage
+                .matMenuContent()
+                .waitFor()
+                .then(() => {
+                    console.info(`hovered ${buttonText} and menu shows. Continue...`);
+                    resolve();
+                })
+                .catch(async () => {
+                    console.info(`hovered ${buttonText} and menu is not showing. Try click it...`);
+                    await buttonLocator.click();
+                    this.materialPage
+                        .matMenuContent()
+                        .waitFor()
+                        .then(() => {
+                            console.info(`clicked ${buttonText} and menu shows. Continue...`);
+                            resolve();
+                        })
+                        .catch(async e => {
+                            console.info(
+                                `clicked ${buttonText} and menu is still not showing. Something wrong. Throwing error`
+                            );
+                            reject(`${buttonText} hovered and clicked, but not trigger the menu`);
+                        });
+                });
+        });
     }
 
     shutdownBanner() {
@@ -49,7 +80,7 @@ export class NavigationMenuPo {
     }
 
     async gotoSettings() {
-        await this.page.getByTestId('logged-in-username').click();
+        await this.clickUntilMenuShows(this.page.getByTestId('logged-in-username'));
         await this.page.getByTestId('user_settings').click();
         await this.page.waitForURL(/\/settings/);
         await this.page.waitForSelector('cde-profile', { state: 'visible' });
@@ -62,14 +93,14 @@ export class NavigationMenuPo {
     }
 
     async gotoClassification() {
-        await this.page.getByTestId('logged-in-username').click();
+        await this.clickUntilMenuShows(this.page.getByTestId('logged-in-username'));
         await this.page.getByTestId('user_classification').click();
         await this.page.waitForURL(/\/classificationManagement/);
         await this.page.getByText('Manage Classifications').isVisible();
     }
 
     async gotoAudit() {
-        await this.page.getByTestId('logged-in-username').click();
+        await this.clickUntilMenuShows(this.page.getByTestId('logged-in-username'));
         await this.page.getByTestId('user_audit').click();
         await this.page.waitForURL(/\/siteAudit/);
         await this.page
@@ -80,7 +111,7 @@ export class NavigationMenuPo {
     }
 
     async logout() {
-        await this.page.getByTestId('logged-in-username').click();
+        await this.clickUntilMenuShows(this.page.getByTestId('logged-in-username'));
         await this.page.getByTestId('user_logout').click();
         await this.page.waitForURL(/\/login/);
         await this.page.getByText('Our sign in process has changed.').isVisible();
@@ -93,7 +124,7 @@ export class NavigationMenuPo {
     }
 
     async gotoSubmissions() {
-        await this.page.locator('#createEltLink').click();
+        await this.clickUntilMenuShows(this.page.locator('#createEltLink'));
         await this.materialPage.matMenuItem('Collection').click();
         await this.page.waitForURL(/\/collection/);
     }

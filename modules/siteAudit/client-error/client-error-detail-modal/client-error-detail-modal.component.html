@@ -1,4 +1,27 @@
 <h1 mat-dialog-title="">Error Details</h1>
 <mat-dialog-content>
-    {{ stack | json }}
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Parsed Error Stack</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-list role="list">
+                <mat-list-item role="listitem">
+                    {{errorMessage}}
+                </mat-list-item>
+                <mat-list-item role="listitem" class="ml-10" *ngFor="let stack of stacks">
+                    at: {{ stack.methodName }}({{ stack.arguments }}) in {{ stack.file }}
+                    line: {{ stack.lineNumber }} {{ stack.column }}
+                </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+    </mat-card>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Original Error</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            {{data}}
+        </mat-card-content>
+    </mat-card>
 </mat-dialog-content>

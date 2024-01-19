@@ -147,6 +147,6 @@ export class ClientErrorComponent implements AfterViewInit {
     }
 
     openErrorDetailModal(message: string) {
-        this.dialog.open(ClientErrorDetailModalComponent, { width: '800px', data: message || '' });
+        this.dialog.open(ClientErrorDetailModalComponent, { data: message || '' });
     }
 }

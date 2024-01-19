@@ -7,6 +7,10 @@ export class MaterialPo {
         this.page = page;
     }
 
+    matMenuContent() {
+        return this.page.locator(`.mat-mdc-menu-content`);
+    }
+
     matMenuItem(text: string): Locator {
         return this.page.getByRole('menuitem', { name: text, exact: true });
     }

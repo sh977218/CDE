@@ -8,6 +8,12 @@ export class LoginRecordsAuditPagePo {
     }
 
     findLatestLoginRecordByUser(username: string): Locator {
-        return this.page.locator(`tr:has-text("${username}")`).first().locator(`td`).last();
+        return this.page
+            .locator(`cde-login-record table tbody tr`, {
+                has: this.page.locator('td', { hasText: username }),
+            })
+            .first()
+            .locator(`td`)
+            .first();
     }
 }

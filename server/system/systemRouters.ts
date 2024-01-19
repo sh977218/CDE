@@ -19,7 +19,7 @@ import {
     createIdSource, deleteIdSource, getAllIdSources, isSourceById, updateIdSource
 } from 'server/system/idSourceSvc';
 import { version } from 'server/version';
-import { consoleLog, loginModel, getUserLoginRecords } from 'server/log/dbLogger';
+import { consoleLog, loginModel } from 'server/log/dbLogger';
 import {
     ItemDocument, jobStatus, removeJobStatus, updateJobStatus
 } from 'server/system/mongo-data';
@@ -327,10 +327,6 @@ export function module() {
             await elt.save();
         }
         res.send();
-    });
-
-    router.post('/loginRecords', isSiteAdminMiddleware, async (req, res) => {
-        res.send(await getUserLoginRecords(req.body));
     });
 
     // drafts
