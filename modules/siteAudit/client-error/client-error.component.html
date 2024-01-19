@@ -1,0 +1,60 @@
+<div class="p-5">
+    <form [formGroup]="searchCriteria" (ngSubmit)="onSubmit()">
+        <mat-checkbox formControlName="chrome" data-testid="include-chrome-checkbox">Chrome</mat-checkbox>
+        <mat-checkbox formControlName="firefox" data-testid="include-firefox-checkbox">firefox</mat-checkbox>
+        <mat-checkbox formControlName="ie" data-testid="include-ie-checkbox">IE</mat-checkbox>
+        <mat-checkbox formControlName="safari" data-testid="include-edge-checkbox">Safari</mat-checkbox>
+        <button mat-raised-button type="submit" color="primary">Search</button>
+    </form>
+    <div class="example-container mat-elevation-z8">
+        <div class="loading-shade"
+             *ngIf="isLoadingResults">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <div class="example-table-container">
+            <table mat-table [dataSource]="dataSource$ |async" class="example-table"
+                   matSort matSortActive="date" matSortDisableClear matSortDirection="desc">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Date</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.date |date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="userAgent">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>User Agent</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.userAgent }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="username">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Username</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.username }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="ip">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> IP</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.ip }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="stack">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Stack</th>
+                    <td mat-cell *matCellDef="let row" (click)="openErrorDetailModal(row.stack)"> {{ row.stack }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="url">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> URL</th>
+                    <td mat-cell *matCellDef="let row" (click)="openErrorDetailModal(row.url)"> {{ row.url }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr *matNoDataRow>
+                    <td class="mat-cell" colspan="8">
+                        No results found.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <mat-paginator [length]="resultsLength" [pageSize]="50" [pageSizeOptions]="[10,50,100]"
+                       aria-label="Select page of Http Logs"></mat-paginator>
+    </div>
+</div>

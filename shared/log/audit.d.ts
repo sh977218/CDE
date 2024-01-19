@@ -34,7 +34,7 @@ export interface DailyUsage {
     hits: number
 }
 
-export interface ServerErrorResponse{
+export interface ServerErrorResponse {
     logs: ServerError[];
     totalItems: number;
 }
@@ -45,6 +45,25 @@ export interface ServerError {
     stack: string;
     details: string;
     date: string;
+}
+
+export interface ClientErrorResponse {
+    logs: ClientError[];
+    totalItems: number;
+}
+
+export interface ClientError {
+    date?: string;
+    message: string;
+    url: string;
+    userAgent?: string;
+    username?: string;
+    ip?: string;
+}
+
+export interface ClientErrorExtraInfo {
+    stack: string;
+    url: string;
 }
 
 export interface LogMessage {

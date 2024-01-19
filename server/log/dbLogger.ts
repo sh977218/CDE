@@ -15,21 +15,10 @@ import {
     AppLog,
     AppLogResponse,
     DailyUsage,
-    ServerErrorResponse
+    ServerErrorResponse,
+    ClientError, ClientErrorResponse
 } from 'shared/log/audit';
 import {Cb, CbError, CbError1} from 'shared/models.model';
-
-export interface ClientError {
-    message: string;
-    date: Date | number;
-    origin: string;
-    name: string;
-    stack: string;
-    userAgent: string;
-    url: string;
-    username: string;
-    ip: string;
-}
 
 export type ClientErrorDocument = Document & ClientError;
 
@@ -221,6 +210,40 @@ export function serverErrors(body: {
     });
 }
 
+export function clientErrors(body: {
+                                 includeUserAgents: string[],
+                                 currentPage: number,
+                                 pageSize: number,
+                                 sortBy: string,
+                                 sortDir: string
+                             },
+                             callback: CbError1<ClientErrorResponse>) {
+    let currentPage = body.currentPage || 0;
+    let itemsPerPage = body.pageSize || 50;
+    let sortBy = body.sortBy || 'date';
+    let sortDirection = body.sortDir || 'asc';
+    const skip = currentPage * itemsPerPage;
+    const condition: {
+        [key in string]: {
+            [key in string]: string[]
+        }
+    } = {
+        userAgent: {$in: body.includeUserAgents}
+    };
+    const modal = clientErrorModel.find(condition);
+    modal.clone().count((err, totalItems) => {
+        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+            .limit(itemsPerPage)
+            .skip(skip)
+            .exec((err, logs) => {
+                callback(err, {
+                    logs,
+                    totalItems
+                });
+            });
+    });
+}
+
 export function logError(message: ErrorMessage, callback?: Cb) { // all server errors, express and not
     if (!message.date) {
         message.date = new Date();
@@ -261,44 +284,28 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
 
 export function logClientError(req: Request, done: Cb) {
     const getRealIp = (req: any) => req._remoteAddress;
-    const exc = req.body;
-    exc.userAgent = req.headers['user-agent'];
-    exc.date = new Date();
-    exc.ip = getRealIp(req);
-    if (req.user) {
-        exc.username = req.user.username;
+    const clientErrorLog = req.body;
+    const ua = userAgent.is(req.headers['user-agent']);
+    if (ua.chrome) {
+        clientErrorLog.userAgent = 'chrome'
     }
-    new clientErrorModel(exc).save(handleConsoleError<ClientErrorDocument>({}, () => {
-        const ua = userAgent.is(req.headers['user-agent']);
-        if (ua.chrome || ua.firefox || ua.edge) {
-            const msg = JSON.stringify({
-                title: 'Client Side Error',
-                options: {
-                    body: (exc.message || '').substr(0, 30),
-                    icon: '/assets/img/NIH-CDE.png',
-                    badge: '/assets/img/NIH-CDE-Logo-Simple.png',
-                    tag: 'cde-client-side',
-                    actions: [
-                        {
-                            action: 'audit-action',
-                            title: 'View',
-                            icon: '/assets/img/NIH-CDE-Logo-Simple.png'
-                        }
-                    ]
-                }
-            });
-        }
+    if (ua.firefox) {
+        clientErrorLog.userAgent = 'firefox'
+    }
+    if (ua.safari) {
+        clientErrorLog.userAgent = 'safari'
+    }
+    if (ua.ie) {
+        clientErrorLog.userAgent = 'ie'
+    }
+    clientErrorLog.date = new Date();
+    clientErrorLog.ip = getRealIp(req);
+    if (req.user) {
+        clientErrorLog.username = req.user.username;
+    }
+    new clientErrorModel(clientErrorLog).save(handleConsoleError<ClientErrorDocument>({}, () => {
         done();
     }));
-}
-
-export function getClientErrors(params: { limit: number, skip: number }, callback: CbError1<ClientErrorDocument[]>) {
-    clientErrorModel
-        .find()
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(callback);
 }
 
 export function getClientErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {

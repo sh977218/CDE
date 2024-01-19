@@ -2,14 +2,13 @@ import {RequestHandler, Router} from 'express';
 import {handleError, handleNotFound} from 'server/errorHandler';
 import {
     appLogs,
-    getClientErrors,
+    clientErrors,
     getClientErrorsNumber,
     getServerErrorsNumber,
     httpLogs,
     logClientError, serverErrors,
     usageByDay,
 } from 'server/log/dbLogger';
-import {is, parse} from 'useragent';
 import {userModel} from 'server/user/userDb';
 
 export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
@@ -38,27 +37,22 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
         }));
     });
 
-    router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
-        getServerErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
-    })
-    router.get('/clientErrorsNumber', roleConfig.superLog, (req, res) => {
-        getClientErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
-    })
-
     router.post('/clientErrors', roleConfig.superLog, async (req, res) => {
-        getClientErrors(req.body, handleNotFound({req, res}, result => {
-            res.send(result.map(r => {
-                const l: any = r.toObject();
-                l.agent = parse(r.userAgent).toAgent();
-                l.ua = is(r.userAgent);
-                return l;
-            }));
+        clientErrors(req.body, handleNotFound({req, res}, result => {
+            res.send(result);
             userModel.findOneAndUpdate(
                 {username: req.user.username},
                 {$set: {'notificationDate.clientLogDate': new Date()}},
                 {}).exec();
         }));
     });
+
+    router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
+        getServerErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
+    })
+    router.get('/clientErrorsNumber', roleConfig.superLog, (req, res) => {
+        getClientErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
+    })
 
     router.post('/clientExceptionLogs', (req, res) => {
         logClientError(req, () => res.send());

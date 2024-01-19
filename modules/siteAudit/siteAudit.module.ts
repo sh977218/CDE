@@ -15,8 +15,6 @@ import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { LoginRecordComponent } from 'siteAudit/loginRecords/loginRecord.component';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
-import { ClientErrorDetailModalComponent } from 'siteAudit/clientErrors/client-error-detail-modal/client-error-detail-modal.component';
-import { ClientErrorsComponent } from 'siteAudit/clientErrors/clientErrors.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
@@ -24,6 +22,7 @@ import { HttpLogComponent } from './http-log/http-log.component';
 import { AppLogComponent } from './app-log/app-log.component';
 import { DailyUsageComponent } from './daily-usage/daily-usage.component';
 import { ServerErrorComponent } from './server-error/server-error.component';
+import { ClientErrorComponent } from './client-error/client-error.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -48,13 +47,12 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         AppLogComponent,
         DailyUsageComponent,
         ServerErrorComponent,
+        ClientErrorComponent,
     ],
     declarations: [
         ActiveBansComponent,
         CamelCaseToHumanPipe,
         ClassificationAuditLogComponent,
-        ClientErrorsComponent,
-        ClientErrorDetailModalComponent,
         DataElementLogComponent,
         FormLogComponent,
         LoginRecordComponent,
