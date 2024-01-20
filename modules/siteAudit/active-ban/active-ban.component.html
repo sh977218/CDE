@@ -1,0 +1,51 @@
+<div class="p-5">
+    <div class="example-container mat-elevation-z8">
+        <div class="loading-shade"
+             *ngIf="isLoadingResults">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <div class="example-table-container">
+            <table mat-table [dataSource]="dataSource" class="example-table"
+                   matSort matSortActive="date" matSortDisableClear matSortDirection="desc">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.date  | date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="ip">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>IP</th>
+                    <td mat-cell *matCellDef="let row">
+                        <div class="flex items-center">
+                            {{ row.ip }}
+                            <button mat-icon-button aria-label="Remove IP ${{row.ip}} from ban"
+                                    (click)="remove(row.ip)">
+                                <mat-icon>delete_outline</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="strikes">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Strikes</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.strikes }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="reason">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Reason</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.reason }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr *matNoDataRow>
+                    <td class="mat-cell" colspan="8">
+                        No results found.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <mat-paginator [length]="resultsLength" [pageSize]="10" [pageSizeOptions]="[5,10,50]"
+                       aria-label="Select page of Http Logs"></mat-paginator>
+    </div>
+</div>

@@ -1,17 +1,10 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DatePipe, NgIf } from '@angular/common';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatNativeDateModule } from '@angular/material/core';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { merge } from 'rxjs';
 import { LoginRecord, LoginRecordResponse } from 'shared/log/audit';
@@ -20,24 +13,7 @@ import { LoginRecord, LoginRecordResponse } from 'shared/log/audit';
     selector: 'cde-login-record',
     templateUrl: './login-record.component.html',
     styleUrls: ['./login-record.component.scss'],
-    imports: [
-        DatePipe,
-        NgIf,
-        NgForOf,
-        FormsModule,
-        ReactiveFormsModule,
-        MatPaginatorModule,
-        MatButtonModule,
-        MatNativeDateModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatSortModule,
-        MatTableModule,
-        AsyncPipe,
-    ],
+    imports: [NgIf, MatProgressSpinnerModule, MatTableModule, MatSortModule, DatePipe, MatPaginatorModule],
     standalone: true,
 })
 export class LoginRecordComponent implements AfterViewInit {

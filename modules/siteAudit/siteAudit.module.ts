@@ -12,7 +12,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
-import { ActiveBansComponent } from 'siteAudit/activeBans/activeBans.component';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
 import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
@@ -23,6 +22,7 @@ import { ServerErrorComponent } from './server-error/server-error.component';
 import { ClientErrorComponent } from './client-error/client-error.component';
 import { DailyUsageComponent } from './daily-usage/daily-usage.component';
 import { LoginRecordComponent } from './login-record/login-record.component';
+import { ActiveBanComponent } from './active-ban/active-ban.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -49,9 +49,9 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         ServerErrorComponent,
         ClientErrorComponent,
         LoginRecordComponent,
+        ActiveBanComponent,
     ],
     declarations: [
-        ActiveBansComponent,
         CamelCaseToHumanPipe,
         ClassificationAuditLogComponent,
         DataElementLogComponent,

@@ -12,11 +12,11 @@
             <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
         </div>
         <div class="example-table-container">
-            <table mat-table [dataSource]="dataSource$ |async" class="example-table"
+            <table mat-table [dataSource]="dataSource$ | async" class="example-table"
                    matSort matSortActive="date" matSortDisableClear matSortDirection="desc">
                 <ng-container matColumnDef="date">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Date</th>
-                    <td mat-cell *matCellDef="let row"> {{ row.date |date }}</td>
+                    <td mat-cell *matCellDef="let row"> {{ row.date | date }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="userAgent">

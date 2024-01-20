@@ -1,17 +1,12 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AsyncPipe, DatePipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AsyncPipe, DatePipe, JsonPipe, NgIf } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatNativeDateModule } from '@angular/material/core';
 import {
     catchError,
     debounceTime,
@@ -31,24 +26,17 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     templateUrl: './server-error.component.html',
     styleUrls: ['./server-error.component.scss'],
     imports: [
-        DatePipe,
-        NgIf,
-        NgForOf,
-        FormsModule,
         ReactiveFormsModule,
-        MatPaginatorModule,
-        MatButtonModule,
-        MatNativeDateModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatSortModule,
-        MatTableModule,
-        AsyncPipe,
         MatCheckboxModule,
+        MatButtonModule,
+        NgIf,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatSortModule,
+        AsyncPipe,
+        DatePipe,
         JsonPipe,
+        MatPaginatorModule,
     ],
     standalone: true,
 })

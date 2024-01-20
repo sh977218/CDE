@@ -34,6 +34,18 @@ export interface DailyUsage {
     hits: number
 }
 
+
+export type ActiveBanResponse ={
+    ipList: ActiveBan[]
+}
+
+export type ActiveBan = {
+    date: string;
+    ip: string;
+    strikes: number;
+    reason: string
+};
+
 export interface ServerErrorResponse {
     logs: ServerError[];
     totalItems: number;

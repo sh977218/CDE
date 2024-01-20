@@ -1,17 +1,15 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatNativeDateModule } from '@angular/material/core';
 import {
     catchError,
     debounceTime,
@@ -30,22 +28,18 @@ import { HttpLog, HttpLogResponse } from 'shared/log/audit';
     templateUrl: './http-log.component.html',
     styleUrls: ['./http-log.component.scss'],
     imports: [
-        DatePipe,
-        NgIf,
-        NgForOf,
-        FormsModule,
         ReactiveFormsModule,
-        MatPaginatorModule,
-        MatButtonModule,
-        MatNativeDateModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatIconModule,
         MatInputModule,
+        NgIf,
+        MatButtonModule,
+        MatIconModule,
+        MatDatepickerModule,
         MatProgressSpinnerModule,
-        MatSortModule,
-        MatTableModule,
         AsyncPipe,
+        MatTableModule,
+        MatSortModule,
+        DatePipe,
+        MatPaginatorModule,
     ],
     standalone: true,
 })

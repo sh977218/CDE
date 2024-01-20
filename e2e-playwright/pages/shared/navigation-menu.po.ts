@@ -29,14 +29,43 @@ export class NavigationMenuPo {
                         .matMenuContent()
                         .waitFor()
                         .then(() => {
-                            console.info(`clicked ${buttonText} and menu shows. Continue...`);
+                            console.info(`clicked ${buttonText} again and menu shows. Continue...`);
                             resolve();
                         })
                         .catch(async e => {
                             console.info(
-                                `clicked ${buttonText} and menu is still not showing. Something wrong. Throwing error`
+                                `clicked ${buttonText} again and menu is still not showing. Something wrong. Throwing error`
                             );
-                            reject(`${buttonText} hovered and clicked, but not trigger the menu`);
+                            reject(`${buttonText} hovered and clicked, but didn't trigger the menu`);
+                        });
+                });
+        });
+    }
+
+    private clickUntilUrl(buttonLocator: Locator, Url: RegExp) {
+        return new Promise<void>(async (resolve, reject) => {
+            await buttonLocator.click();
+            const buttonText = await buttonLocator.innerText();
+            this.page
+                .waitForURL(Url)
+                .then(() => {
+                    console.info(`clicked ${buttonText} and ${Url} navigated. Continue...`);
+                    resolve();
+                })
+                .catch(async () => {
+                    console.info(`clicked ${buttonText} and ${Url} didn't get navigated. Try click it again...`);
+                    await buttonLocator.click();
+                    this.page
+                        .waitForURL(Url)
+                        .then(() => {
+                            console.info(`clicked ${buttonText} again and ${Url} navigated. Continue...`);
+                            resolve();
+                        })
+                        .catch(async e => {
+                            console.info(
+                                `clicked ${buttonText} again and ${Url} still didn't get navigated. Something wrong. Throwing error`
+                            );
+                            reject(`${buttonText} clicked twice, but ${Url} didn't get navigated`);
                         });
                 });
         });
@@ -70,13 +99,11 @@ export class NavigationMenuPo {
     }
 
     async gotoCdeSearch() {
-        await this.page.getByTestId(`menu_cdes_link`).click();
-        await this.page.waitForURL(/\/cde\/search/);
+        await this.clickUntilUrl(this.page.getByTestId(`menu_cdes_link`), /\/cde\/search/);
     }
 
     async gotoFormSearch() {
-        await this.page.getByTestId(`menu_forms_link`).click();
-        await this.page.waitForURL(/\/form\/search/);
+        await this.clickUntilUrl(this.page.getByTestId(`menu_forms_link`), /\/form\/search/);
     }
 
     async gotoSettings() {
@@ -118,8 +145,7 @@ export class NavigationMenuPo {
     }
 
     async gotoMyBoard() {
-        await this.page.getByTestId('myBoardsLink').click();
-        await this.page.waitForURL(/\/myBoards/);
+        await this.clickUntilUrl(this.page.getByTestId('myBoardsLink'), /\/myBoards/);
         return this.page.waitForSelector('h1', { state: 'visible' });
     }
 
