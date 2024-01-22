@@ -3,16 +3,16 @@ import { readdirSync, readFileSync } from 'fs';
 import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
 import { resolve } from 'path';
 import { config, ObjectId } from 'server';
-import { EltLogDocument } from 'server/cde/mongo-cde';
 import { splitError } from 'server/errorHandler';
 import { updateOrInsertDocument } from 'server/form/elastic';
-import { auditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
+import {auditSchema as formAuditSchema, draftSchema, formSchema, formSourceSchema} from 'server/form/schemas';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { auditGetLog, auditModifications, generateTinyId } from 'server/system/mongo-data';
+import {auditModifications, generateTinyId} from 'server/system/mongo-data';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { CdeForm } from 'shared/form/form.model';
 import { CbError1, User } from 'shared/models.model';
+import {auditModificationsForm, EltLogDocument} from "../log/dbLogger";
 
 export type CdeFormDocument = Document<ObjectId, {}, CdeForm> & CdeForm;
 export type CdeFormDraft = CdeForm;
@@ -66,12 +66,11 @@ formSourceSchema.pre('save', preSave);
 
 const conn = establishConnection(config.database.appData);
 export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema);
-const formAuditModel: Model<EltLogDocument> = conn.model('FormAudit', auditSchema);
 export const formDraftModel: Model<CdeFormDraftDocument> = conn.model('Draft', draftSchema);
 export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsources', formSourceSchema);
+export const formAuditModel: Model<EltLogDocument> = conn.model('FormAudit', formAuditSchema);
 
 const auditModificationsForm = auditModifications(formAuditModel);
-export const getAuditLog = auditGetLog(formAuditModel);
 
 export function byTinyId(tinyId: string): Promise<CdeFormDocument | null>;
 export function byTinyId(tinyId: string, cb: CbError1<CdeFormDocument | null>): void;

@@ -1,16 +1,61 @@
 import { Page } from '@playwright/test';
 import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
+import { Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../src/model/type';
+import { MaterialPo } from './material.po';
+import { SaveModalPo } from './save-modal.po';
 
 export class GenerateDetailsPo {
     private readonly page: Page;
+    private readonly materialPage: MaterialPo;
     private readonly inlineEdit: InlineEditPo;
+    private readonly saveModal: SaveModalPo;
     private readonly updateRegistrationStatusModal: UpdateRegistrationStatusModalPo;
 
-    constructor(page: Page, inlineEdit: InlineEditPo, updateRegistrationStatusModal: UpdateRegistrationStatusModalPo) {
+    constructor(
+        page: Page,
+        materialPage: MaterialPo,
+        inlineEdit: InlineEditPo,
+        saveModal: SaveModalPo,
+        updateRegistrationStatusModal: UpdateRegistrationStatusModalPo
+    ) {
         this.page = page;
+        this.materialPage = materialPage;
         this.inlineEdit = inlineEdit;
+        this.saveModal = saveModal;
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
+    }
+
+    createdLabel() {
+        return this.page.getByTestId(`created-label`);
+    }
+
+    created() {
+        return this.page.getByTestId(`created`);
+    }
+
+    createdByLabel() {
+        return this.page.getByTestId(`created-by-label`);
+    }
+
+    createdBy() {
+        return this.page.getByTestId(`created-by`);
+    }
+
+    updatedLabel() {
+        return this.page.getByTestId(`updated-label`);
+    }
+
+    updated() {
+        return this.page.getByTestId(`updated`);
+    }
+
+    updatedByLabel() {
+        return this.page.getByTestId(`updated-by-label`);
+    }
+
+    updatedBy() {
+        return this.page.getByTestId(`updated-by`);
     }
 
     origin() {
@@ -60,4 +105,55 @@ export class GenerateDetailsPo {
         }
         await this.updateRegistrationStatusModal.saveRegistrationStatusButton().click();
     };
+
+    async editNameByIndex(
+        index: number,
+        newDesignation: Designation,
+        config: EditDesignationConfig = { replace: false }
+    ) {
+        const designationRow = this.page
+            .getByTestId(`designations-container`)
+            .getByTestId(`designation-container`)
+            .nth(index);
+        await this.inlineEdit.editIcon(designationRow).click();
+        if (config.replace) {
+            await this.inlineEdit.inputField(designationRow).fill(newDesignation.designation);
+        }
+        await this.inlineEdit.inputField(designationRow).type(newDesignation.designation);
+
+        await this.inlineEdit.confirmButton(designationRow).click();
+
+        for (let tag of newDesignation.tags) {
+            await this.materialPage.matChipListInput(designationRow).click();
+            await this.materialPage.matOption(tag).click();
+        }
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async editDefinitionByIndex(
+        index: number,
+        newDefinition: Definition,
+        config: EditDefinitionConfig = { replace: false, html: false }
+    ) {
+        const definitionRow = this.page
+            .getByTestId(`definitions-container`)
+            .getByTestId(`definition-container`)
+            .nth(index);
+        await this.page.waitForTimeout(2000); // give 2 seconds before click edit, this wait is not a 100% sure fix.
+        await this.inlineEdit.editIcon(definitionRow).click();
+        await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
+        if (config.html) {
+            await this.inlineEdit.richTextButton(definitionRow).click();
+        }
+        if (config.replace) {
+            await this.inlineEdit.clearTextField(definitionRow, config.html);
+        }
+        await this.inlineEdit.typeTextField(definitionRow, newDefinition.definition, config.html);
+
+        for (let tag of newDefinition.tags) {
+            await this.materialPage.matChipListInput(definitionRow).click();
+            await this.materialPage.matOption(tag).click();
+        }
+        await this.saveModal.waitForDraftSaveComplete();
+    }
 }

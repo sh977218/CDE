@@ -25,10 +25,7 @@ import {
     publishExternal,
     viewHistory
 } from 'server/form/formsvc';
-import {
-    formModel,
-    getAuditLog
-} from 'server/form/mongo-form';
+import {formModel} from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsByCdeTinyId, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
@@ -261,10 +258,6 @@ export function module() {
     });
     router.get('/server/form/scrollExport/:scrollId', (req, res) => {
         scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
-    });
-
-    router.post('/server/form/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getAuditLog(req.body, (err, result) => res.send(result));
     });
 
     router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {

@@ -1,9 +1,7 @@
-import { Document, Model, Types } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { config, dbPlugins, ObjectId } from 'server';
-import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { moduleToDbName } from 'server/dbPlugins';
-import { handleError } from 'server/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
@@ -14,14 +12,15 @@ import { CdeForm } from 'shared/form/form.model';
 import {
     Board,
     CbError,
-    CbError1,
-    EltLog,
+    CbError1, EltLog,
     Item,
     ModuleAll,
     User
 } from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
+import {diff} from "../cde/cdediff";
+import {handleError} from "../errorHandler";
 
 interface JobStatus {
     _id: ObjectId;
@@ -77,28 +76,6 @@ export interface Message {
 }
 
 export type MessageDocument = Document & Message;
-export const objectId = Types.ObjectId;
-
-export interface PushRegistration {
-    _id: ObjectId;
-    features: string[];
-    loggedIn?: boolean;
-    subscription?: {
-        endpoint: string,
-        expirationTime: string | null,
-        keys: {
-            auth: string,
-            p256dh: string
-        }
-    };
-    userId: ObjectId;
-    vapidKeys: {
-        privateKey: string,
-        publicKey: string
-    };
-}
-
-export type PushRegistrationDocument = Document & PushRegistration;
 
 const conn = establishConnection(config.database.appData);
 export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue);
@@ -192,34 +169,12 @@ export function auditModifications<T extends Document>(auditDb: Model<T>) {
     };
 }
 
-export interface SearchParams {
-    includeBatch: boolean;
-    limit: number;
-    skip: number;
-}
-
-export const auditGetLog = (auditDb: Model<any>) => (params: SearchParams, cb: CbError1<EltLog[]>) => {
-    auditDb.find(params.includeBatch ? {} : {'user.username': {$ne: 'NIH CDE Repository Team'}})
-        .sort('-date')
-        .skip(params.skip)
-        .limit(params.limit)
-        .exec(cb);
-};
-
-function isDocument<T>(data: T | T & Document): data is T & Document {
-    return !!(data as T & Document).toObject;
-}
-
 export interface FileCreateInfo {
     stream: Readable;
     filename?: string;
     md5?: string;
     type?: string;
 }
-
-// export function getAllUsernames(cb: CbError<{username: string}[]>) {
-//     userModel.find({}, {username: true, _id: false}, cb);
-// }
 
 export function generateTinyId() {
     return shortIdGenerate().replace(/-/g, '_');

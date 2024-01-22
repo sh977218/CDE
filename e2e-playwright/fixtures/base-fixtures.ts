@@ -19,6 +19,7 @@ import { UpdateRegistrationStatusModalPo } from '../pages/shared/update-registra
 
 // CDE page
 import { CdePagePo } from '../pages/cde/cde-page.po';
+import { ConceptPo } from '../pages/cde/concept.po';
 import { PermissibleValuePo } from '../pages/cde/permissible-value.po';
 
 // Form page
@@ -27,9 +28,11 @@ import { PreviewPo } from '../pages/form/preview.po';
 import { FormDescriptionPo } from '../pages/form/form-description.po';
 import { DisplayProfilePo } from '../pages/form/display-profile.po';
 
-import { HistoryPo } from '../pages/shared/history.po';
+// Shared sections
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
+import { IdentifierPo } from '../pages/shared/identifier.po';
 import { AttachmentPo } from '../pages/shared/attachment.po';
+import { HistoryPo } from '../pages/shared/history.po';
 
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
@@ -41,6 +44,7 @@ import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-
 import { ManageClassificationPo } from '../pages/manage-classifications/manage-classification.po';
 
 // Audit page
+import { ItemLogAuditPagePo } from '../pages/audit/item-log-audit-page.po';
 import { AuditTabPo } from '../pages/audit/audit-tab.po';
 import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
 import { LoginRecordsAuditPagePo } from '../pages/audit/login-records-audit-page.po';
@@ -75,6 +79,7 @@ const test = baseTest.extend<{
     homePage: HomePagePo;
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
+    conceptSection: ConceptPo;
     formPage: FormPagePo;
     formDescription: FormDescriptionPo;
     previewSection: PreviewPo;
@@ -82,15 +87,17 @@ const test = baseTest.extend<{
     myBoardPage: MyBoardPagePo;
     boardPage: BoardPagePo;
     saveModal: SaveModalPo;
-    historySection: HistoryPo;
     generateDetailsSection: GenerateDetailsPo;
+    identifierSection: IdentifierPo;
     attachmentSection: AttachmentPo;
+    historySection: HistoryPo;
     updateRegistrationStatusModal: UpdateRegistrationStatusModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
     searchPage: SearchPagePo;
     searchPreferencesPage: SearchPreferencesPagePo;
     inlineEdit: InlineEditPo;
+    itemLogAuditPage: ItemLogAuditPagePo;
     auditTab: AuditTabPo;
     classificationAuditPage: ClassificationAuditPagePo;
     loginRecordAuditPage: LoginRecordsAuditPagePo;
@@ -106,6 +113,9 @@ const test = baseTest.extend<{
     materialPage: async ({ page }, use) => {
         await use(new MaterialPo(page));
     },
+    saveModal: async ({ page, materialPage }, use) => {
+        await use(new SaveModalPo(page, materialPage));
+    },
     homePage: async ({ page }, use) => {
         await use(new HomePagePo(page));
     },
@@ -115,11 +125,14 @@ const test = baseTest.extend<{
     permissibleValueSection: async ({ page }, use) => {
         await use(new PermissibleValuePo(page));
     },
+    conceptSection: async ({ page, materialPage, saveModal }, use) => {
+        await use(new ConceptPo(page, materialPage, saveModal));
+    },
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
     },
-    formDescription: async ({ page, materialPage }, use) => {
-        await use(new FormDescriptionPo(page, materialPage));
+    formDescription: async ({ page, materialPage, inlineEdit }, use) => {
+        await use(new FormDescriptionPo(page, materialPage, inlineEdit));
     },
     previewSection: async ({ page, materialPage }, use) => {
         await use(new PreviewPo(page, materialPage));
@@ -133,17 +146,20 @@ const test = baseTest.extend<{
     boardPage: async ({ page }, use) => {
         await use(new BoardPagePo(page));
     },
-    saveModal: async ({ page, materialPage }, use) => {
-        await use(new SaveModalPo(page, materialPage));
+    generateDetailsSection: async (
+        { page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal },
+        use
+    ) => {
+        await use(new GenerateDetailsPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
-    historySection: async ({ page, materialPage }, use) => {
-        await use(new HistoryPo(page, materialPage));
-    },
-    generateDetailsSection: async ({ page, inlineEdit, updateRegistrationStatusModal }, use) => {
-        await use(new GenerateDetailsPo(page, inlineEdit, updateRegistrationStatusModal));
+    identifierSection: async ({ page }, use) => {
+        await use(new IdentifierPo(page));
     },
     attachmentSection: async ({ page, inlineEdit }, use) => {
         await use(new AttachmentPo(page, inlineEdit));
+    },
+    historySection: async ({ page, materialPage }, use) => {
+        await use(new HistoryPo(page, materialPage));
     },
     updateRegistrationStatusModal: async ({ page }, use) => {
         await use(new UpdateRegistrationStatusModalPo(page));
@@ -165,6 +181,9 @@ const test = baseTest.extend<{
     },
     manageClassificationPage: async ({ page }, use) => {
         await use(new ManageClassificationPo(page));
+    },
+    itemLogAuditPage: async ({ page }, use) => {
+        await use(new ItemLogAuditPagePo(page));
     },
     auditTab: async ({ page }, use) => {
         await use(new AuditTabPo(page));

@@ -10,6 +10,7 @@ import {
     loginRecord,
     serverErrors,
     usageByDay,
+    itemLogByModule,
 } from 'server/log/dbLogger';
 import {userModel} from 'server/user/userDb';
 import {isSiteAdminMiddleware} from "../system/authorization";
@@ -28,6 +29,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
     router.get('/dailyUsageReportLogs/:numberOfDays', roleConfig.superLog, (req, res) => {
         const numberOfDays = parseInt(req.params.numberOfDays) || 3;
         usageByDay(numberOfDays, handleError({req, res}, result => res.send(result)));
+    });
+
+    router.post("/itemLog/:module", roleConfig.feedbackLog, (req, res) => {
+        itemLogByModule(req.params.module, req.body, handleError({req, res}, result => res.send(result)));
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {

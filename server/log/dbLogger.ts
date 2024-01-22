@@ -1,10 +1,10 @@
 import {Request} from 'express';
 import {Document, Model} from 'mongoose';
+const moment = require('moment');
+const userAgent = require('useragent');
 import {config} from 'server';
 import {handleConsoleError} from 'server/errorHandler';
-import {
-    clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema
-} from 'server/log/schemas';
+import {clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema} from 'server/log/schemas';
 import {establishConnection} from 'server/system/connections';
 import {noDbLogger} from 'server/system/noDbLogger';
 import {UserFull} from 'server/user/userDb';
@@ -17,11 +17,21 @@ import {
     ServerErrorResponse,
     ClientError,
     ClientErrorResponse,
-    LoginRecord
+    LoginRecord,
+    SearchParams,
+    ServerErrorSearchRequest,
+    HttpLogSearchRequest,
+    AppLogSearchRequest,
+    ItemLogSearchRequest,
+    ClientErrorSearchRequest,
+    LoginRecordSearchRequest, ItemLogResponse
 } from 'shared/log/audit';
-import {Cb, CbError, CbError1} from 'shared/models.model';
+import {Cb, CbError, CbError1, EltLog} from 'shared/models.model';
+import {cdeAuditModel} from "../cde/mongo-cde";
+import {formAuditModel} from '../form/mongo-form';
 
 export type ClientErrorDocument = Document & ClientError;
+
 
 export interface ErrorLog {
     message: string;
@@ -42,8 +52,6 @@ export interface ErrorLog {
     };
 }
 
-const moment = require('moment');
-const userAgent = require('useragent');
 const conn = establishConnection(config.database.log);
 const logModel: Model<Document & HttpLog> = conn.model('DbLogger', logSchema);
 export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
@@ -103,16 +111,7 @@ interface ErrorMessage {
     stack?: string;
 }
 
-export function httpLogs(body: {
-                             filterTerm: string,
-                             currentPage: number,
-                             pageSize: number,
-                             fromDate: Date,
-                             toDate: Date,
-                             sortBy: string,
-                             sortDir: string
-                         },
-                         callback: CbError1<HttpLogResponse>) {
+export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
@@ -141,15 +140,7 @@ export function httpLogs(body: {
     });
 }
 
-export function appLogs(body: {
-                            currentPage: number,
-                            pageSize: number,
-                            fromDate: Date,
-                            toDate: Date,
-                            sortBy: string,
-                            sortDir: string
-                        },
-                        callback: CbError1<AppLogResponse>) {
+export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
@@ -174,14 +165,35 @@ export function appLogs(body: {
     });
 }
 
-export function serverErrors(body: {
-                                 includeBadInput: boolean,
-                                 currentPage: number,
-                                 pageSize: number,
-                                 sortBy: string,
-                                 sortDir: string
-                             },
-                             callback: CbError1<ServerErrorResponse>) {
+export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callback: CbError1<ItemLogResponse>) => {
+    let currentPage = body.currentPage || 0;
+    let itemsPerPage = body.pageSize || 50;
+    let sortBy = body.sortBy || 'date';
+    let sortDirection = body.sortDir || 'asc';
+    const skip = currentPage * itemsPerPage;
+    const condition = {'user.username': {$nin: ['NIH CDE Repository Team']}};
+    if (!body.includeBatchLoader) {
+        condition["user.username"].$nin.push('batchloader');
+    }
+    const modal = auditDb.find(condition);
+    modal.clone().count((err, totalItems) => {
+        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+            .limit(itemsPerPage)
+            .skip(skip)
+            .exec((err, logs) => {
+                callback(err, {
+                    logs,
+                    totalItems
+                });
+            });
+    });
+};
+
+export const itemLogByModule = (module:string, body: ItemLogSearchRequest, cb: CbError1<ItemLogResponse>)=>{
+    itemLog(module === 'de' ? cdeAuditModel : formAuditModel, body, cb)
+}
+
+export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<ServerErrorResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'date';
@@ -211,14 +223,7 @@ export function serverErrors(body: {
     });
 }
 
-export function clientErrors(body: {
-                                 includeUserAgents: string[],
-                                 currentPage: number,
-                                 pageSize: number,
-                                 sortBy: string,
-                                 sortDir: string
-                             },
-                             callback: CbError1<ClientErrorResponse>) {
+export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<ClientErrorResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'date';
@@ -245,12 +250,8 @@ export function clientErrors(body: {
     });
 }
 
-export async function loginRecord(body: {
-    currentPage: number,
-    pageSize: number,
-    sortBy: string,
-    sortDir: string
-}) {
+
+export async function loginRecord(body: LoginRecordSearchRequest) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
@@ -272,31 +273,12 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
     if (typeof message.stack === 'string') {
         message.stack = message.stack.substr(0, 1500);
     }
-    const description = ((message.message || message.publicMessage) + '').substr(0, 100);
     if (config.logToConsoleForServerError) {
         console.log('---Server Error---');
         console.log(message);
         console.log('--- END Server Error---');
     }
     new logErrorModel(message).save(handleConsoleError<Document & ErrorLog>({}, () => {
-        if (message.origin && message.origin.indexOf('pushGetAdministratorRegistrations') === -1) {
-            const msg = JSON.stringify({
-                title: 'Server Side Error',
-                options: {
-                    body: description,
-                    icon: '/assets/img/NIH-CDE.png',
-                    badge: '/assets/img/NIH-CDE-Logo-Simple.png',
-                    tag: 'cde-server-side',
-                    actions: [
-                        {
-                            action: 'audit-action',
-                            title: 'View',
-                            icon: '/assets/img/NIH-CDE-Logo-Simple.png'
-                        }
-                    ]
-                }
-            });
-        }
         if (callback) {
             callback();
         }
@@ -364,4 +346,3 @@ export function usageByDay(numberOfDays: number = 3, callback: CbError1<DailyUsa
 export function recordUserLogin(user: UserFull, ip: string) {
     new loginModel({user: user.username, email: user.email, ip}).save();
 }
-

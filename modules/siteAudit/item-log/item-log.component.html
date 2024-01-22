@@ -1,0 +1,109 @@
+<div class="p-5">
+    <form [formGroup]="searchCriteria" (ngSubmit)="onSubmit()">
+        <mat-checkbox formControlName="includeBatchLoader" data-testid="include-bad-input-checkbox">
+            Include Batchloader changes?
+        </mat-checkbox>
+        <button mat-raised-button type="submit" color="primary">Search</button>
+    </form>
+    <div class="example-container mat-elevation-z8">
+        <div class="loading-shade"
+             *ngIf="isLoadingResults">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+        </div>
+        <div class="example-table-container">
+            <table mat-table
+                   [dataSource]="dataSource$ | async" multiTemplateDataRows
+                   class="example-table"
+                   matSort matSortActive="date" matSortDisableClear matSortDirection="desc">
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Date</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.date |date }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="adminItem.name">
+                    <th mat-header-cell *matHeaderCellDef>Element Name</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.adminItem.name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="user.username">
+                    <th mat-header-cell *matHeaderCellDef>User</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.user.username }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button aria-label="expand row"
+                                (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+                        <div class="example-element-detail flex-col md:flex-row"
+                             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <dl class="cde-property">
+                                <dt>{{ (module === 'de' ? 'cde' : 'form') | uppercase }} - New Version:</dt>
+                                <dd>
+                                    <a target="_blank"
+                                       href="/{{module}}View?{{module==='de'?'cde':'form'}}Id={{element.adminItem._id}}">{{ element.adminItem.name }}</a>
+                                </dd>
+                                <ng-container *ngIf="element.previousItem">
+                                    <dt>{{ (module === 'de' ? 'cde' : 'form') | uppercase }} - Previous Version:</dt>
+                                    <dd>
+                                        <a target="_blank"
+                                           href="/{{module}}View?{{module==='de'?'cde':'form'}}Id={{element.previousItem._id}}">{{ element.previousItem.name }}</a>
+                                    </dd>
+                                </ng-container>
+                            </dl>
+                            <table *ngIf="element.diff" class="table">
+                                <caption>List of Modifications</caption>
+                                <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>Type of Modification</th>
+                                    <th>Change</th>
+                                </tr>
+                                </thead>
+                                <ng-container *ngFor="let d of element.diff">
+                                    <tr *ngIf="!ignoredDiff(d)">
+                                        <td>{{ d.fieldName }}</td>
+                                        <td>{{ d.modificationType }}</td>
+                                        <td>
+                                            <td-ngx-text-diff [showToolbar]='false' [showBtnToolbar]='false'
+                                                              [left]="d.previousValue || ''"
+                                                              [right]="d.newValue || ''"
+                                                              [format]="'LineByLine'"></td-ngx-text-diff>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </table>
+                        </div>
+                    </td>
+                    >
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+                <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+                    class="example-element-row"
+                    [class.example-expanded-row]="expandedElement === element"
+                    (click)="expandedElement = expandedElement === element ? null : element">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+                <tr *matNoDataRow>
+                    <td class="mat-cell" colspan="8">
+                        No results found.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <mat-paginator [length]="resultsLength" [pageSize]="50" [pageSizeOptions]="[10,50,100]"
+                       aria-label="Select page of Http Logs"></mat-paginator>
+    </div>
+</div>

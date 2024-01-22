@@ -13,8 +13,6 @@ import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
-import { DataElementLogComponent } from 'siteAudit/itemLog/dataElementLog.component';
-import { FormLogComponent } from 'siteAudit/itemLog/formLog.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 import { HttpLogComponent } from './http-log/http-log.component';
 import { AppLogComponent } from './app-log/app-log.component';
@@ -23,6 +21,7 @@ import { ClientErrorComponent } from './client-error/client-error.component';
 import { DailyUsageComponent } from './daily-usage/daily-usage.component';
 import { LoginRecordComponent } from './login-record/login-record.component';
 import { ActiveBanComponent } from './active-ban/active-ban.component';
+import { ItemLogComponent } from './item-log/item-log.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -46,18 +45,13 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         HttpLogComponent,
         AppLogComponent,
         DailyUsageComponent,
+        ItemLogComponent,
         ServerErrorComponent,
         ClientErrorComponent,
         LoginRecordComponent,
         ActiveBanComponent,
     ],
-    declarations: [
-        CamelCaseToHumanPipe,
-        ClassificationAuditLogComponent,
-        DataElementLogComponent,
-        FormLogComponent,
-        SiteAuditComponent,
-    ],
+    declarations: [CamelCaseToHumanPipe, ClassificationAuditLogComponent, SiteAuditComponent],
     exports: [RouterModule],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

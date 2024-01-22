@@ -88,6 +88,11 @@ export class MaterialPo {
         return this.page.locator(`mat-dialog-container`);
     }
 
+    async closeMatDialog() {
+        await this.matDialog().getByRole('button', { name: 'Close', exact: true }).click();
+        await this.matDialog().waitFor({ state: 'hidden' });
+    }
+
     matDatePicker(datePickerToggleLocator: Locator) {
         return datePickerToggleLocator.getByRole(`button`);
     }
@@ -100,6 +105,10 @@ export class MaterialPo {
             .locator(`span`, {
                 has: this.page.locator(`text="${day}"`),
             });
+    }
+
+    matChipListInput(containerLocator: Locator) {
+        return containerLocator.locator(`mat-chip-list input`);
     }
 
     async checkAlert(text: string) {

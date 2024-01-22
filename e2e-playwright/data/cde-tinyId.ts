@@ -10,4 +10,8 @@ export default {
     UnclassifiedCDE: 'mkH_UGXEw',
     'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator': 'NuQwuCAZrz5',
     'Non-Pathology Findings': 'mJQiShWEW',
+    'Mediastinal Lymph Node Physical Examination Specify': '64YoxVrtASF',
+    'Add concept cde': 'VTKkfBXUQ',
+    'Remove concept cde': 'WPlEzNujD',
+    'Reorder concept cde': '71EPiweND',
 };

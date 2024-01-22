@@ -1,5 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
+import { Version } from '../../src/model/type';
 
 export class SaveModalPo {
     protected page: Page;
@@ -12,6 +13,10 @@ export class SaveModalPo {
 
     newVersionInput() {
         return this.page.getByTestId(`new-version-input`);
+    }
+
+    newChangeNoteTextarea() {
+        return this.page.getByTestId(`new-change-note-textarea`);
     }
 
     publishDraftButton() {
@@ -39,18 +44,24 @@ export class SaveModalPo {
         await this.page.waitForTimeout(2000);
     }
 
-    async newVersion(version: string, alertMessage: string) {
+    async newVersion(alertMessage: string, version?: Version) {
+        if (!version) version = { newVersion: '', changeNote: '' };
+        // To not override input parameter 'version', make a copy
+        let newVersion = version.newVersion;
         await this.page.getByTestId(`publish-draft`).click();
         await this.materialPage.matDialog().waitFor({ state: 'visible' });
-        if (!version) {
-            const existingVersion = await this.page.getByTestId(`new-version-input`).inputValue();
+        if (!newVersion) {
+            const existingVersion = await this.newVersionInput().inputValue();
             if (existingVersion.trim().length) {
-                version = existingVersion + '.1';
+                newVersion = existingVersion + '.1';
             } else {
-                version = '1';
+                newVersion = '1';
             }
         }
-        await this.newVersionInput().fill(version);
+        await this.newVersionInput().fill(newVersion);
+        if (version.changeNote) {
+            await this.newChangeNoteTextarea().fill(version.changeNote);
+        }
         await this.saveButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(alertMessage);

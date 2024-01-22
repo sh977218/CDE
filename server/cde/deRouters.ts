@@ -11,7 +11,6 @@ import {
     viewHistory
 } from 'server/cde/cdesvc';
 import { elasticsearch } from 'server/cde/elastic';
-import { getAuditLog } from 'server/cde/mongo-cde';
 import { validatePvs } from 'server/cde/utsValidate';
 import { handleError, respondError } from 'server/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
@@ -19,8 +18,7 @@ import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dat
 import { writeOutArrayStream } from 'shared/node/expressUtil';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware,
-    isOrgAuthorityMiddleware, nocacheMiddleware
+    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, nocacheMiddleware
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
@@ -183,12 +181,6 @@ export function module() {
             }
         };
         exporters.json.export(res);
-    });
-
-    router.post('/server/de/getAuditLog', isOrgAuthorityMiddleware, (req, res) => {
-        getAuditLog(req.body, (err, result) => {
-            res.send(result);
-        });
     });
 
     router.post('/server/de/completion/:term', nocacheMiddleware, (req, res) => {

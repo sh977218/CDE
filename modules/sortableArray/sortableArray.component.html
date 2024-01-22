@@ -1,6 +1,12 @@
-<mat-icon *ngIf="index !== 0" title="Up" class="moveUp-{{index}} fake-button" role="button" tabindex="0"
-          (click)="moveUp()">arrow_upward</mat-icon>
-<mat-icon *ngIf="index < theArray.length - 1" title="Down" class="moveDown-{{index}} fake-button" role="button" tabindex="0"
-          (click)="moveDown()">arrow_downward</mat-icon>
-<mat-icon *ngIf="index !== 0" title="Move to top" class="moveTop-{{index}} fake-button" role="button" tabindex="0"
-          (click)="moveTop()">vertical_align_top</mat-icon>
+<mat-icon *ngIf="index !== 0" class="moveUp-{{index}} fake-button" (click)="moveUp()" role="button" color="primary"
+          aria-hidden="false" aria-label="Move up">arrow_upward
+</mat-icon>
+<mat-icon *ngIf="index < theArray.length - 1" class="moveDown-{{index}} fake-button" (click)="moveDown()" role="button"
+          color="primary" aria-hidden="false" aria-label="Move down">arrow_downward
+</mat-icon>
+<mat-icon *ngIf="index !== 0" class="moveTop-{{index}} fake-button" (click)="moveTop()" role="button" color="primary"
+          aria-hidden="false" aria-label="Move to top">vertical_align_top
+</mat-icon>
+<mat-icon *ngIf="index < theArray.length - 1" class="moveBottom-{{index}} fake-button" (click)="moveBottom()"
+          role="button" color="primary" aria-hidden="false" aria-label="Move to bottom">vertical_align_bottom
+</mat-icon>

@@ -1,4 +1,4 @@
-export type SortOrder = -1 | 1 | 'asc' | 'ascending' | 'desc' | 'descending';
+import {EltLog} from "../models.model";
 
 export interface HttpLogResponse {
     logs: HttpLog[];
@@ -34,7 +34,6 @@ export interface DailyUsage {
     hits: number
 }
 
-
 export type ActiveBanResponse ={
     ipList: ActiveBan[]
 }
@@ -45,6 +44,19 @@ export type ActiveBan = {
     strikes: number;
     reason: string
 };
+
+export interface SearchParams {
+    includeBatch: boolean;
+    limit: number;
+    skip: number;
+}
+
+export interface ItemLogResponse {
+    logs: ItemLog[];
+    totalItems: number;
+}
+
+export type ItemLog  = EltLog
 
 export interface ServerErrorResponse {
     logs: ServerError[];
@@ -89,3 +101,50 @@ export interface LoginRecord {
     email?: string,
     ip: string,
 }
+
+
+/**
+ * Search Request Types:
+ */
+type SearchRequestPagination = {
+    currentPage: number;
+    pageSize: number;
+}
+type SearchRequestSorting = {
+    sortBy: string;
+    sortDir: string;
+}
+
+type SearchRequestDateRange = {
+    fromDate: Date;
+    toDate: Date;
+}
+
+export type HttpLogSearchRequest =
+    SearchRequestSorting
+    & SearchRequestPagination
+    & SearchRequestDateRange
+    & { filterTerm: string }
+
+export type AppLogSearchRequest = SearchRequestSorting
+    & SearchRequestPagination
+    & SearchRequestDateRange
+
+export type  ItemLogSearchRequest = SearchRequestSorting
+    & SearchRequestPagination
+    & { module: string; includeBatchLoader: boolean; }
+
+export type ServerErrorSearchRequest = SearchRequestSorting
+    & SearchRequestPagination
+    & SearchRequestDateRange
+    & { includeBadInput: boolean; }
+
+export type ClientErrorSearchRequest = SearchRequestSorting
+    & SearchRequestPagination
+    & SearchRequestDateRange
+    & { includeUserAgents: string[]; }
+
+export type LoginRecordSearchRequest = SearchRequestSorting
+    & SearchRequestPagination
+    & SearchRequestDateRange
+

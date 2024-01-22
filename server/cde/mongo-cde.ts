@@ -3,15 +3,22 @@ import { isEmpty } from 'lodash';
 import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
 import { config, ObjectId } from 'server';
 import { updateOrInsertDocument } from 'server/cde/elastic';
-import { auditSchema, dataElementSchema, dataElementSourceSchema, draftSchema } from 'server/cde/schemas';
+import {
+    auditSchema as deAuditSchema,
+    dataElementSchema,
+    dataElementSourceSchema,
+    draftSchema
+} from 'server/cde/schemas';
 import { splitError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { auditGetLog, auditModifications, generateTinyId } from 'server/system/mongo-data';
+import {auditModifications, generateTinyId } from 'server/system/mongo-data';
 import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
-import { CbError1, EltLog, User } from 'shared/models.model';
+import { CbError1, User } from 'shared/models.model';
+import { EltLogDocument } from '../log/dbLogger';
+import {EltLogDocument} from "../log/dbLogger";
 
 const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
 
@@ -21,7 +28,6 @@ export type DataElementDraft = DataElement;
 export type DataElementDraftDocument = Document<ObjectId, {}, DataElementDraft> & DataElementDraft;
 export type DataElementSource = DataElement;
 export type DataElementSourceDocument = Document<ObjectId, {}, DataElementSource> & DataElementSource;
-export type EltLogDocument = Document<ObjectId, {}, EltLog> & EltLog;
 
 const ajvElt = new Ajv({allErrors: true});
 ajvElt.addSchema(require(global.assetDir('shared/de/assets/adminItem.schema')));
@@ -69,13 +75,12 @@ dataElementSchema.pre('save', preSave);
 dataElementSourceSchema.pre('save', preSave);
 
 const conn = establishConnection(config.database.appData);
-const cdeAuditModel: Model<EltLogDocument> = conn.model('CdeAudit', auditSchema);
 export const dataElementModel: Model<DataElementDocument> = conn.model('DataElement', dataElementSchema);
 export const dataElementDraftModel: Model<DataElementDraftDocument> = conn.model('DataElementDraft', draftSchema);
 export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.model('DataElementSource', dataElementSourceSchema);
+export const cdeAuditModel: Model<EltLogDocument> = conn.model('CdeAudit', deAuditSchema);
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
-export const getAuditLog = auditGetLog(cdeAuditModel);
 
 export function byTinyId(tinyId: string): Promise<DataElementDocument | null>;
 export function byTinyId(tinyId: string, cb: CbError1<DataElementDocument | null>): void;

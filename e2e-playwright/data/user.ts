@@ -29,4 +29,12 @@ export default {
         username: 'ctepOnlyEditor',
         password: DEFAULT_PASSWORD,
     },
+    ctepEditor: {
+        username: 'ctepEditor',
+        password: DEFAULT_PASSWORD,
+    },
+    testEditor: {
+        username: 'testEditor',
+        password: DEFAULT_PASSWORD,
+    },
 };

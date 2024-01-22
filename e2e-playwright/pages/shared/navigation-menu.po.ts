@@ -96,6 +96,7 @@ export class NavigationMenuPo {
         await this.page.waitForSelector(`[data-testid="logged-in-username"]`, {
             state: 'visible',
         });
+        // wait for URL not being /login
         await expect(this.page).not.toHaveURL(/\/login/);
     }
 
