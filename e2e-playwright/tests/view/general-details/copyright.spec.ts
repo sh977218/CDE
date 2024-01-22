@@ -17,18 +17,18 @@ test.describe(`Edit Copyright`, async () => {
         const copyrightStatementLocator = formPage.copyrightStatement();
         await inlineEdit.editIcon(copyrightStatementLocator).click();
         await inlineEdit.inputField(copyrightStatementLocator).fill(newStatement);
-        await inlineEdit.submitButton(copyrightStatementLocator).click();
+        await inlineEdit.confirmButton(copyrightStatementLocator).click();
 
         const copyrightAuthorityLocator = formPage.copyrightAuthority();
         await inlineEdit.editIcon(copyrightAuthorityLocator).click();
         await inlineEdit.inputField(copyrightAuthorityLocator).fill(newAuthority);
-        await inlineEdit.submitButton(copyrightAuthorityLocator).click();
+        await inlineEdit.confirmButton(copyrightAuthorityLocator).click();
 
         await formPage.copyrightUrlAdd().click();
         const copyrightUrlLocator = formPage.copyrightUrl().first();
         await inlineEdit.editIcon(copyrightUrlLocator).click();
         await inlineEdit.inputField(copyrightUrlLocator).fill(newUrl);
-        await inlineEdit.submitButton(copyrightUrlLocator).click();
+        await inlineEdit.confirmButton(copyrightUrlLocator).click();
 
         await saveModal.newVersion('', 'Form saved.');
     });

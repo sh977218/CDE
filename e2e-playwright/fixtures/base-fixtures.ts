@@ -124,8 +124,8 @@ const test = baseTest.extend<{
     previewSection: async ({ page, materialPage }, use) => {
         await use(new PreviewPo(page, materialPage));
     },
-    displayProfileSection: async ({ page, inlineEdit, materialPage }, use) => {
-        await use(new DisplayProfilePo(page, inlineEdit, materialPage));
+    displayProfileSection: async ({ page, inlineEdit, materialPage, saveModal }, use) => {
+        await use(new DisplayProfilePo(page, inlineEdit, materialPage, saveModal));
     },
     myBoardPage: async ({ page }, use) => {
         await use(new MyBoardPagePo(page));

@@ -10,8 +10,8 @@
                     {{errorMessage}}
                 </mat-list-item>
                 <mat-list-item role="listitem" class="ml-10" *ngFor="let stack of stacks">
-                    at: {{ stack.methodName }}({{ stack.arguments }}) in {{ stack.file }}
-                    line: {{ stack.lineNumber }} {{ stack.column }}
+                    <strong>at:</strong> {{ stack.methodName }}({{ stack.arguments.join(',') }}) <strong>in</strong> {{ stack.file }}
+                    line: <strong>{{ stack.lineNumber }}:{{ stack.column }}</strong>
                 </mat-list-item>
             </mat-list>
         </mat-card-content>

@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
 
 export class SaveModalPo {
@@ -24,6 +24,12 @@ export class SaveModalPo {
 
     saveButton() {
         return this.page.getByTestId(`save-modal`);
+    }
+
+    async waitForDraftSaveComplete() {
+        const viewChangeButton = this.page.locator(`#viewChangesBtn`);
+        await viewChangeButton.waitFor();
+        await expect(viewChangeButton).toHaveText('Changed');
     }
 
     async deleteDraft() {

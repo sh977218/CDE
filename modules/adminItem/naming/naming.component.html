@@ -1,9 +1,9 @@
-<section *ngIf="elt.designations.length || canEdit" id="designations-div">
+<section *ngIf="elt.designations.length || canEdit" id="designations-div" data-testid="designations-container">
     <h3>Other Names & Definitions</h3>
     <div *ngIf="elt.designations.length === 0">
         There are no designations.
     </div>
-    <dl class="cde-property" *ngFor="let designation of elt.designations; index as i">
+    <dl class="cde-property" *ngFor="let designation of elt.designations; index as i" data-testid="designation-container">
         <dt>
             <mat-icon *ngIf="canEdit && !designation.edit && elt.designations.length > 1" title="Delete Designation"
                       id="removeDesignation-{{i}}" class="fake-button" role="button" tabindex="0"
@@ -30,12 +30,12 @@
         Add Name
     </button>
 </section>
-<section *ngIf="elt.definitions.length || canEdit" id="definitions-div">
+<section *ngIf="elt.definitions.length || canEdit" id="definitions-div" data-testid="definitions-container">
     <h4>Definitions</h4>
     <div *ngIf="elt.definitions.length === 0">
         There are no definitions.
     </div>
-    <dl class="cde-property" *ngFor="let definition of elt.definitions;let i = index">
+    <dl class="cde-property" *ngFor="let definition of elt.definitions;let i = index" data-testid="definition-container">
         <dt>
             <mat-icon *ngIf="canEdit && !definition.edit" title="Delete Definition"
                       id="removeDefinition-{{i}}" class="fake-button" role="button" tabindex="0"

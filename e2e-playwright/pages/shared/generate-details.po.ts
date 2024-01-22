@@ -29,7 +29,7 @@ export class GenerateDetailsPo {
         const originLocator = this.origin();
         await this.inlineEdit.editIcon(originLocator).click();
         await this.inlineEdit.inputField(originLocator).fill(newOrigin);
-        await this.inlineEdit.submitButton(originLocator).click();
+        await this.inlineEdit.confirmButton(originLocator).click();
     };
 
     editRegistrationStatus = async ({

@@ -1,8 +1,6 @@
 <div class="p-5">
-    <form [formGroup]="searchCriteria" (ngSubmit)="onSubmit()">
-        <mat-checkbox formControlName="includeBadInput" data-testid="include-bad-input-checkbox">Including user's bad inputs?</mat-checkbox>
-        <button mat-raised-button type="submit" color="primary">Search</button>
-    </form>
+    <mat-checkbox [formControl]="includeBadInput" data-testid="include-bad-input-checkbox">Including user's bad inputs?</mat-checkbox>
+
     <div class="example-container mat-elevation-z8">
         <div class="loading-shade"
              *ngIf="isLoadingResults">

@@ -348,6 +348,7 @@ const formCompareArrayOption: any[] = [
 @Component({
     selector: 'cde-compare-item-array',
     templateUrl: './compareItemArray.component.html',
+    styleUrls: ['./compareItemArray.component.scss'],
 })
 export class CompareItemArrayComponent implements OnInit {
     @Input() older!: ComparedDe | ComparedForm;

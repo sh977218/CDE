@@ -1,10 +1,9 @@
 <div class="p-5">
-    <form [formGroup]="searchCriteria" (ngSubmit)="onSubmit()">
+    <form [formGroup]="searchCriteria">
         <mat-checkbox formControlName="chrome" data-testid="include-chrome-checkbox">Chrome</mat-checkbox>
-        <mat-checkbox formControlName="firefox" data-testid="include-firefox-checkbox">firefox</mat-checkbox>
+        <mat-checkbox formControlName="firefox" data-testid="include-firefox-checkbox">Firefox</mat-checkbox>
         <mat-checkbox formControlName="ie" data-testid="include-ie-checkbox">IE</mat-checkbox>
         <mat-checkbox formControlName="safari" data-testid="include-edge-checkbox">Safari</mat-checkbox>
-        <button mat-raised-button type="submit" color="primary">Search</button>
     </form>
     <div class="example-container mat-elevation-z8">
         <div class="loading-shade"

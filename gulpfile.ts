@@ -167,6 +167,20 @@ gulp.task('checkDbConnection', function checkDbConnection() {
     });
 });
 
+gulp.task('mongorestoretestlog', function mongorestore() {
+    const username = config.database.log.username;
+    const password = config.database.log.password;
+    const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
+    const db = config.database.log.db;
+    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/cde-logs-test/'];
+
+    if (username)  {
+        args.push('-u', username, '-p', password)
+    }
+
+    return run('mongorestore ' + args.join(' '), runInAppOptions);
+});
+
 gulp.task('mongorestoretest', function mongorestore() {
     const username = config.database.appData.username;
     const password = config.database.appData.password;
@@ -181,7 +195,7 @@ gulp.task('mongorestoretest', function mongorestore() {
     return run('mongorestore ' + args.join(' '), runInAppOptions);
 });
 
-gulp.task('injectElastic', ['es', 'mongorestoretest'], function injectElastic() {
+gulp.task('injectElastic', ['es', 'mongorestoretest', 'mongorestoretestlog'], function injectElastic() {
     return node('scripts/indexDb');
 });
 

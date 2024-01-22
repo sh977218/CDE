@@ -18,9 +18,9 @@ test.describe(`Profile`, async () => {
         const userEmailLocator = profilePage.userEmail();
         await inlineEdit.editIcon(userEmailLocator).click();
         await inlineEdit.inputField(userEmailLocator).fill('me@');
-        await expect(inlineEdit.submitButton(userEmailLocator)).toBeDisabled();
+        await expect(inlineEdit.confirmButton(userEmailLocator)).toBeDisabled();
         await inlineEdit.inputField(userEmailLocator).fill('me@me.com');
-        await inlineEdit.submitButton(userEmailLocator).click();
+        await inlineEdit.confirmButton(userEmailLocator).click();
         await materialPage.checkAlert('Saved');
     });
 });

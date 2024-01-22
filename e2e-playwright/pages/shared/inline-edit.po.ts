@@ -15,7 +15,7 @@ export class InlineEditPo {
         return locator.getByTestId('inline-edit-input');
     }
 
-    submitButton(locator: Locator) {
+    confirmButton(locator: Locator) {
         return locator.getByTestId('inline-edit-submit');
     }
 }

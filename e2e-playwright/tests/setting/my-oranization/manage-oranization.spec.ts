@@ -46,7 +46,7 @@ test.describe(`My organization`, async () => {
             manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator);
         await inlineEdit.editIcon(organizationMailAddressLocator).click();
         await inlineEdit.inputField(organizationMailAddressLocator).fill(newOrganization.orgMailAddress);
-        await inlineEdit.submitButton(organizationMailAddressLocator).click();
+        await inlineEdit.confirmButton(organizationMailAddressLocator).click();
         await materialPage.checkAlert('Saved');
         await expect(manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator)).toBeVisible();
     });

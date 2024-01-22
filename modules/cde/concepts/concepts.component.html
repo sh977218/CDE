@@ -24,12 +24,14 @@
                 </td>
                 <td class="detailTableTd">
                     <span (click)="relatedCdes(concept.name, config)" id="concept_cde_name_{{$index}}"
+                          data-testid="concept-name"
                           itemprop="name" class="fake-link">{{concept.name}}</span>
                 </td>
                 <td itemprop="codeSystem" class="detailTableTd">{{concept.origin}}</td>
                 <td itemprop="codeValue" class="detailTableTd">{{concept.originId}}</td>
                 <td headers="conceptActions_{{config.type}}" *ngIf="canEdit" class="detailTableTd">
                     <mat-icon id="remove{{config.type}}-{{$index}}" class="fake-button" role="button" tabindex="0"
+                              data-testid="remove-concept-button"
                               title="Remove" (click)="removeConcept(config.type, $index)">delete_outline
                     </mat-icon>
                     <cde-sortable-array [theArray]="elt[config.type].concepts" [index]="$index"

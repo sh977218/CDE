@@ -1,6 +1,6 @@
 <div>
     <div *ngIf="!editMode" class="wordwrap">
-        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button colorFail" role="button" tabindex="0" (click)="edit()">edit
+        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button colorFail" data-testid="inline-edit-icon" role="button" tabindex="0" (click)="edit()">edit
         </mat-icon>
         <cde-text-truncate *ngIf="localFormat === 'html'; else showText"
                            [text]="value" [threshold]="500" [enableTextTruncate]="enableTextTruncate"

@@ -1,22 +1,13 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AsyncPipe, DatePipe, JsonPipe, NgIf } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import {
-    catchError,
-    debounceTime,
-    distinctUntilChanged,
-    map,
-    pairwise,
-    startWith,
-    switchMap,
-    tap,
-} from 'rxjs/operators';
+import { catchError, debounceTime, distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { ServerError, ServerErrorResponse } from 'shared/log/audit';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -44,12 +35,7 @@ export class ServerErrorComponent implements AfterViewInit {
     @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort!: MatSort;
 
-    searchCriteria = new FormGroup(
-        {
-            includeBadInput: new FormControl<boolean>(false),
-        },
-        { updateOn: 'submit' }
-    );
+    includeBadInput = new FormControl<boolean>(false);
 
     displayedColumns: string[] = ['date', 'request', 'stack', 'details', 'message', 'errorCode', 'errorType'];
 
@@ -65,13 +51,12 @@ export class ServerErrorComponent implements AfterViewInit {
         this.dataSource$ = merge(
             this.paginator.page,
             this.sort.sortChange,
-            this.searchCriteria.valueChanges.pipe(
+            this.includeBadInput.valueChanges.pipe(
                 debounceTime(150),
                 distinctUntilChanged(),
                 startWith(null),
-                pairwise(),
                 tap({
-                    next: () => this.paginator.firstPage(),
+                    next: res => this.paginator.firstPage(),
                 })
             )
         ).pipe(
@@ -80,13 +65,9 @@ export class ServerErrorComponent implements AfterViewInit {
         );
     }
 
-    onSubmit() {
-        this.searchCriteria.updateValueAndValidity({ onlySelf: false, emitEvent: true });
-    }
-
     searchLogs() {
         const body = {
-            includeBadInput: this.searchCriteria.get('includeBadInput')?.value,
+            includeBadInput: this.includeBadInput.value,
             sortBy: this.sort.active,
             sortDir: this.sort.direction,
             currentPage: this.paginator.pageIndex,

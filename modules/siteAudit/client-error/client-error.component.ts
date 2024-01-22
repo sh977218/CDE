@@ -9,16 +9,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-    catchError,
-    debounceTime,
-    distinctUntilChanged,
-    map,
-    pairwise,
-    startWith,
-    switchMap,
-    tap,
-} from 'rxjs/operators';
+import { catchError, debounceTime, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { merge, Observable, of } from 'rxjs';
 import { ClientError, ClientErrorExtraInfo, ClientErrorResponse } from 'shared/log/audit';
 import { ClientErrorDetailModalComponent } from './client-error-detail-modal/client-error-detail-modal.component';
@@ -57,15 +48,12 @@ export class ClientErrorComponent implements AfterViewInit {
     dataSource$: Observable<ClientErrorUI[]> = new Observable<ClientErrorUI[]>();
 
     constructor(private _httpClient: HttpClient, private _formBuilder: FormBuilder, public dialog: MatDialog) {
-        this.searchCriteria = _formBuilder.group(
-            {
-                chrome: true,
-                firefox: true,
-                ie: true,
-                safari: true,
-            },
-            { updateOn: 'submit' }
-        );
+        this.searchCriteria = _formBuilder.group({
+            chrome: true,
+            firefox: true,
+            ie: true,
+            safari: true,
+        });
     }
 
     ngAfterViewInit(): void {
@@ -75,9 +63,7 @@ export class ClientErrorComponent implements AfterViewInit {
             this.sort.sortChange,
             this.searchCriteria.valueChanges.pipe(
                 debounceTime(150),
-                distinctUntilChanged(),
                 startWith(null),
-                pairwise(),
                 tap({
                     next: () => this.paginator.firstPage(),
                 })
@@ -86,10 +72,6 @@ export class ClientErrorComponent implements AfterViewInit {
             tap({ next: () => (this.isLoadingResults = true) }),
             switchMap(() => this.searchLogs())
         );
-    }
-
-    onSubmit() {
-        this.searchCriteria.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     }
 
     searchLogs() {

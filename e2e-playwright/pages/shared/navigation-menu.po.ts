@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
 
@@ -96,6 +96,7 @@ export class NavigationMenuPo {
         await this.page.waitForSelector(`[data-testid="logged-in-username"]`, {
             state: 'visible',
         });
+        await expect(this.page).not.toHaveURL(/\/login/);
     }
 
     async gotoCdeSearch() {

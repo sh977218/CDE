@@ -116,26 +116,26 @@
         </dd>
     </ng-container>
     <ng-container *ngIf="elt.created">
-        <dt>Created:</dt>
-        <dd>
+        <dt data-testid="created-label">Created:</dt>
+        <dd data-testid="created">
             {{elt.created | date: 'MM/dd/yyyy @ h:mma'}}
         </dd>
     </ng-container>
     <ng-container *ngIf="elt.createdBy && userService.isOrgAuthority()">
-        <dt>Created By:</dt>
-        <dd>
+        <dt data-testid="created-by-label">Created By:</dt>
+        <dd data-testid="created-by">
             {{elt.createdBy.username}}
         </dd>
     </ng-container>
     <ng-container *ngIf="elt.updated">
-        <dt>Updated:</dt>
-        <dd tourAnchor="updated" id="updated">
+        <dt data-testid="updated-label">Updated:</dt>
+        <dd tourAnchor="updated" id="updated" data-testid="updated">
             {{elt.updated | date: 'MM/dd/yyyy @ h:mma'}}
         </dd>
     </ng-container>
     <ng-container *ngIf="elt.updatedBy && userService.isOrgAuthority()">
-        <dt>Updated By:</dt>
-        <dd>
+        <dt data-testid="updated-by-label">Updated By:</dt>
+        <dd data-testid="updated-by">
             {{elt.updatedBy.username}}
         </dd>
     </ng-container>
