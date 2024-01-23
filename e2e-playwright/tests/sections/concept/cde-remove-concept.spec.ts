@@ -5,6 +5,7 @@ import user from '../../../data/user';
 import { Version } from '../../../src/model/type';
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`Remove CDE concepts`, async ({
     page,
     cdePage,
@@ -54,12 +55,15 @@ test(`Remove CDE concepts`, async ({
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
             await expect(newPage.getByText(`Warning: this data element is archived.`)).toBeVisible();
-            await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
-            await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
             await expect(newPage.getByText(existingConceptCodes[0])).toBeVisible();
             await expect(newPage.getByText(existingConceptCodes[1])).toBeVisible();
             await expect(newPage.getByText(existingConceptCodes[2])).toBeVisible();
+            await newPage.getByText(`view the current version here`).click();
+            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
+            await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
+            await expect(newPage.getByText(existingConceptCodes[0])).toBeHidden();
+            await expect(newPage.getByText(existingConceptCodes[1])).toBeHidden();
+            await expect(newPage.getByText(existingConceptCodes[2])).toBeHidden();
             await newPage.close();
         });
 

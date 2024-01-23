@@ -42,8 +42,11 @@ type NamedCounts = { name: string; count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
 
 const searchDesktopWidth = 772;
-const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)']);
-const orderedFirstOrgIcons = Object.freeze(['/assets/img/endorsedRibbonIcon.png']);
+const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)', 'ScHARe']);
+const orderedFirstOrgIcons = Object.freeze([
+    '/assets/img/endorsedRibbonIcon.png',
+    '/assets/img/endorsedRibbonIcon.png',
+]);
 
 @Component({
     template: '',
