@@ -162,4 +162,25 @@ export class NavigationMenuPo {
         await this.page.waitForURL(/\/settings\/articles/);
         await this.page.waitForSelector('h1', { state: 'visible' });
     }
+
+    async gotoGuide() {
+        await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
+        await this.materialPage.matMenuItem('Guides').click();
+    }
+
+    async gotoNewFeatures() {
+        await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
+        await this.materialPage.matMenuItem('New Features').click();
+        await this.page.waitForURL(/\/whatsNew/);
+    }
+
+    async gotoResources() {
+        await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
+        await this.materialPage.matMenuItem('Resources').click();
+        await this.page.waitForURL(/\/resources/, { timeout: 10000 }); //resources take very long to load
+    }
+
+    async gotoAbout() {
+        await this.clickUntilUrl(this.page.locator(`#aboutLink`), /\/about/);
+    }
 }

@@ -5,7 +5,7 @@ import user from '../../../data/user';
 import { Version } from '../../../src/model/type';
 
 test.describe.configure({ retries: 0 });
-test.use({ video: 'on', trace: 'on' });
+
 test(`Remove CDE concepts`, async ({
     page,
     cdePage,

@@ -62,7 +62,6 @@ test.describe(`Display profile`, async () => {
     });
 
     test(`Meta device`, async ({ page, searchPage, formPage, displayProfileSection, navigationMenu }) => {
-        test.fixme();
         await searchPage.goToSearch('form');
         const formName = 'Metadata Device Display Profile Test';
         await formPage.goToForm(formTinyId[formName]);

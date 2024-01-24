@@ -13,7 +13,6 @@ test.describe(`Merge form`, async () => {
         });
 
         test(`Not aligned forms cannot be merged`, async ({ myBoardPage, boardPage }) => {
-            test.fixme();
             await myBoardPage.boardTitle('NotAlignForm').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();
@@ -30,7 +29,6 @@ test.describe(`Merge form`, async () => {
         });
 
         test(`Merge and retire CDEs`, async ({ materialPage, myBoardPage, boardPage, cdePage, formPage }) => {
-            test.fixme();
             await myBoardPage.boardTitle('MergeFormRetire').click();
             await boardPage.compareButton().click();
             await boardPage.openMergeFormModalButton().click();

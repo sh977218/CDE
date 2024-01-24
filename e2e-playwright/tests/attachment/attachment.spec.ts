@@ -22,8 +22,4 @@ test.describe(`Attachment`, async () => {
             expect(await attachmentLocator.isVisible()).toBeFalsy();
         });
     });
-
-    test.describe(`Form page`, async () => {
-        test.fixme();
-    });
 });

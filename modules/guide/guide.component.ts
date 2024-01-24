@@ -1,16 +1,24 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { AfterViewInit, Component, HostListener, OnDestroy } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { ScrollService } from 'angular-aio-toc/scroll.service';
 import { TocService } from 'angular-aio-toc/toc.service';
 import { Article } from 'shared/article/article.model';
+import { ScrollSpyService } from '../angular-aio-toc/scroll-spy.service';
+import { NgIf } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { TocModule } from '../angular-aio-toc/toc.module';
+import { MatIconModule } from '@angular/material/icon';
+import { SafeHtmlPipe } from '../non-core/pipes/safeHtml.pipe';
 
 @Component({
     selector: 'cde-guide',
     templateUrl: 'guide.component.html',
     styleUrls: ['guide.component.scss', '../cde/dataElementView/view.style.scss'],
-    providers: [TocService],
+    providers: [TocService, ScrollService, ScrollSpyService],
+    imports: [NgIf, MatSidenavModule, TocModule, MatIconModule, SafeHtmlPipe, RouterLink],
+    standalone: true,
 })
 export class GuideComponent implements OnDestroy, AfterViewInit {
     article?: Article;
@@ -19,7 +27,6 @@ export class GuideComponent implements OnDestroy, AfterViewInit {
     constructor(
         private http: HttpClient,
         private router: Router,
-        private cd: ChangeDetectorRef,
         private scrollService: ScrollService,
         private tocService: TocService,
         public userService: UserService
