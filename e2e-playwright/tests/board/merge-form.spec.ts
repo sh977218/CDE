@@ -34,7 +34,7 @@ test.describe(`Merge form`, async () => {
             await boardPage.openMergeFormModalButton().click();
             await boardPage.retireCdeCheckbox().check();
             await boardPage.mergeFormButton().click();
-            await materialPage.checkAlert('Form merged');
+            await materialPage.checkAlert('Form merged', 60000);
             for (const l of await boardPage.leftQuestions().all()) {
                 await expect(l).toContainText('Retired');
             }

@@ -40,6 +40,9 @@ test(`Edit CDE names`, async ({
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await expect(page.getByRole('heading', { name: 'CDE Details' })).toBeVisible();
         await page.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
+    });
+
+    await test.step(`Get current version`, async () => {
         existingVersion = await page.locator(`[itemprop="version"]`).innerText();
     });
 

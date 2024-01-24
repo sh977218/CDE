@@ -6,7 +6,7 @@
     <mat-form-field appearance="fill">
         <mat-label>Enter New Classification Name</mat-label>
         <input matInput placeholder="Enter Some Input" [formControl]="newClassificationName" required
-               id="newClassificationName" pattern="^[^;]+$">
+               id="newClassificationName" pattern="^[^;]+$" data-testid="new-classification-input">
         <mat-error *ngIf="newClassificationName.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
 </mat-dialog-content>

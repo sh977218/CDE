@@ -1,6 +1,8 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
+import cdeTinyId from '../../data/cde-tinyId';
+import formTinyId from '../../data/form-tinyId';
 
 export class NavigationMenuPo {
     protected readonly page: Page;
@@ -104,8 +106,26 @@ export class NavigationMenuPo {
         await this.clickUntilUrl(this.page.getByTestId(`menu_cdes_link`), /\/cde\/search/);
     }
 
+    async gotoCdeByName(cdeName: string) {
+        const tinyId = cdeTinyId[cdeName];
+        await this.gotoCdeSearch();
+        await this.page.getByTestId(`search-query-input`).fill(tinyId);
+        await this.page.getByTestId(`search-submit-button`).click();
+        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.page.locator(`[id="linkToElt_0"]`).click();
+    }
+
     async gotoFormSearch() {
         await this.clickUntilUrl(this.page.getByTestId(`menu_forms_link`), /\/form\/search/);
+    }
+
+    async gotoFormByName(formName: string) {
+        const tinyId = formTinyId[formName];
+        await this.gotoFormSearch();
+        await this.page.getByTestId(`search-query-input`).fill(tinyId);
+        await this.page.getByTestId(`search-submit-button`).click();
+        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.page.locator(`[id="linkToElt_0"]`).click();
     }
 
     async gotoSettings() {

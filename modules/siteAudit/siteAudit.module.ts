@@ -11,7 +11,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule, Routes } from '@angular/router';
 import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
-import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 import { HttpLogComponent } from './http-log/http-log.component';
@@ -22,6 +21,7 @@ import { DailyUsageComponent } from './daily-usage/daily-usage.component';
 import { LoginRecordComponent } from './login-record/login-record.component';
 import { ActiveBanComponent } from './active-ban/active-ban.component';
 import { ItemLogComponent } from './item-log/item-log.component';
+import { CamelCaseToHumanPipe } from '../non-core/camelCaseToHuman.pipe';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -50,8 +50,9 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         ClientErrorComponent,
         LoginRecordComponent,
         ActiveBanComponent,
+        CamelCaseToHumanPipe,
     ],
-    declarations: [CamelCaseToHumanPipe, ClassificationAuditLogComponent, SiteAuditComponent],
+    declarations: [ClassificationAuditLogComponent, SiteAuditComponent],
     exports: [RouterModule],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

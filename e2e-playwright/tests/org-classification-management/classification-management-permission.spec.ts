@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import test from '../../fixtures/base-fixtures';
 import user from '../../data/user';
 
-test.describe(`Classification Management`, async () => {
+test.describe(`Classification Management Permission`, async () => {
     test(`'Org Edit' not 'Org Admin' can only see classification`, async ({
         page,
         homePage,

@@ -7,6 +7,10 @@ export class SearchPagePo {
         this.page = page;
     }
 
+    /**
+     * Description - This method use page.goto(), which means reload page happens.
+     * @param module - cde or form
+     */
     async goToSearch(module: string) {
         await this.page.goto(`/${module}/search`);
         await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });

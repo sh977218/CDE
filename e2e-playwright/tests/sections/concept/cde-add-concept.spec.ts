@@ -51,6 +51,9 @@ test(`Add CDE concepts`, async ({
         await navigationMenu.login(user.nlm.username, user.nlm.password);
         await expect(page.getByRole('heading', { name: 'Concepts' })).toBeVisible();
         await page.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
+    });
+
+    await test.step(`Get current version`, async () => {
         existingVersion = await page.locator(`[itemprop="version"]`).innerText();
     });
 

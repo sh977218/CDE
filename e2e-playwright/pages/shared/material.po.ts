@@ -111,12 +111,12 @@ export class MaterialPo {
         return containerLocator.locator(`mat-chip-list input`);
     }
 
-    async checkAlert(text: string) {
+    async checkAlert(text: string, timeout = 10 * 1000) {
         const alertText = this.page
             .locator('mat-snack-bar-container')
             .locator('simple-snack-bar')
             .locator('.mat-mdc-snack-bar-label');
-        await expect(alertText).toHaveText(text, { timeout: 30 * 1000 });
+        await expect(alertText).toHaveText(text, { timeout });
         await this.page.locator('mat-snack-bar-container').locator('button').click();
         await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
     }

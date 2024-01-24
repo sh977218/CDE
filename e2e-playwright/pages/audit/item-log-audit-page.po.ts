@@ -1,5 +1,4 @@
-import { expect, Page } from '@playwright/test';
-import { AuditTabPo } from './audit-tab.po';
+import { Page } from '@playwright/test';
 
 export class ItemLogAuditPagePo {
     private readonly page: Page;
