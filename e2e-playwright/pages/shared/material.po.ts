@@ -7,6 +7,10 @@ export class MaterialPo {
         this.page = page;
     }
 
+    matOverlay() {
+        return this.page.locator(`.cdk-overlay-container`);
+    }
+
     matMenuContent() {
         return this.page.locator(`.mat-mdc-menu-content`);
     }
@@ -15,7 +19,15 @@ export class MaterialPo {
         return this.page.getByRole('menuitem', { name: text, exact: true });
     }
 
-    matOption(text: string): Locator {
+    searchAutoCompleteOptions(): Locator {
+        return this.page.getByTestId(`search-auto-complete-option`);
+    }
+
+    matOptions() {
+        return this.page.locator(`mat-option`);
+    }
+
+    matOptionByText(text: string): Locator {
         return this.page.locator('//mat-option[normalize-space() = "' + text + '"]');
     }
 
@@ -111,12 +123,12 @@ export class MaterialPo {
         return containerLocator.locator(`mat-chip-list input`);
     }
 
-    async checkAlert(text: string, timeout = 10 * 1000) {
+    async checkAlert(text: string) {
         const alertText = this.page
             .locator('mat-snack-bar-container')
             .locator('simple-snack-bar')
             .locator('.mat-mdc-snack-bar-label');
-        await expect(alertText).toHaveText(text, { timeout });
+        await expect(alertText).toHaveText(text, { timeout: 30 * 1000 });
         await this.page.locator('mat-snack-bar-container').locator('button').click();
         await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
     }

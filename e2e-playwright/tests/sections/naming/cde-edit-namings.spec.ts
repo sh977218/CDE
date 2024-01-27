@@ -1,15 +1,15 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
-import { Designation, Definition, Version } from '../../../src/model/type';
+import { test } from '../../../fixtures/base-fixtures';
+import { Designation, Definition, Version } from '../../../model/type';
+import { Accounts } from '../../../data/user';
+import { CdeTinyIds } from '../../../data/cde-tinyId';
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`Edit CDE names`, async ({
     request,
     page,
     materialPage,
-    cdePage,
     navigationMenu,
     itemLogAuditPage,
     auditTab,
@@ -21,11 +21,11 @@ test(`Edit CDE names`, async ({
     const cdeName = 'Mediastinal Lymph Node Physical Examination Specify';
 
     const newDesignation: Designation = {
-        designation: `[designation change number 1]`,
+        designation: `[designation change number 1] ${new Date().toISOString()}`,
         tags: [],
     };
     const newDefinition: Definition = {
-        definition: `[definition change number 1]`,
+        definition: `[definition change number 1] ${new Date().toISOString()}`,
         tags: [],
     };
     const versionInfo: Version = {
@@ -36,8 +36,8 @@ test(`Edit CDE names`, async ({
     let existingVersion = '';
 
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoCdeByName(cdeName);
+        await navigationMenu.login(Accounts.nlm);
         await expect(page.getByRole('heading', { name: 'CDE Details' })).toBeVisible();
         await page.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
     });
@@ -64,9 +64,10 @@ test(`Edit CDE names`, async ({
                 page.context().waitForEvent('page'),
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
-            await expect(newPage.getByText(`Warning: this data element is archived.`)).toBeVisible();
+            await newPage.waitForURL(/\/deView\?cdeId=*/);
+            await expect(newPage.getByText(`this data element is archived.`)).toBeVisible();
             await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
+            await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
             await newPage.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
             await expect(newPage.getByText(newDesignation.designation).first()).toBeVisible();
             await expect(newPage.getByText(newDefinition.definition).first()).toBeVisible();
@@ -96,7 +97,7 @@ test(`Edit CDE names`, async ({
             const responseBody = await response.body();
             expect(Array.isArray(responseJson)).toBeTruthy();
             expect(responseJson.length).toBeTruthy();
-            expect(responseBody.toString()).toContain(cdeTinyId[cdeName]);
+            expect(responseBody.toString()).toContain(CdeTinyIds[cdeName]);
         });
 
         await test.step(`Verify modify since API - wrong format`, async () => {

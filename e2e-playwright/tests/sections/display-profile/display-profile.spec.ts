@@ -1,89 +1,44 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import formTinyId from '../../../data/form-tinyId';
-import { DisplayProfile } from '../../../src/model/type';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test.describe(`Display profile`, async () => {
-    test(`Form identifiers always visible`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
-        await searchPage.goToSearch('form');
+    test(`Form identifiers always visible`, async ({
+        previewSection,
+        formPage,
+        displayProfileSection,
+        navigationMenu,
+    }) => {
         const formName = 'Multiple Select Display Profile Test';
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
 
-        const displayProfile: DisplayProfile = {
-            profileName: 'Multiple Select Display Profile',
-            styleName: 'Digital (Dynamic style)',
-            numberOfColumn: 6,
-            answerDropdownLimit: 3,
-            matrix: false,
-            displayValues: false,
-            instructions: false,
-            numbering: false,
-            displayInvisibleQuestion: false,
-            displayMetadataDevice: false,
-        };
-
-        await displayProfileSection.addDisplayProfile(displayProfile);
-        await displayProfileSection.deleteDisplayProfile(displayProfile.profileName);
+        await previewSection.selectDisplayProfileByName('Multiple Select Display Profile');
+        await test.step(`Preview has dropdowns`, async () => {
+            await expect(displayProfileSection.previewSelectDropdown()).toHaveCount(14);
+        });
     });
 
-    test(`Answer value`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
-        await searchPage.goToSearch('form');
+    test(`Answer value`, async ({ previewSection, displayProfileSection, navigationMenu }) => {
         const formName = 'Answer Value Display Profile Test';
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
 
-        const answerValueDisplayProfile: DisplayProfile = {
-            profileName: 'Answer Value Display Profile',
-            styleName: 'Digital (Dynamic style)',
-            numberOfColumn: 5,
-            answerDropdownLimit: 0,
-            matrix: false,
-            displayValues: true,
-            instructions: false,
-            numbering: false,
-            displayInvisibleQuestion: false,
-            displayMetadataDevice: false,
-        };
-
-        await displayProfileSection.addDisplayProfile(answerValueDisplayProfile);
-
-        await formPage.goToForm(formTinyId[formName]);
-
+        await previewSection.selectDisplayProfileByName('Answer Value Display Profile');
         await test.step(`Preview has answer value`, async () => {
             expect(await displayProfileSection.previewAnswerValue().count()).toBeGreaterThanOrEqual(1);
         });
         await test.step(`Display profile has answer value`, async () => {
             expect(await displayProfileSection.displayProfileAnswerValue().count()).toBeGreaterThanOrEqual(1);
         });
-
-        await displayProfileSection.deleteDisplayProfile(answerValueDisplayProfile.profileName);
     });
 
-    test(`Meta device`, async ({ page, searchPage, formPage, displayProfileSection, navigationMenu }) => {
-        await searchPage.goToSearch('form');
+    test(`Meta device`, async ({ previewSection, displayProfileSection, navigationMenu }) => {
         const formName = 'Metadata Device Display Profile Test';
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
 
-        const metadataDeviceDisplayProfile: DisplayProfile = {
-            profileName: 'Metadata Device Display Profile',
-            styleName: 'Digital (Dynamic style)',
-            numberOfColumn: 5,
-            answerDropdownLimit: 0,
-            matrix: false,
-            displayValues: true,
-            instructions: false,
-            numbering: false,
-            displayInvisibleQuestion: false,
-            displayMetadataDevice: true,
-        };
-
-        await displayProfileSection.addDisplayProfile(metadataDeviceDisplayProfile);
-
-        await page.waitForTimeout(5000); // Sometimes the checkbox is not saved.
-        await formPage.goToForm(formTinyId[formName]);
+        await previewSection.selectDisplayProfileByName('Metadata Device Display Profile');
 
         await test.step(`Preview has meta device`, async () => {
             expect(await displayProfileSection.previewMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
@@ -91,74 +46,38 @@ test.describe(`Display profile`, async () => {
         await test.step(`Display profile has meta device`, async () => {
             expect(await displayProfileSection.displayProfileMetaDeviceAddButton().count()).toBeGreaterThanOrEqual(1);
         });
-
-        await displayProfileSection.deleteDisplayProfile(metadataDeviceDisplayProfile.profileName);
     });
 
-    test(`Matrix`, async ({ searchPage, formPage, displayProfileSection, navigationMenu }) => {
-        await searchPage.goToSearch('form');
+    test(`Matrix`, async ({ previewSection, displayProfileSection, navigationMenu }) => {
         const formName = 'Matrix Display Profile Test';
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
 
-        const matrixDisplayProfile: DisplayProfile = {
-            profileName: 'Matrix Display Profile',
-            styleName: 'Digital (Dynamic style)',
-            numberOfColumn: 5,
-            answerDropdownLimit: 0,
-            matrix: true,
-            displayValues: true,
-            instructions: false,
-            numbering: false,
-            displayInvisibleQuestion: false,
-            displayMetadataDevice: false,
-        };
+        await previewSection.selectDisplayProfileByName('Matrix Display Profile');
 
-        await displayProfileSection.addDisplayProfile(matrixDisplayProfile);
-
-        await formPage.goToForm(formTinyId[formName]);
+        await navigationMenu.gotoFormByName(formName);
 
         await test.step(`Preview has meta device`, async () => {
-            expect(await displayProfileSection.previewMatrixCheckbox().count()).toBeGreaterThanOrEqual(1);
+            await expect(displayProfileSection.previewMatrixCheckbox()).toHaveCount(5);
         });
         await test.step(`Display profile has meta device`, async () => {
             expect(await displayProfileSection.previewMatrixRadio().count()).toBeGreaterThanOrEqual(1);
         });
 
-        await displayProfileSection.deleteDisplayProfile(matrixDisplayProfile.profileName);
-
-        const noMatrixDisplayProfile: DisplayProfile = {
-            profileName: 'Matrix Display Profile',
-            styleName: 'Digital (Dynamic style)',
-            numberOfColumn: 5,
-            answerDropdownLimit: 0,
-            matrix: false,
-            displayValues: true,
-            instructions: false,
-            numbering: false,
-            displayInvisibleQuestion: false,
-            displayMetadataDevice: false,
-        };
-
-        await displayProfileSection.addDisplayProfile(noMatrixDisplayProfile);
-
-        await formPage.goToForm(formTinyId[formName]);
+        await previewSection.selectDisplayProfileByName('No Matrix Display Profile');
 
         await test.step(`Preview has no matrix checkbox`, async () => {
-            expect(await displayProfileSection.previewMatrixCheckbox().count()).toBe(0);
+            await expect(displayProfileSection.previewMatrixCheckbox()).toHaveCount(0);
         });
         await test.step(`Display profile no matrix radio`, async () => {
-            expect(await displayProfileSection.previewMatrixRadio().count()).toBe(0);
+            await expect(displayProfileSection.previewMatrixRadio()).toHaveCount(0);
         });
-
-        await displayProfileSection.deleteDisplayProfile(noMatrixDisplayProfile.profileName);
     });
 
     test.describe(`Render display profile`, async () => {
-        test.beforeEach(async ({ searchPage, formPage }) => {
-            await searchPage.goToSearch('form');
+        test.beforeEach(async ({ navigationMenu }) => {
             const formName = 'PROMIS SF v1.1 - Anger 5a';
-            await formPage.goToForm(formTinyId[formName]);
+            await navigationMenu.gotoFormByName(formName);
         });
 
         test(`Verify 'Matrix and Values'`, async ({ page }) => {

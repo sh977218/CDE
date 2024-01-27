@@ -1,11 +1,10 @@
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
+import { Accounts } from '../../data/user';
 
 test.describe(`Item Log`, async () => {
-    test.beforeEach(async ({ homePage, navigationMenu }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.orgAuthority.username, user.orgAuthority.password);
+    test.beforeEach(async ({ navigationMenu }) => {
+        await navigationMenu.login(Accounts.orgAuthority);
         await navigationMenu.gotoAudit();
     });
 

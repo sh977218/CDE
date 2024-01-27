@@ -3,7 +3,6 @@ import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { AioTocViewMenuPo } from '../pages/shared/aio-toc-view-menu.po';
-import { HomePagePo } from '../pages/home-page.po';
 
 import { MyBoardPagePo } from '../pages/board/my-board-page.po';
 import { MaterialPo } from '../pages/shared/material.po';
@@ -75,8 +74,7 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
     }
 }
 
-const test = baseTest.extend<{
-    homePage: HomePagePo;
+const baseFixture = baseTest.extend<{
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
     conceptSection: ConceptPo;
@@ -110,14 +108,16 @@ const test = baseTest.extend<{
     submissionEditPage: SubmissionEditPo;
     submissionManagePage: SubmissionManagePo;
 }>({
+    page: async ({ page, baseURL }, use) => {
+        await page.goto(baseURL || '/home');
+        await page.getByText(`Use of CDEs Supports the NIH Data Management and Sharing Policy`).waitFor();
+        await use(page);
+    },
     materialPage: async ({ page }, use) => {
         await use(new MaterialPo(page));
     },
     saveModal: async ({ page, materialPage }, use) => {
         await use(new SaveModalPo(page, materialPage));
-    },
-    homePage: async ({ page }, use) => {
-        await use(new HomePagePo(page));
     },
     cdePage: async ({ page }, use) => {
         await use(new CdePagePo(page));
@@ -229,7 +229,7 @@ const ignoredConsoleMessages = [
 
 const consoleMessages: string[] = [];
 
-test.beforeEach(({ page }) => {
+baseFixture.beforeEach(({ page }) => {
     page.on('console', (msg: ConsoleMessage) => {
         if (msg) {
             consoleMessages.push(msg.text());
@@ -237,11 +237,11 @@ test.beforeEach(({ page }) => {
     });
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+baseFixture.afterEach(async ({ page }, testInfo) => {
     await codeCoverage(page, testInfo);
 });
 
-test.afterAll(async () => {
+baseFixture.afterAll(async () => {
     for (const consoleMessage of consoleMessages) {
         const expectedConsole = ignoredConsoleMessages.find(
             ignoredConsoleMessage => consoleMessage.indexOf(ignoredConsoleMessage) !== -1
@@ -252,4 +252,4 @@ test.afterAll(async () => {
     }
 });
 
-export default test;
+export const test = baseFixture;

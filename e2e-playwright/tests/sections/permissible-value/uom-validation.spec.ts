@@ -1,8 +1,7 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import formTinyId from '../../../data/form-tinyId';
-import { DisplayProfile } from '../../../src/model/type';
+import { test } from '../../../fixtures/base-fixtures';
+import { DisplayProfile } from '../../../model/type';
+import { Accounts } from '../../../data/user';
 
 test(`Validate UOM`, async ({
     page,
@@ -17,8 +16,8 @@ test(`Validate UOM`, async ({
     const formName = 'DNA Elements - Participant/Subject Information';
 
     await test.step(`Navigate to Form description and login`, async () => {
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
         await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
         await previewSection.editFormDescriptionButton().click();
     });

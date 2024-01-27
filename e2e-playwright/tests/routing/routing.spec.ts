@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 
 test.describe(`App Routing`, async () => {
     test.describe(`Logged In required routes`, async () => {

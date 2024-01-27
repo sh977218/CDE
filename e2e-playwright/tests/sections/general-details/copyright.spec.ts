@@ -1,6 +1,5 @@
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import formTinyId from '../../../data/form-tinyId';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 const newStatement = 'Never ever share this form ' + new Date();
 const newAuthority = 'Patent for truth ' + new Date();
@@ -9,8 +8,8 @@ const newUrl = 'https://search.nih.gov/search?commit=Search&query=' + new Date()
 test.describe(`Edit Copyright`, async () => {
     test(`Form page`, async ({ formPage, navigationMenu, inlineEdit, saveModal }) => {
         const formName = 'Quantitative Sensory Testing (QST)';
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
 
         await formPage.copyrightCheckbox().check();
 

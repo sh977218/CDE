@@ -1,14 +1,13 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
-import { Version } from '../../../src/model/type';
+import { test } from '../../../fixtures/base-fixtures';
+import { Version } from '../../../model/type';
+import { Accounts } from '../../../data/user';
+import { CdeTinyIds } from '../../../data/cde-tinyId';
 
 test.describe.configure({ retries: 0 });
-
+test.use({ video: 'on', trace: 'on' });
 test(`Remove CDE concepts`, async ({
     page,
-    cdePage,
     materialPage,
     itemLogAuditPage,
     auditTab,
@@ -27,8 +26,8 @@ test(`Remove CDE concepts`, async ({
     const existingConceptCodes = [`CONCEPT_CODE_1`, `CONCEPT_CODE_2`, `CONCEPT_CODE_3`];
 
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Concepts' })).toBeVisible();
         await page.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
     });
@@ -57,12 +56,13 @@ test(`Remove CDE concepts`, async ({
                 page.context().waitForEvent('page'),
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
-            await expect(newPage.getByText(`Warning: this data element is archived.`)).toBeVisible();
+            await newPage.waitForURL(/\/deView\?cdeId=*/);
+            await expect(newPage.getByText(`this data element is archived.`)).toBeVisible();
             await expect(newPage.getByText(existingConceptCodes[0])).toBeVisible();
             await expect(newPage.getByText(existingConceptCodes[1])).toBeVisible();
             await expect(newPage.getByText(existingConceptCodes[2])).toBeVisible();
             await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
+            await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
             await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
             await expect(newPage.getByText(existingConceptCodes[0])).toBeHidden();
             await expect(newPage.getByText(existingConceptCodes[1])).toBeHidden();

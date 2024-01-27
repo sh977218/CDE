@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
-import { Version, Concept } from '../../../src/model/type';
+import { test } from '../../../fixtures/base-fixtures';
+import { Version, Concept } from '../../../model/type';
+import { Accounts } from '../../../data/user';
+import { CdeTinyIds } from '../../../data/cde-tinyId';
 
 test.describe.configure({ retries: 0 });
 test(`Add CDE concepts`, async ({
@@ -47,8 +47,8 @@ test(`Add CDE concepts`, async ({
     let existingVersion = '';
 
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Concepts' })).toBeVisible();
         await page.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
     });
@@ -77,9 +77,10 @@ test(`Add CDE concepts`, async ({
                 page.context().waitForEvent('page'),
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
-            await expect(newPage.getByText(`Warning: this data element is archived.`)).toBeVisible();
+            await newPage.waitForURL(/\/deView\?cdeId=*/);
+            await expect(newPage.getByText(`this data element is archived.`)).toBeVisible();
             await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
+            await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
             await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
             await expect(newPage.getByText(newConcepts[0].conceptName)).toBeVisible();
             await expect(newPage.getByText(newConcepts[1].conceptName)).toBeVisible();
@@ -96,7 +97,7 @@ test(`Add CDE concepts`, async ({
 
     await test.step(`Verify CDE audit`, async () => {
         await navigationMenu.logout();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoAudit();
         await auditTab.cdeAuditLog().click();
         await page.route(`/server/log/itemLog/de`, async route => {

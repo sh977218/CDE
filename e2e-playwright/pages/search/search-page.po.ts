@@ -7,15 +7,6 @@ export class SearchPagePo {
         this.page = page;
     }
 
-    /**
-     * Description - This method use page.goto(), which means reload page happens.
-     * @param module - cde or form
-     */
-    async goToSearch(module: string) {
-        await this.page.goto(`/${module}/search`);
-        await this.page.waitForSelector(`text=Enter a phrase/text or explore`, { state: 'visible' });
-    }
-
     searchResultList() {
         return this.page.getByTestId('search-result-list');
     }
@@ -88,10 +79,6 @@ export class SearchPagePo {
 
     searchSubmitButton(): Locator {
         return this.page.getByTestId(`search-submit-button`);
-    }
-
-    searchAutoCompleteOptions(): Locator {
-        return this.page.getByTestId(`search-auto-complete-option`);
     }
 
     goToElt(index: number): Locator {

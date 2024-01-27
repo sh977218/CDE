@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
-import { Version } from '../../src/model/type';
+import { Version } from '../../model/type';
 
 export class SaveModalPo {
     protected page: Page;

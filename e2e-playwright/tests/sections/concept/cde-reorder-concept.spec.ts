@@ -1,8 +1,8 @@
-import test from '../../../fixtures/base-fixtures';
-import { Version } from '../../../src/model/type';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
+import { Version } from '../../../model/type';
 import { expect } from '@playwright/test';
+import { Accounts } from '../../../data/user';
+import { CdeTinyIds } from '../../../data/cde-tinyId';
 
 test(`Reorder CDE concepts`, async ({
     page,
@@ -24,8 +24,8 @@ test(`Reorder CDE concepts`, async ({
     };
     let existingVersion = '';
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.testEditor.username, user.testEditor.password);
+        await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Concepts' })).toBeVisible();
         await page.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
     });
@@ -59,9 +59,10 @@ test(`Reorder CDE concepts`, async ({
                 page.context().waitForEvent('page'),
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
-            await expect(newPage.getByText(`Warning: this data element is archived.`)).toBeVisible();
+            await newPage.waitForURL(/\/deView\?cdeId=*/);
+            await expect(newPage.getByText(`this data element is archived.`)).toBeVisible();
             await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/deView?tinyId=${cdeTinyId[cdeName]}`);
+            await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
             await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
             await newPage.close();
         });
@@ -72,7 +73,7 @@ test(`Reorder CDE concepts`, async ({
 
     await test.step(`Verify CDE audit`, async () => {
         await navigationMenu.logout();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoAudit();
         await auditTab.cdeAuditLog().click();
         await page.route(`/server/log/itemLog/de`, async route => {

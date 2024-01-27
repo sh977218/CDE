@@ -1,18 +1,17 @@
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
+import { Accounts } from '../../data/user';
 
 test.describe(`Profile`, async () => {
     test(`Edit user email`, async ({
         materialPage,
-        homePage,
+
         inlineEdit,
         navigationMenu,
         settingMenu,
         profilePage,
     }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await settingMenu.profileMenu().click();
         const userEmailLocator = profilePage.userEmail();

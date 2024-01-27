@@ -7,15 +7,6 @@ export class CdePagePo {
         this.page = page;
     }
 
-    /**
-     * Description - This method reload page
-     * @param tinyId
-     */
-    async goToCde(tinyId: string) {
-        await this.page.goto(`/deView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
-    }
-
     cdeTitle(): Locator {
         return this.page.getByTestId('data-element-view-title');
     }

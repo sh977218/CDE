@@ -1,14 +1,13 @@
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
+import { Accounts } from '../../data/user';
 
 test.describe(`Server log`, async () => {
     const badSearchInput = `some very bad input &*(`;
     const serverErrorMessage = `ReferenceError: trigger is not defined`;
-    test(`server error log`, async ({ page, homePage, searchPage, navigationMenu, auditTab, materialPage }) => {
+    test(`server error log`, async ({ page, searchPage, navigationMenu, auditTab, materialPage }) => {
         await test.step(`Go to 'server error' and not see server error`, async () => {
-            await homePage.goToHome();
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoAudit();
             await auditTab.serverErrors().click();
             await page.route(`/server/log/serverErrors`, async route => {

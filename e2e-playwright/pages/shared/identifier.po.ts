@@ -1,5 +1,5 @@
 import { expect, Page } from '@playwright/test';
-import { Version } from '../../src/model/type';
+import { Version } from '../../model/type';
 
 export class IdentifierPo {
     protected page: Page;

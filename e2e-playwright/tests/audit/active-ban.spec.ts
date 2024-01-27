@@ -1,10 +1,9 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
-test(`Active ban log`, async ({ page, homePage, navigationMenu, auditTab, materialPage }) => {
-    await homePage.goToHome();
-    await navigationMenu.login(user.nlm.username, user.nlm.password);
+test(`Active ban log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
+    await navigationMenu.login(Accounts.nlm);
     await page.route(`server/system/activeBans`, async route => {
         await page.waitForTimeout(5000);
         await route.continue();

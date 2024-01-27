@@ -1,6 +1,8 @@
+import { Account } from '../model/type';
+
 const DEFAULT_PASSWORD = 'pass';
 
-export default {
+export const Accounts: Record<string, Account> = {
     nlm: {
         username: 'nlm',
         password: 'nlm',

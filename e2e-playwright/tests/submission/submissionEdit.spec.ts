@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
-import user from '../../data/user';
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 import { checkSubmissionValidationReport } from '../../pages/submission/submissionEdit.po';
 import { button } from '../../pages/util';
+import { Accounts } from '../../data/user';
 
 function bannerErrorMessage(text: string) {
     return "//*[contains(@class, 'alert')][text()[normalize-space()='" + text + "']]";
@@ -12,9 +12,8 @@ test.describe.configure({ retries: 0 }); // no retries for edits
 test.use({ video: 'on', trace: 'on' });
 
 test.describe(`Submission Edit`, async () => {
-    test.beforeEach(async ({ page, homePage, navigationMenu, submissionManagePage }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlmCurator.username, user.nlmCurator.password);
+    test.beforeEach(async ({ page, navigationMenu, submissionManagePage }) => {
+        await navigationMenu.login(Accounts.nlmCurator);
         await navigationMenu.gotoSubmissions();
         await submissionManagePage.isSubmissionManagementCurator();
     });
@@ -54,10 +53,10 @@ test.describe(`Submission Edit`, async () => {
         await page.getByLabel('Organization URL - Incomplete').fill('ci.cde.nlm.nih.gov');
 
         await page.getByLabel('NLM Curators - Incomplete').click();
-        await materialPage.matOption('nlmCurator').click();
+        await materialPage.matOptionByText('nlmCurator').click();
 
         await page.getByLabel('NIH Governance Committee Reviewers - Incomplete').click();
-        await materialPage.matOption('governanceUser').click();
+        await materialPage.matOptionByText('governanceUser').click();
 
         await button(page, 'Next').nth(1).click();
         await materialPage.checkAlert('Progress Saved');

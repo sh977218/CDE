@@ -1,14 +1,14 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 
 test.describe(`Pin to board`, async () => {
-    test(`Not logged in`, async ({ searchPage, cdePage, page }) => {
+    test(`Not logged in`, async ({ navigationMenu, searchPage, cdePage, page }) => {
         const loggedOutMessage = [
             'Create Boards and save CDEs and Forms to them',
             'Remember your preferences on all your devices',
             "If approved, become a curator, and view/manage your organization's contents",
         ];
-        await searchPage.goToSearch('cde');
+        await navigationMenu.gotoCdeSearch();
         await searchPage.browseOrganization('NINDS');
         await searchPage.pinAll().click();
         await expect(searchPage.pinBoardModalMessage()).toHaveText(loggedOutMessage);

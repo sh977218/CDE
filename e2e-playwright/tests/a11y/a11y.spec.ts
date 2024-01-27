@@ -1,26 +1,22 @@
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import cdeTinyId from '../../data/cde-tinyId';
-import formTinyId from '../../data/form-tinyId';
 
 test.describe(`@a11y accessibility test`, async () => {
-    test(`Home page`, async ({ homePage }) => {
-        await homePage.goToHome();
-    });
+    test(`Home page`, async () => {});
 
-    test(`CDE view page`, async ({ page, cdePage, searchPage }) => {
+    test(`CDE view page`, async ({ navigationMenu }) => {
         const cdeName = 'Family Assessment Device (FAD) - Discuss problem indicator';
-        await cdePage.goToCde(cdeTinyId[cdeName]);
+        await navigationMenu.gotoCdeByName(cdeName);
     });
 
-    test(`Form view page`, async ({ page, formPage, searchPage }) => {
+    test(`Form view page`, async ({ navigationMenu }) => {
         const formName = 'AED Resistance Log';
-        await formPage.goToForm(formTinyId[formName]);
+        await navigationMenu.gotoFormByName(formName);
     });
 
-    test(`CDE search page`, async ({ page, cdePage, searchPage }) => {
-        await searchPage.goToSearch('cde');
+    test(`CDE search page`, async ({ page, navigationMenu, searchPage }) => {
+        await navigationMenu.gotoCdeSearch();
         await searchPage.browseOrganization('caBIG');
         await expect(searchPage.classificationFilter('caDSR')).toBeVisible();
         await searchPage.nihEndorsedCheckbox().check();
@@ -29,8 +25,8 @@ test.describe(`@a11y accessibility test`, async () => {
         await page.getByText('results. Sorted by relevance.').isVisible();
     });
 
-    test(`Form search page`, async ({ page, formPage, searchPage }) => {
-        await searchPage.goToSearch('form');
+    test(`Form search page`, async ({ page, navigationMenu, searchPage }) => {
+        await navigationMenu.gotoFormSearch();
         await searchPage.browseOrganization('PROMIS / Neuro-QOL');
         await page.getByRole('link', { name: 'PROMIS Instruments' }).click();
         await page.getByRole('link', { name: 'Adult Short Forms' }).click();
@@ -43,13 +39,12 @@ test.describe(`@a11y accessibility test`, async () => {
         await test.step(`Run axe check`, async () => {
             const axe = new AxeBuilder({ page });
             const result = await axe.analyze();
-            result.violations.forEach((violation, i) => {
-                console.log(`
+            expect(result.violations.length, {
+                message: `
                 test name: ${testInfo.title}
-                ${JSON.stringify(violation, null, 4)}
-                `);
-            });
-            expect(result.violations.length).toBeLessThanOrEqual(0);
+               ${JSON.stringify(result.violations, null, 4)}
+                `,
+            }).toBeLessThanOrEqual(0);
         });
     });
 });

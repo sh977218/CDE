@@ -6,15 +6,7 @@ const config: PlaywrightTestConfig = defineConfig({
     globalSetup: require.resolve('./setup.e2e-spec'),
     globalTeardown: require.resolve('./teardown.e2e-spec'),
     /* Maximum time one test can run for. */
-    timeout: 300 * 1000,
     maxFailures: 10,
-    expect: {
-        /**
-         * Maximum time expect() should wait for the condition to be met.
-         * For example in `await expect(locator).toHaveText();`
-         */
-        timeout: 20 * 1000,
-    },
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -47,6 +39,10 @@ const config: PlaywrightTestConfig = defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
+            timeout: 300 * 1000,
+            expect: {
+                timeout: 10 * 1000,
+            },
             name: 'CDE-e2e',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
             fullyParallel: true,

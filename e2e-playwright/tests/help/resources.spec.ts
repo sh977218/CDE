@@ -1,8 +1,7 @@
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
 
-test(`Resources`, async ({ page, homePage, navigationMenu }) => {
-    await homePage.goToHome();
+test(`Resources`, async ({ page, navigationMenu }) => {
     await navigationMenu.gotoResources();
     expect(await page.getByText(`Training`).count()).toBeGreaterThan(0);
     expect(await page.getByText(`NIH CDE Portal`).count()).toBeGreaterThan(0);

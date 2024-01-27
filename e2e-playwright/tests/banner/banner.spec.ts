@@ -1,26 +1,25 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`Banner`, async () => {
-    test(`Shutdown banner`, async ({ homePage, navigationMenu, materialPage, articlePage }) => {
+    test(`Shutdown banner`, async ({ page, navigationMenu, materialPage, articlePage }) => {
         await test.step(`'Shutdown banner' not there`, async () => {
-            await homePage.goToHome();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
         });
 
         await test.step(`Toggle on 'Shutdown banner'`, async () => {
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoSettings();
             await navigationMenu.gotoArticle();
             await articlePage.articleKeySelection().click();
-            await materialPage.matOption('shutdownBanner').click();
+            await materialPage.matOptionByText('shutdownBanner').click();
             await articlePage.shutdownToggle().click();
             await materialPage.checkAlert('Saved');
         });
 
         await test.step(`'Shutdown banner' is there`, async () => {
-            await homePage.goToHome();
+            await page.reload();
             await expect(navigationMenu.shutdownBanner()).toBeVisible();
             await navigationMenu.shutdownBannerCloseButton().click();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
@@ -30,13 +29,13 @@ test.describe(`Banner`, async () => {
             await navigationMenu.gotoSettings();
             await navigationMenu.gotoArticle();
             await articlePage.articleKeySelection().click();
-            await materialPage.matOption('shutdownBanner').click();
+            await materialPage.matOptionByText('shutdownBanner').click();
             await articlePage.shutdownToggle().click();
             await materialPage.checkAlert('Saved');
         });
 
         await test.step(`'Shutdown banner' not there`, async () => {
-            await homePage.goToHome();
+            await page.reload();
             await expect(navigationMenu.shutdownBanner()).toBeHidden();
         });
     });

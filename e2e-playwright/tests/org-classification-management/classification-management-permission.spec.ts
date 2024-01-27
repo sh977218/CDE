@@ -1,18 +1,18 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`Classification Management Permission`, async () => {
     test(`'Org Edit' not 'Org Admin' can only see classification`, async ({
         page,
-        homePage,
+
         navigationMenu,
         manageClassificationPage,
         materialPage,
     }) => {
         const org = 'CTEP';
-        await homePage.goToHome();
-        await navigationMenu.login(user.ctepOnlyEditor.username, user.ctepOnlyEditor.password);
+
+        await navigationMenu.login(Accounts.ctepOnlyEditor);
         await navigationMenu.gotoClassification();
         await manageClassificationPage.selectOrganization(org);
         await manageClassificationPage.expandClassificationAndReturnLeafNode(['CTEP']);

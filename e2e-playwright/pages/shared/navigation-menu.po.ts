@@ -1,8 +1,10 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
-import cdeTinyId from '../../data/cde-tinyId';
-import formTinyId from '../../data/form-tinyId';
+import { CdeTinyIds } from '../../data/cde-tinyId';
+import { FormTinyIds } from '../../data/form-tinyId';
+import { Accounts } from '../../data/user';
+import { Account } from '../../model/type';
 
 export class NavigationMenuPo {
     protected readonly page: Page;
@@ -85,7 +87,7 @@ export class NavigationMenuPo {
         return this.page.getByTestId('search-preferences');
     }
 
-    async login(username: string, password: string) {
+    async login({ username, password }: Account) {
         const context = this.page.context();
         await this.page.getByTestId(`login_link`).click();
         const [loginPage] = await Promise.all([
@@ -106,26 +108,36 @@ export class NavigationMenuPo {
         await this.clickUntilUrl(this.page.getByTestId(`menu_cdes_link`), /\/cde\/search/);
     }
 
+    /**
+     * Description - This method search CDE name with double quotes, make sure login first
+     * @param cdeName
+     */
     async gotoCdeByName(cdeName: string) {
-        const tinyId = cdeTinyId[cdeName];
+        const tinyId = CdeTinyIds[cdeName];
         await this.gotoCdeSearch();
-        await this.page.getByTestId(`search-query-input`).fill(tinyId);
+        await this.page.getByTestId(`search-query-input`).fill(`"${cdeName}"`);
         await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
+        await this.page.waitForURL(`/deView?tinyId=${tinyId}`);
     }
 
     async gotoFormSearch() {
         await this.clickUntilUrl(this.page.getByTestId(`menu_forms_link`), /\/form\/search/);
     }
 
+    /**
+     * Description - This method search Form name with double quote, make sure login first
+     * @param formName
+     */
     async gotoFormByName(formName: string) {
-        const tinyId = formTinyId[formName];
+        const tinyId = FormTinyIds[formName];
         await this.gotoFormSearch();
-        await this.page.getByTestId(`search-query-input`).fill(tinyId);
+        await this.page.getByTestId(`search-query-input`).fill(`"${formName}"`);
         await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
+        await this.page.waitForURL(`/formView?tinyId=${tinyId}`);
     }
 
     async gotoSettings() {

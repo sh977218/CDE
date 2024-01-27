@@ -1,6 +1,6 @@
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
+import { Accounts } from '../../../data/user';
 
 const newOrganization = {
     orgName: 'MLB ' + new Date(),
@@ -15,15 +15,13 @@ const newOrganization = {
 
 test.describe(`My organization`, async () => {
     test(`Rename organization`, async ({
-        homePage,
         materialPage,
         inlineEdit,
         settingMenu,
         navigationMenu,
         manageOrganizationsPage,
     }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await settingMenu.manageOrganizationsMenu().click();
         await manageOrganizationsPage.newOrganizationName().fill(newOrganization.orgName);

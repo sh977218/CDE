@@ -1,58 +1,62 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`Auto complete`, async () => {
     test.describe(`Cde search`, async () => {
         const searchTerm = 'specimen lat*';
-        test.beforeEach(async ({ searchPage }) => {
-            await searchPage.goToSearch('cde');
+        test.beforeEach(async ({ navigationMenu }) => {
+            await navigationMenu.gotoCdeSearch();
         });
 
-        test(`Not Logged in user can only see 'Standard' and 'Qualified'`, async ({ page, cdePage, searchPage }) => {
+        test(`Not Logged in user can only see 'Standard' and 'Qualified'`, async ({
+            materialPage,
+            cdePage,
+            searchPage,
+        }) => {
             const cdeName = 'Cell Specimen Requirement Pathology Finding Status Specimen Histopathological Text Type';
             await searchPage.searchQueryInput().fill(searchTerm);
-            for (let i = 1; i <= (await searchPage.searchAutoCompleteOptions().count()); i++) {
-                await expect(searchPage.searchAutoCompleteOptions().nth(i)).not.toContainText('Specimen Laterality');
+            for (let i = 1; i <= (await materialPage.searchAutoCompleteOptions().count()); i++) {
+                await expect(materialPage.searchAutoCompleteOptions().nth(i)).not.toContainText('Specimen Laterality');
             }
-            const navigationPromise = page.waitForNavigation();
-            await searchPage.searchAutoCompleteOptions().filter({ hasText: cdeName }).click();
-            await navigationPromise;
+            await materialPage.searchAutoCompleteOptions().filter({ hasText: cdeName }).click();
             await expect(cdePage.cdeTitle()).toContainText(cdeName);
         });
 
-        test(`Logged in user can see all status`, async ({ page, cdePage, navigationMenu, searchPage }) => {
+        test(`Logged in user can see all status`, async ({ materialPage, cdePage, navigationMenu, searchPage }) => {
             const cdeName = 'Specimen Laterality Not Specified Reason';
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
             await searchPage.searchQueryInput().fill(searchTerm);
-            const navigationPromise = page.waitForNavigation();
-            await searchPage.searchAutoCompleteOptions().filter({ hasText: cdeName }).click();
-            await navigationPromise;
+            await materialPage.searchAutoCompleteOptions().filter({ hasText: cdeName }).click();
             await expect(cdePage.cdeTitle()).toContainText(cdeName);
         });
     });
 
     test.describe(`Form search`, async () => {
         const searchTerm = 'multi';
-        test.beforeEach(async ({ searchPage }) => {
-            await searchPage.goToSearch('form');
+        test.beforeEach(async ({ navigationMenu }) => {
+            await navigationMenu.gotoFormSearch();
         });
 
-        test(`Not Logged in user can only see 'Standard' and 'Qualified'`, async ({ page, formPage, searchPage }) => {
+        test(`Not Logged in user can only see 'Standard' and 'Qualified'`, async ({
+            materialPage,
+            formPage,
+            searchPage,
+        }) => {
             const formName = 'Multiple Sclerosis Quality of Life (MSQOL)-54';
             await searchPage.searchQueryInput().fill(searchTerm);
-            for (let i = 1; i <= (await searchPage.searchAutoCompleteOptions().count()); i++) {
-                await expect(searchPage.searchAutoCompleteOptions().nth(i)).not.toContainText('MultiSelect');
+            for (let i = 1; i <= (await materialPage.searchAutoCompleteOptions().count()); i++) {
+                await expect(materialPage.searchAutoCompleteOptions().nth(i)).not.toContainText('MultiSelect');
             }
-            await searchPage.searchAutoCompleteOptions().filter({ hasText: formName }).click();
+            await materialPage.searchAutoCompleteOptions().filter({ hasText: formName }).click();
             await expect(formPage.formTitle()).toContainText(formName);
         });
 
-        test(`Logged in user can see all status`, async ({ page, formPage, navigationMenu, searchPage }) => {
+        test(`Logged in user can see all status`, async ({ materialPage, formPage, navigationMenu, searchPage }) => {
             const formName = 'MultiSelect Logic';
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
             await searchPage.searchQueryInput().fill(searchTerm);
-            await searchPage.searchAutoCompleteOptions().filter({ hasText: formName }).click();
+            await materialPage.searchAutoCompleteOptions().filter({ hasText: formName }).click();
             await expect(formPage.formTitle()).toContainText(formName);
         });
     });

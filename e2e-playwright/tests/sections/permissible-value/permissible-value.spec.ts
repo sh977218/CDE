@@ -1,12 +1,11 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test.describe(`Codes with synonyms`, async () => {
-    test.beforeEach(async ({ page, cdePage }) => {
+    test.beforeEach(async ({ page, navigationMenu }) => {
         const cdeName = 'Race Category Text';
-        await cdePage.goToCde(cdeTinyId[cdeName]);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Permissible Value' })).toBeVisible();
         await page.getByRole('heading', { name: 'Permissible Value' }).scrollIntoViewIfNeeded();
     });
@@ -87,7 +86,7 @@ test.describe(`Codes with synonyms`, async () => {
     });
     test.describe(`LoggedIn`, async () => {
         test.beforeEach(async ({ navigationMenu }) => {
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
         });
         test(`Code from LOINC`, async ({ permissibleValueSection }) => {
             await permissibleValueSection.permissibleValueSynonymsCheckbox('LOINC').check();

@@ -1,17 +1,13 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`search preferences`, async () => {
     test.describe(`Should not see`, async () => {
-        test.beforeEach(async ({ homePage }) => {
-            await homePage.goToHome();
-        });
-
         test(`Logout user`, async () => {});
 
         test(`Regular user`, async ({ navigationMenu }) => {
-            await navigationMenu.login(user.regularUser.username, user.regularUser.password);
+            await navigationMenu.login(Accounts.regularUser);
         });
 
         test.afterEach(async ({ navigationMenu }) => {
@@ -20,14 +16,11 @@ test.describe(`search preferences`, async () => {
     });
 
     test.describe(`Should see`, async () => {
-        test.beforeEach(async ({ homePage }) => {
-            await homePage.goToHome();
-        });
         test(`Site admin`, async ({ navigationMenu }) => {
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
         });
         test(`Org authority`, async ({ navigationMenu }) => {
-            await navigationMenu.login(user.orgAuthority.username, user.orgAuthority.password);
+            await navigationMenu.login(Accounts.orgAuthority);
         });
 
         test.afterEach(async ({ navigationMenu }) => {

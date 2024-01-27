@@ -1,8 +1,8 @@
-import test from '../../../fixtures/base-fixtures';
-import formTinyId from '../../../data/form-tinyId';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
-import { Version } from '../../../src/model/type';
+import { Version } from '../../../model/type';
+import { Accounts } from '../../../data/user';
+import { FormTinyIds } from '../../../data/form-tinyId';
 
 test(`Form description`, async ({
     page,
@@ -11,7 +11,6 @@ test(`Form description`, async ({
     itemLogAuditPage,
     auditTab,
     saveModal,
-    formPage,
     previewSection,
     formDescription,
     historySection,
@@ -25,8 +24,8 @@ test(`Form description`, async ({
     };
 
     await test.step(`Navigate to Form description and login`, async () => {
-        await formPage.goToForm(formTinyId[formName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.nlm);
         await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
         await previewSection.editFormDescriptionButton().click();
     });
@@ -50,9 +49,10 @@ test(`Form description`, async ({
                 page.context().waitForEvent('page'),
                 historySection.historyTableRows().nth(1).locator('mat-icon').click(),
             ]);
-            await expect(newPage.getByText(`Warning: this form is archived.`)).toBeVisible();
+            await newPage.waitForURL(/\/formView\?formId=*/);
+            await expect(newPage.getByText(`this form is archived.`)).toBeVisible();
             await newPage.getByText(`view the current version here`).click();
-            await expect(newPage).toHaveURL(`/formView?tinyId=${formTinyId[formName]}`);
+            await expect(newPage).toHaveURL(`/formView?tinyId=${FormTinyIds[formName]}`);
             await expect(newPage.getByText(newQuestionLabel).first()).toBeVisible();
             await expect(newPage.getByText(newInstruction).first()).toBeVisible();
             await newPage.close();
@@ -61,7 +61,7 @@ test(`Form description`, async ({
 
     await test.step(`Verify Form audit`, async () => {
         await navigationMenu.logout();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoAudit();
         await auditTab.formAuditLog().click();
         await page.route(`/server/log/itemLog/form`, async route => {

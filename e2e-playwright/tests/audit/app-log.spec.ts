@@ -1,10 +1,9 @@
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`App log`, async () => {
-    test(`search app log`, async ({ page, homePage, navigationMenu, auditTab, materialPage }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+    test(`search app log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
+        await navigationMenu.login(Accounts.nlm);
         await page.route(`/server/log/appLogs`, async route => {
             await page.waitForTimeout(5000);
             await route.continue();
@@ -28,7 +27,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`Select page size '100'`, async () => {
             await materialPage.paginatorNumberPerPage().click();
-            await materialPage.matOption('100').click();
+            await materialPage.matOptionByText('100').click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);

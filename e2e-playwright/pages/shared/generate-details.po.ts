@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
-import { Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../src/model/type';
+import { Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
 
@@ -125,7 +125,7 @@ export class GenerateDetailsPo {
 
         for (let tag of newDesignation.tags) {
             await this.materialPage.matChipListInput(designationRow).click();
-            await this.materialPage.matOption(tag).click();
+            await this.materialPage.matOptionByText(tag).click();
         }
         await this.saveModal.waitForDraftSaveComplete();
     }
@@ -152,7 +152,7 @@ export class GenerateDetailsPo {
 
         for (let tag of newDefinition.tags) {
             await this.materialPage.matChipListInput(definitionRow).click();
-            await this.materialPage.matOption(tag).click();
+            await this.materialPage.matOptionByText(tag).click();
         }
         await this.saveModal.waitForDraftSaveComplete();
     }

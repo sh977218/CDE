@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { Accounts } from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
 
 test.describe.configure({ retries: 0 }); // no retries for edits
 test(`Remove organization classification`, async ({
@@ -15,13 +15,13 @@ test(`Remove organization classification`, async ({
     const classificationToBeRemoved = `Participant/Subject Characteristics`;
     const searchString = `classification.elements.elements.name: "${classificationToBeRemoved}"`;
     const classificationArray = ['NINDS', 'Domain', classificationToBeRemoved];
-    await searchPage.goToSearch('cde');
-    await navigationMenu.login(user.ninds.username, user.ninds.password);
+    await navigationMenu.gotoCdeSearch();
+    await navigationMenu.login(Accounts.ninds);
     await searchPage.searchQueryInput().fill(searchString);
     await searchPage.searchSubmitButton().click();
     await expect(page.getByText('102 results. Sorted by relevance.')).toBeVisible();
 
-    await searchPage.goToSearch('form');
+    await navigationMenu.gotoFormSearch();
     await searchPage.searchQueryInput().fill(searchString);
     await searchPage.searchSubmitButton().click();
     await expect(page.getByText('34 results. Sorted by relevance.')).toBeVisible();
@@ -35,18 +35,18 @@ test(`Remove organization classification`, async ({
     await manageClassificationPage.confirmRemoveClassificationButton().click();
     await materialPage.checkAlert(`Deleting in progress.`);
 
-    await searchPage.goToSearch('cde');
+    await navigationMenu.gotoCdeSearch();
     await searchPage.searchQueryInput().fill(searchString);
     await searchPage.searchSubmitButton().click();
     await expect(page.getByText('102 results. Sorted by relevance.')).toBeHidden();
 
-    await searchPage.goToSearch('form');
+    await navigationMenu.gotoFormSearch();
     await searchPage.searchQueryInput().fill(searchString);
     await searchPage.searchSubmitButton().click();
     await expect(page.getByText('34 results. Sorted by relevance.')).toBeHidden();
 
     await navigationMenu.logout();
-    await navigationMenu.login(user.nlm.username, user.nlm.password);
+    await navigationMenu.login(Accounts.nlm);
     await navigationMenu.gotoAudit();
     await auditTab.classificationAuditLog().click();
     const locator = classificationAuditPage.classificationAuditByTitle(`10+ cdes ${classificationArray.join(' > ')}`);

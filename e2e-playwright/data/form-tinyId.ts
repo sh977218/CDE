@@ -1,4 +1,4 @@
-export default {
+export const FormTinyIds: Record<string, string> = {
     'AED Resistance Log': '7yxcZJrrte',
     'Measures of Gas Exchange': 'Q1eNEJrHtx',
     'Quantitative Sensory Testing (QST)': '7ygDrkrStx',

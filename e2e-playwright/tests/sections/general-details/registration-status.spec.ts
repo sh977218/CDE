@@ -1,8 +1,6 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import cdeTinyId from '../../../data/cde-tinyId';
-import formTinyId from '../../../data/form-tinyId';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 const retiredStatus = 'Retired';
 
@@ -10,14 +8,14 @@ test.describe(`Edit registration status`, async () => {
     test.describe(`unclassified only see 2 status`, async () => {
         test(`CDE page`, async ({ cdePage, navigationMenu }) => {
             const cdeName = 'UnclassifiedCDE';
-            await cdePage.goToCde(cdeTinyId[cdeName]);
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
+            await navigationMenu.gotoCdeByName(cdeName);
         });
 
         test(`Form page`, async ({ formPage, navigationMenu }) => {
             const formName = 'UnclassifiedForm';
-            await formPage.goToForm(formTinyId[formName]);
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
+            await navigationMenu.gotoFormByName(formName);
         });
 
         test.afterEach(async ({ generateDetailsSection, updateRegistrationStatusModal }) => {
@@ -32,8 +30,8 @@ test.describe(`Edit registration status`, async () => {
     test.describe(`Should allow change status`, async () => {
         test(`CDE page`, async ({ cdePage, generateDetailsSection, navigationMenu }) => {
             const cdeName = 'Cde Status Test';
-            await cdePage.goToCde(cdeTinyId[cdeName]);
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
+            await navigationMenu.gotoCdeByName(cdeName);
             await generateDetailsSection.editRegistrationStatusButton().click();
             await generateDetailsSection.editRegistrationStatus({ status: retiredStatus });
             await expect(cdePage.alerts()).toContainText('This data element is retired.');
@@ -41,8 +39,8 @@ test.describe(`Edit registration status`, async () => {
 
         test(`Form page`, async ({ formPage, generateDetailsSection, navigationMenu }) => {
             const formName = 'Form Status Test';
-            await formPage.goToForm(formTinyId[formName]);
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
+            await navigationMenu.gotoFormByName(formName);
             await generateDetailsSection.editRegistrationStatusButton().click();
             await generateDetailsSection.editRegistrationStatus({ status: retiredStatus });
             await expect(formPage.alerts()).toContainText('This form is retired.');

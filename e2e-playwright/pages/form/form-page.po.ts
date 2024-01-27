@@ -7,11 +7,6 @@ export class FormPagePo {
         this.page = page;
     }
 
-    async goToForm(tinyId: string) {
-        await this.page.goto(`/formView?tinyId=${tinyId}`);
-        await this.page.waitForSelector(`text=ON THIS PAGE`, { state: 'visible' });
-    }
-
     alerts(): Locator {
         return this.page.getByTestId(`form-view-alert`);
     }

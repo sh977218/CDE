@@ -1,31 +1,23 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import cdeTinyId from '../../../data/cde-tinyId';
-import formTinyId from '../../../data/form-tinyId';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test.describe(`Identifiers`, async () => {
     test(`Cde identifiers always visible`, async ({ page, searchPage, cdePage, navigationMenu }) => {
-        await searchPage.goToSearch('cde');
-        const cdeName = 'First Name of Participant';
-        await cdePage.goToCde(cdeTinyId[cdeName]);
+        const cdeName = '36-item Short Form Health Survey (SF-36) - General health score';
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Identifiers' })).toBeVisible();
 
-        await searchPage.goToSearch('cde');
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
-        await cdePage.goToCde(cdeTinyId[cdeName]);
+        await navigationMenu.login(Accounts.nlm);
         await expect(page.getByRole('heading', { name: 'Identifiers' })).toBeVisible();
     });
 
     test(`Form identifiers always visible`, async ({ page, searchPage, formPage, navigationMenu }) => {
-        await searchPage.goToSearch('form');
         const formName = 'AED Resistance Log';
-        await formPage.goToForm(formTinyId[formName]);
+        await navigationMenu.gotoFormByName(formName);
         await expect(page.getByRole('heading', { name: 'Identifiers' })).toBeVisible();
 
-        await searchPage.goToSearch('cde');
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
-        await formPage.goToForm(formTinyId[formName]);
+        await navigationMenu.login(Accounts.nlm);
         await expect(page.getByRole('heading', { name: 'Identifiers' })).toBeVisible();
     });
 });

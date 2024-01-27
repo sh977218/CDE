@@ -1,4 +1,4 @@
-export default {
+export const CdeTinyIds: Record<string, string> = {
     'Family Assessment Device (FAD) - Discuss problem indicator': 'mrKyN_kpt86',
     'Atherosclerosis Risk in Communities transient ischemic attack/stroke form (ARIC TIA) - speech loss slurred symptom indicator':
         '0gqqG2jShnS',
@@ -14,4 +14,5 @@ export default {
     'Add concept cde': 'VTKkfBXUQ',
     'Remove concept cde': 'WPlEzNujD',
     'Reorder concept cde': '71EPiweND',
+    '36-item Short Form Health Survey (SF-36) - General health score': 'UJwo_VkcGRR',
 };

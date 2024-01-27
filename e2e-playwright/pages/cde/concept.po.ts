@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { Concept, ConceptType, ReorderDirection } from '../../src/model/type';
+import { Concept, ConceptType, ReorderDirection } from '../../model/type';
 import { MaterialPo } from '../shared/material.po';
 import { SaveModalPo } from '../shared/save-modal.po';
 
@@ -29,7 +29,7 @@ export class ConceptPo {
             await this.page.getByPlaceholder('Code System').fill(concept.conceptSource);
         }
         await this.page.getByPlaceholder(`Concept Type`).click();
-        await this.materialPage.matOption(CONCEPT_TYPE_MAP[concept.conceptType]).click();
+        await this.materialPage.matOptionByText(CONCEPT_TYPE_MAP[concept.conceptType]).click();
         await this.materialPage.matDialog().getByRole('button', { name: 'Save', exact: true }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.saveModal.waitForDraftSaveComplete();

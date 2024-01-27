@@ -1,5 +1,5 @@
 import { expect, Page, Locator } from '@playwright/test';
-import { DisplayProfile } from '../../src/model/type';
+import { DisplayProfile } from '../../model/type';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { MaterialPo } from '../shared/material.po';
 import { SaveModalPo } from '../shared/save-modal.po';
@@ -91,6 +91,10 @@ export class DisplayProfilePo {
 
     previewMatrixRadio() {
         return this.page.locator(`//*[@id='preview-div']//cde-native-section-matrix//table//input[@type='radio']`);
+    }
+
+    previewSelectDropdown() {
+        return this.page.locator(`//*[@id='preview-div']//cde-native-question//select`);
     }
 
     addDisplayProfile = async ({

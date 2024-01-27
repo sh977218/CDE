@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test(`Import permissible value from CDE`, async ({
     page,
@@ -12,13 +11,12 @@ test(`Import permissible value from CDE`, async ({
     cdePage,
     permissibleValueSection,
     historySection,
-    homePage,
 }) => {
     const cdeName = 'Non-Pathology Findings';
 
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Permissible Value' })).toBeVisible();
         await page.getByRole('heading', { name: 'Permissible Value' }).scrollIntoViewIfNeeded();
     });

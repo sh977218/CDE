@@ -13,5 +13,6 @@
 <mat-dialog-actions>
     <button id="cancelRenameClassificationBtn" class="button fail" [mat-dialog-close]>Cancel</button>
     <button id="confirmRenameClassificationBtn" class="button"
+            data-testid="confirm-rename-classification-button"
             [mat-dialog-close]="newClassificationName.value" [disabled]="!newClassificationName.valid">OK</button>
 </mat-dialog-actions>

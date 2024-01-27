@@ -1,12 +1,11 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`Client log`, async () => {
-    test(`client error log`, async ({ page, homePage, searchPage, navigationMenu, auditTab, materialPage }) => {
+    test(`client error log`, async ({ page, searchPage, navigationMenu, auditTab, materialPage }) => {
         await test.step(`Go to 'client error' and not see any client error`, async () => {
-            await homePage.goToHome();
-            await navigationMenu.login(user.nlm.username, user.nlm.password);
+            await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoAudit();
             await page.route(`/server/log/clientErrors`, async route => {
                 await page.waitForTimeout(5000);

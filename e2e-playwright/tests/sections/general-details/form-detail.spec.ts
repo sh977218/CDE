@@ -1,17 +1,16 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import user from '../../../data/user';
-import formTinyId from '../../../data/form-tinyId';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test.describe(`Form general detail information`, async () => {
     const formName = 'Section Inside Section Form';
 
-    test.beforeEach(async ({ formPage }) => {
-        await formPage.goToForm(formTinyId[formName]);
+    test.beforeEach(async ({ navigationMenu }) => {
+        await navigationMenu.gotoFormByName(formName);
     });
 
     test(`Logged in`, async ({ navigationMenu, generateDetailsSection, inlineEdit }) => {
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
         await expect(generateDetailsSection.createdLabel()).toHaveText(`Created:`);
         await expect(generateDetailsSection.created()).toHaveText(`05/09/2016 @ 5:21PM`);
         await expect(generateDetailsSection.createdByLabel()).toHaveText(`Created By:`);

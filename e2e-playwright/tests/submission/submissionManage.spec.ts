@@ -1,12 +1,11 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
 import { button } from '../../pages/util';
+import { Accounts } from '../../data/user';
 
 test.describe(`Submission Manage`, async () => {
-    test.beforeEach(async ({ homePage, navigationMenu, submissionManagePage }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+    test.beforeEach(async ({ navigationMenu, submissionManagePage }) => {
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSubmissions();
         await submissionManagePage.isSubmissionManagement();
     });
@@ -21,7 +20,7 @@ test.describe(`Submission Manage`, async () => {
 
     test(`Pagination`, async ({ page, materialPage, submissionManagePage }) => {
         await materialPage.paginatorNumberPerPage().click();
-        await materialPage.matOption('10').click();
+        await materialPage.matOptionByText('10').click();
         await page.getByText('1 - 10 of').isVisible();
         await expect(submissionManagePage.tableCell('g12')).toHaveCount(0);
         await materialPage.paginatorNext().click();

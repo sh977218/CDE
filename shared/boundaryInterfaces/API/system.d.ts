@@ -1,5 +1,5 @@
 import { IdSource, User } from 'shared/models.model';
-import { HomePage, HomePageDraft } from 'shared/singleton.model';
+import {HomePage, HomePageDraft} from 'shared/singleton.model';
 
 type UserGetResponse = User | {};
 

@@ -1,7 +1,6 @@
 import { expect } from '@playwright/test';
-import test from '../../../fixtures/base-fixtures';
-import cdeTinyId from '../../../data/cde-tinyId';
-import user from '../../../data/user';
+import { test } from '../../../fixtures/base-fixtures';
+import { Accounts } from '../../../data/user';
 
 test(`Add UMLS permissible value`, async ({
     page,
@@ -14,8 +13,8 @@ test(`Add UMLS permissible value`, async ({
     const cdeName = 'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator';
 
     await test.step(`Navigate to CDE and login`, async () => {
-        await cdePage.goToCde(cdeTinyId[cdeName]);
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByRole('heading', { name: 'Permissible Value' })).toBeVisible();
         await page.getByRole('heading', { name: 'Permissible Value' }).scrollIntoViewIfNeeded();
     });
@@ -61,7 +60,7 @@ test(`Add UMLS permissible value`, async ({
 
     await test.step(`Logout and Verify NCI and UMLS code`, async () => {
         await navigationMenu.logout();
-        await cdePage.goToCde(cdeTinyId[cdeName]);
+        await navigationMenu.gotoCdeByName(cdeName);
 
         await permissibleValueSection.permissibleValueSynonymsCheckbox('NCI').check();
         const nciTableRows = permissibleValueSection.permissibleValueTableRows();

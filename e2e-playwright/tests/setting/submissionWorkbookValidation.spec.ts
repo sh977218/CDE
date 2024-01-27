@@ -1,13 +1,12 @@
-import user from '../../data/user';
-import test from '../../fixtures/base-fixtures';
+import { test } from '../../fixtures/base-fixtures';
 import { checkSubmissionValidationReport } from '../../pages/submission/submissionEdit.po';
+import { Accounts } from '../../data/user';
 
 test.describe.configure({ retries: 0 }); // no retries for edits
 
 test.describe(`Submission Workbook Validator`, async () => {
-    test('Validate', async ({ page, homePage, materialPage, navigationMenu }) => {
-        await homePage.goToHome();
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+    test('Validate', async ({ page, materialPage, navigationMenu }) => {
+        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await navigationMenu.gotoSettingsSubmissionWorkbookValidation();
         await page.setInputFiles(

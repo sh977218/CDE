@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
-import test from '../../fixtures/base-fixtures';
-import user from '../../data/user';
+import { test } from '../../fixtures/base-fixtures';
+import { Accounts } from '../../data/user';
 
 test.describe(`Search Filter`, async () => {
     test(`Clear all filters`, async ({ page, searchPage, navigationMenu }) => {
-        await searchPage.goToSearch('cde');
-        await navigationMenu.login(user.nlm.username, user.nlm.password);
+        await navigationMenu.gotoCdeSearch();
+        await navigationMenu.login(Accounts.nlm);
         await searchPage.browseOrganization('CTEP');
         await searchPage.classificationFilter('CATEGORY').click();
         await expect(page.getByText('AdEERS')).toBeVisible();
