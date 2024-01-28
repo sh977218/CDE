@@ -15,4 +15,7 @@ export const FormTinyIds: Record<string, string> = {
     'DNA Elements - Participant/Subject Information': 'm1fVM1SSFx',
     'Section Inside Section Form': '71AKDVQhW',
     'Form Edit Section And Question Test': 'QkN0o5ENb',
+    'Functional Imaging': 'my7XySBtg',
+    'Frontal Systems Behavioral Scale (FrSBe)': '71Qb7kBrKx',
+    'History Data Source and Reliability': 'Q1rvXyHBFx',
 };

@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 import { Designation, Definition, Version } from '../../../model/type';
-import { Accounts } from '../../../data/user';
 import { CdeTinyIds } from '../../../data/cde-tinyId';
+import { Accounts } from '../../../data/user';
 
 test.describe.configure({ retries: 0 });
 test.use({ video: 'on', trace: 'on' });

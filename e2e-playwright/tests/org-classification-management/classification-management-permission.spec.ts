@@ -14,8 +14,8 @@ test.describe(`Classification Management Permission`, async () => {
 
         await navigationMenu.login(Accounts.ctepOnlyEditor);
         await navigationMenu.gotoClassification();
-        await manageClassificationPage.selectOrganization(org);
-        await manageClassificationPage.expandClassificationAndReturnLeafNode(['CTEP']);
+        await materialPage.selectMatSelect(manageClassificationPage.organizationSelect(), org);
+        await materialPage.expandClassificationAndReturnLeafNode(['CTEP']);
         await expect(page.getByText('CRF_TTU')).toBeVisible();
         await expect(materialPage.matArrayLeft()).toBeHidden();
         await expect(materialPage.matEdit()).toBeHidden();

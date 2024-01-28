@@ -9,17 +9,19 @@
             <select class="form-control" id="selectClassificationOrg" name="selectClassifyItemOrg"
                     (change)="onChangeOrg($event.target.value)" [ngModel]="selectedOrg" required>
                 <option value="">Start by selecting an organization...</option>
-                <option *ngFor="let myOrg of userService.userOrgs" value="{{myOrg}}">{{myOrg}}</option>
+                <option *ngFor="let myOrg of userService.userOrgs" value="{{myOrg}}">{{ myOrg }}</option>
             </select>
             <div class="smallSpace"></div>
             <div *ngIf="orgClassificationsTreeView">
                 <tree-root #tree [nodes]="orgClassificationsTreeView.classifications" [options]="options">
                     <ng-template #treeNodeTemplate let-node="node" let-index="index">
-                        <span [id]="node.path" class="mr-1">{{ node.data.name }}</span>
-                        <button class="button small" (click)="classifyItemByTree(node, selectedOrg)">
-                            <mat-icon>add</mat-icon>
-                            Classify
-                        </button>
+                        <div [id]="node.path">
+                            <span class="mr-1">{{ node.data.name }}</span>
+                            <button class="button small" (click)="classifyItemByTree(node, selectedOrg)">
+                                <mat-icon>add</mat-icon>
+                                Classify
+                            </button>
+                        </div>
                     </ng-template>
                     <ng-template #treeNodeFullTemplate let-node="node" let-index="index" let-templates="templates">
                         <div [class]="node.getClass()"
@@ -45,9 +47,10 @@
             <p>Select from recently used classifications...</p>
             <ng-container
                     *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; index as i">
-                <div class="breadcrumb" id="recentlyClassification_{{i}}">
-                    {{orgClassificationRecentlyAddView.orgName}} /
-                    {{orgClassificationRecentlyAddView.categories.join(" / ")}}
+                <div class="breadcrumb" id="recentlyClassification_{{i}}"
+                     data-testid="recently-classified-classification">
+                    {{ orgClassificationRecentlyAddView.orgName }} /
+                    {{ orgClassificationRecentlyAddView.categories.join(" / ") }}
                     <button class="button small" (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
                         <mat-icon>add</mat-icon>
                         Classify

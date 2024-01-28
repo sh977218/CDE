@@ -1,4 +1,4 @@
-import {EltLog} from "../models.model";
+import {CurationStatus, DateType, EltLog, ModuleItem, ObjectId} from "../models.model";
 
 export interface HttpLogResponse {
     logs: HttpLog[];
@@ -34,7 +34,7 @@ export interface DailyUsage {
     hits: number
 }
 
-export type ActiveBanResponse ={
+export type ActiveBanResponse = {
     ipList: ActiveBan[]
 }
 
@@ -56,7 +56,27 @@ export interface ItemLogResponse {
     totalItems: number;
 }
 
-export type ItemLog  = EltLog
+export type ClassificationAuditLogElement = {
+    tinyId?: string,
+    version?: string,
+    name?: string,
+    status?: CurationStatus,
+    eltType?: ModuleItem,
+}
+
+export type ClassificationAuditLog = {
+    action: 'add' | 'delete' | 'rename' | 'reclassify';
+    date: DateType;
+    elements: ClassificationAuditLogElement[];
+    newname?: string;
+    path: string[];
+    user: {
+        username: string,
+    };
+}
+
+export type ItemLog = EltLog | ClassificationAuditLog;
+
 
 export interface ServerErrorResponse {
     logs: ServerError[];

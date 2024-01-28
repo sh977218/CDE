@@ -22,8 +22,8 @@
                 </ng-container>
 
                 <ng-container matColumnDef="elementName">
-                    <th mat-header-cell *matHeaderCellDef>Element Name</th>
-                    <td mat-cell *matCellDef="let row"> {{ row.adminItem?.name }}</td>
+                    <th mat-header-cell *matHeaderCellDef>Element Name Or Classification Path</th>
+                    <td mat-cell *matCellDef="let row"> {{ row.adminItem?.name }} {{ row.path?.join(' > ') }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="username">
@@ -51,6 +51,10 @@
                                           [ngTemplateOutletContext]="{element}"
                             ></ng-container>
                             <ng-container *ngIf="module === 'form'" [ngTemplateOutlet]="formTemplate"
+                                          [ngTemplateOutletContext]="{element}"
+                            ></ng-container>
+                            <ng-container *ngIf="module === 'classification'"
+                                          [ngTemplateOutlet]="classificationTemplate"
                                           [ngTemplateOutletContext]="{element}"
                             ></ng-container>
                         </div>
@@ -153,4 +157,29 @@
     <ng-container [ngTemplateOutlet]="diffTemplate"
                   [ngTemplateOutletContext]="{diff: element.diff}"
     ></ng-container>
+</ng-template>
+
+<ng-template let-element="element" #classificationTemplate>
+    <dl class="cde-property">
+        <ng-container *ngIf="element.elements.length > 0">
+            <dt>Registration Status</dt>
+            <dd>{{ element.elements[0].status }}</dd>
+        </ng-container>
+        <dt>Classification</dt>
+        <dd data-testid="classification-audit-description">
+            {{ element.action | cdeCamelCaseToHuman }} <span>{{ element.path.join(" > ") }}</span>
+            <span *ngIf="element.action === 'rename'"> to </span> <span>{{ element.newname }}</span>
+        </dd>
+        <dt>{{ element.elements.length + '+' }} Elements</dt>
+        <dd>
+            <div *ngFor="let e of element.elements;">
+                <div *ngIf="e.eltType === 'cde'">
+                    <a target="_blank" href="/deView?tinyId={{e.tinyId}}">{{ e.name }}</a>
+                </div>
+                <div *ngIf="e.eltType === 'form'">
+                    <a target="_blank" href="/formView?tinyId={{e.tinyId}}">{{ e.name }}</a>
+                </div>
+            </div>
+        </dd>
+    </dl>
 </ng-template>

@@ -12,7 +12,7 @@ import {
     NgTemplateOutlet,
     UpperCasePipe,
 } from '@angular/common';
-import { ItemLog, ItemLogResponse } from 'shared/log/audit';
+import { ClassificationAuditLogElement, ItemLog, ItemLogResponse } from 'shared/log/audit';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -139,6 +139,17 @@ export class ItemLogComponent implements AfterViewInit {
                 logs.forEach((log: any) => {
                     if (log.diff) {
                         log.diff.forEach((d: any) => makeHumanReadable(d));
+                    }
+                });
+                return logs;
+            }),
+            // for classification audit log
+            map(logs => {
+                logs.forEach((log: any) => {
+                    if (log.elements) {
+                        log.elements.forEach((e: ClassificationAuditLogElement, i: number) => {
+                            e.name = e.name || `Element ${++i}`;
+                        });
                     }
                 });
                 return logs;

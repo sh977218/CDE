@@ -39,4 +39,16 @@ export const Accounts: Record<string, Account> = {
         username: 'testEditor',
         password: DEFAULT_PASSWORD,
     },
+    classifyBoardUser: {
+        username: 'classifyBoardUser',
+        password: DEFAULT_PASSWORD,
+    },
+    formBoardUser: {
+        username: `formboarduser`,
+        password: DEFAULT_PASSWORD,
+    },
+    nlmCuratorUser: {
+        username: 'nlmCurator',
+        password: DEFAULT_PASSWORD,
+    },
 };

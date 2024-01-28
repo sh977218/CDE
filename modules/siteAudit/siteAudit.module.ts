@@ -11,7 +11,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule, Routes } from '@angular/router';
 import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
-import { ClassificationAuditLogComponent } from 'siteAudit/classificationAuditLog/classificationAuditLog.component';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 import { HttpLogComponent } from './http-log/http-log.component';
 import { AppLogComponent } from './app-log/app-log.component';
@@ -43,6 +42,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         CompareModule,
         MatDialogModule,
         HttpLogComponent,
+        CamelCaseToHumanPipe,
         AppLogComponent,
         DailyUsageComponent,
         ItemLogComponent,
@@ -52,7 +52,7 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         ActiveBanComponent,
         CamelCaseToHumanPipe,
     ],
-    declarations: [ClassificationAuditLogComponent, SiteAuditComponent],
+    declarations: [SiteAuditComponent],
     exports: [RouterModule],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

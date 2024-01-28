@@ -1,3 +1,4 @@
+export type Module = 'cde' | 'form';
 export type Account = {
     username: string;
     password: string;
@@ -13,6 +14,14 @@ export type DisplayProfile = {
     numbering: boolean;
     displayInvisibleQuestion: boolean;
     displayMetadataDevice: boolean;
+};
+
+type BoardType = 'CDEs' | 'Forms';
+
+export type Board = {
+    boardName: string;
+    boardDefinition: string;
+    type: BoardType;
 };
 
 export type Version = {

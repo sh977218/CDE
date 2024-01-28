@@ -3,11 +3,11 @@ import { Document, Model } from 'mongoose';
 import { config, ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { ClassificationAudit } from 'shared/audit/classificationAudit';
 import { CbError1 } from 'shared/models.model';
 import { orderedList } from 'shared/regStatusShared';
+import {ClassificationAuditLog} from "shared/log/audit";
 
-type ClassificationAuditDocument = Document<ObjectId, {}, ClassificationAudit> & ClassificationAudit;
+type ClassificationAuditDocument = Document<ObjectId, {}, ClassificationAuditLog> & ClassificationAuditLog;
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -32,17 +32,9 @@ export const classificationAuditSchema = new Schema({
     path: [StringType]
 }, {collection: 'classificationAudit'});
 
-const classificationAuditModel: Model<ClassificationAuditDocument>
+export const classificationAuditModel: Model<ClassificationAuditDocument>
     = conn.model('classificationAudit', classificationAuditSchema);
 
-export function saveClassificationAudit(msg: ClassificationAudit, callback: CbError1<ClassificationAuditDocument> = () => {}) {
+export function saveClassificationAudit(msg: ClassificationAuditLog, callback: CbError1<ClassificationAuditDocument> = () => {}) {
     new classificationAuditModel(msg).save(callback);
-}
-
-export function classificationAuditPagination({skip, limit, sort}: { limit: number, skip: number, sort?: string }) {
-    return classificationAuditModel
-        .find({}, {elements: {$slice: 10}})
-        .sort(sort)
-        .skip(skip)
-        .limit(limit);
 }

@@ -1,16 +1,10 @@
 import { dbPlugins } from 'server';
-import { classificationAuditPagination, saveClassificationAudit } from 'server/system/classificationAuditDb';
-import { ClassificationAudit } from 'shared/audit/classificationAudit';
+import { saveClassificationAudit } from 'server/system/classificationAuditDb';
 import { getModule, getName } from 'shared/elt/elt';
 import { Item } from 'shared/models.model';
+import {ClassificationAuditLog} from "shared/log/audit";
 
-export async function getClassificationAuditLog(params: {limit: number, skip: number}) {
-    const sort = '-date';
-    const skip = params.skip;
-    const limit = params.limit;
-    return classificationAuditPagination({sort, skip, limit});
-}
-export function addToClassifAudit(msg: ClassificationAudit) {
+export function addToClassifAudit(msg: ClassificationAuditLog) {
     const persistClassifRecord = (elt: Item | null) => {
         if (!elt) {
             return;

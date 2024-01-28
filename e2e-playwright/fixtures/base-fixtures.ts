@@ -1,4 +1,4 @@
-import { Page, test as baseTest, TestInfo } from '@playwright/test';
+import { Page, test as baseTest, expect as baseExpect, TestInfo, Locator } from '@playwright/test';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
@@ -30,6 +30,7 @@ import { DisplayProfilePo } from '../pages/form/display-profile.po';
 // Shared sections
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
+import { ClassificationPo } from '../pages/shared/classification.po';
 import { AttachmentPo } from '../pages/shared/attachment.po';
 import { HistoryPo } from '../pages/shared/history.po';
 
@@ -45,7 +46,6 @@ import { ManageClassificationPo } from '../pages/manage-classifications/manage-c
 // Audit page
 import { ItemLogAuditPagePo } from '../pages/audit/item-log-audit-page.po';
 import { AuditTabPo } from '../pages/audit/audit-tab.po';
-import { ClassificationAuditPagePo } from '../pages/audit/classification-audit-page.po';
 import { LoginRecordsAuditPagePo } from '../pages/audit/login-records-audit-page.po';
 import { ConsoleMessage } from 'playwright-core';
 
@@ -88,6 +88,7 @@ const baseFixture = baseTest.extend<{
     generateDetailsSection: GenerateDetailsPo;
     identifierSection: IdentifierPo;
     attachmentSection: AttachmentPo;
+    classificationSection: ClassificationPo;
     historySection: HistoryPo;
     updateRegistrationStatusModal: UpdateRegistrationStatusModalPo;
     aioTocViewMenu: AioTocViewMenuPo;
@@ -97,7 +98,6 @@ const baseFixture = baseTest.extend<{
     inlineEdit: InlineEditPo;
     itemLogAuditPage: ItemLogAuditPagePo;
     auditTab: AuditTabPo;
-    classificationAuditPage: ClassificationAuditPagePo;
     loginRecordAuditPage: LoginRecordsAuditPagePo;
     manageClassificationPage: ManageClassificationPo;
     manageOrganizationsPage: ManageOrganizationsPo;
@@ -140,8 +140,8 @@ const baseFixture = baseTest.extend<{
     displayProfileSection: async ({ page, inlineEdit, materialPage, saveModal }, use) => {
         await use(new DisplayProfilePo(page, inlineEdit, materialPage, saveModal));
     },
-    myBoardPage: async ({ page }, use) => {
-        await use(new MyBoardPagePo(page));
+    myBoardPage: async ({ page, materialPage }, use) => {
+        await use(new MyBoardPagePo(page, materialPage));
     },
     boardPage: async ({ page }, use) => {
         await use(new BoardPagePo(page));
@@ -154,6 +154,9 @@ const baseFixture = baseTest.extend<{
     },
     identifierSection: async ({ page }, use) => {
         await use(new IdentifierPo(page));
+    },
+    classificationSection: async ({ page, materialPage, saveModal }, use) => {
+        await use(new ClassificationPo(page, materialPage, saveModal));
     },
     attachmentSection: async ({ page, inlineEdit }, use) => {
         await use(new AttachmentPo(page, inlineEdit));
@@ -179,17 +182,14 @@ const baseFixture = baseTest.extend<{
     inlineEdit: async ({ page }, use) => {
         await use(new InlineEditPo(page));
     },
-    manageClassificationPage: async ({ page }, use) => {
-        await use(new ManageClassificationPo(page));
+    manageClassificationPage: async ({ page, materialPage, classificationSection }, use) => {
+        await use(new ManageClassificationPo(page, materialPage, classificationSection));
     },
     itemLogAuditPage: async ({ page }, use) => {
         await use(new ItemLogAuditPagePo(page));
     },
     auditTab: async ({ page }, use) => {
         await use(new AuditTabPo(page));
-    },
-    classificationAuditPage: async ({ page }, use) => {
-        await use(new ClassificationAuditPagePo(page));
     },
     loginRecordAuditPage: async ({ page }, use) => {
         await use(new LoginRecordsAuditPagePo(page));
@@ -215,12 +215,13 @@ const baseFixture = baseTest.extend<{
 });
 
 const ignoredConsoleMessages = [
-    'Failed to load resource: the server responded with a status of 404 (Not Found)',
     '[webpack-dev-server]',
     'Angular is running in development mode',
     'ExpressionChangedAfterItHasBeenCheckedError',
     '[main.js:',
     'Failed to load resource: the server responded with a status of 400',
+    'Failed to load resource: the server responded with a status of 404 (Not Found)',
+    'Failed to load resource: the server responded with a status of 409 (Conflict)',
     'No value accessor for form control',
     `Cannot read properties of undefined (reading '_hostElement')`,
     `Cannot read properties of undefined (reading 'removeEventListener')`,

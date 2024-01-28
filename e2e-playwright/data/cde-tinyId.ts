@@ -15,4 +15,10 @@ export const CdeTinyIds: Record<string, string> = {
     'Remove concept cde': 'WPlEzNujD',
     'Reorder concept cde': '71EPiweND',
     '36-item Short Form Health Survey (SF-36) - General health score': 'UJwo_VkcGRR',
+    'Spectroscopy geometry location not applicable indicator': 'soCkdnmqN8H',
+    'Gastrointestinal therapy water flush status': 'HyQz9G0oYaE',
+    'Data source': '_URwV8TsYjS',
+    'History data reliability type': 'K8v6jJWkmmC',
+    'Person Primary Care Evaluation of Mental Disorders Patient Health Questionnaire Total Score Psychometric Questionnaire Two Digit Score':
+        '7yllQjHmyyl',
 };

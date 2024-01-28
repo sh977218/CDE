@@ -3,7 +3,6 @@ import { MaterialPo } from './material.po';
 import { listItem, tag } from '../util';
 import { CdeTinyIds } from '../../data/cde-tinyId';
 import { FormTinyIds } from '../../data/form-tinyId';
-import { Accounts } from '../../data/user';
 import { Account } from '../../model/type';
 
 export class NavigationMenuPo {
@@ -75,6 +74,10 @@ export class NavigationMenuPo {
         });
     }
 
+    private createButton() {
+        return this.page.locator(`[id="createEltLink"]`);
+    }
+
     shutdownBanner() {
         return this.page.getByTestId(`shutdown-banner-container`);
     }
@@ -108,6 +111,13 @@ export class NavigationMenuPo {
         await this.clickUntilUrl(this.page.getByTestId(`menu_cdes_link`), /\/cde\/search/);
     }
 
+    async gotoCreateCde() {
+        await this.clickUntilMenuShows(this.createButton());
+        await this.page.locator('[id="createCDELink"]').click();
+        await this.page.waitForURL(/\/createCde/);
+        await this.page.getByRole('heading', { name: 'Create Data Element' }).waitFor();
+    }
+
     /**
      * Description - This method search CDE name with double quotes, make sure login first
      * @param cdeName
@@ -124,6 +134,20 @@ export class NavigationMenuPo {
 
     async gotoFormSearch() {
         await this.clickUntilUrl(this.page.getByTestId(`menu_forms_link`), /\/form\/search/);
+    }
+
+    async gotoCreateForm() {
+        await this.clickUntilMenuShows(this.createButton());
+        await this.page.locator('[id="createFormLink"]').click();
+        await this.page.waitForURL(/\/createForm/);
+        await this.page.getByRole('heading', { name: 'Create Form' }).waitFor();
+    }
+
+    async searchFormByName(formName: string) {
+        await this.gotoFormSearch();
+        await this.page.getByTestId(`search-query-input`).fill(`"${formName}"`);
+        await this.page.getByTestId(`search-submit-button`).click();
+        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
     }
 
     /**

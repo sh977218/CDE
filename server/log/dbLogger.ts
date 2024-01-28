@@ -1,5 +1,6 @@
 import {Request} from 'express';
 import {Document, Model} from 'mongoose';
+
 const moment = require('moment');
 const userAgent = require('useragent');
 import {config} from 'server';
@@ -18,7 +19,6 @@ import {
     ClientError,
     ClientErrorResponse,
     LoginRecord,
-    SearchParams,
     ServerErrorSearchRequest,
     HttpLogSearchRequest,
     AppLogSearchRequest,
@@ -26,9 +26,10 @@ import {
     ClientErrorSearchRequest,
     LoginRecordSearchRequest, ItemLogResponse
 } from 'shared/log/audit';
-import {Cb, CbError, CbError1, EltLog} from 'shared/models.model';
+import {Cb, CbError, CbError1} from 'shared/models.model';
 import {cdeAuditModel} from "../cde/mongo-cde";
 import {formAuditModel} from '../form/mongo-form';
+import {classificationAuditModel} from '../system/classificationAuditDb';
 
 export type ClientErrorDocument = Document & ClientError;
 
@@ -175,7 +176,7 @@ export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callbac
     if (!body.includeBatchLoader) {
         condition["user.username"].$nin.push('batchloader');
     }
-    const modal = auditDb.find(condition);
+    const modal = auditDb.find(condition, {elements: {$slice: 10}});
     modal.clone().count((err, totalItems) => {
         modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
             .limit(itemsPerPage)
@@ -189,8 +190,13 @@ export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callbac
     });
 };
 
-export const itemLogByModule = (module:string, body: ItemLogSearchRequest, cb: CbError1<ItemLogResponse>)=>{
-    itemLog(module === 'de' ? cdeAuditModel : formAuditModel, body, cb)
+export const itemLogByModule = (module: 'de' | 'form' | 'classification', body: ItemLogSearchRequest, cb: CbError1<ItemLogResponse>) => {
+    const modalMap = {
+        de: cdeAuditModel,
+        form: formAuditModel,
+        classification: classificationAuditModel
+    };
+    itemLog(modalMap[module], body, cb)
 }
 
 export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<ServerErrorResponse>) {

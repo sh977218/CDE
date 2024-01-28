@@ -103,7 +103,7 @@ export class FormClassificationComponent {
             '/server/classification/addFormClassification/',
             err => {
                 if (err) {
-                    this.alert.addAlert('danger', 'Unexpected error classifying');
+                    this.alert.addAlert('danger', `${err.error}`);
                 } else {
                     this.reloadElt(() => this.alert.addAlert('success', 'Classification added.'));
                 }

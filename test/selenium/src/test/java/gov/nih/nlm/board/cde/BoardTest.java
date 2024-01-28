@@ -45,19 +45,6 @@ public class BoardTest extends NlmCdeBaseTest {
         checkAlert("Pinned to " + boardName);
     }
 
-    protected void pinFormToBoardWithModal(String formName, String boardName) {
-        pinTo(formName, "form");
-        textPresent(boardName);
-        clickBoardHeaderByName(boardName);
-        checkAlert("Pinned to " + boardName);
-        modalGone();
-    }
-
-    protected void pinFormToBoarWithoutModal(String formName, String boardName) {
-        pinTo(formName, "form");
-        checkAlert("Pinned to " + boardName);
-    }
-
     protected void clickBoardHeaderByName(String boardName) {
         clickElement(By.xpath("//*[@id='" + boardName + "']//mat-card-title"));
     }

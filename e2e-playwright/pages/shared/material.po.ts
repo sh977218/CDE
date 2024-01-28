@@ -31,6 +31,13 @@ export class MaterialPo {
         return this.page.locator('//mat-option[normalize-space() = "' + text + '"]');
     }
 
+    async selectMatSelect(matSelectLocator: Locator, text: string) {
+        await matSelectLocator.click();
+        await this.matOverlay().waitFor({ state: 'visible' });
+        await this.matOptionByText(text).click();
+        await this.matOverlay().waitFor({ state: 'hidden' });
+    }
+
     matSpinner() {
         return this.page.locator(`mat-spinner`);
     }
@@ -124,12 +131,60 @@ export class MaterialPo {
     }
 
     async checkAlert(text: string) {
-        const alertText = this.page
-            .locator('mat-snack-bar-container')
-            .locator('simple-snack-bar')
-            .locator('.mat-mdc-snack-bar-label');
-        await expect(alertText).toHaveText(text, { timeout: 30 * 1000 });
+        const matSnackBarContainer = this.page.locator('mat-snack-bar-container');
+        const alertText = matSnackBarContainer.locator('.mat-mdc-snack-bar-label.mdc-snackbar__label');
+        await matSnackBarContainer.waitFor({ state: 'visible', timeout: 60 * 1000 });
+        await expect(alertText).toHaveText(text);
         await this.page.locator('mat-snack-bar-container').locator('button').click();
-        await this.page.waitForSelector(`mat-snack-bar-container`, { state: 'hidden' });
+        await matSnackBarContainer.waitFor({ state: 'hidden' });
+    }
+
+    async pinToBoard(boardName: string) {
+        await this.matDialog().waitFor();
+        await this.matDialog()
+            .getByTestId(`board-title`)
+            .filter({
+                hasText: boardName,
+            })
+            .click();
+        await this.matDialog().waitFor({ state: 'hidden' });
+        await this.checkAlert(`Pinned to ${boardName}Dismiss`);
+    }
+
+    /**
+     * Description - Expand the mat tree according to the input, and return the leaf node
+     * @param classificationsArray - Classification array contains the text from root to leaf (branch)
+     */
+    async expandClassificationAndReturnLeafNode(classificationsArray: string[]) {
+        if (!classificationsArray.length) {
+            throw new Error(`manage classification expandOrgClassification classification array cannot be empty.`);
+        }
+        let treeNodeLocator: any;
+        for (const classification of classificationsArray) {
+            treeNodeLocator = this.page.locator(`mat-tree-node`, {
+                has: this.page.locator(`[data-testid="tree-node-text"]`, {
+                    has: this.page.locator(`text="${classification}"`),
+                }),
+            });
+            await new Promise<void>(resolve => {
+                const togglerLocator = treeNodeLocator.getByTestId(`tree-node-toggler`);
+                togglerLocator
+                    .waitFor({ timeout: 5000 })
+                    .then(async () => {
+                        console.info(`${classification} is a branch, toggle to open/expand`);
+                        await togglerLocator.click();
+                    })
+                    .catch(() => {
+                        console.info(`${classification} is a leaf`);
+                    })
+                    .finally(() => {
+                        resolve();
+                    });
+            });
+        }
+        if (!treeNodeLocator) {
+            throw new Error(`manage classification expandOrgClassification classification cannot find leaf node.`);
+        }
+        return treeNodeLocator;
     }
 }

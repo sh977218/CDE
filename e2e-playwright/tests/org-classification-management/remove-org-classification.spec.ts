@@ -10,49 +10,59 @@ test(`Remove organization classification`, async ({
     manageClassificationPage,
     materialPage,
     auditTab,
-    classificationAuditPage,
 }) => {
-    const classificationToBeRemoved = `Participant/Subject Characteristics`;
+    const classificationToBeRemoved = `AE/SAE CDEs`;
     const searchString = `classification.elements.elements.name: "${classificationToBeRemoved}"`;
-    const classificationArray = ['NINDS', 'Domain', classificationToBeRemoved];
-    await navigationMenu.gotoCdeSearch();
-    await navigationMenu.login(Accounts.ninds);
-    await searchPage.searchQueryInput().fill(searchString);
-    await searchPage.searchSubmitButton().click();
-    await expect(page.getByText('102 results. Sorted by relevance.')).toBeVisible();
+    const classificationArray = ['CIP', 'Adverse Events', classificationToBeRemoved];
 
-    await navigationMenu.gotoFormSearch();
-    await searchPage.searchQueryInput().fill(searchString);
-    await searchPage.searchSubmitButton().click();
-    await expect(page.getByText('34 results. Sorted by relevance.')).toBeVisible();
+    await test.step(`Search 'cde' with classification to be removed.`, async () => {
+        await navigationMenu.gotoCdeSearch();
+        await navigationMenu.login(Accounts.nlm);
+        await searchPage.searchQueryInput().fill(searchString);
+        await searchPage.searchSubmitButton().click();
+        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+    });
 
-    await navigationMenu.gotoClassification();
-    await manageClassificationPage.selectOrganization('NINDS');
-    const leafNode = await manageClassificationPage.expandClassificationAndReturnLeafNode(classificationArray);
-    await manageClassificationPage.classificationMenu(leafNode).click();
-    await manageClassificationPage.classificationOption('Remove').click();
-    await manageClassificationPage.confirmRemoveClassificationInput().fill('Participant/Subject Characteristics');
-    await manageClassificationPage.confirmRemoveClassificationButton().click();
-    await materialPage.checkAlert(`Deleting in progress.`);
+    await test.step(`Search 'form' with classification to be removed.`, async () => {
+        await navigationMenu.gotoFormSearch();
+        await searchPage.searchQueryInput().fill(searchString);
+        await searchPage.searchSubmitButton().click();
+        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+    });
 
-    await navigationMenu.gotoCdeSearch();
-    await searchPage.searchQueryInput().fill(searchString);
-    await searchPage.searchSubmitButton().click();
-    await expect(page.getByText('102 results. Sorted by relevance.')).toBeHidden();
+    await test.step(`Remove org classification`, async () => {
+        await navigationMenu.gotoClassification();
+        await manageClassificationPage.removeOrgClassification(classificationArray);
+    });
+    await test.step(`Verify 'cde' search result.`, async () => {
+        await navigationMenu.gotoCdeSearch();
+        await searchPage.searchQueryInput().fill(searchString);
+        await searchPage.searchSubmitButton().click();
+        await expect(page.getByText('No results were found.')).toBeVisible();
+    });
 
-    await navigationMenu.gotoFormSearch();
-    await searchPage.searchQueryInput().fill(searchString);
-    await searchPage.searchSubmitButton().click();
-    await expect(page.getByText('34 results. Sorted by relevance.')).toBeHidden();
+    await test.step(`Verify 'form' search result.`, async () => {
+        await navigationMenu.gotoFormSearch();
+        await searchPage.searchQueryInput().fill(searchString);
+        await searchPage.searchSubmitButton().click();
+        await expect(page.getByText('No results were found.')).toBeVisible();
+    });
 
-    await navigationMenu.logout();
-    await navigationMenu.login(Accounts.nlm);
-    await navigationMenu.gotoAudit();
-    await auditTab.classificationAuditLog().click();
-    const locator = classificationAuditPage.classificationAuditByTitle(`10+ cdes ${classificationArray.join(' > ')}`);
-    await classificationAuditPage.openClassificationAudit(locator);
-    await expect(classificationAuditPage.classificationAuditDescriptionByTitle(locator)).toHaveText(
-        `delete ${classificationArray.join(' > ')}`
-    );
-    await classificationAuditPage.closeClassificationAuditByTitle(locator);
+    await test.step(`Verify classification audit log`, async () => {
+        await page.route(`/server/log/itemLog/classification`, async route => {
+            await page.waitForTimeout(5000);
+            await route.continue();
+        });
+        await navigationMenu.gotoAudit();
+        await auditTab.classificationAuditLog().click();
+        await page.getByRole('button', { name: 'Search', exact: true }).click();
+        await materialPage.matSpinner().waitFor();
+        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        expect(await page.getByText(`${classificationArray.join(' > ')}`).count()).toBeGreaterThanOrEqual(2);
+        await page
+            .getByText(`${classificationArray.join(' > ')}`)
+            .first()
+            .click();
+        expect(await page.getByText(`delete ${classificationArray.join(' > ')}`).count()).toBeGreaterThanOrEqual(1);
+    });
 });

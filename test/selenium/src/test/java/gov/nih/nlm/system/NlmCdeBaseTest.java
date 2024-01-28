@@ -1662,7 +1662,7 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void classifySubmit(String[] classificationArray, String alertText) {
         String id = String.join(",", classificationArray);
-        clickElement(By.xpath("//*[@id='" + id + "']/../button[contains(.,'Classify')]"));
+        clickElement(By.xpath("//*[@id='" + id + "']/button[contains(.,'Classify')]"));
         if (alertText != null) {
             checkAlert(alertText);
         }
