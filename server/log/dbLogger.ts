@@ -117,7 +117,6 @@ export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogR
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
     let sortDirection = body.sortDir || 'asc';
-    let toDate = body.toDate || new Date()
     const skip = currentPage * itemsPerPage;
     const condition: { [key in string]: RegExp } = {};
     if (body.filterTerm) {
@@ -125,9 +124,11 @@ export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogR
     }
     const modal = logModel.find(condition);
     if (body.fromDate) {
-        modal.where('date').gte(moment(body.fromDate));
+        modal.where('date').gte(moment(body.fromDate).startOf('day'));
     }
-    modal.where('date').lte(moment(toDate));
+    if (body.toDate) {
+        modal.where('date').lte(moment(body.toDate).endOf('day'));
+    }
     modal.clone().count((err, totalItems) => {
         modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
             .limit(itemsPerPage)

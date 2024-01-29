@@ -2,7 +2,7 @@ import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
 test.describe(`Http log`, async () => {
-    test(`search http log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
+    test(`search http log`, async ({ page, navigationMenu, materialPage }) => {
         await navigationMenu.login(Accounts.nlm);
         await page.route(`/server/log/httpLogs`, async route => {
             await page.waitForTimeout(5000);
@@ -19,7 +19,7 @@ test.describe(`Http log`, async () => {
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
-            test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
+            await test.expect(page.locator(`cde-http-log`).locator(`table td`).nth(1)).toBeVisible();
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 50 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
             test.expect(await materialPage.matSortedIndicator()).toContain('desc');

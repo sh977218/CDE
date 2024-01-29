@@ -122,7 +122,6 @@ export interface LoginRecord {
     ip: string,
 }
 
-
 /**
  * Search Request Types:
  */
@@ -167,4 +166,3 @@ export type ClientErrorSearchRequest = SearchRequestSorting
 export type LoginRecordSearchRequest = SearchRequestSorting
     & SearchRequestPagination
     & SearchRequestDateRange
-

@@ -24,6 +24,7 @@
             "tsConfig": "tsconfigApp.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
+              "date-fns",
               "async",
               "diff-match-patch",
               "file-saver",

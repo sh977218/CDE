@@ -12,15 +12,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { CompareModule } from 'compare/compare.module';
 import { NgxTextDiffModule } from 'ngx-text-diff';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
-import { HttpLogComponent } from './http-log/http-log.component';
-import { AppLogComponent } from './app-log/app-log.component';
-import { ServerErrorComponent } from './server-error/server-error.component';
-import { ClientErrorComponent } from './client-error/client-error.component';
-import { DailyUsageComponent } from './daily-usage/daily-usage.component';
-import { LoginRecordComponent } from './login-record/login-record.component';
-import { ActiveBanComponent } from './active-ban/active-ban.component';
-import { ItemLogComponent } from './item-log/item-log.component';
-import { CamelCaseToHumanPipe } from '../non-core/camelCaseToHuman.pipe';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
 
@@ -41,18 +32,9 @@ const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];
         // internal
         CompareModule,
         MatDialogModule,
-        HttpLogComponent,
-        CamelCaseToHumanPipe,
-        AppLogComponent,
-        DailyUsageComponent,
-        ItemLogComponent,
-        ServerErrorComponent,
-        ClientErrorComponent,
-        LoginRecordComponent,
-        ActiveBanComponent,
-        CamelCaseToHumanPipe,
+        SiteAuditComponent,
     ],
-    declarations: [SiteAuditComponent],
+    declarations: [],
     exports: [RouterModule],
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
