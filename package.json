@@ -230,7 +230,6 @@
     "async-es": "^3.2.3",
     "autoprefixer": "^10.4.16",
     "bootstrap": "^4.5.0",
-    "bootstrap-tour": "^0.12.0",
     "capitalize": "^2.0.3",
     "cheerio": "^1.0.0-rc.3",
     "chromedriver": "^103.0.0",

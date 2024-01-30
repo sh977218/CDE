@@ -6,7 +6,6 @@ declare let NAVIGATION_HEIGHT: number;
 declare let NAVIGATION_HEIGHT_MOBILE: number;
 
 // Workaround missing types
-declare module 'bootstrap-tour/build/js/bootstrap-tour-standalone.min.js';
 declare module 'connect-mongo';
 declare module 'file-list-plugin';
 declare module 'gulp-clean-css';

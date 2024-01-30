@@ -12,10 +12,11 @@ test.describe(`Http log`, async () => {
         await test.expect(page.locator(`cde-http-log table tbody tr`)).toHaveCount(0);
 
         await test.step(`Search with date range and ip`, async () => {
+            const todayDate = new Date().getDate();
             await page.getByLabel('Filter by IP Address').fill('127');
             await materialPage.matDatePicker(page.locator(`[data-testid="http-log-date-picker-toggle"]`)).click();
             await materialPage.matDatePickerSelectDay(1).click();
-            await materialPage.matDatePickerSelectDay(28).click();
+            await materialPage.matDatePickerSelectDay(todayDate).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinner().waitFor();
             await materialPage.matSpinner().waitFor({ state: 'hidden' });
