@@ -412,7 +412,7 @@
                             <fieldset class="cdeFieldset welcomeSearchFieldset"
                                       (click)="browseOrg(org.name)">
                                 <legend>
-                                    <img *ngIf="org.featureIcon" [src]="org.featureIcon" class="mR">
+                                    <img *ngIf="org.endorsed" src="/assets/img/endorsedRibbonIcon.png" class="mR">
                                     <span id="browseOrg-{{org.name}}" data-testid="browse-org" class="fake-link">{{org.name}}</span>
                                 </legend>
                                 <div *ngIf="org.longName">{{org.longName}}</div>

@@ -21,6 +21,7 @@
     <tr>
         <th>Organization Name:</th>
         <th>Organization Long Name:</th>
+        <th>Endorse?</th>
         <th>Mailing Address:</th>
         <th>E-mail Address:</th>
         <th>Phone Number:</th>
@@ -34,6 +35,9 @@
         <td data-testid="organization-long-name">
             <cde-inline-edit id="orgLongName-{{c.name}}" [(model)]="c.longName"
                              [isAllowed]="true" (modelChange)="updateOrg(c)"></cde-inline-edit>
+        </td>
+        <td>
+            <mat-slide-toggle [checked]="c.endorsed" (change)="c.endorsed= $event.checked; updateOrg(c)">Endorse this organization</mat-slide-toggle>
         </td>
         <td data-testid="organization-mail-address">
             <cde-inline-edit id="orgMailAddress-{{c.name}}" [(model)]="c.mailAddress"

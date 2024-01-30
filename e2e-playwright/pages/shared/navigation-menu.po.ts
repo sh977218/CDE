@@ -109,6 +109,7 @@ export class NavigationMenuPo {
 
     async gotoCdeSearch() {
         await this.clickUntilUrl(this.page.getByTestId(`menu_cdes_link`), /\/cde\/search/);
+        await expect(this.page.getByText(`Searching...`)).toBeHidden();
     }
 
     async gotoCreateCde() {
@@ -129,11 +130,11 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
-        await this.page.waitForURL(`/deView?tinyId=${tinyId}`);
     }
 
     async gotoFormSearch() {
         await this.clickUntilUrl(this.page.getByTestId(`menu_forms_link`), /\/form\/search/);
+        await expect(this.page.getByText(`Searching...`)).toBeHidden();
     }
 
     async gotoCreateForm() {
@@ -161,7 +162,6 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
-        await this.page.waitForURL(`/formView?tinyId=${tinyId}`);
     }
 
     async gotoSettings() {

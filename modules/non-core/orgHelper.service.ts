@@ -33,6 +33,25 @@ export class OrgHelperService {
         }
     }
 
+    sortOrganizationsEndorsedFirst(buckets: any[]) {
+        if (buckets) {
+            buckets.sort((o1: any, o2: any) => {
+                const orgsDetailedInfo1 = this.orgsDetailedInfo[o1.key];
+                const orgsDetailedInfo2 = this.orgsDetailedInfo[o2.key];
+                const endorsed1 = orgsDetailedInfo1?.endorsed || false;
+                const endorsed2 = orgsDetailedInfo2?.endorsed || false;
+                if (endorsed1 && !endorsed2) {
+                    return -1;
+                }
+                if (!endorsed1 && endorsed2) {
+                    return 1;
+                } else {
+                    return o1.key.localeCompare(o2.key);
+                }
+            });
+        }
+    }
+
     catch(cb: CbErr): Promise<any> {
         return this.promise.catch(cb);
     }

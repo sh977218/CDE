@@ -15,6 +15,14 @@ export class SearchPagePo {
         return this.page.getByTestId('search-result-info-bar');
     }
 
+    organizationTitleLink() {
+        return this.page.getByTestId(`browse-org`);
+    }
+
+    classificationFilterText() {
+        return this.page.getByTestId(`classification-text`);
+    }
+
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {

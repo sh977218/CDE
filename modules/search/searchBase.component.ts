@@ -14,7 +14,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-import { addOrRemoveFromArray, partition, removeFromArray } from 'shared/array';
+import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
 import { DataType } from 'shared/de/dataElement.model';
 import { uriViewBase } from 'shared/item';
 import {
@@ -42,11 +42,6 @@ type NamedCounts = { name: string; count: number }[];
 type SearchType = 'cde' | 'endorsedCde' | 'form';
 
 const searchDesktopWidth = 772;
-const orderedFirstOrgNames = Object.freeze(['Project 5 (COVID-19)', 'ScHARe']);
-const orderedFirstOrgIcons = Object.freeze([
-    '/assets/img/endorsedRibbonIcon.png',
-    '/assets/img/endorsedRibbonIcon.png',
-]);
 
 @Component({
     template: '',
@@ -652,20 +647,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                         this.orgHelperService.then(() => {
                             this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
                         }, noop);
-                        const [firstOrgs, otherOrgs] = partition(aggregations.orgs.buckets, org =>
-                            orderedFirstOrgNames.includes(org.key)
-                        );
-                        firstOrgs.sort((a, b) => {
-                            const A = orderedFirstOrgNames.indexOf(a.key);
-                            const B = orderedFirstOrgNames.indexOf(b.key);
-                            return B > A ? -1 : A === B ? 0 : 1;
-                        });
-                        otherOrgs.sort((a, b) => {
-                            const A = a.key.toLowerCase();
-                            const B = b.key.toLowerCase();
-                            return B > A ? -1 : A === B ? 0 : 1;
-                        });
-                        aggregations.orgs.buckets = firstOrgs.concat(otherOrgs);
                         resolve();
                     });
                 });
@@ -684,9 +665,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                     orgsCreatedPromise.then(() => {
                         this.orgHelperService.then(orgsDetailedInfo => {
+                            this.orgHelperService.sortOrganizationsEndorsedFirst(aggregations.orgs.buckets);
                             aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
+                                const orgsDetailedInfoMapped = orgsDetailedInfo[orgBucket.key];
                                 if (orgsDetailedInfo[orgBucket.key]) {
                                     orgs.push({
+                                        endorsed: orgsDetailedInfoMapped.endorsed,
                                         classifications: [],
                                         name: orgBucket.key,
                                         longName: orgsDetailedInfo[orgBucket.key].longName,
@@ -696,13 +680,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                                         htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
                                         cdeStatusValidationRules: [],
                                     });
-                                }
-                            });
-                            let orgIndex = 0;
-                            orderedFirstOrgNames.forEach((name, i) => {
-                                if (orgs[orgIndex].name === name) {
-                                    orgs[orgIndex].featureIcon = orderedFirstOrgIcons[i];
-                                    orgIndex++;
                                 }
                             });
                         }, noop);

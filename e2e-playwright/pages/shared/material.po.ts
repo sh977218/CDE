@@ -31,6 +31,17 @@ export class MaterialPo {
         return this.page.locator('//mat-option[normalize-space() = "' + text + '"]');
     }
 
+    async toggleMatSlide(containerLocator: Locator, toggle: 'on' | 'off') {
+        const matSlider = containerLocator.locator(`mat-slide-toggle`);
+        const label = matSlider.locator('label');
+        const button = matSlider.locator('button');
+        const checked = await button.getAttribute(`aria-checked`);
+        const needToggle = (toggle === 'on' && checked === 'false') || (toggle === 'off' && checked === 'true');
+        if (needToggle) {
+            await label.click();
+        }
+    }
+
     async selectMatSelect(matSelectLocator: Locator, text: string) {
         await matSelectLocator.click();
         await this.matOverlay().waitFor({ state: 'visible' });

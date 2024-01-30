@@ -10,6 +10,7 @@ export interface Organization {
     extraInfo?: string;
     htmlOverview?: string;
     longName?: string;
+    endorsed: boolean;
     mailAddress?: string;
     name: string;
     nameContexts?: any[];

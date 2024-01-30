@@ -34,6 +34,7 @@ export const orgSchema = new Schema({
     },
     extraInfo: StringType,
     cdeStatusValidationRules: [statusValidationRuleSchema],
+    endorsed: {type: Boolean, default: false},
     htmlOverview: StringType
 }, {});
 export type OrganizationDocument = Document & Organization;
@@ -43,6 +44,7 @@ const orgDetailProject = {
     _id: 0,
     name: 1,
     longName: 1,
+    endorsed: 1,
     mailAddress: 1,
     emailAddress: 1,
     embeds: 1,
