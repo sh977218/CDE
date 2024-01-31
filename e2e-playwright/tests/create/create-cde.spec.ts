@@ -2,37 +2,41 @@ import { expect } from '@playwright/test';
 import { Accounts } from '../../data/user';
 import { test } from '../../fixtures/base-fixtures';
 
-test(`Create CDE`, async ({ page, classificationSection, navigationMenu }) => {
+test(`Create CDE`, async ({ page, materialPage, createEltPage, classificationSection, navigationMenu }) => {
     const cdeName = 'nlm curated data element';
     const cdeDef = 'create by NLM Curator';
-    const cdeOrg = 'SeleniumOrg';
-    const cdeCategories = ['Test Classif'];
+
+    const cdeOrg1 = 'SeleniumOrg';
+    const cdeCategories1 = ['Test Classif'];
+
+    const cdeOrg2 = 'NINDS';
+    const cdeCategories2 = ['Population', 'Adult'];
 
     await test.step(`Login and go to create CDE`, async () => {
         await navigationMenu.login(Accounts.nlmCuratorUser);
         await navigationMenu.gotoCreateCde();
     });
     await test.step(`Create CDE`, async () => {
-        await expect(page.locator(`[id="submit"]`)).toBeDisabled();
-        await page.getByText(`Please enter a name for the new CDE`).waitFor();
+        await expect(createEltPage.submitButton()).toBeDisabled();
+        await expect(createEltPage.validationError()).toContainText(`Please enter a name for the new CDE`);
 
-        await page.locator(`[id="eltName"]`).fill(cdeName);
-        await page.getByText(`Please enter a definition for the new CDE`).waitFor();
+        await createEltPage.eltNameInput().fill(cdeName);
+        await expect(createEltPage.validationError()).toContainText(`Please enter a definition for the new CDE`);
 
-        await page.locator(`[id="eltDefinition"]`).fill(cdeDef);
-        await page.getByText(`Please select a steward for the new CDE`).waitFor();
+        await createEltPage.eltDefinitionInput().fill(cdeDef);
+        await expect(createEltPage.validationError()).toContainText(`Please select a steward for the new CDE`);
 
-        await page.locator(`[id="eltStewardOrgName"]`).selectOption(cdeOrg);
-        await page.getByText(`Please select at least one classification`).waitFor();
+        await createEltPage.eltStewardOrgNameSelect().selectOption(cdeOrg1);
+        await expect(createEltPage.validationError()).toContainText(`Please select at least one classification`);
 
-        await page.locator(`[id="openClassificationModalBtn"]`).click();
-        await classificationSection.classifyItemByOrgAndCategories(cdeOrg, cdeCategories);
+        await createEltPage.openClassifyModalButton().click();
+        await materialPage.classifyItemByOrgAndCategories(cdeOrg1, cdeCategories1);
 
-        await page.locator(`[id="openClassificationModalBtn"]`).click();
-        await classificationSection.classifyItemByOrgAndCategories('NINDS', ['Population', 'Adult']);
+        await createEltPage.openClassifyModalButton().click();
+        await materialPage.classifyItemByOrgAndCategories(cdeOrg2, cdeCategories2);
 
-        await expect(page.getByText(`Please`)).toBeHidden();
-        await page.locator(`[id="submit"]`).click();
+        await expect(createEltPage.validationError()).toBeHidden();
+        await createEltPage.submitButton().click();
     });
 
     await test.step(`Verify CDE`, async () => {

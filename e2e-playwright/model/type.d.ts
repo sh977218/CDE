@@ -1,4 +1,24 @@
+export type ACCOUNT_KEYS =
+    | 'nlm'
+    | 'orgAuthority'
+    | 'nlmCurator'
+    | 'ninds'
+    | 'loginrecorduser'
+    | 'regularUser'
+    | 'ctepOnlyEditor'
+    | 'ctepEditor'
+    | 'testEditor'
+    | 'classifyBoardUser'
+    | 'formBoardUser'
+    | 'nlmCuratorUser'
+    | 'classificationManageUser'
+    | 'workingGroupUser';
+
+export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
+export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';
 export type Module = 'cde' | 'form';
+type BoardType = 'CDEs' | 'Forms';
+
 export type Account = {
     username: string;
     password: string;
@@ -15,8 +35,6 @@ export type DisplayProfile = {
     displayInvisibleQuestion: boolean;
     displayMetadataDevice: boolean;
 };
-
-type BoardType = 'CDEs' | 'Forms';
 
 export type Board = {
     boardName: string;
@@ -47,8 +65,6 @@ export type Definition = {
     tags: string[];
 };
 
-export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';
-
 export type Concept = {
     conceptName: string;
     conceptId: string;
@@ -56,4 +72,9 @@ export type Concept = {
     conceptType: ConceptType;
 };
 
-export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
+export type CreateElt = {
+    eltName: string;
+    eltDef: string;
+    eltOrg: string;
+    eltClassificationCategories: string[];
+};

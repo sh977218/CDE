@@ -25,8 +25,8 @@
             <dd>{{elt.registrationState.unresolvedIssue}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.registrationStatus">
-            <dt>Registration Status:</dt>
-            <dd itemprop="registrationStatus">{{elt.registrationState.registrationStatus}}</dd>
+            <dt data-testid="registration-status-label">Registration Status:</dt>
+            <dd data-testid="registration-status" itemprop="registrationStatus">{{elt.registrationState.registrationStatus}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeStatus">
             <dt>Administrative Status:</dt>

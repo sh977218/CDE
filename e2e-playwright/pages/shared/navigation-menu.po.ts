@@ -21,24 +21,14 @@ export class NavigationMenuPo {
             this.materialPage
                 .matMenuContent()
                 .waitFor()
-                .then(() => {
-                    console.info(`hovered ${buttonText} and menu shows. Continue...`);
-                    resolve();
-                })
+                .then(resolve)
                 .catch(async () => {
-                    console.info(`hovered ${buttonText} and menu is not showing. Try click it...`);
                     await buttonLocator.click();
                     this.materialPage
                         .matMenuContent()
                         .waitFor()
-                        .then(() => {
-                            console.info(`clicked ${buttonText} again and menu shows. Continue...`);
-                            resolve();
-                        })
-                        .catch(async e => {
-                            console.info(
-                                `clicked ${buttonText} again and menu is still not showing. Something wrong. Throwing error`
-                            );
+                        .then(resolve)
+                        .catch(() => {
                             reject(`${buttonText} hovered and clicked, but didn't trigger the menu`);
                         });
                 });
@@ -51,23 +41,13 @@ export class NavigationMenuPo {
             const buttonText = await buttonLocator.innerText();
             this.page
                 .waitForURL(Url)
-                .then(() => {
-                    console.info(`clicked ${buttonText} and ${Url} navigated. Continue...`);
-                    resolve();
-                })
+                .then(resolve)
                 .catch(async () => {
-                    console.info(`clicked ${buttonText} and ${Url} didn't get navigated. Try click it again...`);
                     await buttonLocator.click();
                     this.page
                         .waitForURL(Url)
-                        .then(() => {
-                            console.info(`clicked ${buttonText} again and ${Url} navigated. Continue...`);
-                            resolve();
-                        })
-                        .catch(async e => {
-                            console.info(
-                                `clicked ${buttonText} again and ${Url} still didn't get navigated. Something wrong. Throwing error`
-                            );
+                        .then(resolve)
+                        .catch(() => {
                             reject(`${buttonText} clicked twice, but ${Url} didn't get navigated`);
                         });
                 });
@@ -119,6 +99,13 @@ export class NavigationMenuPo {
         await this.page.getByRole('heading', { name: 'Create Data Element' }).waitFor();
     }
 
+    async searchCdeByName(cdeName: string) {
+        await this.gotoCdeSearch();
+        await this.page.getByTestId(`search-query-input`).fill(`"${cdeName}"`);
+        await this.page.getByTestId(`search-submit-button`).click();
+        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+    }
+
     /**
      * Description - This method search CDE name with double quotes, make sure login first
      * @param cdeName
@@ -130,6 +117,7 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
+        await this.page.waitForURL(`/deView?tinyId=${tinyId}`, { timeout: 10000 });
     }
 
     async gotoFormSearch() {
@@ -162,6 +150,7 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
+        await this.page.waitForURL(`/formView?tinyId=${tinyId}`, { timeout: 10000 });
     }
 
     async gotoSettings() {

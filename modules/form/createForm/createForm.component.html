@@ -32,7 +32,7 @@
             </button>
             <cde-classification-view [elt]="elt" (confirmDelete)="confirmDelete($event)"></cde-classification-view>
         </div>
-        <div *ngIf="validationErrors(elt)" class="form-group text-danger">
+        <div *ngIf="validationErrors(elt)" class="form-group text-danger" data-testid="validation-error">
             <mat-icon>warning</mat-icon>
             {{validationErrors(elt)}}
         </div>

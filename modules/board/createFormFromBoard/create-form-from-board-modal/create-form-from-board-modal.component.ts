@@ -20,26 +20,20 @@ export class CreateFormFromBoardModalComponent {
         private alert: AlertService,
         private http: HttpClient
     ) {
-        const addQuestion = (de: DataElement) => {
-            const q = convertCdeToQuestion(de);
-            if (q) {
-                this.elt.formElements[0].formElements.push(q);
-            }
-        };
+        this.elt = new CdeForm();
+        this.elt.designations.push({ designation: board.name });
+        this.elt.definitions.push({ definition: '', tags: [] });
+        this.elt.formElements.push(new FormSection());
         this.http.get<BoardDe>('/server/board/' + board.id + '/0/500').subscribe(
             res => {
                 if (res.elts.length > 0) {
-                    this.elt = new CdeForm();
-                    this.elt.designations.push({ designation: board.name });
-                    this.elt.definitions.push({ definition: '', tags: [] });
-                    this.elt.formElements.push(new FormSection());
                     res.elts.forEach(pin => {
                         if (isElasticDataElementClipped(pin)) {
-                            DataElementService.fetchDe(pin.tinyId, pin.version || '').then(addQuestion, () => {
+                            DataElementService.fetchDe(pin.tinyId, pin.version || '').then(this.addQuestion, () => {
                                 this.alert.addAlert('danger', pin.tinyId + ' is not found in the database.');
                             });
                         } else {
-                            addQuestion(pin);
+                            this.addQuestion(pin);
                         }
                     });
                 } else {
@@ -48,5 +42,12 @@ export class CreateFormFromBoardModalComponent {
             },
             err => this.alert.addAlert('danger', 'Error on load elements in board ' + err)
         );
+    }
+
+    addQuestion(de: DataElement) {
+        const q = convertCdeToQuestion(de);
+        if (q) {
+            this.elt.formElements[0].formElements.push(q);
+        }
     }
 }

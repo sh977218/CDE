@@ -1,4 +1,4 @@
-import { Page, test as baseTest, expect as baseExpect, TestInfo, Locator } from '@playwright/test';
+import { Page, test as baseTest, TestInfo } from '@playwright/test';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import { join } from 'path';
@@ -15,6 +15,9 @@ import { NavigationMenuPo } from '../pages/shared/navigation-menu.po';
 // Modals
 import { SaveModalPo } from '../pages/shared/save-modal.po';
 import { UpdateRegistrationStatusModalPo } from '../pages/shared/update-registration-status-modal.po';
+
+// Create CDE/Form page
+import { CreateEltPo } from '../pages/create/create-elt.po';
 
 // CDE page
 import { CdePagePo } from '../pages/cde/cde-page.po';
@@ -77,6 +80,7 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
 const baseFixture = baseTest.extend<{
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
+    createEltPage: CreateEltPo;
     conceptSection: ConceptPo;
     formPage: FormPagePo;
     formDescription: FormDescriptionPo;
@@ -124,6 +128,9 @@ const baseFixture = baseTest.extend<{
     },
     permissibleValueSection: async ({ page }, use) => {
         await use(new PermissibleValuePo(page));
+    },
+    createEltPage: async ({ page, materialPage }, use) => {
+        await use(new CreateEltPo(page, materialPage));
     },
     conceptSection: async ({ page, materialPage, saveModal }, use) => {
         await use(new ConceptPo(page, materialPage, saveModal));

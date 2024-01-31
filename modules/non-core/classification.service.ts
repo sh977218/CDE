@@ -1,6 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
 import { uniqWith, isEqual } from 'lodash';
 import { LocalStorageService } from 'non-core/localStorage.service';
@@ -18,7 +17,6 @@ import { SearchSettingsElastic } from 'shared/search/search.model';
 export class ClassificationService {
     constructor(
         private alert: AlertService,
-        public esService: ElasticService,
         public http: HttpClient,
         private localStorageService: LocalStorageService
     ) {}

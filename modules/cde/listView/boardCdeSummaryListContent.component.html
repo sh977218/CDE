@@ -1,6 +1,7 @@
 <cde-summary-heading [elt]="elt" [eltIndex]="eltIndex" urlPrefix="/deView" class="summaryHeading">
     <span class="summary-list-before">
         <input id="elt_compare_{{eltIndex}}" type="checkbox" title="Select Elt" class="checkbox" style="margin-right: .5rem"
+               data-testid="elt-compare-checkbox"
                [(ngModel)]="elt.checked"/>
         <cde-list-sort [elt]="elt" [eltIndex]="eltIndex"
                        [currentPage]="boardListService.currentPage"

@@ -3,7 +3,7 @@ import { Accounts } from '../../data/user';
 import { test } from '../../fixtures/base-fixtures';
 
 test.describe.configure({ retries: 0 });
-test(`Create form from board`, async ({ page, materialPage, classificationSection, navigationMenu, myBoardPage }) => {
+test(`Classify form from board`, async ({ page, materialPage, navigationMenu, myBoardPage }) => {
     const formName1 = `Participant/Subject Contact Information`;
     const formName2 = `Parkinson's Disease Quality of Life Scale (PDQUALIF)`;
     const formName3 = `ER/Admission Therapeutic Procedures`;
@@ -41,7 +41,7 @@ test(`Create form from board`, async ({ page, materialPage, classificationSectio
         await navigationMenu.gotoMyBoard();
         await myBoardPage.boardTitle(boardName).click();
         await myBoardPage.classifyAllFormsButton().click();
-        await classificationSection.classifyItemByOrgAndCategories(newOrg, classificationArray);
+        await materialPage.classifyItemByOrgAndCategories(newOrg, classificationArray);
         await materialPage.checkAlert(`All Elements classified.`);
     });
 

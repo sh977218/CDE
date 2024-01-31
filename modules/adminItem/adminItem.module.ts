@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -14,7 +14,6 @@ import { TreeModule } from '@circlon/angular-tree-component';
 import { AttachmentsComponent } from 'adminItem/attachments/attachments.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { ClassificationViewComponent } from 'adminItem/classification/classificationView.component';
-import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { DeleteClassificationModalComponent } from 'adminItem/classification/delete-classification-modal/delete-classification-modal.component';
 import { DeleteDraftModalComponent } from 'adminItem/delete-draft-modal/delete-draft-modal.component';
 import { DeReadOnlyComponent } from 'adminItem/deReadOnly/deReadOnly.component';
@@ -53,6 +52,13 @@ import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 import { TagModule } from 'tag/tag.module';
 import { NativeRenderModule } from 'nativeRender/nativeRender.module';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ClassifyItemDialogComponent } from './classification/classify-item-dialog/classify-item-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
     imports: [
@@ -83,6 +89,13 @@ import { NativeRenderModule } from 'nativeRender/nativeRender.module';
         InlineViewModule,
         NativeRenderModule,
         TagModule,
+        MatInputModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        MatMenuModule,
+        MatTreeModule,
+        MatRadioModule,
     ],
     declarations: [
         AttachmentsComponent,

@@ -27,6 +27,14 @@ export class ManageClassificationPo {
         });
     }
 
+    addChildClassificationInput() {
+        return this.page.locator(`[id="addChildClassifInput"]`);
+    }
+
+    confirmAddChildClassificationButton(): Locator {
+        return this.page.locator(`[id="confirmAddChildClassificationBtn"]`);
+    }
+
     confirmRemoveClassificationInput(): Locator {
         return this.page.getByTestId(`confirmRemoveClassificationInput`);
     }
@@ -47,18 +55,55 @@ export class ManageClassificationPo {
      *
      * @param classificationArray - First item is org name
      */
+    async addOrgClassification(classificationArray: string[]) {
+        if (classificationArray.length < 2) {
+            throw new Error(`addOrgClassification classificationArray does not contains any categories.`);
+        }
+        const org = classificationArray[0];
+        const rootClassification = classificationArray[1];
+        await this.materialPage.selectMatSelect(this.organizationSelect(), org);
+
+        await this.page.route(`/server/classification/addOrgClassification/`, async route => {
+            await this.page.waitForTimeout(5000);
+            await route.continue();
+        });
+
+        // add to first root classification
+        await this.page.locator(`[id="addClassificationUnderRoot"]`).click();
+        await this.addChildClassificationInput().fill(rootClassification);
+        await this.confirmAddChildClassificationButton().click();
+        await this.materialPage.checkAlert(`Classification added.`);
+
+        for (let i = 2; i < classificationArray.length; i++) {
+            const classificationToBeAdded = classificationArray[i];
+            const classificationArrayToBeExpanded = classificationArray.slice(0, i);
+            const leafNode = await this.materialPage.expandClassificationAndReturnLeafNode(
+                classificationArrayToBeExpanded
+            );
+            await this.classificationMenu(leafNode).click();
+            await this.classificationOption('Add Child Classification').click();
+            await this.addChildClassificationInput().fill(classificationToBeAdded);
+            await this.confirmAddChildClassificationButton().click();
+            await this.materialPage.checkAlert(`Classification added.`);
+        }
+    }
+
+    /**
+     *
+     * @param classificationArray - First item is org name
+     */
     async removeOrgClassification(classificationArray: string[]) {
         if (classificationArray.length < 2) {
             throw new Error(`removeOrgClassification classificationArray does not contains any categories.`);
         }
         const org = classificationArray[0];
-        const classificationToBeRemoved = classificationArray[classificationArray.length - 1];
+        const classificationsToBeRemoved = classificationArray[classificationArray.length - 1];
 
         await this.materialPage.selectMatSelect(this.organizationSelect(), org);
         const leafNode = await this.materialPage.expandClassificationAndReturnLeafNode(classificationArray);
         await this.classificationMenu(leafNode).click();
         await this.classificationOption('Remove').click();
-        await this.confirmRemoveClassificationInput().fill(classificationToBeRemoved);
+        await this.confirmRemoveClassificationInput().fill(classificationsToBeRemoved);
         await this.page.route(`/server/system/jobStatus/deleteClassification`, async route => {
             await this.page.waitForTimeout(5000);
             await route.continue();
@@ -118,7 +163,7 @@ export class ManageClassificationPo {
             await this.page.waitForTimeout(5000);
             await route.continue();
         });
-        await this.classificationSection.classifyItemByOrgAndCategories(newOrg, newCategories);
+        await this.materialPage.classifyItemByOrgAndCategories(newOrg, newCategories);
         await this.materialPage.checkAlert(`Reclassifying in progress.`);
         await this.materialPage.checkAlert(`Classification Reclassified.`);
     }

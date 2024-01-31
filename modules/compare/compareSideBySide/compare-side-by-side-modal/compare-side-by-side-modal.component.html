@@ -37,16 +37,16 @@
                 <strong>{{option.displayAs.label}}</strong>
                 <ng-container *ngIf="fullMatched">
                 <div *ngFor="let fullMatch of option.fullMatches" class="splitHalf">
-                    <div class="noLeftPadding">
-                        <div class="fullMatch">
+                    <div class="noLeftPadding" data-testid="compare-left-container">
+                        <div class="fullMatch" data-testid="full-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(fullMatch.left,d)></span>
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding">
-                        <div class="fullMatch">
+                    <div class="noRightPadding" data-testid="compare-right-container">
+                        <div class="fullMatch" data-testid="full-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(fullMatch.right,d)></span>
@@ -58,8 +58,8 @@
                 <ng-container *ngIf="partialMatched">
 
                 <div *ngFor="let partialMatch of option.partialMatches" class="splitHalf">
-                    <div class="noLeftPadding">
-                        <div class="partialMatch">
+                    <div class="noLeftPadding" data-testid="compare-left-container">
+                        <div class="partialMatch" data-testid="partial-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(partialMatch.left,d)></span>
@@ -67,8 +67,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding">
-                        <div class="partialMatch">
+                    <div class="noRightPadding" data-testid="compare-right-container">
+                        <div class="partialMatch" data-testid="partial-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(partialMatch.right,d)></span>
@@ -81,16 +81,16 @@
                 <ng-container *ngIf="notMatched">
 
                 <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="splitHalf">
-                    <div class="noLeftPadding">
-                        <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch">
+                    <div class="noLeftPadding" data-testid="compare-left-container">
+                        <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch" data-testid="not-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(leftNotMatch,d)></span>
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding">
-                        <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch">
+                    <div class="noRightPadding" data-testid="compare-right-container">
+                        <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch" data-testid="not-match">
                             <div *ngFor="let d of option.displayAs.data">
                                 <strong>{{d.label?d.label+":":d.label}}</strong>
                                 <span [innerHTML]=getValue(rightNotMatch,d)></span>

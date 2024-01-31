@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+    <mat-tab-group>
+        <mat-tab label="By classification tree">
+            <mat-form-field class="w-100" appearance="fill">
+                <mat-select [formControl]="selectedOrg" (selectionChange)="orgChanged($event)" id="selectOrgMatSelect"
+                            data-testid="manage-organization-select"
+                            placeholder="Start by choosing your Organization">
+                    <mat-option *ngFor="let o of userService.userOrgs" [value]="o">{{o}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div *ngIf="selectedOrg.value">
+                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                        <ng-container *ngIf="node.expandable; else expandableButton">
+                            <button mat-icon-button matTreeNodeToggle data-testid="tree-node-toggler"
+                                    [attr.aria-label]="'Toggle ' + node.name">
+                                <mat-icon class="mat-icon-rtl-mirror">
+                                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                                </mat-icon>
+                            </button>
+                        </ng-container>
+                        <ng-template #expandableButton>
+                            <button mat-icon-button disabled></button>
+                        </ng-template>
+                        <span [id]="getHtmlId(node)" class="me-2" data-testid="tree-node-text">{{node.name}}</span>
+                        <button mat-raised-button color="primary" (click)="classifyItemByTree(node)">
+                            Classify
+                        </button>
+                    </mat-tree-node>
+                </mat-tree>
+            </div>
+        </mat-tab>
+        <mat-tab label="By recently added">
+            <p>Select from recently used classifications...</p>
+            <ng-container
+                    *ngFor="let orgClassificationRecentlyAddView of orgClassificationsRecentlyAddView; index as i">
+                <div class="breadcrumb" id="recentlyClassification_{{i}}"
+                     data-testid="recently-classified-classification">
+                    {{ orgClassificationRecentlyAddView.orgName }} /
+                    {{ orgClassificationRecentlyAddView.categories.join(" / ") }}
+                    <button class="button small" (click)="classifyItemByRecentlyAdd(orgClassificationRecentlyAddView)">
+                        <mat-icon>add</mat-icon>
+                        Classify
+                    </button>
+                </div>
+            </ng-container>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<div mat-dialog-actions>
+    <button class="button" [mat-dialog-close]>Close</button>
+</div>

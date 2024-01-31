@@ -198,4 +198,18 @@ export class MaterialPo {
         }
         return treeNodeLocator;
     }
+
+    /**
+     *
+     * @param orgName steward org
+     * @param categories classification array excludes org
+     */
+    async classifyItemByOrgAndCategories(orgName: string, categories: string[]) {
+        await this.matDialog().waitFor();
+        await this.matDialog().locator(`[id="selectOrgMatSelect"]`).click();
+        await this.matOptionByText(orgName).click();
+        const leafNode = await this.expandClassificationAndReturnLeafNode(categories);
+        await leafNode.getByRole('button', { name: 'Classify' }).click();
+        await this.matDialog().waitFor({ state: 'hidden' });
+    }
 }

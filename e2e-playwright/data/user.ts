@@ -1,8 +1,8 @@
-import { Account } from '../model/type';
+import { Account, ACCOUNT_KEYS } from '../model/type';
 
 const DEFAULT_PASSWORD = 'pass';
 
-export const Accounts: Record<string, Account> = {
+export const Accounts: Record<ACCOUNT_KEYS, Account> = {
     nlm: {
         username: 'nlm',
         password: 'nlm',
@@ -49,6 +49,14 @@ export const Accounts: Record<string, Account> = {
     },
     nlmCuratorUser: {
         username: 'nlmCurator',
+        password: DEFAULT_PASSWORD,
+    },
+    classificationManageUser: {
+        username: 'classMgtUser',
+        password: DEFAULT_PASSWORD,
+    },
+    workingGroupUser: {
+        username: 'wguser',
         password: DEFAULT_PASSWORD,
     },
 };

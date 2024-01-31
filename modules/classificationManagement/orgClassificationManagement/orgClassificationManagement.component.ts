@@ -19,7 +19,6 @@ import { ClassificationDatabase } from 'classificationManagement/classification-
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
 import { RenameClassificationDialogComponent } from 'classificationManagement/rename-classification-dialog/rename-classification-dialog.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
-import { ClassifyItemDialogComponent } from 'adminItem/classification/classifyItemDialog.component';
 import { DialogData } from 'classificationManagement/dialog-data';
 import { FlatClassificationNode } from 'classificationManagement/flat-classification-node';
 import { ClassificationNode } from 'classificationManagement/classification-node';
@@ -28,6 +27,7 @@ import { isOrgAdmin } from 'shared/security/authorizationShared';
 import { UserService } from '_app/user.service';
 import { RemoveOrgClassificationDialogComponent } from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ClassifyItemDialogComponent } from '../../adminItem/classification/classify-item-dialog/classify-item-dialog.component';
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
@@ -195,10 +195,7 @@ export class OrgClassificationManagementComponent {
     openAddChildClassificationModal(node: FlatClassificationNode) {
         const data = this.getClassificationPath(node);
         this.dialog
-            .open(AddChildClassificationDialogComponent, {
-                width: '500px',
-                data,
-            })
+            .open(AddChildClassificationDialogComponent, { data })
             .afterClosed()
             .subscribe(newClassificationName => {
                 if (newClassificationName) {
@@ -220,10 +217,7 @@ export class OrgClassificationManagementComponent {
     openDeleteClassificationModal(node: FlatClassificationNode) {
         const data = this.getClassificationPath(node);
         this.dialog
-            .open(RemoveOrgClassificationDialogComponent, {
-                width: '500px',
-                data,
-            })
+            .open(RemoveOrgClassificationDialogComponent, { data })
             .afterClosed()
             .subscribe(
                 confirm => {
@@ -245,10 +239,7 @@ export class OrgClassificationManagementComponent {
     openRenameClassificationModal(node: FlatClassificationNode) {
         const data = this.getClassificationPath(node);
         this.dialog
-            .open(RenameClassificationDialogComponent, {
-                width: '500px',
-                data,
-            })
+            .open(RenameClassificationDialogComponent, { data })
             .afterClosed()
             .subscribe(newClassificationName => {
                 if (newClassificationName) {
@@ -274,10 +265,7 @@ export class OrgClassificationManagementComponent {
         const classificationArray = [data.orgName].concat(data.categories).join(' > ');
         const title = `Classify CDEs in Bulk   <p>Classify all CDEs classified by <strong> ${classificationArray} +  </strong> with new classification(s).</p>`;
         this.dialog
-            .open(ClassifyItemDialogComponent, {
-                width: '500px',
-                data: { title },
-            })
+            .open(ClassifyItemDialogComponent, { data: { title } })
             .afterClosed()
             .subscribe(result => {
                 const oldClassification = data;

@@ -32,7 +32,6 @@ test.describe(`Edit registration status`, async () => {
             const cdeName = 'Cde Status Test';
             await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoCdeByName(cdeName);
-            await generateDetailsSection.editRegistrationStatusButton().click();
             await generateDetailsSection.editRegistrationStatus({ status: retiredStatus });
             await expect(cdePage.alerts()).toContainText('This data element is retired.');
         });
@@ -41,7 +40,6 @@ test.describe(`Edit registration status`, async () => {
             const formName = 'Form Status Test';
             await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoFormByName(formName);
-            await generateDetailsSection.editRegistrationStatusButton().click();
             await generateDetailsSection.editRegistrationStatus({ status: retiredStatus });
             await expect(formPage.alerts()).toContainText('This form is retired.');
         });

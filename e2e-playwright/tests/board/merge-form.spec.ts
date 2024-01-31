@@ -30,7 +30,6 @@ test.describe(`Merge form`, async () => {
         });
 
         test(`Merge and retire CDEs`, async ({
-            page,
             materialPage,
             navigationMenu,
             searchPreferencesPage,
@@ -49,8 +48,8 @@ test.describe(`Merge form`, async () => {
                 for (const l of await boardPage.leftQuestions().all()) {
                     await expect(l).toContainText('Retired');
                 }
-                await page.locator(`[data-testid="close-merge-form-btn"]`).click();
-                await page.locator(`[id="closeCompareSideBySideBtn"]`).click();
+                await boardPage.closeMergeFormButton().click();
+                await boardPage.closeCompareModalButton().click();
             });
 
             await test.step(`Search with merged and retired Form`, async () => {

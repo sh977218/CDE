@@ -3,7 +3,7 @@
         <div *ngIf="showWorkingGroups(classification)"
              id="classificationOrg-{{classification.stewardOrg.name}}" class="classificationBox">
             <div class="classificationTitle">{{classification.stewardOrg.name}}</div>
-            <div *ngFor="let c1 of classification.elements; last as last">
+            <div *ngFor="let c1 of classification   .elements; last as last">
                 <ng-container *ngTemplateOutlet="classificationNode; context: {node: c1, c0: classification.stewardOrg.name, path: c1.name}"></ng-container>
                 <div class="classificationLevel" [class.classificationLevelLine]="!last">
                     <ng-container *ngFor="let cN of c1.elements">

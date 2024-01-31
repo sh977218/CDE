@@ -2,11 +2,15 @@ import { expect } from '@playwright/test';
 import { Accounts } from '../../data/user';
 import { test } from '../../fixtures/base-fixtures';
 
-test(`Create Form`, async ({ page, classificationSection, navigationMenu }) => {
-    const formName = 'nlm curated data element';
+test(`Create Form`, async ({ page, materialPage, createEltPage, navigationMenu }) => {
+    const formName = 'nlm curated form';
     const formDef = 'create by NLM Curator';
-    const formOrg = 'SeleniumOrg';
-    const formCategories = ['Test Classif'];
+
+    const formOrg1 = 'SeleniumOrg';
+    const formCategories1 = ['Test Classif'];
+
+    const formOrg2 = 'NINDS';
+    const formCategories2 = ['Population', 'Adult'];
 
     await test.step(`Login and go to create form`, async () => {
         await navigationMenu.login(Accounts.nlmCuratorUser);
@@ -14,26 +18,26 @@ test(`Create Form`, async ({ page, classificationSection, navigationMenu }) => {
     });
 
     await test.step(`Create form`, async () => {
-        await expect(page.locator(`[id="submit"]`)).toBeDisabled();
-        await page.getByText(`Please enter a name for the new form`).waitFor();
+        await expect(createEltPage.submitButton()).toBeDisabled();
+        await expect(createEltPage.validationError()).toContainText(`Please enter a name for the new Form`);
 
-        await page.locator(`[id="eltName"]`).fill(formName);
-        await page.getByText(`Please enter a definition for the new form`).waitFor();
+        await createEltPage.eltNameInput().fill(formName);
+        await expect(createEltPage.validationError()).toContainText(`Please enter a definition for the new Form`);
 
-        await page.locator(`[id="eltDefinition"]`).fill(formDef);
-        await page.getByText(`Please select a steward for the new form`).waitFor();
+        await createEltPage.eltDefinitionInput().fill(formDef);
+        await expect(createEltPage.validationError()).toContainText(`Please select a steward for the new Form`);
 
-        await page.locator(`[id="eltStewardOrgName"]`).selectOption(formOrg);
-        await page.getByText(`Please select at least one classification`).waitFor();
+        await createEltPage.eltStewardOrgNameSelect().selectOption(formOrg1);
+        await expect(createEltPage.validationError()).toContainText(`Please select at least one classification`);
 
-        await page.locator(`[id="openClassificationModalBtn"]`).click();
-        await classificationSection.classifyItemByOrgAndCategories(formOrg, formCategories);
+        await createEltPage.openClassifyModalButton().click();
+        await materialPage.classifyItemByOrgAndCategories(formOrg1, formCategories1);
 
-        await page.locator(`[id="openClassificationModalBtn"]`).click();
-        await classificationSection.classifyItemByOrgAndCategories('NINDS', ['Population', 'Adult']);
+        await createEltPage.openClassifyModalButton().click();
+        await materialPage.classifyItemByOrgAndCategories(formOrg2, formCategories2);
 
-        await expect(page.getByText(`Please`)).toBeHidden();
-        await page.locator(`[id="submit"]`).click();
+        await expect(createEltPage.validationError()).toBeHidden();
+        await createEltPage.submitButton().click();
     });
 
     await test.step(`Verify form`, async () => {

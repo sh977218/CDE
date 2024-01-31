@@ -58,6 +58,14 @@ export class GenerateDetailsPo {
         return this.page.getByTestId(`updated-by`);
     }
 
+    registrationStatusLabel() {
+        return this.page.getByTestId(`registration-status-label`);
+    }
+
+    registrationStatus() {
+        return this.page.getByTestId(`registration-status`);
+    }
+
     origin() {
         return this.page.getByTestId('origin');
     }
@@ -85,6 +93,8 @@ export class GenerateDetailsPo {
         administrativeNote = '',
         unresolvedIssue = '',
     }) => {
+        await this.editRegistrationStatusButton().click();
+        await this.materialPage.matDialog().waitFor();
         if (status) {
             await this.updateRegistrationStatusModal.registrationStatusSelect().selectOption(status);
         }
@@ -104,6 +114,7 @@ export class GenerateDetailsPo {
             await this.updateRegistrationStatusModal.unresolvedIssueTextarea().fill(unresolvedIssue);
         }
         await this.updateRegistrationStatusModal.saveRegistrationStatusButton().click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
     };
 
     async editNameByIndex(

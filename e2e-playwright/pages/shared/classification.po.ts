@@ -51,19 +51,6 @@ export class ClassificationPo {
     }
 
     // because this is not mat-tree, this method stay here instead of materialPo, but this needs to be converted to mat-tree
-    async classifyItemByOrgAndCategories(orgName: string, categories: string[]) {
-        await this.materialPage.matDialog().waitFor();
-        await this.materialPage.matDialog().locator(`[id="selectClassificationOrg"]`).selectOption(orgName);
-        await this.expandClassificationAndReturnLeafNode(categories);
-        await this.materialPage
-            .matDialog()
-            .locator(`[id="${categories.join(',')}"]`)
-            .getByRole('button', { name: 'Classify' })
-            .click();
-        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-    }
-
-    // because this is not mat-tree, this method stay here instead of materialPo, but this needs to be converted to mat-tree
     async classifyItemByRecent(orgName: string, categories: string[]) {
         await this.materialPage.matDialog().waitFor();
         await this.page.getByRole('tab', { name: 'By recently added', exact: true }).click();
@@ -84,10 +71,14 @@ export class ClassificationPo {
         const org = classificationArray[0];
         const categories = classificationArray.slice(1);
         await this.page.locator(`[id="openClassifyCdesModalBtn"]`).click();
-        await this.classifyItemByOrgAndCategories(org, categories);
+        await this.materialPage.classifyItemByOrgAndCategories(org, categories);
         await this.materialPage.checkAlert(`All CDEs Classified.`);
     }
 
+    /**
+     *
+     * @param classificationArray - classification array includes org name
+     */
     async addClassification(classificationArray: string[]) {
         if (classificationArray.length < 2) {
             throw new Error(`addClassification does not contains any categories.`);
@@ -95,7 +86,7 @@ export class ClassificationPo {
         const org = classificationArray[0];
         const categories = classificationArray.slice(1);
         await this.page.locator(`[id="openClassificationModalBtn"]`).click();
-        await this.classifyItemByOrgAndCategories(org, categories);
+        await this.materialPage.classifyItemByOrgAndCategories(org, categories);
         await this.materialPage.checkAlert(`Classification added.`);
     }
 
