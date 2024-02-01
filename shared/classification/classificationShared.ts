@@ -5,24 +5,24 @@ import {
     ClassificationElement,
     ClassificationElementsContainer,
     Item,
-    ObjectId
+    ObjectId,
 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
 export const actions: {
-    create: string,
-    delete: string,
-    rename: string
+    create: string;
+    delete: string;
+    rename: string;
 } = {
     create: 'create',
     delete: 'delete',
-    rename: 'rename'
+    rename: 'rename',
 };
 
 function findClassifOrCreate(elements: ClassificationElement[], category: string): ClassificationElement {
     let found = find(elements, (element: ClassificationElement) => element.name === category);
     if (!found) {
-        found = {name: category, elements: []};
+        found = { name: category, elements: [] };
         elements.push(found);
     }
     return found;
@@ -47,10 +47,12 @@ export function addCategoriesToTree(tree: ClassificationElementsContainer, categ
 
 export function arrangeClassification(item: Item, orgName: string): void {
     if (item.classification) {
-        item.classification.unshift(item.classification.splice(
-            item.classification.findIndex(o => o.stewardOrg.name === orgName),
-            1
-        )[0]);
+        item.classification.unshift(
+            item.classification.splice(
+                item.classification.findIndex(o => o.stewardOrg.name === orgName),
+                1
+            )[0]
+        );
     }
 }
 
@@ -59,7 +61,10 @@ export function findLeaf(classification: Classification, categories: string[]): 
     let leaf: ClassificationElementsContainer | undefined = classification;
     let parent: ClassificationElementsContainer | undefined = classification;
     categories.forEach((category, i) => {
-        const found = find(leaf && leaf.elements || [], (element: ClassificationElement) => element.name === category);
+        const found = find(
+            (leaf && leaf.elements) || [],
+            (element: ClassificationElement) => element.name === category
+        );
         if (i === categories.length - 2) {
             parent = found;
         }
@@ -85,7 +90,7 @@ export function addCategory(tree: Classification, fields: string[]): string | un
     if (lastLevel.elements.some(element => element.name === fields[fields.length - 1])) {
         return 'Classification Already Exists';
     } else {
-        lastLevel.elements.push({name: fields[fields.length - 1], elements: []});
+        lastLevel.elements.push({ name: fields[fields.length - 1], elements: [] });
     }
 }
 
@@ -113,7 +118,7 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
                 return element;
             }
         }
-        subTree.elements.push({name, elements: []});
+        subTree.elements.push({ name, elements: [] });
         return subTree.elements[subTree.elements.length - 1];
     }
 
@@ -126,13 +131,13 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
     return tempTree;
 }
 
-export function findSteward(item: Item, orgName: string): { index: number, object: Classification } | undefined {
+export function findSteward(item: Item, orgName: string): { index: number; object: Classification } | undefined {
     if (!item || !item.classification) {
         return;
     }
     for (let i = 0; i < item.classification.length; i++) {
         if (item.classification[i].stewardOrg.name === orgName) {
-            return {index: i, object: item.classification[i]};
+            return { index: i, object: item.classification[i] };
         }
     }
 }
@@ -210,7 +215,10 @@ export function transferClassifications(source: Item, destination: Item): void {
             if (st) {
                 stewardOrgDestination = st.object;
             } else {
-                destinationClassification.push({stewardOrg: {name: stewardOrgSource.stewardOrg.name}, elements: []});
+                destinationClassification.push({
+                    stewardOrg: { name: stewardOrgSource.stewardOrg.name },
+                    elements: [],
+                });
                 stewardOrgDestination = destinationClassification[destinationClassification.length - 1];
             }
             treeChildren(stewardOrgSource, [], path => {
@@ -228,18 +236,18 @@ interface Element {
 export interface OrgClassification {
     stewardOrg: {
         name: string;
-    }
-    elements: Element [];
+    };
+    elements: Element[];
 }
 
 export interface OrgClassificationAggregate {
     _id: {
         name: ObjectId;
-        elements: Element [];
-    }
+        elements: Element[];
+    };
 }
 
-function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
+function mergeElements(e1: Element[] = [], e2: Element[] = []): Element[] {
     const duplicatedElements: Element[] = e1.concat(e2);
     const uniqElements = uniqWith(duplicatedElements, (arrVal: Element, othVal: Element) => {
         if (arrVal.name === othVal.name) {
@@ -253,26 +261,33 @@ function mergeElements(e1: Element[] = [], e2: Element[] = []): Element [] {
     return sortElements;
 }
 
-export function mergeOrgClassificationAggregate(c1: OrgClassificationAggregate[] = [], c2: OrgClassificationAggregate[] = []) {
+export function mergeOrgClassificationAggregate(
+    c1: OrgClassificationAggregate[] = [],
+    c2: OrgClassificationAggregate[] = []
+) {
     const e1: Element[] = [];
     const e2: Element[] = [];
     c1.forEach(c => {
-        c._id.elements.forEach(e => e1.push({
-            name: e.name,
-            elements: e.elements
-        }));
-    })
+        c._id.elements.forEach(e =>
+            e1.push({
+                name: e.name,
+                elements: e.elements,
+            })
+        );
+    });
     c2.forEach(c => {
-        c._id.elements.forEach(e => e2.push({
-            name: e.name,
-            elements: e.elements
-        }));
-    })
+        c._id.elements.forEach(e =>
+            e2.push({
+                name: e.name,
+                elements: e.elements,
+            })
+        );
+    });
     return mergeElements(e1, e2);
 }
 
 function treeChildren(tree: ClassificationElementsContainer, path: string[], cb: Cb1<string[]>) {
-    tree.elements.forEach((element) => {
+    tree.elements.forEach(element => {
         const newPath = path.slice(0);
         newPath.push(element.name);
         if (element.elements && element.elements.length > 0) {

@@ -118,6 +118,7 @@ export class FhirSimpleQuantity extends FhirElementBase {
     system?: string;
     value?: number;
 }
+
 export class FhirQuantity extends FhirSimpleQuantity {
     comparator?: string;
 }
@@ -157,7 +158,6 @@ export type FhirTime = string;
 export type FhirUri = string;
 
 export interface FhirValue extends FhirElement {
-    [key: string]: any;
     valueAddress?: FhirAddress;
     valueAttachment?: any;
     valueBase64Binary?: FhirBase64Binary;
@@ -183,4 +183,6 @@ export interface FhirValue extends FhirElement {
     valueString?: string;
     valueTime?: FhirTime;
     valueUri?: FhirUri;
+
+    [key: string]: any;
 }

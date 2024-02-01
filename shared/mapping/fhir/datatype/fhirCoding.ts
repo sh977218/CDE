@@ -7,11 +7,11 @@ export function getText(coding?: FhirCoding): string {
 
 export function getTextFromArray(coding?: FhirCoding[]): string {
     const codings = Array.isArray(coding) && coding.filter(c => !!c.display);
-    return codings && codings.length && codings[0].display || '';
+    return (codings && codings.length && codings[0].display) || '';
 }
 
 export function getTextFromArrayAll(coding?: FhirCoding[]): string {
-    return Array.isArray(coding) ? coding.reduce((a, v) => a += (v.display ? v.display + ', ' : ''), '') : '';
+    return Array.isArray(coding) ? coding.reduce((a, v) => (a += v.display ? v.display + ', ' : ''), '') : '';
 }
 
 export function newCoding(system?: string, code?: string, version?: string, display?: string): FhirCoding {

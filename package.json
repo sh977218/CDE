@@ -312,10 +312,9 @@
   },
   "lint-staged": {
     "modules/**/*.ts": [
-      "npm run esfix",
-      "npm run format"
+      "npm run esfix"
     ],
-    "e2e-playwright/**/*.ts": [
+    "{e2e-playwright,modules,server,shared}/**/*.ts": [
       "npm run format"
     ]
   }

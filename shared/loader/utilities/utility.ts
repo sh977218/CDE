@@ -1,4 +1,4 @@
-import {isEmpty, trim }from 'lodash';
+import { isEmpty, trim } from 'lodash';
 import { PermissibleValueCodeSystem } from 'shared/models.model';
 
 export const CSV_HEADER_MAP: Record<string, string> = {
@@ -17,7 +17,7 @@ export const CSV_HEADER_MAP: Record<string, string> = {
     conceptIds: 'Permissible Value (PV) \nConcept Identifiers',
     conceptSource: 'Permissible Value (PV) Terminology Sources',
     permissibleValueCodes: 'Codes for Permissible Value',
-    codeSystem: 'Permissible Value \nCode Systems'
+    codeSystem: 'Permissible Value \nCode Systems',
 };
 
 export const REQUIRED_FIELDS: string[] = [
@@ -27,21 +27,18 @@ export const REQUIRED_FIELDS: string[] = [
     'source',
     'Preferred Question Text',
     'origin',
-    'originId'
+    'originId',
 ];
 
-export const SPELL_CHECK_FIELDS: string[] = [
-    'naming.designation',
-    'naming.definiton'
-];
+export const SPELL_CHECK_FIELDS: string[] = ['naming.designation', 'naming.definiton'];
 
 export function formatRows(csvFileName: string, rows: any[], skipCount: number) {
-    const formattedRows: Record<string,string>[] = [];
+    const formattedRows: Record<string, string>[] = [];
     rows.forEach((row, i) => {
-        if(i < skipCount){
+        if (i < skipCount) {
             return;
         }
-        const formattedRow: Record<string,string> = {};
+        const formattedRow: Record<string, string> = {};
         for (const p in row) {
             if (row.hasOwnProperty(p)) {
                 const formattedP = formatKey(p);
@@ -59,7 +56,7 @@ export function formatRows(csvFileName: string, rows: any[], skipCount: number) 
     return formattedRows;
 }
 
-export function getCell(row: Record<string,string>, header: string) : string {
+export function getCell(row: Record<string, string>, header: string): string {
     const key = formatKey(header);
     const value = row[key];
     if (!isEmpty(value)) {
@@ -79,32 +76,36 @@ export function formatKey(key: string) {
 }
 
 export function parsePermissibleValueArray(row: Record<string, string>): string[] {
-    return getCell(row, 'valueMeaningName').split('|')
+    return getCell(row, 'valueMeaningName')
+        .split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
 
-export function parseValueDefinitionArray(row: Record<string,string>) {
-    return getCell(row, 'valueMeaningDefinition').split('|')
+export function parseValueDefinitionArray(row: Record<string, string>) {
+    return getCell(row, 'valueMeaningDefinition')
+        .split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
 
-export function parseConceptIdArray(row: Record<string,string>) {
-    return getCell(row, 'Permissible Value (PV) \nConcept Identifiers').split('|')
+export function parseConceptIdArray(row: Record<string, string>) {
+    return getCell(row, 'Permissible Value (PV) \nConcept Identifiers')
+        .split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
 
-export function parseColumn(row: Record<string,string>, header: string) {
-    return getCell(row, header).split('|')
+export function parseColumn(row: Record<string, string>, header: string) {
+    return getCell(row, header)
+        .split('|')
         .map(t => t.trim())
         .filter(t => t);
 }
 
 const CODE_SYSTEM_MAP: Record<string, PermissibleValueCodeSystem> = {
     'UMLS Metathesaurus': 'UMLS',
-}
+};
 
 export function parseCodeSystemName(key: string) {
     const mappedKey = CODE_SYSTEM_MAP[key];

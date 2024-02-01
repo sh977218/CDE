@@ -10,8 +10,8 @@ interface LoadData {
         name: string | null;
         version: string | null;
     };
-    dataElements: (DataElement | null)[],
-    forms: CdeForm[],
+    dataElements: (DataElement | null)[];
+    forms: CdeForm[];
 }
 
 interface VerifySubmissionFileProgress {

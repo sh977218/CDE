@@ -1,7 +1,9 @@
 import {
     CdeId,
-    CodeAndSystem, Definition,
-    DerivationRule, Designation,
+    CodeAndSystem,
+    Definition,
+    DerivationRule,
+    Designation,
     Elt,
     EltRef,
     FormattedValue,
@@ -10,9 +12,16 @@ import {
     PermissibleValue,
 } from 'shared/models.model';
 import {
-    DatatypeContainerDate, DatatypeContainerDynamicList, DatatypeContainerExternal,
-    DatatypeContainerFile, DatatypeContainerGeo, DatatypeContainerNumber, DatatypeContainerText, DatatypeContainerTime,
-    DatatypeContainerValueList, ElasticElement,
+    DatatypeContainerDate,
+    DatatypeContainerDynamicList,
+    DatatypeContainerExternal,
+    DatatypeContainerFile,
+    DatatypeContainerGeo,
+    DatatypeContainerNumber,
+    DatatypeContainerText,
+    DatatypeContainerTime,
+    DatatypeContainerValueList,
+    ElasticElement,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
@@ -22,10 +31,11 @@ import { iterateFeSync } from 'shared/form/fe';
 export type QuestionValue = any;
 
 export class CdeForm<T extends FormElement = FormElement> extends Elt implements FormElementsContainer {
-    copyright?: { // mutable
-        authority?: string,
-        text?: string,
-        urls: CopyrightURL[]
+    copyright?: {
+        // mutable
+        authority?: string;
+        text?: string;
+        urls: CopyrightURL[];
     };
     displayProfiles: DisplayProfile[] = []; // mutable
     elementType: 'form' = 'form';
@@ -46,7 +56,7 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
 
         if (elt.isCopyrighted && !elt.copyright) {
             elt.copyright = {
-                urls: []
+                urls: [],
             };
         }
 
@@ -71,7 +81,8 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
             }
         }
 
-        iterateFeSync(elt,
+        iterateFeSync(
+            elt,
             form => {
                 feValid(form);
                 if (!form.inForm) {
@@ -157,7 +168,8 @@ export type CdeFormInputArray = CdeForm & {
     formInput: { [key: string]: QuestionValue }; // volatile, nativeRender and export
 };
 
-export interface CdeFormElastic extends CdeForm, ElasticElement { // all volatile
+export interface CdeFormElastic extends CdeForm, ElasticElement {
+    // all volatile
     // [key: string]: any; // used for highlighting
     cdeTinyIds: string[];
     numQuestions?: number;
@@ -168,7 +180,6 @@ export class CopyrightURL {
     valid = false;
 }
 
-
 export class DisplayProfile {
     _id!: ObjectId; // TODO: remove
     answerDropdownLimit = 10;
@@ -176,18 +187,18 @@ export class DisplayProfile {
     displayInstructions = true;
     displayInvisible = false;
     displayNumbering = true;
-    displayType: DisplayType ;
+    displayType: DisplayType;
     displayValues = false;
     metadata: { device?: boolean } = {};
     name: string;
     numberOfColumns = 4;
     repeatFormat = '#.';
     sectionsAsMatrix = true;
-    unitsOfMeasureAlias: { alias: string, unitOfMeasure: CodeAndSystem }[] = [];
+    unitsOfMeasureAlias: { alias: string; unitOfMeasure: CodeAndSystem }[] = [];
 
-    constructor(name = '',displayType='Follow-up' as DisplayType) {
+    constructor(name = '', displayType = 'Follow-up' as DisplayType) {
         this.name = name;
-        this.displayType = displayType
+        this.displayType = displayType;
     }
 }
 
@@ -253,6 +264,22 @@ export class FormInForm<T extends FormElement = FormElement> extends FormSection
 }
 
 export class FormQuestion<T extends FormElement = FormElement> extends FormElementPart<T> {
+    static datePrecisionToType = {
+        Year: 'Number',
+        Month: 'month',
+        Day: 'date',
+        Hour: 'datetime-local',
+        Minute: 'datetime-local',
+        Second: 'datetime-local',
+    };
+    static datePrecisionToStep = {
+        Year: null,
+        Month: null,
+        Day: null,
+        Hour: 3600,
+        Minute: null,
+        Second: 1,
+    };
     readonly elementType: 'question' = 'question';
     incompleteRule?: boolean; // volatile, form description
     question: Question = question() as Question;
@@ -261,34 +288,17 @@ export class FormQuestion<T extends FormElement = FormElement> extends FormEleme
         super();
         this.expanded = true;
     }
-
-    static datePrecisionToType = {
-        Year: 'Number',
-        Month: 'month',
-        Day: 'date',
-        Hour: 'datetime-local',
-        Minute: 'datetime-local',
-        Second: 'datetime-local'
-    };
-    static datePrecisionToStep = {
-        Year: null,
-        Month: null,
-        Day: null,
-        Hour: 3600,
-        Minute: null,
-        Second: 1
-    };
 }
 
 export type FormQuestionDraft = FormQuestion<FormElementDraft> & {
     question: {
         cde: {
             newCde?: {
-                definitions: Definition[],
-                designations: Designation[],
-            }
-        }
-    }
+                definitions: Definition[];
+                designations: Designation[];
+            };
+        };
+    };
 };
 
 export type FormQuestionFollow = FormQuestion<FormElementFollow> & {
@@ -316,13 +326,15 @@ export class MetadataTag {
     }
 }
 
-export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer<FormElementFollow> { // view model
+export class PermissibleFormValue extends PermissibleValue implements FormElementsContainer<FormElementFollow> {
+    // view model
     formElements!: FormElementFollow[]; // volatile, nativeRender
     index?: number;
     nonValuelist?: boolean;
 }
 
-export type Question = QuestionDate
+export type Question =
+    | QuestionDate
     | QuestionDynamicList
     | QuestionExternal
     | QuestionFile
@@ -356,10 +368,11 @@ interface QuestionPart {
     uomsValid: string[]; // volatile, FormDescription
 }
 
-export type QuestionDate = DatatypeContainerDate & QuestionPart & {
-    answerDate?: any; // volatile, working storage for date part
-    answerTime?: any; // volatile, working storage for time part
-};
+export type QuestionDate = DatatypeContainerDate &
+    QuestionPart & {
+        answerDate?: any; // volatile, working storage for date part
+        answerTime?: any; // volatile, working storage for time part
+    };
 export type QuestionDynamicList = DatatypeContainerDynamicList & QuestionPart;
 export type QuestionExternal = DatatypeContainerExternal & QuestionPart;
 export type QuestionFile = DatatypeContainerFile & QuestionPart;
@@ -367,12 +380,13 @@ export type QuestionGeo = DatatypeContainerGeo & QuestionPart;
 export type QuestionNumber = DatatypeContainerNumber & QuestionPart;
 export type QuestionText = DatatypeContainerText & QuestionPart;
 export type QuestionTime = DatatypeContainerTime & QuestionPart;
-export type QuestionValueList = DatatypeContainerValueList & QuestionPart & {
-    answers: PermissibleValue[]; // mutable
-    cde: QuestionCdeValueList;
-    displayAs: displayAsValueList;
-    multiselect?: boolean;
-};
+export type QuestionValueList = DatatypeContainerValueList &
+    QuestionPart & {
+        answers: PermissibleValue[]; // mutable
+        cde: QuestionCdeValueList;
+        displayAs: displayAsValueList;
+        multiselect?: boolean;
+    };
 
 export type displayAsValueList = 'radio/checkbox/select' | 'likert scale';
 export const displayAsValueListList = ['radio/checkbox/select', 'likert scale'];
@@ -384,7 +398,7 @@ export function question(): Partial<Question> {
         editable: true,
         unitsOfMeasure: [],
         uomsAlias: [],
-        uomsValid: []
+        uomsValid: [],
     };
 }
 
@@ -396,8 +410,7 @@ export type QuestionCdeValueList = QuestionCde & {
     permissibleValues: PermissibleValue[];
 };
 
-class Section {
-}
+class Section {}
 
 export class SkipLogic {
     action?: string;

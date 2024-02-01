@@ -2,13 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
-test(`Working group classification visible`, async ({
-    page,
-    saveModal,
-    navigationMenu,
-    generateDetailsSection,
-    classificationSection,
-}) => {
+test(`Working group classification visible`, async ({ page, navigationMenu, classificationSection }) => {
     const workingGroupOrg = 'WG-TEST';
     const classificationCategories = ['WG Classif', 'WG Sub / Classif'];
 
@@ -25,6 +19,7 @@ test(`Working group classification visible`, async ({
     });
 
     await test.step(`Log out and working group classification is not visible`, async () => {
+        await navigationMenu.logout();
         await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByText(workingGroupOrg)).toBeHidden();
         await expect(page.getByText(classificationCategories[0])).toBeHidden();

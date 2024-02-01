@@ -1,6 +1,6 @@
 import { Cb1, Cb2 } from 'shared/models.model';
 
-export function joinCb<A, B>(fnA: Cb1<A>, fnB: Cb1<B>, fnAB: Cb2<A, B>): {cbA: Cb1<A>, cbB: Cb1<B>} {
+export function joinCb<A, B>(fnA: Cb1<A>, fnB: Cb1<B>, fnAB: Cb2<A, B>): { cbA: Cb1<A>; cbB: Cb1<B> } {
     let a: A;
     let aReceived: boolean = false;
     let b: B;
@@ -25,11 +25,17 @@ export function joinCb<A, B>(fnA: Cb1<A>, fnB: Cb1<B>, fnAB: Cb2<A, B>): {cbA: C
     };
 }
 
-export function matchLatest<A, B, C>(cbAll: (a: A, b: B) => C): {cbA: (a: A) => Promise<C>, cbB: (b: B) => Promise<C>} {
+export function matchLatest<A, B, C>(
+    cbAll: (a: A, b: B) => C
+): {
+    cbA: (a: A) => Promise<C>;
+    cbB: (b: B) => Promise<C>;
+} {
     let a: A;
     let aResolve: Cb1<C> | null = null;
     let b: B;
     let bResolve: Cb1<C> | null = null;
+
     function run(rA: Cb1<C>, rB: Cb1<C>) {
         const c = cbAll(a, b);
         rA(c);
@@ -37,6 +43,7 @@ export function matchLatest<A, B, C>(cbAll: (a: A, b: B) => C): {cbA: (a: A) => 
         aResolve = null;
         bResolve = null;
     }
+
     return {
         cbA: aIn => {
             a = aIn;
@@ -55,6 +62,6 @@ export function matchLatest<A, B, C>(cbAll: (a: A, b: B) => C): {cbA: (a: A) => 
                     run(aResolve, bResolve);
                 }
             });
-        }
+        },
     };
 }

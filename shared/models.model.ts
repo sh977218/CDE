@@ -79,7 +79,7 @@ export type ModuleItem = 'cde' | 'form';
 export interface Classification extends ClassificationElementsContainer {
     elements: ClassificationElement[];
     stewardOrg: {
-        name: string
+        name: string;
     };
     workingGroup?: boolean;
 }
@@ -120,7 +120,7 @@ export class CodeAndSystem {
     }
 
     static compare(l: CodeAndSystem | undefined, r: CodeAndSystem | undefined) {
-        return !l && !r || l && r && l.code === r.code && l.system === r.system;
+        return (!l && !r) || (l && r && l.code === r.code && l.system === r.system);
     }
 
     static copy(u: CodeAndSystem | any) {
@@ -144,16 +144,15 @@ export class CommentSingle {
     };
 }
 
-export class CommentReply extends CommentSingle {
-}
+export class CommentReply extends CommentSingle {}
 
 export class Comment extends CommentSingle {
     currentComment: boolean = false; // calculated, used by CommentsComponent
     currentlyReplying?: boolean; // calculated, used by CommentsComponent
     element: {
-        eltId: ObjectId,
-        eltType: ModuleAll,
-    } = {eltId: '', eltType: 'cde'};
+        eltId: ObjectId;
+        eltType: ModuleAll;
+    } = { eltId: '', eltType: 'cde' };
     linkedTab: string = '';
     replies: CommentReply[] = [];
 }
@@ -166,9 +165,8 @@ export const curationStatus = [
     'Qualified',
     'Standard',
     'Preferred Standard',
-    'Retired'
+    'Retired',
 ] as const;
-
 
 export class DataSource {
     copyright?: FormattedValue;
@@ -198,30 +196,45 @@ export interface ElasticQueryParams {
     regStatuses: CurationStatus[];
 }
 
-export type ElasticQueryError = {
-    status: 406,
-    error: string,
-} | {
-    status: 400,
-    error: {
-        type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number,
-        root_cause: { type: 'parsing_exception' | 'search_phase_execution_exception', reason: string, line?: number, col?: number }[]
-    }
-} | {
-    status: 500,
-    error: { type: 'json_parse_exception', reason: string, root_cause: { type: 'json_parse_exception', reason: string }[] }
-};
+export type ElasticQueryError =
+    | {
+          status: 406;
+          error: string;
+      }
+    | {
+          status: 400;
+          error: {
+              type: 'parsing_exception' | 'search_phase_execution_exception';
+              reason: string;
+              line?: number;
+              col?: number;
+              root_cause: {
+                  type: 'parsing_exception' | 'search_phase_execution_exception';
+                  reason: string;
+                  line?: number;
+                  col?: number;
+              }[];
+          };
+      }
+    | {
+          status: 500;
+          error: {
+              type: 'json_parse_exception';
+              reason: string;
+              root_cause: { type: 'json_parse_exception'; reason: string }[];
+          };
+      };
 
 export interface ElasticQueryResponse<T = void> {
     _shards: {
-        failed: number,
-        successful: number,
-        total: number,
+        failed: number;
+        successful: number;
+        total: number;
     };
     hits: {
-        hits: ElasticQueryResponseHit<T>[],
-        max_score: number,
-        total: number
+        hits: ElasticQueryResponseHit<T>[];
+        max_score: number;
+        total: number;
     };
     status?: undefined;
     took: number; // Elastic time to process query in milliseconds
@@ -244,21 +257,26 @@ export type ElasticQueryResponseAggregations<T> = ElasticQueryResponse<T> & Elas
 export type ElasticQueryResponseAggregationsDe = ElasticQueryResponseDe & ElasticQueryResponseAggregationsPart;
 export type ElasticQueryResponseAggregationsForm = ElasticQueryResponseForm & ElasticQueryResponseAggregationsPart;
 export type ElasticQueryResponseAggregationsItem =
-    ElasticQueryResponseAggregationsDe
+    | ElasticQueryResponseAggregationsDe
     | ElasticQueryResponseAggregationsForm;
-export type SearchResponseAggregationDe =
-    ElasticQueryResponseAggregationsDe
-    & { maxScore: number, took: number, totalNumber: number };
-export type SearchResponseAggregationForm =
-    ElasticQueryResponseAggregationsForm
-    & { maxScore: number, took: number, totalNumber: number };
+export type SearchResponseAggregationDe = ElasticQueryResponseAggregationsDe & {
+    maxScore: number;
+    took: number;
+    totalNumber: number;
+};
+export type SearchResponseAggregationForm = ElasticQueryResponseAggregationsForm & {
+    maxScore: number;
+    took: number;
+    totalNumber: number;
+};
 export type SearchResponseAggregationItem = SearchResponseAggregationDe | SearchResponseAggregationForm;
 
-export interface ElasticQueryResponseAggregation { // 1 or 2 levels of keys followed by buckets
+export interface ElasticQueryResponseAggregation {
+    // 1 or 2 levels of keys followed by buckets
     [key: string]: {
-        buckets: ElasticQueryResponseAggregationBucket[]
+        buckets: ElasticQueryResponseAggregationBucket[];
     } & {
-        [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] },
+        [key: string]: { buckets: ElasticQueryResponseAggregationBucket[] };
     };
 }
 
@@ -278,6 +296,7 @@ export interface ElasticQueryResponseHit<T> {
 }
 
 export abstract class Elt {
+    static getEltUrl: (elt: Elt) => string;
     /* tslint:disable */
     __v!: number;
     /* tslint:enable */
@@ -303,10 +322,10 @@ export abstract class Elt {
     origin?: string;
     properties: Property[] = []; // mutable
     referenceDocuments: ReferenceDocument[] = []; // mutable
-    registrationState: RegistrationState = {registrationStatus: 'Incomplete'};
+    registrationState: RegistrationState = { registrationStatus: 'Incomplete' };
     stewardOrg: {
-        name: string,
-    } = {name: ''};
+        name: string;
+    } = { name: '' };
     source?: string; // obsolete
     sources: DataSource[] = [];
     tinyId!: string; // server generated
@@ -314,8 +333,6 @@ export abstract class Elt {
     updatedBy?: UserRef;
     usedBy?: string[]; // volatile, Classification stewardOrg names
     version?: string; // ??? elastic(version) or mongo(__v)
-
-    static getEltUrl: (elt: Elt) => string;
 
     static isDefault(elt: Elt) {
         return elt.isDefault === true;
@@ -337,7 +354,6 @@ export abstract class Elt {
             elt.ids = [];
         }
     }
-
 }
 
 export declare interface EltLog {
@@ -348,16 +364,18 @@ export declare interface EltLog {
     diff?: EltLogDiff[];
 }
 
-export type EltLogDiff = EltLogDiffAmend | {
-    fieldName?: string; // calculated makeHumanReadable
-    kind: 'D' | 'E' | 'N';
-    lhs?: string;
-    modificationType?: string; // calculated makeHumanReadable
-    newValue?: string; // calculated makeHumanReadable
-    path: (string | number)[];
-    previousValue?: string; // calculated makeHumanReadable
-    rhs?: string;
-};
+export type EltLogDiff =
+    | EltLogDiffAmend
+    | {
+          fieldName?: string; // calculated makeHumanReadable
+          kind: 'D' | 'E' | 'N';
+          lhs?: string;
+          modificationType?: string; // calculated makeHumanReadable
+          newValue?: string; // calculated makeHumanReadable
+          path: (string | number)[];
+          previousValue?: string; // calculated makeHumanReadable
+          rhs?: string;
+      };
 
 export interface EltLogDiffAmend {
     fieldName?: string; // calculated makeHumanReadable
@@ -371,7 +389,7 @@ export interface EltLogDiffAmend {
     lhs: string | undefined;
     modificationType?: string; // calculated makeHumanReadable
     newValue?: string; // calculated makeHumanReadable
-    path: (string)[];
+    path: string[];
     previousValue?: string; // calculated makeHumanReadable
     rhs: string | undefined;
 }
@@ -400,44 +418,45 @@ export interface Embed {
 export interface EmbedItem {
     cdes?: boolean; // form only
     classifications?: {
-        label: string,
-        startsWith: string,
-        exclude: string,
-        selectedOnly?: boolean
+        label: string;
+        startsWith: string;
+        exclude: string;
+        selectedOnly?: boolean;
     }[];
     ids?: {
-        idLabel: string,
-        source: string,
-        version?: boolean,
-        versionLabel: string
+        idLabel: string;
+        source: string;
+        version?: boolean;
+        versionLabel: string;
     }[];
-    linkedForms?: { // cde only
-        label?: string,
-        show?: boolean,
+    linkedForms?: {
+        // cde only
+        label?: string;
+        show?: boolean;
     };
     lowestRegistrationStatus: CurationStatus;
     nameLabel?: string;
     nbOfQuestions?: boolean; // form only
     otherNames?: {
-        label: string,
-        tags: string,
-        contextName: string
+        label: string;
+        tags: string;
+        contextName: string;
     }[];
     pageSize: number;
     permissibleValues?: boolean; // cde only
     primaryDefinition?: {
-        label?: string,
-        show?: boolean,
-        style?: string
+        label?: string;
+        show?: boolean;
+        style?: string;
     };
     properties?: {
-        label: string,
-        limit: number
-        key: string,
+        label: string;
+        limit: number;
+        key: string;
     }[];
     registrationStatus?: {
-        show?: boolean,
-        label?: string
+        show?: boolean;
+        label?: string;
     };
 }
 
@@ -487,7 +506,7 @@ interface BoardPart {
     elementType: 'board';
     id: string; // generated by mongoose toObject() ???
     name: string;
-    owner: UserRef & {userId?: ObjectId};
+    owner: UserRef & { userId?: ObjectId };
     pins: BoardPin[];
     shareStatus: 'Private' | 'Public';
     tags: string[];
@@ -552,7 +571,7 @@ export type ItemClassificationElt = {
     elements?: IdVersion[];
     eltId: string;
     orgName: string;
-}
+};
 
 export type ItemElastic = DataElementElastic | CdeFormElastic;
 export type ListTypes = 'accordion' | 'table' | 'summary';
@@ -619,7 +638,7 @@ export const administrativeStatuses = [
     'Published',
     'Not Endorsed',
     'Retired',
-    'Released'
+    'Released',
 ] as const;
 
 export interface RegistrationState {
@@ -629,10 +648,10 @@ export interface RegistrationState {
     registrationStatus: CurationStatus;
     registrationStatusSortOrder?: number; // volatile, used by elastic
     replacedBy?: {
-        tinyId?: string,
+        tinyId?: string;
     };
     mergedTo?: {
-        tinyId?: string,
+        tinyId?: string;
     };
     unresolvedIssue?: string;
     untilDate?: Date;
@@ -641,7 +660,7 @@ export interface RegistrationState {
 export interface TableViewFields {
     nihEndorsed?: boolean;
     administrativeStatus?: boolean;
-    customFields?: { key: string, label?: string, style?: string }[];
+    customFields?: { key: string; label?: string; style?: string }[];
     ids?: boolean;
     identifiers?: string[];
     linkedForms?: boolean; // cde only
@@ -666,7 +685,7 @@ export interface Task {
     id: string;
     idType: TaskIdType;
     name: string;
-    properties: { key: string, value?: string }[];
+    properties: { key: string; value?: string }[];
     source: TaskSource;
     state?: number;
     text?: string;
@@ -675,22 +694,30 @@ export interface Task {
 }
 
 export type TaskIdType =
-    'attachment' |
-    'board' |
-    'cde' |
-    'clientError' |
-    'comment' |
-    'commentReply' |
-    'form' |
-    'serverError' |
-    'versionUpdate';
+    | 'attachment'
+    | 'board'
+    | 'cde'
+    | 'clientError'
+    | 'comment'
+    | 'commentReply'
+    | 'form'
+    | 'serverError'
+    | 'versionUpdate';
 export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TASK_STATE_UNREAD = 1;
 
 export type UserRole = ArrayToType<typeof rolesEnum>;
-export const rolesEnum = ['AttachmentReviewer', 'BoardPublisher', 'CommentAuthor',
-    'CommentReviewer', 'DocumentationEditor', 'GovernanceGroup', 'NlmCurator', 'OrgAuthority'] as const;
+export const rolesEnum = [
+    'AttachmentReviewer',
+    'BoardPublisher',
+    'CommentAuthor',
+    'CommentReviewer',
+    'DocumentationEditor',
+    'GovernanceGroup',
+    'NlmCurator',
+    'OrgAuthority',
+] as const;
 
 export interface User {
     _id: ObjectId;
@@ -734,7 +761,7 @@ export interface UserSearchSettings {
 
 export interface UsersOrgQuery {
     name: string;
-    users?: (Partial<UserRef> & {_id?: ObjectId})[];
+    users?: (Partial<UserRef> & { _id?: ObjectId })[];
 }
 
 export interface ValidationWhitelist {

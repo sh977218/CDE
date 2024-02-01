@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
-import { Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../model/type';
+import { Copyright, Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
 
@@ -24,6 +24,35 @@ export class GenerateDetailsPo {
         this.inlineEdit = inlineEdit;
         this.saveModal = saveModal;
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
+    }
+
+    // copyright locators
+    copyrightCheckbox() {
+        return this.page.getByTestId('copyright-checkbox');
+    }
+
+    copyrightStatement() {
+        return this.page.getByTestId('copyright-statement');
+    }
+
+    copyrightAuthority() {
+        return this.page.getByTestId('copyright-authority');
+    }
+
+    copyrightUrlAdd() {
+        return this.page.getByTestId('copyright-url-add');
+    }
+
+    copyrightUrl() {
+        return this.page.getByTestId('copyright-url');
+    }
+
+    disallowRenderingCheckbox() {
+        return this.page.getByTestId(`disallowRendering-checkbox`);
+    }
+
+    disallowRenderingText() {
+        return this.page.getByTestId(`disallow-rendering-text`);
     }
 
     createdLabel() {
@@ -166,5 +195,28 @@ export class GenerateDetailsPo {
             await this.materialPage.matOptionByText(tag).click();
         }
         await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async editCopyright({ copyright, statement, authority, url }: Copyright) {
+        if (copyright) {
+            await this.copyrightCheckbox().check();
+            const copyrightStatementLocator = this.copyrightStatement();
+            await this.inlineEdit.editIcon(copyrightStatementLocator).click();
+            await this.inlineEdit.inputField(copyrightStatementLocator).fill(statement);
+            await this.inlineEdit.confirmButton(copyrightStatementLocator).click();
+
+            const copyrightAuthorityLocator = this.copyrightAuthority();
+            await this.inlineEdit.editIcon(copyrightAuthorityLocator).click();
+            await this.inlineEdit.inputField(copyrightAuthorityLocator).fill(authority);
+            await this.inlineEdit.confirmButton(copyrightAuthorityLocator).click();
+
+            await this.copyrightUrlAdd().click();
+            const copyrightUrlLocator = this.copyrightUrl().first();
+            await this.inlineEdit.editIcon(copyrightUrlLocator).click();
+            await this.inlineEdit.inputField(copyrightUrlLocator).fill(url);
+            await this.inlineEdit.confirmButton(copyrightUrlLocator).click();
+        } else {
+            await this.copyrightCheckbox().uncheck();
+        }
     }
 }

@@ -11,6 +11,6 @@ interface OrgManageAddRequest {
     username: string;
 }
 
-type OrgManageAddRequestHandler = RequestHandler<{}, OrgManageResponse, OrgManageAddRequest, never, User>
-type OrgManageRemoveRequestHandler = RequestHandler<{}, OrgManageResponse, OrgManageRemoveRequest, never, User>
+type OrgManageAddRequestHandler = RequestHandler<{}, OrgManageResponse, OrgManageAddRequest, never, User>;
+type OrgManageRemoveRequestHandler = RequestHandler<{}, OrgManageResponse, OrgManageRemoveRequest, never, User>;
 type OrgManageResponse = void;

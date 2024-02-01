@@ -1,285 +1,286 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-        attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:s="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="dataElement" type="dataElementType"/>
-  <xs:complexType name="stewardOrgType">
-    <xs:sequence>
-      <xs:element type="xs:string" name="name"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="userByType">
-    <xs:all>
-      <xs:element type="xs:string" name="username"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="permissibleValuesType">
-    <xs:all>
-      <xs:element name="permissibleValue" type="xs:string"/>
-      <xs:element name="valueMeaningName" type="xs:string" minOccurs="0"/>
-      <xs:element name="valueMeaningCode" type="xs:string" minOccurs="0"/>
-      <xs:element name="codeSystemName" type="xs:string" minOccurs="0"/>
-      <xs:element name="codeSystemVersion" type="xs:string" minOccurs="0"/>
-      <xs:element name="valueMeaningDefinition" type="xs:string" minOccurs="0"/>
-      <xs:element name="conceptId" type="xs:string" minOccurs="0"/>
-      <xs:element name="conceptSource" type="xs:string" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="valueDomainType">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element type="xs:string" name="datatype"/>
-        <xs:element type="xs:string" name="uom"/>
-        <xs:element type="xs:string" name="definition"/>
-        <xs:element type="xs:string" name="name"/>
-        <xs:element type="permissibleValuesType" name="permissibleValues" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="datatypeTextType" name="datatypeText" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="datatypeNumberType" name="datatypeNumber" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="datatypeDateType" name="datatypeDate" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="datatypeValueListType" name="datatypeValueList" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="datatypeExternallyDefinedType" name="datatypeExternallyDefined" maxOccurs="1" minOccurs="0"/>
-        <xs:element type="idsType" name="ids" minOccurs="0"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="datatypeTextType">
-    <xs:all>
-      <xs:element type="xs:string" name="maxLength" minOccurs="0"/>
-      <xs:element type="xs:string" name="minLength" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="datatypeValueListType">
-    <xs:sequence>
-      <xs:element type="xs:string" name="datatype"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="datatypeNumberType">
-    <xs:all>
-      <xs:element type="xs:string" name="minValue" minOccurs="0"/>
-      <xs:element type="xs:string" name="maxValue" minOccurs="0"/>
-      <xs:element type="xs:string" name="precision" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="datatypeDateType">
-    <xs:all>
-      <xs:element type="xs:string" name="format" minOccurs="0"/>
-      <xs:element type="xs:string" name="precision" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="datatypeExternallyDefinedType">
-    <xs:all>
-      <xs:element type="xs:string" name="link"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="registrationStateType">
-    <xs:all>
-      <xs:element type="xs:string" name="registrationStatus"/>
-      <xs:element type="xs:string" name="administrativeNote" minOccurs="0"/>
-      <xs:element type="xs:string" name="effectiveDate" minOccurs="0"/>
-      <xs:element type="xs:string" name="untilDate" minOccurs="0"/>
-      <xs:element type="xs:string" name="administrativeStatus"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="copyrightType">
-    <xs:all>
-      <xs:element type="xs:string" name="value"/>
-      <xs:element type="xs:string" name="valueFormat"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="sourcesType">
-    <xs:all>
-      <xs:element type="xs:string" name="sourceName"/>
-      <xs:element type="xs:string" name="imported" minOccurs="0"/>
-      <xs:element type="xs:string" name="updated" minOccurs="0"/>
-      <xs:element type="xs:string" name="datatype" minOccurs="0"/>
-      <xs:element type="xs:string" name="created" minOccurs="0"/>
-      <xs:element type="xs:string" name="registrationStatus" minOccurs="0"/>
-      <xs:element type="xs:string" name="administrativeStatus" minOccurs="0"/>
-      <xs:element type="copyrightType" name="copyright" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="referenceDocumentsType">
-    <xs:all>
-      <xs:element type="xs:string" name="source" minOccurs="0"/>
-      <xs:element type="xs:string" name="title" minOccurs="0"/>
-      <xs:element type="xs:string" name="text" minOccurs="0"/>
-      <xs:element type="xs:string" name="uri" minOccurs="0"/>
-      <xs:element type="xs:string" name="document" minOccurs="0"/>
-      <xs:element type="xs:string" name="docType" minOccurs="0"/>
-      <xs:element type="xs:string" name="languageCode" minOccurs="0"/>
-      <xs:element type="xs:string" name="referenceDocumentId" minOccurs="0"/>
-      <xs:element type="xs:string" name="providerOrg" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="designationsType">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element type="xs:string" name="tags" minOccurs="0"/>
-        <xs:element type="xs:string" name="designation"/>
-<!--        &lt;!&ndash; TODO temporary, will be removed &ndash;&gt;-->
-<!--        <xs:element type="xs:string" name="_id"/>-->
-        <xs:element type="xs:string" name="sources" minOccurs="0"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="definitionsType">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element type="xs:string" name="tags" minOccurs="0"/>
-        <xs:element type="xs:string" name="definition"/>
-        <xs:element type="xs:string" name="sources" minOccurs="0"/>
-        <!-- TODO temporary, will be removed -->
-<!--        <xs:element type="xs:string" name="_id"/>-->
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="idsType">
-    <xs:all>
-      <xs:element type="xs:string" name="source"/>
-      <xs:element type="xs:string" name="id"/>
-      <xs:element type="xs:string" name="version" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="propertiesType">
-    <xs:all>
-      <xs:element type="xs:string" name="key"/>
-      <xs:element type="xs:string" name="value"/>
-      <xs:element type="xs:string" name="source" minOccurs="0"/>
-      <xs:element type="xs:string" name="valueFormat" minOccurs="0"/>
-      <!-- TODO Temporary -->
-<!--      <xs:element type="xs:string" name="_id" minOccurs="0"/>-->
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="elementsType">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element type="elementsType" name="elements"/>
-      <xs:element type="xs:string" name="name"/>
-      <!-- TODO -->
-<!--      <xs:element type="xs:string" name="_id"/>-->
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="classificationType">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element type="stewardOrgType" name="stewardOrg"/>
-      <xs:element type="elementsType" name="elements"/>
-      <!-- TODO temporary, will be removed -->
-<!--      <xs:element type="xs:string" name="_id"/>-->
-    </xs:choice>
-  </xs:complexType>
-  <xs:complexType name="conceptsType">
-    <xs:all>
-      <xs:element type="xs:string" name="name"/>
-      <xs:element type="xs:string" name="origin"/>
-      <xs:element type="xs:string" name="originId" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="objectClassType">
-    <xs:sequence>
-      <xs:element type="conceptsType" name="concepts" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="vsacType">
-    <xs:all>
-      <xs:element type="xs:string" name="id"/>
-      <xs:element type="xs:string" name="name" minOccurs="0"/>
-      <xs:element type="xs:string" name="version" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="conceptualDomainType">
-    <xs:sequence>
-      <xs:element type="vsacType" name="vsac"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="dataElementConceptType">
-    <xs:sequence>
-      <xs:choice maxOccurs="unbounded">
-        <xs:element type="conceptualDomainType" name="conceptualDomain" minOccurs="0"/>
-        <xs:element type="conceptsType" name="concepts" minOccurs="0"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="dataSetsType">
-    <xs:all>
-      <xs:element type="xs:string" name="notes"/>
-      <xs:element type="xs:string" name="source"/>
-      <xs:element type="xs:string" name="id" minOccurs="0"/>
-      <xs:element type="xs:string" name="studyUri"/>
-      <xs:element type="xs:string" name="_id" minOccurs="0"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="attachmentsType">
-    <xs:all>
-      <xs:element type="xs:string" name="fileid"/>
-      <xs:element type="xs:string" name="filename"/>
-      <xs:element type="xs:string" name="filetype" minOccurs="0"/>
-      <xs:element type="xs:string" name="filesize"/>
-      <xs:element type="xs:string" name="isDefault" minOccurs="0"/>
-      <xs:element type="xs:string" name="uploadDate"/>
-      <xs:element type="xs:string" name="comment"/>
-      <xs:element type="xs:string" name="scanned" minOccurs="0"/>
-      <xs:element type="userByType" name="uploadedBy"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="commentsType">
-    <xs:all>
-      <!-- TODO temporary, will be removed -->
-      <xs:element type="xs:string" name="user"/>
-      <xs:element type="xs:string" name="username"/>
-      <xs:element type="xs:string" name="created"/>
-      <xs:element type="xs:string" name="text"/>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="derivationRulesType">
-    <xs:sequence>
-      <xs:choice maxOccurs="unbounded">
-        <xs:element type="xs:string" name="ruleType"/>
-        <xs:element type="xs:string" name="formula"/>
-        <xs:element type="xs:string" name="name"/>
-        <xs:element type="xs:string" name="_id"/>
-        <xs:element type="xs:string" name="inputs"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="dataElementType">
-    <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element type="stewardOrgType" name="stewardOrg"/>
-        <xs:element type="userByType" name="createdBy"/>
-        <xs:element type="userByType" name="updatedBy"/>
-        <xs:element type="objectClassType" name="property"/>
-        <xs:element type="dataElementConceptType" name="dataElementConcept"/>
-        <xs:element type="objectClassType" name="objectClass"/>
-        <xs:element type="valueDomainType" name="valueDomain"/>
-        <xs:element type="referenceDocumentsType" name="referenceDocuments"/>
-        <xs:element type="xs:string" name="nihEndorsed"/>
-        <xs:element type="xs:string" name="elementType"/>
-        <xs:element type="xs:string" name="NIH_Endorsed" minOccurs="0"/>
-        <xs:element type="xs:string" name="sourcesNew"/>
-        <xs:element type="xs:string" name="archived"/>
-        <xs:element type="xs:string" name="views"/>
-        <xs:element type="commentsType" name="comments"/>
-        <xs:element type="xs:string" name="tinyId"/>
-        <xs:element type="registrationStateType" name="registrationState"/>
-        <xs:element type="xs:string" name="lastMigrationScript"/>
-        <xs:element type="derivationRulesType" name="derivationRules"/>
-        <xs:element type="dataSetsType" name="dataSets"/>
-        <xs:element type="attachmentsType" name="attachments"/>
-        <xs:element type="xs:string" name="changeNote"/>
-        <xs:element type="xs:string" name="created"/>
-        <xs:element type="xs:string" name="imported"/>
-        <xs:element type="sourcesType" name="sources"/>
-        <xs:element type="xs:string" name="source"/>
-        <xs:element type="xs:string" name="version"/>
-        <xs:element type="xs:string" name="origin"/>
-        <xs:element type="designationsType" name="designations"/>
-        <xs:element type="definitionsType" name="definitions"/>
-        <xs:element type="idsType" name="ids" minOccurs="0"/>
-        <xs:element type="propertiesType" name="properties" minOccurs="0"/>
-        <xs:element type="classificationType" name="classification"/>
-        <xs:element type="xs:string" name="__v"/>
-        <xs:element type="xs:string" name="steward"/>
-        <xs:element type="xs:string" name="classificationSize"/>
-      </xs:choice>
-    </xs:sequence>
-  </xs:complexType>
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified"
+>
+    <xs:element name="dataElement" type="dataElementType"/>
+    <xs:complexType name="stewardOrgType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="name"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="userByType">
+        <xs:all>
+            <xs:element type="xs:string" name="username"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="permissibleValuesType">
+        <xs:all>
+            <xs:element name="permissibleValue" type="xs:string"/>
+            <xs:element name="valueMeaningName" type="xs:string" minOccurs="0"/>
+            <xs:element name="valueMeaningCode" type="xs:string" minOccurs="0"/>
+            <xs:element name="codeSystemName" type="xs:string" minOccurs="0"/>
+            <xs:element name="codeSystemVersion" type="xs:string" minOccurs="0"/>
+            <xs:element name="valueMeaningDefinition" type="xs:string" minOccurs="0"/>
+            <xs:element name="conceptId" type="xs:string" minOccurs="0"/>
+            <xs:element name="conceptSource" type="xs:string" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="valueDomainType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element type="xs:string" name="datatype"/>
+                <xs:element type="xs:string" name="uom"/>
+                <xs:element type="xs:string" name="definition"/>
+                <xs:element type="xs:string" name="name"/>
+                <xs:element type="permissibleValuesType" name="permissibleValues" maxOccurs="1" minOccurs="0"/>
+                <xs:element type="datatypeTextType" name="datatypeText" maxOccurs="1" minOccurs="0"/>
+                <xs:element type="datatypeNumberType" name="datatypeNumber" maxOccurs="1" minOccurs="0"/>
+                <xs:element type="datatypeDateType" name="datatypeDate" maxOccurs="1" minOccurs="0"/>
+                <xs:element type="datatypeValueListType" name="datatypeValueList" maxOccurs="1" minOccurs="0"/>
+                <xs:element type="datatypeExternallyDefinedType" name="datatypeExternallyDefined" maxOccurs="1"
+                            minOccurs="0"/>
+                <xs:element type="idsType" name="ids" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="datatypeTextType">
+        <xs:all>
+            <xs:element type="xs:string" name="maxLength" minOccurs="0"/>
+            <xs:element type="xs:string" name="minLength" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="datatypeValueListType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="datatype"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="datatypeNumberType">
+        <xs:all>
+            <xs:element type="xs:string" name="minValue" minOccurs="0"/>
+            <xs:element type="xs:string" name="maxValue" minOccurs="0"/>
+            <xs:element type="xs:string" name="precision" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="datatypeDateType">
+        <xs:all>
+            <xs:element type="xs:string" name="format" minOccurs="0"/>
+            <xs:element type="xs:string" name="precision" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="datatypeExternallyDefinedType">
+        <xs:all>
+            <xs:element type="xs:string" name="link"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="registrationStateType">
+        <xs:all>
+            <xs:element type="xs:string" name="registrationStatus"/>
+            <xs:element type="xs:string" name="administrativeNote" minOccurs="0"/>
+            <xs:element type="xs:string" name="effectiveDate" minOccurs="0"/>
+            <xs:element type="xs:string" name="untilDate" minOccurs="0"/>
+            <xs:element type="xs:string" name="administrativeStatus"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="copyrightType">
+        <xs:all>
+            <xs:element type="xs:string" name="value"/>
+            <xs:element type="xs:string" name="valueFormat"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="sourcesType">
+        <xs:all>
+            <xs:element type="xs:string" name="sourceName"/>
+            <xs:element type="xs:string" name="imported" minOccurs="0"/>
+            <xs:element type="xs:string" name="updated" minOccurs="0"/>
+            <xs:element type="xs:string" name="datatype" minOccurs="0"/>
+            <xs:element type="xs:string" name="created" minOccurs="0"/>
+            <xs:element type="xs:string" name="registrationStatus" minOccurs="0"/>
+            <xs:element type="xs:string" name="administrativeStatus" minOccurs="0"/>
+            <xs:element type="copyrightType" name="copyright" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="referenceDocumentsType">
+        <xs:all>
+            <xs:element type="xs:string" name="source" minOccurs="0"/>
+            <xs:element type="xs:string" name="title" minOccurs="0"/>
+            <xs:element type="xs:string" name="text" minOccurs="0"/>
+            <xs:element type="xs:string" name="uri" minOccurs="0"/>
+            <xs:element type="xs:string" name="document" minOccurs="0"/>
+            <xs:element type="xs:string" name="docType" minOccurs="0"/>
+            <xs:element type="xs:string" name="languageCode" minOccurs="0"/>
+            <xs:element type="xs:string" name="referenceDocumentId" minOccurs="0"/>
+            <xs:element type="xs:string" name="providerOrg" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="designationsType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element type="xs:string" name="tags" minOccurs="0"/>
+                <xs:element type="xs:string" name="designation"/>
+                <!--        &lt;!&ndash; TODO temporary, will be removed &ndash;&gt;-->
+                <!--        <xs:element type="xs:string" name="_id"/>-->
+                <xs:element type="xs:string" name="sources" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="definitionsType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element type="xs:string" name="tags" minOccurs="0"/>
+                <xs:element type="xs:string" name="definition"/>
+                <xs:element type="xs:string" name="sources" minOccurs="0"/>
+                <!-- TODO temporary, will be removed -->
+                <!--        <xs:element type="xs:string" name="_id"/>-->
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="idsType">
+        <xs:all>
+            <xs:element type="xs:string" name="source"/>
+            <xs:element type="xs:string" name="id"/>
+            <xs:element type="xs:string" name="version" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="propertiesType">
+        <xs:all>
+            <xs:element type="xs:string" name="key"/>
+            <xs:element type="xs:string" name="value"/>
+            <xs:element type="xs:string" name="source" minOccurs="0"/>
+            <xs:element type="xs:string" name="valueFormat" minOccurs="0"/>
+            <!-- TODO Temporary -->
+            <!--      <xs:element type="xs:string" name="_id" minOccurs="0"/>-->
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="elementsType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element type="elementsType" name="elements"/>
+            <xs:element type="xs:string" name="name"/>
+            <!-- TODO -->
+            <!--      <xs:element type="xs:string" name="_id"/>-->
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="classificationType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element type="stewardOrgType" name="stewardOrg"/>
+            <xs:element type="elementsType" name="elements"/>
+            <!-- TODO temporary, will be removed -->
+            <!--      <xs:element type="xs:string" name="_id"/>-->
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="conceptsType">
+        <xs:all>
+            <xs:element type="xs:string" name="name"/>
+            <xs:element type="xs:string" name="origin"/>
+            <xs:element type="xs:string" name="originId" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="objectClassType">
+        <xs:sequence>
+            <xs:element type="conceptsType" name="concepts" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="vsacType">
+        <xs:all>
+            <xs:element type="xs:string" name="id"/>
+            <xs:element type="xs:string" name="name" minOccurs="0"/>
+            <xs:element type="xs:string" name="version" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="conceptualDomainType">
+        <xs:sequence>
+            <xs:element type="vsacType" name="vsac"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="dataElementConceptType">
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element type="conceptualDomainType" name="conceptualDomain" minOccurs="0"/>
+                <xs:element type="conceptsType" name="concepts" minOccurs="0"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="dataSetsType">
+        <xs:all>
+            <xs:element type="xs:string" name="notes"/>
+            <xs:element type="xs:string" name="source"/>
+            <xs:element type="xs:string" name="id" minOccurs="0"/>
+            <xs:element type="xs:string" name="studyUri"/>
+            <xs:element type="xs:string" name="_id" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="attachmentsType">
+        <xs:all>
+            <xs:element type="xs:string" name="fileid"/>
+            <xs:element type="xs:string" name="filename"/>
+            <xs:element type="xs:string" name="filetype" minOccurs="0"/>
+            <xs:element type="xs:string" name="filesize"/>
+            <xs:element type="xs:string" name="isDefault" minOccurs="0"/>
+            <xs:element type="xs:string" name="uploadDate"/>
+            <xs:element type="xs:string" name="comment"/>
+            <xs:element type="xs:string" name="scanned" minOccurs="0"/>
+            <xs:element type="userByType" name="uploadedBy"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="commentsType">
+        <xs:all>
+            <!-- TODO temporary, will be removed -->
+            <xs:element type="xs:string" name="user"/>
+            <xs:element type="xs:string" name="username"/>
+            <xs:element type="xs:string" name="created"/>
+            <xs:element type="xs:string" name="text"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="derivationRulesType">
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element type="xs:string" name="ruleType"/>
+                <xs:element type="xs:string" name="formula"/>
+                <xs:element type="xs:string" name="name"/>
+                <xs:element type="xs:string" name="_id"/>
+                <xs:element type="xs:string" name="inputs"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="dataElementType">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element type="stewardOrgType" name="stewardOrg"/>
+                <xs:element type="userByType" name="createdBy"/>
+                <xs:element type="userByType" name="updatedBy"/>
+                <xs:element type="objectClassType" name="property"/>
+                <xs:element type="dataElementConceptType" name="dataElementConcept"/>
+                <xs:element type="objectClassType" name="objectClass"/>
+                <xs:element type="valueDomainType" name="valueDomain"/>
+                <xs:element type="referenceDocumentsType" name="referenceDocuments"/>
+                <xs:element type="xs:string" name="nihEndorsed"/>
+                <xs:element type="xs:string" name="elementType"/>
+                <xs:element type="xs:string" name="NIH_Endorsed" minOccurs="0"/>
+                <xs:element type="xs:string" name="sourcesNew"/>
+                <xs:element type="xs:string" name="archived"/>
+                <xs:element type="xs:string" name="views"/>
+                <xs:element type="commentsType" name="comments"/>
+                <xs:element type="xs:string" name="tinyId"/>
+                <xs:element type="registrationStateType" name="registrationState"/>
+                <xs:element type="xs:string" name="lastMigrationScript"/>
+                <xs:element type="derivationRulesType" name="derivationRules"/>
+                <xs:element type="dataSetsType" name="dataSets"/>
+                <xs:element type="attachmentsType" name="attachments"/>
+                <xs:element type="xs:string" name="changeNote"/>
+                <xs:element type="xs:string" name="created"/>
+                <xs:element type="xs:string" name="imported"/>
+                <xs:element type="sourcesType" name="sources"/>
+                <xs:element type="xs:string" name="source"/>
+                <xs:element type="xs:string" name="version"/>
+                <xs:element type="xs:string" name="origin"/>
+                <xs:element type="designationsType" name="designations"/>
+                <xs:element type="definitionsType" name="definitions"/>
+                <xs:element type="idsType" name="ids" minOccurs="0"/>
+                <xs:element type="propertiesType" name="properties" minOccurs="0"/>
+                <xs:element type="classificationType" name="classification"/>
+                <xs:element type="xs:string" name="__v"/>
+                <xs:element type="xs:string" name="steward"/>
+                <xs:element type="xs:string" name="classificationSize"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

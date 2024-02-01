@@ -19,12 +19,12 @@ export function isRefType(resourceType: string, ref?: FhirReference<any>): ref i
 
 export function newReference(r: string): FhirReference<any> {
     return {
-        reference: r
+        reference: r,
     };
 }
 
 export function parseRef(ref?: FhirReference<any>, resourceType?: string): string[] {
-    if (resourceType && isRefType(resourceType, ref) || !resourceType && isRef(ref)) {
+    if ((resourceType && isRefType(resourceType, ref)) || (!resourceType && isRef(ref))) {
         if (ref.reference && ref.reference.indexOf('/') > 0) {
             const delimiterIndex = ref.reference.indexOf('/');
             return [ref.reference.substr(0, delimiterIndex), ref.reference.substr(delimiterIndex + 1)];

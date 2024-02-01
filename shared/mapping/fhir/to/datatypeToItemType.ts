@@ -7,7 +7,8 @@ import { isScore } from 'shared/form/fe';
 import { FhirCoding, FhirQuantity } from 'shared/mapping/fhir/fhir.model';
 import { Question, QuestionValueList } from 'shared/form/form.model';
 
-export function containerToItemType(container: Question | ValueDomain): string { // http://hl7.org/fhir/item-type
+export function containerToItemType(container: Question | ValueDomain): string {
+    // http://hl7.org/fhir/item-type
     // NOT IMPLEMENTED: boolean, time, url, open-choice(choice+string), attachment, reference
     if (isScore(container as Question)) {
         return 'display';
@@ -19,13 +20,18 @@ export function containerToItemType(container: Question | ValueDomain): string {
             const precision = container.datatypeDate && container.datatypeDate.precision;
             return precision && ['Hour', 'Minute', 'Second'].indexOf(precision) > -1 ? 'dateTime' : 'date';
         case 'Number':
-            if (Array.isArray((container as Question).unitsOfMeasure) && (container as Question).unitsOfMeasure.length
-                || (container as ValueDomain).uom) {
+            if (
+                (Array.isArray((container as Question).unitsOfMeasure) &&
+                    (container as Question).unitsOfMeasure.length) ||
+                (container as ValueDomain).uom
+            ) {
                 return 'quantity';
             }
-            return !container.datatypeNumber || typeof (container.datatypeNumber.precision) !== 'number'
-            || container.datatypeNumber.precision < 0
-                ? 'decimal' : 'integer';
+            return !container.datatypeNumber ||
+                typeof container.datatypeNumber.precision !== 'number' ||
+                container.datatypeNumber.precision < 0
+                ? 'decimal'
+                : 'integer';
         case 'Text':
             return container.datatypeText && container.datatypeText.showAsTextArea ? 'text' : 'string';
         case 'Dynamic Code List':
@@ -39,17 +45,22 @@ export function containerToItemType(container: Question | ValueDomain): string {
     }
 }
 
-export function containerValueListToCoding(container: Question | ValueDomain, value: string | string[],
-                                           multi: boolean = false): FhirCoding | FhirCoding[] | undefined {
+export function containerValueListToCoding(
+    container: Question | ValueDomain,
+    value: string | string[],
+    multi: boolean = false
+): FhirCoding | FhirCoding[] | undefined {
     function valueToCoding(container: Question | ValueDomain, v: string) {
         const pvs = Array.isArray((container as QuestionValueList).answers)
-            ? (container as QuestionValueList).answers : (container as ValueDomainValueList).permissibleValues;
+            ? (container as QuestionValueList).answers
+            : (container as ValueDomainValueList).permissibleValues;
         const matches = (pvs || []).filter(a => a.permissibleValue === v);
         if (matches.length) {
             return permissibleValueToCoding(matches[0]);
         }
-        return {code: v};
+        return { code: v };
     }
+
     if (Array.isArray(value)) {
         const result = value.map(v => valueToCoding(container, v));
         return multi ? (result.length ? result : undefined) : result[0];
@@ -71,11 +82,16 @@ export function permissibleValueToCoding(pv: PermissibleValue): FhirCoding {
         pv.codeSystemName,
         pv.valueMeaningCode ? pv.valueMeaningCode : pv.permissibleValue,
         pv.codeSystemVersion,
-        pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined);
+        pv.valueMeaningName && pv.valueMeaningName !== pv.permissibleValue ? pv.valueMeaningName : undefined
+    );
 }
 
-export function valueToQuantity(container: Question | ValueDomain, value: string, comparator: string,
-                                valueUom?: CodeAndSystem): FhirQuantity {
+export function valueToQuantity(
+    container: Question | ValueDomain,
+    value: string,
+    comparator: string,
+    valueUom?: CodeAndSystem
+): FhirQuantity {
     const quantity: FhirQuantity = {
         comparator: comparator && comparator !== '=' ? comparator : undefined,
         value: parseFloat(value),
@@ -96,8 +112,14 @@ export function valueToQuantity(container: Question | ValueDomain, value: string
     return quantity;
 }
 
-export function valueToTypedValue(container: Question | ValueDomain, type: string, value: string,
-                                  comparator: string = '=', valueUom?: CodeAndSystem, hasCodeableConcept: boolean = false): any {
+export function valueToTypedValue(
+    container: Question | ValueDomain,
+    type: string,
+    value: string,
+    comparator: string = '=',
+    valueUom?: CodeAndSystem,
+    hasCodeableConcept: boolean = false
+): any {
     switch (type) {
         case 'choice':
             if (hasCodeableConcept) {

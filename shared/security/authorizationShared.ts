@@ -5,7 +5,8 @@ export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' 
 type Privileges = Record<Privilege, boolean>;
 type PrivilegesRegistry = Record<string, Privileges>;
 
-export type RolePrivilege = 'universalAttach' // (no review, edit can NO longer attach)
+export type RolePrivilege =
+    | 'universalAttach' // (no review, edit can NO longer attach)
     | 'universalBundling' // manage 'isBundle' protected field
     | 'universalComment'
     | 'universalCommentManage'
@@ -67,7 +68,8 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
     CommentAuthor: {
         universalComment: true,
     },
-    CommentReviewer: { // token role
+    CommentReviewer: {
+        // token role
         universalComment: true,
     },
     DocumentationEditor: {}, // token role
@@ -83,7 +85,8 @@ export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<Ro
         universalEdit: true,
         universalSearch: true,
     },
-    OrgAuthority: { // token role
+    OrgAuthority: {
+        // token role
         universalAttach: true,
         universalBundling: true,
         universalComment: true,
@@ -127,12 +130,14 @@ export function canComment(user: User, item: Item | Board): boolean {
     if (!user || !item) {
         return false;
     }
-    return isBoard(item)
-        ? hasPrivilege(user, 'comment')
-        : hasPrivilegeForOrg(user, 'comment', item.stewardOrg.name);
+    return isBoard(item) ? hasPrivilege(user, 'comment') : hasPrivilegeForOrg(user, 'comment', item.stewardOrg.name);
 }
 
-export function canCommentManage(user: User | undefined, item: Board | Item | undefined, comment: Comment | undefined): boolean {
+export function canCommentManage(
+    user: User | undefined,
+    item: Board | Item | undefined,
+    comment: Comment | undefined
+): boolean {
     if (!user || !comment) {
         return false;
     }
@@ -154,8 +159,10 @@ export function canEditCuratedItem(user: User | undefined, item: Item | undefine
     if (isOrgAuthority(user)) {
         return true;
     }
-    if (item.registrationState.registrationStatus === 'Standard' ||
-        item.registrationState.registrationStatus === 'Preferred Standard') {
+    if (
+        item.registrationState.registrationStatus === 'Standard' ||
+        item.registrationState.registrationStatus === 'Preferred Standard'
+    ) {
         return false;
     }
     return hasPrivilegeForOrg(user, 'edit', item.stewardOrg.name);
@@ -193,9 +200,11 @@ export function isOrg(user: User | undefined): boolean {
     if (!user) {
         return false;
     }
-    return user.orgAdmin && !!user.orgAdmin.length
-        || user.orgCurator && !!user.orgCurator.length
-        || user.orgEditor && !!user.orgEditor.length;
+    return (
+        (user.orgAdmin && !!user.orgAdmin.length) ||
+        (user.orgCurator && !!user.orgCurator.length) ||
+        (user.orgEditor && !!user.orgEditor.length)
+    );
 }
 
 export function isOrgAdmin(user: User | undefined, org?: string): boolean {
@@ -205,7 +214,7 @@ export function isOrgAdmin(user: User | undefined, org?: string): boolean {
     if (isOrgAuthority(user)) {
         return true;
     }
-    return user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0) || false;
+    return (user.orgAdmin && (org ? user.orgAdmin.indexOf(org) > -1 : user.orgAdmin.length > 0)) || false;
 }
 
 export function isOrgCurator(user: User | undefined, org?: string): boolean {
@@ -234,12 +243,18 @@ export function hasPrivilege(user: User | undefined, privilege: Privilege | unde
     if (isSiteAdmin(user) || hasPrivilegeInRoles(user, privilege)) {
         return true;
     }
-    return user.orgAdmin.some(org => getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege))
-        || user.orgCurator.some(org => getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege))
-        || user.orgEditor.some(org => getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege));
+    return (
+        user.orgAdmin.some(org => getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege)) ||
+        user.orgCurator.some(org => getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege)) ||
+        user.orgEditor.some(org => getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege))
+    );
 }
 
-export function hasPrivilegeForOrg(user: User | undefined, privilege: Privilege | undefined, org: string | undefined): boolean {
+export function hasPrivilegeForOrg(
+    user: User | undefined,
+    privilege: Privilege | undefined,
+    org: string | undefined
+): boolean {
     if (isSiteAdmin(user)) {
         return true;
     }
@@ -249,9 +264,11 @@ export function hasPrivilegeForOrg(user: User | undefined, privilege: Privilege 
     if (hasPrivilegeInRoles(user, privilege)) {
         return true;
     }
-    return user.orgAdmin.includes(org) && getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege)
-        || user.orgCurator.includes(org) && getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege)
-        || user.orgEditor.includes(org) && getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege);
+    return (
+        (user.orgAdmin.includes(org) && getPrivilegeFromOrgRegistry(orgAdminPrivileges, org, privilege)) ||
+        (user.orgCurator.includes(org) && getPrivilegeFromOrgRegistry(orgCuratorPrivileges, org, privilege)) ||
+        (user.orgEditor.includes(org) && getPrivilegeFromOrgRegistry(orgEditorPrivileges, org, privilege))
+    );
 }
 
 export function hasPrivilegeInRoles(user: User, privilege: Privilege): boolean {
@@ -289,13 +306,7 @@ export function hasRolePrivilege(user: User | undefined, privilege: RolePrivileg
 
 export function addRole(user: User, role: UserRole) {
     if (!hasRole(user, role)) {
-        user.roles = intersection(
-            union(
-                Array.isArray(user.roles) ? user.roles : [],
-                [role]
-            ),
-            rolesEnum
-        );
+        user.roles = intersection(union(Array.isArray(user.roles) ? user.roles : [], [role]), rolesEnum);
     }
 }
 

@@ -1,34 +1,28 @@
 import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
 
-const newStatement = 'Never ever share this form ' + new Date();
-const newAuthority = 'Patent for truth ' + new Date();
-const newUrl = 'https://search.nih.gov/search?commit=Search&query=' + new Date();
+const statement = 'Never ever share this form ' + new Date();
+const authority = 'Patent for truth ' + new Date();
+const url = 'https://search.nih.gov/search?commit=Search&query=' + new Date();
 
-test.describe(`Edit Copyright`, async () => {
-    test(`Form page`, async ({ formPage, navigationMenu, inlineEdit, saveModal }) => {
-        const formName = 'Quantitative Sensory Testing (QST)';
-        await navigationMenu.gotoFormByName(formName);
+test(`Edit Form Copyright`, async ({ navigationMenu, generateDetailsSection, saveModal }) => {
+    const formName = 'Quantitative Sensory Testing (QST)';
+
+    await test.step(`Login`, async () => {
         await navigationMenu.login(Accounts.nlm);
+    });
 
-        await formPage.copyrightCheckbox().check();
+    await test.step(`Go to form and edit copyright`, async () => {
+        await navigationMenu.gotoFormByName(formName);
+        await generateDetailsSection.editCopyright({
+            copyright: true,
+            statement,
+            authority,
+            url,
+        });
 
-        const copyrightStatementLocator = formPage.copyrightStatement();
-        await inlineEdit.editIcon(copyrightStatementLocator).click();
-        await inlineEdit.inputField(copyrightStatementLocator).fill(newStatement);
-        await inlineEdit.confirmButton(copyrightStatementLocator).click();
-
-        const copyrightAuthorityLocator = formPage.copyrightAuthority();
-        await inlineEdit.editIcon(copyrightAuthorityLocator).click();
-        await inlineEdit.inputField(copyrightAuthorityLocator).fill(newAuthority);
-        await inlineEdit.confirmButton(copyrightAuthorityLocator).click();
-
-        await formPage.copyrightUrlAdd().click();
-        const copyrightUrlLocator = formPage.copyrightUrl().first();
-        await inlineEdit.editIcon(copyrightUrlLocator).click();
-        await inlineEdit.inputField(copyrightUrlLocator).fill(newUrl);
-        await inlineEdit.confirmButton(copyrightUrlLocator).click();
-
-        await saveModal.newVersion('Form saved.');
+        await test.step(`Publish form`, async () => {
+            await saveModal.newVersion('Form saved.');
+        });
     });
 });

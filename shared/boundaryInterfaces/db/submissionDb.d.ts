@@ -14,13 +14,13 @@ interface Submission {
     endorsed: boolean;
     governanceReviewers: string[];
     history?: {
-        date: string,
-        user?: UserRef,
-        action?: 'Endorse' | 'Governance Reject' | 'NLM Curator Approve' | 'NLM Curator Reject' | 'Submitter Submit',
+        date: string;
+        user?: UserRef;
+        action?: 'Endorse' | 'Governance Reject' | 'NLM Curator Approve' | 'NLM Curator Reject' | 'Submitter Submit';
         comment?: {
-            user: UserRef,
-            message: string,
-        }[],
+            user: UserRef;
+            message: string;
+        }[];
     }[];
     licenseAttribution: boolean;
     licenseCost: boolean;
@@ -61,11 +61,18 @@ interface SubmissionAttachment {
 
 export interface SubmissionDb {
     byId(id: string): Promise<Submission | null>;
+
     byNameAndVersion(name: string, version: string): Promise<Submission | null>;
+
     byKey(key: string): Promise<Submission | null>;
+
     count(query: any): Promise<number>;
+
     deleteOneById(_id: ObjectId): Promise<void>;
+
     query(query: any): Promise<Submission[]>;
+
     save(submission: Submission): Promise<Submission>;
+
     updatePropertiesById(_id: ObjectId, setExpression: Partial<Submission>): Promise<Submission | null>;
 }

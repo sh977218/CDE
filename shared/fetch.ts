@@ -6,12 +6,13 @@ export function isStatus(status: number[]) {
             throw `http status code expected ${status}, got ${res.status}(${res.statusText})` as any;
         }
         return res;
-    }
+    };
 }
 
 export function handleErrors(res: Response): Response {
-    if (!res.ok) { // status 200-299
-        throw 'http error code ' + res.status + ' ' + res.statusText as any;
+    if (!res.ok) {
+        // status 200-299
+        throw ('http error code ' + res.status + ' ' + res.statusText) as any;
     }
     return res;
 }

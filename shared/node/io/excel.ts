@@ -1,7 +1,15 @@
 import { CellObject, WorkBook, WorkSheet } from 'xlsx';
 
-export type ErrorTypes = 'Code' | 'Column Heading' | 'Extra' | 'Length' | 'Manual Intervention' | 'Required' | 'Spellcheck'
-    | 'Suggestion' | 'Template';
+export type ErrorTypes =
+    | 'Code'
+    | 'Column Heading'
+    | 'Extra'
+    | 'Length'
+    | 'Manual Intervention'
+    | 'Required'
+    | 'Spellcheck'
+    | 'Suggestion'
+    | 'Template';
 export type ExcelValue = CellObject | string | number | boolean | Date | null | undefined;
 export type Expectations = Record<number, string>; // columns mapped to text that is supposed to be in the cell
 export type Row = ExcelValue[];
@@ -18,9 +26,7 @@ export function cellValue(cell: ExcelValue): Exclude<ExcelValue, CellObject> {
 export function combineLines(value: string): string;
 export function combineLines(value: ExcelValue): ExcelValue;
 export function combineLines(value: ExcelValue): ExcelValue {
-    return typeof value === 'string'
-        ? value.replaceAll(/\s+/g, ' ').trim()
-        : value;
+    return typeof value === 'string' ? value.replaceAll(/\s+/g, ' ').trim() : value;
 }
 
 export function expectFormTemplate(withError: WithError, row: Row, expect?: Expectations, message?: string): void {
@@ -35,8 +41,13 @@ export function expectFormTemplate(withError: WithError, row: Row, expect?: Expe
     });
 }
 
-export function extractFormValue(withError: WithError, row: Row, readColumn: number, formColumns: number = -1,
-                                 expect?: Expectations): ExcelValue {
+export function extractFormValue(
+    withError: WithError,
+    row: Row,
+    readColumn: number,
+    formColumns: number = -1,
+    expect?: Expectations
+): ExcelValue {
     if (readColumn < 0) {
         withError('Template', `Read column is wrong.`);
         return null;

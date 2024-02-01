@@ -24,6 +24,7 @@ export class SearchSettings {
 
 export class SearchSettingsElastic {
     [key: string]: any;
+
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
     filterDatatype?: any; // server-side, ElasticCondition

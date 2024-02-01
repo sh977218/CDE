@@ -1,4 +1,4 @@
-import {CurationStatus, DateType, EltLog, ModuleItem, ObjectId} from "../models.model";
+import { CurationStatus, DateType, EltLog, ModuleItem } from '../models.model';
 
 export interface HttpLogResponse {
     logs: HttpLog[];
@@ -29,20 +29,20 @@ export interface AppLog {
 }
 
 export interface DailyUsage {
-    _id: { ip: string, year: number, month: number, day: number };
+    _id: { ip: string; year: number; month: number; day: number };
     latest: string;
-    hits: number
+    hits: number;
 }
 
 export type ActiveBanResponse = {
-    ipList: ActiveBan[]
-}
+    ipList: ActiveBan[];
+};
 
 export type ActiveBan = {
     date: string;
     ip: string;
     strikes: number;
-    reason: string
+    reason: string;
 };
 
 export interface SearchParams {
@@ -57,12 +57,12 @@ export interface ItemLogResponse {
 }
 
 export type ClassificationAuditLogElement = {
-    tinyId?: string,
-    version?: string,
-    name?: string,
-    status?: CurationStatus,
-    eltType?: ModuleItem,
-}
+    tinyId?: string;
+    version?: string;
+    name?: string;
+    status?: CurationStatus;
+    eltType?: ModuleItem;
+};
 
 export type ClassificationAuditLog = {
     action: 'add' | 'delete' | 'rename' | 'reclassify';
@@ -71,12 +71,11 @@ export type ClassificationAuditLog = {
     newname?: string;
     path: string[];
     user: {
-        username: string,
+        username: string;
     };
-}
+};
 
 export type ItemLog = EltLog | ClassificationAuditLog;
-
 
 export interface ServerErrorResponse {
     logs: ServerError[];
@@ -116,10 +115,10 @@ export interface LoginRecordResponse {
 }
 
 export interface LoginRecord {
-    date: string,
-    user: string,
-    email?: string,
-    ip: string,
+    date: string;
+    user: string;
+    email?: string;
+    ip: string;
 }
 
 /**
@@ -128,41 +127,32 @@ export interface LoginRecord {
 type SearchRequestPagination = {
     currentPage: number;
     pageSize: number;
-}
+};
 type SearchRequestSorting = {
     sortBy: string;
     sortDir: string;
-}
+};
 
 type SearchRequestDateRange = {
     fromDate: Date;
     toDate: Date;
-}
+};
 
-export type HttpLogSearchRequest =
-    SearchRequestSorting
-    & SearchRequestPagination
-    & SearchRequestDateRange
-    & { filterTerm: string }
+export type HttpLogSearchRequest = SearchRequestSorting &
+    SearchRequestPagination &
+    SearchRequestDateRange & { filterTerm: string };
 
-export type AppLogSearchRequest = SearchRequestSorting
-    & SearchRequestPagination
-    & SearchRequestDateRange
+export type AppLogSearchRequest = SearchRequestSorting & SearchRequestPagination & SearchRequestDateRange;
 
-export type  ItemLogSearchRequest = SearchRequestSorting
-    & SearchRequestPagination
-    & { module: string; includeBatchLoader: boolean; }
+export type ItemLogSearchRequest = SearchRequestSorting &
+    SearchRequestPagination & { module: string; includeBatchLoader: boolean };
 
-export type ServerErrorSearchRequest = SearchRequestSorting
-    & SearchRequestPagination
-    & SearchRequestDateRange
-    & { includeBadInput: boolean; }
+export type ServerErrorSearchRequest = SearchRequestSorting &
+    SearchRequestPagination &
+    SearchRequestDateRange & { includeBadInput: boolean };
 
-export type ClientErrorSearchRequest = SearchRequestSorting
-    & SearchRequestPagination
-    & SearchRequestDateRange
-    & { includeUserAgents: string[]; }
+export type ClientErrorSearchRequest = SearchRequestSorting &
+    SearchRequestPagination &
+    SearchRequestDateRange & { includeUserAgents: string[] };
 
-export type LoginRecordSearchRequest = SearchRequestSorting
-    & SearchRequestPagination
-    & SearchRequestDateRange
+export type LoginRecordSearchRequest = SearchRequestSorting & SearchRequestPagination & SearchRequestDateRange;

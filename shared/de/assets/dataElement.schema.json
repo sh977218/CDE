@@ -136,10 +136,10 @@
         "elementType": {
           "default": "cde"
         },
-        "objectClass":             {
+        "objectClass": {
           "$ref": "#/definitions/conceptsContainer"
         },
-        "property":             {
+        "property": {
           "$ref": "#/definitions/conceptsContainer"
         },
         "valueDomain": {

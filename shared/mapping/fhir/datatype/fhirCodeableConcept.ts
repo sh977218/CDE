@@ -3,7 +3,7 @@ import { FhirCodeableConcept, FhirCoding } from 'shared/mapping/fhir/fhir.model'
 import { getTextFromArray as codingGetTextFromArray } from 'shared/mapping/fhir/datatype/fhirCoding';
 
 export function getText(concept?: FhirCodeableConcept): string {
-    return concept && (concept.text || codingGetTextFromArray(concept.coding)) || '';
+    return (concept && (concept.text || codingGetTextFromArray(concept.coding))) || '';
 }
 
 export function getTextFromArray(conceptArray?: FhirCodeableConcept[]): string {
@@ -20,7 +20,7 @@ export function newCodeableConcept(coding: FhirCoding[], text?: string): FhirCod
             return false;
         });
     }
-    return {coding, text};
+    return { coding, text };
 }
 
 export function reduce<T>(concept: FhirCodeableConcept, codingCb: (a: T, c: FhirCoding) => T, initialValue: T): T {

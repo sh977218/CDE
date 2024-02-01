@@ -5,15 +5,19 @@ import { FhirDomainResource, FhirObservation } from 'shared/mapping/fhir/fhirRes
 
 // TODO: remove, only get text, not "text system:code"
 export function codingArrayPreview(codings?: FhirCoding[]): string {
-    return codings ? codings.reduce((a, v) => a += codingPreview(v) + '\n', '') : '';
+    return codings ? codings.reduce((a, v) => (a += codingPreview(v) + '\n'), '') : '';
 }
 
 function codingPreview(coding: FhirCoding) {
     return coding.display + ' ' + codeSystemIn(coding.system) + ':' + coding.code;
 }
 
-export function getDateString(resource: FhirDomainResource, periodName: string = '', dateTimeName: string = '',
-                              instanceName: string = ''): string {
+export function getDateString(
+    resource: FhirDomainResource,
+    periodName: string = '',
+    dateTimeName: string = '',
+    instanceName: string = ''
+): string {
     if (resource[periodName]) {
         return resource[periodName].start + ' - ' + resource[periodName].end;
     } else if (resource[dateTimeName]) {

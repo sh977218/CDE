@@ -8,7 +8,7 @@ export interface Singleton {
 }
 
 export interface SingletonServer extends Singleton {
-    readonly _id: string
+    readonly _id: string;
 }
 
 export interface HomePage extends Singleton {

@@ -26,8 +26,8 @@ export interface StatusValidationRules {
     field: string;
     occurence?: 'exactlyOne' | 'atLeastOne' | 'all';
     rule: {
-        customValidations?: 'permissibleValuesUMLS'[],
-        regex?: string
+        customValidations?: 'permissibleValuesUMLS'[];
+        regex?: string;
     };
     ruleName: string;
     targetStatus: CurationStatus;

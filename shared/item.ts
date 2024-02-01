@@ -15,29 +15,29 @@ interface ItemActionsApi {
 
 export const ITEM_MAP: {
     board: {
-        view: string,
+        view: string;
         item: {
             cde: {
-                api: string,
-            },
+                api: string;
+            };
             form: {
-                api: string,
-            }
-        }
-    },
-    cde: ItemActionsApi,
-    form: ItemActionsApi
+                api: string;
+            };
+        };
+    };
+    cde: ItemActionsApi;
+    form: ItemActionsApi;
 } = {
     board: {
         view: '/board/',
         item: {
             cde: {
-                api: '/server/board/deBoards/'
+                api: '/server/board/deBoards/',
             },
             form: {
-                api: '/server/board/formBoards/'
-            }
-        }
+                api: '/server/board/formBoards/',
+            },
+        },
     },
     cde: {
         api: '/api/de/',
@@ -58,10 +58,12 @@ export const ITEM_MAP: {
         schema: '/schema/form',
         view: '/formView?tinyId=',
         viewById: '/formView?formId=',
-    }
+    },
 };
 
-export function itemAsElastic<T extends DataElement | CdeForm>(doc: T): T extends DataElement ? DataElementElastic : CdeFormElastic {
+export function itemAsElastic<T extends DataElement | CdeForm>(
+    doc: T
+): T extends DataElement ? DataElementElastic : CdeFormElastic {
     const elt = doc as unknown as T extends DataElement ? DataElementElastic : CdeFormElastic;
     elt.stewardOrgCopy = elt.stewardOrg;
     elt.primaryNameCopy = encodeURIComponent(elt.designations[0].designation);
@@ -72,7 +74,7 @@ export function itemAsElastic<T extends DataElement | CdeForm>(doc: T): T extend
     return elt;
 }
 
-export function isCdeForm(item: Item | FormElement ): item is CdeForm {
+export function isCdeForm(item: Item | FormElement): item is CdeForm {
     return item.elementType === 'form' && isCdeFormNotFe(item as CdeForm | FormElement);
 }
 
@@ -88,9 +90,11 @@ export function uriView(module: ModuleAll, tinyId: string): string {
     return ITEM_MAP[module].view + tinyId;
 }
 
-export function uriViewBase(module: string): string|undefined {
-    return module === 'board' && '/board'
-        || module === 'cde' && '/deView'
-        || module === 'form' && '/formView'
-        || undefined;
+export function uriViewBase(module: string): string | undefined {
+    return (
+        (module === 'board' && '/board') ||
+        (module === 'cde' && '/deView') ||
+        (module === 'form' && '/formView') ||
+        undefined
+    );
 }

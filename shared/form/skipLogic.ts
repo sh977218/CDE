@@ -19,11 +19,17 @@ export function getQuestions(fes: FormElement[], filter?: filter): FormQuestion[
     return matchedQuestions;
 }
 
-export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement, filter?: filter,
-                                  topFe?: FormElementsContainer): FormQuestion[] { // search all tree prior
+export function getQuestionsPrior(
+    parent: FormElementsContainer,
+    fe: FormElement,
+    filter?: filter,
+    topFe?: FormElementsContainer
+): FormQuestion[] {
+    // search all tree prior
     function questions(parent: FormElementsContainer, index: number) {
         return getQuestions(parent.formElements.slice(0, index > 0 ? index : 0), filter);
     }
+
     const index = parent.formElements.indexOf(fe);
 
     if (!topFe || topFe === parent) {
@@ -31,26 +37,30 @@ export function getQuestionsPrior(parent: FormElementsContainer, fe: FormElement
     }
 
     // breadth-first search with "path" traversal top-down
-    type PriorElement = {parent: FormElementsContainer<FormElement>, index: number};
-    const queue: PriorElement[][] = [range(topFe.formElements.length).map(i => ({parent: topFe, index: i}))];
+    type PriorElement = { parent: FormElementsContainer<FormElement>; index: number };
+    const queue: PriorElement[][] = [range(topFe.formElements.length).map(i => ({ parent: topFe, index: i }))];
     let path: PriorElement[] = [];
     while (queue.length) {
         const input: PriorElement[] = queue.shift() || [];
         const self = input[input.length - 1].parent.formElements[input[input.length - 1].index];
         const index = self.formElements.indexOf(parent as FormElement);
         if (index > -1) {
-            path = input.concat({parent: self, index});
+            path = input.concat({ parent: self, index });
             break;
         }
         /*jshint loopfunc: true */
-        self.formElements.forEach((f: FormElement, i: number) => queue.push(input.concat({parent: self, index: i})));
+        self.formElements.forEach((f: FormElement, i: number) => queue.push(input.concat({ parent: self, index: i })));
     }
-    path.push({parent, index});
+    path.push({ parent, index });
     return path.reduce<FormQuestion[]>((acc, p) => acc.concat(questions(p.parent, p.index)), []);
 }
 
-export function getQuestionPriorByLabel(parent: FormElementsContainer, fe: FormElement, label: string,
-                                        topFe?: FormElementsContainer): FormQuestion | undefined {
+export function getQuestionPriorByLabel(
+    parent: FormElementsContainer,
+    fe: FormElement,
+    label: string,
+    topFe?: FormElementsContainer
+): FormQuestion | undefined {
     label = label.trim();
     const matchedQuestions = getQuestionsPrior(parent, fe, fe => getLabel(fe) === label, topFe);
     if (matchedQuestions.length <= 0) {

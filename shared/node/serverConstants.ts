@@ -1,5 +1,3 @@
-import { noop } from 'shared/util';
-
 export const htmlServedUri: string[] = [
     '/',
     '/404',
@@ -29,5 +27,5 @@ export const htmlServedUri: string[] = [
     '/siteAudit',
     '/siteAccountManagement',
     '/whatsNew',
-    '/nihDataSharing'
+    '/nihDataSharing',
 ];

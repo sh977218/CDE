@@ -78,3 +78,10 @@ export type CreateElt = {
     eltOrg: string;
     eltClassificationCategories: string[];
 };
+
+export type Copyright = {
+    copyright: boolean;
+    statement: string;
+    authority: string;
+    url: string;
+};

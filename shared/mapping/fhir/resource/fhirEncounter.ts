@@ -7,10 +7,10 @@ export function newEncounter(date: string, subject: string, serviceProvider?: st
         resourceType: 'Encounter',
         id: undefined,
         status: 'finished',
-        class: {code: 'outpatient'},
-        type: [{coding: [{system: 'http://snomed.info/sct', code: '185349003'}], text: 'Outpatient Encounter'}],
+        class: { code: 'outpatient' },
+        type: [{ coding: [{ system: 'http://snomed.info/sct', code: '185349003' }], text: 'Outpatient Encounter' }],
         period: newPeriod(date),
         serviceProvider: serviceProvider ? newReference(serviceProvider) : undefined,
-        subject: subject ? newReference(subject) : undefined
+        subject: subject ? newReference(subject) : undefined,
     };
 }

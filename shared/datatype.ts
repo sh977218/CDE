@@ -1,7 +1,10 @@
 import { DatatypeContainer, valueDomain, ValueDomain } from 'shared/de/dataElement.model';
 import { assertUnreachable } from 'shared/models.model';
 
-export function copyDatatypeContainer(source: DatatypeContainer, target: Partial<DatatypeContainer>): DatatypeContainer {
+export function copyDatatypeContainer(
+    source: DatatypeContainer,
+    target: Partial<DatatypeContainer>
+): DatatypeContainer {
     target.datatype = source.datatype;
     const s: any = source;
     const t: DatatypeContainer = target as DatatypeContainer;

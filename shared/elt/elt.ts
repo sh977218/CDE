@@ -4,7 +4,7 @@ import { Elt, Item, ItemElastic, ModuleItem } from 'shared/models.model';
 import { copyDeep } from 'shared/util';
 
 export function deepCopyElt(elt: DataElement): DataElement;
-export function deepCopyElt(elt: CdeForm): CdeForm
+export function deepCopyElt(elt: CdeForm): CdeForm;
 export function deepCopyElt(elt: Item): Item;
 export function deepCopyElt(elt: Item): Item {
     const eltCopy = copyDeep(elt);
