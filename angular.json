@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/cde-cli",
+            "outputPath": "build/dist/cde-cli",
             "index": "modules/_app/src/index.html",
             "main": "modules/_app/src/main.ts",
             "polyfills": "modules/_app/src/polyfills.ts",
@@ -218,7 +218,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/nativeRender",
+            "outputPath": "build/dist/nativeRender",
             "index": "modules/_nativeRenderApp/src/index.html",
             "main": "modules/_nativeRenderApp/src/main.ts",
             "polyfills": "modules/_nativeRenderApp/src/polyfills.ts",
@@ -337,7 +337,7 @@
             "customWebpackConfig": {
               "path": "e2e-playwright/coverage.webpack.js"
             },
-            "outputPath": "dist/e2e-coverage",
+            "outputPath": "build/dist/e2e-coverage",
             "index": "modules/_app/src/index.html",
             "main": "modules/_app/src/main.ts",
             "polyfills": "modules/_app/src/polyfills.ts",
