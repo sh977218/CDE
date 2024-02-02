@@ -1,0 +1,111 @@
+{
+  "name": "QA AWS - <hostname>",
+  "publicUrl": "https://cde-qa.nlm.nih.gov",
+  "greenPublicUrl": "https://cde-qa-green.nlm.nih.gov",
+  "hostname": "<hostname>",
+  "port": 80,
+  "proxy": true,
+  "userAlertTime": 5000,
+  "logBufferSize": 1000,
+  "logFile": "/var/nlm/logs/cdeNoDb.log",
+  "viewsIncrementThreshold": 3,
+  "autoSyncMesh": false,
+  "debugEnabled": false,
+  "expressLogFile": "/var/nlm/logs/cde.log",
+  "elastic": {
+    "hosts": [
+      "https://vpc-cde-us-east-1-7-1-4kxvq5ggwivwbfdlzhpg45j5wi.us-east-1.es.amazonaws.com"
+    ],
+    "number_of_replicas": 0,
+    "esIndexVersion": "v13"
+  },
+  "database": {
+    "servers": [
+      {
+        "host": "us-east-1a-1.nlm-qa-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      },
+      {
+        "host": "us-east-1b-1.nlm-qa-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      },
+      {
+        "host": "us-east-1c-1.nlm-qa-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      }
+    ],
+    "appData": {
+      "db": "nlmcde",
+      "username": "cdeuser",
+      "password": "<mongoCdePassword>",
+      "sslCAPath": "/etc/ssl/certs/mongo-rootca.pem",
+      "sslCertPath": "/etc/ssl/certs/mongo.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "cde",
+        "sslValidate": false
+      }
+    },
+    "log": {
+      "db": "cde-logs",
+      "username": "cdeuser",
+      "password": "<mongoCdePassword>",
+      "sslCAPath": "/etc/ssl/certs/mongo-rootca.pem",
+      "sslCertPath": "/etc/ssl/certs/mongo.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "cde",
+        "sslValidate": false
+      }
+    }
+  },
+  "uts": {
+  	"apikey": "a4f3d409-4f86-450e-8b17-62a9b5c3a044"
+  },
+  "vsac": {
+    "username": "ludetc+cdeqa1",
+    "password": "<vsacPassword>",
+    "host": "vsac.nlm.nih.gov",
+    "ticket": {
+      "path": "/vsac/ws/Ticket"
+    },
+    "valueSet": {
+      "path": "/vsac/svs/RetrieveValueSet"
+    },
+    "port": 443
+  },
+  "modules": {
+    "forms": {
+      "attachments": true,
+      "comments": true,
+      "sectionLevels": 10,
+      "localRender": false,
+      "loincRender": true,
+      "loincRenderUrl": "https://lforms.nlm.nih.gov/#/preview/nlmcde"
+    },
+    "article": true,
+    "cde": {
+      "attachments": true,
+      "comments": true,
+      "highlight": true,
+      "audit": true
+    }
+  },
+  "oauth": {
+    "enabled": true,
+    "clientId": "cdeQa",
+    "clientSecret": "ssh-secret",
+    "callbackURL": "https://cde-qa.nlm.nih.gov/nlmoauth/callback",
+    "serverBaseURL": "https://enigmatic-chamber-8005.herokuapp.com"
+  },
+  "pmRunOnStartup": [
+    "/usr/nlm/cde/kibana/current/bin/kibana"
+  ],
+  "s3": {
+    "host": "s3.amazonaws.com", 
+    "path": "nlm-qa-qa-101-cde-us-east-1"
+  },
+  "captchaCode": "6LeVaB8TAAAAABPUd_bhoQFgh9WYgbgaWbNaRfan",
+  "siteKey": "6LeVaB8TAAAAAP6FNsI-DHsl1Ck4N8fgf2iS93g7",
+  "googleTM": true
+}

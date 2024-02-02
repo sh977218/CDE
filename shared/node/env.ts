@@ -27,35 +27,6 @@ export function getEnvironmentHost(config: any, host: string): string | undefine
     }
 }
 
-export function getEnvironmentOrigin(config: any, url: string): string | undefined {
-    switch (config.publicUrl) {
-        case config.urlProd:
-            if (!url) {
-                return undefined;
-            }
-            if (url.startsWith(config.urlProd)) {
-                return 'blue';
-            }
-            if (url.startsWith(config.urlProdGreen)) {
-                return 'green';
-            }
-            return;
-        case config.urlQa:
-            if (!url) {
-                return undefined;
-            }
-            if (url.startsWith(config.urlQa)) {
-                return 'qa-blue';
-            }
-            if (url.startsWith(config.urlQaGreen)) {
-                return 'qa-green';
-            }
-            return;
-        default:
-            return 'dev';
-    }
-}
-
 function removeProtocol(url: string): string {
     return url.substr(url.indexOf('//') + 2);
 }

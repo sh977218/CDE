@@ -1,0 +1,96 @@
+{
+  "userAlertTime": 1,
+  "port": 3001,
+  "provider": {
+    "faas": "ON_PREM"
+  },
+  "logBufferSize": 1000,
+  "logFile": null,
+  "publicUrl": "http://local-cde-dev-1.nlm.nih.gov:3001",
+  "pmRunOnStartup": [
+    "/usr/nlm/cde/kibana/current/kibana"
+  ],
+  "autoSyncMesh": true,
+  "logToConsoleForServerError": true,
+  "viewsIncrementThreshold": 3,
+  "debugEnabled": true,
+  "elastic": {
+    "uri": "http://localhost:9200",
+    "index": {
+      "name": "cdetest-ci1"
+    },
+    "formIndex": {
+      "name": "formtest-ci1"
+    },
+    "boardIndex": {
+      "name": "boardtest-ci1"
+    },
+    "storedQueryIndex": {
+      "name": "storedquerytest-ci1"
+    },
+    "cdeSuggestIndex": {
+      "name": "cdesuggesttest-ci1"
+    },
+    "formSuggestIndex": {
+      "name": "formsuggesttest-ci1"
+    },
+    "number_of_replicas": 0
+  },
+  "database": {
+    "servers": [
+      {
+        "host": "dvlb7cdemongodb01",
+        "port": 27017
+      }
+    ],
+    "appData": {
+      "db": "dvlbcde01-test-ci",
+      "username": "cdeuser",
+      "password": "j44a88",
+      "options": {
+        "ssl": false
+      }
+    },
+    "log": {
+      "db": "dvlbcde01-cde-logs-test-ci",
+      "username": "cdeuser",
+      "password": "j44a88",
+      "options": {
+        "ssl": false
+      },
+      "cappedCollectionSizeMB": 262144000
+    }
+  },
+  "test": {
+    "testLoginServer": {
+      "port": 3002
+    }
+  },
+  "uts": {
+  	"apikey": "64c6db1d-70ef-4f65-b952-c3296cffe8bb",
+    "federatedLoginW": "http://local-cde-dev-1.nlm.nih.gov:3001/testLogin",
+    "federatedServiceValidateW": "http://local-cde-dev-1.nlm.nih.gov:3001/testLogin/serviceValidate",
+    "federatedLogin": "http://local-cde-dev-1.nlm.nih.gov:3002",
+    "federatedServiceValidate": "http://local-cde-dev-1.nlm.nih.gov:3002/serviceValidate",
+    "ssoServerOrigin": "http://localhost:4200",
+    "ssoServerReceiver": "http://localhost:4200/uts/doNotProceedOnCI"
+  },
+  "vsac": {
+    "username": "cdeci1",
+    "password": "Aa!!!000"
+  },
+  "node": {
+    "buildDir": "./build"
+  },
+  "status": {
+    "timeouts": {
+      "statusCheck": 10000
+    }
+  },
+  "versionCheckIntervalInSeconds": 20,
+  "captchaCode": "6LeVaB8TAAAAABPUd_bhoQFgh9WYgbgaWbNaRfan",
+  "siteKey": "6LeVaB8TAAAAAP6FNsI-DHsl1Ck4N8fgf2iS93g7",
+  "useCaptcha": false,
+  "showCovidBanner": false
+}
+
