@@ -1,6 +1,6 @@
 import { Page, expect } from '@playwright/test';
 import { MaterialPo } from './material.po';
-import { Version } from '../../model/type';
+import { AlertType, Version } from '../../model/type';
 
 export class SaveModalPo {
     protected page: Page;
@@ -44,7 +44,7 @@ export class SaveModalPo {
         await this.page.waitForTimeout(2000);
     }
 
-    async newVersion(alertMessage: string, version?: Version) {
+    async newVersion(alertMessage: AlertType, version?: Version) {
         if (!version) version = { newVersion: '', changeNote: '' };
         // To not override input parameter 'version', make a copy
         let newVersion = version.newVersion;

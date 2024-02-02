@@ -29,7 +29,7 @@ export function updateOrInsertImpl(elt: CdeForm): void {
                         message: 'Unable to Index document: ' + doc.elementType + ' ' + doc.tinyId,
                         origin: 'form.elastic.updateOrInsert',
                         stack: err.toString(),
-                        details: ''
+                        details: '',
                     });
                 }
                 if (doneCount >= 1) {
@@ -38,25 +38,34 @@ export function updateOrInsertImpl(elt: CdeForm): void {
                 doneCount++;
             };
             delete doc._id;
-            esClient.index({
-                index: config.elastic.formIndex.name,
-                type: '_doc',
-                id: doc.tinyId,
-                body: doc
-            }, done);
-            suggestRiverFunction(elt, sugDoc => {
-                esClient.index({
-                    index: config.elastic.formSuggestIndex.name,
+            esClient.index(
+                {
+                    index: config.elastic.formIndex.name,
                     type: '_doc',
                     id: doc.tinyId,
-                    body: sugDoc
-                }, done);
+                    body: doc,
+                },
+                done
+            );
+            suggestRiverFunction(elt, sugDoc => {
+                esClient.index(
+                    {
+                        index: config.elastic.formSuggestIndex.name,
+                        type: '_doc',
+                        id: doc.tinyId,
+                        body: sugDoc,
+                    },
+                    done
+                );
             });
         }
     });
 }
 
-export function elasticsearchForm(settings: SearchSettingsElastic, user?: User): Promise<SearchResponseAggregationForm> {
+export function elasticsearchForm(
+    settings: SearchSettingsElastic,
+    user?: User
+): Promise<SearchResponseAggregationForm> {
     if (!Array.isArray(settings.selectedElements)) {
         settings.selectedElements = [];
     }
@@ -64,11 +73,11 @@ export function elasticsearchForm(settings: SearchSettingsElastic, user?: User):
         settings.selectedElementsAlt = [];
     }
     const query = buildElasticSearchQuery(user, settings);
-    if ((query.from + query.size) > 10000) {
+    if (query.from + query.size > 10000) {
         return Promise.reject('Exceeded pagination limit (10,000)');
     }
     if (!settings.fullRecord) {
-        query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
+        query._source = { excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements'] };
     }
     return elasticsearchPromise('form', query, settings);
 }

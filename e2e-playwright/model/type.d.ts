@@ -85,3 +85,23 @@ export type Copyright = {
     authority: string;
     url: string;
 };
+
+export type AlertType = 'Data Element saved.' | 'Form saved.';
+
+export type RegistrationStatusType =
+    | 'Incomplete'
+    | 'Recorded'
+    | 'Candidate'
+    | 'Qualified'
+    | 'Standard'
+    | 'Preferred Standard'
+    | 'Retired';
+
+export type RegistrationStatus = {
+    status: RegistrationStatusType;
+    effectiveDate?: string;
+    untilDate?: string;
+    administrativeStatus?: string;
+    administrativeNote?: string;
+    unresolvedIssue?: string;
+};

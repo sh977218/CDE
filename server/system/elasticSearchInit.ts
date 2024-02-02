@@ -8,25 +8,25 @@ import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/
 const primaryNameSuggest = {
     type: 'text',
     analyzer: 'autocomplete',
-    search_analyzer: 'standard'
+    search_analyzer: 'standard',
 };
 
 export const createSuggestIndexJson = {
     mappings: {
         properties: {
             nameSuggest: primaryNameSuggest,
-            noRenderAllowed: {type: 'boolean'},
+            noRenderAllowed: { type: 'boolean' },
             stewardOrg: {
                 properties: {
-                    name: {type: 'keyword'}
-                }
+                    name: { type: 'keyword' },
+                },
             },
             registrationState: {
                 properties: {
-                    registrationStatus: {type: 'keyword'}
-                }
-            }
-        }
+                    registrationStatus: { type: 'keyword' },
+                },
+            },
+        },
     },
     settings: {
         index: {
@@ -36,26 +36,23 @@ export const createSuggestIndexJson = {
                     autocomplete_filter: {
                         type: 'edge_ngram',
                         min_gram: 1,
-                        max_gram: 20
-                    }
+                        max_gram: 20,
+                    },
                 },
                 analyzer: {
                     default: {
-                        type: 'snowball'
-                        , language: 'English'
+                        type: 'snowball',
+                        language: 'English',
                     },
                     autocomplete: {
                         type: 'custom',
                         tokenizer: 'standard',
-                        filter: [
-                            'lowercase',
-                            'autocomplete_filter'
-                        ]
-                    }
-                }
-            }
-        }
-    }
+                        filter: ['lowercase', 'autocomplete_filter'],
+                    },
+                },
+            },
+        },
+    },
 };
 
 export const createIndexJson = {
@@ -67,110 +64,111 @@ export const createIndexJson = {
                 fields: {
                     raw: {
                         type: 'keyword',
-                        index: false
-                    }
-                }
+                        index: false,
+                    },
+                },
             },
             stewardOrg: {
                 properties: {
-                    name: {type: 'keyword'}
-                }
-            }
-            , flatClassifications: {type: 'keyword'}
-            , classification: {
+                    name: { type: 'keyword' },
+                },
+            },
+            flatClassifications: { type: 'keyword' },
+            classification: {
                 properties: {
                     stewardOrg: {
                         properties: {
-                            name: {type: 'keyword'}
-                        }
-                    }
-                }
-            }
-            , classificationSize: {type: 'integer'}
-            , registrationState: {
+                            name: { type: 'keyword' },
+                        },
+                    },
+                },
+            },
+            classificationSize: { type: 'integer' },
+            registrationState: {
                 properties: {
-                    registrationStatus: {type: 'keyword'}
-                }
-            }
-            , source: {type: 'keyword'}
-            , origin: {type: 'keyword'}
-            , valueDomain: {
+                    registrationStatus: { type: 'keyword' },
+                },
+            },
+            source: { type: 'keyword' },
+            origin: { type: 'keyword' },
+            valueDomain: {
                 properties: {
-                    datatype: {type: 'keyword'},
+                    datatype: { type: 'keyword' },
                     permissibleValues: {
                         properties: {
-                            codeSystemName: {type: 'keyword'},
-                            conceptSource: {type: 'keyword'}
-                        }
-                    }
-                }
-            }
-            , properties: {
-                type: 'nested',
-                include_in_parent: true,
-                properties: {
-                    key: {type: 'text'},
-                    value: {type: 'text'}
-                }
-            }, ids: {
-                type: 'nested',
-                include_in_parent: true,
-                properties: {
-                    source: {type: 'keyword'},
-                    id: {type: 'text'},
-                    version: {type: 'text'}
-                }
-            }
-            , tinyId: {type: 'keyword'}
-            , created: {type: 'date'}
-            , updated: {type: 'date'}
-            , imported: {type: 'date'}
-            , nihEndorsed: {type: 'boolean'}
-            , updatedBy: {properties: {username: {type: 'text'}}}
-            , changeNote: {enabled: false}
-            , attachments: {
-                properties: {
-                    fileid: {enabled: false},
-                    filename: {enabled: false}
-                }
+                            codeSystemName: { type: 'keyword' },
+                            conceptSource: { type: 'keyword' },
+                        },
+                    },
+                },
             },
-            history: {enabled: false},
-            version: {type: 'keyword'},
-            views: {type: 'integer'},
+            properties: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    key: { type: 'text' },
+                    value: { type: 'text' },
+                },
+            },
+            ids: {
+                type: 'nested',
+                include_in_parent: true,
+                properties: {
+                    source: { type: 'keyword' },
+                    id: { type: 'text' },
+                    version: { type: 'text' },
+                },
+            },
+            tinyId: { type: 'keyword' },
+            created: { type: 'date' },
+            updated: { type: 'date' },
+            imported: { type: 'date' },
+            nihEndorsed: { type: 'boolean' },
+            updatedBy: { properties: { username: { type: 'text' } } },
+            changeNote: { enabled: false },
+            attachments: {
+                properties: {
+                    fileid: { enabled: false },
+                    filename: { enabled: false },
+                },
+            },
+            history: { enabled: false },
+            version: { type: 'keyword' },
+            views: { type: 'integer' },
             linkedForms: {
                 properties: {
-                    Retired: {type: 'integer'},
-                    Incomplete: {type: 'integer'},
-                    Candidate: {type: 'integer'},
-                    Recorded: {type: 'integer'},
-                    Qualified: {type: 'integer'},
-                    Standard: {type: 'integer'},
-                    'Preferred Standard': {type: 'integer'},
+                    Retired: { type: 'integer' },
+                    Incomplete: { type: 'integer' },
+                    Candidate: { type: 'integer' },
+                    Recorded: { type: 'integer' },
+                    Qualified: { type: 'integer' },
+                    Standard: { type: 'integer' },
+                    'Preferred Standard': { type: 'integer' },
                     forms: {
                         properties: {
-                            primaryName: {type: 'text'},
-                            tinyId: {type: 'keyword'},
-                            registrationStatus: {type: 'keyword'}
-                        }
-                    }
-
-                }
+                            primaryName: { type: 'text' },
+                            tinyId: { type: 'keyword' },
+                            registrationStatus: { type: 'keyword' },
+                        },
+                    },
+                },
             },
-            noRenderAllowed: {type: 'boolean'}
-        }
-    }, settings: {
+            noRenderAllowed: { type: 'boolean' },
+        },
+    },
+    settings: {
         index: {
-            number_of_replicas: config.elastic.number_of_replicas
+            number_of_replicas: config.elastic.number_of_replicas,
         },
         analysis: {
             analyzer: {
                 default: {
-                    type: 'snowball'
-                    , language: 'English'
-                }
-            }
-        }
-    }
+                    type: 'snowball',
+                    language: 'English',
+                },
+            },
+        },
+    },
 };
 
 export const createFormIndexJson = {
@@ -182,74 +180,74 @@ export const createFormIndexJson = {
                 fields: {
                     raw: {
                         type: 'keyword',
-                        index: false
-                    }
-                }
+                        index: false,
+                    },
+                },
             },
-            stewardOrg: {properties: {name: {type: 'keyword'}}}
-            , flatClassifications: {type: 'keyword'}
-            , classification: {
+            stewardOrg: { properties: { name: { type: 'keyword' } } },
+            flatClassifications: { type: 'keyword' },
+            classification: {
                 properties: {
                     stewardOrg: {
                         properties: {
-                            name: {type: 'keyword'}
-                        }
-                    }
-                }
-            }
-            , classificationSize: {type: 'integer'}
-            , registrationState: {
+                            name: { type: 'keyword' },
+                        },
+                    },
+                },
+            },
+            classificationSize: { type: 'integer' },
+            registrationState: {
                 properties: {
-                    registrationStatus: {type: 'keyword'}
-                }
-            }
-            , source: {type: 'keyword'}
-            , origin: {type: 'keyword'}
-            , properties: {
+                    registrationStatus: { type: 'keyword' },
+                },
+            },
+            source: { type: 'keyword' },
+            origin: { type: 'keyword' },
+            properties: {
                 type: 'nested',
                 include_in_parent: true,
                 properties: {
-                    key: {type: 'text'},
-                    value: {type: 'text'}
-                }
-            }, ids: {
+                    key: { type: 'text' },
+                    value: { type: 'text' },
+                },
+            },
+            ids: {
                 type: 'nested',
                 include_in_parent: true,
                 properties: {
-                    source: {type: 'keyword'},
-                    id: {type: 'text'},
-                    version: {type: 'text'}
-                }
-            }, views: {type: 'integer'},
-            created: {type: 'date'},
-            updated: {type: 'date'},
-            imported: {type: 'date'},
-            nihEndorsed: {type: 'boolean'},
-            numQuestions: {type: 'integer'},
-            cdeTinyIds: {type: 'keyword'},
-            noRenderAllowed: {type: 'boolean'}
-
-        }
-    }, settings: {
+                    source: { type: 'keyword' },
+                    id: { type: 'text' },
+                    version: { type: 'text' },
+                },
+            },
+            views: { type: 'integer' },
+            created: { type: 'date' },
+            updated: { type: 'date' },
+            imported: { type: 'date' },
+            nihEndorsed: { type: 'boolean' },
+            numQuestions: { type: 'integer' },
+            cdeTinyIds: { type: 'keyword' },
+            noRenderAllowed: { type: 'boolean' },
+        },
+    },
+    settings: {
         'index.mapping.total_fields.limit': 2000,
         index: {
-            number_of_replicas: config.elastic.number_of_replicas
+            number_of_replicas: config.elastic.number_of_replicas,
         },
         analysis: {
             analyzer: {
                 default: {
-                    type: 'snowball'
-                    , language: 'English'
-                }
-            }
-        }
-
-    }
+                    type: 'snowball',
+                    language: 'English',
+                },
+            },
+        },
+    },
 };
 
-
 export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
-    const toIndex: any = {nameSuggest: _elt.designations[0].designation};
+    const toIndex: any = { nameSuggest: _elt.designations[0].designation };
     toIndex.registrationState = _elt.registrationState;
     toIndex.stewardOrg = _elt.stewardOrg;
     toIndex.tinyId = _elt.tinyId;
@@ -259,7 +257,6 @@ export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
     return;
 }
 
-
 export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
     if (_elt.archived) {
         return cb();
@@ -267,9 +264,11 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
 
     const formSvc = require('../form/formsvc');
 
-    const getElt = (_elt as CdeForm).formElements ? formSvc.fetchWholeForm : (item: Item, cb: CbError1<Item>) => {
-        cb(null, item);
-    };
+    const getElt = (_elt as CdeForm).formElements
+        ? formSvc.fetchWholeForm
+        : (item: Item, cb: CbError1<Item>) => {
+              cb(null, item);
+          };
 
     getElt(_elt, (err: Error | undefined, elt: ItemElastic) => {
         function escapeHTML(s: string) {
@@ -350,7 +349,7 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
             Recorded: 3,
             Qualified: 2,
             Standard: 1,
-            'Preferred Standard': 0
+            'Preferred Standard': 0,
         };
         elt.registrationState.registrationStatusSortOrder = regStatusSortMap[elt.registrationState.registrationStatus];
         if (elt.classification) {
@@ -371,9 +370,7 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
 }
 
 export const shortHash = (content: any) => {
-    return createHash('md5')
-        .update(JSON.stringify(content)).digest('hex')
-        .substr(0, 5).toLowerCase();
+    return createHash('md5').update(JSON.stringify(content)).digest('hex').substr(0, 5).toLowerCase();
 };
 
 const esVersion = config.elastic.esIndexVersion;
@@ -391,7 +388,8 @@ if (config.elastic.cdeSuggestIndex.name === 'auto') {
     config.elastic.cdeSuggestIndex.name = 'cdesuggest_' + esVersion + '_' + shortHash(createSuggestIndexJson.mappings);
 }
 if (config.elastic.formSuggestIndex.name === 'auto') {
-    config.elastic.formSuggestIndex.name = 'formsuggest_' + esVersion + '_' + shortHash(createSuggestIndexJson.mappings);
+    config.elastic.formSuggestIndex.name =
+        'formsuggest_' + esVersion + '_' + shortHash(createSuggestIndexJson.mappings);
 }
 
 export interface ElasticIndex {
@@ -409,33 +407,33 @@ export const indices: ElasticIndex[] = [
         count: 0,
         indexName: config.elastic.index.name,
         indexJson: createIndexJson,
-        filter: riverFunction
+        filter: riverFunction,
     },
     {
         name: 'form',
         count: 0,
         indexName: config.elastic.formIndex.name,
         indexJson: createFormIndexJson,
-        filter: riverFunction
+        filter: riverFunction,
     },
     {
         name: 'board',
         count: 0,
         indexName: config.elastic.boardIndex.name,
-        indexJson: boardCreateIndexJson
+        indexJson: boardCreateIndexJson,
     },
     {
         name: 'cdeSuggest',
         count: 0,
         indexName: config.elastic.cdeSuggestIndex.name,
         indexJson: createSuggestIndexJson,
-        filter: suggestRiverFunction
+        filter: suggestRiverFunction,
     },
     {
         name: 'formSuggest',
         count: 0,
         indexName: config.elastic.formSuggestIndex.name,
         indexJson: createSuggestIndexJson,
-        filter: suggestRiverFunction
-    }
+        filter: suggestRiverFunction,
+    },
 ];

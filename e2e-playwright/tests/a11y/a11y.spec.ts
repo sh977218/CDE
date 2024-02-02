@@ -18,10 +18,10 @@ test.describe(`@a11y accessibility test`, async () => {
     test(`CDE search page`, async ({ page, navigationMenu, searchPage }) => {
         await navigationMenu.gotoCdeSearch();
         await searchPage.browseOrganization('caBIG');
-        await expect(searchPage.classificationFilter('caDSR')).toBeVisible();
+        await expect(searchPage.classificationFilterByNameAndNumber('caDSR')).toBeVisible();
         await searchPage.nihEndorsedCheckbox().check();
-        await searchPage.registrationStatusFilter('Qualified').click();
-        await searchPage.dataTypeFilter('Date').click();
+        await searchPage.registrationStatusFilterInput('Qualified').click();
+        await searchPage.dataTypeFilterInput('Date').click();
         await page.getByText('results. Sorted by relevance.').isVisible();
     });
 
@@ -31,7 +31,7 @@ test.describe(`@a11y accessibility test`, async () => {
         await page.getByRole('link', { name: 'PROMIS Instruments' }).click();
         await page.getByRole('link', { name: 'Adult Short Forms' }).click();
         await page.getByRole('link', { name: 'Social Health' }).click();
-        await searchPage.registrationStatusFilter('Qualified').click();
+        await searchPage.registrationStatusFilterInput('Qualified').click();
         await page.getByText('results. Sorted by relevance.').isVisible();
     });
 

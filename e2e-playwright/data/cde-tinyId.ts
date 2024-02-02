@@ -22,4 +22,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Person Primary Care Evaluation of Mental Disorders Patient Health Questionnaire Total Score Psychometric Questionnaire Two Digit Score':
         '7yllQjHmyyl',
     'Specimen Block Received Count': 'fPFAp0Onkcx',
+    'Noncompliant Reason Text': 'tAgDWySuF0y',
 };

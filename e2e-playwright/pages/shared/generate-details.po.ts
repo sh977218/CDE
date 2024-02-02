@@ -1,7 +1,15 @@
 import { Page } from '@playwright/test';
 import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
-import { Copyright, Definition, Designation, EditDefinitionConfig, EditDesignationConfig } from '../../model/type';
+import {
+    Copyright,
+    Definition,
+    Designation,
+    EditDefinitionConfig,
+    EditDesignationConfig,
+    RegistrationStatus,
+    RegistrationStatusType,
+} from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
 
@@ -114,14 +122,23 @@ export class GenerateDetailsPo {
         await this.inlineEdit.confirmButton(originLocator).click();
     };
 
-    editRegistrationStatus = async ({
-        status = '',
-        effectiveDate = '',
-        untilDate = '',
-        administrativeStatus = '',
-        administrativeNote = '',
-        unresolvedIssue = '',
-    }) => {
+    editRegistrationStatus = async (
+        {
+            status,
+            effectiveDate,
+            untilDate,
+            administrativeStatus,
+            administrativeNote,
+            unresolvedIssue,
+        }: RegistrationStatus = {
+            status: 'Incomplete',
+            effectiveDate: '',
+            untilDate: '',
+            administrativeStatus: '',
+            administrativeNote: '',
+            unresolvedIssue: '',
+        }
+    ) => {
         await this.editRegistrationStatusButton().click();
         await this.materialPage.matDialog().waitFor();
         if (status) {

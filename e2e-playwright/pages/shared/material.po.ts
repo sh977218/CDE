@@ -102,6 +102,10 @@ export class MaterialPo {
         return this.page.locator(`//mat-icon[normalize-space() = 'subdirectory_arrow_left']`);
     }
 
+    matTooltip() {
+        return this.matOverlay().locator(`.mdc-tooltip`);
+    }
+
     matEdit() {
         return this.page.locator(`//mat-icon[normalize-space() = 'edit']`);
     }

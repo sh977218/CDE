@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import { RegistrationStatusType } from '../../model/type';
 
 export class SearchPagePo {
     protected page: Page;
@@ -15,12 +16,24 @@ export class SearchPagePo {
         return this.page.getByTestId('search-result-info-bar');
     }
 
+    searchResultNumber() {
+        return this.page.locator(`[id="searchResultNum"]`);
+    }
+
     organizationTitleLink() {
         return this.page.getByTestId(`browse-org`);
     }
 
     classificationFilterText() {
         return this.page.getByTestId(`classification-text`);
+    }
+
+    classificationFilterNumber() {
+        return this.page.getByTestId(`classification-number`);
+    }
+
+    classificationFilter() {
+        return this.page.locator(`[data-testid="classification-filter"]`);
     }
 
     async browseOrganization(organization: string) {
@@ -32,7 +45,10 @@ export class SearchPagePo {
         await this.page.waitForSelector(`text=${organization}`);
     }
 
-    classificationFilter(classificationText: string, classificationNumber: number | string = 0): Locator {
+    classificationFilterByNameAndNumber(
+        classificationText: string,
+        classificationNumber: number | string = 0
+    ): Locator {
         const classificationLocator = this.page
             .getByTestId(`classification-filter`)
             .locator('[data-testid="classification-text"]', {
@@ -57,20 +73,32 @@ export class SearchPagePo {
         return this.page.locator(`[id="altClassificationFilterModeToggle"]`);
     }
 
-    registrationStatusFilter(status: string): Locator {
+    copyrightStatusFilter(status: string): Locator {
         return this.page
-            .locator(`[data-testid='registration-status-filter']`, {
+            .locator(`[data-testid='copyright-status-filter']`, {
                 has: this.page.locator(`text=${status}`),
             })
             .locator('input');
     }
 
+    registrationStatusFilter(status: RegistrationStatusType) {
+        return this.page.locator(`[data-testid='registration-status-filter']`, {
+            has: this.page.locator(`text=${status}`),
+        });
+    }
+
+    registrationStatusFilterInput(status: RegistrationStatusType): Locator {
+        return this.registrationStatusFilter(status).locator('input');
+    }
+
     dataTypeFilter(datatype: string): Locator {
-        return this.page
-            .locator(`[data-testid='datatype-filter']`, {
-                has: this.page.locator(`text=${datatype}`),
-            })
-            .locator('input');
+        return this.page.locator(`[data-testid='datatype-filter']`, {
+            has: this.page.locator(`text=${datatype}`),
+        });
+    }
+
+    dataTypeFilterInput(datatype: string): Locator {
+        return this.dataTypeFilter(datatype).locator('input');
     }
 
     nihEndorsedCheckbox(): Locator {
@@ -115,5 +143,9 @@ export class SearchPagePo {
 
     pinBoardModalClose(): Locator {
         return this.page.getByTestId(`pinBoardCloseBtn`);
+    }
+
+    parseNumberFromFilterText(text: string) {
+        return /\d+/.exec(text)?.at(0) || '';
     }
 }

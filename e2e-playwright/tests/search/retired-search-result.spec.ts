@@ -9,7 +9,7 @@ test.describe(`Search result with retired`, async () => {
         await navigationMenu.searchPreferencesButton().click();
         await searchPreferencesPage.searchPreferencesCheckbox().check();
         await searchPreferencesPage.saveButton().click();
-        await searchPage.registrationStatusFilter('Retired').check();
+        await searchPage.registrationStatusFilterInput('Retired').check();
         await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
     });
     test(`Form search result`, async ({ page, searchPage, navigationMenu, searchPreferencesPage }) => {
@@ -18,7 +18,7 @@ test.describe(`Search result with retired`, async () => {
         await navigationMenu.searchPreferencesButton().click();
         await searchPreferencesPage.searchPreferencesCheckbox().check();
         await searchPreferencesPage.saveButton().click();
-        await searchPage.registrationStatusFilter('Retired').check();
+        await searchPage.registrationStatusFilterInput('Retired').check();
         await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
     });
 });
