@@ -8,8 +8,11 @@ test(`Browser search filter`, async ({ materialPage, navigationMenu, searchPage 
         await searchPage.organizationTitleLink().filter({ hasText: `caBIG` }).click();
         await searchPage.classificationFilterSelected(`caBIG`).hover();
         await expect(materialPage.matTooltip()).toHaveText('Remove this classification filter');
+        await searchPage.searchResultInfoBar().click();
+
         await searchPage.classificationFilter().filter({ hasText: `caBIG` }).hover();
         await expect(materialPage.matTooltip()).toHaveText('Cancer Biomedical Informatics Grid');
+        await searchPage.searchResultInfoBar().click();
     });
 
     await test.step(`org classification filter number`, async () => {
