@@ -1,0 +1,124 @@
+{
+  "name": "Prod AWS - <hostname>",
+  "publicUrl": "https://cde.nlm.nih.gov",
+  "greenPublicUrl": "https://cde-green.nlm.nih.gov",
+  "hostname": "<hostname>",
+  "port": 80,
+  "proxy": true,
+  "logFile": "/var/log/cdeNoDb.log",
+  "expressLogFile": "/var/log/cde.log",
+  "umls": {
+  	"apikey": "d26b33f8-5d8e-45d4-b40c-aec74d354cf5"
+  },
+  "uts": {
+	"apikey": "754912bf-b890-4710-9fbf-18f7aeefdc17"
+  },
+  "vsac": {
+    "username": "cdeprod",
+    "password": "<vsacPassword>",
+    "host": "vsac.nlm.nih.gov",
+    "ticket": {
+      "path": "/vsac/ws/Ticket"
+    },
+    "valueSet": {
+      "path": "/vsac/svs/RetrieveValueSet"
+    },
+    "port": 443
+  },
+  "elastic": {
+    "hosts": [
+      "https://vpc-cde-us-east-1-7-1-psvmuqygp3k6aptsijb5xwhosu.us-east-1.es.amazonaws.com"
+    ],
+    "inject_bulk_size": 50,
+    "esIndexVersion": "v13"
+  },
+  "database": {
+    "servers": [
+      {
+        "host": "us-east-1a-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      },
+      {
+        "host": "us-east-1b-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      },
+      {
+        "host": "us-east-1c-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "port": 27017
+      }
+    ],
+    "appData": {
+      "db": "nlmcde",
+      "username": "cdeuser",
+      "password": "<mongoCdePassword>",
+      "sslCAPath": "/etc/ssl/certs/mongo-rootca.pem",
+      "sslCertPath": "/etc/ssl/certs/mongo.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "cde",
+        "sslValidate": false
+      }
+    },
+    "log": {
+      "db": "cde-logs",
+      "username": "cdeuser",
+      "password": "<mongoCdePassword>",
+      "sslCAPath": "/etc/ssl/certs/mongo-rootca.pem",
+      "sslCertPath": "/etc/ssl/certs/mongo.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "cde",
+        "sslValidate": false
+      }
+    },
+    "migration": {
+      "db": "migration",
+      "username": "cdeuser",
+      "password": "<mongoCdePassword>",
+      "sslCAPath": "/etc/ssl/certs/mongo-rootca.pem",
+      "sslCertPath": "/etc/ssl/certs/mongo.pem",
+      "options": {
+        "ssl": true,
+        "replicaSet": "cde",
+        "sslValidate": false
+      }
+    }
+  },
+  "modules": {
+    "forms": {
+      "editable": false,
+      "attachments": true,
+      "comments": true,
+      "sectionLevels": 10,
+      "localRender": false,
+      "loincRender": true,
+      "loincRenderUrl": "https://lforms.nlm.nih.gov/preview/nlmcde"
+    },
+    "article": true,
+    "cde": {
+      "attachments": true,
+      "comments": true,
+      "highlight": true,
+      "audit": true
+    }
+  },
+  "pm": {
+    "port": 3081,
+    "tempDir": "/tmp/",
+    "extractDir": "/usr/nlm/cde/"
+  },
+  "pmNodeProcess": "node",
+  "pmRunOnStartup": [
+    "/usr/nlm/cde/kibana/current/bin/kibana"
+  ],
+  "googleTM": true,
+  "captchaCode": "6LdAmh4TAAAAAI21xMRb8ocrnSmmGJ0QaKM_jmMY",
+  "siteKey": "6LdAmh4TAAAAABf_PCxKsd4ikR-S5pSSa25PGqUV",
+  "prodDump": {
+    "enabled": false
+  },
+  "s3": {
+    "host": "s3.amazonaws.com", 
+    "path": "nlm-prod-prod-101-cde-us-east-1"
+  }
+}

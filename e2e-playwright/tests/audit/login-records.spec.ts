@@ -24,7 +24,9 @@ test.describe(`Login Records`, async () => {
         const recordTimestamp = await loginRecordAuditPage
             .findLatestLoginRecordByUser(Accounts.loginrecorduser.username)
             .innerText();
-        const timeDiff = new Date(recordTimestamp).getMinutes() - now.getMinutes();
+        const recordDate = new Date(recordTimestamp);
+        const recordMinute = recordDate.getMinutes();
+        const timeDiff = recordMinute - now.getMinutes();
         expect(timeDiff).toBeGreaterThanOrEqual(0);
     });
 });

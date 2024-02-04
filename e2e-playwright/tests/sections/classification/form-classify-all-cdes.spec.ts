@@ -3,13 +3,7 @@ import { Accounts } from '../../../data/user';
 import { test } from '../../../fixtures/base-fixtures';
 
 test.describe.configure({ retries: 0 });
-test(`Form classify all CDEs classification`, async ({
-    page,
-    materialPage,
-    auditTab,
-    navigationMenu,
-    classificationSection,
-}) => {
+test(`Form classify all CDEs classification`, async ({ page, navigationMenu, classificationSection }) => {
     const cdeName1 = `Data source`;
     const cdeName2 = `History data reliability type`;
     const formName = 'History Data Source and Reliability';

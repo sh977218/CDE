@@ -25,9 +25,6 @@ ssl/
 my-*
 config/cluster.json
 config/local.json
-config/prod.json
-config/prod-live.json
-config/qa-live.json
 config/qa-mig.json
 config/migration.json
 config/peter.json

@@ -22,7 +22,7 @@
 
                 <ng-container matColumnDef="latestDate">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Date</th>
-                    <td mat-cell *matCellDef="let row"> {{ row.latestDate | date }}</td>
+                    <td mat-cell *matCellDef="let row"> {{ row.latestDate | date: 'MM/dd/yyyy @ h:mma' }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="hits">
