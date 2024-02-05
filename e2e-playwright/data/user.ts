@@ -15,6 +15,14 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'nlmCurator',
         password: DEFAULT_PASSWORD,
     },
+    nlmAdminUser: {
+        username: 'nlmAdmin',
+        password: DEFAULT_PASSWORD,
+    },
+    nlmEditorUser: {
+        username: 'nlmEditor',
+        password: DEFAULT_PASSWORD,
+    },
     ninds: {
         username: 'ninds',
         password: DEFAULT_PASSWORD,
@@ -57,6 +65,10 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
     },
     workingGroupUser: {
         username: 'wguser',
+        password: DEFAULT_PASSWORD,
+    },
+    longUsernameUser: {
+        username: 'hiIamLongerThanSeventeenCharacters',
         password: DEFAULT_PASSWORD,
     },
 };

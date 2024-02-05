@@ -54,7 +54,7 @@ export class NavigationMenuPo {
         });
     }
 
-    private createButton() {
+    createButton() {
         return this.page.locator(`[id="createEltLink"]`);
     }
 

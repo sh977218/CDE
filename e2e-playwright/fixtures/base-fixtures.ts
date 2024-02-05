@@ -189,8 +189,8 @@ const baseFixture = baseTest.extend<{
     inlineEdit: async ({ page }, use) => {
         await use(new InlineEditPo(page));
     },
-    manageClassificationPage: async ({ page, materialPage, classificationSection }, use) => {
-        await use(new ManageClassificationPo(page, materialPage, classificationSection));
+    manageClassificationPage: async ({ page, materialPage }, use) => {
+        await use(new ManageClassificationPo(page, materialPage));
     },
     itemLogAuditPage: async ({ page }, use) => {
         await use(new ItemLogAuditPagePo(page));

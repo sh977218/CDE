@@ -5,16 +5,18 @@ import { ClassificationPo } from '../shared/classification.po';
 export class ManageClassificationPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
-    private readonly classificationSection: ClassificationPo; // @TODO remove it once convert tree-node to mat-tree
 
-    constructor(page: Page, materialPage: MaterialPo, classificationSection: ClassificationPo) {
+    constructor(page: Page, materialPage: MaterialPo) {
         this.page = page;
         this.materialPage = materialPage;
-        this.classificationSection = classificationSection;
     }
 
     organizationSelect(): Locator {
         return this.page.getByTestId(`manage-organization-select`);
+    }
+
+    updateOrgClassificationButton() {
+        return this.page.getByTestId(`update-org-classification-button`);
     }
 
     classificationMenu(locator: Locator): Locator {

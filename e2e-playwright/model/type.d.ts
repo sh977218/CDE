@@ -11,8 +11,11 @@ export type ACCOUNT_KEYS =
     | 'classifyBoardUser'
     | 'formBoardUser'
     | 'nlmCuratorUser'
+    | 'nlmEditorUser'
+    | 'nlmAdminUser'
     | 'classificationManageUser'
-    | 'workingGroupUser';
+    | 'workingGroupUser'
+    | 'longUsernameUser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
 export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';

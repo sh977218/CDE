@@ -8,7 +8,7 @@ import { NgForOf, NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { AlertService } from 'alert/alert.service';
 import { ClassificationService } from 'non-core/classification.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
@@ -28,6 +28,7 @@ import { UserService } from '_app/user.service';
 import { RemoveOrgClassificationDialogComponent } from 'classificationManagement/remove-org-classification-dialog/remove-org-classification-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ClassifyItemDialogComponent } from '../../adminItem/classification/classify-item-dialog/classify-item-dialog.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
@@ -43,6 +44,7 @@ import { ClassifyItemDialogComponent } from '../../adminItem/classification/clas
         ReactiveFormsModule,
         NgForOf,
         MatButtonModule,
+        MatProgressSpinnerModule,
     ],
     providers: [ClassificationDatabase],
     standalone: true,
@@ -65,6 +67,8 @@ export class OrgClassificationManagementComponent {
         node => node.elements
     );
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+    isLoadingResults = false;
 
     constructor(
         private http: HttpClient,
@@ -148,27 +152,35 @@ export class OrgClassificationManagementComponent {
     }
 
     updateOrganization() {
-        const postBody = {
-            orgName: this.selectedOrg.value,
-        };
-        this.http
-            .post<Organization>('/server/classification/updateOrgClassification', postBody)
-            .pipe(
-                map(org => {
-                    return [
-                        {
-                            name: org.name,
-                            elements: org.classifications,
+        if (this.selectedOrg.value) {
+            this.isLoadingResults = true;
+            const postBody = {
+                orgName: this.selectedOrg.value,
+            };
+            this.http
+                .post<Organization>('/server/classification/updateOrgClassification', postBody)
+                .pipe(
+                    tap({
+                        complete: () => {
+                            this.isLoadingResults = false;
                         },
-                    ];
-                })
-            )
-            .subscribe(
-                data => {
-                    this._database.initialize(data);
-                },
-                () => this.alert.addAlert('danger', 'There was an issue update this org.')
-            );
+                    }),
+                    map(org => {
+                        return [
+                            {
+                                name: org.name,
+                                elements: org.classifications,
+                            },
+                        ];
+                    })
+                )
+                .subscribe(
+                    data => {
+                        this._database.initialize(data);
+                    },
+                    () => this.alert.addAlert('danger', 'There was an issue update this org.')
+                );
+        }
     }
 
     orgChanged(event: any, cb?: any) {

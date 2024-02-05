@@ -1,24 +1,24 @@
 <h1>Profile</h1>
 <dl *ngIf="user" class="cde-property">
-    <dt>Username:</dt>
-    <dd id="username">{{user.username}}</dd>
+    <dt data-testid="username-label">Username:</dt>
+    <dd id="username" data-testid="username">{{user.username}}</dd>
     <ng-container *ngIf="isSiteAdmin(user)">
-        <dt>Quota:</dt>
-        <dd id="quota">
+        <dt data-testid="quota-label">Quota:</dt>
+        <dd id="quota" data-testid="quota">
             {{user.quota / 1024 / 1024 | number:'1.2-2' | cdePlaceholder}}<span *ngIf="user.quota"> MB</span>
         </dd>
-        <dt>E-mail:</dt>
-        <dd id="user_email" data-testid="edit-user-email">
+        <dt data-testid="user-email-label">E-mail:</dt>
+        <dd id="user_email" data-testid="user-email">
             <cde-inline-edit id="emailEdit" [(model)]="user.email" inputType="email" [isAllowed]="true"
                              (modelChange)="userService.save({email: user.email})"></cde-inline-edit>
         </dd>
     </ng-container>
     <ng-container *ngIf="user.orgEditor.length">
-        <dt>Editor for:</dt>
-        <dd id="editorFor">{{user.orgEditor.join(', ')}}</dd>
+        <dt data-testid="editor-for-label">Editor for:</dt>
+        <dd id="editorFor" data-testid="editor-for">{{user.orgEditor.join(', ')}}</dd>
     </ng-container>
-    <dt>Curator for:</dt>
-    <dd id="curatorFor">{{user.orgCurator.join(', ')}}</dd>
-    <dt>Admin for:</dt>
-    <dd>{{user.orgAdmin.join(', ')}}</dd>
+    <dt data-testid="curator-for-label">Curator for:</dt>
+    <dd id="curatorFor" data-testid="curator-for">{{user.orgCurator.join(', ')}}</dd>
+    <dt data-testid="admin-for-label">Admin for:</dt>
+    <dd data-testid="admin-for">{{user.orgAdmin.join(', ')}}</dd>
 </dl>
