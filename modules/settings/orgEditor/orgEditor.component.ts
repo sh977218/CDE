@@ -23,6 +23,7 @@ export class OrgEditorComponent {
     orgEditors?: OrgUsers[];
     newUsername!: string;
     newOrgName!: string;
+    isLoadingResults = false;
 
     constructor(
         private alert: AlertService,
@@ -40,6 +41,7 @@ export class OrgEditorComponent {
     }
 
     addOrgEditor() {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/addOrgEditor',
@@ -49,17 +51,21 @@ export class OrgEditorComponent {
                 } as OrgManageAddRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Saved');
                     this.getOrgEditors();
                 },
-                () => this.alert.addAlert('danger', 'There was an issue saving.')
-            );
+                error: () => this.alert.addAlert('danger', 'There was an issue saving.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
         this.newOrgName = '';
     }
 
     removeOrgEditor(orgName: string, userId: string) {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/removeOrgEditor',
@@ -69,12 +75,15 @@ export class OrgEditorComponent {
                 } as OrgManageRemoveRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Removed');
                     this.getOrgEditors();
                 },
-                () => this.alert.addAlert('danger', 'An error occured.')
-            );
+                error: () => this.alert.addAlert('danger', 'An error occured.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
     }
 }

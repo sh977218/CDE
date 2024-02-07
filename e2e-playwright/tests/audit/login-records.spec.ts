@@ -19,8 +19,7 @@ test.describe(`Login Records`, async () => {
             await route.continue();
         });
         await auditTab.loginRecords().click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         const recordTimestamp = await loginRecordAuditPage
             .findLatestLoginRecordByUser(Accounts.loginrecorduser.username)
             .innerText();

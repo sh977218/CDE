@@ -16,6 +16,7 @@ export class NavigationMenuPo {
 
     private clickUntilMenuShows(buttonLocator: Locator) {
         return new Promise<void>(async (resolve, reject) => {
+            await this.page.waitForTimeout(2000); // Try this wait, there maybe some JS code block button click
             await buttonLocator.hover();
             const buttonText = await buttonLocator.innerText();
             this.materialPage
@@ -37,6 +38,7 @@ export class NavigationMenuPo {
 
     private clickUntilUrl(buttonLocator: Locator, Url: RegExp) {
         return new Promise<void>(async (resolve, reject) => {
+            await this.page.waitForTimeout(2000); // Try this wait, there maybe some JS code block button click
             await buttonLocator.click();
             const buttonText = await buttonLocator.innerText();
             this.page
@@ -80,11 +82,16 @@ export class NavigationMenuPo {
         await loginPage.locator(`[name="username"]`).fill(username);
         await loginPage.locator(`[name="password"]`).fill(password);
         await loginPage.locator(`[id="loginSubmitBtn"]`).click();
-        await this.page.waitForSelector(`[data-testid="logged-in-username"]`, {
-            state: 'visible',
-        });
-        // wait for URL not being /login
-        await expect(this.page).not.toHaveURL(/\/login/);
+        let usernameOnNavigationBanner = username;
+        if (username.length > 17) {
+            usernameOnNavigationBanner = username.substring(0, 17) + '...';
+        }
+        await expect(this.page.locator(`[data-testid="logged-in-username"]`)).toHaveText(
+            `${usernameOnNavigationBanner.toUpperCase()}expand_more`,
+            {
+                ignoreCase: true,
+            }
+        );
     }
 
     async gotoCdeSearch() {
@@ -117,7 +124,9 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
-        await this.page.waitForURL(`/deView?tinyId=${tinyId}`, { timeout: 10000 });
+        if (tinyId) {
+            await this.page.waitForURL(`/deView?tinyId=${tinyId}`, { timeout: 10000 });
+        }
     }
 
     async gotoFormSearch() {
@@ -150,7 +159,9 @@ export class NavigationMenuPo {
         await this.page.getByTestId(`search-submit-button`).click();
         await this.page.getByText(`results. Sorted by relevance.`).waitFor();
         await this.page.locator(`[id="linkToElt_0"]`).click();
-        await this.page.waitForURL(`/formView?tinyId=${tinyId}`, { timeout: 10000 });
+        if (tinyId) {
+            await this.page.waitForURL(`/formView?tinyId=${tinyId}`, { timeout: 10000 });
+        }
     }
 
     async gotoSettings() {

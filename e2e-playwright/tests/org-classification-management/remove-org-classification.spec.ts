@@ -56,8 +56,7 @@ test(`Remove organization classification`, async ({
         await navigationMenu.gotoAudit();
         await auditTab.classificationAuditLog().click();
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         expect(await page.getByText(`${classificationArray.join(' > ')}`).count()).toBeGreaterThanOrEqual(2);
         await page
             .getByText(`${classificationArray.join(' > ')}`)

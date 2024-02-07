@@ -5,11 +5,13 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { rolesEnum, User } from 'shared/models.model';
 import { CreateUserModalComponent } from 'settings/usersMgt/create-user-modal/create-user-modal.component';
+import { tap } from 'rxjs/operators';
 
 type FullUser = User & {
     lastLogin: string;
     knownIPs: string;
     createdDate: Date;
+    isLoadingResults?: boolean;
 };
 
 @Component({
@@ -20,6 +22,7 @@ export class UsersMgtComponent {
     foundUsers: FullUser[] = [];
     search: { username: User | string } = { username: '' };
     rolesEnum = rolesEnum;
+    isLoadingResults = false;
 
     constructor(
         private alert: AlertService,
@@ -43,17 +46,29 @@ export class UsersMgtComponent {
     }
 
     searchUsers() {
+        this.isLoadingResults = true;
         this.http
             .get<FullUser[]>(
                 '/server/user/searchUsers/' +
                     ((typeof this.search.username === 'object' && this.search.username.username) ||
                         this.search.username)
             )
-            .subscribe(users => (this.foundUsers = users));
+            .subscribe({
+                next: users => (this.foundUsers = users),
+                complete: () => (this.isLoadingResults = false),
+            });
     }
 
-    updateAvatar(user: User) {
-        this.http.post('/server/user/updateUserAvatar', user).subscribe(() => this.alert.addAlert('success', 'Saved.'));
+    updateAvatar(user: FullUser) {
+        user.isLoadingResults = true;
+        this.http
+            .post('/server/user/updateUserAvatar', user)
+            .pipe(
+                tap({
+                    complete: () => (user.isLoadingResults = false),
+                })
+            )
+            .subscribe(() => this.alert.addAlert('success', 'Saved.'));
     }
 
     updateRoles(user: User) {

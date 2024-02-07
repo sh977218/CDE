@@ -13,8 +13,7 @@ test.describe(`Daily Usage Report Log`, async () => {
             await navigationMenu.gotoAudit();
             await auditTab.dailyUsage().click();
             await page.getByRole('button', { name: 'Generate', exact: true }).click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-daily-usage`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d{1,2} of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Last Date');

@@ -38,8 +38,7 @@ test.describe(`Server log`, async () => {
         });
 
         await test.step(`Without checkbox unchecked and not see bad input error`, async () => {
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-server-error`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -50,8 +49,7 @@ test.describe(`Server log`, async () => {
 
         await test.step(`With checkbox checked and see bad input error`, async () => {
             await page.locator(`[data-testid="include-bad-input-checkbox"] input`).check();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-server-error`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');

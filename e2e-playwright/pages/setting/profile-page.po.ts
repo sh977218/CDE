@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 export class ProfilePagePo {
-    protected page: Page;
+    private readonly page: Page;
 
     constructor(page: Page) {
         this.page = page;

@@ -3,29 +3,38 @@
     <cde-username-autocomplete (selected)="newUsername = $event"></cde-username-autocomplete>
     a curator for
     <mat-form-field>
-        <select *ngIf="userService.user" matNativeControl name="newOrgCuratorOrgName" [(ngModel)]="newOrgName" required>
+        <select *ngIf="userService.user" matNativeControl name="newOrgCuratorOrgName" [(ngModel)]="newOrgName" required
+                data-testid="add-org-curator-user-org-select">
             <option value="">select organization</option>
-            <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
+            <option *ngFor="let myOrg of userService.user.orgAdmin">{{ myOrg }}</option>
         </select>
     </mat-form-field>
-    <button type="submit" class="button" (click)="addOrgCurator()" [disabled]="!newCuratorForm.valid">
+    <button type="submit" class="button" (click)="addOrgCurator()" [disabled]="!newCuratorForm.valid"
+            data-testid="make-org-curator-button">
         Make Curator
     </button>
 </form>
-<table class="table table-border">
-    <tr>
-        <th>Organization Name:</th>
-        <th>Curators for this Organization:</th>
-    </tr>
-    <tr *ngFor="let orgCurator of orgCurators; let $pindex = index">
-        <td id="existingOrgCuratorOrgName-{{orgCurator.name}}">{{orgCurator.name}}</td>
-        <td>
-            <div *ngFor="let user of orgCurator.users; let $index = index">
-                <span id="existingOrgCuratorUsername-{{$pindex}}-{{$index}}">{{user.username}}</span>
-                <mat-icon (click)="removeOrgCurator(orgCurator.name, user._id)"
-                          id="removeOrgCuratorUsername-{{$pindex}}-{{$index}}">delete_outline
-                </mat-icon>
-            </div>
-        </td>
-    </tr>
-</table>
+<div class="example-container mat-elevation-z8">
+    <div class="loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <table class="example-table-container table table-border table-responsive">
+        <tr>
+            <th>Organization Name:</th>
+            <th>Curators for this Organization:</th>
+        </tr>
+        <tr *ngFor="let orgCurator of orgCurators">
+            <td data-testid="org-name">{{ orgCurator.name }}</td>
+            <td>
+                <div *ngFor="let user of orgCurator.users;">
+                    <span data-testid="org-curator-username">{{ user.username }}</span>
+                    <mat-icon class="hand-cursor" data-testid="remove-org-curator-button"
+                              (click)="removeOrgCurator(orgCurator.name, user._id)">delete_outline
+                    </mat-icon>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+

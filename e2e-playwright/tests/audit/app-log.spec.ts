@@ -17,8 +17,7 @@ test.describe(`App log`, async () => {
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(28).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -28,8 +27,7 @@ test.describe(`App log`, async () => {
         await test.step(`Select page size '100'`, async () => {
             await materialPage.paginatorNumberPerPage().click();
             await materialPage.matOptionByText('100').click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -38,8 +36,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`Go to next page`, async () => {
             await materialPage.paginatorNext().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/\d* – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -48,8 +45,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`click sort header 'URL' and resets page to '1' sort direction to 'asc'`, async () => {
             await materialPage.matSortHeader('Level').click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Level');
@@ -58,8 +54,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`Go to next page`, async () => {
             await materialPage.paginatorNext().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Level');
@@ -68,8 +63,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`Search resets page to '1' and sort header to 'Date'`, async () => {
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Level');

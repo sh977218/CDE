@@ -16,6 +16,8 @@ export class OrgAdminComponent {
     };
     orgAdmins: UsersOrgQuery[] = [{ name: 'Loading...' }];
 
+    isLoadingResults = false;
+
     constructor(
         private alert: AlertService,
         private http: HttpClient,
@@ -26,6 +28,7 @@ export class OrgAdminComponent {
     }
 
     addOrgAdmin() {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/addOrgAdmin',
@@ -35,24 +38,32 @@ export class OrgAdminComponent {
                 } as OrgManageAddRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Saved');
                     this.getAdmins();
                 },
-                () => this.alert.addAlert('danger', 'There was an issue adding this administrator.')
-            );
+                error: () => this.alert.addAlert('danger', 'There was an issue adding this administrator.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
     }
 
     getAdmins() {
+        let orgUrl = '/server/orgManagement/myOrgsAdmins';
         if (this.isAllowedModel.hasRole('OrgAuthority')) {
-            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/orgAdmins').subscribe(r => this.setOrgs(r));
-        } else {
-            return this.http.get<UsersOrgQuery[]>('/server/orgManagement/myOrgsAdmins').subscribe(r => this.setOrgs(r));
+            orgUrl = '/server/orgManagement/orgAdmins';
         }
+        this.http.get<UsersOrgQuery[]>(orgUrl).subscribe({
+            next: (r: UsersOrgQuery[]) => {
+                this.setOrgs(r);
+            },
+        });
     }
 
     removeOrgAdmin(orgName: string, userId: string) {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/removeOrgAdmin',
@@ -62,13 +73,16 @@ export class OrgAdminComponent {
                 } as OrgManageRemoveRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Removed');
                     this.getAdmins();
                 },
-                () => this.alert.addAlert('danger', 'An error occurred.')
-            );
+                error: () => this.alert.addAlert('danger', 'An error occurred.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
     }
 
     setOrgs(r: UsersOrgQuery[]) {

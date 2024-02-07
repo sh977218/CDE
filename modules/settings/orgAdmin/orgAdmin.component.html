@@ -4,32 +4,37 @@
     an administrator for
     <mat-form-field>
         <select matNativeControl name="newOrgAdminOrgName"
+                data-testid="add-org-admin-user-org-select"
                 [(ngModel)]="newAdmin.orgName" required>
             <option value="" disabled>select organization</option>
-            <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{myOrgAdmin.name}}</option>
+            <option *ngFor="let myOrgAdmin of orgAdmins" [value]="myOrgAdmin.name">{{ myOrgAdmin.name }}</option>
         </select>
     </mat-form-field>
     <button type="submit" id="newOrgAdminSubmit" class="button"
+            data-testid="make-org-admin-button"
             (click)="addOrgAdmin()" [disabled]="!adminForm.form.valid">Make Admin
     </button>
 </form>
-<table class="table table-border table-responsive">
-    <tr>
-        <th>Organization Name:</th>
-        <th>Admins for this Organization:</th>
-    </tr>
-    <tr *ngFor="let orgAdmin of orgAdmins; let admIndex = index">
-        <td id="existingOrgAdminOrgName-{{orgAdmin.name}}">
-            {{orgAdmin.name}}
-        </td>
-        <td>
-            <div *ngFor="let user of orgAdmin.users; let uIndex = index">
-                <span id="existingOrgAdminUsername-{{admIndex}}-{{uIndex}}">{{user.username}}
-                </span>
-                <mat-icon id="removeOrgAdminUsername-{{admIndex}}-{{uIndex}}" class="hand-cursor"
-                          (click)="removeOrgAdmin(orgAdmin.name, user._id)">delete_outline
-                </mat-icon>
-            </div>
-        </td>
-    </tr>
-</table>
+<div class="example-container mat-elevation-z8">
+    <div class="loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <table class="example-table-container table table-border table-responsive">
+        <tr>
+            <th>Organization Name:</th>
+            <th>Admins for this Organization:</th>
+        </tr>
+        <tr *ngFor="let orgAdmin of orgAdmins">
+            <td data-testid="org-name">{{ orgAdmin.name }}</td>
+            <td>
+                <div *ngFor="let user of orgAdmin.users;">
+                    <span data-testid="org-admin-username">{{ user.username }}</span>
+                    <mat-icon class="hand-cursor" data-testid="remove-org-admin-button"
+                              (click)="removeOrgAdmin(orgAdmin.name, user._id)">delete_outline
+                    </mat-icon>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

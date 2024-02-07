@@ -19,8 +19,20 @@ export class MaterialPo {
         return this.page.getByRole('menuitem', { name: text, exact: true });
     }
 
+    matExpansionPanelHeader() {
+        return this.page.locator(`.mat-expansion-panel-header`);
+    }
+
     searchAutoCompleteOptions(): Locator {
         return this.page.getByTestId(`search-auto-complete-option`);
+    }
+
+    usernameAutocompleteInput() {
+        return this.page.getByTestId(`search-users-input`);
+    }
+
+    usernameAutoCompleteOptions(): Locator {
+        return this.page.getByTestId(`username-auto-complete-option`);
     }
 
     matOptions() {
@@ -51,6 +63,11 @@ export class MaterialPo {
 
     matSpinner() {
         return this.page.locator(`mat-spinner`);
+    }
+
+    async matSpinnerShowAndGone() {
+        await this.matSpinner().waitFor();
+        await this.matSpinner().waitFor({ state: 'hidden' });
     }
 
     matSortHeader(title: string) {

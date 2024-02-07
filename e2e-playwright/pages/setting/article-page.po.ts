@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 export class ArticlePagePo {
-    protected page: Page;
+    private readonly page: Page;
 
     constructor(page: Page) {
         this.page = page;
@@ -11,7 +11,7 @@ export class ArticlePagePo {
         return this.page.getByTestId('article-key-selection');
     }
 
-    shutdownToggle(){
-        return this.page.getByTestId('shutdown-toggle')
+    shutdownToggle() {
+        return this.page.getByTestId('shutdown-toggle');
     }
 }

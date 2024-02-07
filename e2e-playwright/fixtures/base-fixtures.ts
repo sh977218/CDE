@@ -4,12 +4,16 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import { AioTocViewMenuPo } from '../pages/shared/aio-toc-view-menu.po';
 
-import { MyBoardPagePo } from '../pages/board/my-board-page.po';
+/**     Common page object shared between many places
+ *      MaterialPo represents all material components
+ *      InlineEditPo presents Inline edit input, textarea and select components
+ *      usernameAutocomponentPo represents Username autocomponent
+ */
 import { MaterialPo } from '../pages/shared/material.po';
-import { BoardPagePo } from '../pages/board/board-page.po';
-import { SearchPagePo } from '../pages/search/search-page.po';
-import { SearchPreferencesPagePo } from '../pages/search-preferences-page.po';
+import { UsernameAutocompletePo } from '../pages/shared/username-autocomplete.po';
 import { InlineEditPo } from '../pages/shared/inline-edit.po';
+
+// Navigation menu
 import { NavigationMenuPo } from '../pages/shared/navigation-menu.po';
 
 // Modals
@@ -18,6 +22,10 @@ import { UpdateRegistrationStatusModalPo } from '../pages/shared/update-registra
 
 // Create CDE/Form page
 import { CreateEltPo } from '../pages/create/create-elt.po';
+
+// Search page
+import { SearchPagePo } from '../pages/search/search-page.po';
+import { SearchPreferencesPagePo } from '../pages/search-preferences-page.po';
 
 // CDE page
 import { CdePagePo } from '../pages/cde/cde-page.po';
@@ -30,6 +38,10 @@ import { PreviewPo } from '../pages/form/preview.po';
 import { FormDescriptionPo } from '../pages/form/form-description.po';
 import { DisplayProfilePo } from '../pages/form/display-profile.po';
 
+// Board page
+import { MyBoardPagePo } from '../pages/board/my-board-page.po';
+import { BoardPagePo } from '../pages/board/board-page.po';
+
 // Shared sections
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
@@ -40,8 +52,12 @@ import { HistoryPo } from '../pages/shared/history.po';
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
-import { ArticlePagePo } from '../pages/setting/article-page.po';
+import { AdminsPo } from '../pages/setting/my-organizations/admins.po';
+import { CuratorsPo } from '../pages/setting/my-organizations/curators.po';
+import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
+import { UsersPagePo } from '../pages/setting/users-page.po';
+import { ArticlePagePo } from '../pages/setting/article-page.po';
 
 // Manage classification page
 import { ManageClassificationPo } from '../pages/manage-classifications/manage-classification.po';
@@ -78,6 +94,8 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
 }
 
 const baseFixture = baseTest.extend<{
+    materialPage: MaterialPo;
+    usernameAutocomplete: UsernameAutocompletePo;
     cdePage: CdePagePo;
     permissibleValueSection: PermissibleValuePo;
     createEltPage: CreateEltPo;
@@ -104,9 +122,12 @@ const baseFixture = baseTest.extend<{
     auditTab: AuditTabPo;
     loginRecordAuditPage: LoginRecordsAuditPagePo;
     manageClassificationPage: ManageClassificationPo;
+    adminsPage: AdminsPo;
+    curatorsPage: CuratorsPo;
+    editorsPage: EditorsPo;
     manageOrganizationsPage: ManageOrganizationsPo;
-    materialPage: MaterialPo;
     profilePage: ProfilePagePo;
+    usersPage: UsersPagePo;
     articlePage: ArticlePagePo;
     settingMenu: SettingMenuPo;
     submissionEditPage: SubmissionEditPo;
@@ -119,6 +140,9 @@ const baseFixture = baseTest.extend<{
     },
     materialPage: async ({ page }, use) => {
         await use(new MaterialPo(page));
+    },
+    usernameAutocomplete: async ({ page }, use) => {
+        await use(new UsernameAutocompletePo(page));
     },
     saveModal: async ({ page, materialPage }, use) => {
         await use(new SaveModalPo(page, materialPage));
@@ -204,12 +228,25 @@ const baseFixture = baseTest.extend<{
     settingMenu: async ({ page }, use) => {
         await use(new SettingMenuPo(page));
     },
+    adminsPage: async ({ page, materialPage }, use) => {
+        await use(new AdminsPo(page, materialPage));
+    },
+    curatorsPage: async ({ page, materialPage }, use) => {
+        await use(new CuratorsPo(page, materialPage));
+    },
+    editorsPage: async ({ page, materialPage }, use) => {
+        await use(new EditorsPo(page, materialPage));
+    },
     manageOrganizationsPage: async ({ page }, use) => {
         await use(new ManageOrganizationsPo(page));
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
     },
+    usersPage: async ({ page, materialPage }, use) => {
+        await use(new UsersPagePo(page, materialPage));
+    },
+
     articlePage: async ({ page }, use) => {
         await use(new ArticlePagePo(page));
     },

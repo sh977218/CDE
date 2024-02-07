@@ -7,6 +7,8 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
+
+// @TODO THOSE codes are migrated to Playwright already, but playwright needs to a way to authenticate user to do the API test
 public class RESTfulAPI extends BoardTest {
 
     @Test

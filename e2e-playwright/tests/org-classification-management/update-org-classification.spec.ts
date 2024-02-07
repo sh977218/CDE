@@ -22,8 +22,7 @@ test(`Update org classification`, async ({ page, navigationMenu, manageClassific
 
     await test.step(`Update org classification and 'TEST' does have 'AIRR demo'`, async () => {
         await manageClassificationPage.updateOrgClassificationButton().click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         await materialPage.expandClassificationAndReturnLeafNode(['TEST']);
         await expect(page.getByText('AIRR demo')).toBeVisible();
     });

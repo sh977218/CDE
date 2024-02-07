@@ -71,4 +71,12 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'hiIamLongerThanSeventeenCharacters',
         password: DEFAULT_PASSWORD,
     },
+    unpinUser: {
+        username: 'unpinuser',
+        password: DEFAULT_PASSWORD,
+    },
+    viewingHistoryUser: {
+        username: 'viewHistoryUser',
+        password: DEFAULT_PASSWORD,
+    },
 };

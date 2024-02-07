@@ -2,50 +2,65 @@
 <form class="stack" novalidate>
     <cde-username-autocomplete [placeHolder]="'enter username'"
                                (selected)="search.username = $event"></cde-username-autocomplete>
-    <button type="submit" class="button" (click)="searchUsers()">Search</button>
-    <button class="button success" (click)="openNewUserModal()">
+    <button type="submit" class="button" (click)="searchUsers()" data-testid="search-user-button">Search</button>
+    <button class="button success" (click)="openNewUserModal()" data-testid="create-user-button">
         <mat-icon>add</mat-icon>
         Create User
     </button>
 </form>
-<ng-container *ngFor="let u of foundUsers; index as i">
-    <dl class="cde-property">
-        <dt>Username:</dt>
-        <dd id="user_username">{{u.username}}</dd>
+<div class="example-container mat-elevation-z8">
+    <div class="loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <div class="example-table-container">
 
-        <dt>Avatar:</dt>
-        <dd attr.itemprop="user_avatar_{{i}}">
-            <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
-            <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
-                             class="col-9"></cde-inline-edit>
-        </dd>
+        <section *ngFor="let u of foundUsers; index as i">
+            <dl class="cde-property">
+                <dt data-testid="username-label">Username:</dt>
+                <dd data-testid="username" id="user_username">{{ u.username }}</dd>
 
-        <dt>Created:</dt>
-        <dd>{{u.createdDate}}</dd>
+                <dt data-testid="avatar-label">Avatar:</dt>
+                <dd attr.itemprop="user_avatar_{{i}}" data-testid="avatar">
+                    <div class="loading-shade"
+                         *ngIf="u.isLoadingResults">
+                        <mat-spinner *ngIf="u.isLoadingResults"></mat-spinner>
+                    </div>
+                    <img *ngIf="u.avatarUrl" src="{{u.avatarUrl}}" width="32" height="32"/>
+                    <cde-inline-edit [(model)]="u.avatarUrl" [isAllowed]="true" (modelChange)="updateAvatar(u)"
+                                     class="col-9"></cde-inline-edit>
+                </dd>
+                <dt data-testid="created-label">Created:</dt>
+                <dd data-testid="created">{{ u.createdDate }}</dd>
 
-        <dt>Last Login:</dt>
-        <dd>{{u.lastLogin}}</dd>
+                <dt data-testid="Last-login-label">Last Login:</dt>
+                <dd data-testid="Last-login">{{ u.lastLogin }}</dd>
 
-        <dt>Org Editor:</dt>
-        <dd attr.itemprop="user_editor_{{i}}">{{u.orgEditor}}</dd>
+                <dt data-testid="org-editor-label">Org Editor:</dt>
+                <dd data-testid="org-editor" attr.itemprop="user_editor_{{i}}">{{ u.orgEditor }}</dd>
 
-        <dt>Org Curator:</dt>
-        <dd attr.itemprop="user_curator_{{i}}">{{u.orgCurator}}</dd>
+                <dt data-testid="org-curator-label">Org Curator:</dt>
+                <dd data-testid="org-curator" attr.itemprop="user_curator_{{i}}">{{ u.orgCurator }}</dd>
 
-        <dt>Org Admin:</dt>
-        <dd attr.itemprop="user_orgadmin_{{i}}">{{u.orgAdmin}}</dd>
+                <dt data-testid="org-admin-label">Org Admin:</dt>
+                <dd data-testid="org-admin" attr.itemprop="user_orgadmin_{{i}}">{{ u.orgAdmin }}</dd>
 
-        <dt>Site Admin:</dt>
-        <dd attr.itemprop="user_siteadmin_{{i}}" [innerHtml]="u.siteAdmin?'Yes':'No'"></dd>
+                <dt data-testid="site-admin-label">Site Admin:</dt>
+                <dd data-testid="site-admin" attr.itemprop="user_siteadmin_{{i}}"
+                    [innerHtml]="u.siteAdmin?'Yes':'No'"></dd>
 
-        <dt>Roles:</dt>
-        <dd attr.itemprop="user_roles_{{i}}">
-            <cde-tag [tags]="u.roles" [allTags]="rolesEnum"
-                     [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
-        </dd>
+                <dt data-testid="roles-label">Roles:</dt>
+                <dd data-testid="roles" attr.itemprop="user_roles_{{i}}">
+                    <cde-tag [tags]="u.roles" [allTags]="rolesEnum"
+                             [canEdit]="true" (changed)="updateRoles(u)"></cde-tag>
+                </dd>
 
-        <dt>Known IPs:</dt>
-        <dd>{{u.knownIPs}}</dd>
-    </dl>
-    <hr/>
-</ng-container>
+                <dt data-testid="known-ips-label">Known IPs:</dt>
+                <dd data-testid="known-ips">{{ u.knownIPs }}</dd>
+            </dl>
+            <hr/>
+        </section>
+
+    </div>
+
+</div>

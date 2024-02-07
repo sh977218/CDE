@@ -15,8 +15,7 @@ test.describe(`Item Log`, async () => {
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         await expect(page.locator(`cde-item-log table tbody tr`).first()).toBeVisible();
     });
 
@@ -28,8 +27,7 @@ test.describe(`Item Log`, async () => {
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         await expect(page.locator(`cde-item-log table tbody tr`).first()).toBeVisible();
     });
 
@@ -41,8 +39,7 @@ test.describe(`Item Log`, async () => {
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         await expect(page.locator(`cde-item-log table tbody tr`).first()).toBeVisible();
     });
 });

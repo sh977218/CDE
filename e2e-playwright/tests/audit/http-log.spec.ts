@@ -18,8 +18,7 @@ test.describe(`Http log`, async () => {
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(todayDate).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             await test.expect(page.locator(`cde-http-log`).locator(`table td`).nth(1)).toBeVisible();
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 50 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -29,8 +28,7 @@ test.describe(`Http log`, async () => {
         await test.step(`Select page size '100'`, async () => {
             await materialPage.paginatorNumberPerPage().click();
             await materialPage.matOptionByText('100').click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -39,8 +37,7 @@ test.describe(`Http log`, async () => {
 
         await test.step(`Go to next page`, async () => {
             await materialPage.paginatorNext().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`101 – 200 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('Date');
@@ -49,8 +46,7 @@ test.describe(`Http log`, async () => {
 
         await test.step(`Sort 'URL' and resets page to '1' sort direction to 'asc'`, async () => {
             await materialPage.matSortHeader('URL').click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('URL');
@@ -59,8 +55,7 @@ test.describe(`Http log`, async () => {
 
         await test.step(`Go to next page`, async () => {
             await materialPage.paginatorNext().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`101 – 200 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('URL');
@@ -70,8 +65,7 @@ test.describe(`Http log`, async () => {
         await test.step(`Search resets page to '1'`, async () => {
             await page.getByLabel('Filter by IP Address').fill('127.0.0.1');
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);
             await test.expect(materialPage.paginatorRangeLabel()).toContainText(`1 – 100 of`);
             await test.expect(materialPage.matSortedHeader()).toHaveText('URL');

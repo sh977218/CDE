@@ -83,8 +83,7 @@ test(`Edit CDE names`, async ({
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         await itemLogAuditPage.expandLogRecordByName(cdeName);
         const detailLocator = page.locator(`.example-element-detail`);
         await expect(detailLocator.getByText(newDesignation.designation + cdeName).first()).toBeVisible();

@@ -55,8 +55,7 @@ test(`Remove CDE classification`, async ({
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         expect(await page.getByText(classificationToBeRemoved1.join(' > ')).count()).toBeGreaterThanOrEqual(1);
         expect(await page.getByText(classificationToBeRemoved2.join(' > ')).count()).toBeGreaterThanOrEqual(1);
     });

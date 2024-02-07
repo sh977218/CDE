@@ -23,6 +23,8 @@ export class OrgCuratorComponent {
     newUsername!: string;
     newOrgName!: string;
 
+    isLoadingResults = false;
+
     constructor(
         private alert: AlertService,
         private http: HttpClient,
@@ -39,6 +41,7 @@ export class OrgCuratorComponent {
     }
 
     addOrgCurator() {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/addOrgCurator',
@@ -48,17 +51,21 @@ export class OrgCuratorComponent {
                 } as OrgManageAddRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Saved');
                     this.getOrgCurators();
                 },
-                () => this.alert.addAlert('danger', 'There was an issue saving.')
-            );
+                error: () => this.alert.addAlert('danger', 'There was an issue saving.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
         this.newOrgName = '';
     }
 
     removeOrgCurator(orgName: string, userId: string) {
+        this.isLoadingResults = true;
         this.http
             .post(
                 '/server/orgManagement/removeOrgCurator',
@@ -68,12 +75,15 @@ export class OrgCuratorComponent {
                 } as OrgManageRemoveRequest,
                 { responseType: 'text' }
             )
-            .subscribe(
-                () => {
+            .subscribe({
+                next: () => {
                     this.alert.addAlert('success', 'Removed');
                     this.getOrgCurators();
                 },
-                () => this.alert.addAlert('danger', 'An error occured.')
-            );
+                error: () => this.alert.addAlert('danger', 'An error occured.'),
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+            });
     }
 }

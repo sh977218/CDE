@@ -3,20 +3,22 @@ import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
 test.describe(`API testing`, async () => {
-    test(`form edit by tinyId version`, async ({ request }) => {
-        const form = await request.get(`/server/form/forEdit/XJzVz1TZDe/version/v1.0 2014Jul2`);
-        expect(form.ok()).toBeTruthy();
-    });
+    test.describe(`Form API`, async () => {
+        test(`form edit by tinyId version`, async ({ request }) => {
+            const response = await request.get(`/server/form/forEdit/XJzVz1TZDe/version/v1.0 2014Jul2`);
+            expect(response.ok()).toBeTruthy();
+        });
 
-    test(`draft save`, async ({ request, page, navigationMenu }) => {
-        await navigationMenu.login(Accounts.nlm);
-        const form = await request.get(`/server/form/draft/my9q6NmEb`);
-        expect(form.status()).toBe(403);
-    });
+        test(`draft save`, async ({ request, navigationMenu }) => {
+            await navigationMenu.login(Accounts.nlm);
+            const response = await request.get(`/server/form/draft/my9q6NmEb`);
+            expect(response.status()).toBe(403);
+        });
 
-    test(`original source`, async ({ request }) => {
-        const form = await request.get(`/server/form/originalSource/sourceName/tinyId`);
-        expect(form.status()).toBe(404);
+        test(`original source`, async ({ request }) => {
+            const response = await request.get(`/server/form/originalSource/sourceName/tinyId`);
+            expect(response.status()).toBe(404);
+        });
     });
     test.describe(`uom convert`, async () => {
         test(`Invalidate uom query parameter return empty array`, async ({ request }) => {
@@ -66,6 +68,63 @@ test.describe(`API testing`, async () => {
             const body = await response.json();
             expect(response.ok()).toBeTruthy();
             expect(body).toBe(0);
+        });
+    });
+    test.describe(`Pin API`, async () => {
+        //Find a way to authenticate user before API testing
+        test.skip();
+        test(`User cannot query board not owned`, async ({ request, navigationMenu }) => {
+            await navigationMenu.login(Accounts.regularUser);
+
+            // this board is owned by boardUser
+            const data = { boardId: '65c03c7f17988e10242138a9' };
+
+            await test.step(`Cannot pin to board not owned`, async () => {
+                const response = await request.post(`/server/board/pinToBoard`, { data });
+                expect(response.status()).toBe(404);
+            });
+            await test.step(`Cannot delete pin from board not owned`, async () => {
+                const response = await request.post(`/server/board/deletePin`, { data });
+                expect(response.status()).toBe(404);
+            });
+            await test.step(`Cannot pin to board not owned`, async () => {
+                const response = await request.post(`/server/board/pinEntireSearchToBoard`, { data });
+                expect(response.status()).toBe(404);
+            });
+            await test.step(`Cannot move pin up to board not owned`, async () => {
+                const response = await request.post(`/server/board/pinMoveUp`, { data });
+                expect(response.status()).toBe(404);
+            });
+            await test.step(`Cannot move pin down to board not owned`, async () => {
+                const response = await request.post(`/server/board/pinMoveDown`, { data });
+                expect(response.status()).toBe(404);
+            });
+            await test.step(`Cannot move pin top to board not owned`, async () => {
+                const response = await request.post(`/server/board/pinMoveTop`, { data });
+                expect(response.status()).toBe(404);
+            });
+        });
+        test(`Bad request`, async ({ request, navigationMenu }) => {
+            await navigationMenu.login(Accounts.unpinUser);
+            // this board is owned by unpinUser
+            const data = { boardId: '57114b5328329938330f5c7f', tinyId: 'wrong' };
+
+            await test.step(`deletePin`, async () => {
+                const response = await request.post(`/server/board/deletePin`, { data });
+                expect(response.status()).toBe(422);
+            });
+            await test.step(`pinMoveUp`, async () => {
+                const response = await request.post(`/server/board/pinMoveUp`, { data });
+                expect(response.status()).toBe(422);
+            });
+            await test.step(`pinMoveDown`, async () => {
+                const response = await request.post(`/server/board/pinMoveDown`, { data });
+                expect(response.status()).toBe(422);
+            });
+            await test.step(`pinMoveTop`, async () => {
+                const response = await request.post(`/server/board/pinMoveTop`, { data });
+                expect(response.status()).toBe(422);
+            });
         });
     });
 });

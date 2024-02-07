@@ -4,17 +4,14 @@ import { handleNotFound, handleError } from 'server/errorHandler';
 import { formModel } from 'server/form/mongo-form';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import {
+    byId,
     orgAdmins as userOrgAdmins,
     orgCurators as userOrgCurators,
     orgEditors as userOrgEditors,
-    userById,
-    userByName
+    userByName,
 } from 'server/user/userDb';
 import { concat } from 'shared/array';
-import {
-    OrgManageAddRequestHandler,
-    OrgManageRemoveRequestHandler
-} from 'shared/boundaryInterfaces/API/orgManagement';
+import { OrgManageAddRequestHandler, OrgManageRemoveRequestHandler } from 'shared/boundaryInterfaces/API/orgManagement';
 import { User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { isOrgAdmin } from 'shared/security/authorizationShared';
@@ -43,20 +40,24 @@ export async function myOrgsAdmins(user: User) {
 }
 
 export function orgCurators(req: Request, res: Response) {
-    userOrgCurators(req.user.orgAdmin, handleNotFound({req, res}, users => {
-        res.send((req.user as User).orgAdmin
-            .map(org => ({
-                name: org,
-                users: users
-                    .filter(user => user.orgCurator.indexOf(org) > -1)
-                    .map(user => ({
-                        _id: user._id,
-                        username: user.username,
-                    })),
-            }))
-            .filter(org => org.users.length > 0)
-        );
-    }));
+    userOrgCurators(
+        req.user.orgAdmin,
+        handleNotFound({ req, res }, users => {
+            res.send(
+                (req.user as User).orgAdmin
+                    .map(org => ({
+                        name: org,
+                        users: users
+                            .filter(user => user.orgCurator.indexOf(org) > -1)
+                            .map(user => ({
+                                _id: user._id,
+                                username: user.username,
+                            })),
+                    }))
+                    .filter(org => org.users.length > 0)
+            );
+        })
+    );
 }
 
 export async function orgAdmins() {
@@ -69,85 +70,119 @@ export async function orgAdmins() {
             .map(u => ({
                 _id: u._id,
                 username: u.username,
-            }))
+            })),
     }));
 }
 
 export function orgEditors(req: Request, res: Response) {
-    userOrgEditors(req.user.orgAdmin, handleNotFound({req, res}, users => {
-        res.send((req.user as User).orgAdmin
-            .map(org => ({
-                name: org,
-                users: users
-                    .filter(user => user.orgEditor.indexOf(org) > -1)
-                    .map(user => ({
-                        _id: user._id,
-                        username: user.username,
-                    })),
-            }))
-            .filter(org => org.users.length > 0)
-        );
-    }));
+    userOrgEditors(
+        req.user.orgAdmin,
+        handleNotFound({ req, res }, users => {
+            res.send(
+                (req.user as User).orgAdmin
+                    .map(org => ({
+                        name: org,
+                        users: users
+                            .filter(user => user.orgEditor.indexOf(org) > -1)
+                            .map(user => ({
+                                _id: user._id,
+                                username: user.username,
+                            })),
+                    }))
+                    .filter(org => org.users.length > 0)
+            );
+        })
+    );
 }
 
 export const addOrgAdmin: OrgManageAddRequestHandler = (req, res) => {
-    userByName(req.body.username, handleNotFound({req, res}, user => {
-        if (user.orgAdmin.indexOf(req.body.org) === -1) {
-            user.orgAdmin.push(req.body.org);
-        }
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    userByName(
+        req.body.username,
+        handleNotFound({ req, res }, user => {
+            if (user.orgAdmin.indexOf(req.body.org) === -1) {
+                user.orgAdmin.push(req.body.org);
+            }
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export const removeOrgAdmin: OrgManageRemoveRequestHandler = (req, res) => {
-    userById(req.body.userId, handleNotFound({req, res}, user => {
-        user.orgAdmin = user.orgAdmin.filter(a => a !== req.body.org);
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    byId(
+        req.body.userId,
+        handleNotFound({ req, res }, user => {
+            user.orgAdmin = user.orgAdmin.filter(a => a !== req.body.org);
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export const addOrgCurator: OrgManageAddRequestHandler = (req, res) => {
-    userByName(req.body.username, handleNotFound({req, res}, user => {
-        if (user.orgCurator.indexOf(req.body.org) === -1) {
-            user.orgCurator.push(req.body.org);
-        }
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    userByName(
+        req.body.username,
+        handleNotFound({ req, res }, user => {
+            if (user.orgCurator.indexOf(req.body.org) === -1) {
+                user.orgCurator.push(req.body.org);
+            }
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export const removeOrgCurator: OrgManageRemoveRequestHandler = (req, res) => {
-    userById(req.body.userId, handleNotFound({req, res}, user => {
-        user.orgCurator = user.orgCurator.filter(a => a !== req.body.org);
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    byId(
+        req.body.userId,
+        handleNotFound({ req, res }, user => {
+            user.orgCurator = user.orgCurator.filter(a => a !== req.body.org);
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export const addOrgEditor: OrgManageAddRequestHandler = (req, res) => {
-    userByName(req.body.username, handleNotFound({req, res}, user => {
-        if (user.orgEditor.indexOf(req.body.org) === -1) {
-            user.orgEditor.push(req.body.org);
-        }
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    userByName(
+        req.body.username,
+        handleNotFound({ req, res }, user => {
+            if (user.orgEditor.indexOf(req.body.org) === -1) {
+                user.orgEditor.push(req.body.org);
+            }
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export const removeOrgEditor: OrgManageRemoveRequestHandler = (req, res) => {
-    userById(req.body.userId, handleNotFound({req, res}, user => {
-        user.orgEditor = user.orgEditor.filter(a => a !== req.body.org);
-        user.save(handleError({req, res}, () => {
-            res.send();
-        }));
-    }));
+    byId(
+        req.body.userId,
+        handleNotFound({ req, res }, user => {
+            user.orgEditor = user.orgEditor.filter(a => a !== req.body.org);
+            user.save(
+                handleError({ req, res }, () => {
+                    res.send();
+                })
+            );
+        })
+    );
 };
 
 export async function addNewOrg(newOrg: Organization) {
@@ -165,10 +200,13 @@ export async function transferSteward(req: Request, res: Response) {
     const from = req.body.from;
     const to = req.body.to;
     if (isOrgAdmin(req.user, req.body.from) && isOrgAdmin(req.user, req.body.to)) {
-        let result = await dataElementModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
+        let result = await dataElementModel.updateMany(
+            { 'stewardOrg.name': from },
+            { $set: { 'stewardOrg.name': to } }
+        );
         results.push(result.modifiedCount + ' CDEs transferred. ');
 
-        result = await formModel.updateMany({'stewardOrg.name': from}, {$set: {'stewardOrg.name': to}});
+        result = await formModel.updateMany({ 'stewardOrg.name': from }, { $set: { 'stewardOrg.name': to } });
         results.push(result.modifiedCount + ' forms transferred. ');
         return res.send(results.join(''));
     } else {

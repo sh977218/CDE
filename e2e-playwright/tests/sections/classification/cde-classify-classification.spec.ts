@@ -36,8 +36,7 @@ test(`CDE classify classification`, async ({ page, materialPage, auditTab, navig
             await route.continue();
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
-        await materialPage.matSpinner().waitFor();
-        await materialPage.matSpinner().waitFor({ state: 'hidden' });
+        await materialPage.matSpinnerShowAndGone();
         expect(await page.getByText(classificationArray.join(' > ')).count()).toBeGreaterThanOrEqual(1);
     });
 });

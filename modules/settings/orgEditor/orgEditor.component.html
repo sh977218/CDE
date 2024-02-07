@@ -3,29 +3,40 @@
     <cde-username-autocomplete (selected)="newUsername = $event"></cde-username-autocomplete>
     an editor for
     <mat-form-field>
-        <select *ngIf="userService.user" matNativeControl name="newOrgEditorOrgName" [(ngModel)]="newOrgName" required>
+        <select *ngIf="userService.user" matNativeControl name="newOrgEditorOrgName" [(ngModel)]="newOrgName" required
+                data-testid="add-editor-user-org-select">
             <option value="">select organization</option>
-            <option *ngFor="let myOrg of userService.user.orgAdmin">{{myOrg}}</option>
+            <option *ngFor="let myOrg of userService.user.orgAdmin">{{ myOrg }}</option>
         </select>
     </mat-form-field>
-    <button type="submit" class="button" (click)="addOrgEditor()" [disabled]="!newEditorForm.valid">
+    <button type="submit" class="button" (click)="addOrgEditor()" [disabled]="!newEditorForm.valid"
+            data-testid="make-editor-button">
         Make Editor
     </button>
 </form>
-<table class="table table-border">
-    <tr>
-        <th>Organization Name:</th>
-        <th>Editors for this Organization:</th>
-    </tr>
-    <tr *ngFor="let orgEditor of orgEditors; index as i">
-        <td id="existingOrgEditorOrgName-{{orgEditor.name}}">{{orgEditor.name}}</td>
-        <td>
-            <div *ngFor="let user of orgEditor.users; let $index = index">
-                <span id="existingOrgEditorUsername-{{i}}-{{$index}}">{{user.username}}</span>
-                <mat-icon (click)="removeOrgEditor(orgEditor.name, user._id)"
-                          id="removeOrgEditorUsername-{{i}}-{{$index}}">delete_outline
-                </mat-icon>
-            </div>
-        </td>
-    </tr>
-</table>
+<div class="example-container mat-elevation-z8">
+    <div class="loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <table class="example-table-container table table-border table-responsive">
+        <tr>
+            <th>Organization Name:</th>
+            <th>Editors for this Organization:</th>
+        </tr>
+        <tr *ngFor="let orgEditor of orgEditors">
+            <td data-testid="org-name">{{ orgEditor.name }}</td>
+            <td>
+                <div *ngFor="let user of orgEditor.users">
+                    <span data-testid="org-editor-username">{{ user.username }}</span>
+                    <mat-icon class="hand-cursor"
+                              data-testid="remove-org-editor-button"
+                              (click)="removeOrgEditor(orgEditor.name, user._id)"
+                    >delete_outline
+                    </mat-icon>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>

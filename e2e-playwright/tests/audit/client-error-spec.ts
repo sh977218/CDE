@@ -12,8 +12,7 @@ test.describe(`Client log`, async () => {
                 await route.continue();
             });
             await auditTab.clientErrors().click();
-            await materialPage.matSpinner().waitFor();
-            await materialPage.matSpinner().waitFor({ state: 'hidden' });
+            await materialPage.matSpinnerShowAndGone();
             expect(await page.locator(`cde-client-error`).locator(`table td`).count()).toBeGreaterThan(0);
         });
     });
