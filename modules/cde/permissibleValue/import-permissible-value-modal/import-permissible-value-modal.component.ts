@@ -13,6 +13,7 @@ export class ImportPermissibleValueModalComponent {
         classification: [],
         classificationAlt: [],
         datatypes: ['Value List'],
+        copyrightStatus: [],
         nihEndorsed: false,
         excludeOrgs: [],
         excludeAllOrgs: false,

@@ -2,7 +2,7 @@ import { config } from 'server';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
-import { elasticsearchPromise, esClient } from 'server/system/elastic';
+import { elasticsearchPromise, esClient, getAllowedStatuses, regStatusFilter } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { CdeForm } from 'shared/form/form.model';
 import { copyShallow } from 'shared/util';
@@ -79,5 +79,14 @@ export function elasticsearchForm(
     if (!settings.fullRecord) {
         query._source = { excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements'] };
     }
+
+    // Filter by selected copyrightStatus
+    if (settings.includeAggregations) {
+        query.aggregations.copyrightStatus = {
+            filter: settings.filterCopyrightStatus,
+            aggs: { copyrightStatus: { terms: { field: 'copyrightStatus' } } },
+        };
+    }
+
     return elasticsearchPromise('form', query, settings);
 }

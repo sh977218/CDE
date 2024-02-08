@@ -133,6 +133,19 @@
                     </div>
                     <div class="flex-break"></div>
                 </ng-container>
+                <ng-container *ngIf="hasSelectedCopyrightStatuses()">
+                    <div *ngFor="let s of searchSettings.copyrightStatus" class="activeFilterClause">
+                        <span class="status_crumb pill" role="button" tabindex="0"
+                              aria-label="Remove this copyright statuses filter"
+                              matTooltip="Remove this copyright statuses filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedCopyrightStatus(s)">
+                            <span class="text">{{s}}</span>
+                            <span class="close">X</span>
+                        </span>
+                    </div>
+                    <div class="flex-break"></div>
+                </ng-container>
                 <ng-container *ngIf="hasSelectedStatuses()">
                     <div *ngFor="let s of searchSettings.regStatuses" class="activeFilterClause">
                         <span class="status_crumb pill" role="button" tabindex="0"
@@ -264,6 +277,31 @@
                     <span class="keyboard-arrow treeItemIcon"></span>
                     <span class="treeItemText" data-testid="classification-text">{{b.name}} </span> (<span id="nbOfClassifElts-{{b.name}}" data-testid="classification-number">{{b.count}}</span>)
                 </div>
+            </div>
+        </div>
+        <!-- COPYRIGHT STATUS AGGREGATION -->
+        <div *ngIf="aggregations.copyrightStatus?.copyrightStatus?.buckets" #copyrightStatusSection
+             tourAnchor="copyrightStatusListHolder"
+             id="copyrightStatusListHolder" class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="copyrightStatusSection.classList.toggle('collapsed')">
+                Copyright Status
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let t of aggregations.copyrightStatus.copyrightStatus.buckets">
+                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
+                           data-testid="copyright-status-filter"
+                           [matTooltip]="getCopyrightStatusHelp(t.key)" [attr.aria-label]="getCopyrightStatusHelp(t.key)"
+                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
+                        <input type="checkbox" id="copyright-status-{{t.key}}" class="checkbox treeItemText"
+                               [ngModel]="searchSettings.copyrightStatus && searchSettings.copyrightStatus.indexOf(t.key) > -1"
+                               (change)="addCopyrightStatusFilter(t.key)"/>
+                        {{t.key}} ({{t.doc_count}})
+                    </label>
+                </ng-container>
             </div>
         </div>
         <!-- REGISTRATION STATUS AGGREGATION -->

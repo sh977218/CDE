@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSearchMapping';
 import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
-import { DataElementElastic, ValueDomainValueList } from 'shared/de/dataElement.model';
+import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic, FormElement, FormQuestion } from 'shared/form/form.model';
 import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
 
@@ -228,6 +228,7 @@ export const createFormIndexJson = {
             numQuestions: { type: 'integer' },
             cdeTinyIds: { type: 'keyword' },
             noRenderAllowed: { type: 'boolean' },
+            copyrightStatus: { type: 'keyword' },
         },
     },
     settings: {
@@ -255,6 +256,20 @@ export function suggestRiverFunction(_elt: Item, cb: Cb1<Item>) {
 
     cb(toIndex);
     return;
+}
+
+function parseCopyrightStatus(f: CdeFormElastic) {
+    let copyrightStatus = '';
+    if (!f.isCopyrighted && !f.noRenderAllowed) {
+        copyrightStatus = 'Public domain, free to use';
+    }
+    if (f.isCopyrighted && !f.noRenderAllowed) {
+        copyrightStatus = 'Copyrighted, but free to use';
+    }
+    if (f.isCopyrighted && f.noRenderAllowed) {
+        copyrightStatus = 'Copyrighted, with restrictions';
+    }
+    f.copyrightStatus = copyrightStatus;
 }
 
 export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
@@ -341,6 +356,8 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
         } else {
             elt.primaryDefinitionCopy = escapeHTML(elt.primaryDefinitionCopy);
         }
+
+        parseCopyrightStatus(form);
 
         const regStatusSortMap = {
             Retired: 6,

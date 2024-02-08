@@ -173,6 +173,7 @@ export interface CdeFormElastic extends CdeForm, ElasticElement {
     // [key: string]: any; // used for highlighting
     cdeTinyIds: string[];
     numQuestions?: number;
+    copyrightStatus: string;
 }
 
 export class CopyrightURL {

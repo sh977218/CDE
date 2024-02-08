@@ -1,10 +1,11 @@
 import { DataType } from 'shared/de/dataElement.model';
-import { ArrayToType, CurationStatus } from 'shared/models.model';
+import { ArrayToType, CopyrightStatus, CurationStatus } from 'shared/models.model';
 
 export class SearchSettings {
     classification: string[] = [];
     classificationAlt: string[] = [];
     datatypes: DataType[] = [];
+    copyrightStatus: CopyrightStatus[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
     nihEndorsed: boolean = false;
@@ -28,6 +29,7 @@ export class SearchSettingsElastic {
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
     filterDatatype?: any; // server-side, ElasticCondition
+    filterCopyrightStatus?: any; // server-side, ElasticCondition
     fullRecord?: boolean;
     includeAggregations?: boolean;
     includeRetired?: boolean;
@@ -38,6 +40,7 @@ export class SearchSettingsElastic {
     searchTerm?: string;
     searchToken?: string;
     selectedDatatypes: DataType[] = [];
+    selectedCopyrightStatus: CopyrightStatus[] = [];
     selectedElements: string[] = [];
     selectedElementsAlt: string[] = [];
     selectedOrg?: string;

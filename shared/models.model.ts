@@ -157,6 +157,11 @@ export class Comment extends CommentSingle {
     replies: CommentReply[] = [];
 }
 
+export type CopyrightStatus =
+    | 'Public domain, free to use'
+    | 'Copyrighted, but free to use'
+    | 'Copyrighted, with restrictions';
+
 export type CurationStatus = ArrayToType<typeof curationStatus>;
 export const curationStatus = [
     'Incomplete',

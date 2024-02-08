@@ -1,4 +1,11 @@
-import { ElasticCondition, getAllowedStatuses, regStatusFilter, termRegStatus } from 'server/system/elastic';
+import {
+    ElasticCondition,
+    getAllowedStatuses,
+    regStatusFilter,
+    termCopyrightStatus,
+    termDatatype,
+    termRegStatus,
+} from 'server/system/elastic';
 import { User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
@@ -45,19 +52,32 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
             filter: [{ bool: { should: filterRegStatusTerms } }],
         },
     };
+    settings.filterCopyrightStatus = {
+        bool: {
+            filter: [{ bool: { should: filterRegStatusTerms } }],
+        },
+    };
+
     // Filter by selected Registration Statuses
     const filterStatus = (settings.selectedStatuses || []).map(termRegStatus);
     if (filterStatus.length > 0) {
         elasticFilter.bool.filter.push({ bool: { should: filterStatus } });
         settings.filterDatatype.bool.filter.push({ bool: { should: filterStatus } });
+        settings.filterCopyrightStatus.bool.filter.push({ bool: { should: filterStatus } });
     }
+
+    // Filter by selected copyrightStatus
+    const filterCopyrightStatusTerms = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
+    if (filterCopyrightStatusTerms.length > 0) {
+        elasticFilter.bool.filter.push({ bool: { should: filterCopyrightStatusTerms } });
+    }
+
     // Filter by selected Datatypes
-    const filterDatatypeTerms = (settings.selectedDatatypes || []).map(dt => ({
-        term: { 'valueDomain.datatype': dt },
-    }));
+    const filterDatatypeTerms = (settings.selectedDatatypes || []).map(termDatatype);
     if (filterDatatypeTerms.length > 0) {
         elasticFilter.bool.filter.push({ bool: { should: filterDatatypeTerms } });
     }
+
     // Filter by NIH Endorsed
     /*
         const filterNihEndorsedTerms = {term: {nihEndorsed: true}}
@@ -104,6 +124,7 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
     if (settings.nihEndorsed) {
         queryStuff.query.bool.must.push({ term: { nihEndorsed: true } });
     }
+
     if (hasSearchTerm) {
         queryStuff.query.bool.must[0].dis_max.queries.push({
             function_score: {
@@ -179,7 +200,6 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
         },
     };
     // show NIH Endorsed aggregation
-
     const nihEndorsedAggFilter: ElasticCondition = {
         bool: {
             filter: [
@@ -227,7 +247,7 @@ export function buildElasticSearchQuery(user: User | undefined, settings: Search
                 },
             },
             statuses: {
-                filter: regStatusAggFilter,
+                filter: elasticFilter,
                 aggs: {
                     statuses: {
                         terms: {

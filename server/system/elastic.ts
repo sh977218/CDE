@@ -22,6 +22,7 @@ import {
     Cb,
     Cb1,
     CbError1,
+    CopyrightStatus,
     CurationStatus,
     ElasticQueryResponse,
     ElasticQueryResponseAggregations,
@@ -397,8 +398,16 @@ export function completionSuggest(
     );
 }
 
+export function termDatatype(dataType: string) {
+    return { term: { 'valueDomain.datatype': dataType } };
+}
+
 export function termRegStatus(regStatus: CurationStatus) {
     return { term: { 'registrationState.registrationStatus': regStatus } };
+}
+
+export function termCopyrightStatus(copyrightStatus: CopyrightStatus) {
+    return { term: { copyrightStatus: copyrightStatus } };
 }
 
 export function getAllowedStatuses(user: User | undefined, settings: SearchSettingsElastic): CurationStatus[] {
@@ -432,6 +441,14 @@ export function regStatusFilter(
         allowedStatuses.map(termRegStatus),
         myOrgs(user).map(org => ({ term: { 'stewardOrg.name': org } }))
     );
+}
+
+export function copyrightStatusFilter(): { term: any }[] {
+    return [
+        { term: { copyrightStatus: 'Public domain, free to use' } },
+        { term: { copyrightStatus: 'Copyrighted, but free to use' } },
+        { term: { copyrightStatus: 'Copyrighted, with restrictions' } },
+    ];
 }
 
 const searchTemplate: { [key: string]: any } = {

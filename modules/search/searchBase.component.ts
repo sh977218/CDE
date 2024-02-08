@@ -20,6 +20,7 @@ import { uriViewBase } from 'shared/item';
 import {
     assertUnreachable,
     Cb1,
+    CopyrightStatus,
     CurationStatus,
     ElasticQueryResponseAggregation,
     ElasticQueryResponseAggregationBucket,
@@ -34,6 +35,7 @@ import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
+import { copyrightStatusList } from 'shared/copyrightStatusShared';
 import { noop, ownKeys, stringToArray } from 'shared/util';
 import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
@@ -177,6 +179,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.excludeAllOrgs = !!params.excludeAllOrgs;
             this.searchSettings.page = parseInt(params.page, 10) || 1;
             this.searchSettings.q = this.searchTerm = params.q;
+            this.searchSettings.copyrightStatus = stringToArray(params.copyrightStatus);
             this.searchSettings.regStatuses = stringToArray(params.regStatuses);
             this.searchSettings.selectedOrg = params.selectedOrg;
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
@@ -209,6 +212,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.regStatuses = [];
         }
         addOrRemoveFromArray(this.searchSettings.regStatuses, status);
+        this.doSearch();
+    }
+
+    addCopyrightStatusFilter(status: string) {
+        if (!this.searchSettings.copyrightStatus) {
+            this.searchSettings.copyrightStatus = [];
+        }
+        addOrRemoveFromArray(this.searchSettings.copyrightStatus, status);
         this.doSearch();
     }
 
@@ -307,6 +318,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
+    clearSelectedCopyrightStatus(status: CopyrightStatus) {
+        if (this.searchSettings.copyrightStatus && removeFromArray(this.searchSettings.copyrightStatus, status)) {
+            this.doSearch();
+        }
+    }
+
     clearSelectedStatus(status: CurationStatus) {
         if (this.searchSettings.regStatuses && removeFromArray(this.searchSettings.regStatuses, status)) {
             this.doSearch();
@@ -359,6 +376,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         const searchTerms: Params = {};
         if (this.searchSettings.q) {
             searchTerms.q = this.searchSettings.q;
+        }
+        if (this.searchSettings.copyrightStatus && this.searchSettings.copyrightStatus.length > 0) {
+            searchTerms.copyrightStatus = this.searchSettings.copyrightStatus.join(';');
         }
         if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
@@ -414,6 +434,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     getRegStatusHelp(name: string) {
         let result = '';
         statusList.forEach(s => {
+            if (s.name === name) {
+                result = s.help;
+            }
+        });
+        return result;
+    }
+
+    getCopyrightStatusHelp(name: string) {
+        let result = '';
+        copyrightStatusList.forEach(s => {
             if (s.name === name) {
                 result = s.help;
             }
@@ -503,6 +533,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         );
     }
 
+    hasSelectedCopyrightStatuses() {
+        return this.searchSettings.copyrightStatus && this.searchSettings.copyrightStatus.length > 0;
+    }
+
     hideShowFilter() {
         this.filterMode = !this.filterMode;
     }
@@ -517,7 +551,8 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.nihEndorsed ||
             this.hasSelectedClassifications() ||
             this.hasSelectedDatatypes() ||
-            this.hasSelectedStatuses()
+            this.hasSelectedStatuses() ||
+            this.hasSelectedCopyrightStatuses()
         );
     }
 
