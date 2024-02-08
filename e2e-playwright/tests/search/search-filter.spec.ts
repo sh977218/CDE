@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 
-test(`Browser search filter`, async ({ materialPage, navigationMenu, searchPage }) => {
+test(`Browser search filter`, async ({ page, materialPage, navigationMenu, searchPage }) => {
     await navigationMenu.gotoCdeSearch();
 
     await test.step(`org classification`, async () => {
@@ -41,6 +41,7 @@ test(`Browser search filter`, async ({ materialPage, navigationMenu, searchPage 
         const registrationStatusNumber = searchPage.parseNumberFromFilterText(await registrationStatus.innerText());
         await registrationStatus.click();
         await expect(searchPage.searchResultNumber()).toHaveText(registrationStatusNumber);
+        await expect(searchPage.activeFilterRegistrationStatus()).toContainText('Qualified');
     });
 
     await test.step(`data type filter number`, async () => {
@@ -48,11 +49,21 @@ test(`Browser search filter`, async ({ materialPage, navigationMenu, searchPage 
         const datatypeNumber = searchPage.parseNumberFromFilterText(await datatype.innerText());
         await datatype.click();
         await expect(searchPage.searchResultNumber()).toHaveText(datatypeNumber);
+        await expect(searchPage.activeFilterDateType()).toContainText('Value List');
     });
 
     await test.step(`clear all filter`, async () => {
         await searchPage.clearAllFilters().click();
         await searchPage.organizationTitleLink().filter({ hasText: `caBIG` }).click();
         await expect(materialPage.paginatorRangeLabel()).toHaveText(/1 – 20 of \d*/);
+    });
+
+    await test.step(`go to search welcome page and reset all filters`, async () => {
+        const registrationStatus = searchPage.registrationStatusFilter('Qualified');
+        await registrationStatus.click();
+        const datatype = searchPage.dataTypeFilter('Value List');
+        await datatype.click();
+        await navigationMenu.gotoCdeSearch();
+        await expect(page.getByText('Enter a phrase/text or explore')).toBeVisible();
     });
 });

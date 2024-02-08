@@ -36,6 +36,14 @@ export class SearchPagePo {
         return this.page.locator(`[data-testid="classification-filter"]`);
     }
 
+    activeFilterDateType() {
+        return this.page.locator(`[data-testid="active-filter-data-type"]`);
+    }
+
+    activeFilterRegistrationStatus() {
+        return this.page.locator(`[data-testid="active-filter-registration-status"]`);
+    }
+
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {

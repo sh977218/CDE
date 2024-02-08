@@ -136,6 +136,7 @@
                 <ng-container *ngIf="hasSelectedStatuses()">
                     <div *ngFor="let s of searchSettings.regStatuses" class="activeFilterClause">
                         <span class="status_crumb pill" role="button" tabindex="0"
+                              data-testid="active-filter-registration-status"
                               aria-label="Remove this registration statuses filter"
                               matTooltip="Remove this registration statuses filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
@@ -149,6 +150,7 @@
                 <ng-container *ngIf="module === 'cde' && hasSelectedDatatypes()">
                     <div *ngFor="let d of searchSettings.datatypes" class="activeFilterClause">
                         <span class="datatype_crumb pill" role="button" tabindex="0"
+                              data-testid="active-filter-data-type"
                               aria-label="Remove this datatype filter"
                               matTooltip="Remove this datatype filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
