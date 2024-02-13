@@ -35,7 +35,6 @@ import { AlertModule } from 'alert/alert.module';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { FormResolve } from 'form/formDescription/form.resolve';
-import { LoginFederatedComponent } from '_app/loginFederated.component';
 import { CdeTourService } from '_app/cdeTour.service';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 import { GlobalErrorHandler } from '_app/global-error-handler';
@@ -82,7 +81,6 @@ import { VideosResolve } from '../videos/videos.resolve';
     declarations: [
         CdeAppComponent,
         NotificationDialogComponent,
-        LoginFederatedComponent,
         IEBannerComponent,
         ShutdownBannerComponent,
         InactivityLoggedOutComponent,
