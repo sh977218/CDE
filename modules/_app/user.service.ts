@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertService } from 'alert/alert.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { uriView } from 'shared/item';
 import { Cb1, Comment, User } from 'shared/models.model';
@@ -62,7 +61,6 @@ export class UserService {
     private promise!: Promise<User | undefined>;
 
     constructor(
-        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => NotificationService))
         private notificationService: NotificationService,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -131,7 +129,7 @@ export class UserService {
             }));
     }
 
-    private reloadFrom(user: User): Promise<User> {
+    reloadFrom(user: User): Promise<User> {
         this.clear();
         const promise = Promise.resolve(user).then(user => this.processUser(user));
         promise.finally(() => {
@@ -157,17 +155,7 @@ export class UserService {
     }
 
     save(incrementalUpdate: Partial<User>) {
-        this.http
-            .post<User>('/server/user/', incrementalUpdate)
-            .toPromise()
-            .then(
-                user => {
-                    this.reloadFrom(user).then(() => {
-                        this.alert.addAlert('success', 'Saved');
-                    });
-                },
-                err => this.alert.httpErrorMessageAlert(err)
-            );
+        return this.http.post<User>('/server/user/', incrementalUpdate);
     }
 
     searchUsernames(username: string) {
