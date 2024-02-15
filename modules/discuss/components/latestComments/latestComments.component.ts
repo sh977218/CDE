@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from '_app/user.service';
 import { Comment, DiscussionComments } from 'shared/models.model';
+import { uriView } from 'shared/item';
 
 @Component({
     selector: 'cde-latest-comments',
@@ -11,7 +11,6 @@ import { Comment, DiscussionComments } from 'shared/models.model';
 })
 export class LatestCommentsComponent {
     comments: DiscussionComments = { currentCommentsPage: 1, totalItems: 10000, latestComments: [] };
-    getEltLink = UserService.getEltLink;
 
     constructor(private http: HttpClient, private route: ActivatedRoute) {
         this.getComments(1);
@@ -36,4 +35,6 @@ export class LatestCommentsComponent {
         this.comments.currentCommentsPage = newPageNb.pageIndex + 1;
         this.getComments(this.comments.currentCommentsPage);
     }
+
+    protected readonly uriView = uriView;
 }

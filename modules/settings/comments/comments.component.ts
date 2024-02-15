@@ -4,10 +4,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
-import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
 import { Comment } from 'shared/models.model';
+import { uriView } from 'shared/item';
 
 type CommentWithOrgName = Comment & { organizationName: string } & Dictionary<any>;
 
@@ -20,7 +20,6 @@ export class CommentsComponent {
     commentColumns: string[] = ['created', 'text', 'type', 'user', 'organizationName'];
     commentTableData!: MatTableDataSource<CommentWithOrgName>;
     commentUrl!: string;
-    getEltLink = UserService.getEltLink;
     organizationNames?: string[];
     selectedOrganization = '';
     title = 'Comments';
@@ -74,4 +73,6 @@ export class CommentsComponent {
             this.commentTableData.paginator.firstPage();
         }
     }
+
+    protected readonly uriView = uriView;
 }

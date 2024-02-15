@@ -27,7 +27,7 @@
             <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header class="pr-3">Type</th>
                 <td mat-cell *matCellDef="let comment" class="pr-3">
-                    <a href="{{getEltLink(comment)}}" target="_blank">{{comment.element.eltType}}</a>
+                    <a href="{{uriView(comment.element.eltType, comment.element.eltId)}}" target="_blank">{{comment.element.eltType}}</a>
                 </td>
             </ng-container>
             <ng-container matColumnDef="user">

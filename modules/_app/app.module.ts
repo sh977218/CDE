@@ -30,7 +30,7 @@ import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { NotificationService } from '_app/notifications/notification.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
-import { InactivityLoggedOutComponent, UserService } from '_app/user.service';
+import { UserService } from '_app/user.service';
 import { AlertModule } from 'alert/alert.module';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
@@ -83,7 +83,6 @@ import { VideosResolve } from '../videos/videos.resolve';
         NotificationDialogComponent,
         IEBannerComponent,
         ShutdownBannerComponent,
-        InactivityLoggedOutComponent,
         NavigationComponent,
         TruncateLongNamePipe,
     ],

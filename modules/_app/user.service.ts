@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, forwardRef, Inject, Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { uriView } from 'shared/item';
-import { Cb1, Comment, User } from 'shared/models.model';
+import { isEmpty } from 'lodash';
+import { map } from 'rxjs/operators';
+
+import { Cb1, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator,
@@ -19,21 +21,7 @@ import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'sha
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { NotificationService } from '_app/notifications/notification.service';
 import { removeFromArray } from 'shared/array';
-import { isEmpty } from 'lodash';
-import { map } from 'rxjs/operators';
-
-@Component({
-    template: `
-        <h1 mat-dialog-title>Inactivity timeout</h1>
-        <mat-dialog-content>
-            <p>Your session was automatically timed out.</p>
-        </mat-dialog-content>
-        <mat-dialog-actions>
-            <button class="button secondary" [mat-dialog-close]="">OK</button>
-        </mat-dialog-actions>
-    `,
-})
-export class InactivityLoggedOutComponent {}
+import { InactivityLoggedOutModalComponent } from '../inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 
 /*
  * 3 ways to get User:
@@ -146,7 +134,7 @@ export class UserService {
                     this.reload();
                     this.waitForUser().then(() => {
                         if (!this.user) {
-                            this.dialog.open(InactivityLoggedOutComponent);
+                            this.dialog.open(InactivityLoggedOutModalComponent);
                         }
                     });
                 }
@@ -219,9 +207,5 @@ export class UserService {
             user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
         }
         return user;
-    }
-
-    static getEltLink(c: Comment) {
-        return uriView(c.element.eltType, c.element.eltId);
     }
 }

@@ -14,7 +14,7 @@
                 <td>{{c.user?.username}}</td>
                 <td>{{c.created | date:'MM/dd/yyyy @h:mma'}}</td>
                 <td>{{c.text}}</td>
-                <td><a href="{{getEltLink(c)}}" target="_blank">{{c.element.eltType}}</a></td>
+                <td><a href="{{uriView(c.element.eltType, c.element.eltId)}}" target="_blank">{{c.element.eltType}}</a></td>
             </tr>
             </tbody>
         </table>
