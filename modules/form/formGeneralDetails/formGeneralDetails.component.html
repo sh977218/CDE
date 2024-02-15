@@ -59,8 +59,8 @@
                         </mat-icon>
                     </a>
                 </div>
-                <ul *ngIf="elt.copyright?.urls.length">
-                    <li *ngFor="let url of elt.copyright.urls;let index=i; trackBy: trackByUrl" class="copyright-url"
+                <ul *ngIf="elt.copyright?.urls.length" data-test-id="copyright-container">
+                    <li *ngFor="let url of elt.copyright.urls;let i=index;" class="copyright-url"
                         [ngStyle]="{'align-items': canEdit? 'baseline' : 'center'}" data-testid="copyright-url">
                         <cde-inline-edit [(model)]="url.url" [linkSource]="url.url"
                                          [isAllowed]="canEdit" (modelChange)="eltChange.emit();">
@@ -70,8 +70,8 @@
                                    (change)="eltChange.emit();"/>
                             Valid?
                         </label>
-                        <a *ngIf="canEdit" aria-label="Delete"
-                           (click)="elt.copyright.urls.splice(index, 1); eltChange.emit(); ">
+                        <a *ngIf="canEdit" aria-label="Delete" data-testid="copyright-url-delete"
+                           (click)="elt.copyright.urls.splice(i, 1); eltChange.emit(); ">
                             <mat-icon>delete</mat-icon>
                         </a>
                     </li>

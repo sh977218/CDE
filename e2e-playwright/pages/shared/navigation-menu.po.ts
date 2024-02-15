@@ -126,6 +126,8 @@ export class NavigationMenuPo {
         await this.page.locator(`[id="linkToElt_0"]`).click();
         if (tinyId) {
             await this.page.waitForURL(`/deView?tinyId=${tinyId}`, { timeout: 10000 });
+        } else {
+            await this.page.waitForURL(/\/deView\?tinyId=/, { timeout: 10000 });
         }
     }
 
@@ -161,6 +163,8 @@ export class NavigationMenuPo {
         await this.page.locator(`[id="linkToElt_0"]`).click();
         if (tinyId) {
             await this.page.waitForURL(`/formView?tinyId=${tinyId}`, { timeout: 10000 });
+        } else {
+            await this.page.waitForURL(/\/formView\?tinyId=/, { timeout: 10000 });
         }
     }
 

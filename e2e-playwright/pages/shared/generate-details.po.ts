@@ -47,8 +47,16 @@ export class GenerateDetailsPo {
         return this.page.getByTestId('copyright-authority');
     }
 
+    copyrightUrlContainer() {
+        return this.page.getByTestId(`copyright-container`);
+    }
+
     copyrightUrlAdd() {
         return this.page.getByTestId('copyright-url-add');
+    }
+
+    copyrightUrlDelete() {
+        return this.page.getByTestId('copyright-url-delete');
     }
 
     copyrightUrl() {
@@ -235,5 +243,14 @@ export class GenerateDetailsPo {
         } else {
             await this.copyrightCheckbox().uncheck();
         }
+    }
+
+    async addCopyright({ url = '' }: Copyright) {
+        await this.copyrightUrlAdd().click();
+        const copyrightUrlLocator = this.copyrightUrl().last();
+        await this.inlineEdit.editIcon(copyrightUrlLocator).click();
+        await this.inlineEdit.inputField(copyrightUrlLocator).fill(url);
+        await this.inlineEdit.confirmButton(copyrightUrlLocator).click();
+        await this.saveModal.waitForDraftSaveComplete();
     }
 }

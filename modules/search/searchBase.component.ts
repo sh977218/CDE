@@ -86,7 +86,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     private lastTypeahead: { [term: string]: string } = {};
     module!: ModuleItem;
     numPages?: number;
-    orgs?: (Organization & { featureIcon?: string })[];
+    orgs?: (Organization & { featureIcon?: string })[] = [];
     ownKeys = ownKeys;
     previousUrl?: string;
     resultsView: 'summary' | 'table' = 'summary';

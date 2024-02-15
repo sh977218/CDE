@@ -32,6 +32,11 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
             url,
         });
 
+        await generateDetailsSection.addCopyright({ url: 'https://www.nlm.nih.gov' });
+        await generateDetailsSection.addCopyright({ url: 'https://www.nih.gov/' });
+        await generateDetailsSection.addCopyright({ url: 'https://www.hhs.gov/' });
+        await generateDetailsSection.addCopyright({ url: 'https://www.usa.gov/' });
+
         await test.step(`Publish form`, async () => {
             await saveModal.newVersion('Form saved.');
         });
@@ -43,6 +48,24 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
             await expect(searchPage.copyrightStatusFilter('Public domain, free to use').first()).toBeHidden();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, but free to use').first()).toBeVisible();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, with restrictions').first()).toBeHidden();
+        });
+
+        await test.step(`Delete 'hhs url'`, async () => {
+            await navigationMenu.gotoFormByName(formName);
+            await generateDetailsSection
+                .copyrightUrl()
+                .nth(3)
+                .locator(generateDetailsSection.copyrightUrlDelete())
+                .click();
+            await saveModal.waitForDraftSaveComplete();
+        });
+
+        await test.step(`Publish form`, async () => {
+            await saveModal.newVersion('Form saved.');
+        });
+
+        await test.step(`Verify 'hhs url' is not there`, async () => {
+            await expect(generateDetailsSection.copyrightUrlContainer().getByText(`https://www.hhs.gov/`)).toBeHidden();
         });
     });
 

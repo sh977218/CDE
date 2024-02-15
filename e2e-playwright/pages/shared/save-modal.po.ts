@@ -58,10 +58,12 @@ export class SaveModalPo {
                 newVersion = '1';
             }
         }
-        await this.newVersionInput().fill(newVersion);
         if (version.changeNote) {
             await this.newChangeNoteTextarea().fill(version.changeNote);
         }
+        await this.newVersionInput().fill(newVersion);
+        await this.newVersionInput().blur();
+        await expect(this.saveButton()).toBeEnabled();
         await this.saveButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(alertMessage);

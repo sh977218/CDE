@@ -85,10 +85,10 @@ export type CreateElt = {
 };
 
 export type Copyright = {
-    copyright: boolean;
-    statement: string;
-    authority: string;
-    url: string;
+    copyright?: boolean;
+    statement?: string;
+    authority?: string;
+    url?: string;
 };
 
 export type AlertType = 'Data Element saved.' | 'Form saved.';
