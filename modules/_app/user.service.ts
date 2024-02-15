@@ -44,7 +44,6 @@ export class UserService {
     private listeners: Cb1<User | null>[] = [];
     private mailSubscription?: Subscription;
     userOrgs: string[] = [];
-    canViewComment: boolean = false;
     logoutTimeout?: number;
     private promise!: Promise<User | undefined>;
 
@@ -58,8 +57,6 @@ export class UserService {
         this.resetInactivityTimeout();
         document.body.addEventListener('click', () => this.resetInactivityTimeout());
     }
-
-    canSeeComment = () => canViewComment(this.user);
 
     clear() {
         this._user = undefined;
@@ -77,6 +74,9 @@ export class UserService {
     isNlmCurator = () => isNlmCurator(this.user);
     isSiteAdmin = () => isSiteAdmin(this.user);
     isDocumentEditor = () => canEditArticle(this.user);
+
+    canSeeComment = () => canViewComment(this.user);
+    canViewComment: boolean = false;
 
     loginViaJwt(jwt: string): Promise<User> {
         return this.http
@@ -96,7 +96,7 @@ export class UserService {
             this._user = undefined;
             return Promise.reject();
         }
-        this._user = UserService.validate(user);
+        this._user = this.validate(user);
         await this.setOrganizations();
         if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
             this._user.searchSettings.defaultSearchView = 'summary';
@@ -190,7 +190,7 @@ export class UserService {
         return this.promise;
     }
 
-    static validate(user: User): User {
+    validate(user: User): User {
         if (!user.orgAdmin) {
             user.orgAdmin = [];
         }
