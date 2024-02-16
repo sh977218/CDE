@@ -19,7 +19,7 @@
     <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '272px'">
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="start">
-                <div *ngIf="elt && userService.canViewComment">
+                <div *ngIf="elt && userService.canSeeComment()">
                     <cde-discuss-area *ngIf="elt" [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"
                                       [eltName]="elt.designations[0].designation"></cde-discuss-area>
@@ -210,7 +210,7 @@
                             <mat-icon>list</mat-icon>
                             <span class="button-label">CDEs</span>
                         </button>
-                        <button *ngIf="elt && userService.canViewComment" id="discussBtn" class="button" title="Discuss Form"
+                        <button *ngIf="elt && userService.canSeeComment()" id="discussBtn" class="button" title="Discuss Form"
                                 (click)="commentDrawer.toggle();">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
                                 comment

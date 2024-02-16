@@ -101,7 +101,6 @@ export class UserService {
         if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
             this._user.searchSettings.defaultSearchView = 'summary';
         }
-        this.canViewComment = canViewComment(this.user);
         if (this.isSiteAdmin()) {
             this.notificationService.updateErrorNumber();
         }

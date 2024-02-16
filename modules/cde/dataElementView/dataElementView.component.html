@@ -19,7 +19,7 @@
     <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '300px'">
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="end">
-                <div *ngIf="elt && userService.canViewComment">
+                <div *ngIf="elt && userService.canSeeComment()">
                     <cde-discuss-area [currentTab]="currentTab" [elt]="elt"
                                       (highlightedTabsChange)="loadHighlightedTabs($event)"
                                       [eltName]="elt.designations[0].designation"></cde-discuss-area>
@@ -110,7 +110,7 @@
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
                         </button>
-                        <button *ngIf="elt && userService.canViewComment" tourAnchor="discussBtn"
+                        <button *ngIf="elt && userService.canSeeComment()" tourAnchor="discussBtn"
                                 id="discussBtn" class="button light" title="Discuss CDE"
                                 (click)="commentDrawer.toggle()">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">
