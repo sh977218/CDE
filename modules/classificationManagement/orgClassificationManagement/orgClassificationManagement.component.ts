@@ -13,7 +13,7 @@ import { Organization } from 'shared/organization/organization';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
 import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Cb } from 'shared/models.model';
 import { ClassificationDatabase } from 'classificationManagement/classification-database';
 import { AddChildClassificationDialogComponent } from 'classificationManagement/add-child-classification-dialog/add-child-classification-dialog.component';
@@ -72,16 +72,15 @@ export class OrgClassificationManagementComponent {
 
     constructor(
         private http: HttpClient,
-        private route: ActivatedRoute,
-        private router: Router,
+        private activatedRoute: ActivatedRoute,
         public dialog: MatDialog,
         private alert: AlertService,
         private userService: UserService,
         private classificationSvc: ClassificationService,
         private _database: ClassificationDatabase
     ) {
-        this.selectedOrg = new UntypedFormControl(this.route.snapshot.queryParams.selectedOrg);
-        this.orgs = this.route.snapshot.data.orgs;
+        this.selectedOrg = new UntypedFormControl(this.activatedRoute.snapshot.queryParams.selectedOrg);
+        this.orgs = this.activatedRoute.snapshot.data.orgs;
         this.treeFlattener = new MatTreeFlattener(this.transformer, this.getLevel, this.isExpandable, this.getChildren);
         this.treeControl = new FlatTreeControl<FlatClassificationNode>(this.getLevel, this.isExpandable);
         this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);

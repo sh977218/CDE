@@ -7,17 +7,14 @@ import {
     forwardRef,
     HostListener,
     Inject,
-    Injector,
     Renderer2,
 } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { NavigationEnd, Params, Router } from '@angular/router';
 import { CdeAppComponent } from '_app/app.component';
-import { LoginService } from '_app/login.service';
 import { NotificationService } from '_app/notifications/notification.service';
 import { UserService } from '_app/user.service';
-import { AlertService } from 'alert/alert.service';
 import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
@@ -225,15 +222,12 @@ export class NavigationComponent {
     sectionActive: SECTIONS = -1;
 
     constructor(
-        @Inject(forwardRef(() => AlertService)) private alert: AlertService,
         @Inject(forwardRef(() => ApplicationRef))
         private appRef: ApplicationRef,
         @Inject(forwardRef(() => CdeAppComponent)) private app: CdeAppComponent,
         @Inject(forwardRef(() => ComponentFactoryResolver))
         private componentFactoryResolver: ComponentFactoryResolver,
-        @Inject(forwardRef(() => Injector)) private injector: Injector,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
-        @Inject(forwardRef(() => LoginService)) public loginSvc: LoginService,
         @Inject(forwardRef(() => NotificationService))
         public notificationService: NotificationService,
         @Inject(forwardRef(() => Router)) private router: Router,
@@ -277,7 +271,9 @@ export class NavigationComponent {
     logout() {
         const refreshAndLogin = () => {
             this.userService.reload().then(noop, noop);
-            this.loginSvc.goToLogin();
+            if (window.location.href.indexOf('login') === -1) {
+                this.router.navigate(['/login']);
+            }
         };
         this.app.ssoLogout(() => {});
         this.http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe(

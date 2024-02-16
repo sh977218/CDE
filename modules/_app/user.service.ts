@@ -76,7 +76,6 @@ export class UserService {
     isDocumentEditor = () => canEditArticle(this.user);
 
     canSeeComment = () => canViewComment(this.user);
-    canViewComment: boolean = false;
 
     loginViaJwt(jwt: string): Promise<User> {
         return this.http

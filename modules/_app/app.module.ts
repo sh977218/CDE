@@ -26,7 +26,6 @@ import { BackForwardService } from '_app/backForward.service';
 import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
 import { IEBannerComponent } from '_app/banner/ieBanner.component';
 import { ElasticService } from '_app/elastic.service';
-import { LoginService } from '_app/login.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { NotificationService } from '_app/notifications/notification.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
@@ -91,7 +90,6 @@ import { VideosResolve } from '../videos/videos.resolve';
         LocalStorageService,
         BackForwardService,
         ElasticService,
-        LoginService,
         NotificationService,
         UserService,
         OrgHelperService,
