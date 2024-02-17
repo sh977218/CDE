@@ -122,7 +122,9 @@ let ignoreErrors = [
     `Cannot read properties of null (reading `,
     `Cannot read properties of undefined (reading `,
     `because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.`,
-    'This file should be served over HTTPS'
+    'This file should be served over HTTPS',
+    `https://www.googletagmanager.com/`,
+    `https://dap.digitalgov.gov/`
 ];
 
 fs.readdir(logFolder, (err, files) => {

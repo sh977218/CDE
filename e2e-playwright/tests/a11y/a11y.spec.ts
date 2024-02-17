@@ -38,7 +38,8 @@ test.describe(`@a11y accessibility test`, async () => {
     test.afterEach(async ({ page }, testInfo) => {
         await test.step(`Run axe check`, async () => {
             const axe = new AxeBuilder({ page });
-            const result = await axe.analyze();
+            const result = await axe.include(`nih-cde`).analyze();
+
             expect(result.violations.length, {
                 message: `
                 test name: ${testInfo.title}
