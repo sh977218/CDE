@@ -8,21 +8,10 @@
     <div class="splitHalf">
         <div class="leftObj">
             <a id="sourceElement" class="button" [href]=leftUrl target="_blank">
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
+                <mat-icon>visibility</mat-icon>
+                View Full Detail</a>
             <ng-container *ngIf="canMergeDataElement">
                 <cde-merge-data-element [source]="right" [destination]="left"
-                                        (doneMergeDataElement)="doneMerge($event)"></cde-merge-data-element>
-            </ng-container>
-            <ng-container *ngIf="canMergeForm">
-                <cde-merge-form [source]="left" [destination]="right"
-                                (doneMergeForm)="doneMerge($event)"></cde-merge-form>
-            </ng-container>
-        </div>
-        <div class="rightObj">
-            <a id="destinationElement" class="button" [href]=rightUrl target="_blank">
-                <mat-icon>visibility</mat-icon> View Full Detail</a>
-            <ng-container *ngIf="canMergeDataElement">
-                <cde-merge-data-element [source]="left" [destination]="right"
                                         (doneMergeDataElement)="doneMerge($event)"></cde-merge-data-element>
             </ng-container>
             <ng-container *ngIf="canMergeForm">
@@ -30,74 +19,89 @@
                                 (doneMergeForm)="doneMerge($event)"></cde-merge-form>
             </ng-container>
         </div>
+        <div class="rightObj">
+            <a id="destinationElement" class="button" [href]=rightUrl target="_blank">
+                <mat-icon>visibility</mat-icon>
+                View Full Detail</a>
+            <ng-container *ngIf="canMergeDataElement">
+                <cde-merge-data-element [source]="left" [destination]="right"
+                                        (doneMergeDataElement)="doneMerge($event)"></cde-merge-data-element>
+            </ng-container>
+            <ng-container *ngIf="canMergeForm">
+                <cde-merge-form [source]="left" [destination]="right"
+                                (doneMergeForm)="doneMerge($event)"></cde-merge-form>
+            </ng-container>
+        </div>
     </div>
     <ng-container *ngFor="let option of options">
         <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}" class="{{option.displayAs.label}}">
             <div style="overflow: hidden">
-                <strong>{{option.displayAs.label}}</strong>
+                <strong>{{ option.displayAs.label }}</strong>
                 <ng-container *ngIf="fullMatched">
-                <div *ngFor="let fullMatch of option.fullMatches" class="splitHalf">
-                    <div class="noLeftPadding" data-testid="compare-left-container">
-                        <div class="fullMatch" data-testid="full-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(fullMatch.left,d)></span>
+                    <div *ngFor="let fullMatch of option.fullMatches" class="splitHalf">
+                        <div class="noLeftPadding" data-testid="compare-left-container">
+                            <div class="fullMatch" data-testid="full-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(fullMatch.left,d)></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="noRightPadding" data-testid="compare-right-container">
+                            <div class="fullMatch" data-testid="full-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(fullMatch.right,d)></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding" data-testid="compare-right-container">
-                        <div class="fullMatch" data-testid="full-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(fullMatch.right,d)></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 </ng-container>
                 <ng-container *ngIf="partialMatched">
 
-                <div *ngFor="let partialMatch of option.partialMatches" class="splitHalf">
-                    <div class="noLeftPadding" data-testid="compare-left-container">
-                        <div class="partialMatch" data-testid="partial-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(partialMatch.left,d)></span>
-                                <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
+                    <div *ngFor="let partialMatch of option.partialMatches" class="splitHalf">
+                        <div class="noLeftPadding" data-testid="compare-left-container">
+                            <div class="partialMatch" data-testid="partial-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(partialMatch.left,d)></span>
+                                    <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="noRightPadding" data-testid="compare-right-container">
+                            <div class="partialMatch" data-testid="partial-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(partialMatch.right,d)></span>
+                                    <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding" data-testid="compare-right-container">
-                        <div class="partialMatch" data-testid="partial-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(partialMatch.right,d)></span>
-                                <mat-icon *ngIf="partialMatch.diff.indexOf(d.property)>-1">warning</mat-icon>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 </ng-container>
                 <ng-container *ngIf="notMatched">
 
-                <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="splitHalf">
-                    <div class="noLeftPadding" data-testid="compare-left-container">
-                        <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch" data-testid="not-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(leftNotMatch,d)></span>
+                    <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="splitHalf">
+                        <div class="noLeftPadding" data-testid="compare-left-container">
+                            <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch"
+                                 data-testid="not-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(leftNotMatch,d)></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="noRightPadding" data-testid="compare-right-container">
+                            <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch"
+                                 data-testid="not-match">
+                                <div *ngFor="let d of option.displayAs.data">
+                                    <strong>{{ d.label ? d.label + ":" : d.label }}</strong>
+                                    <span [innerHTML]=getValue(rightNotMatch,d)></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="noRightPadding" data-testid="compare-right-container">
-                        <div *ngFor="let rightNotMatch of option.rightNotMatches" class="notMatch" data-testid="not-match">
-                            <div *ngFor="let d of option.displayAs.data">
-                                <strong>{{d.label?d.label+":":d.label}}</strong>
-                                <span [innerHTML]=getValue(rightNotMatch,d)></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 </ng-container>
             </div>
         </div>

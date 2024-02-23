@@ -24,23 +24,29 @@ test.describe(`Merge form`, async () => {
         test(`Left form has more questions cannot be merged`, async ({ myBoardPage, boardPage }) => {
             await myBoardPage.boardTitle('SourceFormMoreQuestions').click();
             await boardPage.compareButton().click();
-            await boardPage.openMergeFormModalButton().click();
+            await boardPage.openMergeFormModalButton('right').click();
             await expect(boardPage.mergeFormError()).toHaveText(`Left form has too many questions`);
             await boardPage.closeMergeFormButton().click();
         });
 
         test(`Merge and retire CDEs`, async ({
+            page,
             materialPage,
             navigationMenu,
             searchPreferencesPage,
             myBoardPage,
             boardPage,
+            searchPage,
             cdePage,
             formPage,
         }) => {
-            await test.step(`Go to 'MergeFormRetire' and merge form`, async () => {
+            const nlmForm = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
+            const nindsForm = `Patient Health Questionnaire - 9 (PHQ-9) Depression Scale`;
+            await test.step(`Go to 'MergeFormRetire'`, async () => {
                 await myBoardPage.boardTitle('MergeFormRetire').click();
                 await boardPage.compareButton().click();
+            });
+            await test.step(`merge nindsForm into nlmForm`, async () => {
                 await boardPage.openMergeFormModalButton().click();
                 await boardPage.retireCdeCheckbox().check();
                 await boardPage.mergeFormButton().click();
@@ -52,30 +58,62 @@ test.describe(`Merge form`, async () => {
                 await boardPage.closeCompareModalButton().click();
             });
 
-            await test.step(`Search with merged and retired Form`, async () => {
+            await test.step(`Search preference include 'Retired'`, async () => {
                 await navigationMenu.searchPreferencesButton().click();
                 await searchPreferencesPage.searchPreferencesCheckbox().check();
                 await searchPreferencesPage.saveButton().click();
-                const formName = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
-                await navigationMenu.gotoFormByName(formName);
+                await materialPage.checkAlert('Settings saved!');
             });
 
-            await test.step(`Verify retired Form`, async () => {
+            await test.step(`Search nindsForm return 2 results`, async () => {
+                await navigationMenu.gotoFormSearch();
+                await searchPage.searchQueryInput().fill(`"${nindsForm}"`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
+            });
+
+            await test.step(`Search nlmForm return 1 results`, async () => {
+                await navigationMenu.gotoFormSearch();
+                await searchPage.searchQueryInput().fill(`"${nlmForm}"`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
+            });
+
+            await test.step(`Verify nindsForm (Retired)`, async () => {
+                await navigationMenu.gotoFormByName(nindsForm);
+                await expect(page.getByText('Merge to tinyId mJsGoMU1m')).toBeVisible();
                 await expect(formPage.alerts()).toContainText(
                     `This form version is no longer current. The most current version of this form is available here:`
                 );
-                await formPage.mergeToLink().click();
-                await test
-                    .expect(formPage.formTitle())
-                    .toContainText('Patient Health Questionnaire - 9 (PHQ-9) Depression Scale');
+                await test.step(`Go to current version`, async () => {
+                    await formPage.mergeToLink().click();
+                    await expect(formPage.formTitle()).toContainText(nlmForm);
+                });
             });
 
-            await test.step(`Verify retired CDE`, async () => {
-                const cdeName = `Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]`;
-                await navigationMenu.gotoCdeByName(cdeName);
+            const nindsCde = `Patient Health Questionnaire Depression (PHQ-9) - Sleep impairment score`;
+            const nlmCde = `Trouble falling or staying asleep, or sleeping too much in last 2 weeks [Reported.PHQ]`;
+            await test.step(`Search nindsCde return 2 results`, async () => {
+                await navigationMenu.gotoCdeSearch();
+                await searchPage.searchQueryInput().fill(`"${nindsCde}"`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
+            });
+
+            await test.step(`Search nlmCde return 1 results`, async () => {
+                await navigationMenu.gotoFormSearch();
+                await searchPage.searchQueryInput().fill(`"${nlmCde}"`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
+            });
+
+            await test.step(`Verify nindsCde (Retired)`, async () => {
+                await navigationMenu.gotoCdeByName(nindsCde);
                 await expect(cdePage.alerts()).toContainText(`This data element is retired.`);
-                await cdePage.mergeToLink().click();
-                await expect(cdePage.cdeTitle()).toContainText('Sleep impairment score');
+                await test.step(`Go to current version`, async () => {
+                    await cdePage.mergeToLink().click();
+                    await expect(cdePage.cdeTitle()).toContainText(nlmCde);
+                });
             });
         });
     });

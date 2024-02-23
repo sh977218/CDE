@@ -12,7 +12,7 @@ export class MergeFormComponent {
     @Input() destination!: CompareForm;
     @Output() doneMergeForm = new EventEmitter<{ left: CompareForm; right: CompareForm }>();
 
-    constructor(public dialog: MatDialog) {}
+    constructor(private dialog: MatDialog) {}
 
     openMergeFormModal() {
         const data = {
