@@ -42,7 +42,10 @@ export class ArticleAdminComponent {
         if (formData) {
             formData.append('id', this.article._id || '');
             this.http.post<Article>('/server/attachment/article/add', formData).subscribe(
-                res => (this.article = res),
+                res => {
+                    this.article = res;
+                    this.alertSvc.addAlert('success', 'Attachment added.');
+                },
                 () => this.alertSvc.addAlert('danger', 'Unexpected error attaching')
             );
         }

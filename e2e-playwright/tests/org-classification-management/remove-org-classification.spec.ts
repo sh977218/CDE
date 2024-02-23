@@ -18,16 +18,12 @@ test(`Remove organization classification`, async ({
     await test.step(`Search 'cde' with classification to be removed.`, async () => {
         await navigationMenu.gotoCdeSearch();
         await navigationMenu.login(Accounts.nlm);
-        await searchPage.searchQueryInput().fill(searchString);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchString);
     });
 
     await test.step(`Search 'form' with classification to be removed.`, async () => {
         await navigationMenu.gotoFormSearch();
-        await searchPage.searchQueryInput().fill(searchString);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchString);
     });
 
     await test.step(`Remove org classification`, async () => {
@@ -36,16 +32,12 @@ test(`Remove organization classification`, async ({
     });
     await test.step(`Verify 'cde' search result.`, async () => {
         await navigationMenu.gotoCdeSearch();
-        await searchPage.searchQueryInput().fill(searchString);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('No results were found.')).toBeVisible();
+        await searchPage.searchWithString(searchString, 0);
     });
 
     await test.step(`Verify 'form' search result.`, async () => {
         await navigationMenu.gotoFormSearch();
-        await searchPage.searchQueryInput().fill(searchString);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('No results were found.')).toBeVisible();
+        await searchPage.searchWithString(searchString, 0);
     });
 
     await test.step(`Verify classification audit log`, async () => {

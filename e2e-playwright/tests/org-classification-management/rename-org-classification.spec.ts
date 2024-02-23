@@ -23,20 +23,12 @@ test(`Rename organization classification`, async ({
 
     await test.step(`Search cde with classification to be removed.`, async () => {
         await navigationMenu.gotoCdeSearch();
-        await searchPage.searchQueryInput().fill(searchStringWithOldClassification);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
-
-        await searchPage.searchQueryInput().fill(searchStringWithNewClassification);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchStringWithOldClassification);
     });
 
     await test.step(`Search form with classification to be removed.`, async () => {
         await navigationMenu.gotoFormSearch();
-        await searchPage.searchQueryInput().fill(searchStringWithOldClassification);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchStringWithOldClassification);
     });
 
     await test.step(`Rename org classification`, async () => {
@@ -46,16 +38,12 @@ test(`Rename organization classification`, async ({
 
     await test.step(`Verify cde search result.`, async () => {
         await navigationMenu.gotoCdeSearch();
-        await searchPage.searchQueryInput().fill(searchStringWithNewClassification);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchStringWithNewClassification);
     });
 
     await test.step(`Verify form search result.`, async () => {
         await navigationMenu.gotoFormSearch();
-        await searchPage.searchQueryInput().fill(searchStringWithNewClassification);
-        await searchPage.searchSubmitButton().click();
-        await expect(page.getByText('results. Sorted by relevance.')).toBeVisible();
+        await searchPage.searchWithString(searchStringWithNewClassification);
     });
 
     await test.step(`Verify classification audit log`, async () => {

@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import { Board, Module } from '../../model/type';
+import { Board } from '../../model/type';
 import { MaterialPo } from '../shared/material.po';
 
 export class MyBoardPagePo {

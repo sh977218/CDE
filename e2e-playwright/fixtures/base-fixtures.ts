@@ -189,8 +189,8 @@ const baseFixture = baseTest.extend<{
     classificationSection: async ({ page, materialPage, saveModal }, use) => {
         await use(new ClassificationPo(page, materialPage, saveModal));
     },
-    attachmentSection: async ({ page, inlineEdit }, use) => {
-        await use(new AttachmentPo(page, inlineEdit));
+    attachmentSection: async ({ page, materialPage, inlineEdit }, use) => {
+        await use(new AttachmentPo(page, materialPage, inlineEdit));
     },
     historySection: async ({ page, materialPage }, use) => {
         await use(new HistoryPo(page, materialPage));
@@ -201,8 +201,8 @@ const baseFixture = baseTest.extend<{
     aioTocViewMenu: async ({ page }, use) => {
         await use(new AioTocViewMenuPo(page));
     },
-    navigationMenu: async ({ page, materialPage }, use) => {
-        await use(new NavigationMenuPo(page, materialPage));
+    navigationMenu: async ({ page, materialPage, searchPage }, use) => {
+        await use(new NavigationMenuPo(page, materialPage, searchPage));
     },
     searchPage: async ({ page }, use) => {
         await use(new SearchPagePo(page));
@@ -247,8 +247,8 @@ const baseFixture = baseTest.extend<{
         await use(new UsersPagePo(page, materialPage));
     },
 
-    articlePage: async ({ page }, use) => {
-        await use(new ArticlePagePo(page));
+    articlePage: async ({ page, materialPage, inlineEdit }, use) => {
+        await use(new ArticlePagePo(page, materialPage, inlineEdit));
     },
     submissionEditPage: async ({ page }, use) => {
         await use(new SubmissionEditPo(page));

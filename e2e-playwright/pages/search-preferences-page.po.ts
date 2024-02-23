@@ -11,6 +11,14 @@ export class SearchPreferencesPagePo {
         return this.page.getByTestId(`include-retired`).locator('input');
     }
 
+    downloadAsFile() {
+        return this.page.getByLabel('File');
+    }
+
+    downloadAsTab() {
+        return this.page.getByLabel('New Tab');
+    }
+
     saveButton() {
         return this.page.getByTestId(`save-search-preferences-button`);
     }

@@ -24,8 +24,7 @@ test(`Import permissible value from CDE`, async ({
     await test.step(`Import PV from CDE has duplicated PVs`, async () => {
         await permissibleValueSection.importPermissibleValueFromCDdeButton().click();
         await materialPage.matDialog().waitFor({ state: 'visible' });
-        await searchPage.searchQueryInput().fill('mJQiShWEW');
-        await searchPage.searchSubmitButton().click();
+        await searchPage.searchWithString('mJQiShWEW');
         await page.waitForTimeout(5000);
         await page.waitForLoadState('networkidle', { timeout: 3000 });
         await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
@@ -44,8 +43,7 @@ test(`Import permissible value from CDE`, async ({
     await test.step(`Import PV from CDE doesn't have duplicated PVs`, async () => {
         await permissibleValueSection.importPermissibleValueFromCDdeButton().click();
         await materialPage.matDialog().waitFor({ state: 'visible' });
-        await searchPage.searchQueryInput().fill('CK8F0tHZ5wp');
-        await searchPage.searchSubmitButton().click();
+        await searchPage.searchWithString('CK8F0tHZ5wp');
         await searchPage.searchResultList().getByRole('button', { name: 'Add', exact: true }).click();
         await materialPage.checkAlert('Permissible Values imported');
     });

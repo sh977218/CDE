@@ -27,9 +27,7 @@ test.describe(`Server log`, async () => {
 
         await test.step(`Trigger bad input error`, async () => {
             await navigationMenu.gotoCdeSearch();
-            await searchPage.searchQueryInput().fill(badSearchInput);
-            await searchPage.searchSubmitButton().click();
-            await expect(page.getByText('No results were found.')).toBeVisible();
+            await searchPage.searchWithString(badSearchInput, 0);
         });
 
         await test.step(`Go to 'server error'`, async () => {

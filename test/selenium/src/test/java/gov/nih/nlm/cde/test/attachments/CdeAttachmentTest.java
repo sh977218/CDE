@@ -1,10 +1,9 @@
 package gov.nih.nlm.cde.test.attachments;
 
-import gov.nih.nlm.common.test.BaseAttachmentTest;
+import gov.nih.nlm.system.NlmCdeBaseTest;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
-import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,32 +13,7 @@ import java.util.Random;
 
 import static io.restassured.RestAssured.given;
 
-public class CdeAttachmentTest extends BaseAttachmentTest {
-
-    public void cdeAttachment() {
-        String cdeName = "Family Assessment Device (FAD) - Discuss problem indicator";
-        mustBeLoggedInAs(ctepEditor_username, password);
-        goToCdeByName(cdeName);
-        goToAttachments();
-        textNotPresent("Upload more files");
-        logout();
-
-        mustBeLoggedInAs(nlmCuratorUser_username, password);
-        goToCdeByName(cdeName);
-        goToAttachments();
-        addAttachment("glass.jpg");
-        setAttachmentDefault();
-        logout();
-        openCdeInList(cdeName);
-        findElement(By.cssSelector("img.cdeAttachmentThumbnail"));
-        goToCdeByName(cdeName);
-
-        mustBeLoggedInAs(nlmCuratorUser_username, password);
-        goToCdeByName(cdeName);
-
-        removeAttachmentByIndex(0);
-    }
-
+public class CdeAttachmentTest extends NlmCdeBaseTest {
 
     @Test
     public void attachmentErrors() throws IOException {

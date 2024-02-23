@@ -225,21 +225,27 @@ export class GenerateDetailsPo {
     async editCopyright({ copyright, statement, authority, url }: Copyright) {
         if (copyright) {
             await this.copyrightCheckbox().check();
-            const copyrightStatementLocator = this.copyrightStatement();
-            await this.inlineEdit.editIcon(copyrightStatementLocator).click();
-            await this.inlineEdit.inputField(copyrightStatementLocator).fill(statement);
-            await this.inlineEdit.confirmButton(copyrightStatementLocator).click();
 
-            const copyrightAuthorityLocator = this.copyrightAuthority();
-            await this.inlineEdit.editIcon(copyrightAuthorityLocator).click();
-            await this.inlineEdit.inputField(copyrightAuthorityLocator).fill(authority);
-            await this.inlineEdit.confirmButton(copyrightAuthorityLocator).click();
+            if (statement) {
+                const copyrightStatementLocator = this.copyrightStatement();
+                await this.inlineEdit.editIcon(copyrightStatementLocator).click();
+                await this.inlineEdit.inputField(copyrightStatementLocator).fill(statement);
+                await this.inlineEdit.confirmButton(copyrightStatementLocator).click();
+            }
 
-            await this.copyrightUrlAdd().click();
-            const copyrightUrlLocator = this.copyrightUrl().first();
-            await this.inlineEdit.editIcon(copyrightUrlLocator).click();
-            await this.inlineEdit.inputField(copyrightUrlLocator).fill(url);
-            await this.inlineEdit.confirmButton(copyrightUrlLocator).click();
+            if (authority) {
+                const copyrightAuthorityLocator = this.copyrightAuthority();
+                await this.inlineEdit.editIcon(copyrightAuthorityLocator).click();
+                await this.inlineEdit.inputField(copyrightAuthorityLocator).fill(authority);
+                await this.inlineEdit.confirmButton(copyrightAuthorityLocator).click();
+                if (url) {
+                    await this.copyrightUrlAdd().click();
+                    const copyrightUrlLocator = this.copyrightUrl().first();
+                    await this.inlineEdit.editIcon(copyrightUrlLocator).click();
+                    await this.inlineEdit.inputField(copyrightUrlLocator).fill(url);
+                    await this.inlineEdit.confirmButton(copyrightUrlLocator).click();
+                }
+            }
         } else {
             await this.copyrightCheckbox().uncheck();
         }

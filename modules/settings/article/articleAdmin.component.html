@@ -23,11 +23,10 @@
                         Government shutdown
                     </mat-slide-toggle>
                 </div>
-                <div>
+                <div data-testid="article-edit-container">
                     <cde-inline-area-edit *ngIf="article" [(model)]="article.body" [defFormat]="'html'"
-                                          [bypassSanitize]="true"
-                                          [isAllowed]="true"
-                                          (modelChange)="save()"></cde-inline-area-edit>
+                                          [bypassSanitize]="true" [isAllowed]="true" (modelChange)="save()">
+                    </cde-inline-area-edit>
                 </div>
                 <div>
                     <cde-attachments [elt]="article" [canEdit]="true"

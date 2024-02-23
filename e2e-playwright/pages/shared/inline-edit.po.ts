@@ -1,7 +1,10 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+const INLINE_EDIT_TEXTAREA_OFFSET_X = 50;
+const INLINE_EDIT_TEXTAREA_OFFSET_Y = 15;
+
 export class InlineEditPo {
-    protected page: Page;
+    private readonly page: Page;
 
     constructor(page: Page) {
         this.page = page;
@@ -23,11 +26,12 @@ export class InlineEditPo {
      */
     private ckEditTextarea(containerLocator: Locator, html = false) {
         if (html) {
-            return containerLocator
+            return containerLocator.locator(`//*[contains(@id,'cke_') and contains(@id,'_contents')]`).locator(` div`);
+            /*return containerLocator
                 .locator(`cde-inline-area-edit`, {
-                    has: containerLocator.locator(`textarea`),
+                    has: this.page.locator(`textarea`),
                 })
-                .locator(`.cke_contents`);
+                .locator(`.cke_contents`);*/
         } else {
             return containerLocator.locator(`cde-inline-area-edit textarea`);
         }
@@ -43,12 +47,15 @@ export class InlineEditPo {
         const box = await textareaLocator.boundingBox();
         await textareaLocator.click({
             position: {
-                x: box?.width || 0,
-                y: box?.height || 0,
+                x: (box?.width || 0) - INLINE_EDIT_TEXTAREA_OFFSET_X,
+                y: (box?.height || 0) - INLINE_EDIT_TEXTAREA_OFFSET_Y,
             },
+            force: html,
         });
+        await this.page.waitForTimeout(2000);
         await this.page.keyboard.press('Control+a');
-        await this.page.keyboard.press('Backslash');
+        await this.page.waitForTimeout(2000);
+        await this.page.keyboard.press('Backspace');
         await this.page.waitForTimeout(1000);
     }
 
@@ -65,28 +72,29 @@ export class InlineEditPo {
         // click 50 px left top from bottom right corner of the textarea.
         await textareaLocator.click({
             position: {
-                x: (box?.width || 0) - 50,
-                y: (box?.height || 0) - 10,
+                x: (box?.width || 0) - INLINE_EDIT_TEXTAREA_OFFSET_X,
+                y: (box?.height || 0) - INLINE_EDIT_TEXTAREA_OFFSET_Y,
             },
+            force: html,
         });
         await this.page.keyboard.type(inputString);
-        await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(2000);
         await this.confirmButton(containerLocator).click();
     }
 
     confirmButton(locator: Locator) {
-        return locator.getByRole('button', { name: 'Confirm', exact: true });
+        return this.page.getByRole('button', { name: 'Confirm', exact: true });
     }
 
     discardButton(locator: Locator) {
-        return locator.getByRole('button', { name: 'Discard', exact: true });
+        return this.page.getByRole('button', { name: 'Discard', exact: true });
     }
 
     plainTextButton(locator: Locator) {
-        return locator.getByRole('button', { name: 'Plain Text', exact: true });
+        return this.page.getByRole('button', { name: 'Plain Text', exact: true });
     }
 
     richTextButton(locator: Locator) {
-        return locator.getByRole('button', { name: 'Rich Text', exact: true });
+        return this.page.getByRole('button', { name: 'Rich Text', exact: true });
     }
 }

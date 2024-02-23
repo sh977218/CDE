@@ -17,7 +17,9 @@ export type ACCOUNT_KEYS =
     | 'workingGroupUser'
     | 'longUsernameUser'
     | 'unpinUser'
-    | 'viewingHistoryUser';
+    | 'viewingHistoryUser'
+    | 'boardExportUser'
+    | 'formLinkedFormsUser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
 export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';

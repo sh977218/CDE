@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { RegistrationStatusType } from '../../model/type';
 
 export class SearchPagePo {
@@ -155,5 +155,17 @@ export class SearchPagePo {
 
     parseNumberFromFilterText(text: string) {
         return /\d+/.exec(text)?.at(0) || '';
+    }
+
+    async searchWithString(s: string, expectedNumberOfResults: null | number = null) {
+        await this.searchQueryInput().fill(s);
+        await this.searchSubmitButton().click();
+        if (expectedNumberOfResults === null) {
+            await expect(this.page.getByText('results. Sorted by relevance.')).toBeVisible();
+        } else if (expectedNumberOfResults === 0) {
+            await expect(this.page.getByText('No results were found.')).toBeVisible();
+        } else {
+            await expect(this.page.getByText(`${expectedNumberOfResults} results. Sorted by relevance.`)).toBeVisible();
+        }
     }
 }

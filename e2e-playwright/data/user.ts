@@ -79,4 +79,12 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'viewHistoryUser',
         password: DEFAULT_PASSWORD,
     },
+    boardExportUser: {
+        username: 'boardExportUser',
+        password: DEFAULT_PASSWORD,
+    },
+    formLinkedFormsUser: {
+        username: 'formLinkedFormsUser',
+        password: DEFAULT_PASSWORD,
+    },
 };

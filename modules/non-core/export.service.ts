@@ -171,11 +171,6 @@ export class ExportService {
             );
         }
 
-        if (type !== 'validationRules') {
-            this.alertService.addAlert('', 'Your export is being generated, please wait.');
-        }
-
-        this.alertService.addAlert('', 'Fetching ' + module + 's. Please wait...');
         this.elasticService.getExport(
             this.elasticService.buildElasticQuerySettings(exportSettings.searchSettings),
             module || 'cde',
@@ -287,7 +282,6 @@ export class ExportService {
     }
 
     async quickBoardExport(elts: Item[]) {
-        this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         const csv = await this.resultToCsv(elts as ItemElastic[]);
         if (csv) {
             const blob = new Blob([csv], { type: 'text/csv' });
@@ -299,7 +293,6 @@ export class ExportService {
     }
 
     async formCdeExport(form: CdeForm) {
-        this.alertService.addAlert('', 'Fetching cdes. Please wait...');
         const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
         const elts = await this.http
             .get<DataElement[]>('/server/de/list/' + tinyIdList)

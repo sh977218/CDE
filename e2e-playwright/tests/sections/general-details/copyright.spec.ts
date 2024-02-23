@@ -12,8 +12,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
 
     await test.step(`Form is in 'Public domain, free to use'`, async () => {
         await navigationMenu.gotoFormSearch();
-        await searchPage.searchQueryInput().fill(`"${formName}"`);
-        await searchPage.searchSubmitButton().click();
+        await searchPage.searchWithString(`"${formName}"`);
         await expect(searchPage.copyrightStatusFilter('Public domain, free to use').first()).toBeVisible();
         await expect(searchPage.copyrightStatusFilter('Copyrighted, but free to use').first()).toBeHidden();
         await expect(searchPage.copyrightStatusFilter('Copyrighted, with restrictions').first()).toBeHidden();
@@ -43,8 +42,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
 
         await test.step(`Form is in 'Copyrighted, but free to use'`, async () => {
             await navigationMenu.gotoFormSearch();
-            await searchPage.searchQueryInput().fill(`"${formName}"`);
-            await searchPage.searchSubmitButton().click();
+            await searchPage.searchWithString(`"${formName}"`);
             await expect(searchPage.copyrightStatusFilter('Public domain, free to use').first()).toBeHidden();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, but free to use').first()).toBeVisible();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, with restrictions').first()).toBeHidden();
@@ -79,8 +77,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
 
         await test.step(`Form is in 'Copyrighted, with restrictions'`, async () => {
             await navigationMenu.gotoFormSearch();
-            await searchPage.searchQueryInput().fill(`"${formName}"`);
-            await searchPage.searchSubmitButton().click();
+            await searchPage.searchWithString(`"${formName}"`);
             await expect(searchPage.copyrightStatusFilter('Public domain, free to use').first()).toBeHidden();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, but free to use').first()).toBeHidden();
             await expect(searchPage.copyrightStatusFilter('Copyrighted, with restrictions').first()).toBeVisible();

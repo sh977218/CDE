@@ -21,7 +21,7 @@
                 </div>
                 <div>
                     <label>Default Image: </label>
-                    <div>{{attachment.isDefault ? 'Yes' : 'N/A'}}</div>
+                    <div data-testid="default-attachment-checkbox">{{attachment.isDefault ? 'Yes' : 'N/A'}}</div>
                 </div>
                 <ng-container *ngIf="canEdit">
                     <div>
@@ -30,7 +30,7 @@
                         </label>
                         <div>
                             <input type="checkbox" class="checkbox" [(ngModel)]="attachment.isDefault"
-                                   id="defaultCbLabel"
+                                   id="defaultCbLabel" data-testid="show-attachment-in-search-result-checkbox"
                                    (change)="setDefault.emit(i)"/>
                         </div>
                     </div>

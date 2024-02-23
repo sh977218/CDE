@@ -4,14 +4,17 @@ import { listItem, tag } from '../util';
 import { CdeTinyIds } from '../../data/cde-tinyId';
 import { FormTinyIds } from '../../data/form-tinyId';
 import { Account } from '../../model/type';
+import { SearchPagePo } from '../search/search-page.po';
 
 export class NavigationMenuPo {
     protected readonly page: Page;
     protected readonly materialPage: MaterialPo;
+    protected readonly searchPage: SearchPagePo;
 
-    constructor(page: Page, materialPage: MaterialPo) {
+    constructor(page: Page, materialPage: MaterialPo, searchPage: SearchPagePo) {
         this.page = page;
         this.materialPage = materialPage;
+        this.searchPage = searchPage;
     }
 
     private clickUntilMenuShows(buttonLocator: Locator) {
@@ -108,9 +111,7 @@ export class NavigationMenuPo {
 
     async searchCdeByName(cdeName: string) {
         await this.gotoCdeSearch();
-        await this.page.getByTestId(`search-query-input`).fill(`"${cdeName}"`);
-        await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.searchPage.searchWithString(`"${cdeName}"`, 1);
     }
 
     /**
@@ -120,9 +121,7 @@ export class NavigationMenuPo {
     async gotoCdeByName(cdeName: string) {
         const tinyId = CdeTinyIds[cdeName];
         await this.gotoCdeSearch();
-        await this.page.getByTestId(`search-query-input`).fill(`"${cdeName}"`);
-        await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`results. Sorted by relevance.`).waitFor();
+        await this.searchPage.searchWithString(`"${cdeName}"`);
         await this.page.locator(`[id="linkToElt_0"]`).click();
         if (tinyId) {
             await this.page.waitForURL(`/deView?tinyId=${tinyId}`, { timeout: 10000 });
@@ -145,9 +144,7 @@ export class NavigationMenuPo {
 
     async searchFormByName(formName: string) {
         await this.gotoFormSearch();
-        await this.page.getByTestId(`search-query-input`).fill(`"${formName}"`);
-        await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`1 results. Sorted by relevance.`).waitFor();
+        await this.searchPage.searchWithString(`"${formName}"`, 1);
     }
 
     /**
@@ -157,15 +154,25 @@ export class NavigationMenuPo {
     async gotoFormByName(formName: string) {
         const tinyId = FormTinyIds[formName];
         await this.gotoFormSearch();
-        await this.page.getByTestId(`search-query-input`).fill(`"${formName}"`);
-        await this.page.getByTestId(`search-submit-button`).click();
-        await this.page.getByText(`results. Sorted by relevance.`).waitFor();
+        await this.searchPage.searchWithString(`"${formName}"`);
         await this.page.locator(`[id="linkToElt_0"]`).click();
         if (tinyId) {
             await this.page.waitForURL(`/formView?tinyId=${tinyId}`, { timeout: 10000 });
         } else {
             await this.page.waitForURL(/\/formView\?tinyId=/, { timeout: 10000 });
         }
+    }
+
+    /**
+     * Description - This method search Form with tinyId, should use gotoFormByName() whenever it's possible.
+     *               This method exists because there are multiple forms with exact same name, gotoFormByName() returns multiple records.
+     * @param formTinyId
+     */
+    async gotoFormByTinyId(formTinyId: string) {
+        await this.gotoFormSearch();
+        await this.searchPage.searchWithString(`"${formTinyId}"`);
+        await this.page.locator(`[id="linkToElt_0"]`).click();
+        await this.page.waitForURL(`/formView?tinyId=${formTinyId}`, { timeout: 10000 });
     }
 
     async gotoSettings() {

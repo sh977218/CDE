@@ -34,4 +34,8 @@ export class SettingMenuPo {
     usersMenu() {
         return this.page.getByTestId(`users`);
     }
+
+    articlesMenu() {
+        return this.page.getByTestId(`articles`);
+    }
 }
