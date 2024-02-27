@@ -195,8 +195,10 @@ export class MaterialPo {
 
     async loadTableViewSettingsForExport() {
         await this.page.locator('#list_gridView').click();
+        const waitForIdSourceApiPromise = this.page.waitForResponse('/server/system/idSources');
         await this.page.locator('#tableViewSettings').click();
         await this.matDialog().waitFor();
+        await waitForIdSourceApiPromise;
         await this.page.locator('#uom').click();
         await this.page.locator('#naming').click();
         await this.page.locator('#pvCodeNames').click();

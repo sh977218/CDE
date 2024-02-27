@@ -74,7 +74,11 @@ test.describe(`Form view export`, async () => {
             if (downloadedFile) {
                 const expectedContents = [
                     `"Surgical or therapeutic procedure other text","Other, specify","Text","","NINDS","NINDS","Qualified","NINDS: C18765 v1; NINDS Variable Name: SurgTherapProcedurOTH"`,
-                    `myoQ8JBHFe, my57Uyrrtg, XkYXUyHStg, mkDmUyBBFe, 7k0Q1rHYe`,
+                    `myoQ8JBHFe`,
+                    `my57Uyrrtg`,
+                    `XkYXUyHStg`,
+                    `mkDmUyBBFe`,
+                    `7k0Q1rHYe`,
                 ];
 
                 const fileContent = readFileSync(downloadedFile, { encoding: 'utf8' });

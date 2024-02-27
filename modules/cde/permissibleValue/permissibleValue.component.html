@@ -269,7 +269,7 @@
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
             </button>
-            <button *ngIf="userService.user?.siteAdmin" id="validateAgainstUMLS" class="button light secondary"
+            <button *ngIf="userService.user?.siteAdmin" data-testid="validate-against-UMLS-button" id="validateAgainstUMLS" class="button light secondary"
                     title="Validate Against UMLS"
                     (click)="validatePVAgainstUMLS(elt.valueDomain)">
                 <mat-icon>check_circle_outline</mat-icon>
@@ -285,7 +285,7 @@
         </ng-container>
     </ng-container>
 
-    <ng-container *ngIf="!umlsValidationLoading" [ngSwitch]="umlsValidationResults">
+    <div *ngIf="!umlsValidationLoading" [ngSwitch]="umlsValidationResults" data-testid="umls-validation-result">
         <ng-container *ngSwitchCase="undefined">
         </ng-container>
         <ng-container *ngSwitchCase="''">
@@ -296,7 +296,7 @@
             <mat-icon class="text-danger">cancel</mat-icon>
             {{ umlsValidationResults }}
         </ng-container>
-    </ng-container>
+    </div>
 
     <h3>VSAC Value Set</h3>
     <a href="https://vsac.nlm.nih.gov" target="_blank" rel="noopener noreferrer">Lookup Value Sets here.</a>

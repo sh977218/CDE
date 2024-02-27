@@ -2,7 +2,7 @@ import { config } from 'server';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
-import { elasticsearchPromise, esClient, getAllowedStatuses, regStatusFilter } from 'server/system/elastic';
+import { elasticsearchPromise, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { CdeForm } from 'shared/form/form.model';
 import { copyShallow } from 'shared/util';

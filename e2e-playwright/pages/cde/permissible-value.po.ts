@@ -11,6 +11,14 @@ export class PermissibleValuePo {
         return this.page.getByRole('button', { name: ' Import PVs From CDE ' });
     }
 
+    validateAgainstUmlsButtopn() {
+        return this.page.getByTestId(`validate-against-UMLS-button`);
+    }
+
+    umlsValidationResult() {
+        return this.page.getByTestId(`umls-validation-result`);
+    }
+
     addPermissibleValueButton() {
         return this.page.getByTestId('openAddPermissibleValueModelBtn');
     }
