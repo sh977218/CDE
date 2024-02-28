@@ -4,35 +4,40 @@ import {
     canSubmissionSubmitMiddleware,
     isOrgAuthorityMiddleware,
     loggedInMiddleware,
-    nocacheMiddleware
+    nocacheMiddleware,
 } from 'server/system/authorization';
 import {
     byId as userById,
-    byUsername, governanceReviewers, nlmCurators,
+    byUsername,
+    governanceReviewers,
+    nlmCurators,
     orgCurators,
     save as userSave,
     updateUser,
     userByName,
     UserFull,
-    usersByUsername
+    usersByUsername,
 } from 'server/user/userDb';
 import { User } from 'shared/models.model';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
 
-export function module(roleConfig: { manage: RequestHandler, search: RequestHandler }) {
+export function module(roleConfig: { manage: RequestHandler; search: RequestHandler }) {
     const router = Router();
 
     router.get('/', nocacheMiddleware, async (req, res): Promise<Response> => {
         if (!req.user) {
             return res.send({});
         }
-        return respondPromise({res}, userById(req.user._id).then(user => user));
+        return respondPromise(
+            { res },
+            userById(req.user._id).then(user => user)
+        );
     });
 
     router.post('/', loggedInMiddleware, async (req, res): Promise<Response> => {
-        return respondPromise({res}, updateUser(req.user, req.body));
+        return respondPromise({ res }, updateUser(req.user, req.body));
     });
 
     router.post('/jwt', (req, res, next) => {
@@ -45,13 +50,11 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
     });
 
     router.get('/governanceReviewerNames', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
-        return governanceReviewers()
-            .then(users => res.send(users.map(user => user.username)));
+        return governanceReviewers().then(users => res.send(users.map(user => user.username)));
     });
 
     router.get('/nlmCuratorNames', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
-        return nlmCurators()
-            .then(users => res.send(users.map(user => user.username)));
+        return nlmCurators().then(users => res.send(users.map(user => user.username)));
     });
 
     router.get('/orgCuratorNames/:org', canSubmissionSubmitMiddleware, (req, res) => {
@@ -82,7 +85,7 @@ export function module(roleConfig: { manage: RequestHandler, search: RequestHand
             const newUser: Partial<UserFull> = {
                 username: username.toLowerCase(),
                 password: 'umls',
-                quota: 1024 * 1024 * 1024
+                quota: 1024 * 1024 * 1024,
             };
             await userSave(newUser);
             res.send(username + ' added.');

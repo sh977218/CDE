@@ -21,21 +21,22 @@ import { module as deModule } from 'server/cde/deRouters';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
 import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as formModule } from 'server/form/formRouters';
-import { module as loaderModule } from 'server/loader/loaderRoutes'
+import { module as loaderModule } from 'server/loader/loaderRoutes';
 import { module as logModule } from 'server/log/logRoutes';
 import { module as orgManagementModule } from 'server/orgManagement/orgManagementRoutes';
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
-import { module as submissionModule } from './submission/submissionRoutes'
+import { module as submissionModule } from './submission/submissionRoutes';
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
-    canAttachMiddleware, canEditArticleMiddleware,
+    canAttachMiddleware,
+    canEditArticleMiddleware,
     canSeeCommentMiddleware,
     checkEditing,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware,
-    isSiteAdminMiddleware
+    isSiteAdminMiddleware,
 } from 'server/system/authorization';
 import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';
@@ -63,46 +64,73 @@ console.log('Node Environment ' + process.env.NODE_ENV);
 const app = express();
 
 app.use(helmet());
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
-        fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
-        frameSrc: ["'self'", '*.youtube.com', config.uts.ssoServerOrigin],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'cdn.ckeditor.com', 'cdn.jsdelivr.net', 'script.crazyegg.com',
-            'cdnjs.cloudflare.com', '*.nih.gov', 'ajax.googleapis.com', 'www.googletagmanager.com', 'www.google-analytics.com'],
-        styleSrc: ["'self'", 'maxcdn.bootstrapcdn.com', 'fonts.googleapis.com', 'fonts.gstatic.com',
-            "'unsafe-inline'", '*.nih.gov', 'cdn.ckeditor.com'],
-        imgSrc: ["'self'", 'data:', 'cdn.ckeditor.com', '*.nih.gov', 'www.google-analytics.com', 'www.googletagmanager.com'],
-        connectSrc: ['*'],
-        reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
-        workerSrc: ['*', 'blob:']
-    }
-}));
-app.use(helmet.referrerPolicy({policy: 'same-origin'}));
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'", 'fonts.gstatic.com', '*.youtube.com'],
+            fontSrc: ["'self'", 'fonts.gstatic.com', '*.nih.gov'],
+            frameSrc: ["'self'", '*.youtube.com', config.uts.ssoServerOrigin],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                'cdn.ckeditor.com',
+                'cdn.jsdelivr.net',
+                'script.crazyegg.com',
+                'cdnjs.cloudflare.com',
+                '*.nih.gov',
+                'ajax.googleapis.com',
+                'www.googletagmanager.com',
+                'www.google-analytics.com',
+            ],
+            styleSrc: [
+                "'self'",
+                'maxcdn.bootstrapcdn.com',
+                'fonts.googleapis.com',
+                'fonts.gstatic.com',
+                "'unsafe-inline'",
+                '*.nih.gov',
+                'cdn.ckeditor.com',
+            ],
+            imgSrc: [
+                "'self'",
+                'data:',
+                'cdn.ckeditor.com',
+                '*.nih.gov',
+                'www.google-analytics.com',
+                'www.googletagmanager.com',
+            ],
+            connectSrc: ['*'],
+            reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
+            workerSrc: ['*', 'blob:'],
+        },
+    })
+);
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 app.use(compress());
 
-app.use(hsts({maxAge: 31536000000}));
+app.use(hsts({ maxAge: 31536000000 }));
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
     // Promise Error events are not Node Error objects, they are usually strings
     const message = `Error: Unhandled Promise Rejection: ${err}`;
     console.error(message);
     errorLogger.error(message, {
         origin: 'app.process.unhandledRejection',
-        stack: err && (err as any).stack || err,
+        stack: (err && (err as any).stack) || err,
     });
 });
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
     console.error('Error: Process Uncaught Exception');
     console.error(err.stack || err);
     errorLogger.error('Error: Uncaught Exception', {
         origin: 'app.process.uncaughtException',
-        stack: err.stack || err
+        stack: err.stack || err,
     });
 });
 
-domain.on('error', (err) => {
+domain.on('error', err => {
     console.error('Error: Domain Error');
     console.error(err.stack || err);
     errorLogger.error('Error: Domain Error', {
@@ -120,8 +148,8 @@ app.set('views', __dirname);
 app.use(blockBannedIps);
 app.use(banHackers);
 
-app.use(bodyParser.urlencoded({extended: false, limit: '5mb'}));
-app.use(bodyParser.json({limit: '16mb'}));
+app.use(bodyParser.urlencoded({ extended: false, limit: '5mb' }));
+app.use(bodyParser.json({ limit: '16mb' }));
 app.use(methodOverride());
 app.use(cookieParser());
 
@@ -144,7 +172,6 @@ const getRealIp = (req: Request): string => {
     return '';
 };
 
-
 // check https
 app.use((req, res, next) => {
     if (config.proxy && req.originalUrl !== '/server/system/status/cde') {
@@ -162,11 +189,15 @@ app.use((req, res, next) => {
     }
 });
 
-
 let mongoClient: MongoClient | null = null;
-establishConnection(config.database.appData).asPromise().then(conn => {
-    mongoClient = conn.getClient();
-}, err => console.log(`app db connection failed with error ${err}`));
+establishConnection(config.database.appData)
+    .asPromise()
+    .then(
+        conn => {
+            mongoClient = conn.getClient();
+        },
+        err => console.log(`app db connection failed with error ${err}`)
+    );
 require('deasync').loopWhile(() => !mongoClient);
 if (!mongoClient) {
     console.log('Error connecting to mongo');
@@ -175,13 +206,13 @@ if (!mongoClient) {
 const expressSettings = {
     store: MongoStore.create({
         client: mongoClient,
-        touchAfter: 60
+        touchAfter: 60,
     }),
     secret: config.sessionKey,
     proxy: config.proxy,
     resave: false,
     saveUninitialized: false,
-    cookie: {httpOnly: true, secure: config.proxy, maxAge: 60 * 60 * 1000}
+    cookie: { httpOnly: true, secure: config.proxy, maxAge: 60 * 60 * 1000 },
 };
 app.use(session(expressSettings));
 
@@ -225,7 +256,7 @@ const logFormat = {
     httpStatus: ':status',
     date: ':date',
     referrer: ':referrer',
-    responseTime: ':response-time'
+    responseTime: ':response-time',
 };
 
 morganLogger.token('real-remote-addr', (req: Request) => {
@@ -236,30 +267,35 @@ const expressLogger1 = morganLogger(JSON.stringify(logFormat), {
     stream: {
         write: (message: string) => {
             expressLogger.info(message);
-        }
-    }
+        },
+    },
 });
 
 if (config.expressLogFile) {
-    const logger = new (Logger)({
+    const logger = new Logger({
         transports: [
-            new (transports.File)({
-                filename: config.expressLogFile
-            })
-        ]
+            new transports.File({
+                filename: config.expressLogFile,
+            }),
+        ],
     });
-    app.use(morganLogger(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
-        ' ":referrer" ":user-agent" ":response-time ms"', {
-        stream: {
-            write: (message) => {
-                logger.info(message);
+    app.use(
+        morganLogger(
+            ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]' +
+                ' ":referrer" ":user-agent" ":response-time ms"',
+            {
+                stream: {
+                    write: message => {
+                        logger.info(message);
+                    },
+                },
             }
-        }
-    }));
+        )
+    );
 }
 
 let connections = 0;
-setInterval(() => connections = 0, 60000);
+setInterval(() => (connections = 0), 60000);
 
 app.use((req, res, next) => {
     const maxLogsPerMinute = config.maxLogsPerMinute || 1000;
@@ -275,41 +311,56 @@ try {
     app.use('/', appModule());
     app.use('/server/attachment/cde', canAttachMiddleware, attachmentModule(dbPlugins.dataElement, checkEditing));
     app.use('/server/attachment/form', canAttachMiddleware, attachmentModule(dbPlugins.form, checkEditing));
-    app.use('/server/attachment/article', canEditArticleMiddleware, attachmentModule(dbPlugins.article, isDocumentationEditor));
-    app.use('/server/discuss', discussModule({
-        allComments: isOrgAuthorityMiddleware,
-        canSeeComment: canSeeCommentMiddleware,
-    }));
-    app.use('/server/log', logModule({
-        feedbackLog: isOrgAuthorityMiddleware,
-        superLog: isSiteAdminMiddleware,
-    }));
+    app.use(
+        '/server/attachment/article',
+        canEditArticleMiddleware,
+        attachmentModule(dbPlugins.article, isDocumentationEditor)
+    );
+    app.use(
+        '/server/discuss',
+        discussModule({
+            allComments: isOrgAuthorityMiddleware,
+            canSeeComment: canSeeCommentMiddleware,
+        })
+    );
+    app.use(
+        '/server/log',
+        logModule({
+            feedbackLog: isOrgAuthorityMiddleware,
+            superLog: isSiteAdminMiddleware,
+        })
+    );
     app.use('/server/uts', utsModule());
-    app.use('/server/classification', classificationModule({
-        allowClassify: (req, res, next) => {
-            if (!canClassifyOrg(req.user, req.body.orgName)) {
-                return res.status(401).send();
-            }
-            next();
-        }
-    }));
+    app.use(
+        '/server/classification',
+        classificationModule({
+            allowClassify: (req, res, next) => {
+                if (!canClassifyOrg(req.user, req.body.orgName)) {
+                    return res.status(401).send();
+                }
+                next();
+            },
+        })
+    );
     app.use('/nativeRender', nativeRenderModule());
     app.use('/server/system', systemModule());
     app.use('/', deModule());
     app.use('/', formModule());
     app.use('/server/board', boardModule());
-    app.use('/server/submission', submissionModule())
+    app.use('/server/submission', submissionModule());
     swaggerInit(app);
-    app.use('/server/user', userModule({
-        search: isOrgAdminMiddleware,
-        manage: isOrgAuthorityMiddleware
-    }));
+    app.use(
+        '/server/user',
+        userModule({
+            search: isOrgAdminMiddleware,
+            manage: isOrgAuthorityMiddleware,
+        })
+    );
     app.use('/server/siteAdmin', isSiteAdminMiddleware, siteAdminModule());
     app.use('/server/orgManagement', orgManagementModule());
     app.use('/server/article', articleModule());
 
     app.use('/server/loader', isOrgAuthorityMiddleware, loaderModule());
-
 } catch (e: any) {
     console.error(e.stack);
     process.exit();
@@ -323,7 +374,6 @@ app.use((req, res, next) => {
     }
     respondHomeFull(req, res);
 });
-
 
 app.use(((err, req, res, next) => {
     if (err.code === 'EBADCSRFTOKEN') {
@@ -367,10 +417,10 @@ app.use(((err, req, res, next) => {
             params: req.params,
             body: req.body,
             ip: req.ip,
-            headers: {'user-agent': req.headers['user-agent']},
+            headers: { 'user-agent': req.headers['user-agent'] },
             errorCode: err.code,
-            errorType: err.type
-        }
+            errorType: err.type,
+        },
     };
     errorLogger.error('error', 'Error: Express Default Error Handler', meta);
     res.status(500).send('Something broke!');

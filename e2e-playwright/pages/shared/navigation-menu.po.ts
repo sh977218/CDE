@@ -95,6 +95,7 @@ export class NavigationMenuPo {
                 ignoreCase: true,
             }
         );
+        await this.page.getByTestId(`login_link`).waitFor({ state: 'hidden' });
     }
 
     async gotoCdeSearch() {
