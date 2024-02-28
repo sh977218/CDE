@@ -5,7 +5,7 @@
                   [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">drag_handle
         </mat-icon>
         <mat-icon *ngIf="question.skipLogic?.condition?.length > 0" class="updatedSkipLogicIcon"
-                  [ngClass]="{'fa-spin': question.updatedSkipLogic}"
+                  [ngClass]="{'spin': question.updatedSkipLogic}"
                   title="{{question.updatedSkipLogic?'Question has updated show if rule':'Question has show if rule'}}">
             settings
         </mat-icon>

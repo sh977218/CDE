@@ -24,7 +24,7 @@ public class FormDraftConcurrentWrite extends BaseFormTest {
         addSectionTop(change1);
         switchTab(1);
         addSectionBottom(change2, null);
-        textPresent("Cannot save this old version. Reload and redo.");
+        textPresent("Save Error. Please reload and redo.");
         textNotPresent(change1);
         textPresent(change2);
         refresh();

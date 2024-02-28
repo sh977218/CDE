@@ -1,15 +1,23 @@
 import { Component } from '@angular/core';
+import { NgForOf, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { UmlsTerm } from 'cde/permissibleValue/umls-term';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { EMPTY, Subject } from 'rxjs';
 import { PermissibleValue } from 'shared/models.model';
-import { UmlsTerm } from 'cde/permissibleValue/umls-term';
-import { MatDialogModule } from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
-import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
     templateUrl: './new-permissible-value-modal.component.html',
+    styles: [
+        `
+            label {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+        `,
+    ],
     imports: [MatDialogModule, FormsModule, NgIf, NgForOf],
     standalone: true,
 })
@@ -18,7 +26,7 @@ export class NewPermissibleValueModalComponent {
     umlsTerms: UmlsTerm[] = [];
     private searchTerms = new Subject<string>();
 
-    constructor(public http: HttpClient) {
+    constructor(public dialogRef: MatDialogRef<NewPermissibleValueModalComponent>, public http: HttpClient) {
         this.searchTerms
             .pipe(
                 debounceTime(300),
@@ -42,8 +50,16 @@ export class NewPermissibleValueModalComponent {
         this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
     }
 
+    saveDialog() {
+        if (!this.newPermissibleValue.valueMeaningName) {
+            this.newPermissibleValue.valueMeaningName = this.newPermissibleValue.permissibleValue;
+        }
+        this.dialogRef.close(this.newPermissibleValue);
+    }
+
     selectFromUmls(term: UmlsTerm) {
         this.newPermissibleValue.valueMeaningName = term.name;
+        this.newPermissibleValue.valueMeaningDefinition = term.name;
         this.newPermissibleValue.valueMeaningCode = term.ui;
         this.newPermissibleValue.codeSystemName = 'UMLS';
         if (!this.newPermissibleValue.permissibleValue && term.name) {

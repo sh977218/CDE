@@ -170,9 +170,8 @@
     <ng-template #noPvs>
         <p>No Permissible Values</p>
     </ng-template>
-    <ng-container *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs">
-        <table id="pvTable" data-testid="pvTable"
-               class="table table-bordered table-condensed table-striped table-responsive">
+    <div *ngIf="elt.valueDomain.permissibleValues.length > 0; else noPvs" id="pvTable">
+        <table data-testid="pvTable" class="table table-bordered table-condensed table-striped table-responsive">
             <thead>
             <tr>
                 <th>PV Labels</th>
@@ -192,17 +191,28 @@
             <tr *ngFor="let pv of elt.valueDomain.permissibleValues; index as i" id="pv_{{i}}">
                 <td id="pvValue_{{i}}">
                     <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
-                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
                 <td id="pvMeaningDefinition_{{i}}">
-                    <cde-inline-edit [(model)]="pv.valueMeaningDefinition"
-                                     [isAllowed]="canEdit"
-                                     (modelChange)="eltChange.emit();"></cde-inline-edit>
+                    <cde-inline-edit [(model)]="pv.valueMeaningDefinition" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvConceptId_{{i}}">{{pv.conceptId}}</td>
-                <td id="pvConceptSource_{{i}}">{{pv.conceptSource}}</td>
-                <td id="pvMeaningCode_{{i}}">{{pv.valueMeaningCode}}</td>
-                <td id="pvCodeSystem_{{i}}">{{pv.codeSystemName}}</td>
+                <td id="pvConceptId_{{i}}">
+                    <cde-inline-edit [(model)]="pv.conceptId" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
+                </td>
+                <td id="pvConceptSource_{{i}}">
+                    <cde-inline-edit [(model)]="pv.conceptSource" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
+                </td>
+                <td id="pvMeaningCode_{{i}}">
+                    <cde-inline-edit [(model)]="pv.valueMeaningCode" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
+                </td>
+                <td id="pvCodeSystem_{{i}}">
+                    <cde-inline-edit [(model)]="pv.codeSystemName" [isAllowed]="canEdit"
+                                     (modelChange)="eltChange.emit()"></cde-inline-edit>
+                </td>
                 <ng-container *ngIf="SOURCES['UMLS'].selected">
                     <td id="codeAsUMLS_{{i}}" data-testid="umls">
                         {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
@@ -250,7 +260,7 @@
             </tr>
             </tbody>
         </table>
-    </ng-container>
+    </div>
     <div>
         <ng-container *ngIf="canEdit">
             <button id="openAddPermissibleValueModelBtn" class="button light success"

@@ -223,7 +223,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 cb();
             },
             err => {
-                this.alert.httpErrorMessageAlert(err);
+                this.alert.httpErrorAlert(err);
             }
         );
     }
@@ -310,7 +310,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     this.tabsCommented = res.map(c => c.linkedTab + '_tab');
                     cb();
                 },
-                err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.')
+                err => this.alert.httpErrorAlert(err, 'Error loading comments.')
             );
         } else {
             cb();
@@ -397,7 +397,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 if (result) {
                     this.formViewService.removeDraft(elt).subscribe(
                         () => this.loadElt(() => (this.hasDrafts = false)),
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 }
             });
@@ -434,8 +434,8 @@ export class FormViewComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.draftSaving = undefined;
-                    this.savingText = 'Cannot save this old version. Reload and redo.';
-                    this.alert.httpErrorMessageAlert(err);
+                    this.savingText = 'Save Error. Please reload and redo.';
+                    this.alert.httpErrorAlert(err);
                     throw err;
                 }
             ));
@@ -478,7 +478,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                                             this.loadElt(() => this.alert.addAlert('success', 'Form saved.'));
                                         }
                                     },
-                                    err => this.alert.httpErrorMessageAlert(err, 'Error publishing')
+                                    err => this.alert.httpErrorAlert(err, 'Error publishing')
                                 );
                             };
                             if (newCdeQuestions.length) {
@@ -486,7 +486,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                                     () => {
                                         publish();
                                     },
-                                    err => this.alert.httpErrorMessageAlert(err, 'Error saving form')
+                                    err => this.alert.httpErrorAlert(err, 'Error saving form')
                                 );
                             } else {
                                 publish();
@@ -711,7 +711,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
                     data: { newer: draft, older: published },
                 });
             },
-            err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.')
+            err => this.alert.httpErrorAlert(err, 'Error loading view changes.')
         );
     }
 

@@ -64,21 +64,18 @@ const validateUrl = Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6}
     styleUrls: ['./submissionEdit.component.scss'],
 })
 export class SubmissionEditComponent implements OnDestroy {
-    set submission(submission: Partial<Submission>) {
-        this._submission = submission;
-        this.defaultValues(this.submission);
-    }
-
+    // set to submissionLoaded()
     get submission(): Partial<Submission> {
         return this._submission;
     }
 
-    _submission: Partial<Submission> = {};
+    _submission: Readonly<Partial<Submission>> = {};
     allNlmCurators: string[] = [''];
     allOrgCurators: string[] = [''];
     allReviewers: string[] = [''];
     canSave: boolean = true;
     canReview: boolean = false;
+    endorsed: boolean = false;
     filteredNlmCurators: Observable<string[]>;
     filteredOrgCurators: Observable<string[]>;
     filteredReviewers: Observable<string[]>;
@@ -396,6 +393,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     endorse() {
+        this.endorsed = true;
         if (this.page1.invalid || this.page2.invalid || this.page3.invalid) {
             this.page1Submitted = true;
             this.page2Submitted = true;
@@ -466,13 +464,13 @@ export class SubmissionEditComponent implements OnDestroy {
         );
     }
 
-    forwardToExisting() {
+    forwardToExisting(_id: string) {
         if (this.route.snapshot.queryParams._id) {
             return;
         }
         this.router.navigate(['/collection/edit'], {
             queryParams: {
-                _id: this.submission._id,
+                _id,
             },
         });
     }
@@ -573,9 +571,9 @@ export class SubmissionEditComponent implements OnDestroy {
             .toPromise()
             .then(
                 s => {
-                    this.submission = s;
-                    this.forwardToExisting();
-                    return s;
+                    this.forwardToExisting(s._id);
+                    this.submissionLoaded(s);
+                    return this.submission as Submission;
                 },
                 (err: HttpErrorResponse) => {
                     this.alert.addAlert('fail', httpErrorMessage(err));
@@ -631,7 +629,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     submissionLoaded(s: Submission) {
-        this.submission = s;
+        (this._submission as Submission) = s;
         this.defaultValues(this.submission);
         this.copySubmissionToForm();
     }

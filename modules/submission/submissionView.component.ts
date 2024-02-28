@@ -26,6 +26,7 @@ export class SubmissionViewComponent implements OnInit {
     @Input() submission: Partial<Submission> = {};
     canReview: boolean = false;
     canSave: boolean = false;
+    endorsed: boolean = false;
     filteredNlmCurators: Observable<string[]>;
     filteredOrgCurators: Observable<string[]>;
     filteredReviewers: Observable<string[]>;

@@ -48,7 +48,7 @@ export class UnpinBoardComponent {
                     this.boardListService.reload.emit();
                 },
                 err => {
-                    this.alert.httpErrorMessageAlert(err);
+                    this.alert.httpErrorAlert(err);
                     this.boardListService.reload.emit();
                 }
             );

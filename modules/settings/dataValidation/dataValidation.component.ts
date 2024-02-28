@@ -68,7 +68,7 @@ export class DataValidationComponent {
                 },
                 error => {
                     this.fileValidating = false;
-                    this.alert.httpErrorMessageAlert(error);
+                    this.alert.httpErrorAlert(error);
                 }
             );
         }

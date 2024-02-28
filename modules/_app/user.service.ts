@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { NotificationService } from '_app/notifications/notification.service';
+import { InactivityLoggedOutModalComponent } from 'inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 import { isEmpty } from 'lodash';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { Cb1, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
@@ -19,9 +20,7 @@ import {
 } from 'shared/security/authorizationShared';
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
-import { NotificationService } from '_app/notifications/notification.service';
 import { removeFromArray } from 'shared/array';
-import { InactivityLoggedOutModalComponent } from '../inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 
 /*
  * 3 ways to get User:
@@ -95,7 +94,7 @@ export class UserService {
             this._user = undefined;
             return Promise.reject();
         }
-        this._user = this.validate(user);
+        this._user = validate(user);
         await this.setOrganizations();
         if (this._user.searchSettings && !['summary', 'table'].includes(this._user.searchSettings.defaultSearchView)) {
             this._user.searchSettings.defaultSearchView = 'summary';
@@ -187,23 +186,23 @@ export class UserService {
     waitForUser(): Promise<User | undefined> {
         return this.promise;
     }
+}
 
-    validate(user: User): User {
-        if (!user.orgAdmin) {
-            user.orgAdmin = [];
-        }
-        if (!user.orgCurator) {
-            user.orgCurator = [];
-        }
-        if (!user.orgEditor) {
-            user.orgEditor = [];
-        }
-        if (!user.notificationSettings) {
-            user.notificationSettings = newNotificationSettings();
-        }
-        if (!user.notificationSettings.comment) {
-            user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
-        }
-        return user;
+function validate(user: User): User {
+    if (!user.orgAdmin) {
+        user.orgAdmin = [];
     }
+    if (!user.orgCurator) {
+        user.orgCurator = [];
+    }
+    if (!user.orgEditor) {
+        user.orgEditor = [];
+    }
+    if (!user.notificationSettings) {
+        user.notificationSettings = newNotificationSettings();
+    }
+    if (!user.notificationSettings.comment) {
+        user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
+    }
+    return user;
 }

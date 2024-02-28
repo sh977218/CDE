@@ -1,46 +1,54 @@
 <h1 mat-dialog-title>Add A New Permissible Value</h1>
 <form #newPermissibleValueForm="ngForm">
     <div mat-dialog-content>
-        <div class="form-group">
-            <label for="permissibleValueInput">Value</label>
-            <input class="form-control" [(ngModel)]="newPermissibleValue.permissibleValue"
-                   id="permissibleValueInput"
-                   name="permissibleValueInput" Placeholder="Permissible Value" required/>
-        </div>
-        <div class="form-group">
-            <label for="valueMeaningNameInput">Code Name</label>
-            <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningName"
-                   id="valueMeaningNameInput" name="valueMeaningNameInput" (keyup)="lookupUmls()"
-                   data-testid="valueMeaningNameInput"
-                   Placeholder="Code Name" (ngModelChange)="lookupUmls()"/>
-        </div>
-        <div class="form-group">
-            <label for="valueMeaningCodeInput">Code</label>
-            <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningCode"
-                   id="valueMeaningCodeInput"
-                   name="valueMeaningCodeInput" Placeholder="Code"/>
-        </div>
-        <div class="form-group">
-            <label for="valueMeaningDescInput">Description</label>
-            <input class="form-control" [(ngModel)]="newPermissibleValue.valueMeaningDefinition"
-                   id="valueMeaningDescInput" name="valueMeaningDescInput" Placeholder="Description"/>
-        </div>
-        <div class="form-group" *ngIf="newPermissibleValue.valueMeaningCode?.length > 0">
-            <label for="codeSystemInput">Code System</label>
-            <input class="form-control" [(ngModel)]="newPermissibleValue.codeSystemName" id="codeSystemInput"
-                   name="codeSystemInput" Placeholder="Code System" required/>
-        </div>
+        <label>
+            Look up in UMLS
+            <input name="valueMeaningNameInput" class="form-control" Placeholder="Code Name" data-testid="valueMeaningNameInput"
+                   [(ngModel)]="newPermissibleValue.valueMeaningName"
+                   (ngModelChange)="lookupUmls()" (keyup)="lookupUmls()"/>
+        </label>
+        <label>
+            PV Label
+            <input name="permissibleValueInput" class="form-control" Placeholder="Permissible Value"
+                   required [(ngModel)]="newPermissibleValue.permissibleValue"/>
+        </label>
+        <label>
+            PV Definition
+            <input name="valueMeaningDescInput" class="form-control" Placeholder="Description"
+                   required [(ngModel)]="newPermissibleValue.valueMeaningDefinition"/>
+        </label>
+        <label>
+            Permissible Value (PV) Concept Identifier
+            <input name="conceptIdInput" class="form-control"
+                   [(ngModel)]="newPermissibleValue.conceptId"/>
+        </label>
+        <label>
+            Permissible Value (PV) Terminology Source
+            <input name="conceptSourceInput" class="form-control"
+                   [required]="newPermissibleValue.conceptId?.length > 0"
+                   [(ngModel)]="newPermissibleValue.conceptSource"/>
+        </label>
+        <label>
+            Code for Permissible Value
+            <input name="valueMeaningCodeInput" class="form-control"
+                   [(ngModel)]="newPermissibleValue.valueMeaningCode"/>
+        </label>
+        <label>
+            Permissible Value Code System
+            <input name="codeSystemInput" class="form-control"
+                   [required]="newPermissibleValue.valueMeaningCode?.length > 0"
+                   [(ngModel)]="newPermissibleValue.codeSystemName"/>
+        </label>
         <div *ngIf="umlsTerms.length > 0">
             <h2>Choices from UMLS: </h2>
             <div *ngFor="let term of umlsTerms; let i = index;">
-                <a *ngIf="i<10" href="javascript:void(0);" (click)="selectFromUmls(term)">{{term.ui}}
-                    : {{term.name}}</a>
+                <button *ngIf="i<10" class="fake-link" (click)="selectFromUmls(term)">{{term.ui}} : {{term.name}}</button>
             </div>
         </div>
     </div>
     <div mat-dialog-actions>
         <button class="button fail" [mat-dialog-close]>Cancel</button>
-        <button type="submit" id="createNewPermissibleValueBtn" class="button" [mat-dialog-close]="newPermissibleValue"
+        <button type="submit" id="createNewPermissibleValueBtn" class="button" (click)="saveDialog()"
                 [disabled]="!newPermissibleValueForm.form.valid">Save
         </button>
     </div>

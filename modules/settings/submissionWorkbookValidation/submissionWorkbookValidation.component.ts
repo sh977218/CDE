@@ -38,7 +38,7 @@ export class SubmissionWorkbookValidationComponent {
                 },
                 error => {
                     this.fileValidating = false;
-                    this.alert.httpErrorMessageAlert(error);
+                    this.alert.httpErrorAlert(error);
                 }
             );
         }

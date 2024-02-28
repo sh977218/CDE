@@ -393,7 +393,7 @@
             <label for="licenseDocument">
                 <div id="licenseDocument">Upload Supporting License/Copyright Documentation (optional)</div>
                 <label for="fileLicense" class="fileInput">
-                    <button class="button"
+                    <button class="button" type="button"
                             [disabled]="page3.controls.boolLicense.disabled"
                             (click)="!page3.controls.boolLicense.disabled && openFileDialog('fileLicense')">
                         Browse
@@ -410,7 +410,7 @@
             <label for="supporting">
                 <div id="supporting">Upload Supporting Other Documentation (optional)</div>
                 <label for="fileSupporting" class="fileInput">
-                    <button class="button"
+                    <button class="button" type="button"
                             [disabled]="page3.controls.boolSupporting.disabled"
                             (click)="!page3.controls.boolSupporting.disabled && openFileDialog('fileSupporting')">
                         Browse
@@ -539,7 +539,10 @@
                 <div style="float: right">
                     <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
                     <button *ngIf="canSave && !canReview" type="submit" class="button" (click)="submit()">Submit</button>
-                    <button *ngIf="canSave && canReview" type="submit" class="button success" (click)="endorse()">Endorse</button>
+                    <button *ngIf="canSave && canReview && !endorsed" type="submit" class="button success" (click)="endorse()">Endorse</button>
+                    <span *ngIf="endorsed">
+                        <mat-icon class="spin">auto_renew</mat-icon>
+                    </span>
                 </div>
             </div>
         </div>

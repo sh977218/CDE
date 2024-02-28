@@ -58,7 +58,7 @@ export class IdentifiersComponent {
                 .get<IdSourcesResponse>('/server/system/idSources')
                 .toPromise()
                 .catch(err => {
-                    this.alert.httpErrorMessageAlert(err);
+                    this.alert.httpErrorAlert(err);
                     return [];
                 }));
         }

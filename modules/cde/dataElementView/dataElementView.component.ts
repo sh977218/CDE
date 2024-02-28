@@ -243,7 +243,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     this.comments = res;
                     cb();
                 },
-                err => this.alert.httpErrorMessageAlert(err, 'Error loading comments.')
+                err => this.alert.httpErrorAlert(err, 'Error loading comments.')
             );
         } else {
             cb();
@@ -345,7 +345,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 if (result) {
                     this.deViewService.removeDraft(elt).subscribe(
                         () => this.loadElt(() => (this.hasDrafts = false)),
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 }
             });
@@ -383,8 +383,8 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                 },
                 err => {
                     this.draftSaving = undefined;
-                    this.savingText = 'Cannot save this old version. Reload and redo.';
-                    this.alert.httpErrorMessageAlert(err);
+                    this.savingText = 'Save Error. Please reload and redo.';
+                    this.alert.httpErrorAlert(err);
                     throw err;
                 }
             ));
@@ -412,7 +412,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                         this.loadElt(() => this.alert.addAlert('success', 'Data Element saved.'));
                     }
                 },
-                err => this.alert.httpErrorMessageAlert(err, 'Error publishing')
+                err => this.alert.httpErrorAlert(err, 'Error publishing')
             );
         };
 
@@ -444,7 +444,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
                     data: { newer: draft, older: published },
                 });
             },
-            err => this.alert.httpErrorMessageAlert(err, 'Error loading view changes.')
+            err => this.alert.httpErrorAlert(err, 'Error loading view changes.')
         );
     }
 

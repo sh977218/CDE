@@ -21,8 +21,9 @@ export class InlineEditComponent {
     }
     @Input() inputType: InputTypes = 'text';
     @Input() selectOptions = [];
-    @Input() isAllowed = false;
+    @Input() isAllowed: boolean = false;
     @Input() linkSource!: string;
+    @Input() placeholder: string = '';
     @Output() modelChange = new EventEmitter<string>();
     editMode = false;
     value!: string;

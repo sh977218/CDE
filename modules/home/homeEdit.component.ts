@@ -86,7 +86,7 @@ export class HomeEditComponent {
                 },
                 err => {
                     this.autoSaveLock = false;
-                    this.alert.httpErrorMessageAlert(err);
+                    this.alert.httpErrorAlert(err);
                 }
             );
     }
@@ -111,7 +111,7 @@ export class HomeEditComponent {
             })
             .then(() => this.http.delete('/server/homeEdit').toPromise())
             .then(() => this.router.navigate(['/home']))
-            .catch(err => this.alert.httpErrorMessageAlert(err));
+            .catch(err => this.alert.httpErrorAlert(err));
     }
 
     deleteImage(update: UpdateCard): Promise<void> {
@@ -165,7 +165,7 @@ export class HomeEditComponent {
                     homepage.updatedBy = newHomepage.updatedBy;
                     this.editing = true;
                 },
-                err => this.alert.httpErrorMessageAlert(err)
+                err => this.alert.httpErrorAlert(err)
             );
     }
 
@@ -210,7 +210,7 @@ export class HomeEditComponent {
                         )
                     )
                     .then(() => this.router.navigate(['/home']))
-                    .catch(err => this.alert.httpErrorMessageAlert(err));
+                    .catch(err => this.alert.httpErrorAlert(err));
             });
     }
 
@@ -242,10 +242,10 @@ export class HomeEditComponent {
                                 }
                                 this.postLoad(homepage);
                             },
-                            err => this.alert.httpErrorMessageAlert(err)
+                            err => this.alert.httpErrorAlert(err)
                         );
                 },
-                err => this.alert.httpErrorMessageAlert(err)
+                err => this.alert.httpErrorAlert(err)
             );
     }
 
@@ -264,7 +264,7 @@ export class HomeEditComponent {
                     }
                     this.router.navigate(['/home']);
                 },
-                err => this.alert.httpErrorMessageAlert(err)
+                err => this.alert.httpErrorAlert(err)
             );
     }
 

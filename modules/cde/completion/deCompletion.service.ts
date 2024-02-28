@@ -36,7 +36,7 @@ export class DeCompletionService {
                         result => {
                             this.suggestedCdes = result;
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 } else {
                     this.suggestedCdes = [];

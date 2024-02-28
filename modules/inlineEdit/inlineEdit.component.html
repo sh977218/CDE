@@ -1,25 +1,29 @@
 <form *ngIf="editMode else viewMode;" #inlineForm="ngForm" (ngSubmit)="save()">
     <ng-container *ngIf="inputType.toLowerCase() === 'text'">
-        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="text" autocomplete="off" [(ngModel)]="value" />
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="text" autocomplete="off"
+               [(ngModel)]="value" [placeholder]="placeholder"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'email'">
-        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="email" autocomplete="off" [(ngModel)]="value" [email]="true"/>
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="email" autocomplete="off"
+               [(ngModel)]="value" [email]="true" [placeholder]="placeholder"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'date'">
-        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="date" autocomplete="off" [(ngModel)]="value"/>
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="date" autocomplete="off"
+               [(ngModel)]="value" [placeholder]="placeholder"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'number'">
-        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="number" autocomplete="off" [(ngModel)]="value"/>
+        <input class="form-control" data-testid="inline-edit-input" name="inlineInput" type="number" autocomplete="off"
+               [(ngModel)]="value" [placeholder]="placeholder"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'select'">
-        <select class="form-control" data-testid="inline-edit-select" [(ngModel)]="value" name="inlineSelect">
+        <select name="inlineSelect" class="form-control" data-testid="inline-edit-select" [(ngModel)]="value" [textContent]="placeholder">
             <option *ngFor="let selectOption of selectOptions" [selected]="selectOption === value">
                 {{selectOption}}
             </option>
         </select>
     </ng-container>
     <ng-container data-testid="inline-edit-input" *ngIf="inputType.toLowerCase() === 'textarea'" name="inlineTextarea">
-        <textarea class="form-control" autocomplete="off" [(ngModel)]="value"></textarea>
+        <textarea class="form-control" autocomplete="off" [(ngModel)]="value" [placeholder]="placeholder"></textarea>
     </ng-container>
     <div class="actions">
         <button type="button" class="button small fail" (click)="discard()">

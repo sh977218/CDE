@@ -1,25 +1,30 @@
+import { NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Dictionary } from 'async';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
-import { DataElement, DATA_TYPE_ARRAY, ValueDomainValueList } from 'shared/de/dataElement.model';
-import { fixDataElement, fixDatatype } from 'shared/de/dataElement.model';
+import { Dictionary } from 'async';
+import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
+import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
+import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
+import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
+import { NonCoreModule } from 'non-core/noncore.module';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+    DataElement,
+    DATA_TYPE_ARRAY,
+    ValueDomainValueList,
+    fixDatatype,
+    fixDataElement,
+} from 'shared/de/dataElement.model';
 import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
 import { mapSeries } from 'shared/promise';
-import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-permissible-value-modal/new-permissible-value-modal.component';
-import { ImportPermissibleValueModalComponent } from 'cde/permissibleValue/import-permissible-value-modal/import-permissible-value-modal.component';
-import { MatInputModule } from '@angular/material/input';
-import { NgForOf, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
-import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
-import { NonCoreModule } from 'non-core/noncore.module';
-import { MatIconModule } from '@angular/material/icon';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
 interface Source {

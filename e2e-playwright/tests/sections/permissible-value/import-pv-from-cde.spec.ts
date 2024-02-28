@@ -55,10 +55,10 @@ test(`Import permissible value from CDE`, async ({
         await expect(lastRowTds.first().locator(`cde-inline-view`)).toHaveText(
             `Native Hawaiian or Other Pacific Islander`
         );
-        await expect(lastRowTds.nth(2)).toHaveText(`C41219`);
-        await expect(lastRowTds.nth(3)).toHaveText(`NCI Thesaurus`);
-        await expect(lastRowTds.nth(4)).toHaveText(`C41219`);
-        await expect(lastRowTds.nth(5)).toHaveText(`NCI Thesaurus`);
+        await expect(lastRowTds.nth(2)).toContainText(`C41219`);
+        await expect(lastRowTds.nth(3)).toContainText(`NCI Thesaurus`);
+        await expect(lastRowTds.nth(4)).toContainText(`C41219`);
+        await expect(lastRowTds.nth(5)).toContainText(`NCI Thesaurus`);
     });
 
     await test.step(`Verify history`, async () => {

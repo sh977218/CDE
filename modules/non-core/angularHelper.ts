@@ -4,22 +4,25 @@ import { ownKeys } from 'shared/util';
 
 export function httpErrorMessage(err: HttpErrorResponse): string {
     if (typeof err.error === 'string') {
-        // response body
-        return err.error;
+        return err.error; // response body
     }
     if (err.error instanceof Error) {
-        // legacy server error objects
-        return err.error.message;
+        return err.error.message; // legacy server error objects
     }
     if (err.message === 'Http failure response for (unknown url): 0 Unknown Error') {
         return 'Server is not available or you are offline.';
     }
-    if (err.statusText) {
-        // general status codes
-        return err.statusText;
+    if (err.status === 401) {
+        return 'Unauthenticated. Please login.'; // Unauthorized
+    }
+    if (err.status === 403) {
+        return 'Forbidden. Please request permission from your NIH point of contact.';
     }
     if (err.status === 409) {
         return 'Conflict. Already Exists';
+    }
+    if (err.statusText) {
+        return err.statusText; // general status codes
     }
     return err.message; // fallback to full angular http description
 }

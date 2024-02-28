@@ -54,10 +54,10 @@ export class PinToBoardDirective {
                                         boardName: 'New Board',
                                     });
                                 },
-                                err => this.alert.httpErrorMessageAlert(err)
+                                err => this.alert.httpErrorAlert(err)
                             );
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 } else if (this.myBoardService.boards?.length === 1) {
                     const board = this.myBoardService.boards[0];
@@ -69,7 +69,7 @@ export class PinToBoardDirective {
                                 boardName: board.name,
                             });
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 } else {
                     const data = module;
@@ -90,7 +90,7 @@ export class PinToBoardDirective {
                                                 boardName: board.name,
                                             });
                                         },
-                                        err => this.alert.httpErrorMessageAlert(err)
+                                        err => this.alert.httpErrorAlert(err)
                                     );
                                 } else if (this.elasticsearchPinQuery) {
                                     this.myBoardService.addAllToBoard(board, module, this.elasticsearchPinQuery);

@@ -50,7 +50,7 @@ export class CreateBoardComponent {
                         () => {
                             this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Board created.'));
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 }
             });

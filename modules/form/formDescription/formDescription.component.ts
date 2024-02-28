@@ -225,8 +225,8 @@ export class FormDescriptionComponent implements OnInit {
                 this.elt.__v = elt.__v;
             },
             error => {
-                this.alert.httpErrorMessageAlert(error);
-                this.alert.addAlert('danger', 'Cannot save this old version. Reload and redo.');
+                this.alert.httpErrorAlert(error);
+                this.alert.addAlert('danger', 'Save Error. Please reload and redo.');
             }
         );
     }

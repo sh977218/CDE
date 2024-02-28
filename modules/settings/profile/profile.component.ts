@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { User } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
-import { AlertService } from '../../alert/alert.service';
 
 @Component({
     selector: 'cde-profile',
@@ -26,7 +26,7 @@ export class ProfileComponent {
                     this.alert.addAlert('success', 'Saved');
                 });
             },
-            error: err => this.alert.httpErrorMessageAlert(err),
+            error: err => this.alert.httpErrorAlert(err),
         });
     }
 }

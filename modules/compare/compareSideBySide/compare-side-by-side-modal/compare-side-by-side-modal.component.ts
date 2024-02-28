@@ -172,7 +172,7 @@ export class CompareSideBySideModalComponent {
                     });
                     cb();
                 },
-                err => this.alert.httpErrorMessageAlert(err)
+                err => this.alert.httpErrorAlert(err)
             );
     }
 

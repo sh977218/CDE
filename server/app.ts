@@ -211,6 +211,7 @@ const expressSettings = {
     secret: config.sessionKey,
     proxy: config.proxy,
     resave: false,
+    rolling: true,
     saveUninitialized: false,
     cookie: { httpOnly: true, secure: config.proxy, maxAge: 60 * 60 * 1000 },
 };

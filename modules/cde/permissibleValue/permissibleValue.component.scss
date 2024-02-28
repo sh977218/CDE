@@ -1,7 +1,10 @@
 #pvTable {
-  overflow: auto;
-  width: 100%;
-  max-height: 500px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+
+  table {
+    margin-bottom: 0;
+  }
 }
 
 dl.cde-property dt {

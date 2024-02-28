@@ -11,18 +11,19 @@ public class PvValidatorTest extends NlmCdeBaseTest {
     public void addPv(String pv, String name, String code, String codeSystem) {
         clickElement(By.id("openAddPermissibleValueModelBtn"));
         hangon(1);
-        findElement(By.id("permissibleValueInput")).sendKeys(pv);
+        findElement(By.name("permissibleValueInput")).sendKeys(pv);
+        findElement(By.name("valueMeaningDescInput")).sendKeys(name.length() > 0 ? name : "permissible value without a name");
 
         if (name != null) {
-            findElement(By.id("valueMeaningNameInput")).sendKeys(name);
+            findElement(By.name("valueMeaningNameInput")).sendKeys(name);
         }
 
         if (code != null) {
-            findElement(By.id("valueMeaningCodeInput")).sendKeys(code);
+            findElement(By.name("valueMeaningCodeInput")).sendKeys(code);
         }
 
         if (codeSystem != null) {
-            findElement(By.id("codeSystemInput")).sendKeys(codeSystem);
+            findElement(By.name("codeSystemInput")).sendKeys(codeSystem);
         }
 
         clickElement(By.id("createNewPermissibleValueBtn"));
@@ -74,10 +75,11 @@ public class PvValidatorTest extends NlmCdeBaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("openSave")));
 
         clickElement(By.id("openAddPermissibleValueModelBtn"));
-        findElement(By.id("permissibleValueInput")).sendKeys("pv6");
-        findElement(By.id("valueMeaningCodeInput")).sendKeys("code6");
+        findElement(By.name("permissibleValueInput")).sendKeys("pv6");
+        findElement(By.name("valueMeaningDescInput")).sendKeys("pv6");
+        findElement(By.name("valueMeaningCodeInput")).sendKeys("code6");
         Assert.assertFalse(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
-        findElement(By.id("codeSystemInput")).sendKeys("MESH");
+        findElement(By.name("codeSystemInput")).sendKeys("MESH");
         Assert.assertTrue(findElement(By.id("createNewPermissibleValueBtn")).isEnabled());
     }
 

@@ -43,7 +43,7 @@ export class BoardOverviewComponent implements OnInit {
                         () => {
                             this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Saved.'));
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 }
             });
@@ -59,7 +59,7 @@ export class BoardOverviewComponent implements OnInit {
                         () => {
                             this.myBoardService.waitAndReload(() => this.alert.addAlert('success', 'Deleted.'));
                         },
-                        err => this.alert.httpErrorMessageAlert(err)
+                        err => this.alert.httpErrorAlert(err)
                     );
                 }
             });

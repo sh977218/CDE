@@ -139,6 +139,10 @@ export class MaterialPo {
         return this.page.locator(`mat-dialog-container`);
     }
 
+    matDialogContent() {
+        return this.page.locator('//*[@mat-dialog-content]');
+    }
+
     async closeMatDialog() {
         await this.matDialog().getByRole('button', { name: 'Close', exact: true }).click();
         await this.matDialog().waitFor({ state: 'hidden' });

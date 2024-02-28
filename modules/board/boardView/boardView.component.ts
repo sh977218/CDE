@@ -152,7 +152,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
                     this.boardListService.totalItems = this.totalItems;
                 }
             },
-            err => this.alert.httpErrorMessageAlert(err, 'Board')
+            err => this.alert.httpErrorAlert(err, 'Board')
         );
     }
 

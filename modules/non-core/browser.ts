@@ -42,15 +42,13 @@ export function openUrl(url: string, event: Event, newTab = false) {
 }
 
 export function scrollTo(id: string) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.scrollIntoView();
-    }
+    document.getElementById(id)?.scrollIntoView();
 }
 
 export function textTruncate(limit: number, text: string) {
     return text.length > limit - 3 ? text.substr(0, limit - 3) + '...' : text;
 }
+
 export function waitRendered(condition: CbRet<boolean>, cb: Cb, tries = 5) {
     if (tries === 0) {
         throw new Error('Timeout while waiting to render');

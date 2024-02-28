@@ -54,7 +54,7 @@ export class HistoryComponent {
                 }
                 this.collapseList();
             },
-            err => this.alert.httpErrorMessageAlert(err, 'Error retrieving history:')
+            err => this.alert.httpErrorAlert(err, 'Error retrieving history:')
         );
     }
 

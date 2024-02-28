@@ -62,7 +62,7 @@ export class CommentsComponent {
                 comments.forEach(comment => organizationSet.add(comment.organizationName));
                 this.organizationNames = Array.from(organizationSet.values());
             },
-            err => this.alert.httpErrorMessageAlert(err)
+            err => this.alert.httpErrorAlert(err)
         );
     }
 

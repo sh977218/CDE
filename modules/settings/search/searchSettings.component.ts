@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { User } from 'shared/models.model';
-import { AlertService } from '../../alert/alert.service';
 
 @Component({
     templateUrl: './searchSettings.component.html',
@@ -27,7 +27,7 @@ export class SearchSettingsComponent {
                         this.alert.addAlert('success', 'Saved');
                     });
                 },
-                error: err => this.alert.httpErrorMessageAlert(err),
+                error: err => this.alert.httpErrorAlert(err),
             });
         }
     }

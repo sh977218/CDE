@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ComponentType } from '@angular/cdk/overlay';
+import { UserService } from '_app/user.service';
 import { httpErrorMessage } from 'non-core/angularHelper';
 
 export class Alert {
@@ -21,7 +22,7 @@ export class Alert {
 export class AlertService {
     alertTime = 90000;
 
-    constructor(private snackBar: MatSnackBar) {}
+    constructor(private snackBar: MatSnackBar, private userService: UserService) {}
 
     addAlert(type: string, message: string) {
         const config = { duration: type === 'danger' ? 0 : this.alertTime };
@@ -36,8 +37,10 @@ export class AlertService {
         });
     }
 
-    httpErrorMessageAlert(err: HttpErrorResponse, info = '') {
-        const message = (info ? info + ' ' : '') + httpErrorMessage(err);
-        this.snackBar.open(message, 'Dismiss', { duration: this.alertTime });
+    httpErrorAlert(err: HttpErrorResponse, info = '') {
+        if (err.status === 401) {
+            this.userService.reload().then();
+        }
+        this.addAlert('error', (info ? info + ' ' : '') + httpErrorMessage(err));
     }
 }

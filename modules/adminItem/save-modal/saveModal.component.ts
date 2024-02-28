@@ -86,7 +86,7 @@ export class SaveModalComponent {
                     }
                     this.eltChange.emit();
                 },
-                (err: any) => this.alert.httpErrorMessageAlert(err)
+                (err: any) => this.alert.httpErrorAlert(err)
             );
     }
 }

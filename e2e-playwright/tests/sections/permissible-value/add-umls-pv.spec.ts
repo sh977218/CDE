@@ -23,7 +23,7 @@ test(`Add UMLS permissible value`, async ({
         await permissibleValueSection.addPermissibleValueButton().click();
         await materialPage.matDialog().waitFor({ state: 'visible' });
         await permissibleValueSection.valueMeaningNameInput().fill('Female');
-        await page.getByRole('link', { name: 'C0086287 : Females' }).click();
+        await page.getByRole('button', { name: 'C0086287 : Females' }).click();
         await page.getByRole('button', { name: 'Save' }).click();
     });
 

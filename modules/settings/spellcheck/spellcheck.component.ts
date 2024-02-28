@@ -62,7 +62,7 @@ export class SpellCheckComponent {
     getWhiteLists() {
         this.http.get<ValidationWhitelist[]>('/server/loader/whitelists').subscribe(
             res => (this.whiteList = res),
-            error => this.alert.httpErrorMessageAlert(error)
+            error => this.alert.httpErrorAlert(error)
         );
     }
 
@@ -89,7 +89,7 @@ export class SpellCheckComponent {
                 }
                 if (cb) cb(res);
             },
-            err => this.alert.httpErrorMessageAlert(err)
+            err => this.alert.httpErrorAlert(err)
         );
     }
 
@@ -114,7 +114,7 @@ export class SpellCheckComponent {
                 },
                 error => {
                     this.checkingFile = false;
-                    this.alert.httpErrorMessageAlert(error);
+                    this.alert.httpErrorAlert(error);
                 }
             );
         }
