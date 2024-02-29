@@ -1,14 +1,14 @@
-import {Request} from 'express';
-import {Document, Model} from 'mongoose';
+import { Request } from 'express';
+import { Document, Model } from 'mongoose';
 
 const moment = require('moment');
 const userAgent = require('useragent');
-import {config} from 'server';
-import {handleConsoleError} from 'server/errorHandler';
-import {clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema} from 'server/log/schemas';
-import {establishConnection} from 'server/system/connections';
-import {noDbLogger} from 'server/system/noDbLogger';
-import {UserFull} from 'server/user/userDb';
+import { config } from 'server';
+import { handleConsoleError } from 'server/errorHandler';
+import { clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema } from 'server/log/schemas';
+import { establishConnection } from 'server/system/connections';
+import { noDbLogger } from 'server/system/noDbLogger';
+import { UserFull } from 'server/user/userDb';
 import {
     HttpLog,
     HttpLogResponse,
@@ -24,15 +24,15 @@ import {
     AppLogSearchRequest,
     ItemLogSearchRequest,
     ClientErrorSearchRequest,
-    LoginRecordSearchRequest, ItemLogResponse
+    LoginRecordSearchRequest,
+    ItemLogResponse,
 } from 'shared/log/audit';
-import {Cb, CbError, CbError1} from 'shared/models.model';
-import {cdeAuditModel} from "../cde/mongo-cde";
-import {formAuditModel} from '../form/mongo-form';
-import {classificationAuditModel} from '../system/classificationAuditDb';
+import { Cb, CbError, CbError1 } from 'shared/models.model';
+import { cdeAuditModel } from '../cde/mongo-cde';
+import { formAuditModel } from '../form/mongo-form';
+import { classificationAuditModel } from '../system/classificationAuditDb';
 
 export type ClientErrorDocument = Document & ClientError;
-
 
 export interface ErrorLog {
     message: string;
@@ -62,7 +62,7 @@ export const loginModel: Model<Document & LoginRecord> = conn.model('logins', lo
 
 export function consoleLog(message: string, level: 'debug' | 'error' | 'info' | 'warning' = 'debug') {
     // no express errors see dbLogger.log(message)
-    new consoleLogModel({message, level}).save(err => {
+    new consoleLogModel({ message, level }).save(err => {
         if (err) {
             noDbLogger.error('Cannot log to DB: ' + err);
         }
@@ -79,8 +79,9 @@ interface MorganLogMessage {
     responseTime?: number;
 }
 
-export function log(message: MorganLogMessage, callback?: CbError) { // express only, all others dbLogger.consoleLog(message);
-    if (message.responseTime as any === '-' || Number.isNaN(message.responseTime)) {
+export function log(message: MorganLogMessage, callback?: CbError) {
+    // express only, all others dbLogger.consoleLog(message);
+    if ((message.responseTime as any) === '-' || Number.isNaN(message.responseTime)) {
         delete message.responseTime;
     }
 
@@ -130,13 +131,14 @@ export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogR
         modal.where('date').lte(moment(body.toDate).endOf('day'));
     }
     modal.clone().count((err, totalItems) => {
-        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        modal
+            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .limit(itemsPerPage)
             .skip(skip)
             .exec((err, logs) => {
                 callback(err, {
                     logs,
-                    totalItems
+                    totalItems,
                 });
             });
     });
@@ -147,7 +149,7 @@ export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResp
     let itemsPerPage = body.pageSize || 50;
     let sortBy = body.sortBy || 'url';
     let sortDirection = body.sortDir || 'asc';
-    let toDate = body.toDate || new Date()
+    let toDate = body.toDate || new Date();
     const skip = currentPage * itemsPerPage;
     const modal = consoleLogModel.find();
     if (body.fromDate) {
@@ -155,13 +157,14 @@ export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResp
     }
     modal.where('date').lte(moment(toDate));
     modal.clone().count((err, totalItems) => {
-        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        modal
+            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .limit(itemsPerPage)
             .skip(skip)
             .exec((err, logs) => {
                 callback(err, {
                     logs,
-                    totalItems
+                    totalItems,
                 });
             });
     });
@@ -173,33 +176,37 @@ export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callbac
     let sortBy = body.sortBy || 'date';
     let sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
-    const condition = {'user.username': {$nin: ['NIH CDE Repository Team']}};
+    const condition = { 'user.username': { $nin: ['NIH CDE Repository Team'] } };
     if (!body.includeBatchLoader) {
-        condition["user.username"].$nin.push('batchloader');
+        condition['user.username'].$nin.push('batchloader');
     }
-    const modal = auditDb.find(condition, {elements: {$slice: 10}});
+    const modal = auditDb.find(condition, { elements: { $slice: 10 } });
     modal.clone().count((err, totalItems) => {
-        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        modal
+            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .limit(itemsPerPage)
             .skip(skip)
             .exec((err, logs) => {
                 callback(err, {
                     logs,
-                    totalItems
+                    totalItems,
                 });
             });
     });
 };
 
-export const itemLogByModule = (module: 'de' | 'form' | 'classification', body: ItemLogSearchRequest, cb: CbError1<ItemLogResponse>) => {
+export const itemLogByModule = (
+    module: 'de' | 'form' | 'classification',
+    body: ItemLogSearchRequest,
+    cb: CbError1<ItemLogResponse>
+) => {
     const modalMap = {
         de: cdeAuditModel,
         form: formAuditModel,
-        classification: classificationAuditModel
+        classification: classificationAuditModel,
     };
-    itemLog(modalMap[module], body, cb)
-}
-
+    itemLog(modalMap[module], body, cb);
+};
 export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<ServerErrorResponse>) {
     let currentPage = body.currentPage || 0;
     let itemsPerPage = body.pageSize || 50;
@@ -208,23 +215,24 @@ export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<
     const skip = currentPage * itemsPerPage;
     const condition: {
         [key in string]: {
-            [key in string]: boolean
-        }
+            [key in string]: boolean;
+        };
     } = {
-        badInput: {$ne: true}
+        badInput: { $ne: true },
     };
     if (body.includeBadInput) {
         delete condition.badInput;
     }
     const modal = logErrorModel.find(condition);
     modal.clone().count((err, totalItems) => {
-        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        modal
+            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .limit(itemsPerPage)
             .skip(skip)
             .exec((err, logs) => {
                 callback(err, {
                     logs,
-                    totalItems
+                    totalItems,
                 });
             });
     });
@@ -238,25 +246,25 @@ export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<
     const skip = currentPage * itemsPerPage;
     const condition: {
         [key in string]: {
-            [key in string]: string[]
-        }
+            [key in string]: string[];
+        };
     } = {
-        userAgent: {$in: body.includeUserAgents}
+        userAgent: { $in: body.includeUserAgents },
     };
     const modal = clientErrorModel.find(condition);
     modal.clone().count((err, totalItems) => {
-        modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+        modal
+            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
             .limit(itemsPerPage)
             .skip(skip)
             .exec((err, logs) => {
                 callback(err, {
                     logs,
-                    totalItems
+                    totalItems,
                 });
             });
     });
 }
-
 
 export async function loginRecord(body: LoginRecordSearchRequest) {
     let currentPage = body.currentPage || 0;
@@ -266,14 +274,16 @@ export async function loginRecord(body: LoginRecordSearchRequest) {
     const skip = currentPage * itemsPerPage;
     const modal = loginModel.find();
     const totalItems = await modal.clone().count();
-    const logs = await modal.sort({[sortBy]: sortDirection === 'asc' ? 1 : -1})
+    const logs = await modal
+        .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
         .limit(itemsPerPage)
         .skip(skip)
         .exec();
-    return {logs, totalItems}
+    return { logs, totalItems };
 }
 
-export function logError(message: ErrorMessage, callback?: Cb) { // all server errors, express and not
+export function logError(message: ErrorMessage, callback?: Cb) {
+    // all server errors, express and not
     if (!message.date) {
         message.date = new Date();
     }
@@ -285,11 +295,13 @@ export function logError(message: ErrorMessage, callback?: Cb) { // all server e
         console.log(message);
         console.log('--- END Server Error---');
     }
-    new logErrorModel(message).save(handleConsoleError<Document & ErrorLog>({}, () => {
-        if (callback) {
-            callback();
-        }
-    }));
+    new logErrorModel(message).save(
+        handleConsoleError<Document & ErrorLog>({}, () => {
+            if (callback) {
+                callback();
+            }
+        })
+    );
 }
 
 export function logClientError(req: Request, done: Cb) {
@@ -297,38 +309,42 @@ export function logClientError(req: Request, done: Cb) {
     const clientErrorLog = req.body;
     const ua = userAgent.is(req.headers['user-agent']);
     if (ua.chrome) {
-        clientErrorLog.userAgent = 'chrome'
+        clientErrorLog.userAgent = 'chrome';
     }
     if (ua.firefox) {
-        clientErrorLog.userAgent = 'firefox'
+        clientErrorLog.userAgent = 'firefox';
     }
     if (ua.safari) {
-        clientErrorLog.userAgent = 'safari'
+        clientErrorLog.userAgent = 'safari';
     }
     if (ua.ie) {
-        clientErrorLog.userAgent = 'ie'
+        clientErrorLog.userAgent = 'ie';
     }
     clientErrorLog.date = new Date();
     clientErrorLog.ip = getRealIp(req);
     if (req.user) {
         clientErrorLog.username = req.user.username;
     }
-    new clientErrorModel(clientErrorLog).save(handleConsoleError<ClientErrorDocument>({}, () => {
-        done();
-    }));
+    new clientErrorModel(clientErrorLog).save(
+        handleConsoleError<ClientErrorDocument>({}, () => {
+            done();
+        })
+    );
 }
 
 export function getClientErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
-    const condition = user.notificationDate && user.notificationDate.clientLogDate
-        ? {date: {$gt: user.notificationDate.clientLogDate}}
-        : {};
+    const condition =
+        user.notificationDate && user.notificationDate.clientLogDate
+            ? { date: { $gt: user.notificationDate.clientLogDate } }
+            : {};
     clientErrorModel.countDocuments(condition).exec(callback);
 }
 
 export function getServerErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
-    const condition = user.notificationDate && user.notificationDate.serverLogDate
-        ? {date: {$gt: user.notificationDate.serverLogDate}} as any
-        : {};
+    const condition =
+        user.notificationDate && user.notificationDate.serverLogDate
+            ? ({ date: { $gt: user.notificationDate.serverLogDate } } as any)
+            : {};
     logErrorModel.countDocuments(condition).exec(callback);
 }
 
@@ -336,20 +352,26 @@ export function usageByDay(numberOfDays: number = 3, callback: CbError1<DailyUsa
     const d = new Date();
     d.setDate(d.getDate() - numberOfDays);
     //noinspection JSDuplicatedDeclaration
-    logModel.aggregate([
-        {$match: {$and: [{date: {$exists: true}}, {date: {$gte: d}}]}},
-        {
-            $group: {
-                _id: {
-                    ip: '$remoteAddr',
-                    year: {$year: '$date'},
-                    month: {$month: '$date'},
-                    day: {$dayOfMonth: '$date'}
-                } as any, hits: {$sum: 1}, latestDate: {$max: '$date'}
-            }
-        }], callback);
+    logModel.aggregate(
+        [
+            { $match: { $and: [{ date: { $exists: true } }, { date: { $gte: d } }] } },
+            {
+                $group: {
+                    _id: {
+                        ip: '$remoteAddr',
+                        year: { $year: '$date' },
+                        month: { $month: '$date' },
+                        day: { $dayOfMonth: '$date' },
+                    } as any,
+                    hits: { $sum: 1 },
+                    latestDate: { $max: '$date' },
+                },
+            },
+        ],
+        callback
+    );
 }
 
 export function recordUserLogin(user: UserFull, ip: string) {
-    new loginModel({user: user.username, email: user.email, ip}).save();
+    new loginModel({ user: user.username, email: user.email, ip }).save();
 }

@@ -175,11 +175,6 @@ export function userById(id: string, callback: CbError1<UserDocument | null>) {
 export function byId(id: string, callback?: CbError1<UserDocument | null>) {
     return userModel.findById(id, userProject, callback);
 }
-
-export function find(crit: any, cb: CbError1<UserDocument[]>) {
-    userModel.find(crit, cb);
-}
-
 export function updateUser(user: User, fields: Partial<UserFull>): Promise<UserFull> {
     const update: Partial<UserFull> = {};
     if (fields.commentNotifications) {

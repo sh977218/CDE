@@ -9,18 +9,11 @@ import { jobQueue, message } from 'server/system/schemas';
 import { userModel } from 'server/user/userDb';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import {
-    Board,
-    CbError,
-    CbError1, EltLog,
-    Item,
-    ModuleAll,
-    User
-} from 'shared/models.model';
+import { Board, CbError, CbError1, EltLog, Item, ModuleAll, User } from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
-import {diff} from "../cde/cdediff";
-import {handleError} from "../errorHandler";
+import { diff } from '../cde/cdediff';
+import { handleError } from '../errorHandler';
 
 interface JobStatus {
     _id: ObjectId;
@@ -33,46 +26,46 @@ export interface Message {
     author: {
         authorType: 'user';
         name: string;
-    }
+    };
     date: Date;
     recipient: {
         recipientType: 'role' | 'user';
         name: string;
-    }
+    };
     states: {
         _id?: ObjectId;
         action: 'Filed';
         comment: string;
         date: Date;
-    }[]
+    }[];
     type: 'CommentApproval' | 'CommentReply';
     typeBoardApproval?: {
         element: {
             elementType: any;
-        }
-    }
+        };
+    };
     typeCommentApproval?: {
         comment: {
             commentId: ObjectId;
             text: string;
-        }
+        };
         element: {
             eltId: ObjectId;
             eltType: ModuleAll;
             name: string;
-        }
-    }
+        };
+    };
     typeCommentReply?: {
         comment: {
             commentId: ObjectId;
             text: string;
-        }
+        };
         element: {
             eltId: ObjectId;
             eltType: ModuleAll;
             name: string;
-        }
-    }
+        };
+    };
 }
 
 export type MessageDocument = Document & Message;
@@ -82,17 +75,17 @@ export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue',
 export const messageModel: Model<MessageDocument> = conn.model('Message', message);
 
 export function jobStatus(type: string, callback: CbError1<Document & JobStatus>) {
-    jobQueueModel.findOne({type}, callback);
+    jobQueueModel.findOne({ type }, callback);
 }
 
 export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> | void {
     return callback
-        ? jobQueueModel.updateOne({type}, {status}, {upsert: true}).exec(callback)
-        : jobQueueModel.updateOne({type}, {status}, {upsert: true}).then();
+        ? jobQueueModel.updateOne({ type }, { status }, { upsert: true }).exec(callback)
+        : jobQueueModel.updateOne({ type }, { status }, { upsert: true }).then();
 }
 
 export function removeJobStatus(type: string, callback: CbError) {
-    jobQueueModel.deleteMany({type}, callback);
+    jobQueueModel.deleteMany({ type }, callback);
 }
 
 export function addCdeToViewHistory(elt: Item, user: User) {
@@ -103,15 +96,15 @@ export function addCdeToViewHistory(elt: Item, user: User) {
         viewHistory: {
             $each: [elt.tinyId],
             $position: 0,
-            $slice: 1000
-        }
+            $slice: 1000,
+        },
     };
-    userModel.updateOne({_id: user._id}, {$push: updStmt}, null, err => {
+    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null, err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addCdeToViewHistory',
                 stack: new Error().stack,
-                details: {cde: elt, user}
+                details: { cde: elt, user },
             });
         }
     });
@@ -125,15 +118,15 @@ export function addFormToViewHistory(elt: Item, user: User) {
         formViewHistory: {
             $each: [elt.tinyId],
             $position: 0,
-            $slice: 1000
-        }
+            $slice: 1000,
+        },
     };
-    userModel.updateOne({_id: user._id}, {$push: updStmt}, null, err => {
+    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null, err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addFormToViewHistory',
                 stack: new Error().stack,
-                details: {cde: elt, user}
+                details: { cde: elt, user },
             });
         }
     });
@@ -181,11 +174,13 @@ export function generateTinyId() {
 }
 
 export function createMessage(msg: Omit<Message, '_id'>, cb: CbError1<MessageDocument> = () => {}) {
-    msg.states = [{
-        action: 'Filed',
-        date: new Date(),
-        comment: 'cmnt'
-    }];
+    msg.states = [
+        {
+            action: 'Filed',
+            date: new Date(),
+            comment: 'cmnt',
+        },
+    ];
     new messageModel(msg).save(cb);
 }
 
