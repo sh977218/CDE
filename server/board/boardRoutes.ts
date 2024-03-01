@@ -6,7 +6,12 @@ import { boardRefresh, myBoards } from 'server/board/elastic';
 import { hideProprietaryCodes } from 'server/cde/cdesvc';
 import { moduleItemToDbName } from 'server/dbPlugins';
 import { respondError } from 'server/errorHandler';
-import { checkBoardViewerShip, loggedInMiddleware, nocacheMiddleware, unauthorizedPublishing } from 'server/system/authorization';
+import {
+    checkBoardViewerShip,
+    loggedInMiddleware,
+    nocacheMiddleware,
+    unauthorizedPublishing,
+} from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise } from 'server/system/elastic';
@@ -24,7 +29,7 @@ export function module() {
 
     router.post('/deletePin/', loggedInMiddleware, async (req, res): Promise<Response> => {
         try {
-            const {boardId, tinyId} = req.body;
+            const { boardId, tinyId } = req.body;
             const board = await dbPlugins.board.byIdAndOwner(boardId, req.user._id);
             if (!board) {
                 return res.status(404).send();
@@ -34,52 +39,54 @@ export function module() {
             }
             await dbPlugins.board.save(board);
             return res.send('Removed');
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
     router.put('/pinToBoard/', loggedInMiddleware, (req, res): Promise<Response> => {
-        const {boardId, tinyIdList, type}: { boardId: string, tinyIdList: string[], type: ModuleItem } = req.body;
-        return dbPlugins.board.byIdAndOwner(boardId, req.user._id)
+        const { boardId, tinyIdList, type }: { boardId: string; tinyIdList: string[]; type: ModuleItem } = req.body;
+        return dbPlugins.board
+            .byIdAndOwner(boardId, req.user._id)
             .then(board => {
                 if (!board) {
                     return res.status(404).send();
                 }
-                const intersectionCdes = intersection(board.pins.map(p => p.tinyId), tinyIdList);
+                const intersectionCdes = intersection(
+                    board.pins.map(p => p.tinyId),
+                    tinyIdList
+                );
                 if (!isEmpty(intersectionCdes)) {
                     return res.status(409).send('Already added');
                 }
-                return dbPlugins[moduleItemToDbName(type)].byTinyIdListElastic(tinyIdList)
-                    .then(elts => {
-                        board.pins = uniqBy(board.pins.concat(elts.map(mapToBoardPin)), 'tinyId');
-                        return dbPlugins.board.save(board)
-                            .then(() => res.send());
-                    });
+                return dbPlugins[moduleItemToDbName(type)].byTinyIdListElastic(tinyIdList).then(elts => {
+                    board.pins = uniqBy(board.pins.concat(elts.map(mapToBoardPin)), 'tinyId');
+                    return dbPlugins.board.save(board).then(() => res.send());
+                });
             })
-            .catch(respondError({req, res}))
+            .catch(respondError({ req, res }));
     });
 
-    const pinMoveByIncrement = (inc: number) => async (req: Request, res: Response): Promise<Response> => {
-        try {
-            const {boardId, tinyId} = req.body;
-            const board = await dbPlugins.board.byIdAndOwner(boardId, req.user._id);
-            if (!board) {
-                return res.status(404).send();
+    const pinMoveByIncrement =
+        (inc: number) =>
+        async (req: Request, res: Response): Promise<Response> => {
+            try {
+                const { boardId, tinyId } = req.body;
+                const board = await dbPlugins.board.byIdAndOwner(boardId, req.user._id);
+                if (!board) {
+                    return res.status(404).send();
+                }
+                const index = board.pins.findIndex(p => p.tinyId === tinyId);
+                if (index === -1) {
+                    return res.status(422).send();
+                }
+                board.pins.splice(index + inc, 0, board.pins.splice(index, 1)[0]);
+                await dbPlugins.board.save(board);
+                return res.send();
+            } catch (err: any) {
+                return respondError({ req, res })(err);
             }
-            const index = board.pins.findIndex(p => p.tinyId === tinyId);
-            if (index === -1) {
-                return res.status(422).send();
-            }
-            board.pins.splice(index + inc, 0, board.pins.splice(index, 1)[0]);
-            await dbPlugins.board.save(board);
-            return res.send();
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
-        }
-    };
+        };
 
     router.post('/pinMoveUp', loggedInMiddleware, pinMoveByIncrement(-1));
 
@@ -87,7 +94,7 @@ export function module() {
 
     router.post('/pinMoveTop', async (req, res): Promise<Response> => {
         try {
-            const {boardId, tinyId} = req.body;
+            const { boardId, tinyId } = req.body;
             const board = await dbPlugins.board.byIdAndOwner(boardId, req.user._id);
             if (!board) {
                 return res.status(404).send();
@@ -99,9 +106,8 @@ export function module() {
             board.pins.splice(0, 0, board.pins.splice(index, 1)[0]);
             await dbPlugins.board.save(board);
             return res.send();
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
@@ -115,9 +121,8 @@ export function module() {
             await dbPlugins.board.deleteOneById(board._id);
             await boardRefresh();
             return res.send('Board Removed.');
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
@@ -133,32 +138,30 @@ export function module() {
             const boardId = req.params.boardId;
             const start = parseInt(req.params.start, 10);
             const board = await dbPlugins.board.byId(boardId);
-            if (!board || board.shareStatus !== 'Public' && !checkBoardViewerShip(board, req.user)) {
+            if (!board || (board.shareStatus !== 'Public' && !checkBoardViewerShip(board, req.user))) {
                 return res.status(404).send();
             }
             delete board.owner.userId;
             const totalItems = board.pins.length;
             const tinyIdList = board.pins.splice(start, size).map(p => p.tinyId);
             board.pins = [];
-            return await dbPlugins[moduleItemToDbName(board.type)].cache.byTinyIdList(tinyIdList, size)
-                .then(elts => {
-                    if (board.type === 'cde') {
-                        hideProprietaryCodes(elts as DataElement[], req.user);
-                    }
-                    const exportBoard = {
-                        board: stripBsonIds(board),
-                        elts,
-                        totalItems
-                    };
-                    if (req.query.type === 'xml') {
-                        res.setHeader('Content-Type', 'application/xml');
-                        return res.send(js2xml('export', exportBoard));
-                    }
-                    return res.send(exportBoard);
-                });
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+            return await dbPlugins[moduleItemToDbName(board.type)].cache.byTinyIdList(tinyIdList, size).then(elts => {
+                if (board.type === 'cde') {
+                    hideProprietaryCodes(elts as DataElement[], req.user);
+                }
+                const exportBoard = {
+                    board: stripBsonIds(board),
+                    elts,
+                    totalItems,
+                };
+                if (req.query.type === 'xml') {
+                    res.setHeader('Content-Type', 'application/xml');
+                    return res.send(js2xml('export', exportBoard));
+                }
+                return res.send(exportBoard);
+            });
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
@@ -171,11 +174,11 @@ export function module() {
                 board.createdDate = new Date();
                 board.owner = {
                     userId: req.user._id,
-                    username: req.user.username
+                    username: req.user.username,
                 };
-                board.pins.forEach(p => p.pinnedDate = new Date());
+                board.pins.forEach(p => (p.pinnedDate = new Date()));
                 if (unauthorizedPublishing(req.user, req.body)) {
-                    return res.status(403).send('You don\'t have permission to make boards public!');
+                    return res.status(403).send("You don't have permission to make boards public!");
                 }
                 const numberBoards = await dbPlugins.board.countByUser(req.user._id);
                 if (numberBoards >= boardQuota) {
@@ -193,15 +196,14 @@ export function module() {
                 }
                 return res.send(await dbPlugins.board.save(boardDocument));
             }
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
     router.post('/users', loggedInMiddleware, async (req, res): Promise<Response> => {
         try {
-            const {boardId, users} = req.body;
+            const { boardId, users } = req.body;
             const board = await dbPlugins.board.byIdAndOwner(boardId, req.user._id);
             if (!board) {
                 return res.status(404).send();
@@ -209,14 +211,17 @@ export function module() {
             board.users = users;
             await dbPlugins.board.save(board);
             return res.send('done');
-        }
-        catch (err: any) {
-            return respondError({req, res})(err);
+        } catch (err: any) {
+            return respondError({ req, res })(err);
         }
     });
 
-    router.post('/myBoards', nocacheMiddleware, loggedInMiddleware,
-        check('sortDirection').isIn(['', 'desc', 'asc']), validateBody,
+    router.post(
+        '/myBoards',
+        nocacheMiddleware,
+        loggedInMiddleware,
+        check('sortDirection').isIn(['', 'desc', 'asc']),
+        validateBody,
         async (req, res): Promise<Response> => {
             const result = await myBoards(req.user, req.body);
             return res.send(result.body);
@@ -229,17 +234,16 @@ export function module() {
         if (!board) {
             return res.status(404).send();
         }
-        const query = buildElasticSearchQuery(req.user, req.body.query);
+        const query = buildElasticSearchQuery('board', req.user, req.body.query);
         if (query.size > MAX_PINS) {
             return res.status(403).send('Maximum number excesses.');
         }
         return elasticsearchPromise('cde', query, req.body.query)
             .then(result => {
                 board.pins = uniqBy(board.pins.concat(result.cdes.map(mapToBoardPin)), 'tinyId');
-                return dbPlugins.board.save(board)
-                    .then(() => res.send('Added to Board'));
+                return dbPlugins.board.save(board).then(() => res.send('Added to Board'));
             })
-            .catch(respondError({req, res}));
+            .catch(respondError({ req, res }));
     });
 
     return router;

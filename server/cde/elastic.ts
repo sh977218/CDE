@@ -39,38 +39,48 @@ export function updateOrInsertImpl(elt: DataElement): void {
                 doneCount++;
             };
             delete doc._id;
-            esClient.index({
-                index: config.elastic.index.name,
-                id: doc.tinyId,
-                type: '_doc',
-                body: doc
-            }, done);
-            suggestRiverFunction(elt, sugDoc => {
-                esClient.index({
-                    index: config.elastic.cdeSuggestIndex.name,
-                    type: '_doc',
+            esClient.index(
+                {
+                    index: config.elastic.index.name,
                     id: doc.tinyId,
-                    body: sugDoc
-                }, done);
+                    type: '_doc',
+                    body: doc,
+                },
+                done
+            );
+            suggestRiverFunction(elt, sugDoc => {
+                esClient.index(
+                    {
+                        index: config.elastic.cdeSuggestIndex.name,
+                        type: '_doc',
+                        id: doc.tinyId,
+                        body: sugDoc,
+                    },
+                    done
+                );
             });
         }
     });
 }
 
-export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<SearchResponseAggregationDe | void>) {
+export function elasticsearch(
+    user: User,
+    settings: SearchSettingsElastic,
+    cb: CbError1<SearchResponseAggregationDe | void>
+) {
     if (!Array.isArray(settings.selectedElements)) {
         settings.selectedElements = [];
     }
     if (!Array.isArray(settings.selectedElementsAlt)) {
         settings.selectedElementsAlt = [];
     }
-    const query = buildElasticSearchQuery(user, settings);
+    const query = buildElasticSearchQuery('cde', user, settings);
 
     if (!isOrgAuthority(user)) {
-        query.query.bool.must_not.push({term: {noRenderAllowed: true}})
+        query.query.bool.must_not.push({ term: { noRenderAllowed: true } });
     }
 
-    if ((query.from + query.size) > 10000) {
+    if (query.from + query.size > 10000) {
         return cb(new Error('page size exceeded'));
     }
     if (settings.includeAggregations) {
@@ -82,16 +92,16 @@ export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: C
                         field: 'valueDomain.datatype',
                         size: 500,
                         order: {
-                            _key: 'desc'
-                        }
-                    }
-                }
-            }
+                            _key: 'desc',
+                        },
+                    },
+                },
+            },
         };
     }
 
     if (!settings.fullRecord) {
-        query._source = {excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements']};
+        query._source = { excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements'] };
     }
 
     elasticSearchShared('cde', query, settings).then(result => {

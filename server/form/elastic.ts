@@ -72,7 +72,7 @@ export function elasticsearchForm(
     if (!Array.isArray(settings.selectedElementsAlt)) {
         settings.selectedElementsAlt = [];
     }
-    const query = buildElasticSearchQuery(user, settings);
+    const query = buildElasticSearchQuery('form', user, settings);
     if (query.from + query.size > 10000) {
         return Promise.reject('Exceeded pagination limit (10,000)');
     }

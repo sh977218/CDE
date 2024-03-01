@@ -23,14 +23,18 @@ import {
     priorForms,
     publishFromDraft,
     publishExternal,
-    viewHistory
+    viewHistory,
 } from 'server/form/formsvc';
-import {formModel} from 'server/form/mongo-form';
+import { formModel } from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsByCdeTinyId, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
 import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
-    completionSuggest, elasticSearchExport, removeElasticFields, scrollExport, scrollNext
+    completionSuggest,
+    elasticSearchExport,
+    removeElasticFields,
+    scrollExport,
+    scrollNext,
 } from 'server/system/elastic';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
@@ -40,7 +44,7 @@ import {
     canEditMiddleware,
     isOrgAuthorityMiddleware,
     loggedInMiddleware,
-    nocacheMiddleware
+    nocacheMiddleware,
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
@@ -92,24 +96,33 @@ export function module() {
                 const cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
+                    'registrationState.registrationStatus': 'Qualified',
                 };
-                formModel.countDocuments(cond, undefined, handleNotFound({req, res}, totalCount => {
-                    formModel.find(cond, 'tinyId designations', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, handleError<FormDocument[]>({req, res}, forms => {
-                        let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) {
-                            totalPages = totalPages + 1;
-                        }
-                        res.render('bot/formSearchOrg', {
-                            forms,
-                            totalPages,
-                            selectedOrg
-                        });
-                    }));
-                }));
+                formModel.countDocuments(
+                    cond,
+                    undefined,
+                    handleNotFound({ req, res }, totalCount => {
+                        formModel.find(
+                            cond,
+                            'tinyId designations',
+                            {
+                                skip: pageSize * (pageNum - 1),
+                                limit: pageSize,
+                            },
+                            handleError<FormDocument[]>({ req, res }, forms => {
+                                let totalPages = totalCount / pageSize;
+                                if (totalPages % 1 > 0) {
+                                    totalPages = totalPages + 1;
+                                }
+                                res.render('bot/formSearchOrg', {
+                                    forms,
+                                    totalPages,
+                                    selectedOrg,
+                                });
+                            })
+                        );
+                    })
+                );
             } else {
                 res.render('bot/formSearch');
             }
@@ -120,9 +133,21 @@ export function module() {
     router.get(['/schema/form', '/form/schema'], (req, res) => res.send((formModel as any).jsonSchema()));
 
     // Remove /form after July 1st 2020
-    router.get(['/api/form/:tinyId', '/form/:tinyId'], umlsAuth, allowXOrigin, nocacheMiddleware, allRequestsProcessing, byTinyId);
-    router.get(['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
-        umlsAuth, allowXOrigin, nocacheMiddleware, byTinyIdAndVersion);
+    router.get(
+        ['/api/form/:tinyId', '/form/:tinyId'],
+        umlsAuth,
+        allowXOrigin,
+        nocacheMiddleware,
+        allRequestsProcessing,
+        byTinyId
+    );
+    router.get(
+        ['/api/form/:tinyId/version/:version?', '/form/:tinyId/version/:version?'],
+        umlsAuth,
+        allowXOrigin,
+        nocacheMiddleware,
+        byTinyIdAndVersion
+    );
 
     router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/api/form/search', allowXOrigin, nocacheMiddleware, (req, res) => {
@@ -131,34 +156,32 @@ export function module() {
         if (!Array.isArray(settings.selectedStatuses)) {
             settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
         }
-        elasticsearchForm(settings, req.user)
-            .then(
-                result => {
-                    if (!result) {
-                        return res.status(400).send('invalid query');
-                    }
-                    dbPlugins.form.byTinyIdList(result.forms.map(item => item.tinyId))
-                        .then(data => {
-                            if (!data) {
-                                res.status(404).send();
-                                return;
-                            }
-                            const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
-                            res.send({
-                                resultsTotal: result.totalNumber,
-                                resultsRetrieved: data.length,
-                                from: documentIndex >= 0 ? documentIndex + 1 : 1,
-                                docs: data,
-                            });
-                        }, respondError({req, res}));
-                },
-                errorMessage => {
-                    if (errorMessage instanceof Error) {
-                        return respondError({res});
-                    }
-                    return res.status(422).send(errorMessage);
+        elasticsearchForm(settings, req.user).then(
+            result => {
+                if (!result) {
+                    return res.status(400).send('invalid query');
                 }
-            );
+                dbPlugins.form.byTinyIdList(result.forms.map(item => item.tinyId)).then(data => {
+                    if (!data) {
+                        res.status(404).send();
+                        return;
+                    }
+                    const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                    res.send({
+                        resultsTotal: result.totalNumber,
+                        resultsRetrieved: data.length,
+                        from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                        docs: data,
+                    });
+                }, respondError({ req, res }));
+            },
+            errorMessage => {
+                if (errorMessage instanceof Error) {
+                    return respondError({ res });
+                }
+                return res.status(422).send(errorMessage);
+            }
+        );
     });
 
     router.post('/server/form', canCreateMiddleware, create);
@@ -180,84 +203,105 @@ export function module() {
 
     router.get('/server/form/viewingHistory', loggedInMiddleware, nocacheMiddleware, viewHistory);
 
-    router.get('/server/form/forEdit/:tinyId', nocacheMiddleware, checkSchema({
+    router.get(
+        '/server/form/forEdit/:tinyId',
+        nocacheMiddleware,
+        checkSchema({
             tinyId: {
                 in: ['params'],
                 isLength: {
                     options: {
-                        min: 5
-                    }
-                }
-            }
+                        min: 5,
+                    },
+                },
+            },
         }),
-        validateBody, forEditByTinyId);
-    router.get('/server/form/forEdit/:tinyId/version/:version?', nocacheMiddleware, checkSchema({
+        validateBody,
+        forEditByTinyId
+    );
+    router.get(
+        '/server/form/forEdit/:tinyId/version/:version?',
+        nocacheMiddleware,
+        checkSchema({
             tinyId: {
                 in: ['params'],
                 isLength: {
                     options: {
-                        min: 5
-                    }
-                }
-            }
+                        min: 5,
+                    },
+                },
+            },
         }),
-        validateBody, forEditByTinyIdAndVersion);
-    router.get('/server/form/forEditById/:id', nocacheMiddleware, checkSchema({
+        validateBody,
+        forEditByTinyIdAndVersion
+    );
+    router.get(
+        '/server/form/forEditById/:id',
+        nocacheMiddleware,
+        checkSchema({
             id: {
                 in: ['params'],
                 isLength: {
                     options: {
                         min: 24,
-                        max: 24
-                    }
-                }
-            }
+                        max: 24,
+                    },
+                },
+            },
         }),
-        validateBody, forEditById);
+        validateBody,
+        forEditById
+    );
 
     /* ---------- PUT NEW REST API above ---------- */
 
     router.post('/server/form/search', (req, res) => {
-        elasticsearchForm(req.body, req.user)
-            .then(
-                result => res.send(result),
-                errorMessage => {
-                    if (errorMessage instanceof Error) {
-                        return respondError({res});
-                    }
-                    return res.status(422).send(errorMessage);
+        elasticsearchForm(req.body, req.user).then(
+            result => res.send(result),
+            errorMessage => {
+                if (errorMessage instanceof Error) {
+                    return respondError({ res });
                 }
-            );
+                return res.status(422).send(errorMessage);
+            }
+        );
     });
     router.post('/server/form/searchExport', (req, res) => {
         const exporters = {
             json: {
                 export(res: Response) {
                     const [next] = writeOutArrayStream(res);
-                    elasticSearchExport('form', buildElasticSearchQuery(req.user, req.body), handleError({
-                        req,
-                        res
-                    }, (elt) => {
-                        next(elt
-                            ? JSON.stringify(
-                                removeElasticFields(
-                                    stripBsonIdsElt(elt)
-                                )
-                            )
-                            : null
-                        );
-                    }));
-                }
-            }
+                    elasticSearchExport(
+                        'form',
+                        buildElasticSearchQuery('form', req.user, req.body),
+                        handleError(
+                            {
+                                req,
+                                res,
+                            },
+                            elt => {
+                                next(elt ? JSON.stringify(removeElasticFields(stripBsonIdsElt(elt))) : null);
+                            }
+                        )
+                    );
+                },
+            },
         };
         exporters.json.export(res);
     });
     router.post('/server/form/scrollExport', (req, res) => {
-        const query = buildElasticSearchQuery(req.user, req.body);
-        scrollExport(query, 'form', handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
+        const query = buildElasticSearchQuery('form', req.user, req.body);
+        scrollExport(
+            query,
+            'form',
+            handleNotFound({ res, statusCode: 400 }, response => res.send(response.body))
+        );
     });
     router.get('/server/form/scrollExport/:scrollId', (req, res) => {
-        scrollNext(req.params.scrollId, handleNotFound({res, statusCode: 400}, response => res.send(response.body)));
+        scrollNext(
+            req.params.scrollId,
+            handleNotFound({ res, statusCode: 400 }, response => res.send(response.body))
+        );
     });
 
     router.post('/server/form/completion/:term', nocacheMiddleware, (req, res) => {
@@ -266,7 +310,7 @@ export function module() {
             if (err || !resp) {
                 throw new Error('/formCompletion failed: ' + JSON.stringify(err).substring(1, 200));
             }
-            resp.hits.hits.forEach(r => r._index = undefined);
+            resp.hits.hits.forEach(r => (r._index = undefined));
             res.send(resp.hits.hits);
         });
     });
@@ -275,10 +319,9 @@ export function module() {
         const tinyId = req.query.tinyId as string;
         const version = req.query.version as string;
         if (isSearchEngine(req)) {
-            dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version)
-                .then(cde => {
-                    res.render('bot/formView', {elt: cde});
-                }, respondError({req, res}));
+            dbPlugins.form.byTinyIdAndVersionOptional(tinyId, version).then(cde => {
+                res.render('bot/formView', { elt: cde });
+            }, respondError({ req, res }));
         } else {
             respondHomeFull(req, res);
         }
@@ -316,11 +359,13 @@ export function module() {
         if (!resp || !resp.unit) {
             return res.send([]);
         } else {
-            res.send([{
-                name: resp.unit.name_,
-                synonyms: resp.unit.synonyms_.split('; '),
-                code: resp.unit.csCode_
-            }]);
+            res.send([
+                {
+                    name: resp.unit.name_,
+                    synonyms: resp.unit.synonyms_.split('; '),
+                    code: resp.unit.csCode_,
+                },
+            ]);
         }
     });
 
@@ -340,7 +385,9 @@ export function module() {
             const suggestions: string[] = [];
             const synonyms = ucumUtils.checkSynonyms(uom);
             if (synonyms.status === 'succeeded' && synonyms.units.length) {
-                synonyms.units.forEach((u: { code: string, name: string }) => u.name === uom ? suggestions.push(u.code) : null);
+                synonyms.units.forEach((u: { code: string; name: string }) =>
+                    u.name === uom ? suggestions.push(u.code) : null
+                );
                 if (suggestions.length) {
                     return cb(undefined, suggestions[0]);
                 }
@@ -372,14 +419,14 @@ export function module() {
                 }
             }
         });
-        res.send({errors, units});
+        res.send({ errors, units });
     });
 
     router.post('/server/syncLinkedFormWithTinyId', isOrgAuthorityMiddleware, async (req, res) => {
         const tinyId = req.body.tinyId;
         const result = await syncLinkedFormsByCdeTinyId(tinyId);
-        res.send({result});
-    })
+        res.send({ result });
+    });
 
     router.post('/server/syncLinkedForms', isOrgAuthorityMiddleware, (req, res) => {
         res.send();

@@ -2,13 +2,24 @@ import { Response, Router } from 'express';
 import { toInteger } from 'lodash';
 import { config, dbPlugins } from 'server';
 import {
-    byId, byTinyId, byTinyIdAndVersion, byTinyIdList, create, derivationOutputs, draftDelete, draftForEditByTinyId,
+    byId,
+    byTinyId,
+    byTinyIdAndVersion,
+    byTinyIdList,
+    create,
+    derivationOutputs,
+    draftDelete,
+    draftForEditByTinyId,
     draftSave,
     hideProprietaryCodes,
-    latestVersionByTinyId, modifiedElements, moreLikeThis, originalSourceByTinyIdSourceName, priorDataElements,
+    latestVersionByTinyId,
+    modifiedElements,
+    moreLikeThis,
+    originalSourceByTinyIdSourceName,
+    priorDataElements,
     publishExternal,
     publishFromDraft,
-    viewHistory
+    viewHistory,
 } from 'server/cde/cdesvc';
 import { elasticsearch } from 'server/cde/elastic';
 import { validatePvs } from 'server/cde/utsValidate';
@@ -18,7 +29,10 @@ import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dat
 import { writeOutArrayStream } from 'shared/node/expressUtil';
 import { respondHomeFull } from 'server/system/appRouters';
 import {
-    canCreateMiddleware, canEditByTinyIdMiddleware, canEditMiddleware, nocacheMiddleware
+    canCreateMiddleware,
+    canEditByTinyIdMiddleware,
+    canEditMiddleware,
+    nocacheMiddleware,
 } from 'server/system/authorization';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
@@ -26,7 +40,7 @@ import { isSearchEngine } from 'server/system/helper';
 import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import * as path from "path";
+import * as path from 'path';
 
 const canEditMiddlewareDe = canEditMiddleware(dbPlugins.dataElement);
 const canEditByTinyIdMiddlewareDe = canEditByTinyIdMiddleware(dbPlugins.dataElement);
@@ -51,24 +65,29 @@ export function module() {
                 const cond = {
                     'classification.stewardOrg.name': selectedOrg,
                     archived: false,
-                    'registrationState.registrationStatus': 'Qualified'
+                    'registrationState.registrationStatus': 'Qualified',
                 };
                 dbPlugins.dataElement.count(cond).then(totalCount => {
-                    dataElementModel.find(cond, 'tinyId designations', {
-                        skip: pageSize * (pageNum - 1),
-                        limit: pageSize
-                    }, handleError<DataElementDocument[]>({req, res}, cdes => {
-                        let totalPages = totalCount / pageSize;
-                        if (totalPages % 1 > 0) {
-                            totalPages = totalPages + 1;
-                        }
-                        res.render('bot/cdeSearchOrg', {
-                            cdes,
-                            totalPages,
-                            selectedOrg
-                        });
-                    }));
-                }, respondError({req, res}));
+                    dataElementModel.find(
+                        cond,
+                        'tinyId designations',
+                        {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize,
+                        },
+                        handleError<DataElementDocument[]>({ req, res }, cdes => {
+                            let totalPages = totalCount / pageSize;
+                            if (totalPages % 1 > 0) {
+                                totalPages = totalPages + 1;
+                            }
+                            res.render('bot/cdeSearchOrg', {
+                                cdes,
+                                totalPages,
+                                selectedOrg,
+                            });
+                        })
+                    );
+                }, respondError({ req, res }));
             } else {
                 res.render('bot/cdeSearch');
             }
@@ -88,7 +107,12 @@ export function module() {
     router.get('/api/de/modifiedElements', modifiedElements);
     // Remove /de after June 1st 2020
     router.get(['/api/de/:tinyId', '/de/:tinyId'], umlsAuth, nocacheMiddleware, byTinyId);
-    router.get(['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'], umlsAuth, nocacheMiddleware, byTinyIdAndVersion);
+    router.get(
+        ['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'],
+        umlsAuth,
+        nocacheMiddleware,
+        byTinyIdAndVersion
+    );
 
     router.get('/api/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/server/de', canCreateMiddleware, create);
@@ -108,11 +132,10 @@ export function module() {
     router.get('/server/de/viewingHistory', nocacheMiddleware, viewHistory);
     router.get('/server/de/moreLike/:tinyId', nocacheMiddleware, moreLikeThis);
     router.post('/server/de/byTinyIdList', (req, res): Promise<Response> => {
-        return dbPlugins.dataElement.byTinyIdListElastic(req.body)
-            .then(items => {
-                hideProprietaryCodes(items, req.user);
-                return res.send(items);
-            }, respondError({req, res}));
+        return dbPlugins.dataElement.byTinyIdListElastic(req.body).then(items => {
+            hideProprietaryCodes(items, req.user);
+            return res.send(items);
+        }, respondError({ req, res }));
     });
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
@@ -127,21 +150,20 @@ export function module() {
             if (err || !result) {
                 return res.status(400).send('invalid query');
             }
-            dbPlugins.dataElement.byTinyIdList(result.cdes.map(item => item.tinyId))
-                .then(data => {
-                    if (!data) {
-                        res.status(404).send();
-                        return;
-                    }
-                    hideProprietaryCodes(data, req.user);
-                    const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
-                    res.send({
-                        resultsTotal: result.totalNumber,
-                        resultsRetrieved: data.length,
-                        from: documentIndex >= 0 ? documentIndex + 1 : 1,
-                        docs: data,
-                    });
-                }, respondError({req, res}));
+            dbPlugins.dataElement.byTinyIdList(result.cdes.map(item => item.tinyId)).then(data => {
+                if (!data) {
+                    res.status(404).send();
+                    return;
+                }
+                hideProprietaryCodes(data, req.user);
+                const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                res.send({
+                    resultsTotal: result.totalNumber,
+                    resultsRetrieved: data.length,
+                    from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                    docs: data,
+                });
+            }, respondError({ req, res }));
         });
     });
 
@@ -159,26 +181,19 @@ export function module() {
             json: {
                 export(res: Response) {
                     const [next, dataExists] = writeOutArrayStream(res);
-                    elasticSearchExport('cde', buildElasticSearchQuery(req.user, req.body), (err, elt) => {
+                    elasticSearchExport('cde', buildElasticSearchQuery('cde', req.user, req.body), (err, elt) => {
                         if (err) {
                             return res.status(403).send('ERROR with es search export');
                         }
-                        next(elt
-                            ? JSON.stringify(
-                                removeElasticFields(
-                                    stripBsonIdsElt(elt)
-                                )
-                            )
-                            : null
-                        );
+                        next(elt ? JSON.stringify(removeElasticFields(stripBsonIdsElt(elt))) : null);
                     });
                     dataExists.then(exists => {
                         if (exists) {
                             storeQuery(req.body);
                         }
                     });
-                }
-            }
+                },
+            },
         };
         exporters.json.export(res);
     });
@@ -189,18 +204,17 @@ export function module() {
             if (err || !resp) {
                 throw new Error('/cdeCompletion error: ' + JSON.stringify(err).substring(1, 200));
             }
-            resp.hits.hits.forEach(r => r._index = undefined);
+            resp.hits.hits.forEach(r => (r._index = undefined));
             res.send(resp.hits.hits);
         });
     });
 
     router.get('/deView', (req, res) => {
-        const {tinyId, version} = req.query;
+        const { tinyId, version } = req.query;
         if (isSearchEngine(req)) {
-            dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId as string, version as string)
-                .then(de => {
-                    res.render('bot/deView', {elt: de});
-                }, respondError({req, res}));
+            dbPlugins.dataElement.byTinyIdAndVersionOptional(tinyId as string, version as string).then(de => {
+                res.render('bot/deView', { elt: de });
+            }, respondError({ req, res }));
         } else {
             respondHomeFull(req, res);
         }

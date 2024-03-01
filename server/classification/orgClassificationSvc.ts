@@ -9,22 +9,36 @@ import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { elasticsearchPromise } from 'server/system/elastic';
 import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import {
-    addCategoriesToOrg, addCategoriesToTree, arrangeClassification, deleteCategory, findLeaf,
-    mergeOrgClassificationAggregate, OrgClassificationAggregate, renameCategory,
+    addCategoriesToOrg,
+    addCategoriesToTree,
+    arrangeClassification,
+    deleteCategory,
+    findLeaf,
+    mergeOrgClassificationAggregate,
+    OrgClassificationAggregate,
+    renameCategory,
 } from 'shared/classification/classificationShared';
 import {
-    CbError, CbError1, Classification, ItemClassification, ItemClassificationNew, User
+    CbError,
+    CbError1,
+    Classification,
+    ItemClassification,
+    ItemClassificationNew,
+    User,
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
     item.classification = defaultArray(item.classification);
-    let classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    let classification = find(
+        item.classification,
+        (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName
+    );
     if (!classification) {
         classification = {
-            stewardOrg: {name: orgName},
-            elements: []
+            stewardOrg: { name: orgName },
+            elements: [],
         };
         item.classification.push(classification);
     }
@@ -35,8 +49,12 @@ export function classifyItem(item: ItemDocument, orgName: string, categories: st
     }
 }
 
-export async function deleteOrgClassification(user: User, deleteClassification: ItemClassification, settings: SearchSettingsElastic,
-                                              callback: CbError) {
+export async function deleteOrgClassification(
+    user: User,
+    deleteClassification: ItemClassification,
+    settings: SearchSettingsElastic,
+    callback: CbError
+) {
     deleteClassification.categories = defaultArray(deleteClassification.categories);
     await updateJobStatus('deleteClassification', 'Running');
 
@@ -46,84 +64,109 @@ export async function deleteOrgClassification(user: User, deleteClassification: 
         callback(new Error('not an organization: ' + deleteClassification.orgName));
         return;
     }
-    const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
+    const fakeTree = { elements: stewardOrg.classifications, stewardOrg: { name: '' } };
     deleteCategory(fakeTree, deleteClassification.categories);
     stewardOrg.markModified('classifications');
     await stewardOrg.save();
 
     settings.selectedOrg = deleteClassification.orgName;
     settings.selectedElements = deleteClassification.categories;
-    const query = buildElasticSearchQuery(user, settings);
-    parallel([
-        done => elasticsearchPromise('cde', query, settings).then(result => {
-            if (result && result.cdes && result.cdes.length > 0) {
-                const tinyIds = result.cdes.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const de = await deByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!de) {
-                        callback(new Error('not a de: ' + tinyId));
-                        return;
+    const query = buildElasticSearchQuery('org', user, settings);
+    parallel(
+        [
+            done =>
+                elasticsearchPromise('cde', query, settings).then(
+                    result => {
+                        if (result && result.cdes && result.cdes.length > 0) {
+                            const tinyIds = result.cdes.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const de = await deByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!de) {
+                                        callback(new Error('not a de: ' + tinyId));
+                                        return;
+                                    }
+                                    unclassifyElt(de, deleteClassification.orgName, deleteClassification.categories);
+                                    de.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'cde' })),
+                                        action: 'delete',
+                                        path: [deleteClassification.orgName].concat(deleteClassification.categories),
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done();
                     }
-                    unclassifyElt(de, deleteClassification.orgName, deleteClassification.categories);
-                    de.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
-                        action: 'delete',
-                        path: [deleteClassification.orgName].concat(deleteClassification.categories)
-                    });
-                });
-            } else {
-                done();
-            }
-        }, err => {
-            respondError()(err);
-            done();
-        }),
-        done => elasticsearchPromise('form', query, settings).then(result => {
-            if (result && result.forms && result.forms.length > 0) {
-                const tinyIds = result.forms.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const form = await formByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!form) {
-                        callback(new Error('not a form: ' + tinyId));
-                        return;
+                ),
+            done =>
+                elasticsearchPromise('form', query, settings).then(
+                    result => {
+                        if (result && result.forms && result.forms.length > 0) {
+                            const tinyIds = result.forms.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const form = await formByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!form) {
+                                        callback(new Error('not a form: ' + tinyId));
+                                        return;
+                                    }
+                                    unclassifyElt(form, deleteClassification.orgName, deleteClassification.categories);
+                                    form.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'form' })),
+                                        action: 'delete',
+                                        path: [deleteClassification.orgName].concat(deleteClassification.categories),
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done();
                     }
-                    unclassifyElt(form, deleteClassification.orgName, deleteClassification.categories);
-                    form.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
-                        action: 'delete',
-                        path: [deleteClassification.orgName].concat(deleteClassification.categories)
-                    });
-                });
-            } else {
-                done();
+                ),
+        ],
+        (err?: Error | null) => {
+            if (err) {
+                respondError()(err);
+                return;
             }
-        }, err => {
-            respondError()(err);
-            done();
-        })
-    ], (err?: Error | null) => {
-        if (err) {
-            respondError()(err);
-            return;
+            removeJobStatus('deleteClassification', callback);
         }
-        removeJobStatus('deleteClassification', callback);
-    });
+    );
 }
 
-export async function renameOrgClassification(user: User, newClassification: ItemClassificationNew, settings: SearchSettingsElastic,
-                                              callback: CbError) {
+export async function renameOrgClassification(
+    user: User,
+    newClassification: ItemClassificationNew,
+    settings: SearchSettingsElastic,
+    callback: CbError
+) {
     newClassification.categories = defaultArray(newClassification.categories);
     updateJobStatus('renameClassification', 'Running');
     const stewardOrg = await orgByName(newClassification.orgName);
@@ -132,88 +175,120 @@ export async function renameOrgClassification(user: User, newClassification: Ite
         callback(new Error('not an organization: ' + newClassification.orgName));
         return;
     }
-    const fakeTree = {elements: stewardOrg.classifications, stewardOrg: {name: ''}};
+    const fakeTree = { elements: stewardOrg.classifications, stewardOrg: { name: '' } };
     renameCategory(fakeTree, newClassification.categories, newClassification.newName);
     stewardOrg.markModified('classifications');
     await stewardOrg.save();
     settings.selectedOrg = newClassification.orgName;
     settings.selectedElements = newClassification.categories;
-    const query = buildElasticSearchQuery(user, settings);
-    parallel([
-        done => elasticsearchPromise('cde', query, settings).then(result => {
-            /* istanbul ignore else */
-            if (result && result.cdes && result.cdes.length > 0) {
-                const tinyIds = result.cdes.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const de = await deByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!de) {
-                        callback(new Error('not a de: ' + tinyId));
-                        return;
+    const query = buildElasticSearchQuery('org', user, settings);
+    parallel(
+        [
+            done =>
+                elasticsearchPromise('cde', query, settings).then(
+                    result => {
+                        /* istanbul ignore else */
+                        if (result && result.cdes && result.cdes.length > 0) {
+                            const tinyIds = result.cdes.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const de = await deByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!de) {
+                                        callback(new Error('not a de: ' + tinyId));
+                                        return;
+                                    }
+                                    renameClassifyElt(
+                                        de,
+                                        newClassification.orgName,
+                                        newClassification.categories,
+                                        newClassification.newName
+                                    );
+                                    de.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'cde' })),
+                                        action: 'rename',
+                                        path: [newClassification.orgName].concat(newClassification.categories),
+                                        newname: newClassification.newName,
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done();
                     }
-                    renameClassifyElt(de, newClassification.orgName,
-                        newClassification.categories, newClassification.newName);
-                    de.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
-                        action: 'rename',
-                        path: [newClassification.orgName].concat(newClassification.categories),
-                        newname: newClassification.newName
-                    });
-                });
-            } else {
-                done();
-            }
-        }, err => {
-            respondError()(err);
-            done();
-        }),
-        done => elasticsearchPromise('form', query, settings).then(result => {
-            /* istanbul ignore else */
-            if (result && result.forms && result.forms.length > 0) {
-                const tinyIds = result.forms.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const form = await formByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!form) {
-                        callback(new Error('not a form: ' + tinyId));
-                        return;
+                ),
+            done =>
+                elasticsearchPromise('form', query, settings).then(
+                    result => {
+                        /* istanbul ignore else */
+                        if (result && result.forms && result.forms.length > 0) {
+                            const tinyIds = result.forms.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const form = await formByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!form) {
+                                        callback(new Error('not a form: ' + tinyId));
+                                        return;
+                                    }
+                                    renameClassifyElt(
+                                        form,
+                                        newClassification.orgName,
+                                        newClassification.categories,
+                                        newClassification.newName
+                                    );
+                                    form.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'form' })),
+                                        action: 'rename',
+                                        path: [newClassification.orgName].concat(newClassification.categories),
+                                        newname: newClassification.newName,
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done();
                     }
-                    renameClassifyElt(form, newClassification.orgName,
-                        newClassification.categories, newClassification.newName);
-                    form.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
-                        action: 'rename',
-                        path: [newClassification.orgName].concat(newClassification.categories),
-                        newname: newClassification.newName
-                    });
-                });
-            } else {
-                done();
+                ),
+        ],
+        (err?: Error | null) => {
+            if (err) {
+                respondError()(err);
+                return;
             }
-        }, err => {
-            respondError()(err);
-            done();
-        })
-    ], (err?: Error | null) => {
-        if (err) {
-            respondError()(err);
-            return;
+            removeJobStatus('renameClassification', callback);
         }
-        removeJobStatus('renameClassification', callback);
-    });
+    );
 }
 
-export async function addOrgClassification(newClassification: ItemClassification, callback: CbError1<OrganizationDocument | void>) {
+export async function addOrgClassification(
+    newClassification: ItemClassification,
+    callback: CbError1<OrganizationDocument | void>
+) {
     newClassification.categories = defaultArray(newClassification.categories);
     const stewardOrg = await orgByName(newClassification.orgName);
     /* istanbul ignore if */
@@ -226,9 +301,13 @@ export async function addOrgClassification(newClassification: ItemClassification
     stewardOrg.save(callback);
 }
 
-export async function reclassifyOrgClassification(user: User, oldClassification: ItemClassification,
-                                                  newClassification: ItemClassification, settings: SearchSettingsElastic,
-                                                  callback: CbError) {
+export async function reclassifyOrgClassification(
+    user: User,
+    oldClassification: ItemClassification,
+    newClassification: ItemClassification,
+    settings: SearchSettingsElastic,
+    callback: CbError
+) {
     oldClassification.categories = defaultArray(oldClassification.categories);
     newClassification.categories = defaultArray(newClassification.categories);
     await updateJobStatus('reclassifyClassification', 'Running');
@@ -243,78 +322,102 @@ export async function reclassifyOrgClassification(user: User, oldClassification:
     await stewardOrg.save();
     settings.selectedOrg = oldClassification.orgName;
     settings.selectedElements = oldClassification.categories;
-    const query = buildElasticSearchQuery(user, settings);
-    parallel([
-        done => elasticsearchPromise('cde', query, settings).then(result => {
-            if (result && result.cdes && result.cdes.length > 0) {
-                const tinyIds = result.cdes.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const de = await deByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!de) {
-                        callback(new Error('not a de: ' + tinyId));
-                        return;
+    const query = buildElasticSearchQuery('org', user, settings);
+    parallel(
+        [
+            done =>
+                elasticsearchPromise('cde', query, settings).then(
+                    result => {
+                        if (result && result.cdes && result.cdes.length > 0) {
+                            const tinyIds = result.cdes.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const de = await deByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!de) {
+                                        callback(new Error('not a de: ' + tinyId));
+                                        return;
+                                    }
+                                    classifyItem(de, newClassification.orgName, newClassification.categories);
+                                    de.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'cde' })),
+                                        action: 'reclassify',
+                                        path: [newClassification.orgName].concat(newClassification.categories),
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done(err);
                     }
-                    classifyItem(de, newClassification.orgName, newClassification.categories);
-                    de.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'cde'})),
-                        action: 'reclassify',
-                        path: [newClassification.orgName].concat(newClassification.categories)
-                    });
-                });
-            } else {
-                done();
-            }
-        }, err => {
-            respondError()(err);
-            done(err);
-        }),
-        done => elasticsearchPromise('form', query, settings).then(result => {
-            if (result && result.forms && result.forms.length > 0) {
-                const tinyIds = result.forms.map(c => c.tinyId);
-                eachLimit(tinyIds, 100, async (tinyId, doneOne) => {
-                    const form = await formByTinyId(tinyId);
-                    /* istanbul ignore if */
-                    if (!form) {
-                        callback(new Error('not a form: ' + tinyId));
-                        return;
+                ),
+            done =>
+                elasticsearchPromise('form', query, settings).then(
+                    result => {
+                        if (result && result.forms && result.forms.length > 0) {
+                            const tinyIds = result.forms.map(c => c.tinyId);
+                            eachLimit(
+                                tinyIds,
+                                100,
+                                async (tinyId, doneOne) => {
+                                    const form = await formByTinyId(tinyId);
+                                    /* istanbul ignore if */
+                                    if (!form) {
+                                        callback(new Error('not a form: ' + tinyId));
+                                        return;
+                                    }
+                                    classifyItem(form, newClassification.orgName, newClassification.categories);
+                                    form.save(doneOne);
+                                },
+                                () => {
+                                    done();
+                                    addToClassifAudit({
+                                        date: new Date(),
+                                        user,
+                                        elements: tinyIds.map(e => ({ tinyId: e, eltType: 'form' })),
+                                        action: 'reclassify',
+                                        path: [newClassification.orgName].concat(newClassification.categories),
+                                    });
+                                }
+                            );
+                        } else {
+                            done();
+                        }
+                    },
+                    err => {
+                        respondError()(err);
+                        done();
                     }
-                    classifyItem(form, newClassification.orgName, newClassification.categories);
-                    form.save(doneOne);
-                }, () => {
-                    done();
-                    addToClassifAudit({
-                        date: new Date(),
-                        user,
-                        elements: tinyIds.map(e => ({tinyId: e, eltType: 'form'})),
-                        action: 'reclassify',
-                        path: [newClassification.orgName].concat(newClassification.categories)
-                    });
-                });
-            } else {
-                done();
+                ),
+        ],
+        (err?: Error | null) => {
+            if (err) {
+                respondError()(err);
+                return;
             }
-        }, err => {
-            respondError()(err);
-            done();
-        })
-    ], (err?: Error | null) => {
-        if (err) {
-            respondError()(err);
-            return;
+            removeJobStatus('reclassifyClassification', callback);
         }
-        removeJobStatus('reclassifyClassification', callback)
-    });
+    );
 }
 
 export function renameClassifyElt(item: ItemDocument, orgName: string, categories: string[], newName: string): void {
     item.classification = defaultArray(item.classification);
-    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    const classification = find(
+        item.classification,
+        (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName
+    );
     if (classification) {
         const leaf = findLeaf(classification, categories);
         if (leaf) {
@@ -326,7 +429,10 @@ export function renameClassifyElt(item: ItemDocument, orgName: string, categorie
 }
 
 export function unclassifyElt(item: ItemDocument, orgName: string, categories: string[]): any {
-    const classification = find(item.classification, (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName);
+    const classification = find(
+        item.classification,
+        (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName
+    );
     if (classification) {
         const leaf = findLeaf(classification, categories);
         if (leaf) {
@@ -338,16 +444,15 @@ export function unclassifyElt(item: ItemDocument, orgName: string, categories: s
 
 export async function updateOrgClassification(orgName: string): Promise<any[]> {
     const aggregate: PipelineStage[] = [
-        {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
-        {$unwind: '$classification'},
-        {$match: {archived: false, 'classification.stewardOrg.name': orgName}},
-        {$group: {_id: {name: '$classification.stewardOrg.name', elements: '$classification.elements'} as any}}
+        { $match: { archived: false, 'classification.stewardOrg.name': orgName } },
+        { $unwind: '$classification' },
+        { $match: { archived: false, 'classification.stewardOrg.name': orgName } },
+        { $group: { _id: { name: '$classification.stewardOrg.name', elements: '$classification.elements' } as any } },
     ];
     const cdeClassificationsAggregate: OrgClassificationAggregate[] = await dataElementModel.aggregate(aggregate);
     const formClassificationsAggregate: OrgClassificationAggregate[] = await formModel.aggregate(aggregate);
     return mergeOrgClassificationAggregate(cdeClassificationsAggregate, formClassificationsAggregate);
 }
-
 
 function defaultArray<T>(arr?: T[]): T[] {
     return arr || [];

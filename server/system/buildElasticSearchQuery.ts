@@ -20,7 +20,7 @@ function hideRetired(settings: SearchSettingsElastic, user?: User) {
     return (!settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1) || !isOrgAuthority(user);
 }
 
-export function buildElasticSearchQuery(user: User | undefined, settings: SearchSettingsElastic) {
+export function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
     const allowedStatuses = getAllowedStatuses(user, settings);
 
     // Increase ranking score for high registration status
