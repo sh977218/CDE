@@ -20,7 +20,23 @@ function hideRetired(settings: SearchSettingsElastic, user?: User) {
     return (!settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1) || !isOrgAuthority(user);
 }
 
-export function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
+export function buildElasticSearchQueryCde(user: User | undefined, settings: SearchSettingsElastic) {
+    return buildElasticSearchQuery('cde', user, settings);
+}
+
+export function buildElasticSearchQueryForm(user: User | undefined, settings: SearchSettingsElastic) {
+    return buildElasticSearchQuery('form', user, settings);
+}
+
+export function buildElasticSearchQueryBoard(user: User | undefined, settings: SearchSettingsElastic) {
+    return buildElasticSearchQuery('board', user, settings);
+}
+
+export function buildElasticSearchQueryOrg(user: User | undefined, settings: SearchSettingsElastic) {
+    return buildElasticSearchQuery('org', user, settings);
+}
+
+function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
     const allowedStatuses = getAllowedStatuses(user, settings);
 
     // Increase ranking score for high registration status

@@ -7,7 +7,7 @@ import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearch
 import { DataElement } from 'shared/de/dataElement.model';
 import { CbError1, SearchResponseAggregationDe, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
 import { copyShallow } from 'shared/util';
 import { isOrgAuthority } from 'shared/security/authorizationShared';
 
@@ -74,7 +74,7 @@ export function elasticsearch(
     if (!Array.isArray(settings.selectedElementsAlt)) {
         settings.selectedElementsAlt = [];
     }
-    const query = buildElasticSearchQuery('cde', user, settings);
+    const query = buildElasticSearchQueryCde(user, settings);
 
     if (!isOrgAuthority(user)) {
         query.query.bool.must_not.push({ term: { noRenderAllowed: true } });

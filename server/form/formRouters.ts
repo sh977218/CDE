@@ -46,7 +46,7 @@ import {
     loggedInMiddleware,
     nocacheMiddleware,
 } from 'server/system/authorization';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { buildElasticSearchQueryForm } from 'server/system/buildElasticSearchQuery';
 import { isSearchEngine } from 'server/system/helper';
 import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
@@ -273,16 +273,10 @@ export function module() {
                     const [next] = writeOutArrayStream(res);
                     elasticSearchExport(
                         'form',
-                        buildElasticSearchQuery('form', req.user, req.body),
-                        handleError(
-                            {
-                                req,
-                                res,
-                            },
-                            elt => {
-                                next(elt ? JSON.stringify(removeElasticFields(stripBsonIdsElt(elt))) : null);
-                            }
-                        )
+                        buildElasticSearchQueryForm(req.user, req.body),
+                        handleError({ req, res }, elt => {
+                            next(elt ? JSON.stringify(removeElasticFields(stripBsonIdsElt(elt))) : null);
+                        })
                     );
                 },
             },
@@ -290,7 +284,7 @@ export function module() {
         exporters.json.export(res);
     });
     router.post('/server/form/scrollExport', (req, res) => {
-        const query = buildElasticSearchQuery('form', req.user, req.body);
+        const query = buildElasticSearchQueryForm(req.user, req.body);
         scrollExport(
             query,
             'form',

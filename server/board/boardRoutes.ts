@@ -13,7 +13,7 @@ import {
     unauthorizedPublishing,
 } from 'server/system/authorization';
 import { validateBody } from 'server/system/bodyValidator';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { buildElasticSearchQueryBoard } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise } from 'server/system/elastic';
 import { removeFromArrayBy } from 'shared/array';
 import { MAX_PINS } from 'shared/constants';
@@ -234,7 +234,7 @@ export function module() {
         if (!board) {
             return res.status(404).send();
         }
-        const query = buildElasticSearchQuery('board', req.user, req.body.query);
+        const query = buildElasticSearchQueryBoard(req.user, req.body.query);
         if (query.size > MAX_PINS) {
             return res.status(403).send('Maximum number excesses.');
         }

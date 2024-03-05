@@ -27,7 +27,7 @@ import {
     User,
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { buildElasticSearchQueryOrg } from 'server/system/buildElasticSearchQuery';
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
     item.classification = defaultArray(item.classification);
@@ -71,7 +71,7 @@ export async function deleteOrgClassification(
 
     settings.selectedOrg = deleteClassification.orgName;
     settings.selectedElements = deleteClassification.categories;
-    const query = buildElasticSearchQuery('org', user, settings);
+    const query = buildElasticSearchQueryOrg(user, settings);
     parallel(
         [
             done =>
@@ -181,7 +181,7 @@ export async function renameOrgClassification(
     await stewardOrg.save();
     settings.selectedOrg = newClassification.orgName;
     settings.selectedElements = newClassification.categories;
-    const query = buildElasticSearchQuery('org', user, settings);
+    const query = buildElasticSearchQueryOrg(user, settings);
     parallel(
         [
             done =>
@@ -322,7 +322,7 @@ export async function reclassifyOrgClassification(
     await stewardOrg.save();
     settings.selectedOrg = oldClassification.orgName;
     settings.selectedElements = oldClassification.categories;
-    const query = buildElasticSearchQuery('org', user, settings);
+    const query = buildElasticSearchQueryOrg(user, settings);
     parallel(
         [
             done =>

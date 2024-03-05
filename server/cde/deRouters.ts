@@ -34,7 +34,7 @@ import {
     canEditMiddleware,
     nocacheMiddleware,
 } from 'server/system/authorization';
-import { buildElasticSearchQuery } from 'server/system/buildElasticSearchQuery';
+import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
 import { umlsAuth } from 'server/user/authentication';
@@ -181,7 +181,7 @@ export function module() {
             json: {
                 export(res: Response) {
                     const [next, dataExists] = writeOutArrayStream(res);
-                    elasticSearchExport('cde', buildElasticSearchQuery('cde', req.user, req.body), (err, elt) => {
+                    elasticSearchExport('cde', buildElasticSearchQueryCde(req.user, req.body), (err, elt) => {
                         if (err) {
                             return res.status(403).send('ERROR with es search export');
                         }
