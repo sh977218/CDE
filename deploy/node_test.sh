@@ -87,13 +87,6 @@ npx playwright install
 npm run playwright
 export PW_TEST=$
 
-if [[ $PW_TEST -ne 0 ]]
-then
-    echo "Error: Playwright test Failed"
-else
-    echo "Success: Playwight test runs Ok"
-fi
-
 #Run selenium test
 set -x
 if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
