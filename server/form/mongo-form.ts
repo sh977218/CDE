@@ -70,7 +70,7 @@ const conn = establishConnection(config.database.appData);
 export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema);
 export const formDraftModel: Model<CdeFormDraftDocument> = conn.model('Draft', draftSchema);
 export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsources', formSourceSchema);
-export const formAuditModel: Model<EltLog> = conn.model('FormAudit', formAuditSchema);
+export const formAuditModel: Model<Document & EltLog> = conn.model('FormAudit', formAuditSchema);
 
 const auditModificationsForm = auditModifications(formAuditModel);
 

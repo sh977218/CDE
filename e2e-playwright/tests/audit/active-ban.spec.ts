@@ -26,7 +26,8 @@ test(`Active ban log`, async ({ page, navigationMenu, auditTab, materialPage }) 
         await test.step(`Remove first ban`, async () => {
             await page.locator(`cde-active-ban table tbody tr`).first().getByRole('button').click();
             await materialPage.matSpinnerShowAndGone();
-            const recordCountAfter = await page.locator(`cde-active-ban`).locator(`table tbody tr`).count();
+            await page.waitForTimeout(5000);
+            const recordCountAfter = await page.locator(`cde-active-ban`).locator(`table tbody tr .mat-cell`).count();
             expect(recordCountAfter).toBeLessThan(recordCountBefore);
         });
     });

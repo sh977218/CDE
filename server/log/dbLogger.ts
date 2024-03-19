@@ -1,8 +1,5 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
-
-const moment = require('moment');
-const userAgent = require('useragent');
 import { config } from 'server';
 import { handleConsoleError } from 'server/errorHandler';
 import { clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema } from 'server/log/schemas';
@@ -32,11 +29,14 @@ import { cdeAuditModel } from '../cde/mongo-cde';
 import { formAuditModel } from '../form/mongo-form';
 import { classificationAuditModel } from '../system/classificationAuditDb';
 
+const moment = require('moment');
+const userAgent = require('useragent');
+
 export type ClientErrorDocument = Document & ClientError;
 
 export interface ErrorLog {
     message: string;
-    date: Date;
+    date: string;
     details?: string;
     origin: string;
     stack: string;
@@ -114,10 +114,10 @@ interface ErrorMessage {
 }
 
 export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogResponse>) {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'url';
-    let sortDirection = body.sortDir || 'asc';
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'url';
+    const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const condition: { [key in string]: RegExp } = {};
     if (body.filterTerm) {
@@ -145,11 +145,11 @@ export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogR
 }
 
 export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResponse>) {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'url';
-    let sortDirection = body.sortDir || 'asc';
-    let toDate = body.toDate || new Date();
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'url';
+    const sortDirection = body.sortDir || 'asc';
+    const toDate = body.toDate || new Date();
     const skip = currentPage * itemsPerPage;
     const modal = consoleLogModel.find();
     if (body.fromDate) {
@@ -171,10 +171,10 @@ export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResp
 }
 
 export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callback: CbError1<ItemLogResponse>) => {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'date';
-    let sortDirection = body.sortDir || 'asc';
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'date';
+    const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const condition = { 'user.username': { $nin: ['NIH CDE Repository Team'] } };
     if (!body.includeBatchLoader) {
@@ -207,11 +207,12 @@ export const itemLogByModule = (
     };
     itemLog(modalMap[module], body, cb);
 };
+
 export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<ServerErrorResponse>) {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'date';
-    let sortDirection = body.sortDir || 'asc';
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'date';
+    const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const condition: {
         [key in string]: {
@@ -239,10 +240,10 @@ export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<
 }
 
 export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<ClientErrorResponse>) {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'date';
-    let sortDirection = body.sortDir || 'asc';
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'date';
+    const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const condition: {
         [key in string]: {
@@ -267,10 +268,10 @@ export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<
 }
 
 export async function loginRecord(body: LoginRecordSearchRequest) {
-    let currentPage = body.currentPage || 0;
-    let itemsPerPage = body.pageSize || 50;
-    let sortBy = body.sortBy || 'url';
-    let sortDirection = body.sortDir || 'asc';
+    const currentPage = body.currentPage || 0;
+    const itemsPerPage = body.pageSize || 50;
+    const sortBy = body.sortBy || 'url';
+    const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const modal = loginModel.find();
     const totalItems = await modal.clone().count();

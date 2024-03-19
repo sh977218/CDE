@@ -82,7 +82,7 @@ export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.mod
     'DataElementSource',
     dataElementSourceSchema
 );
-export const cdeAuditModel: Model<EltLog> = conn.model('CdeAudit', deAuditSchema);
+export const cdeAuditModel: Model<Document & EltLog> = conn.model('CdeAudit', deAuditSchema);
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
 

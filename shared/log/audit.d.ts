@@ -57,6 +57,7 @@ export interface ItemLogResponse {
 }
 
 export type ClassificationAuditLogElement = {
+    _id?: string;
     tinyId?: string;
     version?: string;
     name?: string;
@@ -86,7 +87,7 @@ export interface ServerError {
     message: string;
     origin: string;
     stack: string;
-    details: string;
+    details?: string;
     date: string;
 }
 

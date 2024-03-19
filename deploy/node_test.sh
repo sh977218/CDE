@@ -85,7 +85,7 @@ echo "Install playwright dependencies"
 cd ..
 npx playwright install
 npm run playwright
-export PW_TEST=$
+export PW_TEST=$?
 
 #Run selenium test
 set -x
@@ -140,28 +140,30 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     if [ "$BROWSER" == 'coverage' ]
     then
         mv ../test/selenium/build/.nyc_output/* .nyc_output/
-        node node_modules/nyc/bin/nyc report
+        node ../../../node_modules/nyc/bin/nyc report
     fi
 
     if [ "$BROWSER" != 'oneTest' ]
     then
-        node node_modules/nyc/bin/nyc check-coverage
+        node ../../../node_modules/nyc/bin/nyc check-coverage --lines 45 --functions 38 --branches 40
         if [ $? -ne 0 ]
         then
             echo "Error: Insufficient Coverage"
             exit 1
         fi
     fi
+
+    cd ../../..
 fi
 
-pkill -TERM -P $(cat build/test.pid)
-pkill -TERM -P $(cat testLogin.pid)
+pkill -TERM -P "$(cat build/test.pid)"
+pkill -TERM -P "$(cat testLogin.pid)"
 echo $?
 
 if [ $PW_TEST -ne 0 ]
 then
     echo "Error: Playwright test failed"
-    #exit 1
+    exit 1
 else
     #Upload playwright test reports to artifacts
     if [ "$COVERAGE_ENABLED" == "true" ]
@@ -176,3 +178,6 @@ else
         #cp -fr ${COVERAGE_PATH}/* target/coverage
     fi
 fi
+
+echo "All tests completed successfully."
+exit 0

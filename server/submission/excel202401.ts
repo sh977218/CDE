@@ -12,7 +12,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.designations) {
                 de.designations = [];
             }
-            de.designations.push({designation: valueAsString(v), tags: []});
+            de.designations.push({ designation: valueAsString(v), tags: [] });
         },
     },
     'CDE Data Type': {
@@ -29,7 +29,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             } else if (value.includes('date')) {
                 type = 'Date';
             } else if (value.includes('time')) {
-                type = 'Time'
+                type = 'Time';
             } else if (value.includes('file')) {
                 type = 'File';
             } else if (value.includes('geo')) {
@@ -41,7 +41,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             } else if (value.includes('text')) {
                 type = 'Text';
             } else {
-                withError('Required', 'CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL.');
+                withError(
+                    'Required',
+                    'CDE Data Type must be one of the following: Value List, Text, Number, Date, Time, Datetime, Geolocation, File/URI/URL.'
+                );
             }
             if (value.includes('other')) {
                 withError('Manual Intervention', 'Datatype "OTHER", assistance has been requested.');
@@ -52,18 +55,31 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             de.valueDomain.datatype = type;
             fixDatatype(de.valueDomain);
             const name = (de.designations?.[0]?.designation || '').toLowerCase();
-            if (de.valueDomain.datatype !== 'Number' && (
-                name.includes('how many') || name.includes('number of') || name.includes('count of') || name.includes('duration')
-                || name.includes('how often') || name.includes('how long')
-            )) {
-                withError('Suggestion', `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a number.`);
+            if (
+                de.valueDomain.datatype !== 'Number' &&
+                (name.includes('how many') ||
+                    name.includes('number of') ||
+                    name.includes('count of') ||
+                    name.includes('duration') ||
+                    name.includes('how often') ||
+                    name.includes('how long'))
+            ) {
+                withError(
+                    'Suggestion',
+                    `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a number.`
+                );
             }
-            if (de.valueDomain.datatype !== 'Date' && de.valueDomain.datatype !== 'Time' && (
-                name.includes('when') || name.includes('date') || name.includes('time')
-            )) {
-                withError('Suggestion', `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a date or time.`);
+            if (
+                de.valueDomain.datatype !== 'Date' &&
+                de.valueDomain.datatype !== 'Time' &&
+                (name.includes('when') || name.includes('date') || name.includes('time'))
+            ) {
+                withError(
+                    'Suggestion',
+                    `CDE Data Type is ${de.valueDomain.datatype}, but the CDE seems to ask for a date or time.`
+                );
             }
-        }
+        },
     },
     'CDE Definition': {
         order: 2,
@@ -73,7 +89,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.definitions) {
                 de.definitions = [];
             }
-            de.definitions.push({definition: valueAsString(v) || ' ', tags: []});
+            de.definitions.push({ definition: valueAsString(v) || ' ', tags: [] });
         },
     },
     'Preferred Question Text': {
@@ -84,7 +100,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.designations) {
                 de.designations = [];
             }
-            de.designations.push({designation: valueAsString(v) || ' ', tags: ['Preferred Question Text']});
+            de.designations.push({ designation: valueAsString(v) || ' ', tags: ['Preferred Question Text'] });
         },
     },
     'Unit of Measure': {
@@ -95,12 +111,15 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             const val = valueAsString(v);
             if (!val) {
                 if (de.valueDomain?.datatype === 'Number') {
-                    withError('Suggestion', 'If CDE Data Type is Number, a unit of measure is usually needed.')
+                    withError('Suggestion', 'If CDE Data Type is Number, a unit of measure is usually needed.');
                 }
                 return;
             }
             if (de.valueDomain?.datatype !== 'Number') {
-                withError('Suggestion', `If CDE Data Type is ${de.valueDomain?.datatype}, Unit of Measure should be left blank.`)
+                withError(
+                    'Suggestion',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Unit of Measure should be left blank.`
+                );
             }
             if (!de.valueDomain) {
                 de.valueDomain = valueDomain();
@@ -117,8 +136,8 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!val) {
                 return;
             }
-            de.sources = valueToArray(val).map(s => ({sourceName: s}));
-        }
+            de.sources = valueToArray(val).map(s => ({ sourceName: s }));
+        },
     },
     'DEC Concept Terminology Source': {
         order: 6,
@@ -132,8 +151,8 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.dataElementConcept) {
                 de.dataElementConcept = {};
             }
-            de.dataElementConcept.concepts = valueToArray(val).map(system => ({origin: system, type: ''}));
-        }
+            de.dataElementConcept.concepts = valueToArray(val).map(system => ({ origin: system, type: '' }));
+        },
     },
     'Data Element Concept (DEC) Identifier': {
         order: 7,
@@ -150,11 +169,17 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             }
             const conceptIds = valueToArray(val);
             if (conceptIds.length !== de.dataElementConcept.concepts.length) {
-                arrayMismatch(withError, de.dataElementConcept.concepts, conceptIds, 'Concept Sources', 'Concept Identifiers');
+                arrayMismatch(
+                    withError,
+                    de.dataElementConcept.concepts,
+                    conceptIds,
+                    'Concept Sources',
+                    'Concept Identifiers'
+                );
                 return;
             }
-            de.dataElementConcept.concepts.forEach((c, i) => c.originId = conceptIds[i] || undefined);
-        }
+            de.dataElementConcept.concepts.forEach((c, i) => (c.originId = conceptIds[i] || undefined));
+        },
     },
     'NLM Identifier for NIH CDE Repository': {
         order: 8,
@@ -166,7 +191,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             de.tinyId = val;
-        }
+        },
     },
     'Other Identifier(s)': {
         order: 9,
@@ -182,9 +207,9 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             }
             const ids = valueToArray(val);
             ids.forEach(id => {
-                de.ids?.push({id, source: de.stewardOrg?.name || ''});
+                de.ids?.push({ id, source: de.stewardOrg?.name || '' });
             });
-        }
+        },
     },
     'CDE Type': {
         order: 10,
@@ -198,7 +223,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (val === 'Composite' || val === 'Bundled Set of Questions') {
                 info.bundled = true;
             }
-        }
+        },
     },
     'Name of Bundle': {
         order: 11,
@@ -208,7 +233,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             const val = valueAsString(v);
             if (!val) {
                 if (info.bundled) {
-                    withError('Required', 'For "CDE Type" of "Composite" or "Bundled Set of Questions", "Name of Bundle" is required.');
+                    withError(
+                        'Required',
+                        'For "CDE Type" of "Composite" or "Bundled Set of Questions", "Name of Bundle" is required.'
+                    );
                 }
                 return;
             }
@@ -216,9 +244,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 withError('Required', 'If a "Name of Bundle" is given, then "CDE Type" is required.');
             }
             info.bundleName = val;
-        }
+        },
     },
-    'Permissible Value (PV) Labels': { // (by combining values in separate rows from original submission)
+    'Permissible Value (PV) Labels': {
+        // (by combining values in separate rows from original submission)
         order: 12,
         required: false,
         value: null,
@@ -231,14 +260,20 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value should be left blank. Please review datatype.`
+                );
                 return;
             }
-            de.valueDomain.permissibleValues = valueToArray(val).map(pv => ({permissibleValue: pv, valueMeaningName: pv}));
+            de.valueDomain.permissibleValues = valueToArray(val).map(pv => ({
+                permissibleValue: pv,
+                valueMeaningName: pv,
+            }));
             if (de.valueDomain.permissibleValues.length === 1) {
                 withError('Length', 'CDE Data Type is Value List, but only one Permissible Value Label was provided.');
             }
-        }
+        },
     },
     'Permissible Value (PV) Definitions': {
         order: 13,
@@ -248,12 +283,18 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             const val = valueAsString(v);
             if (!val) {
                 if (de.valueDomain?.datatype === 'Value List') {
-                    withError('Required', 'CDE Data Type is Value List, but Permissible Value Definitions are missing.');
+                    withError(
+                        'Required',
+                        'CDE Data Type is Value List, but Permissible Value Definitions are missing.'
+                    );
                 }
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Definition should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Definition should be left blank. Please review datatype.`
+                );
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -267,7 +308,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             de.valueDomain.permissibleValues.forEach((pv, i) => {
                 pv.valueMeaningDefinition = valArray[i];
             });
-        }
+        },
     },
     'Permissible Value (PV) Concept Identifiers': {
         order: 14,
@@ -279,7 +320,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Code should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Code should be left blank. Please review datatype.`
+                );
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -287,7 +331,13 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                arrayMismatch(withError, de.valueDomain.permissibleValues, valArray, 'PV Labels', 'PV Concept Identifiers');
+                arrayMismatch(
+                    withError,
+                    de.valueDomain.permissibleValues,
+                    valArray,
+                    'PV Labels',
+                    'PV Concept Identifiers'
+                );
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
@@ -305,8 +355,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra',
-                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Source should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Concept Source should be left blank. Please review datatype.`
+                );
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -314,13 +366,19 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             }
             const valArray = valueToArray(val, de.valueDomain.permissibleValues.length);
             if (de.valueDomain.permissibleValues.length !== valArray.length) {
-                arrayMismatch(withError, de.valueDomain.permissibleValues, valArray, 'PV Labels', 'PV Terminology Sources');
+                arrayMismatch(
+                    withError,
+                    de.valueDomain.permissibleValues,
+                    valArray,
+                    'PV Labels',
+                    'PV Terminology Sources'
+                );
                 return;
             }
             de.valueDomain.permissibleValues.forEach((pv, i) => {
                 pv.conceptSource = valArray[i];
             });
-        }
+        },
     },
     'Codes for Permissible Value': {
         order: 16,
@@ -332,7 +390,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code should be left blank. Please review datatype.`
+                );
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -346,7 +407,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             de.valueDomain.permissibleValues.forEach((pv, i) => {
                 pv.valueMeaningCode = valArray[i];
             });
-        }
+        },
     },
     'Permissible Value Code Systems': {
         order: 17,
@@ -358,7 +419,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             if (de.valueDomain?.datatype !== 'Value List') {
-                withError('Extra', `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code System should be left blank. Please review datatype.`);
+                withError(
+                    'Extra',
+                    `If CDE Data Type is ${de.valueDomain?.datatype}, Permissible Value Code System should be left blank. Please review datatype.`
+                );
                 return;
             }
             if (!de.valueDomain.permissibleValues) {
@@ -377,7 +441,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                     withError('Code', `PV code system "${codeSystem}" is not recognized.`);
                 }
             });
-        }
+        },
     },
     References: {
         order: 18,
@@ -389,14 +453,17 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 return;
             }
             de.referenceDocuments = valueToArray(val).map(s => {
-                const ref: ReferenceDocument = {document: s};
-                const url = s.toLowerCase().split(' ').filter(w => w.startsWith('http'))[0];
+                const ref: ReferenceDocument = { document: s };
+                const url = s
+                    .toLowerCase()
+                    .split(' ')
+                    .filter(w => w.startsWith('http'))[0];
                 if (url) {
                     ref.uri = url;
                 }
                 return ref;
             });
-        }
+        },
     },
     'Keywords/Tags': {
         order: 19,
@@ -410,9 +477,37 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.properties) {
                 de.properties = [];
             }
-            de.properties.push({key: 'CDE Tags', value: val});
-        }
-    }
+            de.properties.push({ key: 'CDE Tags', value: val });
+        },
+    },
+    'URL/URI for Permissible Values': {
+        order: 20,
+        required: false,
+        value: null,
+        setValue: (withError, de, v) => {
+            const val = valueAsString(v);
+            if (de.valueDomain?.datatype !== 'Externally Defined') {
+                if (val) {
+                    withError(
+                        'Extra',
+                        `If CDE Data Type is ${de.valueDomain?.datatype}, URL/URI for Permissible Values should be left blank. Please review datatype. This columns is only used by "Externally Defined".`
+                    );
+                }
+                return;
+            }
+            if (!val) {
+                withError(
+                    'Required',
+                    'CDE Data Type is Externally Defined, but URL/URI for Permissible Values is missing.'
+                );
+                return;
+            }
+            if (!de.valueDomain.datatypeExternallyDefined) {
+                de.valueDomain.datatypeExternallyDefined = {};
+            }
+            de.valueDomain.datatypeExternallyDefined.link = val;
+        },
+    },
 };
 
 Object.keys(cdeColumns).forEach((key, i) => {

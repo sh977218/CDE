@@ -1,5 +1,5 @@
-import {RequestHandler, Router} from 'express';
-import {handleError, handleNotFound} from 'server/errorHandler';
+import { RequestHandler, Router } from 'express';
+import { handleError, handleNotFound } from 'server/errorHandler';
 import {
     appLogs,
     clientErrors,
@@ -12,47 +12,75 @@ import {
     usageByDay,
     itemLogByModule,
 } from 'server/log/dbLogger';
-import {userModel} from 'server/user/userDb';
-import {isSiteAdminMiddleware} from "../system/authorization";
+import { userModel } from 'server/user/userDb';
+import { isSiteAdminMiddleware } from '../system/authorization';
 
-export function module(roleConfig: { feedbackLog: RequestHandler, superLog: RequestHandler }) {
+export function module(roleConfig: { feedbackLog: RequestHandler; superLog: RequestHandler }) {
     const router = Router();
 
     router.post('/httpLogs', roleConfig.superLog, (req, res) => {
-        httpLogs(req.body, handleError({req, res}, result => res.send(result)));
+        httpLogs(
+            req.body,
+            handleError({ req, res }, result => res.send(result))
+        );
     });
 
     router.post('/appLogs', roleConfig.superLog, (req, res) => {
-        appLogs(req.body, handleError({req, res}, result => res.send(result)));
+        appLogs(
+            req.body,
+            handleError({ req, res }, result => res.send(result))
+        );
     });
 
     router.get('/dailyUsageReportLogs/:numberOfDays', roleConfig.superLog, (req, res) => {
-        const numberOfDays = parseInt(req.params.numberOfDays) || 3;
-        usageByDay(numberOfDays, handleError({req, res}, result => res.send(result)));
+        const numberOfDays = parseInt(req.params.numberOfDays, 10) || 3;
+        usageByDay(
+            numberOfDays,
+            handleError({ req, res }, result => res.send(result))
+        );
     });
 
-    router.post("/itemLog/:module", roleConfig.feedbackLog, (req, res) => {
-        itemLogByModule(req.params.module, req.body, handleError({req, res}, result => res.send(result)));
+    router.post('/itemLog/:module', roleConfig.feedbackLog, (req, res) => {
+        if (!['de', 'form', 'classification'].includes(req.params.module)) {
+            return res.status(400).send('Module needs to be "de", "form" or "classification".');
+        }
+        itemLogByModule(
+            req.params.module as unknown as 'de' | 'form' | 'classification',
+            req.body,
+            handleError({ req, res }, result => res.send(result))
+        );
     });
 
     router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        serverErrors(req.body, handleError({req, res}, result => {
-            res.send(result);
-            userModel.findOneAndUpdate(
-                {username: req.user.username},
-                {$set: {'notificationDate.serverLogDate': new Date()}},
-                {}).exec();
-        }));
+        serverErrors(
+            req.body,
+            handleError({ req, res }, result => {
+                res.send(result);
+                userModel
+                    .findOneAndUpdate(
+                        { username: req.user.username },
+                        { $set: { 'notificationDate.serverLogDate': new Date() } },
+                        {}
+                    )
+                    .exec();
+            })
+        );
     });
 
     router.post('/clientErrors', roleConfig.superLog, async (req, res) => {
-        clientErrors(req.body, handleNotFound({req, res}, result => {
-            res.send(result);
-            userModel.findOneAndUpdate(
-                {username: req.user.username},
-                {$set: {'notificationDate.clientLogDate': new Date()}},
-                {}).exec();
-        }));
+        clientErrors(
+            req.body,
+            handleNotFound({ req, res }, result => {
+                res.send(result);
+                userModel
+                    .findOneAndUpdate(
+                        { username: req.user.username },
+                        { $set: { 'notificationDate.clientLogDate': new Date() } },
+                        {}
+                    )
+                    .exec();
+            })
+        );
     });
 
     router.post('/loginRecords', isSiteAdminMiddleware, async (req, res) => {
@@ -60,11 +88,17 @@ export function module(roleConfig: { feedbackLog: RequestHandler, superLog: Requ
     });
 
     router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
-        getServerErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
-    })
+        getServerErrorsNumber(
+            req.user,
+            handleError({ req, res }, result => res.send({ count: result }))
+        );
+    });
     router.get('/clientErrorsNumber', roleConfig.superLog, (req, res) => {
-        getClientErrorsNumber(req.user, handleError({req, res}, result => res.send({count: result})));
-    })
+        getClientErrorsNumber(
+            req.user,
+            handleError({ req, res }, result => res.send({ count: result }))
+        );
+    });
 
     router.post('/clientExceptionLogs', (req, res) => {
         logClientError(req, () => res.send());
