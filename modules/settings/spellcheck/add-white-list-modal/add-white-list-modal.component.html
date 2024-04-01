@@ -9,19 +9,18 @@
 
         <label for="newWhitelistname">Terms</label>
         <mat-form-field class="example-chip-list" appearance="fill">
-            <mat-chip-list #chipList aria-label="Term selection">
-                <mat-chip *ngFor="let term of newWhiteList.terms" (removed)="remove(term)">
+            <mat-chip-grid #chipList aria-label="Term selection">
+                <mat-chip-row *ngFor="let term of newWhiteList.terms" (removed)="remove(term)">
                     {{term}}
                     <button matChipRemove>
                         <mat-icon>cancel</mat-icon>
                     </button>
-                </mat-chip>
+                </mat-chip-row>
                 <input placeholder="New term..."
                        [matChipInputFor]="chipList"
                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                       [matChipInputAddOnBlur]="addOnBlur"
                        (matChipInputTokenEnd)="add($event)">
-            </mat-chip-list>
+            </mat-chip-grid>
         </mat-form-field>
 
     </div>

@@ -1,16 +1,15 @@
 <mat-form-field class="w-100">
-    <mat-chip-list #chipList>
-        <mat-chip *ngFor="let key of keys"
-                  [selectable]="true" [removable]="true" (removed)="removeKey(key)">
+    <mat-chip-grid #chipList>
+        <mat-chip-row *ngFor="let key of keys"
+                  [editable]="true" (removed)="removeKey(key)">
             {{key}}
             <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
+        </mat-chip-row>
         <input placeholder="{{placeHolder}}"
                #keyInput
                [formControl]="keyControl"
                [matChipInputFor]="chipList"
                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-               [matChipInputAddOnBlur]="true"
                (matChipInputTokenEnd)="addKey($event)"
                [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="autoSelectedKey($event)">
@@ -18,5 +17,5 @@
                 {{opt}}
             </mat-option>
         </mat-autocomplete>
-    </mat-chip-list>
+    </mat-chip-grid>
 </mat-form-field>

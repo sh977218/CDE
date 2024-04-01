@@ -8,7 +8,6 @@ import {
     EditDefinitionConfig,
     EditDesignationConfig,
     RegistrationStatus,
-    RegistrationStatusType,
 } from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
@@ -130,6 +129,10 @@ export class GenerateDetailsPo {
         await this.inlineEdit.confirmButton(originLocator).click();
     };
 
+    addNameButton() {
+        return this.page.getByRole('button', { name: `Add Name`, exact: true }).click();
+    }
+
     editRegistrationStatus = async (
         {
             status,
@@ -170,6 +173,21 @@ export class GenerateDetailsPo {
         await this.updateRegistrationStatusModal.saveRegistrationStatusButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
     };
+
+    async addName(newDesignation: Designation) {
+        await this.page.getByRole('button', { name: `Add Name`, exact: true }).click();
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByPlaceholder(`Name / Designation`).fill(newDesignation.designation);
+        for (const tag of newDesignation.tags) {
+            await this.materialPage
+                .matChipListInput(this.materialPage.matDialog().locator(`[id="newDesignationTags"]`))
+                .click();
+            await this.materialPage.matOptionByText(tag).click();
+        }
+        await this.materialPage.matDialog().getByRole('button', { name: `Save`, exact: true }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.saveModal.waitForDraftSaveComplete();
+    }
 
     async editNameByIndex(
         index: number,

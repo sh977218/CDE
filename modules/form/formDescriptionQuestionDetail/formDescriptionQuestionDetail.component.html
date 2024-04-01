@@ -6,22 +6,22 @@
             Select Multiple
         </span>
         <span *ngIf="question.question?.datatypeText?.minLength" class="badge badge-success formViewSummaryLabel">
-            At least: {{question.question?.datatypeText?.minLength}} characters
+            At least: {{ question.question?.datatypeText?.minLength }} characters
         </span>
         <span *ngIf="question.question?.datatypeText?.maxLength" class="badge badge-success formViewSummaryLabel">
-            At most: {{question.question?.datatypeText?.maxLength}} characters
+            At most: {{ question.question?.datatypeText?.maxLength }} characters
         </span>
         <span *ngIf="question.question?.datatypeNumber?.minValue" class="badge badge-success formViewSummaryLabel">
-            At least: {{question.question?.datatypeNumber.minValue}}
+            At least: {{ question.question?.datatypeNumber.minValue }}
         </span>
         <span *ngIf="question.question?.datatypeNumber?.maxValue" class="badge badge-success formViewSummaryLabel">
-            At most: {{question.question?.datatypeNumber?.maxValue}}
+            At most: {{ question.question?.datatypeNumber?.maxValue }}
         </span>
         <span *ngIf="question.question?.datatypeDate?.format" class="badge badge-success formViewSummaryLabel">
-            Format: {{question.question?.datatypeDate?.format}}
+            Format: {{ question.question?.datatypeDate?.format }}
         </span>
         <span *ngIf="repeatFeLabel(question)" class="badge badge-primary formViewSummaryLabel">
-            Repeats: {{repeatFeLabel(question)}} times
+            Repeats: {{ repeatFeLabel(question) }} times
         </span>
         <span *ngIf="isScore(question.question)" class="badge badge-primary formViewSummaryLabel">
             Score: <span [textContent]="question.question.scoreFormula" style="margin-left: .25em"></span>
@@ -39,7 +39,7 @@
         </span>
         <span *ngIf="question.skipLogic?.condition?.length > 0 && parent"
               class="badge badge-warning formViewSummaryLabel">
-            Show if: {{question.skipLogic.condition}}
+            Show if: {{ question.skipLogic.condition }}
         </span>
     </div>
     <div>
@@ -52,7 +52,7 @@
         <div *ngIf="question.question.datatype === 'Value List' && question.question.displayAs !== 'radio/checkbox/select'">
             <span class="formViewQuestionLabel">Display As:</span>
             <span class="badge badge-secondary formViewSummaryLabel" style="background-color: #666">
-                    {{question.question.displayAs === 'likert scale' ? 'Likert Scale' : 'Default'}}
+                    {{ question.question.displayAs === 'likert scale' ? 'Likert Scale' : 'Default' }}
                 </span>
         </div>
         <div class="answerList"
@@ -65,23 +65,23 @@
              class="defaultAnswer">
             <span class="formViewQuestionLabel">Precision:</span>
             <span class="badge badge-secondary formViewSummaryLabel"
-                  style="background-color: #666">{{question.question.datatypeDate?.precision}}</span>
+                  style="background-color: #666">{{ question.question.datatypeDate?.precision }}</span>
         </div>
         <div *ngIf="question.question.defaultAnswer"
              class="defaultAnswer">
             <span class="formViewQuestionLabel">Default Answer:</span>
             <span class="badge badge-secondary formViewSummaryLabel"
-                  style="background-color: #666">{{defaultToLabel(question.question)}}</span>
+                  style="background-color: #666">{{ defaultToLabel(question.question) }}</span>
         </div>
         <div *ngIf="question.question.unitsOfMeasure.length > 0" class="questionUom">
             <span class="formViewQuestionLabel">Units of Measure:</span>
             <span *ngFor="let u of question.question.unitsOfMeasure; let index = index"
                   class="badge badge-info formViewSummaryLabel"
                   [ngClass]="{'badge-danger': (question.question.uomsValid && question.question.uomsValid[index])}">
-                    <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
-                    <ng-container>{{u.code}}</ng-container>
+                    <ng-container *ngIf="u.system">{{ u.system }}/</ng-container>
+                    <ng-container>{{ u.code }}</ng-container>
                     <ng-container
-                            *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{question.question.uomsValid[index]}}
+                            *ngIf="question.question.uomsValid && question.question.uomsValid[index]">&nbsp;(Error: {{ question.question.uomsValid[index] }}
                         )</ng-container>
                 </span>
         </div>
@@ -92,10 +92,11 @@
     <dl class="cde-property">
         <dt>Label:</dt>
         <dd>
-            <mat-icon class="changeQuestionLabelIcon fake-button" title="Change question label" role="button" tabindex="0"
+            <mat-icon class="changeQuestionLabelIcon fake-button" title="Change question label" role="button"
+                      tabindex="0"
                       (click)="openNameSelect(question, parent)">edit
             </mat-icon>
-            {{question.label || "(No Label)"}}
+            {{ question.label || "(No Label)" }}
         </dd>
         <dt>Instructions:</dt>
         <dd class="editQuestionInstruction">
@@ -146,9 +147,9 @@
         </ng-container>
         <ng-container *ngIf="question.question.datatype === 'Dynamic Code List'">
             <dt>System:</dt>
-            <dd>{{question.question.datatypeDynamicCodeList.system}}</dd>
+            <dd>{{ question.question.datatypeDynamicCodeList.system }}</dd>
             <dt>Code:</dt>
-            <dd>{{question.question.datatypeDynamicCodeList.code}}</dd>
+            <dd>{{ question.question.datatypeDynamicCodeList.code }}</dd>
         </ng-container>
         <ng-container
                 *ngIf="question.question.datatype === 'Number' || (question.question.datatype === 'Text' && !question.question.datatypeText?.showAsTextArea)">
@@ -159,8 +160,8 @@
                           class="badge badge-info formViewSummaryLabel">
                         <mat-icon class="action-icon-dark" role="button" tabindex="0"
                                   (click)="removeUomByIndex(i)" title="Remove UOM">cancel</mat-icon>
-                        <ng-container *ngIf="u.system">{{u.system}}/</ng-container>
-                        <ng-container>{{u.code}}</ng-container>
+                        <ng-container *ngIf="u.system">{{ u.system }}/</ng-container>
+                        <ng-container>{{ u.code }}</ng-container>
                     </span>
                     <div style="padding: .25rem; display: flex; flex-flow: row wrap; gap: .5rem; align-items: center">
                         Add
@@ -177,20 +178,21 @@
                                     <mat-option *ngFor="let uom of filteredUoms" [value]="uom"
                                                 (click)="uomAddSelected(uom);">
                                         <ng-container *ngIf="uom.name">
-                                            {{uom.code}}:{{uom.name}} (
-                                            <ng-container *ngFor="let s of uom.synonyms">{{s}} </ng-container>
+                                            {{ uom.code }}:{{ uom.name }} (
+                                            <ng-container *ngFor="let s of uom.synonyms">{{ s }}</ng-container>
                                             )
                                         </ng-container>
                                         <ng-container *ngIf="!uom.name">
                                             <mat-icon>warning</mat-icon>
-                                            {{uom.code}} is not a valid UCUM Unit
+                                            {{ uom.code }} is not a valid UCUM Unit
                                         </ng-container>
                                     </mat-option>
                                 </mat-autocomplete>
                             </mat-form-field>
                         </ng-container>
                         <ng-template #manualUom>
-                            <input class="form-control" style="display: inline-block; max-width: 200px" [(ngModel)]="newUom"/>
+                            <input class="form-control" style="display: inline-block; max-width: 200px"
+                                   [(ngModel)]="newUom"/>
                             <button class="button" style="vertical-align: baseline"
                                     (click)="uomAddNew()">
                                 <mat-icon>add</mat-icon>
@@ -199,9 +201,9 @@
                         <ng-container *ngFor="let e of question.question.uomsValid; index as i">
                             <div *ngIf="e" style="color: red">
                                 <ng-container *ngIf="question.question.unitsOfMeasure[i].system">
-                                    {{question.question.unitsOfMeasure[i].system}}/
+                                    {{ question.question.unitsOfMeasure[i].system }}/
                                 </ng-container>
-                                {{question.question.unitsOfMeasure[i].code}} - {{e}}
+                                {{ question.question.unitsOfMeasure[i].code }} - {{ e }}
                             </div>
                         </ng-container>
                     </div>
@@ -217,7 +219,9 @@
                         <mat-option value="likert scale">Likert Scale</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <div *ngIf="question.question.displayAs === 'likert scale'">Likert Scale is only seen on the Digital view for single select questions. It's value is required and defaulted automatically.</div>
+                <div *ngIf="question.question.displayAs === 'likert scale'">Likert Scale is only seen on the Digital
+                    view for single select questions. It's value is required and defaulted automatically.
+                </div>
             </dd>
             <dt>Multiple Selection:</dt>
             <dd class="multipleSelection">
@@ -226,8 +230,10 @@
             </dd>
             <ng-container *ngIf="question.question.cde.tinyId">
                 <dt class="answerListLabel">Answer List
-                    <mat-icon *ngIf="question.question.answers.length > 0" class="fake-button" role="button" tabindex="0"
-                              (click)="openEditAnswerModal()">edit</mat-icon>
+                    <mat-icon *ngIf="question.question.answers.length > 0" class="fake-button" role="button"
+                              tabindex="0"
+                              (click)="openEditAnswerModal()">edit
+                    </mat-icon>
                     :
                 </dt>
                 <dd class="answerList">
@@ -244,7 +250,8 @@
                                 (selectionChange)="eltChange.emit()">
                         <mat-option value=""></mat-option>
                         <mat-option *ngFor="let pv of question.question.answers"
-                                    [value]="pv.permissibleValue">{{pvGetLabel(pv)}}</mat-option>
+                                    [value]="pv.permissibleValue">{{ pvGetLabel(pv) }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
             </ng-container>
@@ -268,55 +275,62 @@
             <mat-card-title>Create New CDE</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <mat-form-field class="w-50 newCdeDesignations">
-                <mat-chip-list #designationChipList>
-                    <mat-chip *ngFor="let designation of question.question.cde.newCde.designations; index as i"
-                              [selectable]="true"
-                              [removable]="question.question.cde.newCde.designations.length > 1"
-                              (removed)="removeCdeDesignation(question.question.cde.newCde.designations, i)">
-                        {{designation.designation}}
-                        <mat-icon matChipRemove *ngIf="question.question.cde.newCde.designations.length > 1">cancel</mat-icon>
-                    </mat-chip>
+            <mat-form-field class="w-50 newCdeDesignations" appearance="fill">
+                <mat-chip-grid #designationChipGrid>
+                    <mat-chip-row *ngFor="let designation of question.question.cde.newCde.designations; index as i"
+                                  [editable]="true"
+                                  (removed)="removeCdeDesignation(question.question.cde.newCde.designations, i)">
+                        {{ designation.designation }}
+                        <button matChipRemove [attr.aria-label]="'remove ' + designation.designation">
+                            <mat-icon>
+                                cancel
+                            </mat-icon>
+                        </button>
+                    </mat-chip-row>
                     <input placeholder="New Name..."
-                           [matChipInputFor]="designationChipList"
+                           [matChipInputFor]="designationChipGrid"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
+                           [matChipInputAddOnBlur]="true"
                            (matChipInputTokenEnd)="addCdeDesignation(question.question.cde.newCde.designations, $event)">
-                </mat-chip-list>
+                </mat-chip-grid>
             </mat-form-field>
             <mat-form-field class="w-50 newCdeIdentifiers">
-                <mat-chip-list #idChipList>
-                    <mat-chip *ngFor="let id of question.question.cde.ids; index as i"
-                              [selectable]="true" [removable]="true" (removed)="removeCdeId(i)">
-                        <span class="green mr-1">{{id.source}}</span> <span class="blue" style="margin-left: .25rem">{{id.id}}</span>
-                        <mat-icon matChipRemove class="removeIdentifier">cancel</mat-icon>
-                    </mat-chip>
+                <mat-chip-grid #idChipList>
+                    <mat-chip-row *ngFor="let id of question.question.cde.ids; index as i"
+                                  [editable]="true" (removed)="removeCdeId(i)">
+                        {{ id.source + ' ' + id.id }}
+                        <button matChipRemove [attr.aria-label]="'remove ' + id.source + ' ' + id.id">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
                     <input placeholder="New Identifier...(Example: LOINC;12345-6)"
                            [matChipInputFor]="idChipList"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
+                           [matChipInputAddOnBlur]="true"
                            (matChipInputTokenEnd)="addCdeId($event)">
-                </mat-chip-list>
+                </mat-chip-grid>
             </mat-form-field>
             <mat-form-field class="w-50">
                 <mat-select placeholder="CDE Data Type" [ngModel]="question.question.datatype"
                             (selectionChange)="onDatatypeChange(question.question, $event)">
-                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{ dataType }}</mat-option>
                 </mat-select>
             </mat-form-field>
             <mat-form-field class="w-50 newCdePvs" *ngIf="question.question.datatype==='Value List'">
-                <mat-chip-list #pvChipList>
-                    <mat-chip *ngFor="let pv of question.question.cde.permissibleValues; index as i;"
-                              [selectable]="true" [removable]="true" (removed)="removeCdePv(i)">
-                        {{pv.permissibleValue}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
+                <mat-chip-grid #pvChipList>
+                    <mat-chip-row *ngFor="let pv of question.question.cde.permissibleValues; index as i;"
+                                  [editable]="true" (removed)="removeCdePv(i)">
+                        {{ pv.permissibleValue }}
+                        <button matChipRemove [attr.aria-label]="'remove ' + pv.permissibleValue">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </mat-chip-row>
                     <input placeholder="New Permissible Value"
                            [matChipInputFor]="pvChipList"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
+                           [matChipInputAddOnBlur]="true"
                            (matChipInputTokenEnd)="addCdePv($event)">
-                </mat-chip-list>
+                </mat-chip-grid>
             </mat-form-field>
         </mat-card-content>
     </mat-card>

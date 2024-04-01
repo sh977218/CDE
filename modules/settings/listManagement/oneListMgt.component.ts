@@ -15,8 +15,7 @@ export class OneListMgtComponent implements OnInit {
     @Input() allKeys!: string[];
     @Input() placeHolder: string = 'Property Keys';
     @Output() save: EventEmitter<any> = new EventEmitter();
-    @ViewChild('keyInput', { static: true })
-    keyInput!: ElementRef<HTMLInputElement>;
+    @ViewChild('keyInput', { static: true }) keyInput!: ElementRef<HTMLInputElement>;
     filteredKeys!: Observable<string[]>;
     keyControl = new UntypedFormControl();
 
@@ -37,23 +36,21 @@ export class OneListMgtComponent implements OnInit {
     }
 
     removeKey(key: string) {
-        this.keys.splice(this.keys.indexOf(key), 1);
-        this.save.emit();
+        const index = this.keys.indexOf(key);
+        if (index >= 0) {
+            this.keys.splice(this.keys.indexOf(key), 1);
+            this.save.emit();
+        }
     }
 
-    addKey(key: MatChipInputEvent) {
-        const input = key.input;
-        const value = key.value;
+    addKey(event: MatChipInputEvent) {
+        const value = (event.value || '').trim();
 
-        if ((value || '').trim()) {
-            this.keys.push(value.trim());
+        if (value) {
+            this.keys.push(value);
         }
 
-        // Reset the input value
-        if (input) {
-            input.value = '';
-        }
-
+        event.chipInput!.clear();
         this.keyControl.setValue(null);
         this.save.emit();
     }
@@ -62,6 +59,5 @@ export class OneListMgtComponent implements OnInit {
         this.keys.push(key.option.viewValue);
         this.keyInput.nativeElement.value = '';
         this.keyControl.setValue(null);
-        this.save.emit();
     }
 }

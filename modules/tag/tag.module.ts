@@ -6,7 +6,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MAT_CHIPS_DEFAULT_OPTIONS, MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { TagComponent } from 'tag/tag.component';
 
 @NgModule({
@@ -18,7 +17,6 @@ import { TagComponent } from 'tag/tag.component';
         MatInputModule,
         MatIconModule,
         MatChipsModule,
-        MatLegacyChipsModule,
     ],
     declarations: [TagComponent],
     exports: [TagComponent],

@@ -19,6 +19,14 @@ export class SettingMenuPo {
         return this.page.getByTestId('manage-organizations');
     }
 
+    manageProperties() {
+        return this.page.getByTestId('manage-properties');
+    }
+
+    manageTags() {
+        return this.page.getByTestId('manage-tags');
+    }
+
     adminsMenu() {
         return this.page.getByTestId(`admins`);
     }
@@ -37,5 +45,9 @@ export class SettingMenuPo {
 
     articlesMenu() {
         return this.page.getByTestId(`articles`);
+    }
+
+    spellCheckMenu() {
+        return this.page.getByTestId(`spell-check`);
     }
 }

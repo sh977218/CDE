@@ -17,7 +17,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -273,7 +272,6 @@ const appRoutes: Routes = [
         MatGridListModule,
         MatIconModule,
         MatInputModule,
-        MatLegacyChipsModule,
         MatListModule,
         MatMenuModule,
         MatNativeDateModule,

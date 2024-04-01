@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import { Accounts } from '../../../data/user';
 
 const newOrganization = {
-    orgName: 'MLB ' + new Date(),
+    orgName: 'MLB ' + new Date().toISOString(),
     orgLongName: 'Medical Language Branch',
     orgMailAddress: '9000 Rockville Pike, Bethesda, Maryland 20982 USA',
     orgEmailAddress: 'mlb@mln.mlb',

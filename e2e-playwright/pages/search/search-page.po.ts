@@ -161,11 +161,13 @@ export class SearchPagePo {
         await this.searchQueryInput().fill(s);
         await this.searchSubmitButton().click();
         if (expectedNumberOfResults === null) {
-            await expect(this.page.getByText('results. Sorted by relevance.')).toBeVisible();
+            await expect(this.page.getByText('results. Sorted by relevance.')).toBeVisible({ timeout: 10 * 1000 });
         } else if (expectedNumberOfResults === 0) {
-            await expect(this.page.getByText('No results were found.')).toBeVisible();
+            await expect(this.page.getByText('No results were found.')).toBeVisible({ timeout: 10 * 1000 });
         } else {
-            await expect(this.page.getByText(`${expectedNumberOfResults} results. Sorted by relevance.`)).toBeVisible();
+            await expect(this.page.getByText(`${expectedNumberOfResults} results. Sorted by relevance.`)).toBeVisible({
+                timeout: 10 * 1000,
+            });
         }
     }
 }

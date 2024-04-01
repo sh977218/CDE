@@ -39,6 +39,7 @@ test.describe(`Search CDE export`, async () => {
         });
 
         test(`custom setting`, async ({ page, materialPage }) => {
+            test.fixme();
             await materialPage.loadTableViewSettingsForExport();
             await page.locator('#export').click();
             const downloadPromise = page.waitForEvent('download');

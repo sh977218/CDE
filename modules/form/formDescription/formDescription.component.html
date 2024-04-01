@@ -34,6 +34,7 @@
                     <span class="toolSection"></span>
                 </button>
                 <button *ngIf="elt.formElements.length > 0" role="button" id="startAddingQuestions"
+                        data-testid="add-question-button"
                         class="toolButton formDescriptionTool"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref: 'question'}" [treeDragEnabled]="true"

@@ -13,7 +13,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatLegacyChipsModule } from '@angular/material/legacy-chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
@@ -65,7 +64,6 @@ const appRoutes: Routes = [{ path: '', component: FormDescriptionComponent }];
         MatGridListModule,
         MatIconModule,
         MatInputModule,
-        MatLegacyChipsModule,
         MatMenuModule,
         MatSelectModule,
         MatSliderModule,

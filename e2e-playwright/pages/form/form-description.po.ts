@@ -1,6 +1,7 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
 import { InlineEditPo } from '../shared/inline-edit.po';
+import { ReorderDirection } from '../../model/type';
 
 export class FormDescriptionPo {
     private readonly page: Page;
@@ -13,12 +14,44 @@ export class FormDescriptionPo {
         this.inlineEdit = inlineEdit;
     }
 
+    addQuestionButton() {
+        return this.page.getByTestId(`add-question-button`);
+    }
+
+    questionContainer(id: string) {
+        return this.page.locator(`#${id}`);
+    }
+
+    questionLabel() {
+        return this.page.locator(`.questionLabel`);
+    }
+
+    questionDatatype() {
+        return this.page.locator(`.questionDataType`);
+    }
+
+    questionAnswerList() {
+        return this.page.locator(`.answerList .badge`);
+    }
+
+    questionLabelByIndex(id: string) {
+        return this.questionContainer(id).locator(this.questionLabel());
+    }
+
+    questionDataTypeByIndex(id: string) {
+        return this.questionContainer(id).locator(this.questionDatatype());
+    }
+
+    questionAnswerListByIndex(id: string) {
+        return this.questionContainer(id).locator(this.questionAnswerList());
+    }
+
     async startEditQuestionById(id: string) {
-        await this.page.locator(`//*[@id='${id}']//*[contains(@class,'questionLabel')]`).click();
+        await this.questionLabelByIndex(id).click();
     }
 
     async saveEditQuestionById(id: string) {
-        await this.page.locator(`//*[@id='${id}']//*[contains(@class,'questionLabel')]`).click();
+        await this.questionLabelByIndex(id).click();
     }
 
     async saveFormEdit() {
@@ -63,6 +96,9 @@ export class FormDescriptionPo {
         }
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert('Saved');
+        if (index === -1) {
+            await expect(questionLocator).toHaveText(`(No Label)`);
+        }
     }
 
     async editQuestionInstructionByIndex(questionLocatorId: string, newInstruction: string) {
@@ -72,5 +108,149 @@ export class FormDescriptionPo {
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
         await this.inlineEdit.typeTextField(instructionLocator, newInstruction);
         await this.materialPage.checkAlert('Saved');
+    }
+
+    async reorderAnswerListByIndex(questionLocatorId: string, index: number, direction: ReorderDirection) {
+        await this.page
+            .locator(`//*[@id='${questionLocatorId}']//*[contains(@class,'answerListLabel')]//mat-icon`)
+            .click();
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage
+            .matDialog()
+            .locator('table tbody tr')
+            .nth(index)
+            .getByRole('button', {
+                name: direction,
+                exact: true,
+            })
+            .click();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Save' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async deleteAnswerListByIndex(questionLocatorId: string, answersToBeDeleted: string[]) {
+        const questionContainerLocator = this.page.locator(`#${questionLocatorId}`);
+        for (const answerToBeDeleted of answersToBeDeleted) {
+            await this.materialPage.removeMatChipRowByName(questionContainerLocator, answerToBeDeleted);
+            await this.materialPage.checkAlert('Saved');
+        }
+    }
+
+    /**
+     *
+     * @param cdeName - CDE name to be searched or created
+     * @param questionId - Question id where CDE to be dropped before
+     */
+    async addQuestionByNameBeforeId(cdeName: string, questionId: string) {
+        const dropLocator = this.page.locator(`//*[@id='${questionId}']//tree-node-drop-slot[1]`);
+        await this.addQuestionButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.page.locator(`#addNewCdeBtn`).click();
+        await this.page.getByPlaceholder(`New Data Element Name`).fill(cdeName);
+        await this.page.locator(`#createNewDataElement`).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async addQuestionByNameBeforeIdSuggested(cdeName: string, questionId: string) {
+        const dropLocator = this.page.locator(`//*[@id='${questionId}']//tree-node-drop-slot[1]`);
+        await this.addQuestionButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
+        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage
+            .matDialog()
+            .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
+            .click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+    }
+
+    /**
+     * This method create CDE by name using keyboard shortcut "q"
+     * @param cdeName - CDE name to be searched
+     * @param selectSuggested - Select first suggested result if true, default to false
+     */
+    async addQuestionByNameHotKey(cdeName: string) {
+        await this.page.keyboard.press('q');
+        await this.materialPage.matDialog().waitFor();
+        await this.page.keyboard.type(cdeName);
+        await this.page.keyboard.press('Enter');
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async addQuestionByNameHotKeySuggested(cdeName: string) {
+        await this.page.keyboard.press('q');
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Search Data Elements' }).click();
+        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
+        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage
+            .matDialog()
+            .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
+            .click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+    }
+
+    async addQuestionByNamesHotKeySuggested(cdeNames: string[]) {
+        await this.page.keyboard.press('q');
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Search Data Elements' }).click();
+        for (const cdeName of cdeNames) {
+            await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
+            await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+            await this.materialPage
+                .matDialog()
+                .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
+                .click();
+            await this.materialPage.checkAlert(`Saved`);
+        }
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
+    async addNewDesignationByQuestionId(questionId: string, newDesignation: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdeDesignations')]`;
+        await this.materialPage.addMatChipRowByName(this.page.locator(xpath), newDesignation);
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
+    async addNewIdentifierByQuestionId(questionId: string, newSource: string, newIdentifier: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdeIdentifiers')]`;
+        await this.materialPage.addMatChipRowByName(this.page.locator(xpath), `${newSource};${newIdentifier}`);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async editCdeDataTypeById(questionId: string, dataType: string) {
+        await this.materialPage.selectMatSelect(this.page.locator(`//*[@id='${questionId}']//mat-select`), dataType);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async deleteCdeNameById(questionId: string, designation: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdeDesignations')]`;
+        await this.materialPage.removeMatChipRowByName(this.page.locator(xpath), designation);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async deleteCdeIdentifierById(questionId: string, source: string, id: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdeIdentifiers')]`;
+        await this.materialPage.removeMatChipRowByName(this.page.locator(xpath), `${source} ${id}`);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async addCdePvById(questionId: string, pv: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdePvs')]`;
+        await this.materialPage.addMatChipRowByName(this.page.locator(xpath), pv);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async deleteCdePvById(questionId: string, pv: string) {
+        const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdePvs')]`;
+        await this.materialPage.removeMatChipRowByName(this.page.locator(xpath), pv);
+        await this.materialPage.checkAlert(`Saved`);
     }
 }

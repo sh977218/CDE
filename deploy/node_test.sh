@@ -85,7 +85,12 @@ echo "Install playwright dependencies"
 cd ..
 npx playwright install
 npm run playwright
-export PW_TEST=$?
+
+if [ $? -ne 0 ]
+then
+    echo "Error: playwright test failed."
+    exit 1
+fi
 
 #Run selenium test
 set -x
@@ -119,14 +124,14 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     fi
     if [ $? -ne 0 ]
     then
-        echo "Error: Test Failed."
+        echo "Error: selenium test failed."
         exit 1
     fi
 
     node ../verifyConsoleLogs.js
     if [ $? -ne 0 ]
     then
-        echo "Error: Verify Console Logs'"
+        echo "Error: verify console logs'"
         exit 1
     fi
 

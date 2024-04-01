@@ -56,9 +56,7 @@ export class MaterialPo {
 
     async selectMatSelect(matSelectLocator: Locator, text: string) {
         await matSelectLocator.click();
-        await this.matOverlay().waitFor({ state: 'visible' });
         await this.matOptionByText(text).click();
-        await this.matOverlay().waitFor({ state: 'hidden' });
     }
 
     matSpinner() {
@@ -66,8 +64,9 @@ export class MaterialPo {
     }
 
     async matSpinnerShowAndGone() {
-        await this.matSpinner().waitFor();
-        await this.matSpinner().waitFor({ state: 'hidden' });
+        await this.matSpinner().waitFor({ state: 'visible', timeout: 20 * 1000 });
+        await this.page.waitForTimeout(5000); // this line really should not be here, @TODO remove this wait.
+        await this.matSpinner().waitFor({ state: 'detached', timeout: 20 * 1000 });
     }
 
     matSortHeader(title: string) {
@@ -163,7 +162,17 @@ export class MaterialPo {
     }
 
     matChipListInput(containerLocator: Locator) {
-        return containerLocator.locator(`mat-chip-list input`);
+        return containerLocator.locator(`mat-chip-grid input`);
+    }
+
+    async addMatChipRowByName(containerLocator: Locator, name: string) {
+        await this.matChipListInput(containerLocator).click();
+        await this.page.keyboard.type(name);
+        await this.page.keyboard.press('Enter');
+    }
+
+    async removeMatChipRowByName(containerLocator: Locator, name: string) {
+        await containerLocator.getByRole('gridcell', { name: `remove ${name}` }).click();
     }
 
     async checkAlert(text: string) {
@@ -172,7 +181,7 @@ export class MaterialPo {
         await matSnackBarContainer.waitFor({ state: 'visible' });
         await expect(alertText).toHaveText(text, { timeout: 60 * 1000 });
         await this.page.locator('mat-snack-bar-container').locator('button').click();
-        await matSnackBarContainer.waitFor({ state: 'hidden' });
+        await matSnackBarContainer.waitFor({ state: 'detached' });
     }
 
     async pinToBoard(boardName: string) {

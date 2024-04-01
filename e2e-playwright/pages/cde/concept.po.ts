@@ -61,7 +61,6 @@ export class ConceptPo {
                 name: direction,
                 exact: true,
             })
-            // .getByAltText(direction, {exact: true})
             .click();
         await this.saveModal.waitForDraftSaveComplete();
     }

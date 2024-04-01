@@ -93,6 +93,12 @@ export type Copyright = {
     url?: string;
 };
 
+export type Property = {
+    key: string;
+    value: string;
+    html?: boolean;
+};
+
 export type AlertType = 'Data Element saved.' | 'Form saved.';
 
 export type RegistrationStatusType =

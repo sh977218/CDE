@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
 
 export class PreviewPo {
@@ -26,4 +26,9 @@ export class PreviewPo {
         await this.displayProfileSelect().click();
         await this.materialPage.matMenuItem(profileName).click();
     };
+
+    async goToFormDescription() {
+        await expect(this.page.getByRole('heading', { name: 'Preview' })).toBeVisible();
+        await this.editFormDescriptionButton().click();
+    }
 }

@@ -1,19 +1,22 @@
-<mat-chip-list *ngIf="!canEdit && tags.length" aria-label="tag selection">
-    <mat-chip [aria-label]="tag" *ngFor="let tag of tags">{{tag}}</mat-chip>
-</mat-chip-list>
+<ng-container *ngIf="!canEdit && tags.length">
+    <mat-chip-listbox aria-label="tag selection" [selectable]="false">
+        <mat-chip-option *ngFor="let tag of tags">{{ tag }}</mat-chip-option>
+    </mat-chip-listbox>
+</ng-container>
 <mat-form-field *ngIf="canEdit" class="w-100">
-    <mat-chip-list #chipList aria-label="Tags">
-        <mat-chip *ngFor="let tag of tags" [selectable]="false" [removable]="true" (removed)="remove(tag)" [aria-label]="tag">
-            {{tag}}
-            <mat-icon matChipRemove>cancel</mat-icon>
-        </mat-chip>
+    <mat-chip-grid #chipList aria-label="Tags">
+        <mat-chip-row *ngFor="let tag of tags" [editable]="true" (removed)="remove(tag)" [aria-label]="tag">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                <mat-icon>cancel</mat-icon>
+            </button>
+        </mat-chip-row>
         <input matInput #tagInput placeholder="{{placeHolder}}" [formControl]="tagCtrl"
-               [matAutocomplete]="tagAuto" [matChipInputFor]="chipList" (matChipInputTokenEnd)="add($event)"
-               [matChipInputAddOnBlur]="true">
+               [matAutocomplete]="tagAuto" [matChipInputFor]="chipList" (matChipInputTokenEnd)="add($event)">
         <mat-autocomplete #tagAuto="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-                {{tag}}
+                {{ tag }}
             </mat-option>
         </mat-autocomplete>
-    </mat-chip-list>
+    </mat-chip-grid>
 </mat-form-field>

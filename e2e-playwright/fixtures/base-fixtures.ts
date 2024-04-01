@@ -45,6 +45,7 @@ import { BoardPagePo } from '../pages/board/board-page.po';
 // Shared sections
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
+import { PropertyPo } from '../pages/shared/property.po';
 import { ClassificationPo } from '../pages/shared/classification.po';
 import { AttachmentPo } from '../pages/shared/attachment.po';
 import { HistoryPo } from '../pages/shared/history.po';
@@ -56,6 +57,7 @@ import { AdminsPo } from '../pages/setting/my-organizations/admins.po';
 import { CuratorsPo } from '../pages/setting/my-organizations/curators.po';
 import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
+import { ManageTagsPropertiesPo } from '../pages/setting/my-organizations/manage-tags-properties.po';
 import { UsersPagePo } from '../pages/setting/users-page.po';
 import { ArticlePagePo } from '../pages/setting/article-page.po';
 
@@ -109,6 +111,7 @@ const baseFixture = baseTest.extend<{
     saveModal: SaveModalPo;
     generateDetailsSection: GenerateDetailsPo;
     identifierSection: IdentifierPo;
+    propertySection: PropertyPo;
     attachmentSection: AttachmentPo;
     classificationSection: ClassificationPo;
     historySection: HistoryPo;
@@ -126,6 +129,7 @@ const baseFixture = baseTest.extend<{
     curatorsPage: CuratorsPo;
     editorsPage: EditorsPo;
     manageOrganizationsPage: ManageOrganizationsPo;
+    manageTagsPropertiesPage: ManageTagsPropertiesPo;
     profilePage: ProfilePagePo;
     usersPage: UsersPagePo;
     articlePage: ArticlePagePo;
@@ -186,6 +190,9 @@ const baseFixture = baseTest.extend<{
     identifierSection: async ({ page }, use) => {
         await use(new IdentifierPo(page));
     },
+    propertySection: async ({ page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal }, use) => {
+        await use(new PropertyPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
+    },
     classificationSection: async ({ page, materialPage, saveModal }, use) => {
         await use(new ClassificationPo(page, materialPage, saveModal));
     },
@@ -239,6 +246,9 @@ const baseFixture = baseTest.extend<{
     },
     manageOrganizationsPage: async ({ page }, use) => {
         await use(new ManageOrganizationsPo(page));
+    },
+    manageTagsPropertiesPage: async ({ page, materialPage }, use) => {
+        await use(new ManageTagsPropertiesPo(page, materialPage));
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));

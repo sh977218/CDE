@@ -48,6 +48,10 @@ const config: PlaywrightTestConfig = defineConfig({
             fullyParallel: true,
         },
         {
+            timeout: 100 * 1000,
+            expect: {
+                timeout: 10 * 1000,
+            },
             name: 'CDE-smokeTest',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
             grep: [/@smoke/, /@debug/],

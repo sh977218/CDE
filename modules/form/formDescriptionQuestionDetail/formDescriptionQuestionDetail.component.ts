@@ -213,7 +213,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (input) {
             input.value = '';
         }
-        this.eltChange.emit();
+        if (value) {
+            this.eltChange.emit();
+        }
     }
 
     removeCdeId(i: number) {
@@ -235,7 +237,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if (input) {
             input.value = '';
         }
-        this.eltChange.emit();
+        if (value) {
+            this.eltChange.emit();
+        }
     }
 
     removeCdeDesignation(designations: Designation[], i: number) {
@@ -260,7 +264,9 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
             input.value = '';
         }
         question.answers = question.cde.permissibleValues.concat([]) as any;
-        this.eltChange.emit();
+        if (value) {
+            this.eltChange.emit();
+        }
     }
 
     removeCdePv(i: number) {

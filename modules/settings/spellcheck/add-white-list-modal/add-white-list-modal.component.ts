@@ -21,7 +21,6 @@ export class AddWhiteListModalComponent {
         terms: [],
     };
 
-    addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
     constructor(@Inject(MAT_DIALOG_DATA) public selectedWhiteList: ValidationWhitelist) {

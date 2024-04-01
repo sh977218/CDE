@@ -17,7 +17,6 @@ import { cloneDeep } from 'lodash';
 })
 export class EditWhiteListModalComponent {
     oldTerms: string[] = [];
-    addOnBlur = true;
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
     constructor(@Inject(MAT_DIALOG_DATA) public selectedWhiteList: ValidationWhitelist) {

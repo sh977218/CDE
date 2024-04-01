@@ -1,14 +1,22 @@
 <h1>Tags</h1>
-<table class="table table-border" *ngIf="allTags.length">
-    <tr>
-        <th>Organization Name:</th>
-        <th>Tags:</th>
-    </tr>
-    <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}">
-        <td>{{o.name}}</td>
-        <td>
-            <cde-one-list-management [allKeys]="allTags" [keys]="o.nameTags" [placeHolder]="'Naming Tags'"
-                                     (save)="saveOrg(o)"></cde-one-list-management>
-        </td>
-    </tr>
-</table>
+<div class="example-container mat-elevation-z8">
+    <div class="loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+    <div class="example-table-container">
+        <table class="table table-border" *ngIf="allTags.length">
+            <tr>
+                <th>Organization Name:</th>
+                <th>Tags:</th>
+            </tr>
+            <tr *ngFor="let o of orgs" id="orgListName-{{o.name}}" data-testid="org-container">
+                <td data-testid="org-name">{{ o.name }}</td>
+                <td data-testid="org-tags-list">
+                    <cde-one-list-management [allKeys]="allTags" [keys]="o.nameTags" [placeHolder]="'Naming Tags'"
+                                             (save)="saveOrg(o)"></cde-one-list-management>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

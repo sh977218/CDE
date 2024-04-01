@@ -5,9 +5,9 @@ import { Accounts } from '../../../data/user';
 import { CdeTinyIds } from '../../../data/cde-tinyId';
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`Add CDE concepts`, async ({
     page,
-    cdePage,
     materialPage,
     navigationMenu,
     itemLogAuditPage,

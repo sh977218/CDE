@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from 'alert/alert.service';
-import { OrgHelperService } from 'non-core/orgHelper.service';
 import { Organization } from 'shared/organization/organization';
-import { noop } from 'shared/util';
+import { tap } from 'rxjs/operators';
 
 @Component({
     templateUrl: './propertiesManagement.component.html',
@@ -12,13 +11,9 @@ import { noop } from 'shared/util';
 export class PropertiesManagementComponent {
     allPropertyKeys: string[] = [];
     orgs: any[];
+    isLoadingResults = false;
 
-    constructor(
-        private http: HttpClient,
-        private alert: AlertService,
-        private route: ActivatedRoute,
-        private orgHelperService: OrgHelperService
-    ) {
+    constructor(private http: HttpClient, private alert: AlertService, private route: ActivatedRoute) {
         this.orgs = this.route.snapshot.data.managedOrgs;
         this.orgs.forEach(o => {
             if (o.propertyKeys) {
@@ -30,9 +25,16 @@ export class PropertiesManagementComponent {
     }
 
     saveOrg(org: Organization) {
-        this.http.post('/server/orgManagement/updateOrg', org).subscribe(
-            () => this.orgHelperService.reload().then(() => this.alert.addAlert('success', 'Org Updated'), noop),
-            () => this.alert.addAlert('danger', 'Error. Unable to save.')
-        );
+        this.isLoadingResults = true;
+        this.http
+            .post('/server/orgManagement/updateOrg', org)
+            .pipe(
+                tap({
+                    next: () => this.alert.addAlert('success', 'Org Updated'),
+                    error: () => this.alert.addAlert('danger', 'Error. Unable to save.'),
+                    complete: () => (this.isLoadingResults = false),
+                })
+            )
+            .subscribe();
     }
 }
