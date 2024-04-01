@@ -23,9 +23,9 @@ test(`Form classify all CDEs classification`, async ({ page, navigationMenu, cla
 
     await test.step(`New classification is visible for CDEs`, async () => {
         await navigationMenu.gotoCdeByName(cdeName1);
-        await expect(page.getByText(classificationArray[2])).toBeHidden();
+        await expect(page.getByText(classificationArray[2])).toBeVisible();
 
         await navigationMenu.gotoCdeByName(cdeName2);
-        await expect(page.getByText(classificationArray[2])).toBeHidden();
+        await expect.soft(page.getByText(classificationArray[2])).toBeVisible();
     });
 });

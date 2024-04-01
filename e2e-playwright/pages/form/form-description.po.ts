@@ -97,7 +97,14 @@ export class FormDescriptionPo {
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert('Saved');
         if (index === -1) {
-            await expect(questionLocator).toHaveText(`(No Label)`);
+            await expect(
+                questionLocator
+                    .locator('cde-form-description-question-detail')
+                    .locator('dl')
+                    .first()
+                    .locator('dd')
+                    .first()
+            ).toContainText(`(No Label)`);
         }
     }
 

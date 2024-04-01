@@ -24,10 +24,6 @@ public class QuestionTest extends BaseFormTest {
         clickElement(By.id("cancelSelectQ"));
     }
 
-    public void addCdeByNameBeforeId(String cdeName, String id, boolean isSuggested) {
-        addCde(cdeName, "//*[@id='" + id + "']//tree-node-drop-slot[1]", isSuggested);
-    }
-
     private void addCde(String cdeName, String dropXpath, boolean isSuggested) {
         By sourceBy = By.xpath("//*[@id='startAddingQuestions']");
         By targetBy = By.xpath(dropXpath);
@@ -42,53 +38,6 @@ public class QuestionTest extends BaseFormTest {
         } else {
             clickElement(By.xpath("(//*[@id='accordionList']//div[@class='card-header']//button)[1]"));
         }
-    }
-
-    public void addCdeDesignationById(String questionId, String newDesignation) {
-        openQuestionEdit(questionId);
-        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeDesignations')]//input";
-        findElement(By.xpath(xpath)).sendKeys(newDesignation + Keys.ENTER);
-    }
-
-    public void addCdeIdentifierById(String questionId, String newSource, String newIdentifier) {
-        openQuestionEdit(questionId);
-        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeIdentifiers')]//input";
-        findElement(By.xpath(xpath)).sendKeys(newSource + ";" + newIdentifier + Keys.ENTER);
-    }
-
-    public void deleteCdeNameById(String questionId, String designation) {
-        openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId
-                + "']//mat-card//*[contains(@class,'newCdeDesignations')]//mat-chip-list//mat-chip[contains(., '"
-                + designation + "')]//mat-icon[text()='cancel']"));
-    }
-
-    public void deleteCdeIdentifierById(String questionId, String source, String id) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdeIdentifiers')]//mat-chip-list//mat-chip[contains(normalize-space(.),'" + source + "') and contains(normalize-space(.),'" + id + "')]"));
-    }
-
-    public void editCdeDataTypeById(String questionId, String dataType) {
-        openQuestionEdit(questionId);
-        selectMatSelectByPlaceholder("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]", "CDE Data Type", dataType);
-    }
-
-    public void openQuestionEdit(String questionId) {
-        boolean isQuestionOpen = driver.findElements(By.xpath("//*[@id='" + questionId + "']//div[contains(@class,'card-body')]//*[contains(@class,'changeQuestionLabelIcon')]")).size() > 0;
-        if (!isQuestionOpen) startEditQuestionById(questionId);
-    }
-
-    public void addCdePvById(String questionId, String pv) {
-        openQuestionEdit(questionId);
-        String xpath = "//*[@id='" + questionId + "']//mat-card//*[contains(@class,'newCdePvs')]//input";
-        findElement(By.xpath(xpath)).sendKeys(pv + Keys.ENTER);
-        checkAlert("Saved");
-    }
-
-    public void deleteCdePvById(String questionId, String pv) {
-        openQuestionEdit(questionId);
-        clickElement(By.xpath("//*[@id='" + questionId
-                + "']//mat-card//*[contains(@class,'newCdePvs')]//mat-chip-list//mat-chip[contains(.,'"
-                + pv + "')]//mat-icon[text()='cancel']"));
     }
 
     public void addQuestionToSectionUnsafe(String cdeName, int sectionNumber) {

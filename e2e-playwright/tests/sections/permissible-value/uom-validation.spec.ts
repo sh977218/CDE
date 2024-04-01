@@ -18,8 +18,7 @@ test(`Validate UOM`, async ({
     await test.step(`Navigate to Form description and login`, async () => {
         await navigationMenu.gotoFormByName(formName);
         await navigationMenu.login(Accounts.nlm);
-        await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
-        await previewSection.editFormDescriptionButton().click();
+        await previewSection.goToFormDescription();
     });
 
     await test.step(`validate uom error exist`, async () => {

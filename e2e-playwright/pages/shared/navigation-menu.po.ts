@@ -129,6 +129,7 @@ export class NavigationMenuPo {
         } else {
             await this.page.waitForURL(/\/deView\?tinyId=/, { timeout: 10000 });
         }
+        await this.materialPage.matSpinner().waitFor({ state: 'hidden' });
     }
 
     async gotoFormSearch() {
@@ -162,6 +163,7 @@ export class NavigationMenuPo {
         } else {
             await this.page.waitForURL(/\/formView\?tinyId=/, { timeout: 10000 });
         }
+        await this.materialPage.matSpinner().waitFor({ state: 'hidden' });
     }
 
     /**

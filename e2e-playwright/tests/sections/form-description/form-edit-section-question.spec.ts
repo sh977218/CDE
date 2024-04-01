@@ -26,12 +26,12 @@ test(`Form description`, async ({
     await test.step(`Navigate to Form description and login`, async () => {
         await navigationMenu.gotoFormByName(formName);
         await navigationMenu.login(Accounts.nlm);
-        await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible();
-        await previewSection.editFormDescriptionButton().click();
+        await previewSection.goToFormDescription();
     });
 
     await test.step(`Edit form question label and instruction`, async () => {
         await formDescription.startEditQuestionById('question_0-0');
+        await formDescription.selectQuestionLabelByIndex('question_0-0', -1);
         await formDescription.selectQuestionLabelByIndex('question_0-0', 1);
         await formDescription.editQuestionInstructionByIndex('question_0-0', newInstruction);
     });
@@ -40,6 +40,7 @@ test(`Form description`, async ({
         await formDescription.saveFormEdit();
         await saveModal.newVersion('Form saved.', versionInfo);
     });
+
     await test.step(`Verify history`, async () => {
         await page.getByRole('heading', { name: 'History' }).scrollIntoViewIfNeeded();
         await expect(historySection.historyTableRows().first()).toContainText(versionInfo.changeNote);
