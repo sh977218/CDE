@@ -269,6 +269,8 @@ const baseFixture = baseTest.extend<{
 });
 
 const ignoredConsoleMessages = [
+    'HttpErrorResponse',
+    'Failed to load resource: net::ERR_FAILED',
     '[webpack-dev-server]',
     'Angular is running in development mode',
     'ExpressionChangedAfterItHasBeenCheckedError',

@@ -19,10 +19,6 @@ test(`Endorsed organization display first`, async ({
         await expect(searchPage.organizationTitleLink().first()).toHaveText('caBIG');
         await expect(searchPage.organizationTitleLink().nth(1)).toHaveText('caCORE');
         await expect(searchPage.organizationTitleLink().nth(2)).toHaveText('ACRIN');
-
-        await expect(searchPage.organizationTitleLink().first()).toHaveText('caBIG');
-        await expect(searchPage.organizationTitleLink().nth(1)).toHaveText('caCORE');
-        await expect(searchPage.organizationTitleLink().nth(2)).toHaveText('ACRIN');
     });
 
     await test.step(`Endorse 'TEST'`, async () => {

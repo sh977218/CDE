@@ -1,7 +1,9 @@
 import { Locator, Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
-import { ClassificationPo } from '../shared/classification.po';
 
+/** When mocking interval job status APIs, 'deleteClassification','renameClassification','reclassifyClassification'
+ *  using 'alreadyDone' to only return response once. So the playwright only see the snackbar after the bulk update has completed.
+ **/
 export class ManageClassificationPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
@@ -106,9 +108,19 @@ export class ManageClassificationPo {
         await this.classificationMenu(leafNode).click();
         await this.classificationOption('Remove').click();
         await this.confirmRemoveClassificationInput().fill(classificationsToBeRemoved);
+        let alreadyDone = false;
         await this.page.route(`/server/system/jobStatus/deleteClassification`, async route => {
             await this.page.waitForTimeout(5000);
-            await route.continue();
+            const response = await route.fetch();
+            const result = await response.json();
+            if (alreadyDone) {
+                await route.abort();
+            } else if (result.done) {
+                await route.continue();
+                alreadyDone = true;
+            } else {
+                await route.abort();
+            }
         });
         await this.confirmRemoveClassificationButton().click();
         await this.materialPage.checkAlert(`Deleting in progress.`);
@@ -131,9 +143,19 @@ export class ManageClassificationPo {
         await this.classificationMenu(leafNode).click();
         await this.classificationOption('Edit').click();
         await this.newClassificationInput().fill(newClassificationText);
+        let alreadyDone = false;
         await this.page.route(`/server/system/jobStatus/renameClassification`, async route => {
             await this.page.waitForTimeout(5000);
-            await route.continue();
+            const response = await route.fetch();
+            const result = await response.json();
+            if (alreadyDone) {
+                await route.abort();
+            } else if (result.done) {
+                await route.continue();
+                alreadyDone = true;
+            } else {
+                await route.abort();
+            }
         });
         await this.confirmRenameClassificationButton().click();
         await this.materialPage.checkAlert(`Renaming in progress.`);
@@ -160,10 +182,19 @@ export class ManageClassificationPo {
         const leafNode = await this.materialPage.expandClassificationAndReturnLeafNode(classificationArray);
         await this.classificationMenu(leafNode).click();
         await this.classificationOption('Reclassify').click();
-
+        let alreadyDone = false;
         await this.page.route(`/server/system/jobStatus/reclassifyClassification`, async route => {
             await this.page.waitForTimeout(5000);
-            await route.continue();
+            const response = await route.fetch();
+            const result = await response.json();
+            if (alreadyDone) {
+                await route.abort();
+            } else if (result.done) {
+                await route.continue();
+                alreadyDone = true;
+            } else {
+                await route.abort();
+            }
         });
         await this.materialPage.classifyItemByOrgAndCategories(newOrg, newCategories);
         await this.materialPage.checkAlert(`Reclassifying in progress.`);
