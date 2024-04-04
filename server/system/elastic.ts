@@ -156,7 +156,6 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         const nextCommandBuffer = Buffer.alloc(DOC_MAX_SIZE);
         let nextCommandOffset = 0;
         const startTime = new Date().getTime();
-        const indexTypes = dbStream.indexes.map(index => Object.keys(index.indexJson.mappings)[0]);
 
         dbStream.indexes.forEach(index => {
             index.count = 0;
@@ -359,7 +358,6 @@ export function completionSuggest(
     index: ElasticIndex,
     cb: CbError1<ElasticQueryResponse<ItemElastic> | void>
 ) {
-    const allowedStatuses = getAllowedStatuses(user, settings);
     const suggestQuery: any = {
         query: {
             match: {
@@ -370,7 +368,7 @@ export function completionSuggest(
         },
         post_filter: {
             bool: {
-                filter: [{ bool: { should: regStatusFilter(user, settings, allowedStatuses) } }],
+                filter: [{ bool: { should: regStatusFilter(user, settings) } }],
             },
         },
     };
@@ -411,32 +409,25 @@ export function termCopyrightStatus(copyrightStatus: CopyrightStatus) {
 }
 
 export function getAllowedStatuses(user: User | undefined, settings: SearchSettingsElastic): CurationStatus[] {
-    return concat(
-        ['Preferred Standard', 'Standard', 'Qualified'],
-        user && user.viewDrafts ? ['Recorded', 'Candidate'] : [],
-        settings.includeRetired ? ['Retired'] : []
-    );
+    const allowedStatusesSet = new Set<CurationStatus>(['Preferred Standard', 'Standard', 'Qualified']);
+    if (hasRolePrivilege(user, 'universalSearch')) {
+        allowedStatusesSet.add('Recorded');
+        allowedStatusesSet.add('Candidate');
+        allowedStatusesSet.add('Incomplete');
+    }
+    if (user && user.viewDrafts) {
+        allowedStatusesSet.add('Recorded');
+        allowedStatusesSet.add('Candidate');
+    }
+    if (settings.includeRetired) {
+        allowedStatusesSet.add('Retired');
+    }
+
+    return Array.from(allowedStatusesSet);
 }
 
-export function regStatusFilter(
-    user: User | undefined,
-    settings: SearchSettingsElastic,
-    allowedStatuses: CurationStatus[]
-): { term: any }[] {
-    if (hasRolePrivilege(user, 'universalSearch')) {
-        return (
-            (settings.includeRetired
-                ? ['Preferred Standard', 'Standard', 'Qualified', 'Recorded', 'Candidate', 'Incomplete', 'Retired']
-                : [
-                      'Preferred Standard',
-                      'Standard',
-                      'Qualified',
-                      'Recorded',
-                      'Candidate',
-                      'Incomplete',
-                  ]) as CurationStatus[]
-        ).map(termRegStatus);
-    }
+export function regStatusFilter(user: User | undefined, settings: SearchSettingsElastic): { term: any }[] {
+    const allowedStatuses = getAllowedStatuses(user, settings);
     return concat<{ term: any }>(
         allowedStatuses.map(termRegStatus),
         myOrgs(user).map(org => ({ term: { 'stewardOrg.name': org } }))
@@ -511,7 +502,6 @@ export function elasticsearch<T extends ModuleItem>(
         }
 
         const items: ItemElastic[] = [];
-        type t = typeof type;
         const result = {
             _shards: {
                 failed: 0,

@@ -37,8 +37,6 @@ export function buildElasticSearchQueryOrg(user: User | undefined, settings: Sea
 }
 
 function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
-    const allowedStatuses = getAllowedStatuses(user, settings);
-
     // Increase ranking score for high registration status
     //    const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
 
@@ -55,7 +53,7 @@ function buildElasticSearchQuery(module: string, user: User | undefined, setting
     const sort = !hasSearchTerm;
     // (function setFilters() {
 
-    const filterRegStatusTerms = regStatusFilter(user, settings, allowedStatuses);
+    const filterRegStatusTerms = regStatusFilter(user, settings);
 
     const elasticFilter: ElasticCondition['post_filter'] = {
         bool: {
@@ -209,7 +207,7 @@ function buildElasticSearchQuery(module: string, user: User | undefined, setting
             filter: [
                 {
                     bool: {
-                        should: regStatusFilter(user, settings, allowedStatuses),
+                        should: regStatusFilter(user, settings),
                     },
                 },
             ],
