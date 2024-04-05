@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
     cdeSearchTerm!: string;
     featureSelected: 'explore' | 'learn' | 'submit' = 'explore';
     isMobile: boolean = window.innerWidth <= mobileWidth;
-    searchType: SearchType = 'endorsedCde';
+    searchType: SearchType = 'cde';
 
     constructor(
         private route: ActivatedRoute,

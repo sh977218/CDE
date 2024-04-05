@@ -11,17 +11,17 @@
             <button style="display: none" type="submit" (click)="search()"></button>
             <div class="input-topside formHomeLargeScreen">
                 <button class="button"
+                        [class.active]="searchType === 'cde'"
+                        (click)="searchType = 'cde'">
+                    Search All CDEs
+                </button>
+                <button class="button"
                         [class.active]="searchType === 'endorsedCde'"
                         (click)="searchType = 'endorsedCde'">
                     <img src="/assets/img/endorsedRibbonIcon.png"
                          style="height: 20px; vertical-align: text-top"
                          alt="Endorsed Ribbon">
                     Search NIH-Endorsed CDEs
-                </button>
-                <button class="button"
-                        [class.active]="searchType === 'cde'"
-                        (click)="searchType = 'cde'">
-                    Search All CDEs
                 </button>
                 <button class="button"
                         [class.active]="searchType === 'form'"
