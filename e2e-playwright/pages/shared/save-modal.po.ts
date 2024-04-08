@@ -44,6 +44,11 @@ export class SaveModalPo {
         await this.page.waitForTimeout(2000);
     }
 
+    /**
+     * @description This method publish the draft and update with version information.
+     * @param alertMessage - snack message to check during save
+     * @param version - optional versioning information, but highly recommended to provide
+     */
     async newVersion(alertMessage: AlertType, version?: Version) {
         if (!version) version = { newVersion: '', changeNote: '' };
         // To not override input parameter 'version', make a copy

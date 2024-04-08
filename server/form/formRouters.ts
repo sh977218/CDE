@@ -152,36 +152,24 @@ export function module() {
     router.get('/api/form/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/api/form/search', allowXOrigin, nocacheMiddleware, (req, res) => {
         const settings: SearchSettingsElastic = req.body;
-        settings.includeAggregations = false;
-        if (!Array.isArray(settings.selectedStatuses)) {
-            settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
-        }
-        elasticsearchForm(settings, req.user).then(
-            result => {
-                if (!result) {
-                    return res.status(400).send('invalid query');
-                }
-                dbPlugins.form.byTinyIdList(result.forms.map(item => item.tinyId)).then(data => {
-                    if (!data) {
-                        res.status(404).send();
-                        return;
-                    }
-                    const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
-                    res.send({
-                        resultsTotal: result.totalNumber,
-                        resultsRetrieved: data.length,
-                        from: documentIndex >= 0 ? documentIndex + 1 : 1,
-                        docs: data,
-                    });
-                }, respondError({ req, res }));
-            },
-            errorMessage => {
-                if (errorMessage instanceof Error) {
-                    return respondError({ res });
-                }
-                return res.status(422).send(errorMessage);
+        elasticsearchForm(req.user, settings, (err, result) => {
+            if (err || !result) {
+                return res.status(400).send('invalid query');
             }
-        );
+            dbPlugins.form.byTinyIdList(result.forms.map(item => item.tinyId)).then(data => {
+                if (!data) {
+                    res.status(404).send();
+                    return;
+                }
+                const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
+                res.send({
+                    resultsTotal: result.totalNumber,
+                    resultsRetrieved: data.length,
+                    from: documentIndex >= 0 ? documentIndex + 1 : 1,
+                    docs: data,
+                });
+            }, respondError({ req, res }));
+        });
     });
 
     router.post('/server/form', canCreateMiddleware, create);
@@ -256,15 +244,13 @@ export function module() {
     /* ---------- PUT NEW REST API above ---------- */
 
     router.post('/server/form/search', (req, res) => {
-        elasticsearchForm(req.body, req.user).then(
-            result => res.send(result),
-            errorMessage => {
-                if (errorMessage instanceof Error) {
-                    return respondError({ res });
-                }
-                return res.status(422).send(errorMessage);
+        const settings: SearchSettingsElastic = req.body;
+        elasticsearchForm(req.user, settings, (err, result) => {
+            if (err || !result) {
+                return res.status(400).send(`invalid query`);
             }
-        );
+            res.send(result);
+        });
     });
     router.post('/server/form/searchExport', (req, res) => {
         const exporters = {

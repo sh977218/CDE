@@ -1,11 +1,18 @@
 import { expect, Page } from '@playwright/test';
-import { Version } from '../../model/type';
+import { Identifier, Version } from '../../model/type';
+import { MaterialPo } from './material.po';
 
 export class IdentifierPo {
-    protected page: Page;
+    private readonly page: Page;
+    private readonly materialPage: MaterialPo;
 
-    constructor(page: Page) {
+    constructor(page: Page, materialPage: MaterialPo) {
         this.page = page;
+        this.materialPage = materialPage;
+    }
+
+    addIdentifierButton() {
+        return this.page.getByRole('button', { name: 'Add Identifier' });
     }
 
     async verifyVersion(versionInfo: Version, versionBeforeSave: string = '') {
@@ -21,5 +28,32 @@ export class IdentifierPo {
         else {
             await expect(this.page.locator(`[itemprop="version"]`)).toHaveText('1');
         }
+    }
+
+    async addIdentifier({ source, id, version }: Identifier) {
+        await this.addIdentifierButton().click();
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByTestId(`new-source`).selectOption(source);
+        await this.materialPage.matDialog().getByPlaceholder(`Identifier`).fill(id);
+        if (version) {
+            await this.materialPage.matDialog().getByPlaceholder(`Version`).fill(id);
+        }
+        await this.materialPage.matDialog().getByRole('button', { name: 'Save' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
+    /**
+     * @description Remove identifier by index row, starting from 1, because index 0 is tinyId which cannot be removed.
+     * @param index - Start from 1
+     */
+    async removeIdentifierByIndex(index: number) {
+        if (index === 0) {
+            throw new Error('You cannot remove tinyId.');
+        }
+        await this.page
+            .locator(`cde-identifiers table tbody tr`)
+            .nth(index)
+            .getByTestId('remove-identifier-button')
+            .click();
     }
 }

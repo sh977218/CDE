@@ -11,6 +11,10 @@ export class SettingMenuPo {
         return this.page.getByTestId('profile');
     }
 
+    searchSettingsMenu() {
+        return this.page.getByTestId(`search-settings`);
+    }
+
     viewingHistoryMenu() {
         return this.page.getByTestId(`viewing-history`);
     }

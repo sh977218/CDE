@@ -3,7 +3,7 @@
     <mat-dialog-content>
         <div class="form-group">
             <label for="newSource">Source</label>
-            <select id="newSource" class="form-control" name="source" required [(ngModel)]="newIdentifier.source">
+            <select id="newSource" class="form-control" name="source" required [(ngModel)]="newIdentifier.source" data-testid="new-source">
                 <option *ngIf="!newIdentifier.source"></option>
                 <option *ngFor="let s of idSources | async">{{s._id}}</option>
             </select>

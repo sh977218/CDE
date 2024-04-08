@@ -7,6 +7,7 @@ const authority = 'Patent for truth ' + new Date();
 const url = 'https://search.nih.gov/search?commit=Search&query=' + new Date();
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetailsSection, saveModal }) => {
     const formName = 'Quantitative Sensory Testing (QST)';
 

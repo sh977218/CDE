@@ -39,8 +39,20 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'ctepOnlyEditor',
         password: DEFAULT_PASSWORD,
     },
+    acrin: {
+        username: 'acrin',
+        password: DEFAULT_PASSWORD,
+    },
     ctepEditor: {
         username: 'ctepEditor',
+        password: DEFAULT_PASSWORD,
+    },
+    ctepAdmin: {
+        username: 'ctepAdmin',
+        password: DEFAULT_PASSWORD,
+    },
+    cabigEditor: {
+        username: 'cabigEditor',
         password: DEFAULT_PASSWORD,
     },
     testEditor: {

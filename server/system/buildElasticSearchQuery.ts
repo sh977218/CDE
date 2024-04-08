@@ -1,23 +1,27 @@
 import {
-    ElasticCondition,
     getAllowedStatuses,
-    regStatusFilter,
+    hideRetired,
     termCopyrightStatus,
     termDatatype,
     termRegStatus,
+    termStewardOrg,
 } from 'server/system/elastic';
-import { User } from 'shared/models.model';
+import { CurationStatus, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { isOrgAuthority } from 'shared/security/authorizationShared';
+import { myOrgs } from '../orgManagement/orgSvc';
 
 const endorsedBoost: string = '1.2';
+const script = `
+        if (doc['nihEndorsed'].value == true) { 
+            return _score * ${endorsedBoost};
+        } else {
+            return _score;
+        }
+    `;
 
 function escapeRegExp(str: string) {
+    // @ts-ignore
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
-}
-
-function hideRetired(settings: SearchSettingsElastic, user?: User) {
-    return (!settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1) || !isOrgAuthority(user);
 }
 
 export function buildElasticSearchQueryCde(user: User | undefined, settings: SearchSettingsElastic) {
@@ -37,110 +41,72 @@ export function buildElasticSearchQueryOrg(user: User | undefined, settings: Sea
 }
 
 function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
-    // Increase ranking score for high registration status
-    //    const script = "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) * doc['classificationBoost'].value";
+    if (!Array.isArray(settings.selectedElements)) {
+        settings.selectedElements = [];
+    }
+    if (!Array.isArray(settings.selectedElementsAlt)) {
+        settings.selectedElementsAlt = [];
+    }
 
-    const script = `
-    if (doc['nihEndorsed'].value == true) { return _score * ${endorsedBoost} } else return _score
-    `;
+    const query = generateQuery(user, settings);
+    const aggregations = generateAggregation(module, user, settings);
+    const post_filter = generatePostFilter(user, settings);
+    const from = generateFrom(settings);
+    const size = generateSize(settings);
+    const sort = generateSort(settings);
+    const highlight = generateHighlight();
+    const elasticQueryBody: any = {
+        query,
+        aggregations,
+        post_filter,
+        from,
+        size,
+        sort,
+        highlight,
+    };
 
-    // Search for the query term given by user
+    if (elasticQueryBody.from + elasticQueryBody.size > 10000) {
+        throw new Error('page size exceeded');
+    }
+
+    return elasticQueryBody;
+}
+
+function generateQuery(user: User | undefined, settings: SearchSettingsElastic) {
     // ElasticSearch Reserved Characters(some are used by power users): + - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /
     settings.searchTerm = settings.searchTerm?.replace(/(?<=[^\\])\//g, '\\/'); // escape /
     const hasSearchTerm = !!settings.searchTerm;
-    // last resort, we sort.
-
-    const sort = !hasSearchTerm;
-    // (function setFilters() {
-
-    const filterRegStatusTerms = regStatusFilter(user, settings);
-
-    const elasticFilter: ElasticCondition['post_filter'] = {
+    const query: any = {
         bool: {
-            filter: [{ bool: { should: filterRegStatusTerms } }],
-        },
-    };
-
-    settings.filterDatatype = {
-        bool: {
-            filter: [{ bool: { should: filterRegStatusTerms } }],
-        },
-    };
-    settings.filterCopyrightStatus = {
-        bool: {
-            filter: [{ bool: { should: filterRegStatusTerms } }],
-        },
-    };
-
-    // Filter by selected Registration Statuses
-    const filterStatus = (settings.selectedStatuses || []).map(termRegStatus);
-    if (filterStatus.length > 0) {
-        elasticFilter.bool.filter.push({ bool: { should: filterStatus } });
-        settings.filterDatatype.bool.filter.push({ bool: { should: filterStatus } });
-        settings.filterCopyrightStatus.bool.filter.push({ bool: { should: filterStatus } });
-    }
-
-    // Filter by selected copyrightStatus
-    const filterCopyrightStatusTerms = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
-    if (filterCopyrightStatusTerms.length > 0) {
-        elasticFilter.bool.filter.push({ bool: { should: filterCopyrightStatusTerms } });
-    }
-
-    // Filter by selected Datatypes
-    const filterDatatypeTerms = (settings.selectedDatatypes || []).map(termDatatype);
-    if (filterDatatypeTerms.length > 0) {
-        elasticFilter.bool.filter.push({ bool: { should: filterDatatypeTerms } });
-    }
-
-    // Filter by NIH Endorsed
-    /*
-        const filterNihEndorsedTerms = {term: {nihEndorsed: true}}
-        if (settings.nihEndorsed) {
-            elasticFilter.bool.filter.push({bool: {should: filterNihEndorsedTerms}});
-        }
-    */
-
-    if (hideRetired(settings, user)) {
-        elasticFilter.bool.filter.push({ bool: { must_not: termRegStatus('Retired') } });
-    }
-
-    const queryStuff: ElasticCondition = {
-        post_filter: elasticFilter,
-        query: {
-            bool: {
-                must: [
-                    {
-                        dis_max: {
-                            queries: [
-                                {
-                                    function_score: {
-                                        query: hasSearchTerm
-                                            ? {
-                                                  query_string: {
-                                                      analyze_wildcard: true,
-                                                      default_operator: 'AND',
-                                                      query: settings.searchTerm,
-                                                  },
-                                              }
-                                            : undefined,
-                                        script_score: { script },
-                                    },
+            must: [
+                {
+                    dis_max: {
+                        queries: [
+                            {
+                                function_score: {
+                                    query: hasSearchTerm
+                                        ? {
+                                              query_string: {
+                                                  analyze_wildcard: true,
+                                                  default_operator: 'AND',
+                                                  query: settings.searchTerm,
+                                              },
+                                          }
+                                        : undefined,
+                                    script_score: { script },
                                 },
-                            ],
-                        },
+                            },
+                        ],
                     },
-                ],
-                must_not: [],
-            },
+                },
+            ],
+            must_not: [],
+            filter: [{ bool: { should: getAllowedStatuses(user, settings).map(termRegStatus) } }],
         },
-        size: settings.resultPerPage ? (settings.resultPerPage > 100 ? 100 : settings.resultPerPage) : 20,
     };
-    if (settings.nihEndorsed) {
-        queryStuff.query.bool.must.push({ term: { nihEndorsed: true } });
-    }
 
     if (hasSearchTerm) {
-        queryStuff.query.bool.must[0].dis_max.queries.push({
+        query.bool.must[0].dis_max.queries.push({
             function_score: {
                 boost: '2.5',
                 query: {
@@ -157,8 +123,8 @@ function buildElasticSearchQuery(module: string, user: User | undefined, setting
         });
         // Boost rank if we find exact string match, or if terms are in a less than 4 terms apart.
         if ((settings.searchTerm || '').indexOf('"') < 0) {
-            queryStuff.query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
-            queryStuff.query.bool.must[0].dis_max.queries.push({
+            query.bool.must[0].dis_max.queries[1].function_score.boost = '2';
+            query.bool.must[0].dis_max.queries.push({
                 function_score: {
                     boost: 4,
                     query: {
@@ -175,151 +141,199 @@ function buildElasticSearchQuery(module: string, user: User | undefined, setting
         }
     }
 
-    // Filter by selected org
+    if (hideRetired(settings, user)) {
+        query.bool.must_not.push(termRegStatus('Retired'));
+    }
+
+    // if I'm one or more organizations' orgAdmin, orgEditor or orgCurator, I'll be able to see those Orgs all status
+    if (myOrgs(user).length) {
+        query.bool.filter[0].bool.should.push({
+            bool: {
+                must: [
+                    {
+                        bool: {
+                            should: myOrgs(user).map(termStewardOrg),
+                        },
+                    },
+                    {
+                        bool: {
+                            should: (['Incomplete', 'Candidate'] as CurationStatus[]).map(termRegStatus),
+                        },
+                    },
+                ],
+            },
+        });
+    }
+
+    if (settings.nihEndorsed) {
+        query.bool.must.push({ term: { nihEndorsed: true } });
+    }
     if (settings.selectedOrg) {
-        queryStuff.query.bool.must.push({ term: { 'classification.stewardOrg.name': settings.selectedOrg } });
+        query.bool.must.push({ term: { 'classification.stewardOrg.name': settings.selectedOrg } });
     }
     if (settings.selectedOrgAlt) {
-        queryStuff.query.bool.must.push({ term: { 'classification.stewardOrg.name': settings.selectedOrgAlt } });
+        query.bool.must.push({ term: { 'classification.stewardOrg.name': settings.selectedOrgAlt } });
     }
+
     if (settings.excludeAllOrgs) {
-        queryStuff.query.bool.must.push({ term: { classificationSize: 1 } });
+        query.bool.must.push({ term: { classificationSize: 1 } });
     } else {
         if (settings.excludeOrgs && settings.excludeOrgs.length > 0) {
             settings.excludeOrgs.forEach(o => {
-                queryStuff.query.bool.must_not = { term: { 'classification.stewardOrg.name': o } };
+                query.bool.must_not.push({ term: { 'classification.stewardOrg.name': o } });
             });
         }
     }
+
     const flatSelection = settings.selectedElements ? settings.selectedElements.join(';') : '';
     if (settings.selectedOrg && flatSelection !== '') {
-        queryStuff.query.bool.must.push({ term: { flatClassifications: settings.selectedOrg + ';' + flatSelection } });
+        query.bool.must.push({ term: { flatClassifications: settings.selectedOrg + ';' + flatSelection } });
     }
     const flatSelectionAlt = settings.selectedElementsAlt ? settings.selectedElementsAlt.join(';') : '';
     if (settings.selectedOrgAlt && flatSelectionAlt !== '') {
-        queryStuff.query.bool.must.push({
+        query.bool.must.push({
             term: { flatClassifications: settings.selectedOrgAlt + ';' + flatSelectionAlt },
         });
     }
-    // show statuses that either you selected, or it's your org and it's not retired.
-    const regStatusAggFilter: ElasticCondition = {
-        bool: {
-            filter: [
-                {
-                    bool: {
-                        should: regStatusFilter(user, settings),
-                    },
-                },
-            ],
-        },
-    };
-    // show NIH Endorsed aggregation
-    const nihEndorsedAggFilter: ElasticCondition = {
-        bool: {
-            filter: [
-                {
-                    term: {
-                        nihEndorsed: true,
-                    },
-                },
-            ],
-        },
-    };
-    if (hideRetired(settings, user)) {
-        regStatusAggFilter.bool.filter.push({ bool: { must_not: termRegStatus('Retired') } });
-    }
-    if (sort) {
-        queryStuff.sort = {
-            'registrationState.registrationStatusSortOrder': 'asc',
-            classificationBoost: 'desc',
-            'primaryNameCopy.raw': 'asc',
-        };
-    }
 
-    if (sort) {
-        queryStuff.sort = {
+    if (query.bool.must.length === 0) {
+        delete query.bool.must;
+    }
+    return query;
+}
+
+function generateFrom(settings: SearchSettingsElastic) {
+    let from = ((settings.page || 0) - 1) * settings.resultPerPage;
+    if (!from || from < 0) {
+        from = 0;
+    }
+    return from;
+}
+
+function generateSize(settings: SearchSettingsElastic) {
+    let size: number;
+    if (settings.resultPerPage > 100) {
+        size = 100;
+    } else {
+        size = settings.resultPerPage || 20;
+    }
+    return size;
+}
+
+function generateSort(settings: SearchSettingsElastic) {
+    const hasSearchTerm = !!settings.searchTerm;
+    let sort: any = {};
+    if (!hasSearchTerm) {
+        sort = {
             nihEndorsed: 'desc',
             'primaryNameCopy.raw': 'asc',
         };
     }
+    return sort;
+}
 
-    // Get aggregations on classifications and statuses
-    if (settings.includeAggregations) {
-        queryStuff.aggregations = {
-            orgs: {
-                filter: elasticFilter,
-                aggs: {
-                    orgs: {
-                        terms: {
-                            field: 'classification.stewardOrg.name',
-                            size: 500,
-                            order: {
-                                _term: 'desc',
-                            },
-                        },
-                    },
-                },
-            },
-            statuses: {
-                filter: elasticFilter,
-                aggs: {
-                    statuses: {
-                        terms: {
-                            field: 'registrationState.registrationStatus',
-                        },
-                    },
-                },
-            },
-            nihEndorsed: {
-                filter: nihEndorsedAggFilter,
-                aggs: {
-                    nihEndorsed: {
-                        terms: {
-                            field: 'nihEndorsed',
-                        },
-                    },
-                },
-            },
-        };
-        const flattenClassificationAggregations = (
-            variableName: string,
-            orgVariableName: string,
-            selectionString: string
-        ) => {
-            const flatClassifications: ElasticCondition = {
-                terms: {
-                    size: 500,
-                    field: 'flatClassifications',
-                },
-            };
-            if (selectionString === '') {
-                flatClassifications.terms.include = escapeRegExp(settings[orgVariableName]) + ';[^;]+';
-            } else {
-                flatClassifications.terms.include =
-                    escapeRegExp(settings[orgVariableName]) + ';' + escapeRegExp(selectionString) + ';[^;]+';
-            }
-            queryStuff.aggregations[variableName] = {
-                filter: elasticFilter,
-                aggs: {},
-            };
-            queryStuff.aggregations[variableName].aggs[variableName] = flatClassifications;
-        };
-        if (settings.selectedOrg) {
-            flattenClassificationAggregations('flatClassifications', 'selectedOrg', flatSelection);
-        }
-        if (settings.selectedOrgAlt) {
-            flattenClassificationAggregations('flatClassificationsAlt', 'selectedOrgAlt', flatSelectionAlt);
-        }
+function generateAggregation(module: string, user: User | undefined, settings: SearchSettingsElastic) {
+    const selectedStatuses = (settings.selectedStatuses || []).map(termRegStatus);
+    const selectedDatatypes = (settings.selectedDatatypes || []).map(termDatatype);
+    const selectedCopyrightStatus = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
+
+    const orgs: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { orgs: { terms: { field: 'classification.stewardOrg.name', size: 500, order: { _key: 'desc' } } } },
+    };
+    const flatClassifications: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { flatClassifications: { terms: { field: 'flatClassifications', size: 500 } } },
+    };
+    const flatClassificationsAlt: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { flatClassificationsAlt: { terms: { field: 'flatClassifications', size: 500 } } },
+    };
+
+    const statuses: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { statuses: { terms: { field: 'registrationState.registrationStatus' } } },
+    };
+    const datatype: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { datatype: { terms: { field: 'valueDomain.datatype' } } },
+    };
+    const copyrightStatus: any = {
+        filter: { bool: { filter: [] } },
+        aggs: { copyrightStatus: { terms: { field: 'copyrightStatus' } } },
+    };
+    if (selectedStatuses.length) {
+        // allowedStatuses apply on every aggregation filter, include reg status itself
+        datatype.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        copyrightStatus.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        orgs.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        flatClassifications.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedStatuses } });
     }
-    if (queryStuff.query.bool.must.length === 0) {
-        delete queryStuff.query.bool.must;
+    if (selectedDatatypes.length) {
+        statuses.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
+        copyrightStatus.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
+        orgs.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
+        flatClassifications.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
+        flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
     }
-    queryStuff.from = ((settings.page || 0) - 1) * settings.resultPerPage;
-    if (!queryStuff.from || queryStuff.from < 0) {
-        queryStuff.from = 0;
+    if (module === 'form' && selectedCopyrightStatus.length) {
+        statuses.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        datatype.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        orgs.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        flatClassifications.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
     }
+
+    const aggregation: any = {
+        orgs,
+        statuses,
+    };
+    if (module === 'cde') {
+        aggregation.datatype = datatype;
+    }
+    if (module === 'form') {
+        aggregation.copyrightStatus = copyrightStatus;
+    }
+
+    if (settings.selectedOrg && settings.selectedElements) {
+        const array = settings.selectedElements.slice(); // use slice() to avoid change original array
+        array.unshift(settings.selectedOrg);
+        flatClassifications.aggs.flatClassifications.terms.include = escapeRegExp(array.join(';')) + ';[^;]+';
+        aggregation.flatClassifications = flatClassifications;
+    }
+
+    if (settings.selectedOrgAlt && settings.selectedElementsAlt) {
+        const array = settings.selectedElementsAlt.slice(); // use slice() to avoid change original array
+        array.unshift(settings.selectedOrgAlt);
+        flatClassificationsAlt.aggs.flatClassificationsAlt.terms.include = escapeRegExp(array.join(';')) + ';[^;]+';
+        aggregation.flatClassificationsAlt = flatClassificationsAlt;
+    }
+
+    return aggregation;
+}
+
+function generatePostFilter(user: User | undefined, settings: SearchSettingsElastic) {
+    const postFilter: any = { bool: { filter: [] } };
+    const selectedStatuses = (settings.selectedStatuses || []).map(termRegStatus);
+    const selectedDatatypes = (settings.selectedDatatypes || []).map(termDatatype);
+    const selectedCopyrightStatus = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
+    if (selectedStatuses.length) {
+        postFilter.bool.filter.push({ bool: { should: selectedStatuses } });
+    }
+    if (selectedDatatypes.length) {
+        postFilter.bool.filter.push({ bool: { should: selectedDatatypes } });
+    }
+    if (selectedCopyrightStatus.length) {
+        postFilter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+    }
+
+    return postFilter;
+}
+
+function generateHighlight() {
     // highlight search results if part of the following fields.
-    queryStuff.highlight = {
+    return {
         require_field_match: false,
         fragment_size: 150,
         order: 'score',
@@ -352,5 +366,4 @@ function buildElasticSearchQuery(module: string, user: User | undefined, setting
             'classification.elements.elements.elements.name': {},
         },
     };
-    return queryStuff;
 }

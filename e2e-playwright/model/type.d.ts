@@ -6,7 +6,10 @@ export type ACCOUNT_KEYS =
     | 'loginrecorduser'
     | 'regularUser'
     | 'ctepOnlyEditor'
+    | 'acrin'
     | 'ctepEditor'
+    | 'ctepAdmin'
+    | 'cabigEditor'
     | 'testEditor'
     | 'classifyBoardUser'
     | 'formBoardUser'
@@ -77,6 +80,12 @@ export type Concept = {
     conceptId: string;
     conceptSource?: string;
     conceptType: ConceptType;
+};
+
+export type Identifier = {
+    source: string;
+    id: string;
+    version?: string;
 };
 
 export type CreateElt = {

@@ -187,8 +187,8 @@ const baseFixture = baseTest.extend<{
     ) => {
         await use(new GenerateDetailsPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
-    identifierSection: async ({ page }, use) => {
-        await use(new IdentifierPo(page));
+    identifierSection: async ({ page, materialPage }, use) => {
+        await use(new IdentifierPo(page, materialPage));
     },
     propertySection: async ({ page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal }, use) => {
         await use(new PropertyPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));

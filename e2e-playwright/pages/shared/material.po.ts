@@ -245,12 +245,9 @@ export class MaterialPo {
                 togglerLocator
                     .waitFor({ timeout: 5000 })
                     .then(async () => {
-                        console.info(`${classification} is a branch, toggle to open/expand`);
                         await togglerLocator.click();
                     })
-                    .catch(() => {
-                        console.info(`${classification} is a leaf`);
-                    })
+                    .catch(() => {})
                     .finally(() => {
                         resolve();
                     });

@@ -2,12 +2,13 @@ import { config } from 'server';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQueryForm } from 'server/system/buildElasticSearchQuery';
-import { elasticsearchPromise, esClient } from 'server/system/elastic';
+import { elasticsearchPromise as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
 import { CdeForm } from 'shared/form/form.model';
 import { copyShallow } from 'shared/util';
-import { SearchResponseAggregationForm, User } from 'shared/models.model';
+import { CbError1, SearchResponseAggregationForm, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import { storeQuery } from '../log/storedQueryDb';
 
 export function updateOrInsert(elt: CdeForm): CdeForm {
     updateOrInsertImpl(copyShallow(elt));
@@ -63,30 +64,15 @@ export function updateOrInsertImpl(elt: CdeForm): void {
 }
 
 export function elasticsearchForm(
+    user: User,
     settings: SearchSettingsElastic,
-    user?: User
-): Promise<SearchResponseAggregationForm> {
-    if (!Array.isArray(settings.selectedElements)) {
-        settings.selectedElements = [];
-    }
-    if (!Array.isArray(settings.selectedElementsAlt)) {
-        settings.selectedElementsAlt = [];
-    }
+    cb: CbError1<SearchResponseAggregationForm | void>
+) {
     const query = buildElasticSearchQueryForm(user, settings);
-    if (query.from + query.size > 10000) {
-        return Promise.reject('Exceeded pagination limit (10,000)');
-    }
-    if (!settings.fullRecord) {
-        query._source = { excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements'] };
-    }
-
-    // Filter by selected copyrightStatus
-    if (settings.includeAggregations) {
-        query.aggregations.copyrightStatus = {
-            filter: settings.filterCopyrightStatus,
-            aggs: { copyrightStatus: { terms: { field: 'copyrightStatus' } } },
-        };
-    }
-
-    return elasticsearchPromise('form', query, settings);
+    elasticSearchShared('form', query, settings).then(result => {
+        if (result && result.forms && result.forms.length > 0) {
+            storeQuery(settings);
+        }
+        cb(null, result);
+    }, cb);
 }

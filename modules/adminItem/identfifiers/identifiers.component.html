@@ -1,31 +1,36 @@
 <h3>Identifiers</h3>
 <table class="sectionDetailTable">
+    <thead>
     <tr>
         <th>Source</th>
         <th>Id</th>
         <th>Version</th>
         <th *ngIf="canEdit"></th>
     </tr>
+    </thead>
+    <tbody>
     <tr>
         <td itemprop="codingSystem" content="NIH CDE Repository">NLM</td>
-        <td itemprop="codeValue">{{elt.tinyId}}</td>
-        <td itemprop="version">{{elt.version}}</td>
+        <td itemprop="codeValue">{{ elt.tinyId }}</td>
+        <td itemprop="version">{{ elt.version }}</td>
         <td *ngIf="canEdit"></td>
     </tr>
     <tr *ngFor="let id of elt.ids; let i = index">
-        <td attr.itemprop="source_{{i}}">{{id.source}}</td>
+        <td attr.itemprop="source_{{i}}">{{ id.source }}</td>
         <td attr.itemprop="id_{{i}}">
             <a *ngIf="idsLinks[i]; else noLink" [href]="idsLinks[i]" target="_blank"
-               rel="noopener noreferrer">{{id.id}}</a>
-            <ng-template #noLink>{{id.id}}</ng-template>
+               rel="noopener noreferrer">{{ id.id }}</a>
+            <ng-template #noLink>{{ id.id }}</ng-template>
         </td>
-        <td attr.itemprop="version_{{i}}">{{id.version}}</td>
+        <td attr.itemprop="version_{{i}}">{{ id.version }}</td>
         <td *ngIf="canEdit">
             <mat-icon id="removeIdentifier-{{i}}" class="fake-button" role="button" tabindex="0"
+                      data-testid="remove-identifier-button"
                       title="Remove" (click)="removeIdentifierByIndex(i)">delete_outline
             </mat-icon>
         </td>
     </tr>
+    </tbody>
 </table>
 <button *ngIf="canEdit" id="openNewIdentifierModalBtn" class="button" (click)="openNewIdentifierModal()">
     <mat-icon>add</mat-icon>

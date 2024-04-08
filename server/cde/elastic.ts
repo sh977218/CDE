@@ -9,7 +9,6 @@ import { CbError1, SearchResponseAggregationDe, User } from 'shared/models.model
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
 import { copyShallow } from 'shared/util';
-import { isOrgAuthority } from 'shared/security/authorizationShared';
 
 export function updateOrInsert(elt: DataElement): DataElement {
     updateOrInsertImpl(copyShallow(elt));
@@ -68,42 +67,7 @@ export function elasticsearch(
     settings: SearchSettingsElastic,
     cb: CbError1<SearchResponseAggregationDe | void>
 ) {
-    if (!Array.isArray(settings.selectedElements)) {
-        settings.selectedElements = [];
-    }
-    if (!Array.isArray(settings.selectedElementsAlt)) {
-        settings.selectedElementsAlt = [];
-    }
     const query = buildElasticSearchQueryCde(user, settings);
-
-    if (!isOrgAuthority(user)) {
-        query.query.bool.must_not.push({ term: { noRenderAllowed: true } });
-    }
-
-    if (query.from + query.size > 10000) {
-        return cb(new Error('page size exceeded'));
-    }
-    if (settings.includeAggregations) {
-        query.aggregations.datatype = {
-            filter: settings.filterDatatype,
-            aggs: {
-                datatype: {
-                    terms: {
-                        field: 'valueDomain.datatype',
-                        size: 500,
-                        order: {
-                            _key: 'desc',
-                        },
-                    },
-                },
-            },
-        };
-    }
-
-    if (!settings.fullRecord) {
-        query._source = { excludes: ['flatProperties', 'properties', 'classification.elements', 'formElements'] };
-    }
-
     elasticSearchShared('cde', query, settings).then(result => {
         if (result && result.cdes && result.cdes.length > 0) {
             storeQuery(settings);

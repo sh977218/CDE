@@ -142,10 +142,6 @@ export function module() {
     /* ---------- PUT NEW REST API above ---------- */
     router.post('/api/de/search', umlsAuth, (req, res) => {
         const settings: SearchSettingsElastic = req.body;
-        settings.includeAggregations = false;
-        if (!Array.isArray(settings.selectedStatuses)) {
-            settings.selectedStatuses = ['Preferred Standard', 'Standard', 'Qualified'];
-        }
         elasticsearch(req.user, settings, (err, result) => {
             if (err || !result) {
                 return res.status(400).send('invalid query');
@@ -168,7 +164,8 @@ export function module() {
     });
 
     router.post('/server/de/search', (req, res) => {
-        elasticsearch(req.user, req.body, (err, result) => {
+        const settings: SearchSettingsElastic = req.body;
+        elasticsearch(req.user, settings, (err, result) => {
             if (err || !result) {
                 return res.status(400).send(`invalid query`);
             }

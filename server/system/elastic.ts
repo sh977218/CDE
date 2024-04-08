@@ -34,7 +34,7 @@ import {
     User,
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { hasRolePrivilege } from 'shared/security/authorizationShared';
+import { hasRole, hasRolePrivilege, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 
 export type ElasticCondition = any;
@@ -408,6 +408,14 @@ export function termCopyrightStatus(copyrightStatus: CopyrightStatus) {
     return { term: { copyrightStatus: copyrightStatus } };
 }
 
+export function termStewardOrg(org: string) {
+    return { term: { 'stewardOrg.name': org } };
+}
+
+export function hideRetired(settings: SearchSettingsElastic, user?: User) {
+    return (!settings.includeRetired && settings.selectedStatuses.indexOf('Retired') === -1) || !isOrgAuthority(user);
+}
+
 export function getAllowedStatuses(user: User | undefined, settings: SearchSettingsElastic): CurationStatus[] {
     const allowedStatusesSet = new Set<CurationStatus>(['Preferred Standard', 'Standard', 'Qualified']);
     if (hasRolePrivilege(user, 'universalSearch')) {
@@ -415,6 +423,13 @@ export function getAllowedStatuses(user: User | undefined, settings: SearchSetti
         allowedStatusesSet.add('Candidate');
         allowedStatusesSet.add('Incomplete');
     }
+
+    if (myOrgs(user).includes(settings.selectedOrg || '') || myOrgs(user).includes(settings.selectedOrgAlt || '')) {
+        allowedStatusesSet.add('Recorded');
+        allowedStatusesSet.add('Candidate');
+        allowedStatusesSet.add('Incomplete');
+    }
+
     if (user && user.viewDrafts) {
         allowedStatusesSet.add('Recorded');
         allowedStatusesSet.add('Candidate');
@@ -428,10 +443,7 @@ export function getAllowedStatuses(user: User | undefined, settings: SearchSetti
 
 export function regStatusFilter(user: User | undefined, settings: SearchSettingsElastic): { term: any }[] {
     const allowedStatuses = getAllowedStatuses(user, settings);
-    return concat<{ term: any }>(
-        allowedStatuses.map(termRegStatus),
-        myOrgs(user).map(org => ({ term: { 'stewardOrg.name': org } }))
-    );
+    return concat<{ term: any }>(allowedStatuses.map(termRegStatus), myOrgs(user).map(termStewardOrg));
 }
 
 export function copyrightStatusFilter(): { term: any }[] {
