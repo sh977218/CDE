@@ -113,8 +113,7 @@ export class CdeAppComponent {
     }
 
     ssoLogout(cb: () => void) {
-        this.utsSendMessage('Logout', () => {});
-        cb();
+        this.utsSendMessage('Logout', cb);
     }
 
     utsSendMessage(message: string, cb: () => void) {
@@ -128,6 +127,9 @@ export class CdeAppComponent {
         this.iframeReady.then(() => {
             if (this.receiver && this.receiver.nativeElement && this.receiver.nativeElement.contentWindow) {
                 this.receiver.nativeElement.contentWindow.postMessage(message, window.ssoServerOrigin);
+                cb();
+            } else {
+                // throw new Error('sso iframe is missing or blocked');
                 cb();
             }
         });

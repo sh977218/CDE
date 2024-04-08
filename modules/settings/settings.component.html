@@ -99,34 +99,37 @@
                     </mat-list>
                 </ng-container>
 
-                <ng-container *ngIf="userSvc.isDocumentEditor()">
-                    <mat-divider></mat-divider>
-                    <mat-list-item id="users" [routerLinkActive]="['isActive']" routerLink="users"
-                                   data-testid="users">
-                        Users
+                <mat-divider></mat-divider>
+                <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                               id="users" [routerLinkActive]="['isActive']" routerLink="users"
+                               data-testid="users">
+                    Users
+                </mat-list-item>
+                <mat-list-item *ngIf="userSvc.isDocumentEditor()"
+                               id="articles" [routerLinkActive]="['isActive']" routerLink="articles"
+                               data-testid="articles">
+                    Articles
+                </mat-list-item>
+                <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                               [routerLinkActive]="['isActive']" routerLink="dataValidation"
+                               data-testid="data-loading">
+                    Data Loading
+                </mat-list-item>
+                <mat-list *ngIf="userSvc.isOrgAuthority()" style="margin-left: 1rem">
+                    <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']"
+                                   routerLink="dataValidation" data-testid="validation">
+                        Validation
                     </mat-list-item>
-                    <mat-list-item id="articles" [routerLinkActive]="['isActive']" routerLink="articles"
-                                   data-testid="articles">
-                        Articles
+                    <mat-list-item id="spellCheck" [routerLinkActive]="['isActive']" routerLink="spellCheck"
+                                   data-testid="spell-check">
+                        Spell Check
                     </mat-list-item>
-                    <mat-list-item [routerLinkActive]="['isActive']" routerLink="dataValidation"
-                                   data-testid="data-loading">
-                        Data Loading
-                    </mat-list-item>
-                    <mat-list style="margin-left: 1rem">
-                        <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']"
-                                       routerLink="dataValidation" data-testid="validation">
-                            Validation
-                        </mat-list-item>
-                        <mat-list-item id="spellCheck" [routerLinkActive]="['isActive']" routerLink="spellCheck"
-                                       data-testid="spell-check">
-                            Spell Check
-                        </mat-list-item>
-                        <mat-list-item [routerLinkActive]="['isActive']" routerLink="submissionWorkbookValidation">
-                            Submission Workbook Validation
-                        </mat-list-item>
-                    </mat-list>
-                </ng-container>
+                </mat-list>
+
+                <mat-list-item *ngIf="userSvc.isNlmCurator()"
+                               [routerLinkActive]="['isActive']" routerLink="submissionWorkbookValidation">
+                    Submission Workbook Validation
+                </mat-list-item>
 
                 <ng-container *ngIf="userSvc.user?.siteAdmin">
                     <mat-divider></mat-divider>
