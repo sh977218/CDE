@@ -39,6 +39,7 @@ test.describe(`Merge form`, async () => {
             searchPage,
             cdePage,
             formPage,
+            generateDetailsSection,
         }) => {
             const nlmForm = `PHQ-9 quick depression assessment panel [Reported.PHQ]`;
             const nindsForm = `Patient Health Questionnaire - 9 (PHQ-9) Depression Scale`;
@@ -88,6 +89,8 @@ test.describe(`Merge form`, async () => {
                 await test.step(`Go to current version`, async () => {
                     await formPage.mergeToLink().click();
                     await expect(formPage.formTitle()).toContainText(nlmForm);
+                    await expect(generateDetailsSection.copyrightCheckbox()).toBeChecked();
+                    await expect(generateDetailsSection.copyrightStatement()).toContainText('Proprietary');
                 });
             });
 

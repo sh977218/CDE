@@ -16,6 +16,10 @@
                         [disabled]="!mergeFormService.error.ownTargetForm">
                     None
                 </button>
+                <mat-checkbox [(ngModel)]="mergeFields.copyright"
+                              [disabled]="!mergeFormService.error.ownTargetForm">
+                    Copyright
+                </mat-checkbox>
                 <mat-checkbox [(ngModel)]="mergeFields.designations"
                               [disabled]="!mergeFormService.error.ownTargetForm">
                     Designation

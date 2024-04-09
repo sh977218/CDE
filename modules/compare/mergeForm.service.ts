@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CompareForm } from 'compare/compareSideBySide/compare-form';
+import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 import { doMerge as deDoMerge } from 'compare/mergeDe.service';
 import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 import {
@@ -9,11 +11,12 @@ import {
     mergeArrayByProperties,
     mergeArrayByReferenceDocuments,
 } from 'core/adminItem/classification';
+import { unionWith } from 'lodash';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { transferClassifications } from 'shared/classification/classificationShared';
+import { urlComparator } from 'shared/elt/comparator';
+import { CdeForm } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
-import { CompareForm } from './compareSideBySide/compare-form';
-import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 
 @Injectable()
 export class MergeFormService {
@@ -56,6 +59,9 @@ export class MergeFormService {
         if (mergeFrom.questions.length !== mergeTo.questions.length) {
             throw new Error('number of question on left is not same on right.');
         } else {
+            if (fields.copyright) {
+                mergeCopyright(mergeFrom, mergeTo);
+            }
             if (fields.designations) {
                 mergeArrayByDesignations(mergeFrom, mergeTo);
             }
@@ -103,4 +109,22 @@ export class MergeFormService {
             });
         });
     }
+}
+
+function mergeCopyright(eltFrom: CdeForm, eltTo: CdeForm) {
+    if (!eltFrom.copyright) {
+        return;
+    }
+    if (!eltTo.copyright) {
+        eltTo.copyright = eltFrom.copyright;
+    }
+    if (eltFrom.copyright.authority) {
+        eltTo.copyright.authority =
+            (eltTo.copyright.authority ? eltTo.copyright.authority + ', ' : '') + eltFrom.copyright.authority;
+    }
+    if (eltFrom.copyright.text) {
+        eltTo.copyright.text = (eltTo.copyright.text ? eltTo.copyright.text + ', ' : '') + eltFrom.copyright.text;
+    }
+    eltTo.copyright.urls = unionWith(eltTo.copyright.urls, eltFrom.copyright.urls, urlComparator);
+    eltTo.isCopyrighted = eltFrom.isCopyrighted || eltTo.isCopyrighted;
 }

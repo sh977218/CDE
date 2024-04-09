@@ -1,6 +1,7 @@
 import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
 
 export interface FormMergeFields {
+    copyright: boolean;
     designations: boolean;
     definitions: boolean;
     referenceDocuments: boolean;

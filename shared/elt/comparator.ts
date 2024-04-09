@@ -1,5 +1,6 @@
 import { isEqual, union } from 'lodash';
 import { DataSet } from 'shared/de/dataElement.model';
+import { CopyrightURL } from 'shared/form/form.model';
 import {
     Attachment,
     CdeId,
@@ -72,4 +73,8 @@ export function referenceDocumentComparator(a: ReferenceDocument, b: ReferenceDo
 
 export function sourceComparator(a: DataSource, b: DataSource) {
     return isEqual(a.sourceName, b.sourceName);
+}
+
+export function urlComparator(a: CopyrightURL, b: CopyrightURL) {
+    return isEqual(a.url, b.url);
 }

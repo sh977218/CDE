@@ -11,6 +11,7 @@ import { AlertService } from 'alert/alert.service';
 })
 export class MergeFormModalComponent {
     mergeFields: FormMergeFields = {
+        copyright: true,
         designations: true,
         definitions: true,
         referenceDocuments: true,
@@ -61,6 +62,7 @@ export class MergeFormModalComponent {
     }
 
     unselectAllFormMergerFields() {
+        this.mergeFields.copyright = false;
         this.mergeFields.designations = false;
         this.mergeFields.definitions = false;
         this.mergeFields.referenceDocuments = false;
@@ -88,6 +90,7 @@ export class MergeFormModalComponent {
     }
 
     selectAllFormMergerFields() {
+        this.mergeFields.copyright = true;
         this.mergeFields.designations = true;
         this.mergeFields.definitions = true;
         this.mergeFields.referenceDocuments = true;
