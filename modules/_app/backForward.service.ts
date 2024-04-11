@@ -1,7 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class BackForwardService {

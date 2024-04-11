@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { bundleCreate, bundleDestroy } from 'form/formServices';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { CdeForm, CopyrightURL } from 'shared/form/form.model';
 import { canBundle } from 'shared/security/authorizationShared';
@@ -10,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'cde-form-general-details[elt]',
@@ -49,7 +49,7 @@ export class FormGeneralDetailsComponent implements OnDestroy {
     unsubscribeUser?: () => void;
     userOrgs: string[] = [];
 
-    constructor(public orgHelperService: OrgHelperService, public userService: UserService) {
+    constructor(private http: HttpClient, public orgHelperService: OrgHelperService, public userService: UserService) {
         this.unsubscribeUser = this.userService.subscribe(() => {
             this.userOrgs = this.userService.userOrgs;
         });
@@ -68,11 +68,15 @@ export class FormGeneralDetailsComponent implements OnDestroy {
     }
 
     bundle(form: CdeForm) {
-        bundleCreate(form.tinyId).then(elt => this.eltReloaded.emit(elt));
+        this.http.post<CdeForm>('/server/form/bundle/' + form.tinyId, undefined).subscribe(elt => {
+            this.eltReloaded.emit(elt);
+        });
     }
 
     unbundle(form: CdeForm) {
-        bundleDestroy(form.tinyId).then(elt => this.eltReloaded.emit(elt));
+        this.http.post<CdeForm>('/server/form/unbundle/' + form.tinyId, undefined).subscribe(elt => {
+            this.eltReloaded.emit(elt);
+        });
     }
 
     trackByUrl(index: number, url: CopyrightURL) {

@@ -3,7 +3,7 @@ import { DeMergeFields } from 'compare/mergeDataElement/deMergeFields.model';
 import { AlertService } from 'alert/alert.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { doMerge } from '../../mergeDe.service';
+import { MergeDeService } from '../../mergeDe.service';
 
 @Component({
     templateUrl: './merge-data-element-modal.component.html',
@@ -33,7 +33,8 @@ export class MergeDataElementModalComponent {
         @Inject(MAT_DIALOG_DATA) public data: any,
         private dialogRef: MatDialogRef<MergeDataElementModalComponent>,
         private alert: AlertService,
-        public isAllowedModel: IsAllowedService
+        public isAllowedModel: IsAllowedService,
+        private deService: MergeDeService
     ) {
         this.source = data.source;
         this.destination = data.destination;
@@ -88,7 +89,7 @@ export class MergeDataElementModalComponent {
     }
 
     doMerge() {
-        doMerge(this.source.tinyId, this.destination.tinyId, this.mergeFields).then(
+        this.deService.doMerge(this.source.tinyId, this.destination.tinyId, this.mergeFields).then(
             res => {
                 this.alert.addAlert('success', 'Finished merging');
                 this.doneMerge.emit(res);

@@ -12,11 +12,15 @@ export class SaveModalPo {
     }
 
     newVersionInput() {
-        return this.page.getByTestId(`new-version-input`);
+        return this.materialPage.matDialog().getByTestId(`new-version-input`);
     }
 
     newChangeNoteTextarea() {
-        return this.page.getByTestId(`new-change-note-textarea`);
+        return this.materialPage.matDialog().getByTestId(`new-change-note-textarea`);
+    }
+
+    overrideVersionCheckbox() {
+        return this.materialPage.matDialog().locator(`id=overrideVersion`);
     }
 
     publishDraftButton() {
@@ -28,7 +32,7 @@ export class SaveModalPo {
     }
 
     saveButton() {
-        return this.page.getByTestId(`save-modal`);
+        return this.materialPage.matDialog().getByTestId(`save-modal`);
     }
 
     async waitForDraftSaveComplete() {
@@ -67,8 +71,6 @@ export class SaveModalPo {
             await this.newChangeNoteTextarea().fill(version.changeNote);
         }
         await this.newVersionInput().fill(newVersion);
-        await this.newVersionInput().blur();
-        await expect(this.saveButton()).toBeEnabled();
         await this.saveButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(alertMessage);

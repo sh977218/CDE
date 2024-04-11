@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CompareForm } from 'compare/compareSideBySide/compare-form';
 import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
-import { doMerge as deDoMerge } from 'compare/mergeDe.service';
 import { FormMergeFields } from 'compare/mergeForm/formMergeFields.model';
 import {
     mergeArrayByDefinitions,
@@ -17,14 +16,21 @@ import { transferClassifications } from 'shared/classification/classificationSha
 import { urlComparator } from 'shared/elt/comparator';
 import { CdeForm } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
+import { MergeDeService } from './mergeDe.service';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class MergeFormService {
     error: any = {};
     maxNumberQuestions!: number;
     numMergedQuestions!: number;
 
-    constructor(private http: HttpClient, public isAllowedModel: IsAllowedService) {}
+    constructor(
+        private http: HttpClient,
+        private mergeDeService: MergeDeService,
+        public isAllowedModel: IsAllowedService
+    ) {}
 
     saveForm({ form, cb }: { form: CompareForm; cb: CbErr1<CompareForm | void> }) {
         this.http.post<CompareForm>('/server/form/publishExternal', form).subscribe(
@@ -49,7 +55,7 @@ export class MergeFormService {
             const questionTo = questionsTo[i];
             const tinyIdFrom = questionFrom.question.cde.tinyId;
             const tinyIdTo = questionTo.question.cde.tinyId;
-            await deDoMerge(tinyIdFrom, tinyIdTo, fields.cde);
+            await this.mergeDeService.doMerge(tinyIdFrom, tinyIdTo, fields.cde);
             questionFrom.isRetired = true;
             this.numMergedQuestions++;
         }

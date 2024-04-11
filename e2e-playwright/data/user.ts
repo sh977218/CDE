@@ -29,7 +29,7 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
     },
     loginrecorduser: {
         username: 'loginrecorduser',
-        password: 'umls',
+        password: DEFAULT_PASSWORD,
     },
     regularUser: {
         username: 'reguser',

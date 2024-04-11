@@ -53,10 +53,9 @@ app.use(favicon(path.resolve(__dirname, '../modules/_app/assets/favicon.ico')));
 const tokens = {};
 
 app.post('/login', (req, res) => {
-    db.collection('users').countDocuments({
-        username: req.body.username,
-        password: req.body.password || 'failme'
-    }).then(count => {
+    const username = req.body.username
+    const password = req.body.password || 'failme';
+    db.collection('users').countDocuments({username, password}).then(count => {
         if (count) {
             const token = 'CDE-' + Math.random().toString(36).substr(2) + '-localhost'
             tokens[token] = req.body.username;
