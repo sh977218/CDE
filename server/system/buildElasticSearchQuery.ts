@@ -146,13 +146,14 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic) 
     }
 
     // if I'm one or more organizations' orgAdmin, orgEditor or orgCurator, I'll be able to see those Orgs all status
-    if (myOrgs(user).length) {
+    const organizationsUserBelongsTo = myOrgs(user);
+    if (organizationsUserBelongsTo.length) {
         query.bool.filter[0].bool.should.push({
             bool: {
                 must: [
                     {
                         bool: {
-                            should: myOrgs(user).map(termStewardOrg),
+                            should: organizationsUserBelongsTo.map(termStewardOrg),
                         },
                     },
                     {

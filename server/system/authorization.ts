@@ -25,6 +25,38 @@ import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 // --------------------------------------------------
 // Middleware
 // --------------------------------------------------
+
+export const loggedInMiddleware: RequestHandler = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).send();
+    }
+    next();
+};
+
+export const isNlmCuratorMiddleware: RequestHandler = (req, res, next) => {
+    if (!isNlmCurator(req.user)) {
+        res.status(403).send();
+        return;
+    }
+    next();
+};
+
+export const isOrgAdminMiddleware: RequestHandler = (req, res, next) => {
+    if (!isOrgAdmin(req.user, req.body.org)) {
+        res.status(403).send();
+        return;
+    }
+    next();
+};
+
+export const isOrgAuthorityMiddleware: RequestHandler = (req, res, next) => {
+    if (!isOrgAuthority(req.user)) {
+        res.status(403).send();
+        return;
+    }
+    next();
+};
+
 export const isOrgCuratorMiddleware: RequestHandler = (req, res, next) => {
     if (!isOrgCurator(req.user)) {
         res.status(403).send();
@@ -45,13 +77,6 @@ export const isSiteAdminMiddleware: RequestHandler = (req, res, next) => {
     if (!isSiteAdmin(req.user)) {
         res.status(403).send();
         return;
-    }
-    next();
-};
-
-export const loggedInMiddleware: RequestHandler = (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).send();
     }
     next();
 };
@@ -164,30 +189,6 @@ export const canSubmissionReviewMiddleware: RequestHandler = (req, res, next) =>
 
 export const canSubmissionSubmitMiddleware: RequestHandler = (req, res, next) => {
     if (!canSubmissionSubmit(req.user)) {
-        res.status(403).send();
-        return;
-    }
-    next();
-};
-
-export const isNlmCuratorMiddleware: RequestHandler = (req, res, next) => {
-    if (!isNlmCurator(req.user)) {
-        res.status(403).send();
-        return;
-    }
-    next();
-};
-
-export const isOrgAdminMiddleware: RequestHandler = (req, res, next) => {
-    if (!isOrgAdmin(req.user, req.body.org)) {
-        res.status(403).send();
-        return;
-    }
-    next();
-};
-
-export const isOrgAuthorityMiddleware: RequestHandler = (req, res, next) => {
-    if (!isOrgAuthority(req.user)) {
         res.status(403).send();
         return;
     }

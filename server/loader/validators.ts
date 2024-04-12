@@ -1,22 +1,14 @@
 import {
     formatRows,
     getCell,
-    parsePermissibleValueArray,
-    parseValueDefinitionArray,
-    parseConceptIdArray,
     parseCodeSystemName,
     parseColumn,
     REQUIRED_FIELDS,
     SPELL_CHECK_FIELDS,
-    CSV_HEADER_MAP
+    CSV_HEADER_MAP,
 } from 'shared/loader/utilities/utility';
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
-import {
-    PermissibleValue,
-    PermissibleValueCodeSystem,
-    permissibleValueCodeSystems,
-    ValidationWhitelist
-} from 'shared/models.model';
+import { PermissibleValue, ValidationWhitelist } from 'shared/models.model';
 import { validatePvs } from 'server/cde/utsValidate';
 import * as XLSX from 'xlsx';
 import * as spellChecker from 'simple-spellchecker';
@@ -31,7 +23,8 @@ export function validatePermissibleValues(
     conceptIds: string[],
     conceptSource: string[],
     valueMeaningCodes: string[],
-    codeSystem: string[]) {
+    codeSystem: string[]
+) {
     const output: string[] = [];
 
     if (pvs.length === 0) {
@@ -50,10 +43,10 @@ export function validatePermissibleValues(
         output.push('Data type is: Value List but no Permissible Value (PV) Terminology Sources were provided.');
     }
 
-    conceptSource.forEach((v) => {
-       if(!validConceptSystems.includes(v)){
+    conceptSource.forEach(v => {
+        if (!validConceptSystems.includes(v)) {
             output.push(`Invalid concept system: ${v}`);
-       }
+        }
     });
 
     if (valueMeaningCodes.length === 0) {
@@ -64,13 +57,13 @@ export function validatePermissibleValues(
         output.push('Data type is: Value List but no Permissible Value Code Systems were provided.');
     }
 
-    codeSystem.forEach((v) => {
-        if(!validCodeSystems.includes(v)){
+    codeSystem.forEach(v => {
+        if (!validCodeSystems.includes(v)) {
             output.push(`Invalid code system: ${v}`);
         }
     });
 
-    if(!Array.from(arguments).every((v,i,arr) => v.length === arr[0].length)){
+    if (!Array.from(arguments).every((v, i, arr) => v.length === arr[0].length)) {
         output.push('Mismatch between amount of permissible values and amount of codes and/or value definitions');
     }
 
@@ -78,7 +71,6 @@ export function validatePermissibleValues(
 }
 
 export async function validateAgainstUMLS(pvs: PermissibleValue[]) {
-
     return validatePvs(pvs).then(
         () => {
             return '';
@@ -118,9 +110,9 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
     const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const fileErrors = [] as string[];
     const dataErrors = [] as {
-        row: number,
-        name: string,
-        logs: string[]
+        row: number;
+        name: string;
+        logs: string[];
     }[];
     let rowIdx = 6;
 
@@ -136,7 +128,9 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
             const datatype = getCell(row, 'datatypeValueList:datatype');
             const permissibleValueString = getCell(row, 'valueMeaningName');
             if (datatype !== 'Value List' && permissibleValueString) {
-                currentLogs.push(`Data type is: '${datatype}' but permissible values were specified. Should this be a Value List type?`);
+                currentLogs.push(
+                    `Data type is: '${datatype}' but permissible values were specified. Should this be a Value List type?`
+                );
             }
 
             // Validate PVs
@@ -147,26 +141,27 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
                 const conceptIdArray = parseColumn(row, 'conceptIds');
                 let conceptSource = parseColumn(row, 'conceptSource');
 
-                if(conceptSource.length === 1) {
+                if (conceptSource.length === 1) {
                     conceptSource = Array(pvArray.length).fill(conceptSource[0]);
                 }
-                conceptSource = conceptSource.map((v) => parseCodeSystemName(v));
+                conceptSource = conceptSource.map(v => parseCodeSystemName(v));
 
                 const valueMeaningCodeArray = parseColumn(row, 'permissibleValueCodes');
                 let codeSystemName = parseColumn(row, 'codeSystem');
 
-                if(codeSystemName.length === 1) {
+                if (codeSystemName.length === 1) {
                     codeSystemName = Array(pvArray.length).fill(codeSystemName[0]);
                 }
-                codeSystemName = codeSystemName.map((v) => parseCodeSystemName(v));
+                codeSystemName = codeSystemName.map(v => parseCodeSystemName(v));
 
-                currentLogs.push(...validatePermissibleValues(
-                    pvArray,
-                    valueDefArray,
-                    conceptIdArray,
-                    conceptSource,
-                    valueMeaningCodeArray,
-                    codeSystemName
+                currentLogs.push(
+                    ...validatePermissibleValues(
+                        pvArray,
+                        valueDefArray,
+                        conceptIdArray,
+                        conceptSource,
+                        valueMeaningCodeArray,
+                        codeSystemName
                     )
                 );
 
@@ -179,8 +174,8 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
                         valueMeaningCode: valueMeaningCodeArray[i],
                         codeSystemName: codeSystemName[i],
                         conceptId: conceptIdArray[i],
-                        conceptSource: conceptSource[i]
-                    })) as PermissibleValue[]
+                        conceptSource: conceptSource[i],
+                    })) as PermissibleValue[],
                 };
 
                 const umlsErrors = await validateAgainstUMLS(valueDomain.permissibleValues);
@@ -195,24 +190,27 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
             }
 
             if (currentLogs.length > 0) {
-                dataErrors.push({row: rowIdx, name: title, logs: currentLogs});
+                dataErrors.push({ row: rowIdx, name: title, logs: currentLogs });
             }
-            rowIdx++
+            rowIdx++;
         }
     }
-    return {fileErrors, dataErrors};
+    return { fileErrors, dataErrors };
 }
 
 export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) {
     const workbook = XLSX.read(csvFile);
     const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
     const fileErrors = [] as string[];
-    const spellingErrors: Record<string, {
-        row: number,
-        name: string,
-        error: string,
-        field: string
-    }[]> = {};
+    const spellingErrors: Record<
+        string,
+        {
+            row: number;
+            name: string;
+            error: string;
+            field: string;
+        }[]
+    > = {};
     let rowIdx = 6;
 
     const formattedRows = formatRows('UploadedFile', workBookRows, 4);
@@ -221,7 +219,7 @@ export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) 
         fileErrors.push('No data found to validate. Was this a valid CSV file?');
     } else {
         const dictionary = spellChecker.getDictionarySync('en-US');
-        const whitelist = await validationWhitelistModel.findOne({collectionName: whitelistName});
+        const whitelist = await validationWhitelistModel.findOne({ collectionName: whitelistName });
         let whiteListTerms: string[];
         if (!whitelist) {
             whiteListTerms = [];
@@ -239,22 +237,24 @@ export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) 
                             row: rowIdx,
                             name: designation,
                             error: getCell(row, field),
-                            field: CSV_HEADER_MAP[field] || field
+                            field: CSV_HEADER_MAP[field] || field,
                         });
                     } else {
-                        spellingErrors[v] = [{
-                            row: rowIdx,
-                            name: designation,
-                            error: getCell(row, field),
-                            field: CSV_HEADER_MAP[field] || field
-                        }];
+                        spellingErrors[v] = [
+                            {
+                                row: rowIdx,
+                                name: designation,
+                                error: getCell(row, field),
+                                field: CSV_HEADER_MAP[field] || field,
+                            },
+                        ];
                     }
                 });
             }
-            rowIdx++
+            rowIdx++;
         }
     }
-    return {fileErrors, spellingErrors};
+    return { fileErrors, spellingErrors };
 }
 
 function checkValue(row: Record<string, string>, header: string, dictionary: any, whitelist: string[]) {
@@ -282,7 +282,7 @@ export async function getValidationWhitelists() {
 }
 
 export async function deleteValidationWhitelist(name: string) {
-    return validationWhitelistModel.deleteOne({collectionName: name});
+    return validationWhitelistModel.deleteOne({ collectionName: name });
 }
 
 export async function addValidationWhitelist(whiteList: ValidationWhitelist) {
@@ -291,13 +291,14 @@ export async function addValidationWhitelist(whiteList: ValidationWhitelist) {
 
 export async function updateValidationWhitelist(whiteList: ValidationWhitelist) {
     return validationWhitelistModel.findOneAndUpdate(
-        {collectionName: whiteList.collectionName},
+        { collectionName: whiteList.collectionName },
         {
             $set: {
-                terms: whiteList.terms
-            }
+                terms: whiteList.terms,
+            },
         },
         {
-            new: true
-        });
+            new: true,
+        }
+    );
 }
