@@ -19,6 +19,8 @@ export class ServerStatusComponent {
     esIndices!: { name: string; indexName: string; count: number; totalCount: number }[];
     indexToReindex!: number;
     isDone: boolean = false;
+    meshSyncs: any;
+
     linkedForms: { total: number; done: number } = { total: 0, done: 0 };
     statuses: any[] = [];
     esInfo$;
@@ -83,6 +85,31 @@ export class ServerStatusComponent {
                     this.reIndex();
                 }
             });
+    }
+
+    syncMesh() {
+        this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
+        const indexFn = setInterval(() => {
+            this.http.get<any>('/server/mesh/syncWithMesh').subscribe(
+                res => {
+                    this.meshSyncs = [];
+                    for (const p in res) {
+                        if (res.hasOwnProperty(p)) {
+                            this.meshSyncs.push(res[p]);
+                        }
+                    }
+                    if (res.dataelement.done === res.dataelement.total && res.form.done === res.form.total) {
+                        clearInterval(indexFn);
+                        this.alert.addAlert('success', 'Done syncing');
+                        this.meshSyncs = null;
+                    }
+                },
+                () => {
+                    clearInterval(indexFn);
+                    this.alert.addAlert('danger', 'Unexpected error syncing');
+                }
+            );
+        }, 1000);
     }
 
     syncLinkedForms() {

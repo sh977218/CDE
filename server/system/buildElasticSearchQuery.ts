@@ -209,6 +209,27 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic) 
         });
     }
 
+    // filter by topic
+    if (settings.meshTree) {
+        // boost for those with fewer mesh trees
+        query.bool.must.push({
+            dis_max: {
+                queries: [
+                    {
+                        function_score: {
+                            script_score: {
+                                script:
+                                    "(_score + (6 - doc['registrationState.registrationStatusSortOrder'].value)) /" +
+                                    " (doc['flatMeshTrees'].length + 1)",
+                            },
+                        },
+                    },
+                ],
+            },
+        });
+        query.bool.must.push({ term: { flatMeshTrees: settings.meshTree } });
+    }
+
     if (query.bool.must.length === 0) {
         delete query.bool.must;
     }
@@ -254,6 +275,31 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         filter: { bool: { filter: [] } },
         aggs: { orgs: { terms: { field: 'classification.stewardOrg.name', size: 500, order: { _key: 'desc' } } } },
     };
+    const meshTrees: any = {
+        filter: { bool: { filter: [] } },
+        aggs: {
+            meshTrees: {
+                terms: {
+                    include: settings.meshTree?.length ? escapeRegExp(settings.meshTree) + ';[^;]+' : '[^;]+',
+                    field: 'flatMeshTrees',
+                    size: 50,
+                },
+            },
+        },
+    };
+    const twoLevelMesh: any = {
+        filter: { bool: { filter: [] } },
+        aggs: {
+            twoLevelMesh: {
+                terms: {
+                    size: 500,
+                    field: 'flatMeshTrees',
+                    include: '[^;]+;[^;]+',
+                },
+            },
+        },
+    };
+
     const flatClassifications: any = {
         filter: { bool: { filter: [] } },
         aggs: { flatClassifications: { terms: { field: 'flatClassifications', size: 500 } } },
@@ -280,6 +326,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         datatype.filter.bool.filter.push({ bool: { should: selectedStatuses } });
         copyrightStatus.filter.bool.filter.push({ bool: { should: selectedStatuses } });
         orgs.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        meshTrees.filter.bool.filter.push({ bool: { should: selectedStatuses } });
+        twoLevelMesh.filter.bool.filter.push({ bool: { should: selectedStatuses } });
         flatClassifications.filter.bool.filter.push({ bool: { should: selectedStatuses } });
         flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedStatuses } });
     }
@@ -287,6 +335,7 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         statuses.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
         copyrightStatus.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
         orgs.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
+        meshTrees.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
         flatClassifications.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
         flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedDatatypes } });
     }
@@ -294,6 +343,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         statuses.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
         datatype.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
         orgs.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        meshTrees.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
+        twoLevelMesh.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
         flatClassifications.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
         flatClassificationsAlt.filter.bool.filter.push({ bool: { should: selectedCopyrightStatus } });
     }
@@ -301,6 +352,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
     const aggregation: any = {
         orgs,
         statuses,
+        meshTrees,
+        twoLevelMesh,
     };
     if (module === 'cde') {
         aggregation.datatype = datatype;

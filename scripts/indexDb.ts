@@ -1,13 +1,17 @@
-// to override express.request.user
-import * as authorization from 'server/system/authorization';
-
 import 'server/globals';
 import { syncLinkedFormsByCdeTinyId } from 'server/form/syncLinkedForms';
 import { initEs } from 'server/system/elastic';
+import { syncWithMesh } from 'server/mesh/elastic';
+import { Cb, CbError } from 'shared/models.model';
 
 initEs(() => {
     console.log('Done indexing collections');
+    console.log('Syncing with Mesh');
+
     Promise.all([
+        new Promise<void>((resolve: Cb, reject: CbError) => {
+            syncWithMesh((err) => err ? reject(err) : resolve());
+        }),
         syncLinkedFormsByCdeTinyId('myg51_nyXg'),
         syncLinkedFormsByCdeTinyId('7J69yuhyme'),
         syncLinkedFormsByCdeTinyId('QJmc1OnyQe'),

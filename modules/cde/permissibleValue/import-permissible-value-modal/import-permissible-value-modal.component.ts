@@ -16,6 +16,7 @@ export class ImportPermissibleValueModalComponent {
         copyrightStatus: [],
         nihEndorsed: false,
         excludeOrgs: [],
+        meshTree: '',
         excludeAllOrgs: false,
         regStatuses: [],
         resultPerPage: 20,

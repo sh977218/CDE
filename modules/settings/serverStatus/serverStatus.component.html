@@ -10,19 +10,28 @@
     <div *ngFor="let i of esIndices; let $index = index">
         <button mat-fab extended color="primary" class="button" (click)="openConfirmReindexModal($index)">
             <mat-icon>refresh</mat-icon>
-            Re-index: <b>{{i.name}}</b> / {{i.indexName}}
+            Re-index: <b>{{ i.name }}</b> / {{ i.indexName }}
         </button>
         <mat-progress-bar *ngIf="i.totalCount > 0 && i.count > 0" [value]="i.count * 100 / i.totalCount">
             \
         </mat-progress-bar>
     </div>
 
+    <button class="button" (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
+    <div *ngFor="let meshSync of meshSyncs">
+        <mat-progress-bar *ngIf="meshSync.total > 0 && meshSync.done > 0"
+                          [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
+        </mat-progress-bar>
+    </div>
+
     <button class="button" (click)="syncLinkedForms()">Sync Linked Forms</button>
-    <form (ngSubmit)="syncLinkedFormWithCdeTinyId(cdeTinyIdInput.value)">
-        <mat-label>CDE TinyId:</mat-label>
-        <input mat-input #cdeTinyIdInput/>
-        <button class="button" type="submit">Sync Linked Forms with tinyId</button>
-    </form>
+    <div>
+        <form (ngSubmit)="syncLinkedFormWithCdeTinyId(cdeTinyIdInput.value)">
+            <mat-label>CDE TinyId:</mat-label>
+            <input mat-input #cdeTinyIdInput/>
+            <button class="button" type="submit">Sync Linked Forms with tinyId</button>
+        </form>
+    </div>
     <mat-progress-bar *ngIf="linkedForms.total > 0 && linkedForms.done > 0"
                       [max]="linkedForms.total" [value]="linkedForms.done * 100 / linkedForms.total">
     </mat-progress-bar>

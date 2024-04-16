@@ -1,0 +1,13 @@
+<h1>Mesh Mapping</h1>
+
+<div>
+    <p>Upload Mesh Mapping CSV</p>
+    <label>
+        <button class="button"  (click)="fileInput.click()">
+            <mat-icon>cloud_upload</mat-icon>
+            Upload CSV file
+        </button>
+        <span class="file-name">{{ selectedFile?.name }}</span>
+    </label>
+    <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+</div>

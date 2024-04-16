@@ -116,6 +116,10 @@
                     Data Loading
                 </mat-list-item>
                 <mat-list *ngIf="userService.isOrgAuthority()" style="margin-left: 1rem">
+                    <mat-list-item [routerLinkActive]="['isActive']"
+                                   routerLink="meshMapping" data-testid="mesh-mapping">
+                        Mesh Mapping
+                    </mat-list-item>
                     <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']"
                                    routerLink="dataValidation" data-testid="validation">
                         Validation

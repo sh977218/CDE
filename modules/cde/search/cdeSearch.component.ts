@@ -21,6 +21,7 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
+import { MatListModule } from '@angular/material/list';
 
 @Component({
     selector: 'cde-cde-search',
@@ -40,6 +41,7 @@ import { RegistrationValidatorService } from 'non-core/registrationValidator.ser
         PinToBoardModule,
         MatInputModule,
         MatPaginatorModule,
+        MatListModule,
     ],
     providers: [ExportService, RegistrationValidatorService],
     standalone: true,

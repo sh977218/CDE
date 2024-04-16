@@ -8,6 +8,7 @@ export class SearchSettings {
     copyrightStatus: CopyrightStatus[] = [];
     excludeAllOrgs?: boolean;
     excludeOrgs: string[] = [];
+    meshTree: string = '';
     nihEndorsed: boolean = false;
     page?: number = 1;
     q?: string = '';
@@ -33,6 +34,7 @@ export class SearchSettingsElastic {
     fullRecord?: boolean;
     includeAggregations?: boolean;
     includeRetired?: boolean;
+    meshTree = '';
     nihEndorsed: boolean = false;
     page?: number = 1;
     q?: string;

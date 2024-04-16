@@ -10,7 +10,7 @@ import {
 import { DATA_TYPE_ARRAY } from 'shared/de/dataElement.model';
 import { PermissibleValue, ValidationWhitelist } from 'shared/models.model';
 import { validatePvs } from 'server/cde/utsValidate';
-import * as XLSX from 'xlsx';
+import { read, utils } from 'xlsx';
 import * as spellChecker from 'simple-spellchecker';
 import { validationWhitelistModel } from 'server/loader/schema';
 
@@ -106,8 +106,8 @@ function checkRequiredFields(row: Record<string, string>) {
 }
 
 export async function runValidationOnLoadCSV(csvFile: Buffer) {
-    const workbook = XLSX.read(csvFile);
-    const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
+    const workbook = read(csvFile);
+    const workBookRows = utils.sheet_to_json(workbook.Sheets.Sheet1);
     const fileErrors = [] as string[];
     const dataErrors = [] as {
         row: number;
@@ -199,8 +199,8 @@ export async function runValidationOnLoadCSV(csvFile: Buffer) {
 }
 
 export async function spellcheckCSVLoad(whitelistName: string, csvFile: string) {
-    const workbook = XLSX.read(csvFile);
-    const workBookRows = XLSX.utils.sheet_to_json(workbook.Sheets.Sheet1);
+    const workbook = read(csvFile);
+    const workBookRows = utils.sheet_to_json(workbook.Sheets.Sheet1);
     const fileErrors = [] as string[];
     const spellingErrors: Record<
         string,

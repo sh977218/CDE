@@ -46,6 +46,7 @@ import { Readable } from 'stream';
 import { promisify } from 'util';
 import { flattenFormElement } from 'shared/form/fe';
 import { syncLinkedForms } from 'server/form/syncLinkedForms';
+import { syncWithMesh } from '../mesh/elastic';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
@@ -56,6 +57,8 @@ export function module() {
     router.get('/site-version', (req, res) => res.send(version));
 
     router.get('/status/cde', status); // used for DevOps health check API (heartbeat), has a HTTPS redirect bypass
+
+    new CronJob('00 00 4 * * *', () => syncWithMesh(), null, true, 'America/New_York').start();
 
     // every hour
     new CronJob(

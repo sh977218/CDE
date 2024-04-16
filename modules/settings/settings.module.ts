@@ -86,6 +86,7 @@ import { articleGuard } from '_app/routerGuard/articleGuard';
 import { siteAdminGuard } from '_app/routerGuard/siteAdminGuard';
 import { orgAdminGuard } from '_app/routerGuard/orgAdminGuard';
 import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
+import { MeshMappingComponent } from './mesh-mapping/mesh-mapping.component';
 
 const appRoutes: Routes = [
     {
@@ -228,6 +229,12 @@ const appRoutes: Routes = [
                 component: IdSourcesComponent,
                 canActivate: [siteAdminGuard],
                 data: { title: 'Id Sources' },
+            },
+            {
+                path: 'meshMapping',
+                component: MeshMappingComponent,
+                canActivate: [orgAuthorityGuard],
+                data: { title: 'Mesh Mapping' },
             },
             {
                 path: 'dataValidation',

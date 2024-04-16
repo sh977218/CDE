@@ -6,23 +6,27 @@
             <div class="stretchBar inline-group" style="gap: 0">
                 <button class="forSearchDesktop searchDropdown button" [disabled]="embedded"
                         [matMenuTriggerFor]="searchMenu">
-                    <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png" alt="Endorsed Ribbon"
+                    <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png"
+                         alt="Endorsed Ribbon"
                          style="height: 20px; vertical-align: text-top">
-                    {{getSearchLabel(searchType)}}
+                    {{ getSearchLabel(searchType) }}
                     <mat-icon *ngIf="!embedded" style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
                 </button>
                 <label class="shrink grow d-block mN">
-                    <input #autoCompleteInput id="ftsearch-input" data-testid="search-query-input" name="q" class="form-control"
+                    <input #autoCompleteInput id="ftsearch-input" data-testid="search-query-input" name="q"
+                           class="form-control"
                            [placeholder]="isSearchDesktop ? 'Search by topic, keyword, or organization' : 'Search by topic, keyword, or org...'"
                            maxlength="500" [matAutocomplete]="auto"
                            [(ngModel)]="searchTerm" (ngModelChange)="searchTermAutoComplete.emit($event)"/>
                 </label>
-                <button id="search.submit" data-testid="search-submit-button" class="button icon" (click)="termSearch()" aria-label="search">
+                <button id="search.submit" data-testid="search-submit-button" class="button icon" (click)="termSearch()"
+                        aria-label="search">
                     <mat-icon>search</mat-icon>
                 </button>
             </div>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)" >
-                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option" data-testid="search-auto-complete-option">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="typeaheadSelect($event)">
+                <mat-option *ngFor="let option of autocompleteSuggestions" [value]="option"
+                            data-testid="search-auto-complete-option">
                     {{ option }}
                 </mat-option>
             </mat-autocomplete>
@@ -30,7 +34,7 @@
                     [disabled]="embedded" [matMenuTriggerFor]="searchMenu">
                 <img *ngIf="searchType === 'endorsedCde'" src="/assets/img/endorsedRibbonIcon.png" alt="Endorsed Ribbon"
                      style="height: 20px; vertical-align: text-top">
-                {{getSearchLabel(searchType)}}
+                {{ getSearchLabel(searchType) }}
                 <mat-icon *ngIf="!embedded" style="float: right; line-height: 1rem">arrow_drop_down</mat-icon>
             </button>
             <!-- Error display area -->
@@ -64,11 +68,11 @@
     <div *ngIf="filterMode" class="content filterPanel">
         <!-- BREADCRUMBS / Active Filters -->
         <div *ngIf="isSearched()">
-            <div class="searchFilterTitle">ACTIVE {{module === 'cde' ? 'CDE' : 'FORM'}} FILTERS</div>
+            <div class="searchFilterTitle">ACTIVE {{ module === 'cde' ? 'CDE' : 'FORM' }} FILTERS</div>
             <div *ngIf="aggregations" class="searchFilterLayoutActive">
                 <div *ngIf="searchSettings.nihEndorsed" class="activeFilterClause">
                     <span class="pill" role="button" tabindex="0" (click)="addNihEndorsedFilter(false)">
-                        <span class="text">NIH-Endorsed {{module === 'cde' ? 'CDEs' : 'Forms'}}</span>
+                        <span class="text">NIH-Endorsed {{ module === 'cde' ? 'CDEs' : 'Forms' }}</span>
                         <span class="close">X</span>
                     </span>
                 </div>
@@ -79,7 +83,7 @@
                           matTooltip="Remove this search term filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="above"
                           (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
-                        <span class="text">{{searchedTerm}}</span>
+                        <span class="text">{{ searchedTerm }}</span>
                         <span class="close">X</span>
                     </span>
                 </div>
@@ -94,7 +98,7 @@
                               matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedClassifications(c)">
-                            <span class="text" data-testid="classification-text">{{c}}</span>
+                            <span class="text" data-testid="classification-text">{{ c }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -112,7 +116,7 @@
                               matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedClassificationsAlt(c)">
-                            <span class="text" data-testid="classification-text">{{c}}</span>
+                            <span class="text" data-testid="classification-text">{{ c }}</span>
                             <span class="close">X</span>
                         </span>
                     </span>
@@ -127,7 +131,20 @@
                               matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearExcludeOrgs()">
-                            <span class="text" data-testid="classification-text">{{getExcludedOrgs()}}</span>
+                            <span class="text" data-testid="classification-text">{{ getExcludedOrgs() }}</span>
+                            <span class="close">X</span>
+                        </span>
+                    </div>
+                    <div class="flex-break"></div>
+                </ng-container>
+                <ng-container *ngIf="hasSelectedTopics()">
+                    <div class="activeFilterClause">
+                        <span class="status_crumb pill" role="button" tabindex="0"
+                              aria-label="Remove this topics filter"
+                              matTooltip="Remove this topics filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedTopics()">
+                            <span class="text">{{ getSelectedTopics() }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -140,7 +157,7 @@
                               matTooltip="Remove this copyright statuses filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedCopyrightStatus(s)">
-                            <span class="text">{{s}}</span>
+                            <span class="text">{{ s }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -154,7 +171,7 @@
                               matTooltip="Remove this registration statuses filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedStatus(s)">
-                            <span class="text">{{s}}</span>
+                            <span class="text">{{ s }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -168,14 +185,15 @@
                               matTooltip="Remove this datatype filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedDatatype(d)">
-                            <span class="text">{{d}}</span>
+                            <span class="text">{{ d }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
                     <div class="flex-break"></div>
                 </ng-container>
                 <div class="activeFilterClause">
-                    <span (click)="resetFilters()" class="clearAllPill" role="button" tabindex="0" data-testid="class-all-filters">
+                    <span (click)="resetFilters()" class="clearAllPill" role="button" tabindex="0"
+                          data-testid="class-all-filters">
                         Clear all
                         <span class="close">X</span>
                     </span>
@@ -184,7 +202,7 @@
         </div>
         <!-- NIH Endorsed AGGREGATIONS -->
         <div *ngIf="aggregations.orgs.buckets" id="nihEndorsedHolder" style="margin-bottom: 1rem">
-            <div class="searchFilterTitle">REFINE {{module === 'cde' ? 'CDE' : 'FORM'}} RESULTS</div>
+            <div class="searchFilterTitle">REFINE {{ module === 'cde' ? 'CDE' : 'FORM' }} RESULTS</div>
             <div *ngIf="module === 'cde'">
                 <label class="input-hover">
                     <input id="nihEndorsedCheckbox" type="checkbox" class="checkbox"
@@ -228,45 +246,53 @@
             <div class="searchFilterCollapseContent">
                 <button *ngIf="excludeOrgFilterMode" id="exludeAllOrgs" class="treeChild fake-link"
                         (click)="searchExcludeAllOrgs()">
-                    All (Except {{searchSettings.selectedOrg}})
+                    All (Except {{ searchSettings.selectedOrg }})
                 </button>
                 <ng-container *ngFor="let t of aggregations.orgs.buckets; trackBy: trackByKey">
                     <ng-container *ngIf="getCurrentSelectedOrg(); else classifOrg">
                         <ng-container *ngIf="t.key === getCurrentSelectedOrg()">
                             <div *ngIf="getCurrentSelectedClassification()?.length; else classifSelf"
-                                 id="classif-{{t.key}}" data-testid="classification-filter" class="treeParent input-hover"
+                                 id="classif-{{t.key}}" data-testid="classification-filter"
+                                 class="treeParent input-hover"
                                  [attr.aria-label]="t.longName" (click)="alterOrgFilter(t.key)" role="link">
                                 <span class="keyboard-arrow left treeItemIcon"></span>
                                 <span class="treeItemText" data-testid="classification-text" [matTooltip]="t.longName"
-                                      matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'"> {{t.key}}</span>
+                                      matTooltipClass="cdeTooltip"
+                                      [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'"> {{ t.key }}</span>
                             </div>
                             <ng-template #classifSelf>
-                                <div id="classif-{{t.key}}" data-testid="classification-filter" class="treeCurrent treeItemText"
+                                <div id="classif-{{t.key}}" data-testid="classification-filter"
+                                     class="treeCurrent treeItemText"
                                      [matTooltip]="t.longName" [attr.aria-label]="t.longName"
-                                     matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
-                                    {{t.key}}
+                                     matTooltipClass="cdeTooltip"
+                                     [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
+                                    {{ t.key }}
                                 </div>
                             </ng-template>
                         </ng-container>
                     </ng-container>
                     <ng-template #classifOrg>
-                        <div id="classif-{{t.key}}" data-testid="classification-filter" class="treeChild input-hover" (click)="alterOrgFilter(t.key)"
+                        <div id="classif-{{t.key}}" data-testid="classification-filter" class="treeChild input-hover"
+                             (click)="alterOrgFilter(t.key)"
                              role="link" [attr.aria-label]="t.longName" [matTooltip]="t.longName"
                              matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                             <span class="keyboard-arrow treeItemIcon"></span>
-                            <span class="treeItemText" data-testid="classification-text">{{t.key}}</span> (<span id="nbOfClassifElts-{{t.key}}" data-testid="classification-number">{{t.doc_count}}</span>)
+                            <span class="treeItemText" data-testid="classification-text">{{ t.key }}</span> (<span
+                                id="nbOfClassifElts-{{t.key}}"
+                                data-testid="classification-number">{{ t.doc_count }}</span>)
                         </div>
                     </ng-template>
                 </ng-container>
                 <ng-container *ngFor="let e of getCurrentSelectedClassification(); index as i; last as isLast">
-                    <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" data-testid="classification-filter" class="treeParent input-hover"
+                    <div *ngIf="!isLast; else classifSelf2" id="classif-{{e}}" data-testid="classification-filter"
+                         class="treeParent input-hover"
                          (click)="selectElement(e, 'parent', i)" role="link">
                         <span class="keyboard-arrow left treeItemIcon"></span>
-                        <span class="treeItemText" data-testid="classification-text"> {{e}}</span>
+                        <span class="treeItemText" data-testid="classification-text"> {{ e }}</span>
                     </div>
                     <ng-template #classifSelf2>
                         <div id="classif-{{e}}" data-testid="classification-filter" class="treeCurrent treeItemText"
-                             [class.treeItem]="getCurrentSelectedClassification().length">{{e}}
+                             [class.treeItem]="getCurrentSelectedClassification().length">{{ e }}
                         </div>
                     </ng-template>
                 </ng-container>
@@ -275,7 +301,42 @@
                      [class.treeItem]="getCurrentSelectedClassification().length"
                      (click)="selectElement(b.name, 'child', i)" role="link">
                     <span class="keyboard-arrow treeItemIcon"></span>
-                    <span class="treeItemText" data-testid="classification-text">{{b.name}} </span> (<span id="nbOfClassifElts-{{b.name}}" data-testid="classification-number">{{b.count}}</span>)
+                    <span class="treeItemText" data-testid="classification-text">{{ b.name }} </span> (<span
+                        id="nbOfClassifElts-{{b.name}}" data-testid="classification-number">{{ b.count }}</span>)
+                </div>
+            </div>
+        </div>
+        <!-- TOPIC AGGREGATIONS -->
+        <div *ngIf="aggregations.meshTrees.meshTrees.buckets" #topicSection
+             tourAnchor="meshTopicListHolder"
+             id="meshTreesListHolder" class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="topicSection.classList.toggle('collapsed')">
+                Topics
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
+                              id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
+                    <div *ngIf="!isLast; else topicSelf" class="treeParent">
+                        <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
+                        <a class="treeItemText">{{ e }}</a>
+                    </div>
+                    <ng-template #topicSelf>
+                        <div class="treeCurrent treeItemText"
+                             [class.treeItem]="getCurrentSelectedTopic().length > 1">{{ e }}
+                        </div>
+                    </ng-template>
+                </ng-container>
+                <div *ngFor="let b of aggregationsTopics; trackBy: trackByName"
+                     id="topic-{{b.name}}" class="treeChild hand-cursor"
+                     [class.treeItem]="getCurrentSelectedTopic().length > 1"
+                     (click)="selectTopic(b.name)" role="link">
+                    <span class="keyboard-arrow treeItemIcon"></span>
+                    <span class="treeItemText">{{ b.name }}</span>
+                    (<span>{{ b.count }}</span>)
                 </div>
             </div>
         </div>
@@ -294,12 +355,13 @@
                 <ng-container *ngFor="let t of aggregations.copyrightStatus.copyrightStatus.buckets">
                     <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
                            data-testid="copyright-status-filter"
-                           [matTooltip]="getCopyrightStatusHelp(t.key)" [attr.aria-label]="getCopyrightStatusHelp(t.key)"
+                           [matTooltip]="getCopyrightStatusHelp(t.key)"
+                           [attr.aria-label]="getCopyrightStatusHelp(t.key)"
                            matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
                         <input type="checkbox" id="copyright-status-{{t.key}}" class="checkbox treeItemText"
                                [ngModel]="searchSettings.copyrightStatus && searchSettings.copyrightStatus.indexOf(t.key) > -1"
                                (change)="addCopyrightStatusFilter(t.key)"/>
-                        {{t.key}} ({{t.doc_count}})
+                        {{ t.key }} ({{ t.doc_count }})
                     </label>
                 </ng-container>
             </div>
@@ -324,7 +386,7 @@
                         <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
                                [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
                                (change)="addStatusFilter(t.key)"/>
-                        {{t.key}} ({{t.doc_count}})
+                        {{ t.key }} ({{ t.doc_count }})
                     </label>
                 </ng-container>
             </div>
@@ -345,7 +407,7 @@
                         <input type="checkbox" id="datatype-{{t.key}}" class="checkbox treeItemText"
                                [ngModel]="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1"
                                (change)="addDatatypeFilter(t.key)"/>
-                        {{t.key}} ({{t.doc_count}})
+                        {{ t.key }} ({{ t.doc_count }})
                     </label>
                 </ng-container>
             </div>
@@ -355,7 +417,7 @@
     <div class="content searchResultsView">
         <ng-container *ngIf="elts.length > 0 && aggregations; else noResults">
             <ng-container *ngIf="isSearched(); else welcomePage">
-                <h1>{{module==='cde' ? 'CDE' : 'Form'}} Search Results</h1>
+                <h1>{{ module === 'cde' ? 'CDE' : 'Form' }} Search Results</h1>
                 <div class="searchResultBar" style="margin-bottom: 1rem">
                     <div>
                         <button *ngIf="totalItems > 0" class="button light secondary searchHamburger"
@@ -368,7 +430,7 @@
                             <div class="searchBarTopRow">
                                 <button id="showHideFilters" class="button light" (click)="hideShowFilter()">
                                     <mat-icon>filter_list</mat-icon>
-                                    {{filterMode ? 'Hide' : 'Show'}} Filters
+                                    {{ filterMode ? 'Hide' : 'Show' }} Filters
                                 </button>
                                 <button *ngIf="embedded; else notEmbedButtons" id="resetSearch" class="button light"
                                         (click)="resetFilters()">
@@ -397,7 +459,7 @@
                     </div>
                 </div>
                 <div style="margin-bottom: 1rem" id="searchResultInfoBar" data-testid="search-result-info-bar">
-                    <strong id="searchResultNum">{{totalItems}}</strong> results. Sorted by relevance.
+                    <strong id="searchResultNum">{{ totalItems }}</strong> results. Sorted by relevance.
                 </div>
                 <!-- SEARCH RESULTS -->
                 <div id="resultList" data-testid="search-result-list">
@@ -422,24 +484,24 @@
             <ng-template #welcomePage>
                 <section id="tabs" class="cde-bg-grey" style="margin-bottom: 0; padding: 30px">
                     <h1>
-                        Search {{module === 'cde' ? 'CDEs' : 'Forms'}}
+                        Search {{ module === 'cde' ? 'CDEs' : 'Forms' }}
                         <button id="export" class="button light"
                                 style="margin-right: 0; float: right"
                                 [matMenuTriggerFor]="exportMenu">
                             <mat-icon>play_for_work</mat-icon>
-                            Export All {{module === 'cde' ? 'CDEs' : 'Forms'}}
+                            Export All {{ module === 'cde' ? 'CDEs' : 'Forms' }}
                             <mat-icon>arrow_drop_down</mat-icon>
                         </button>
                     </h1>
                     <div class="clearfix"></div>
                     <p>
-                        Enter a phrase/text or explore {{module === 'cde' ? 'CDEs' : 'Forms'}} by selecting a
+                        Enter a phrase/text or explore {{ module === 'cde' ? 'CDEs' : 'Forms' }} by selecting a
                         Collection.
                     </p>
                     <p>
                         The NIH CDE Repository hosts <strong><span
-                            id="totalItems">{{totalItems}}</span> {{module === 'cde' ? 'CDEs' : 'Forms'}}</strong>
-                        from <strong>{{orgs.length}} Collections</strong>.
+                            id="totalItems">{{ totalItems }}</span> {{ module === 'cde' ? 'CDEs' : 'Forms' }}</strong>
+                        from <strong>{{ orgs.length }} Collections</strong>.
                         We provide access to structured human and machine-readable definitions of data elements that
                         have
                         been recommended or required by NIH Institutes and Centers and other organizations for use in
@@ -453,13 +515,14 @@
                                       (click)="browseOrg(org.name)">
                                 <legend>
                                     <img *ngIf="org.endorsed" src="/assets/img/endorsedRibbonIcon.png" class="mR">
-                                    <span id="browseOrg-{{org.name}}" data-testid="browse-org" class="fake-link">{{org.name}}</span>
+                                    <span id="browseOrg-{{org.name}}" data-testid="browse-org"
+                                          class="fake-link">{{ org.name }}</span>
                                 </legend>
-                                <div *ngIf="org.longName" class="max-sm:hidden">{{org.longName}}</div>
-                                <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
+                                <div *ngIf="org.longName" class="max-sm:hidden">{{ org.longName }}</div>
+                                <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{ org.count }}</span>
                                     elements
                                 </div>
-                                <div *ngIf="org.extraInfo">{{org.extraInfo}}</div>
+                                <div *ngIf="org.extraInfo">{{ org.extraInfo }}</div>
                                 <div *ngIf="org.uri"><a href="{{org.uri}}" target="_blank" rel="noopener noreferrer">Source</a>
                                 </div>
                                 <mat-icon class="welcomeDetailIcon" *ngIf="org.htmlOverview"
@@ -500,7 +563,7 @@
         <button *ngFor="let key of ownKeys(exporters)" id="{{exporters[key].id}}"
                 mat-menu-item
                 (click)="exportService.exportSearchResults(key, module, {searchSettings: searchSettings})">
-            {{exporters[key].display}}
+            {{ exporters[key].display }}
         </button>
     </ng-container>
     <ng-template #exportFormNotAuthorized>

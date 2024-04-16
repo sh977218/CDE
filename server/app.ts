@@ -5,7 +5,7 @@ import * as MongoStore from 'connect-mongo';
 import * as cookieParser from 'cookie-parser';
 import * as Domain from 'domain';
 import * as express from 'express';
-import { ErrorRequestHandler, Request } from 'express';
+import { ErrorRequestHandler, Request, RequestHandler } from 'express';
 import * as session from 'express-session';
 import * as helmet from 'helmet';
 import * as http from 'http';
@@ -27,6 +27,7 @@ import { module as orgManagementModule } from 'server/orgManagement/orgManagemen
 import { module as nativeRenderModule } from 'server/nativeRender/nativeRenderRouters';
 import { module as siteAdminModule } from 'server/siteAdmin/siteAdminRoutes';
 import { module as submissionModule } from './submission/submissionRoutes';
+import { module as meshModule } from 'server/mesh/meshRoutes';
 import { init as swaggerInit } from 'server/swagger';
 import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
@@ -47,7 +48,7 @@ import { module as systemModule } from 'server/system/systemRouters';
 import { banHackers, banIp, bannedIps, blockBannedIps, getRealIp } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
-import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
+import { canClassifyOrg, isDocumentationEditor, isOrgAuthority } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
 import { addNewUser, findUserByUsername } from './user/userDb';
 import { recordUserLogin } from './log/dbLogger';
@@ -453,6 +454,17 @@ try {
     app.use('/', formModule());
     app.use('/server/board', boardModule());
     app.use('/server/submission', submissionModule());
+    app.use(
+        '/server/mesh',
+        meshModule({
+            allowSyncMesh: ((req, res, next) => {
+                if (!config.autoSyncMesh && !isOrgAuthority(req.user)) {
+                    return res.status(401).send();
+                }
+                next();
+            }) as RequestHandler,
+        })
+    );
     swaggerInit(app);
     app.use(
         '/server/user',

@@ -29,6 +29,9 @@ import { RemoveOrgClassificationDialogComponent } from 'classificationManagement
 import { MatButtonModule } from '@angular/material/button';
 import { ClassifyItemDialogComponent } from '../../adminItem/classification/classify-item-dialog/classify-item-dialog.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+/* mesh API is not available
+import { MapMeshClassificationDialogComponent } from '../map-mesh-classification-dialog/map-mesh-classification-dialog.component';
+*/
 
 @Component({
     templateUrl: './orgClassificationManagement.component.html',
@@ -296,6 +299,12 @@ export class OrgClassificationManagementComponent {
                 );
             });
     }
+
+    /*  mesh API is not available
+    openMapClassificationMeshModal(node: FlatClassificationNode) {
+        this.dialog.open(MapMeshClassificationDialogComponent).afterClosed().subscribe();
+    }
+*/
 
     checkJob(type: string, orgName: string, cb: Cb) {
         const indexFn = setInterval(() => {

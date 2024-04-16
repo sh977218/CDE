@@ -24,6 +24,9 @@
       }
     }
   },
+  "mesh": {
+    "baseUrl": "https://meshb.nlm.nih.gov"
+  },
   "banEndsWith": [
     ".php",
     ".cfm",
@@ -66,6 +69,7 @@
   },
   "logdir": "",
   "port": 3000,
+  "autoSyncMesh": true,
   "elastic": {
     "hosts": [
       "http://localhost:9200"
