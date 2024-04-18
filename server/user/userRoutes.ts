@@ -40,15 +40,6 @@ export function module(roleConfig: { manage: RequestHandler; search: RequestHand
         return respondPromise({ res }, updateUser(req.user, req.body));
     });
 
-    router.post('/jwt', (req, res, next) => {
-        /* istanbul ignore next */
-        passport.authenticate('utsJwt', (err: Error | null, user: User | null) => {
-            req.logIn(user, () => {
-                res.status(err ? 401 : 200).send(err ? err : user);
-            });
-        })(req, res, next);
-    });
-
     router.get('/governanceReviewerNames', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
         return governanceReviewers().then(users => res.send(users.map(user => user.username)));
     });

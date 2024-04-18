@@ -4,6 +4,7 @@ const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 const path = require('path');
 const favicon = require('serve-favicon');
+const {randomUUID} = require("node:crypto");
 
 const database = config.database.appData;
 const url = 'mongodb://' + (database.username ? database.username + ':' + database.password + '@' : '')
@@ -53,16 +54,16 @@ app.use(favicon(path.resolve(__dirname, '../modules/_app/assets/favicon.ico')));
 const tokens = {};
 
 /**
- * @description this endpoint mock CIT to return service ticket
+ * @description this endpoint mocks CIT PIV card login and returns service ticket
  */
 app.post('/login', (req, res) => {
     const username = req.body.username
     const password = req.body.password || 'failme';
     db.collection('users').findOne({username, password}).then(user => {
         if (user) {
-            const token = 'CDE-' + Math.random().toString(36).substr(2) + '-localhost'
-            tokens[token] = req.body.username;
-            res.redirect(302, req.query.service + '?ticket=' + token);
+            const ticket = 'CDE-' + randomUUID() + '-localhost'
+            tokens[ticket] = username;
+            res.redirect(302, `${req.query.service}?ticket=${ticket}`);
         } else {
             res.send('Login Failed');
         }
@@ -72,15 +73,15 @@ app.post('/login', (req, res) => {
 });
 
 /**
- * @description this endpoint mocking UTS endpoint
+ * @description this endpoint mocks UTS login to retrieve UTS username from ticket
  */
 app.get('/serviceValidate', (req, res) => {
     const username = tokens[req.query.ticket];
     res.send({
         idpUserOrg: 'testServer',
         utsUser: username ? {username} : undefined,
-    });
-});
+    })
+})
 
 if (![
     'dev-test', // CI

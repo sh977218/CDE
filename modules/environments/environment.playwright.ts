@@ -5,4 +5,5 @@ export const environment = {
     publicUrl: 'http://localhost:3001',
     socketIoUrl: 'http://localhost:3001',
     ssoServerReceiver: 'http://localhost:4200/uts/messenger',
+    ssoServerOrigin: 'https://uts.nlm.nih.gov',
 };

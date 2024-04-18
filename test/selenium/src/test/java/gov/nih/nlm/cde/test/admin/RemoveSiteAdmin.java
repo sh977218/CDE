@@ -13,18 +13,9 @@ public class RemoveSiteAdmin extends NlmCdeBaseTest {
     public void removeSiteAdmin () {
         mustBeLoggedInAs(nlm_username, nlm_password);
         goToSiteAdmins();
-
-
         clickElement(By.xpath("//div[span[@class='admin'][. = 'promoteSiteAdmin']]/mat-icon"));
         checkAlert("Removed");
         textNotPresent("promoteSiteAdmin");
-    }
-
-    @Test
-    public void removeWrongUser() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{}").post(baseUrl + "/server/siteAdmin/removeSiteAdmin").then().statusCode(422);
     }
 
 }

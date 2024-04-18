@@ -5,7 +5,7 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { InactivityLoggedOutModalComponent } from 'inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 import { isEmpty } from 'lodash';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Cb1, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
@@ -76,11 +76,18 @@ export class UserService {
 
     canSeeComment = () => canViewComment(this.user);
 
-    loginViaJwt(jwt: string): Promise<User> {
+    loginViaJwt(jwt: string) {
         return this.http
-            .post<User>('/server/user/jwt', { jwtToken: jwt })
-            .toPromise()
-            .then(user => this.processUser(user));
+            .post<{ jwtToken: string }>('/server/utslogin', { jwtToken: jwt })
+            .pipe(
+                tap({
+                    next: jwtToken => localStorage.setItem('jwtToken', jwtToken.jwtToken),
+                    error: () => localStorage.removeItem('jwtToken'),
+                })
+            )
+            .subscribe(() => {
+                this.reload();
+            });
     }
 
     async processUser(user: User | undefined): Promise<User> {

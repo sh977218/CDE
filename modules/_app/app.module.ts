@@ -1,6 +1,6 @@
 import '@angular/localize/init';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -44,6 +44,7 @@ import { LoginComponent } from '../login/login.component';
 import { LoginResolve } from '../login/login.resolve';
 import { ResourceResolve } from '../resources/resources.resolve';
 import { VideosResolve } from '../videos/videos.resolve';
+import { TokenInterceptor } from './token.interceptor';
 
 @NgModule({
     imports: [
@@ -99,6 +100,7 @@ import { VideosResolve } from '../videos/videos.resolve';
         ResourceResolve,
         VideosResolve,
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     ],
     exports: [],
     bootstrap: [CdeAppComponent],

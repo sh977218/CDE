@@ -11,7 +11,6 @@ declare global {
         loggedIn: () => void;
         publicUrl: string;
         siteKey: string;
-        ssoServerOrigin: string;
         ssoServerReceiver: string;
         urlProd: string;
         version: string;

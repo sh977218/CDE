@@ -9,6 +9,7 @@ export const environment = {
     publicUrl: 'https://cde-qa.nlm.nih.gov',
     socketIoUrl: 'https://cde-qa.nlm.nih.gov:3001',
     ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger',
+    ssoServerOrigin: 'https://uts.nlm.nih.gov',
 };
 
 /*

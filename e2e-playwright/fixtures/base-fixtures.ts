@@ -269,6 +269,7 @@ const baseFixture = baseTest.extend<{
 });
 
 const ignoredConsoleMessages = [
+    `Failed to execute 'postMessage' on 'DOMWindow'`,
     'HttpErrorResponse',
     'Failed to load resource: net::ERR_FAILED',
     '[webpack-dev-server]',

@@ -37,18 +37,23 @@ import {
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware,
     isSiteAdminMiddleware,
+    loggedInMiddleware,
 } from 'server/system/authorization';
 import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';
 import { startSocketIoServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { module as systemModule } from 'server/system/systemRouters';
-import { banHackers, blockBannedIps, banIp, bannedIps } from 'server/system/trafficFilterSvc';
-import { init as authInit } from 'server/user/authentication';
+import { banHackers, banIp, bannedIps, blockBannedIps } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
+import { findUserByUsername } from './user/userDb';
+import { recordUserLogin } from './log/dbLogger';
+import fetch from 'node-fetch';
+import { generateJwtToken, validateJWToken } from './jwtTokenSvc';
+const passport = require('passport'); // must use require to preserve this pointer
 
 require('source-map-support').install();
 const flash = require('connect-flash');
@@ -248,7 +253,7 @@ app.use('/', express.static(global.assetDir('dist/cde-cli/')));
 app.use('/native', express.static(global.assetDir('dist/nativeRender/')));
 
 app.use(flash());
-authInit(app);
+app.use(passport.initialize());
 
 const logFormat = {
     remoteAddr: ':real-remote-addr',
@@ -308,7 +313,103 @@ app.use((req, res, next) => {
     }
 });
 
+app.use(async (req, res, next) => {
+    const bearerHeader = req.headers.authorization;
+    const bearerCookie = req.cookies.Bearer;
+    if (bearerHeader || bearerCookie) {
+        const bearerToken = bearerHeader || bearerCookie;
+        const bearer = bearerToken.split(' ').filter((a: string) => a.trim().length);
+        const token = bearer[1] || undefined;
+        try {
+            const payload = validateJWToken(token);
+            const userObj = await findUserByUsername(payload.sub);
+            req.user = userObj;
+            next();
+        } catch (e) {
+            res.clearCookie('Bearer');
+            res.status(401).send();
+        }
+    } else {
+        next();
+    }
+});
+
 try {
+    app.post('/server/login', async (req, res) => {
+        const federatedServiceValidate = config.uts.federatedServiceValidate;
+        if (!federatedServiceValidate) {
+            res.status(500).send('No UTS server configured');
+            return;
+        }
+        const { ticket } = req.body;
+        if (!ticket) {
+            res.status(401).send(`Unauthorized.`);
+            return;
+        }
+        let service = config.publicUrl;
+        if (req.body.green) {
+            service = config.greenPublicUrl;
+        }
+        const profileResponse = await fetch(
+            `${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${ticket}`
+        );
+        const profile: any = await profileResponse.json();
+        if (profile.utsUser.username) {
+            const user = await findUserByUsername(profile.utsUser.username);
+            if (!user) {
+                res.status(401).send(`Incorrect username, password or service ticket.`);
+                return;
+            }
+            const jwtToken = generateJwtToken(user.username);
+            recordUserLogin(user, req.ip);
+            res.cookie('Bearer', `Bearer ${jwtToken}`);
+            res.send({ jwtToken });
+        }
+    });
+
+    app.post('/server/utslogin', async (req, res) => {
+        const utsUsersServer = config.uts.federatedService;
+        if (!utsUsersServer) {
+            res.status(500).send('No UTS server configured');
+            return;
+        }
+        const jwtString = Buffer.from(req.body.jwtToken, 'base64').toString();
+        const match = /"iss":"(\w+)"/.exec(jwtString);
+        const username = match && match[1];
+        if (!username) {
+            res.status(401).send(`Unauthorized.`);
+            return;
+        }
+        const profileResponse = await fetch(
+            `${utsUsersServer}/rest/content/angular/profile/getprofile?username=${username}&app=angular`,
+            {
+                headers: {
+                    Authorization: 'Bearer ' + req.body.jwtToken,
+                },
+            }
+        );
+        const profile: any = await profileResponse.json();
+        if (username !== profile.user.username) {
+            res.status(401).send('usernames did not match');
+            return;
+        }
+        const user = await findUserByUsername(username);
+        if (!user) {
+            res.status(401).send(`Incorrect username, password or service ticket.`);
+            return;
+        }
+        const jwtToken = generateJwtToken(user.username);
+        recordUserLogin(user, req.ip);
+        res.cookie('Bearer', `Bearer ${jwtToken}`);
+        res.send({ jwtToken });
+    });
+
+    app.get('/server/refreshToken', loggedInMiddleware, (req, res) => {
+        const jwtToken = generateJwtToken(req.user.username);
+        res.cookie('Bearer', `Bearer ${jwtToken}`);
+        res.send({ jwtToken });
+    });
+
     app.use('/', appModule());
     app.use('/server/attachment/cde', canAttachMiddleware, attachmentModule(dbPlugins.dataElement, checkEditing));
     app.use('/server/attachment/form', canAttachMiddleware, attachmentModule(dbPlugins.form, checkEditing));

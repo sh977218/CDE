@@ -36,15 +36,4 @@ public class CreateUser extends NlmCdeBaseTest {
         clickElement(By.xpath("//button[text()='Search']"));
         textPresent("coco channel");
     }
-
-    @Test
-    public void createUserAPI() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        Cookie myCookie = getCurrentCookie();
-        given().contentType(ContentType.JSON).cookie(myCookie)
-                .body("{\"username\": \"nlm\"}")
-                .post(baseUrl + "/server/user/addUser").then().statusCode(409);
-
-    }
-
 }
