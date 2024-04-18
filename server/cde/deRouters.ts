@@ -37,7 +37,6 @@ import {
 import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
 import { completionSuggest, elasticSearchExport, removeElasticFields } from 'server/system/elastic';
 import { isSearchEngine } from 'server/system/helper';
-import { umlsAuth } from 'server/user/authentication';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import * as path from 'path';
@@ -106,10 +105,9 @@ export function module() {
 
     router.get('/api/de/modifiedElements', modifiedElements);
     // Remove /de after June 1st 2020
-    router.get(['/api/de/:tinyId', '/de/:tinyId'], umlsAuth, nocacheMiddleware, byTinyId);
+    router.get(['/api/de/:tinyId', '/de/:tinyId'], nocacheMiddleware, byTinyId);
     router.get(
         ['/api/de/:tinyId/version/:version?', '/de/:tinyId/version/:version?'],
-        umlsAuth,
         nocacheMiddleware,
         byTinyIdAndVersion
     );
@@ -140,7 +138,7 @@ export function module() {
     router.get('/server/de/derivationOutputs/:inputCdeTinyId', derivationOutputs);
 
     /* ---------- PUT NEW REST API above ---------- */
-    router.post('/api/de/search', umlsAuth, (req, res) => {
+    router.post('/api/de/search', (req, res) => {
         const settings: SearchSettingsElastic = req.body;
         elasticsearch(req.user, settings, (err, result) => {
             if (err || !result) {

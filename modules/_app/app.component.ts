@@ -95,7 +95,7 @@ export class CdeAppComponent {
     attemptSsoLogin() {
         const userService = this.userService;
         window.addEventListener('message', function receiveMessage(message: MessageEvent) {
-            if (message.origin === window.ssoServerOrigin && message.data) {
+            if (message.origin === environment.ssoServerOrigin && message.data) {
                 userService.loginViaJwt(message.data);
             }
         });
@@ -126,7 +126,7 @@ export class CdeAppComponent {
         }
         this.iframeReady.then(() => {
             if (this.receiver && this.receiver.nativeElement && this.receiver.nativeElement.contentWindow) {
-                this.receiver.nativeElement.contentWindow.postMessage(message, window.ssoServerOrigin);
+                this.receiver.nativeElement.contentWindow.postMessage(message, environment.ssoServerOrigin);
                 cb();
             } else {
                 // throw new Error('sso iframe is missing or blocked');

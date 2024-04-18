@@ -160,6 +160,7 @@ fs.readdir(logFolder, (err, files) => {
     });
     if (errors.length) {
         errors.forEach(e => console.log(e));
+        throw new Error('Verify console log failed.')
         process.exit(1);
     } else {
         console.log('INFO: Console Logs Clean.');

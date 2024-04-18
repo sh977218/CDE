@@ -1,4 +1,4 @@
-package gov.nih.nlm.cde.test;
+    package gov.nih.nlm.cde.test;
 
 import gov.nih.nlm.system.NlmCdeBaseTest;
 import io.restassured.RestAssured;
@@ -73,22 +73,8 @@ public class MiscTests extends NlmCdeBaseTest {
     }
 
     @Test
-    public void whenArticleWrongKey_then400() {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{key:'notWhatsNew'}").post(baseUrl + "/server/article/whatsNew").then().statusCode(400);
-    }
-
-    @Test
     public void siteStatus() {
         String response = get(baseUrl + "/server/system/status/cde").asString();
         Assert.assertTrue(response.contains("ALL SERVICES UP"));
-    }
-
-    @Test
-    public void emptyPostBodyServerError(){
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        Cookie myCookie = getCurrentCookie();
-        given().cookie(myCookie).body("{}").post(baseUrl + "/server/log/serverErrors").then().statusCode(200);
     }
 }

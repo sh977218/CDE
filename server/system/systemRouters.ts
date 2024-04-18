@@ -268,70 +268,12 @@ export function module() {
         return failedIps.filter(f => f.ip === ip)[0];
     }
 
-    const myCsrf: RequestHandler = function myCsrf(req, res, next) {
-        if (req.body.federated) {
-            return next();
-        }
-        if (!req.body._csrf) {
-            return res.status(401).send();
-        }
-        csrf()(req, res, next);
-    };
-
-    router.post('/login', /*checkLoginReq,*/ myCsrf, (req, res, next) => {
-        const failedIp = findFailedIp(getRealIp(req));
-        if (failedIp && failedIp.nb > 2) {
-            return res.status(412).send('Failed too many times');
-        }
-        if (failedIp) {
-            failedIp.nb = 0;
-        }
-        // Regenerate is used so appscan won't complain
-        if (req.session) {
-            req.session.regenerate(passportAuthenticate);
-        } else {
-            passportAuthenticate();
-        }
-
-        function passportAuthenticate() {
-            passport.authenticate('local', (err: Error | null, user: User | null, info: string) => {
-                if (err) {
-                    respondError()(err);
-                    return res.status(403).send();
-                }
-                if (!user) {
-                    if (failedIp && config.useCaptcha) {
-                        failedIp.nb++;
-                    } else {
-                        failedIps.unshift({ ip: getRealIp(req), nb: 1 });
-                        failedIps.length = 50;
-                    }
-                    return res.status(403).send(info);
-                }
-                req.logIn(user, err => {
-                    if (err) {
-                        respondError()(err);
-                        return res.status(403).send();
-                    }
-                    if (req.session) {
-                        (req.session as any).passport = { user: req.user._id };
-                    }
-                    return res.send('OK');
-                });
-            })(req, res, next);
-        }
-    });
-
     router.post('/logout', (req, res) => {
         if (!req.session) {
             return res.status(403).end();
         }
-        req.session.destroy(() => {
-            (req.logout as any)((err: any) => {
-                res.clearCookie('connect.sid');
-                res.redirect('/server/system/login');
-            });
-        });
+        res.clearCookie('Bearer');
+        res.redirect('/server/login');
     });
 
     router.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {

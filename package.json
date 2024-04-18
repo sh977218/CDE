@@ -27,6 +27,7 @@
     "coverage": "npx cross-env node ./node_modules/nyc/bin/nyc.js npm start",
     "dev": "npm run devApp",
     "devApp": "ng s cde-cli",
+    "devApp:qa": "ng s cde-cli -c qa",
     "devAppNr": "npx ng s cde-cli --no-live-reload",
     "devNative": "npx ng s nativeRender",
     "devNativeNr": "npx ng s nativeRender --no-live-reload",
@@ -136,7 +137,6 @@
     "nyc": "^15.1.0",
     "passport": "0.6.0",
     "passport-custom": "1.1.1",
-    "passport-local": "1.0.0",
     "passport.socketio": "^3.7.0",
     "rss-parser": "^3.9.0",
     "serve-favicon": "^2.5.0",
@@ -156,7 +156,8 @@
     "xml2js": "^0.4.23",
     "xmlbuilder": "^15.1.1",
     "xsd-schema-validator": "0.6.0",
-    "yesno": "^0.4.0"
+    "yesno": "^0.4.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^15.0.0",
@@ -222,7 +223,6 @@
     "@types/node": "^12.12.55",
     "@types/node-fetch": "^2.5.8",
     "@types/passport": "1.0.0",
-    "@types/passport-local": "^1.0.0",
     "@types/passport-strategy": "^0.2.35",
     "@types/passport.socketio": "^3.7.0",
     "@types/selenium-webdriver": "^4.0.9",

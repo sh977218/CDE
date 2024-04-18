@@ -19,7 +19,6 @@ import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
 import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -269,17 +268,11 @@ export class NavigationComponent {
     }
 
     logout() {
-        const refreshAndLogin = () => {
-            this.userService.reload().then(noop, noop);
-            if (window.location.href.indexOf('login') === -1) {
-                this.router.navigate(['/login']);
-            }
-        };
+        localStorage.removeItem('jwtToken');
+        this.userService.clear();
+        this.router.navigate(['/login']);
         this.app.ssoLogout(() => {});
-        this.http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe(
-            refreshAndLogin,
-            refreshAndLogin // ignore error in favor of already being logged out
-        );
+        this.http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe();
     }
 
     menuClickCleanup(bar: HTMLElement, trigger: MatMenuTrigger, button: MatButton, menu: MatMenu) {

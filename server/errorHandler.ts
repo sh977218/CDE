@@ -2,11 +2,15 @@ import { Request, Response } from 'express';
 import { CastError } from 'mongoose';
 import { logError } from 'server/log/dbLogger';
 import { noDbLogger } from 'server/system/noDbLogger';
-import { AuthenticatedRequest } from 'server/user/authentication';
-import { Cb, Cb1, CbError1, CbErrorObj, CbErrorObj1 } from 'shared/models.model';
+import { Cb, Cb1, CbError1, CbErrorObj, CbErrorObj1, User } from 'shared/models.model';
 import { noop } from 'shared/util';
 
 type HandledError = CastError | Error;
+
+type AuthenticatedRequest = {
+    user: User;
+    username: string;
+} & Request;
 
 interface HandlerOptionsNoRes {
     details?: string; // private accurate message additional
@@ -17,14 +21,17 @@ interface HandlerOptionsNoRes {
     statusCode?: number;
 }
 
-type HandlerOptionsRes = HandlerOptionsNoRes & {res: Response};
+type HandlerOptionsRes = HandlerOptionsNoRes & { res: Response };
 export type HandlerOptions = HandlerOptionsNoRes | HandlerOptionsRes;
 
 function hasRes(options: HandlerOptions): options is HandlerOptionsRes {
     return !!(options as HandlerOptionsRes).res;
 }
 
-export function handleConsoleError<T>(options?: HandlerOptions, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
+export function handleConsoleError<T>(
+    options?: HandlerOptions,
+    cb: Cb1<T> = noop
+): CbErrorObj1<HandledError | null, T> {
     return (err: HandledError | null, arg1: T) => {
         if (err) {
             noDbLogger.info('ERROR: ' + err);
@@ -63,8 +70,10 @@ export function handleErrorVoid(options?: HandlerOptions, cb: Cb = noop): CbErro
     };
 }
 
-export function handleNotFound<T>(options?: HandlerOptions,
-                                  cb: Cb1<NonNullable<Exclude<T, void>>> = noop): CbErrorObj1<HandledError | null, T | null | void> {
+export function handleNotFound<T>(
+    options?: HandlerOptions,
+    cb: Cb1<NonNullable<Exclude<T, void>>> = noop
+): CbErrorObj1<HandledError | null, T | null | void> {
     return function errorHandler(err: HandledError | null, arg1: T | null | void) {
         if (err) {
             respondError(options)(err);
@@ -83,7 +92,9 @@ export function handleNotFound<T>(options?: HandlerOptions,
 export function respondError(options?: HandlerOptionsNoRes): (err: HandledError) => void;
 export function respondError(options: HandlerOptionsRes): (err: HandledError) => Response;
 export function respondError(options: HandlerOptions): (err: HandledError) => Response | void;
-export function respondError<T>(options?: T extends Error ? never : HandlerOptions): (err: HandledError) => void | Response  {
+export function respondError<T>(
+    options?: T extends Error ? never : HandlerOptions
+): (err: HandledError) => void | Response {
     const handler = (err: HandledError) => {
         if (!options) {
             options = {} as T extends Error ? never : HandlerOptions;
@@ -93,9 +104,13 @@ export function respondError<T>(options?: T extends Error ? never : HandlerOptio
             if (err.name === 'CastError' && (err as CastError).kind === 'ObjectId') {
                 return options.res.status(400).send('Invalid id');
             }
-            if (err.message === 'validation failed' && Array.isArray((err as any).errors) && (err as any).errors[0].message) {
+            if (
+                err.message === 'validation failed' &&
+                Array.isArray((err as any).errors) &&
+                (err as any).errors[0].message
+            ) {
                 // JSON Schema validation
-                return options.res.status(400).send((err as any).errors[0].message)
+                return options.res.status(400).send((err as any).errors[0].message);
             }
             if (err.name === 'ValidationError') {
                 return options.res.status(422).send(err.message);
@@ -111,12 +126,12 @@ export function respondError<T>(options?: T extends Error ? never : HandlerOptio
             publicMessage: options.publicMessage,
             request: options.req
                 ? {
-                    url: options.req.url,
-                    params: JSON.stringify(options.req.params),
-                    body: JSON.stringify(options.req.body),
-                    username: (options.req as AuthenticatedRequest).username,
-                    ip: options.req.ip,
-                }
+                      url: options.req.url,
+                      params: JSON.stringify(options.req.params),
+                      body: JSON.stringify(options.req.body),
+                      username: (options.req as AuthenticatedRequest).username,
+                      ip: options.req.ip,
+                  }
                 : undefined,
             stack: err.stack || new Error().stack,
         });
@@ -141,7 +156,10 @@ export function respondPromise<T>(options: HandlerOptionsRes, promise: Promise<T
     );
 }
 
-export function splitError<T = void, U = void, V = void>(errCb: CbError1<T>, cb: Cb1<T> = noop): CbErrorObj1<HandledError | null, T> {
+export function splitError<T = void, U = void, V = void>(
+    errCb: CbError1<T>,
+    cb: Cb1<T> = noop
+): CbErrorObj1<HandledError | null, T> {
     return function errorHandler(err: HandledError | null, arg1: T) {
         if (err) {
             errCb(err, arg1);

@@ -104,7 +104,7 @@ export function module(roleConfig: { feedbackLog: RequestHandler; superLog: Requ
         logClientError(req, () => res.send());
     });
 
-    router.get('/triggerServerErrorExpress', roleConfig.superLog, (req, res) => {
+    router.get('/triggerServerErrorExpress', (req, res) => {
         res.send('received');
         // Run-time exception on purpose
         // @ts-ignore

@@ -9,6 +9,7 @@ export const environment = {
     publicUrl: 'http://localhost:4200',
     socketIoUrl: 'http://localhost:3001',
     ssoServerReceiver: 'https://uts.nlm.nih.gov/uts/messenger',
+    ssoServerOrigin: 'https://uts.nlm.nih.gov',
 };
 
 /*

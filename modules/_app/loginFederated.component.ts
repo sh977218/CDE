@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { isEmpty } from 'lodash';
 import { AlertService } from '../alert/alert.service';
 
 @Component({
@@ -24,27 +23,17 @@ export class LoginFederatedComponent {
                     if (ticket) {
                         const body: any = {
                             ticket,
-                            username: 'x',
-                            password: 'x',
                             federated: true,
                         };
                         if (window.location.href.indexOf('-green.') !== -1) {
                             body.green = true;
                         }
-                        return http
-                            .post('/server/system/login', body, {
-                                withCredentials: true,
-                                responseType: 'text',
+                        return http.post<{ jwtToken: string }>('/server/login', body, { withCredentials: true }).pipe(
+                            tap({
+                                next: jwtToken => localStorage.setItem('jwtToken', jwtToken.jwtToken),
+                                error: () => localStorage.removeItem('jwtToken'),
                             })
-                            .pipe(
-                                map(user => {
-                                    if (!isEmpty(user)) {
-                                        return true;
-                                    } else {
-                                        return throwError(() => new Error('No user found.'));
-                                    }
-                                })
-                            );
+                        );
                     } else {
                         return throwError(() => new Error('No ticket found.'));
                     }
@@ -57,7 +46,7 @@ export class LoginFederatedComponent {
                     window.close();
                 },
                 error: e => {
-                    this.alertService.addAlert('danger', `Error log`);
+                    localStorage.removeItem('jwtToken'), this.alertService.addAlert('danger', `Error log`);
                     window?.opener?.loggedIn();
                 },
             });

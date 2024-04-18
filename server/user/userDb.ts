@@ -168,13 +168,14 @@ export function userByName(name: string, callback?: CbError1<UserDocument>): Que
     return userModel.findOne({ username: new RegExp('^' + name + '$', 'i') }, callback);
 }
 
-export function userById(id: string, callback: CbError1<UserDocument | null>) {
-    userModel.findById(id, userProject, { lean: true }, callback);
-}
-
 export function byId(id: string, callback?: CbError1<UserDocument | null>) {
     return userModel.findById(id, userProject, callback);
 }
+
+export function findUserByUsername(username: string) {
+    return userModel.findOne({ username: new RegExp('^' + username + '$', 'i') }, userProject);
+}
+
 export function updateUser(user: User, fields: Partial<UserFull>): Promise<UserFull> {
     const update: Partial<UserFull> = {};
     if (fields.commentNotifications) {
