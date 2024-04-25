@@ -19,7 +19,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule, Routes } from '@angular/router';
-import { TreeModule } from '@circlon/angular-tree-component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { CdeModule } from 'cde/cde.module';
 import { CdeSearchModule } from 'cde/cdeSearch.module';

@@ -10,7 +10,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
-import { TreeModule } from '@circlon/angular-tree-component';
+import { TreeModule } from '@ali-hm/angular-tree-component';
 import { AttachmentsComponent } from 'adminItem/attachments/attachments.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';
 import { ClassificationViewComponent } from 'adminItem/classification/classificationView.component';

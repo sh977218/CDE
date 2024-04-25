@@ -6,7 +6,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectChange } from '@angular/material/select';
 import { AlertService } from 'alert/alert.service';
-import { TreeNode } from '@circlon/angular-tree-component';
+import { TreeNode } from '@ali-hm/angular-tree-component';
 import { pvGetLabel } from 'core/de/deShared';
 import { repeatFe, repeatFeLabel, repeatFeQuestion } from 'core/form/fe';
 import { SkipLogicValidateService } from 'form/skipLogicValidate.service';

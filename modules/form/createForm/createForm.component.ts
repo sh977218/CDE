@@ -2,7 +2,7 @@ import { Location, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, Output, OnInit, ViewChild, QueryList, ViewChildren, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { TreeComponent } from '@circlon/angular-tree-component';
+import { TreeComponent } from '@ali-hm/angular-tree-component';
 import { UserService } from '_app/user.service';
 import { DeletedNodeEvent } from 'adminItem/classification/classificationView.component';
 import { ClassifyItemComponent } from 'adminItem/classification/classifyItem.component';

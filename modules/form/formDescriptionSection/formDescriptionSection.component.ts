@@ -11,7 +11,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TreeNode } from '@circlon/angular-tree-component';
+import { TreeNode } from '@ali-hm/angular-tree-component';
 import { AlertService } from 'alert/alert.service';
 import { repeatFe, repeatFeLabel, repeatFeNumber, repeatFeQuestion } from 'core/form/fe';
 import { FormDescriptionComponent } from 'form/formDescription/formDescription.component';

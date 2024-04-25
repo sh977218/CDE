@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Host, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TreeNode } from '@circlon/angular-tree-component';
+import { TreeNode } from '@ali-hm/angular-tree-component';
 import { FormDescriptionComponent } from 'form/formDescription/formDescription.component';
 import { DataType } from 'shared/de/dataElement.model';
 import { isScore } from 'shared/form/fe';
