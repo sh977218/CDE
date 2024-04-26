@@ -49,7 +49,7 @@ test(`Edit CDE names`, async ({
     await test.step(`edit name and definition, then save`, async () => {
         await generateDetailsSection.editNameByIndex(0, newDesignation);
         await generateDetailsSection.editDefinitionByIndex(0, newDefinition);
-        await saveModal.newVersion('Data Element saved.', versionInfo);
+        await saveModal.newVersionByType('cde', versionInfo);
     });
     await test.step(`Verify version number`, async () => {
         await identifierSection.verifyVersion(versionInfo, existingVersion);

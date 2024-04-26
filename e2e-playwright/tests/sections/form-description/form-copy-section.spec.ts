@@ -40,7 +40,7 @@ test(`Form copy section`, async ({
 
     await test.step(`Save form`, async () => {
         await formDescription.saveFormEdit();
-        await saveModal.newVersion('Form saved.', versionInfo);
+        await saveModal.newVersionByType('form', versionInfo);
     });
     await test.step(`Verify form section`, async () => {
         await navigationMenu.gotoFormByName(form2);

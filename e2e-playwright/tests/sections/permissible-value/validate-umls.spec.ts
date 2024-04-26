@@ -7,6 +7,6 @@ test(`Validate PV against UMLS`, async ({ navigationMenu, permissibleValueSectio
     await navigationMenu.login(Accounts.nlm);
     await navigationMenu.gotoCdeByName(cdeName);
 
-    await permissibleValueSection.validateAgainstUmlsButtopn().click();
+    await permissibleValueSection.validateAgainstUmlsButton().click();
     await expect(permissibleValueSection.umlsValidationResult()).toContainText(`UMLS Validation Passed`);
 });

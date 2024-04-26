@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { BoardModule } from 'board/board.module';
 import { CdeModule } from 'cde/cde.module';
 import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.component';
@@ -26,7 +25,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
@@ -56,7 +54,6 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         CdeModule,
         SearchModule,
         TagModule,
-        TourMatMenuModule,
     ],
     declarations: [
         BoardCdeSummaryListComponent,

@@ -41,7 +41,6 @@ import { DiscussModule } from 'discuss/discuss.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
-import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { DeGeneralDetailsComponent } from 'cde/deGeneralDetails/deGeneralDetails.component';
@@ -81,7 +80,7 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
         MatMenuModule,
         PinToBoardModule,
         NgTemplateOutlet,
-        TourAnchorMatMenuDirective,
+
         NgClass,
         MatTooltipModule,
         DatePipe,

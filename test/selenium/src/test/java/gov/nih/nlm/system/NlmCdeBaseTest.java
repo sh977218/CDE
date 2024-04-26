@@ -2021,4 +2021,26 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void clickCancelButton() {
         clickElement(By.xpath("//button[normalize-space(text())='Cancel']"));
     }
+
+
+    public void addPv(String pv, String name, String code, String codeSystem) {
+        clickElement(By.id("openAddPermissibleValueModelBtn"));
+        hangon(1);
+        findElement(By.name("permissibleValueInput")).sendKeys(pv);
+        findElement(By.name("valueMeaningDescInput")).sendKeys(name.length() > 0 ? name : "permissible value without a name");
+
+        if (name != null) {
+            findElement(By.name("valueMeaningNameInput")).sendKeys(name);
+        }
+
+        if (code != null) {
+            findElement(By.name("valueMeaningCodeInput")).sendKeys(code);
+        }
+
+        if (codeSystem != null) {
+            findElement(By.name("codeSystemInput")).sendKeys(codeSystem);
+        }
+
+        clickElement(By.id("createNewPermissibleValueBtn"));
+    }
 }

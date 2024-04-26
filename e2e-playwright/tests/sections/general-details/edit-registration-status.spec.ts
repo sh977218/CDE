@@ -27,7 +27,7 @@ test.describe(`Edit registration status`, async () => {
             await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoCdeByName(cdeName);
             await generateDetailsSection.editRegistrationStatus({ status: 'Preferred Standard' });
-            await saveModal.newVersion('Data Element saved.');
+            await saveModal.newVersionByType('cde');
 
             await navigationMenu.gotoCdeSearch();
             await expect(searchPage.registrationStatusFilter('Preferred Standard')).toBeVisible();
@@ -38,7 +38,7 @@ test.describe(`Edit registration status`, async () => {
             await navigationMenu.login(Accounts.nlm);
             await navigationMenu.gotoFormByName(formName);
             await generateDetailsSection.editRegistrationStatus({ status: 'Preferred Standard' });
-            await saveModal.newVersion('Form saved.');
+            await saveModal.newVersionByType('form');
 
             await navigationMenu.gotoFormSearch();
             await expect(searchPage.registrationStatusFilter('Preferred Standard')).toBeVisible();

@@ -8,24 +8,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
-import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'cde-form-general-details[elt]',
     templateUrl: './formGeneralDetails.component.html',
     styleUrls: ['./formGeneralDetails.component.scss'],
-    imports: [
-        NgIf,
-        MatIconModule,
-        FormsModule,
-        InlineEditModule,
-        NgForOf,
-        NgStyle,
-        InlineSelectEditModule,
-        DatePipe,
-        TourAnchorMatMenuDirective,
-    ],
+    imports: [NgIf, MatIconModule, FormsModule, InlineEditModule, NgForOf, NgStyle, InlineSelectEditModule, DatePipe],
     standalone: true,
 })
 export class FormGeneralDetailsComponent implements OnDestroy {

@@ -58,7 +58,7 @@ export class SaveModalPo {
         // To not override input parameter 'version', make a copy
         let newVersion = version.newVersion;
         await this.page.getByTestId(`publish-draft`).click();
-        await this.materialPage.matDialog().waitFor({ state: 'visible' });
+        await this.materialPage.matDialog().waitFor();
         if (!newVersion) {
             const existingVersion = await this.newVersionInput().inputValue();
             if (existingVersion.trim().length) {
@@ -74,5 +74,15 @@ export class SaveModalPo {
         await this.saveButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(alertMessage);
+    }
+
+    async newVersionByType(type: 'cde' | 'form', version?: Version) {
+        if (type.toLowerCase() === 'cde') {
+            await this.newVersion('Data Element saved.', version);
+        } else if (type.toLowerCase() === 'form') {
+            await this.newVersion('Form saved.', version);
+        } else {
+            throw new Error(`Unexpected type ${type}`);
+        }
     }
 }

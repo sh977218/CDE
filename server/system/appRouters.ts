@@ -6,9 +6,12 @@ import { isNlmCuratorMiddleware } from 'server/system/authorization';
 import { isSearchEngine } from 'server/system/helper';
 import { version } from 'server/version';
 import {
-    HomepageDraftGetResponse, HomepageDraftPutRequest, HomepageDraftPutResponse,
+    HomepageDraftGetResponse,
+    HomepageDraftPutRequest,
+    HomepageDraftPutResponse,
     HomepageGetResponse,
-    HomepagePutRequest, HomepagePutResponse
+    HomepagePutRequest,
+    HomepagePutResponse,
 } from 'shared/boundaryInterfaces/API/system';
 import { SingletonServer as Singleton } from 'shared/singleton.model';
 import * as path from 'path';
@@ -28,7 +31,7 @@ export function module() {
         console.error("Missing file index.html. Run 'ng build' and retry");
         process.exit(1);
     }
-// replace version
+    // replace version
     respondHomeFull = function getIndexHtml(req, res) {
         res.send(indexHtml);
     };
@@ -46,18 +49,17 @@ export function module() {
     });
 
     router.get('/server/home', (req, res): Promise<Response> => {
-        return dbPlugins.singleton.byId('home')
-            .then(homeData => {
-                if (homeData) {
-                    (homeData as any)._id = undefined;
-                }
-                return res.send(homeData as HomepageGetResponse);
-            });
+        return dbPlugins.singleton.byId('home').then(homeData => {
+            if (homeData) {
+                (homeData as any)._id = undefined;
+            }
+            return res.send(homeData as HomepageGetResponse);
+        });
     });
 
-    function addId<T, U>(t: T, u: U): T & {_id: U} {
-        (t as T & {_id: U})._id = u;
-        return t as T & {_id: U};
+    function addId<T, U>(t: T, u: U): T & { _id: U } {
+        (t as T & { _id: U })._id = u;
+        return t as T & { _id: U };
     }
 
     router.put('/server/home', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
@@ -65,27 +67,26 @@ export function module() {
         if (!homepage.body) {
             return Promise.resolve(res.status(400).send());
         }
-        return dbPlugins.singleton.update('home', {}, req.user._id, homepage)
-            .then((newHomepage) => res.send(newHomepage as HomepagePutResponse));
+        return dbPlugins.singleton
+            .update('home', {}, req.user._id, homepage)
+            .then(newHomepage => res.send(newHomepage as HomepagePutResponse));
     });
 
     attachmentRoutes(router, isNlmCuratorMiddleware, '/server/homeAttach', '/server/homeDetach');
 
     router.delete('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
         return dbPlugins.singleton.byId('homeEdit').then(draft => {
-            return dbPlugins.singleton.deleteOneById('homeEdit')
-                .then(() => res.send());
+            return dbPlugins.singleton.deleteOneById('homeEdit').then(() => res.send());
         });
     });
 
     router.get('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
-        return dbPlugins.singleton.byId('homeEdit')
-            .then(homeData => {
-                if (homeData) {
-                    (homeData as any)._id = undefined;
-                }
-                return res.send(homeData as HomepageDraftGetResponse);
-            });
+        return dbPlugins.singleton.byId('homeEdit').then(homeData => {
+            if (homeData) {
+                (homeData as any)._id = undefined;
+            }
+            return res.send(homeData as HomepageDraftGetResponse);
+        });
     });
 
     function isSingleton(s: any): s is Singleton {
@@ -93,18 +94,20 @@ export function module() {
     }
 
     router.put('/server/homeEdit', isNlmCuratorMiddleware, (req, res): Promise<Response> => {
-        type Req = Singleton | {updated: number, updateInProgress?: boolean};
+        type Req = Singleton | { updated: number; updateInProgress?: boolean };
         const homepage: Req = addId(req.body as HomepageDraftPutRequest, 'homeEdit') as Req;
         return dbPlugins.singleton.byId('homeEdit').then(draft => {
             let query = {};
-            if (isSingleton(homepage)) { // save
+            if (isSingleton(homepage)) {
+                // save
                 if (draft) {
                     if (homepage.updated !== draft.updated || draft.updatedBy.toString() !== req.user._id.toString()) {
                         return res.status(409).send();
                     }
-                    query = {updated: draft.updated, updatedBy: draft.updatedBy};
+                    query = { updated: draft.updated, updatedBy: draft.updatedBy };
                 }
-            } else { // metadata
+            } else {
+                // metadata
                 if (draft === null) {
                     return res.send();
                 }
@@ -112,20 +115,19 @@ export function module() {
                     if (homepage.updated !== draft.updated) {
                         return res.status(409).send();
                     }
-                    query = {updated: homepage.updated};
+                    query = { updated: homepage.updated };
                 }
             }
             delete (homepage as any).updated;
-            return dbPlugins.singleton.update('homeEdit', query, req.user._id, homepage)
-                .then((newHomepage) => res.send(newHomepage as HomepageDraftPutResponse));
+            return dbPlugins.singleton
+                .update('homeEdit', query, req.user._id, homepage)
+                .then(newHomepage => res.send(newHomepage as HomepageDraftPutResponse));
         });
     });
 
     router.get('/sitemap.txt', (req, res): Promise<Response> => {
-        return getFileAndRespond({filename: '/app/sitemap.txt'}, res);
+        return getFileAndRespond({ filename: '/app/sitemap.txt' }, res);
     });
-
-    router.get('/tour', (req, res) => res.redirect('/home?tour=yes'));
 
     router.get('/site-version', (req, res) => res.send(version));
 

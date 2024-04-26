@@ -98,7 +98,7 @@
                             <span class="close">X</span>
                         </span>
                     </div>
-                    <div class="flex-break" tourAnchor="classif_crumb"></div>
+                    <div class="flex-break" ></div>
                 </ng-container>
                 <ng-container *ngIf="altClassificationFilterMode">
                     <div class="flex-break"></div>
@@ -198,7 +198,7 @@
             </div>
         </div>
         <!-- CLASSIFICATION AGGREGATIONS -->
-        <div *ngIf="aggregations.orgs.buckets" #classificationSection tourAnchor="classificationListHolder"
+        <div *ngIf="aggregations.orgs.buckets" #classificationSection
              id="classificationListHolder" class="searchFilterCollapse">
             <div class="searchFilterCollapseHeading" (click)="classificationSection.classList.toggle('collapsed')">
                 Collections
@@ -217,7 +217,7 @@
                 </a>
                 <a *ngIf="userService.isSiteAdmin() && !excludeOrgFilterMode && !embedded && !altClassificationFilterMode"
                    id="excludeFilterModeToggle" class="classification-filter" style="line-height: 12px"
-                   tourAnchor="excludeFilterModeToggle"
+
                    (click)="setExcludeOrgFilterMode(); $event.stopPropagation()" href="javascript:void(0);"
                    aria-label="Add a second classification filter as a NOT condition"
                    matTooltip="Add a second classification filter as a NOT condition"
@@ -281,7 +281,7 @@
         </div>
         <!-- COPYRIGHT STATUS AGGREGATION -->
         <div *ngIf="aggregations.copyrightStatus?.copyrightStatus?.buckets" #copyrightStatusSection
-             tourAnchor="copyrightStatusListHolder"
+
              id="copyrightStatusListHolder" class="searchFilterCollapse">
             <div class="searchFilterCollapseHeading" (click)="copyrightStatusSection.classList.toggle('collapsed')">
                 Copyright Status
@@ -306,7 +306,7 @@
         </div>
         <!-- REGISTRATION STATUS AGGREGATION -->
         <div *ngIf="aggregations.statuses.statuses.buckets" #regStatusSection
-             tourAnchor="registrationStatusListHolder"
+
              id="registrationStatusListHolder" class="searchFilterCollapse">
             <div class="searchFilterCollapseHeading" (click)="regStatusSection.classList.toggle('collapsed')">
                 Registration Status
@@ -331,7 +331,7 @@
         </div>
         <!--DATA TYPE AGGREGATION-->
         <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" #datatypeSection
-             tourAnchor="datatypeListHolder" id="datatypeListHolder" class="searchFilterCollapse">
+              id="datatypeListHolder" class="searchFilterCollapse">
             <div class="searchFilterCollapseHeading" (click)="datatypeSection.classList.toggle('collapsed')">
                 Data Types
                 <span style="display: inline-block; width: 19px">
@@ -401,7 +401,7 @@
                 </div>
                 <!-- SEARCH RESULTS -->
                 <div id="resultList" data-testid="search-result-list">
-                    <div id="resultListTour" tourAnchor="resultListTour"></div>
+                    <div id="resultListTour" ></div>
                     <cde-list-view [elts]="elts" [embedded]="embedded" [module]="module" [(listView)]="resultsView"
                                    (add)="add.emit($event)"></cde-list-view>
                     <div style="float: right">
@@ -447,7 +447,7 @@
                     </p>
                     <h2 style="margin-top: 2rem">Collections</h2>
                     <div class="responsiveGrid" style="gap: 10px 30px; grid-template-columns: 1fr 1fr;">
-                        <div *ngFor="let org of orgs" tourAnchor="search_by_classification_{{org.name}}"
+                        <div *ngFor="let org of orgs"
                              id="search_by_classification_{{org.name}}">
                             <fieldset class="cdeFieldset welcomeSearchFieldset"
                                       (click)="browseOrg(org.name)">

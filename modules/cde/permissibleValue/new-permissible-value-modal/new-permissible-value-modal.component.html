@@ -19,23 +19,23 @@
         </label>
         <label>
             Permissible Value (PV) Concept Identifier
-            <input name="conceptIdInput" class="form-control"
+            <input name="conceptIdInput" class="form-control" Placeholder="Concept ID"
                    [(ngModel)]="newPermissibleValue.conceptId"/>
         </label>
         <label>
             Permissible Value (PV) Terminology Source
-            <input name="conceptSourceInput" class="form-control"
+            <input name="conceptSourceInput" class="form-control" Placeholder="Concept Source"
                    [required]="newPermissibleValue.conceptId?.length > 0"
                    [(ngModel)]="newPermissibleValue.conceptSource"/>
         </label>
         <label>
             Code for Permissible Value
-            <input name="valueMeaningCodeInput" class="form-control"
+            <input name="valueMeaningCodeInput" class="form-control"  Placeholder="PV Code"
                    [(ngModel)]="newPermissibleValue.valueMeaningCode"/>
         </label>
         <label>
             Permissible Value Code System
-            <input name="codeSystemInput" class="form-control"
+            <input name="codeSystemInput" class="form-control"  Placeholder="Code System"
                    [required]="newPermissibleValue.valueMeaningCode?.length > 0"
                    [(ngModel)]="newPermissibleValue.codeSystemName"/>
         </label>

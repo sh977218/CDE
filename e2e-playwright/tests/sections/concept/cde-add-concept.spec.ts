@@ -61,7 +61,7 @@ test(`Add CDE concepts`, async ({
         await conceptSection.addNewConcept(newConcepts[0]);
         await conceptSection.addNewConcept(newConcepts[1]);
         await conceptSection.addNewConcept(newConcepts[2]);
-        await saveModal.newVersion('Data Element saved.', versionInfo);
+        await saveModal.newVersionByType('cde', versionInfo);
     });
 
     await test.step(`Verify version number`, async () => {

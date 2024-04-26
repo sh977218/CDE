@@ -27,7 +27,7 @@ test.describe(`Edit Disallow Rendering`, async () => {
                 await navigationMenu.gotoFormByName(formName);
                 await expect(generateDetailsSection.disallowRenderingText()).toBeHidden();
                 await generateDetailsSection.disallowRenderingCheckbox().check();
-                await saveModal.newVersion('Form saved.');
+                await saveModal.newVersionByType('form');
             });
             test(`NlmCurator user`, async ({ generateDetailsSection, navigationMenu }) => {
                 const formName = 'Short Form 36-Item Health Survey (SF-36)';

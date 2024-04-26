@@ -31,9 +31,7 @@ export class HomeComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        if (this.route.snapshot.queryParams.tour) {
-            this.router.navigate(['/home']);
-        } else if (this.route.snapshot.queryParams.notifications !== undefined) {
+        if (this.route.snapshot.queryParams.notifications !== undefined) {
             this.router.navigate(['/home']);
         }
 

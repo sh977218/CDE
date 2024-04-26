@@ -46,7 +46,6 @@ import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineViewModule } from 'inlineView/inlineView.module';
 import { CKEditorModule } from 'ng2-ckeditor';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
@@ -72,7 +71,7 @@ import { MatRadioModule } from '@angular/material/radio';
         MatIconModule,
         MatTabsModule,
         MatCardModule,
-        TourMatMenuModule,
+
         MatCheckboxModule,
         MatDividerModule,
         MatExpansionModule,

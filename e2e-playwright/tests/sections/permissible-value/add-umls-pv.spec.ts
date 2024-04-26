@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
+import { Version } from '../../../model/type';
 
 test(`Add UMLS permissible value`, async ({
     page,
@@ -11,6 +12,10 @@ test(`Add UMLS permissible value`, async ({
     permissibleValueSection,
 }) => {
     const cdeName = 'Scale for Outcomes in PD Autonomic (SCOPA-AUT) - urinate night indicator';
+    const versionInfo: Version = {
+        newVersion: '',
+        changeNote: '[cde add uml pv]',
+    };
 
     await test.step(`Navigate to CDE and login`, async () => {
         await navigationMenu.login(Accounts.nlm);
@@ -21,7 +26,7 @@ test(`Add UMLS permissible value`, async ({
 
     await test.step(`Import PV from UMLS`, async () => {
         await permissibleValueSection.addPermissibleValueButton().click();
-        await materialPage.matDialog().waitFor({ state: 'visible' });
+        await materialPage.matDialog().waitFor();
         await permissibleValueSection.valueMeaningNameInput().fill('Female');
         await page.getByRole('button', { name: 'C0086287 : Females' }).click();
         await page.getByRole('button', { name: 'Save' }).click();
@@ -55,7 +60,7 @@ test(`Add UMLS permissible value`, async ({
     });
 
     await test.step(`Publish CDE to new version`, async () => {
-        await saveModal.newVersion('Data Element saved.');
+        await saveModal.newVersionByType('cde', versionInfo);
     });
 
     await test.step(`Logout and Verify NCI and UMLS code`, async () => {

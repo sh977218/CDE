@@ -97,4 +97,10 @@ export class InlineEditPo {
     richTextButton(locator: Locator) {
         return this.page.getByRole('button', { name: 'Rich Text', exact: true });
     }
+
+    async editInlineEdit(inlineEditorLocator: Locator, text: string) {
+        await this.editIcon(inlineEditorLocator).click();
+        await this.inputField(inlineEditorLocator).fill(text);
+        await this.confirmButton(inlineEditorLocator).click();
+    }
 }

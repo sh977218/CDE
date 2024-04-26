@@ -34,7 +34,7 @@
             </a>
             <span class="spacer"></span>
             <div class="" style="height: 100%;">
-                <span *ngFor="let menuItem of menuList" [tourAnchor]="menuItem.id">
+                <span *ngFor="let menuItem of menuList" >
                     <ng-container *ngIf="!menuItem.condition || menuItem.condition()">
                         <ng-container
                                 *ngIf="!menuItem.children || !menuItem.children.length; else dropdownWithChildren">

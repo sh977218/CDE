@@ -6,7 +6,6 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
-import { CdeTourService } from '_app/cdeTour.service';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -31,15 +30,8 @@ export class CdeAppComponent {
         private notificationService: NotificationService,
         @Inject(forwardRef(() => Router)) private router: Router,
         @Inject(forwardRef(() => Title)) private title: Title,
-        @Inject(forwardRef(() => UserService)) private userService: UserService,
-        public cdeTourService: CdeTourService
+        @Inject(forwardRef(() => UserService)) private userService: UserService
     ) {
-        this.route.queryParams.subscribe(params => {
-            if (params.tour) {
-                this.cdeTourService.takeTour();
-            }
-        });
-
         this.userService.waitForUser().catch((err?: HttpErrorResponse) => {
             if (err && err.status === 0 && err.statusText === 'Unknown Error') {
                 this.router.navigate(['/offline'], {

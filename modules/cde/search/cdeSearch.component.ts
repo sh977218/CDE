@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
 import { SearchModule } from 'search/search.module';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 import { MatInputModule } from '@angular/material/input';
@@ -35,7 +34,7 @@ import { RegistrationValidatorService } from 'non-core/registrationValidator.ser
         MatAutocompleteModule,
         MatTooltipModule,
         NgForOf,
-        TourAnchorMatMenuDirective,
+
         SearchModule,
         UpperCasePipe,
         PinToBoardModule,

@@ -61,7 +61,6 @@ import { NativeRenderFullComponent } from 'form/nativeRenderFull/nativeRenderFul
 import { FormGeneralDetailsComponent } from 'form/formGeneralDetails/formGeneralDetails.component';
 import { FormClassificationComponent } from 'form/formClassification/formClassification.component';
 import { DisplayProfileComponent } from 'form/displayProfile/displayProfile.component';
-import { TourAnchorMatMenuDirective } from 'ngx-ui-tour-md-menu';
 import { RegistrationValidatorService } from 'non-core/registrationValidator.service';
 import { ClassificationService } from 'non-core/classification.service';
 import { IsAllowedService } from 'non-core/isAllowed.service';
@@ -111,7 +110,6 @@ export class LocatableError {
         FormGeneralDetailsComponent,
         FormClassificationComponent,
         DisplayProfileComponent,
-        TourAnchorMatMenuDirective,
     ],
     standalone: true,
 })

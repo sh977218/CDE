@@ -18,7 +18,6 @@ import { MatListModule } from '@angular/material/list';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { environment } from 'environments/environment';
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
@@ -34,7 +33,6 @@ import { AlertModule } from 'alert/alert.module';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { FormResolve } from 'form/formDescription/form.resolve';
-import { CdeTourService } from '_app/cdeTour.service';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 import { GlobalErrorHandler } from '_app/global-error-handler';
 import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
@@ -68,7 +66,6 @@ import { TokenInterceptor } from './token.interceptor';
         // internal
         CdeAppRoutingModule,
         AlertModule,
-        TourMatMenuModule,
         LoggerModule.forRoot({
             level: environment.production ? NgxLoggerLevel.OFF : NgxLoggerLevel.TRACE,
             serverLogLevel: NgxLoggerLevel.ERROR,
@@ -94,7 +91,6 @@ import { TokenInterceptor } from './token.interceptor';
         NotificationService,
         UserService,
         OrgHelperService,
-        CdeTourService,
         MyBoardsService,
         LoginResolve,
         ResourceResolve,

@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
+import { Version } from '../../../model/type';
 
 test(`Import permissible value from CDE`, async ({
     page,
@@ -23,7 +24,7 @@ test(`Import permissible value from CDE`, async ({
 
     await test.step(`Import PV from CDE has duplicated PVs`, async () => {
         await permissibleValueSection.importPermissibleValueFromCDdeButton().click();
-        await materialPage.matDialog().waitFor({ state: 'visible' });
+        await materialPage.matDialog().waitFor();
         await searchPage.searchWithString('mJQiShWEW');
         await page.waitForTimeout(5000);
         await page.waitForLoadState('networkidle', { timeout: 3000 });
@@ -42,7 +43,7 @@ test(`Import permissible value from CDE`, async ({
 
     await test.step(`Import PV from CDE doesn't have duplicated PVs`, async () => {
         await permissibleValueSection.importPermissibleValueFromCDdeButton().click();
-        await materialPage.matDialog().waitFor({ state: 'visible' });
+        await materialPage.matDialog().waitFor();
         await searchPage.searchWithString('CK8F0tHZ5wp');
         await searchPage.searchResultList().getByRole('button', { name: 'Add', exact: true }).click();
         await materialPage.checkAlert('Permissible Values imported');

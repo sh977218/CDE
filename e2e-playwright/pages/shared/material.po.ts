@@ -178,7 +178,7 @@ export class MaterialPo {
     async checkAlert(text: string) {
         const matSnackBarContainer = this.page.locator('mat-snack-bar-container');
         const alertText = matSnackBarContainer.locator('.mat-mdc-snack-bar-label.mdc-snackbar__label');
-        await matSnackBarContainer.waitFor({ state: 'visible' });
+        await matSnackBarContainer.waitFor();
         await expect(alertText).toHaveText(text, { timeout: 60 * 1000 });
         await this.page.locator('mat-snack-bar-container').locator('button').click();
         await matSnackBarContainer.waitFor({ state: 'detached' });

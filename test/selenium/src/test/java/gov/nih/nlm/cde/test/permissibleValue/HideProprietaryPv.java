@@ -6,15 +6,13 @@ import org.testng.annotations.Test;
 
 public class HideProprietaryPv extends NlmCdeBaseTest {
 
-    private PvValidatorTest pvValidator = new PvValidatorTest();
-
     @Test
     public void hideProprietaryPv() {
         String cdeName = "Post traumatic amnesia duration range";
         mustBeLoggedInAs(ninds_username, password);
         goToCdeByName(cdeName);
         goToDataTypeDetails();
-        pvValidator.addPv("pv1", "name1", "code1", "SNOMEDCT");
+        addPv("pv1", "name1", "code1", "SNOMEDCT");
         newCdeVersion();
 
         logout();

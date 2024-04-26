@@ -38,7 +38,7 @@ test(`Form description`, async ({
 
     await test.step(`Save form`, async () => {
         await formDescription.saveFormEdit();
-        await saveModal.newVersion('Form saved.', versionInfo);
+        await saveModal.newVersionByType('form', versionInfo);
     });
 
     await test.step(`Verify history`, async () => {

@@ -110,7 +110,7 @@
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
                         </button>
-                        <button *ngIf="elt && userService.canSeeComment()" tourAnchor="discussBtn"
+                        <button *ngIf="elt && userService.canSeeComment()"
                                 id="discussBtn" class="button light" title="Discuss CDE"
                                 (click)="commentDrawer.toggle()">
                             <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">

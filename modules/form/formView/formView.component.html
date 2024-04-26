@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <nav>
-                        <button tourAnchor="export" id="export" class="button" title="Export"
+                        <button  id="export" class="button" title="Export"
                                 #exportMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="exportMenu"
                                 *ngIf="!elt.noRenderAllowed">
                             <mat-icon>play_for_work</mat-icon>
@@ -246,7 +246,7 @@
                             <cde-admin-item-sources [elt]="elt"></cde-admin-item-sources>
                             <cde-registration [elt]="elt" (eltChange)="saveDraftVoid(elt)"
                                               [canEdit]="canEdit()"></cde-registration>
-                            <button tourAnchor="openLinkedFormsModalBtn" id="openLinkedFormsModalBtn" class="button"
+                            <button  id="openLinkedFormsModalBtn" class="button"
                                     (click)="openLinkedFormsModal()">Linked Forms
                             </button>
                         </section>

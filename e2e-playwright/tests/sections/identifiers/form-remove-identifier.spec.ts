@@ -18,7 +18,7 @@ test(`form remove identifier`, async ({ page, saveModal, navigationMenu, identif
 
     await identifierSection.removeIdentifierByIndex(1);
 
-    await saveModal.newVersion('Form saved.', versionInfo);
+    await saveModal.newVersionByType('form', versionInfo);
 
     await expect(page.getByText('MyId1')).toBeHidden();
     await expect(page.getByText('MyId2')).toBeVisible();

@@ -1,3 +1,5 @@
+import { PermissibleValueCodeSystem } from 'shared/models.model';
+
 export type ACCOUNT_KEYS =
     | 'nlm'
     | 'orgAuthority'
@@ -126,4 +128,13 @@ export type RegistrationStatus = {
     administrativeStatus?: string;
     administrativeNote?: string;
     unresolvedIssue?: string;
+};
+
+export type PermissibleValue = {
+    permissibleValue?: string;
+    valueMeaningDefinition?: string;
+    conceptId?: string;
+    conceptSource?: string;
+    valueMeaningCode?: string;
+    codeSystemName?: string;
 };

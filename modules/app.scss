@@ -235,29 +235,6 @@ nih-cde:empty + .loading {
 
 /* END Layouts */
 
-
-/* BEGIN Bootstrap Popover these 3 styles because Peter and I, we can't figure out why .orphan won't position in the middle */
-
-.popover[class*="tour-"].orphan {
-  left: 50% !important;
-  margin-top: 0;
-  position: fixed !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
-}
-
-.popover h3 {
-  margin-top: 2px;
-}
-
-.popover {
-  background-color: #fff;
-  border: 3px solid rgb(167, 158, 45);
-}
-
-/* END Bootstrap Popover these 3 styles */
-
-
 /* BEGIN Font Awesome wrench */
 
 @-webkit-keyframes wrench {

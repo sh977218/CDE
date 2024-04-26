@@ -15,7 +15,6 @@ import { SummaryListComponent } from 'search/listView/summaryList.component';
 import { SummaryListItemComponent, SummaryPlaceholderDirective } from 'search/listView/summaryListItem.component';
 import { TableListComponent } from 'search/listView/tableList.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
@@ -31,7 +30,7 @@ import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.compo
         MatMenuModule,
         MatTabsModule,
         MatTooltipModule,
-        TourMatMenuModule,
+
         PinToBoardModule,
     ],
     declarations: [

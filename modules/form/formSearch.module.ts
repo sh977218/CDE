@@ -25,7 +25,6 @@ import { FormSearchComponent } from 'form/search/formSearch.component';
 import { SearchModule } from 'search/search.module';
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 import { TagModule } from 'tag/tag.module';
-import { TourMatMenuModule } from 'ngx-ui-tour-md-menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 
 @NgModule({
@@ -52,7 +51,6 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         PinToBoardModule,
         SearchModule,
         TagModule,
-        TourMatMenuModule,
     ],
     declarations: [
         BoardFormSummaryListComponent,

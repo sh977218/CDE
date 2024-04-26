@@ -6,19 +6,19 @@
             <mat-form-field>
                 <mat-select [(value)]="elt.valueDomain.datatype" (selectionChange)="onDataTypeChange()"
                             [disabled]="!canEdit" placeholder="Select data type">
-                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{dataType}}</mat-option>
+                    <mat-option *ngFor="let dataType of dataTypeArray" [value]="dataType">{{ dataType }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </ng-container>
         <ng-template #dataTypeTemplate>
-            {{elt.valueDomain.datatype}}
+            {{ elt.valueDomain.datatype }}
         </ng-template>
     </dd>
 
     <ng-container *ngIf="elt.valueDomain.definition">
         <dt>Instructions:</dt>
         <dd itemprop="instructions">
-            {{elt.valueDomain.definition}}
+            {{ elt.valueDomain.definition }}
         </dd>
     </ng-container>
 
@@ -26,8 +26,8 @@
         <dt>Ids:</dt>
         <dd itemprop="identifiers">
             <div *ngFor="let id of elt.valueDomain.ids">
-                {{id.source}}: {{id.id}}
-                <ng-container *ngIf="id.version">, version: {{id.version}}</ng-container>
+                {{ id.source }}: {{ id.id }}
+                <ng-container *ngIf="id.version">, version: {{ id.version }}</ng-container>
             </div>
         </dd>
     </ng-container>
@@ -163,7 +163,7 @@
                    style="margin-right: 2px"
                    [(ngModel)]="SOURCES[source].selected"
                    [disabled]="SOURCES[source].disabled && !userService.user"
-                   (ngModelChange)="lookupAsSource(elt.valueDomain, source)"> {{source}} Codes
+                   (ngModelChange)="lookupAsSource(elt.valueDomain, source)"> {{ source }} Codes
             <span *ngIf="!userService.user && SOURCES[source].disabled"> (Login to enable)</span>
         </label>
     </div>
@@ -189,60 +189,60 @@
             </thead>
             <tbody>
             <tr *ngFor="let pv of elt.valueDomain.permissibleValues; index as i" id="pv_{{i}}">
-                <td id="pvValue_{{i}}">
+                <td id="pvValue_{{i}}" data-testid="pvValue">
                     <cde-inline-edit [(model)]="pv.permissibleValue" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvMeaningDefinition_{{i}}">
+                <td id="pvMeaningDefinition_{{i}}" data-testid="pvMeaningDefinition">
                     <cde-inline-edit [(model)]="pv.valueMeaningDefinition" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvConceptId_{{i}}">
+                <td id="pvConceptId_{{i}}" data-testid="pvConceptId">
                     <cde-inline-edit [(model)]="pv.conceptId" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvConceptSource_{{i}}">
+                <td id="pvConceptSource_{{i}}" data-testid="pvConceptSource">
                     <cde-inline-edit [(model)]="pv.conceptSource" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvMeaningCode_{{i}}">
+                <td id="pvMeaningCode_{{i}}" data-testid="pvMeaningCode">
                     <cde-inline-edit [(model)]="pv.valueMeaningCode" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
-                <td id="pvCodeSystem_{{i}}">
+                <td id="pvCodeSystem_{{i}}" data-testid="pvCodeSystem">
                     <cde-inline-edit [(model)]="pv.codeSystemName" [isAllowed]="canEdit"
                                      (modelChange)="eltChange.emit()"></cde-inline-edit>
                 </td>
                 <ng-container *ngIf="SOURCES['UMLS'].selected">
                     <td id="codeAsUMLS_{{i}}" data-testid="umls">
-                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                        {{ (SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
                     </td>
                     <td *ngIf="SOURCES['UMLS'].selected" id="nameAsUMLS_{{i}}" data-testid="umls">
-                        {{(SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                        {{ (SOURCES['UMLS'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
                     </td>
                 </ng-container>
                 <ng-container *ngIf="SOURCES['NCI Thesaurus'].selected">
                     <td id="codeAsNCI_{{i}}" data-testid="nci">
-                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                        {{ (SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
                     </td>
                     <td *ngIf="SOURCES['NCI Thesaurus'].selected" id="nameAsNCI_{{i}}" data-testid="nci">
-                        {{(SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ')}}
+                        {{ (SOURCES['NCI Thesaurus'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
                     </td>
                 </ng-container>
                 <ng-container *ngIf="SOURCES['LOINC'].selected">
                     <td id="codeAsLNC_{{i}}" data-testid="loinc">
-                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
+                        {{ (SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
                     </td>
                     <td id="nameAsLNC_{{i}}" data-testid="loinc">
-                        {{(SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                        {{ (SOURCES['LOINC'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
                     </td>
                 </ng-container>
                 <ng-container *ngIf="SOURCES['SNOMEDCT US'].selected">
                     <td id="codeAsSCT_{{i}}" data-testid="snomedct">
-                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ')}}
+                        {{ (SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'code').join(' | ') }}
                     </td>
                     <td *ngIf="SOURCES['SNOMEDCT US'].selected" id="nameAsSCT_{{i}}" data-testid="snomedct">
-                        {{(SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
+                        {{ (SOURCES['SNOMEDCT US'].codes[pv.valueMeaningCode] | pluck:'meaning').join(' | ') }}
                     </td>
                 </ng-container>
                 <td id="pvAction_{{i}}" *ngIf="canEdit">
@@ -251,6 +251,7 @@
                     </ng-container>
                     <ng-container *ngIf="canEdit">
                         <mat-icon id="pvRemove_{{i}}" class="fake-button" role="button" tabindex="0"
+                                  data-testid="remove-pv-button"
                                   (click)="removePv(elt.valueDomain, i)">delete_outline
                         </mat-icon>
                         <cde-sortable-array [theArray]="elt.valueDomain.permissibleValues" [index]="i"
@@ -279,7 +280,8 @@
                 <mat-icon>play_for_work</mat-icon>
                 Import PVs From CDE
             </button>
-            <button *ngIf="userService.user?.siteAdmin" data-testid="validate-against-UMLS-button" id="validateAgainstUMLS" class="button light secondary"
+            <button *ngIf="userService.user?.siteAdmin" data-testid="validate-against-UMLS-button"
+                    id="validateAgainstUMLS" class="button light secondary"
                     title="Validate Against UMLS"
                     (click)="validatePVAgainstUMLS(elt.valueDomain)">
                 <mat-icon>check_circle_outline</mat-icon>
@@ -313,11 +315,11 @@
     <div *ngIf="vsacMappingExists()">
         <dl class="cde-property">
             <dt>Value Set Name:</dt>
-            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.name}}</dd>
+            <dd>{{ elt.dataElementConcept.conceptualDomain.vsac?.name }}</dd>
             <dt>Value Set ID:</dt>
-            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.id}}</dd>
+            <dd>{{ elt.dataElementConcept.conceptualDomain.vsac?.id }}</dd>
             <dt>Value Set Version:</dt>
-            <dd>{{elt.dataElementConcept.conceptualDomain.vsac?.version}}</dd>
+            <dd>{{ elt.dataElementConcept.conceptualDomain.vsac?.version }}</dd>
         </dl>
     </div>
 
@@ -344,6 +346,7 @@
     </div>
 
     <table *ngIf="vsacValueSet.length > 0" id="vsacTableBody" class="table-bordered table-condensed table-striped">
+        <thead>
         <tr>
             <th>Code Name</th>
             <th>Code</th>
@@ -351,10 +354,12 @@
             <th id="validation">Match</th>
             <th *ngIf="canEdit">Actions</th>
         </tr>
+        </thead>
+        <tbody>
         <tr *ngFor="let con of vsacValueSet; let i = index;">
-            <td>{{con.displayName}}</td>
-            <td>{{con.code}}</td>
-            <td>{{con.codeSystemName}}</td>
+            <td>{{ con.displayName }}</td>
+            <td>{{ con.code }}</td>
+            <td>{{ con.codeSystemName }}</td>
             <td>
                 <mat-icon *ngIf="con.isValid" class="text-success" id="vset-{{i}}-valid">check</mat-icon>
                 <mat-icon *ngIf="!con.isValid" class="text-warning" id="vset-{{i}}-warning">warning</mat-icon>
@@ -365,6 +370,7 @@
                 </mat-icon>
             </td>
         </tr>
+        </tbody>
     </table>
     <div *ngIf="vsacMappingExists() && !userService.user">Please log in to see VSAC mapping.</div>
     <button *ngIf="vsacMappingExists() && canEdit && !allVsacMatch()" class="button"

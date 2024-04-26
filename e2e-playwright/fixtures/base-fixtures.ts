@@ -154,8 +154,8 @@ const baseFixture = baseTest.extend<{
     cdePage: async ({ page }, use) => {
         await use(new CdePagePo(page));
     },
-    permissibleValueSection: async ({ page }, use) => {
-        await use(new PermissibleValuePo(page));
+    permissibleValueSection: async ({ page, materialPage, inlineEdit, saveModal }, use) => {
+        await use(new PermissibleValuePo(page, materialPage, inlineEdit, saveModal));
     },
     createEltPage: async ({ page, materialPage }, use) => {
         await use(new CreateEltPo(page, materialPage));
