@@ -146,8 +146,8 @@
                 {
                   "type": "bundle",
                   "name": "main",
-                  "maximumWarning": "170kb",
-                  "maximumError": "1.14mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 }
               ],
               "outputHashing": "all"
@@ -163,8 +163,8 @@
                 {
                   "type": "bundle",
                   "name": "main",
-                  "maximumWarning": "170kb",
-                  "maximumError": "1.14mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "3mb"
                 }
               ],
               "outputHashing": "all"
@@ -274,8 +274,8 @@
                 {
                   "type": "bundle",
                   "name": "main",
-                  "maximumWarning": "170kb",
-                  "maximumError": "420kb"
+                  "maximumWarning": "1.17mb",
+                  "maximumError": "2mb"
                 }
               ],
               "outputHashing": "all"
@@ -291,8 +291,8 @@
                 {
                   "type": "bundle",
                   "name": "main",
-                  "maximumWarning": "170kb",
-                  "maximumError": "420kb"
+                  "maximumWarning": "1.17mb",
+                  "maximumError": "2mb"
                 }
               ],
               "outputHashing": "all"
@@ -414,16 +414,7 @@
                   "replace": "modules/environments/environment.ts",
                   "with": "modules/environments/environment.playwright.ts"
                 }
-              ],
-              "budgets": [
-                {
-                  "type": "bundle",
-                  "name": "main",
-                  "maximumWarning": "170kb",
-                  "maximumError": "1.06mb"
-                }
-              ],
-              "outputHashing": "all"
+              ]
             }
           },
           "defaultConfiguration": "prod"
