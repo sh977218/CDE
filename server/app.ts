@@ -90,7 +90,6 @@ app.use(
             ],
             styleSrc: [
                 "'self'",
-                'maxcdn.bootstrapcdn.com',
                 'fonts.googleapis.com',
                 'fonts.gstatic.com',
                 "'unsafe-inline'",
