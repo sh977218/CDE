@@ -49,7 +49,7 @@ import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
 import { Logger, transports } from 'winston';
-import { findUserByUsername } from './user/userDb';
+import { addNewUser, findUserByUsername } from './user/userDb';
 import { recordUserLogin } from './log/dbLogger';
 import fetch from 'node-fetch';
 import { generateJwtToken, validateJWToken } from './jwtTokenSvc';
@@ -353,11 +353,14 @@ try {
             `${config.uts.federatedServiceValidate}?service=${service}/loginFederated&ticket=${ticket}`
         );
         const profile: any = await profileResponse.json();
+        if (!profile?.utsUser?.username) {
+            res.status(401).send(`Incorrect username, password or service ticket.`);
+            return;
+        }
         if (profile.utsUser.username) {
-            const user = await findUserByUsername(profile.utsUser.username);
+            let user = await findUserByUsername(profile.utsUser.username);
             if (!user) {
-                res.status(401).send(`Incorrect username, password or service ticket.`);
-                return;
+                user = await addNewUser({ username: profile.utsUser.username });
             }
             const jwtToken = generateJwtToken(user.username);
             recordUserLogin(user, req.ip);

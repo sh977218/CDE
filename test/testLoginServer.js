@@ -51,7 +51,9 @@ app.get('/', function (req, res) {
 
 app.use(favicon(path.resolve(__dirname, '../modules/_app/assets/favicon.ico')));
 
-const tokens = {};
+const tokens = {
+    userExistingInUtsButNotCDE: 'suerpower-ticket'
+};
 
 /**
  * @description this endpoint mocks CIT PIV card login and returns service ticket
@@ -60,7 +62,7 @@ app.post('/login', (req, res) => {
     const username = req.body.username
     const password = req.body.password || 'failme';
     db.collection('users').findOne({username, password}).then(user => {
-        if (user) {
+        if (user || username === 'userExistingInUtsButNotCDE') {
             const ticket = 'CDE-' + randomUUID() + '-localhost'
             tokens[ticket] = username;
             res.redirect(302, `${req.query.service}?ticket=${ticket}`);

@@ -234,8 +234,9 @@ export function byUsername(username: string): Promise<UserDocument | null> {
     return userModel.findOne({ username }, userProject).then();
 }
 
-export function save(user: Partial<UserFull>, callback: CbError1<UserDocument> = () => {}) {
-    return new userModel(user).save(callback);
+export function addNewUser(user: Partial<UserFull>) {
+    user.password = 'umls';
+    return new userModel(user).save();
 }
 
 // Site Admin

@@ -7,6 +7,11 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'nlm',
         password: 'nlm',
     },
+    // do not add this user to CDE mongo DB.
+    userExistingInUtsButNotCDE: {
+        username: 'userExistingInUtsButNotCDE',
+        password: DEFAULT_PASSWORD,
+    },
     orgAuthority: {
         username: 'orgAuthorityUser',
         password: DEFAULT_PASSWORD,

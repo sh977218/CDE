@@ -12,13 +12,12 @@ import {
     governanceReviewers,
     nlmCurators,
     orgCurators,
-    save as userSave,
+    addNewUser,
     updateUser,
     userByName,
     UserFull,
     usersByUsername,
 } from 'server/user/userDb';
-import { User } from 'shared/models.model';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
@@ -78,7 +77,7 @@ export function module(roleConfig: { manage: RequestHandler; search: RequestHand
                 password: 'umls',
                 quota: 1024 * 1024 * 1024,
             };
-            await userSave(newUser);
+            await addNewUser(newUser);
             res.send(username + ' added.');
         }
     });

@@ -35,10 +35,15 @@ export class TokenInterceptor implements HttpInterceptor {
                 },
             });
 
-            const decodedToken = jwtDecode(jwtToken);
-            const isJwtTokenExpired = decodedToken.exp || 0 <= new Date().getTime();
+            try {
+                const decodedToken = jwtDecode(jwtToken);
+                const isJwtTokenExpired = decodedToken.exp || 0 <= new Date().getTime();
 
-            if (isJwtTokenExpired) {
+                if (isJwtTokenExpired) {
+                    localStorage.removeItem(localStorageJwtTokenKey);
+                    router.navigate(['/logout']);
+                }
+            } catch (e) {
                 localStorage.removeItem(localStorageJwtTokenKey);
                 router.navigate(['/logout']);
             }

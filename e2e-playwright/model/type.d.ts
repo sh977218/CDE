@@ -2,6 +2,7 @@ import { PermissibleValueCodeSystem } from 'shared/models.model';
 
 export type ACCOUNT_KEYS =
     | 'nlm'
+    | 'userExistingInUtsButNotCDE'
     | 'orgAuthority'
     | 'nlmCurator'
     | 'ninds'
