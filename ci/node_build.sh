@@ -9,9 +9,8 @@ then
   export PATH=/usr/nlm/apps/node/node-16.19.0/bin:$PATH
 fi
 
-npm install
 npm cache clean -f
-npm cache verify -f
+npm i --legacy-peer-deps
 
 echo "node version $(node --version)"
 echo "npm version $(npm --version)"

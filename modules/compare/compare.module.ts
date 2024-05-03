@@ -19,7 +19,7 @@ import { MergeFormService } from 'compare/mergeForm.service';
 import { CompareSideBySideModalComponent } from 'compare/compareSideBySide/compare-side-by-side-modal/compare-side-by-side-modal.component';
 import { MergeDataElementModalComponent } from 'compare/mergeDataElement/merge-data-element-modal/merge-data-element-modal.component';
 import { MergeFormModalComponent } from 'compare/mergeForm/merge-form-modal/merge-form-modal.component';
-import { NgxTextDiffModule } from 'ngx-text-diff';
+import { NgxTextDiffModule } from '@winarg/ngx-text-diff';
 
 @NgModule({
     imports: [

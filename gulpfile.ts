@@ -133,7 +133,7 @@ gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps(cb) {
         .pipe(gulp.dest(BUILD_DIR))
         .on('error', cb)
         .on('end', () => {
-            run('npm i --omit=dev', {cwd: BUILD_DIR}).then(cb, cb);
+            run('npm i --legacy-peer-deps --omit=dev', {cwd: BUILD_DIR}).then(cb, cb);
         });
 });
 

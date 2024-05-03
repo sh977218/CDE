@@ -48,6 +48,16 @@ const config: PlaywrightTestConfig = defineConfig({
             fullyParallel: true,
         },
         {
+            timeout: 300 * 1000,
+            expect: {
+                timeout: 10 * 1000,
+            },
+            name: 'CDE-oneTest',
+            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            grep: [/@oneTest/],
+            fullyParallel: true,
+        },
+        {
             timeout: 100 * 1000,
             expect: {
                 timeout: 10 * 1000,

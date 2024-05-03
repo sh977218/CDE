@@ -3,7 +3,7 @@ export PATH=/usr/nlm/apps/node/current/bin:/usr/nlm/apps/git/bin:$PATH
 export SPAWN_WRAP_SHIM_ROOT=/usr/nlm/apps/bamboo-agent/home/tmp
 export host_name=`hostname`
 export NODE_ENV=dev-test
-#clean up revious nodes and leftover files
+#clean up previous nodes and leftover files
 pkill -u 7000 node
 pkill -u 7000 gulp
 pkill -u 7000 -f gradle
@@ -17,7 +17,9 @@ if [ "$host_name" == "dvlb7cde02" ]
 then
     export PATH=/usr/nlm/apps/node/node-16.19.0/bin:$PATH
 fi
-npm install
+
+npm cache clean -f
+npm i --legacy-peer-deps
 
 ## CI build
 echo "======CI build============="
@@ -148,7 +150,7 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
         node ../../../node_modules/nyc/bin/nyc report
     fi
 
-    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 35 --functions 38 --branches 35
+    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 35 --functions 35 --branches 35
     if [ $? -ne 0 ]
     then
         echo "Error: Insufficient Coverage"

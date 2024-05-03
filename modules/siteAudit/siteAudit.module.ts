@@ -10,7 +10,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule, Routes } from '@angular/router';
 import { CompareModule } from 'compare/compare.module';
-import { NgxTextDiffModule } from 'ngx-text-diff';
+import { NgxTextDiffModule } from '@winarg/ngx-text-diff';
 import { SiteAuditComponent } from 'siteAudit/siteAudit.component';
 
 const appRoutes: Routes = [{ path: '', component: SiteAuditComponent }];

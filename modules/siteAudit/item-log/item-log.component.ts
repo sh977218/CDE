@@ -31,7 +31,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ignoredDiff, makeHumanReadable } from './cdeDiffPopulate.service';
-import { NgxTextDiffModule } from 'ngx-text-diff';
+import { NgxTextDiffModule } from '@winarg/ngx-text-diff';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CamelCaseToHumanPipe } from '../../non-core/camelCaseToHuman.pipe';
 

@@ -122,7 +122,7 @@ button.mat-button-base {
   margin-right: 0.2rem !important;
 }
 
-mat-radio-button label {  // vertical center with button
+mat-radio-button label { // vertical center with button
   line-height: 17px;
   margin: 0;
 }
@@ -134,7 +134,7 @@ table {
   }
 }
 
-.mat-drawer-container {
+.mat-drawer-container.mat-sidenav-container, .mat-drawer-content.mat-sidenav-content {
   background-color: $nlmBackgroundColor;
   color: $nlmTextColor;
 }
@@ -238,7 +238,7 @@ cde-related-content {
   position: absolute;
   top: 0;
   left: 0;
-  bottom:0;
+  bottom: 0;
   right: 0;
   background: rgba(0, 0, 0, 0.15);
   z-index: 1;
