@@ -24,6 +24,7 @@ export class SubmissionWorkbookValidationReportService {
     reportCdeManual: ReportCategory[] = [];
     reportCdeRequired: ReportCategory[] = [];
     reportCdeSpellcheck: ReportCategory[] = [];
+    reportDuplicatedCDEs: ReportCategory[] = [];
     reportCdeSuggestion: ReportCategory[] = [];
     reportCdeTemplate: ReportCategory[] = [];
 
@@ -224,6 +225,13 @@ export class SubmissionWorkbookValidationReportService {
             }
             addLine('');
         }
+        if (this.reportDuplicatedCDEs.length) {
+            addLine('DuplicatedCDEsCheck');
+            for (const e of this.reportDuplicatedCDEs) {
+                addLine(`\t${this.displayError(e)}`);
+            }
+            addLine('');
+        }
 
         const blob = new Blob([report], {
             type: 'text/text',
@@ -251,6 +259,8 @@ export class SubmissionWorkbookValidationReportService {
                 return this.reportCdeSpellcheck;
             case 'Suggestion':
                 return this.reportCdeSuggestion;
+            case 'Duplicated CDEs':
+                return this.reportDuplicatedCDEs;
             case 'Template':
                 return this.reportCdeTemplate;
             default:

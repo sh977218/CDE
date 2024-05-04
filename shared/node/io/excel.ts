@@ -9,6 +9,7 @@ export type ErrorTypes =
     | 'Required'
     | 'Spellcheck'
     | 'Suggestion'
+    | 'Duplicated CDEs'
     | 'Template';
 export type ExcelValue = CellObject | string | number | boolean | Date | null | undefined;
 export type Expectations = Record<number, string>; // columns mapped to text that is supposed to be in the cell

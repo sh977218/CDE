@@ -21,6 +21,7 @@ import { SubmissionViewComponent } from 'submission/submissionView.component';
 import { SubmissionWorkbookValidationReportComponent } from 'submission/submissionWorkbookValidationReport.component';
 import { SubmissionWorkbookValidationReportService } from 'submission/submissionWorkbookValidationReport.service';
 import { SubmissionPreviewComponent } from 'submission/submissionPreview.component';
+import { SafeHtmlPipe } from '../non-core/pipes/safeHtml.pipe';
 
 const routes: Routes = [
     { path: '', component: SubmissionManagementComponent },
@@ -47,6 +48,7 @@ const routes: Routes = [
         //
         AdminItemModule,
         DeleteWithConfirmModule,
+        SafeHtmlPipe,
     ],
     declarations: [
         SubmissionEditComponent,

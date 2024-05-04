@@ -1,17 +1,17 @@
-import { EventEmitter } from 'events';
-import { Response } from 'express';
+import {EventEmitter} from 'events';
+import {Response} from 'express';
 import {
     LoadData,
     ValidationErrors,
     VerifySubmissionFileProgress,
     VerifySubmissionFileReport,
 } from 'shared/boundaryInterfaces/API/submission';
-import { keys } from 'shared/builtIn';
-import { create as deCreate } from 'server/cde/mongo-cde';
-import { CdeFormDocument, create as formCreate } from 'server/form/mongo-form';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CdeForm } from 'shared/form/form.model';
-import { ArrayToType, Cb, Cb1, PermissibleValue, User } from 'shared/models.model';
+import {keys} from 'shared/builtIn';
+import {create as deCreate} from 'server/cde/mongo-cde';
+import {CdeFormDocument, create as formCreate} from 'server/form/mongo-form';
+import {DataElement} from 'shared/de/dataElement.model';
+import {CdeForm} from 'shared/form/form.model';
+import {ArrayToType, Cb, Cb1, PermissibleValue, User} from 'shared/models.model';
 import {
     cellValue,
     combineLines,
@@ -21,20 +21,24 @@ import {
     trim,
     WithError,
 } from 'shared/node/io/excel';
-import { mapSeries, nextTick } from 'shared/promise';
-import { schedulingExecutor } from 'shared/scheduling';
-import { isString, noop } from 'shared/util';
-import { CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode } from 'server/uts/utsSvc';
+import {mapSeries, nextTick} from 'shared/promise';
+import {schedulingExecutor} from 'shared/scheduling';
+import {isString, noop} from 'shared/util';
+import {CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode} from 'server/uts/utsSvc';
 import * as spellChecker from 'simple-spellchecker';
-import { utils, WorkBook } from 'xlsx';
-import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
-import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
-import { ColumnInformation, RowInformation, valueAsString } from 'server/submission/submissionShared';
+import {utils, WorkBook} from 'xlsx';
+import {Submission} from 'shared/boundaryInterfaces/db/submissionDb';
+import {DataElementDocument} from 'server/mongo/mongoose/dataElement.mongoose';
+import {ColumnInformation, RowInformation, valueAsString} from 'server/submission/submissionShared';
 import {
     cdeColumns as excelCdeColumns202401,
     cdeColumnsOrdered as excelCdeColumnsOrdered202401,
 } from 'server/submission/excel202401';
-import { convertCdeToQuestion } from 'shared/form/fe';
+import {convertCdeToQuestion} from 'shared/form/fe';
+import {config} from '../config';
+import {esClient, termRegStatus} from '../system/elastic';
+import {SearchSettingsElastic} from 'shared/search/search.model';
+import {elasticsearch} from '../cde/elastic';
 
 // Workbook Versions:
 //     v.2024.01(LATEST): add 'URI/URL'
@@ -60,7 +64,7 @@ function propertyColumnInformation(propertyName: string): ColumnInformation {
             if (!de.properties) {
                 de.properties = [];
             }
-            de.properties.push({ key: propertyName, value: val });
+            de.properties.push({key: propertyName, value: val});
         },
     };
 }
@@ -107,7 +111,7 @@ export function processWorkBook(
         code: 0,
         codeTotal: 0,
     };
-    const { run: execute } = schedulingExecutor(100, 0); // limit total server resources used
+    const {run: execute} = schedulingExecutor(100, 0); // limit total server resources used
     let browserTimer: number = 0;
     let closeoutPromiseResolve: Cb | void;
     let updateHandler: Cb1<true | void> | void;
@@ -123,7 +127,7 @@ export function processWorkBook(
         updateHandler = (done: true | void) => {
             if (done) {
                 clearInterval(browserTimer);
-                progress.report = { data, validationErrors };
+                progress.report = {data, validationErrors};
             }
             if (res) {
                 res.send(progress);
@@ -144,7 +148,7 @@ export function processWorkBook(
         if (updateHandler) {
             await updateHandler(true);
         }
-        return { data, validationErrors };
+        return {data, validationErrors};
     });
 
     function processSheetCover(): boolean {
@@ -155,7 +159,7 @@ export function processWorkBook(
             errors.push('Worksheet "Cover Sheet" is missing.');
             return false;
         }
-        const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, { header: 1, defval: null });
+        const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, {header: 1, defval: null});
         let row = 0;
 
         workbookVersion = (rows[row][7] as any) || '';
@@ -163,18 +167,18 @@ export function processWorkBook(
         expectFormTemplate(
             withError(row),
             rows[row++],
-            { 7: 'v.2024.01' },
+            {7: 'v.2024.01'},
             'Submission does not use the current submission template (version v.2024.01). No action is needed from you, but our team may contact you if additional information is required. The current version can always be found in the NLM Common Data Elements Team, in the General channel, under Files, in the CDE_Governance folder.'
         );
-        expectFormTemplate(withError(row), rows[row++], { 1: 'CDE Governance Submission Cover Sheet' });
+        expectFormTemplate(withError(row), rows[row++], {1: 'CDE Governance Submission Cover Sheet'});
         row++;
         row++;
-        expectFormTemplate(withError(row), rows[row++], { 1: 'Submission Information' });
-        const submissionName = extractFormValue(withError(row), rows[row++], 2, 9, { 1: '*Submission title:' });
+        expectFormTemplate(withError(row), rows[row++], {1: 'Submission Information'});
+        const submissionName = extractFormValue(withError(row), rows[row++], 2, 9, {1: '*Submission title:'});
         row++;
-        const submissionUrl = extractFormValue(withError(row), rows[row++], 2, 9, { 1: 'Submission URL:' });
+        const submissionUrl = extractFormValue(withError(row), rows[row++], 2, 9, {1: 'Submission URL:'});
         row++;
-        const submissionVersion = extractFormValue(withError(row), rows[row], 2, 9, { 1: '*Version number:' });
+        const submissionVersion = extractFormValue(withError(row), rows[row], 2, 9, {1: '*Version number:'});
         const numberCDEs = extractFormValue(withError(row), rows[row++], 7, 9, {
             5: 'Number of CDEs in this submission:',
         });
@@ -220,7 +224,7 @@ export function processWorkBook(
             errors.push('Worksheet "CDEs" is missing.');
             return false;
         }
-        const rows = utils.sheet_to_json<Row>(cdesSheet, { header: 1, defval: null });
+        const rows = utils.sheet_to_json<Row>(cdesSheet, {header: 1, defval: null});
         progress.rowTotal += rows.length;
 
         const columnErrors = getColumnPositions(rows[0], columnNumber, additionalColumnsOrdered);
@@ -229,7 +233,7 @@ export function processWorkBook(
             return !errors.length;
         }
 
-        expectFormTemplate(withError(2), rows[1], { 0: 'Required' });
+        expectFormTemplate(withError(2), rows[1], {0: 'Required'});
 
         if (!valueAsString(rows[2][0]).startsWith('A unique and unambiguous label to help users')) {
             withError(3)('Template', 'Description Row is missing.');
@@ -283,6 +287,9 @@ export function processWorkBook(
             if (!de) {
                 return;
             }
+            // await findDuplicatedCdeInEsUsingMoreLikeThis(withError, de);
+            await findDuplicatedCdeInEsUsingPlainSearch(withError, de);
+
             await processIds(withError, de);
             if (de.valueDomain?.datatype === 'Value List') {
                 await processPVs(withError, de);
@@ -341,10 +348,10 @@ export function processWorkBook(
             );
         return errors.length
             ? errors.concat(
-                  optionalColumns.map(
-                      columnHeading => `Optional Column "${columnHeading}" not used yet in the worksheet. This is okay.`
-                  )
-              )
+                optionalColumns.map(
+                    columnHeading => `Optional Column "${columnHeading}" not used yet in the worksheet. This is okay.`
+                )
+            )
             : errors;
     }
 
@@ -413,8 +420,8 @@ export function processWorkBook(
         de.nihEndorsed = true;
         de.stewardOrg.name = submission.name;
         de.classification.push({
-            stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.version }],
+            stewardOrg: {name: submission.name},
+            elements: [{elements: [], name: submission.version}],
         });
         de.registrationState.registrationStatus = submission.registrationStatus;
         de.registrationState.administrativeStatus = submission.administrativeStatus;
@@ -497,6 +504,7 @@ export function processWorkBook(
                             return match(results.slice(1), newName);
                         });
                 }
+
                 if (name === null) {
                     return;
                 }
@@ -624,11 +632,11 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
         form.isBundle = true;
         form.nihEndorsed = true;
         form.stewardOrg.name = submission.name;
-        form.designations.push({ designation: name });
-        form.definitions.push({ definition: 'This is a bundle.', tags: [] });
+        form.designations.push({designation: name});
+        form.definitions.push({definition: 'This is a bundle.', tags: []});
         form.classification.push({
-            stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.version }],
+            stewardOrg: {name: submission.name},
+            elements: [{elements: [], name: submission.version}],
         });
         form.registrationState.registrationStatus = submission.registrationStatus;
         form.registrationState.administrativeStatus = submission.administrativeStatus;
@@ -648,4 +656,121 @@ function withErrorCapture(location: string, errors: string[]) {
     return (subLocation: string | number): WithError =>
         (type, message) =>
             errors.push(location + ':' + subLocation + ':' + type + ':' + message);
+}
+
+function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Partial<DataElement>): Promise<[]> {
+    return new Promise((resolve, reject) => {
+        const query: any = {
+            bool: {
+                must: [
+                    {
+                        term: {
+                            nihEndorsed: true,
+                        },
+                    },
+                ],
+                filter: {
+                    bool: {
+                        must_not: [termRegStatus('Retired')],
+                    },
+                },
+            },
+        };
+        (cde.designations || []).forEach(d => {
+            query.bool.must.push({
+                more_like_this: {
+                    fields: ['designations.designation'],
+                    like: d.designation,
+                    min_term_freq: 1,
+                    min_doc_freq: 1,
+                },
+            });
+        });
+
+        if (cde.valueDomain?.datatype === 'Value List') {
+            query.bool.must.push({
+                term: {
+                    'valueDomain.datatype': 'Value List',
+                },
+            });
+            query.bool.must.push({
+                script: {
+                    script: {
+                        source:
+                            "doc['valueDomain.permissibleValues.permissibleValue'].length == " +
+                            cde.valueDomain?.permissibleValues.length || 0,
+                        lang: 'painless',
+                    },
+                },
+            });
+        } else {
+            query.bool.must.push({
+                term: {
+                    'valueDomain.datatype': cde.valueDomain?.datatype,
+                },
+            });
+        }
+        const queryBody = {
+            index: config.elastic.index.name,
+            body: {
+                query,
+            },
+        };
+        esClient.search(queryBody, (err: any, result: any) => {
+            if (err) {
+                reject(err);
+            } else {
+                result.body.hits.hits.forEach((hit: any) => {
+                    withError(
+                        'Duplicated CDEs',
+                        `'${(cde.designations || [])[0]?.designation}' matched tinyId: '${hit._id}' '${
+                            hit._source.primaryNameCopy
+                        }'`
+                    );
+                });
+                resolve(true);
+            }
+        });
+    });
+}
+
+function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partial<DataElement>) {
+    return new Promise((resolve, reject) => {
+        const designation = (cde.designations || [])[0]?.designation;
+        const searchSetting: SearchSettingsElastic = {
+            nihEndorsed: true,
+            excludeOrgs: [],
+            resultPerPage: 20,
+            selectedDatatypes: [],
+            selectedCopyrightStatus: [],
+            selectedStatuses: [],
+            selectedElements: [],
+            selectedElementsAlt: [],
+            searchTerm: `designations.designation: ${designation} AND valueDomain.datatype: ${cde.valueDomain?.datatype}`,
+        };
+        if (cde.valueDomain?.datatype === 'Value List') {
+            searchSetting.searchTerm += ` AND valueDomain.nbOfPVs: ${cde.valueDomain?.permissibleValues.length}`;
+        }
+        const nlmUser: User = {
+            _id: '',
+            orgAdmin: [],
+            orgCurator: [],
+            orgEditor: [],
+            siteAdmin: true,
+            username: 'root_user',
+        };
+        elasticsearch(nlmUser, searchSetting, (err: any, result: any) => {
+            if (err) {
+                reject(err);
+            } else {
+                result.cdes.slice(0, 2).forEach((cde: any) => {
+                    withError(
+                        'Duplicated CDEs',
+                        `'<strong>${designation}</strong>' matched tinyId: <a href="/deView?tinyId=${cde.tinyId}" target="_blank">${cde.tinyId}</a> '<strong>${cde.primaryNameCopy}</strong>'`
+                    );
+                });
+                resolve(true);
+            }
+        });
+    });
 }

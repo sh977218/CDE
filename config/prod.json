@@ -30,7 +30,7 @@
       "https://vpc-cde-us-east-1-7-1-psvmuqygp3k6aptsijb5xwhosu.us-east-1.es.amazonaws.com"
     ],
     "inject_bulk_size": 50,
-    "esIndexVersion": "v14"
+    "esIndexVersion": "v15"
   },
   "database": {
     "servers": [
@@ -118,7 +118,7 @@
     "enabled": false
   },
   "s3": {
-    "host": "s3.amazonaws.com", 
+    "host": "s3.amazonaws.com",
     "path": "nlm-prod-prod-101-cde-us-east-1"
   }
 }

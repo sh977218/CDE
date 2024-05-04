@@ -1,122 +1,139 @@
-<button type="button" class="button mT" style="margin-bottom: 1rem" (click)="r.downloadReport()">Download Report</button>
+<button type="button" class="button mT" style="margin-bottom: 1rem" (click)="r.downloadReport()">Download Report
+</button>
 
 <section *ngIf="r?.report?.data">
-  <div>
-    Submission: {{r.report.data.metadata.name}}
-  </div>
-  <div>
-    Version: {{r.report.data.metadata.version}}
-  </div>
+    <div>
+        Submission: {{ r.report.data.metadata.name }}
+    </div>
+    <div>
+        Version: {{ r.report.data.metadata.version }}
+    </div>
 </section>
 
 <section>
-  <hr>
-  <div>
-    <h1>Summary of Errors</h1>
-    <h2>Critical Errors</h2>
-    <ng-container *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length; else noCriticalErrors">
-      <div>These must be fixed before your submission can be accepted for review.</div>
-      <ul>
-        <li *ngIf="r.reportCdeManual.length">Assistance Required: {{r.reportCdeManual.length}}</li>
-        <li *ngIf="r.reportCdeColumnExtra.length + r.reportCdeColumnRequired.length">Column Heading: {{r.reportCdeColumnExtra.length + r.reportCdeColumnRequired.length}}</li>
-        <li *ngIf="r.reportCdeLength.length">Length of Lists: {{r.reportCdeLength.length}}</li>
-        <li *ngIf="r.reportCdeRequired.length">Required Field: {{r.reportCdeRequired.length}}</li>
-        <li *ngIf="r.reportCdeTemplate.length">Workbook Template: {{r.reportCdeTemplate.length}}</li>
-      </ul>
-    </ng-container>
-    <ng-template #noCriticalErrors>
-      No critical errors found.
-    </ng-template>
-    <h2>Suggestions to Review</h2>
-    <ng-container *ngIf="r.reportCdeCodes.length || r.reportCdeExtra.length || r.reportCdeSpellcheck.length || r.reportCdeSuggestion.length; else noSuggestions">
-      <div>We recommend that you review the following, but you may submit without changing anything.</div>
-      <ul>
-        <li *ngIf="r.reportCdeCodes.length">Code Validation: {{r.reportCdeCodes.length}}</li>
-        <li *ngIf="r.reportCdeExtra.length">Extra Unused Data: {{r.reportCdeExtra.length}}</li>
-        <li *ngIf="r.reportCdeSuggestion.length">More Suggestions: {{r.reportCdeSuggestion.length}}</li>
-        <li *ngIf="r.reportCdeSpellcheck.length">Spellcheck: {{r.reportCdeSpellcheck.length}}</li>
-      </ul>
-    </ng-container>
-    <ng-template #noSuggestions>
-      No suggestions to review.
-    </ng-template>
-  </div>
+    <hr>
+    <div>
+        <h1>Summary of Errors</h1>
+        <h2>Critical Errors</h2>
+        <ng-container
+                *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length; else noCriticalErrors">
+            <div>These must be fixed before your submission can be accepted for review.</div>
+            <ul>
+                <li *ngIf="r.reportCdeManual.length">Assistance Required: {{ r.reportCdeManual.length }}</li>
+                <li *ngIf="r.reportCdeColumnExtra.length + r.reportCdeColumnRequired.length">Column
+                    Heading: {{ r.reportCdeColumnExtra.length + r.reportCdeColumnRequired.length }}
+                </li>
+                <li *ngIf="r.reportCdeLength.length">Length of Lists: {{ r.reportCdeLength.length }}</li>
+                <li *ngIf="r.reportCdeRequired.length">Required Field: {{ r.reportCdeRequired.length }}</li>
+                <li *ngIf="r.reportCdeTemplate.length">Workbook Template: {{ r.reportCdeTemplate.length }}</li>
+            </ul>
+        </ng-container>
+        <ng-template #noCriticalErrors>
+            No critical errors found.
+        </ng-template>
+        <h2>Suggestions to Review</h2>
+        <ng-container
+                *ngIf="r.reportCdeCodes.length || r.reportCdeExtra.length || r.reportCdeSpellcheck.length || r.reportCdeSuggestion.length; else noSuggestions">
+            <div>We recommend that you review the following, but you may submit without changing anything.</div>
+            <ul>
+                <li *ngIf="r.reportCdeCodes.length">Code Validation: {{ r.reportCdeCodes.length }}</li>
+                <li *ngIf="r.reportCdeExtra.length">Extra Unused Data: {{ r.reportCdeExtra.length }}</li>
+                <li *ngIf="r.reportCdeSuggestion.length">More Suggestions: {{ r.reportCdeSuggestion.length }}</li>
+                <li *ngIf="r.reportCdeSpellcheck.length">Spellcheck: {{ r.reportCdeSpellcheck.length }}</li>
+                <li *ngIf="r.reportDuplicatedCDEs.length">Duplicated CDEs Validation: {{ r.reportDuplicatedCDEs.length }}</li>
+            </ul>
+        </ng-container>
+        <ng-template #noSuggestions>
+            No suggestions to review.
+        </ng-template>
+    </div>
 </section>
 
-<section *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length">
-  <hr>
-  <h1>Critical Errors:</h1>
-  <div *ngIf="r.reportCdeManual.length">
-    <h2>Assistance Required</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeManual">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeColumn.length">
-    <h2>Column Heading</h2>
-    <h3>Incorrect Worksheet Column Headings: Please do not change the column headers, or insert new columns in the middle of the form. If you need to add additional properties, add them to the right of the columns.</h3>
-    <ul>
-      <li *ngFor="let e of r.reportCdeColumnExtra">{{e}}</li>
-    </ul>
-    <ng-container *ngIf="r.reportCdeColumnRequired.length">
-      <h3>Required Column Headings missing from the worksheet: (Add these columns to continue.)</h3>
-      <ul>
-        <li *ngFor="let e of r.reportCdeColumnRequired">{{e}}</li>
-      </ul>
-    </ng-container>
-    <ng-container *ngIf="r.reportCdeColumnOptional.length">
-      <h3>Optional Column Headings not used yet: (For your reference.)</h3>
-      <ul>
-        <li *ngFor="let e of r.reportCdeColumnOptional">{{e}}</li>
-      </ul>
-    </ng-container>
-  </div>
-  <div *ngIf="r.reportCdeLength.length">
-    <h2>Length of Lists</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeLength">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeRequired.length">
-    <h2>Required Fields</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeRequired">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeTemplate.length">
-    <h2>Workbook Template</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeTemplate">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
+<section
+        *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length">
+    <hr>
+    <h1>Critical Errors:</h1>
+    <div *ngIf="r.reportCdeManual.length">
+        <h2>Assistance Required</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeManual">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeColumn.length">
+        <h2>Column Heading</h2>
+        <h3>Incorrect Worksheet Column Headings: Please do not change the column headers, or insert new columns in the
+            middle of the form. If you need to add additional properties, add them to the right of the columns.</h3>
+        <ul>
+            <li *ngFor="let e of r.reportCdeColumnExtra">{{ e }}</li>
+        </ul>
+        <ng-container *ngIf="r.reportCdeColumnRequired.length">
+            <h3>Required Column Headings missing from the worksheet: (Add these columns to continue.)</h3>
+            <ul>
+                <li *ngFor="let e of r.reportCdeColumnRequired">{{ e }}</li>
+            </ul>
+        </ng-container>
+        <ng-container *ngIf="r.reportCdeColumnOptional.length">
+            <h3>Optional Column Headings not used yet: (For your reference.)</h3>
+            <ul>
+                <li *ngFor="let e of r.reportCdeColumnOptional">{{ e }}</li>
+            </ul>
+        </ng-container>
+    </div>
+    <div *ngIf="r.reportCdeLength.length">
+        <h2>Length of Lists</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeLength">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeRequired.length">
+        <h2>Required Fields</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeRequired">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeTemplate.length">
+        <h2>Workbook Template</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeTemplate">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
 </section>
 
-<section *ngIf="r.reportCdeCodes.length || r.reportCdeExtra.length || r.reportCdeSpellcheck.length || r.reportCdeSuggestion.length">
-  <hr>
-  <h1>Suggestions to Review:</h1>
-  <p>We recommend that you review the following, but you may submit without changing anything.</p>
-  <div *ngIf="r.reportCdeCodes.length">
-    <h2>Code Validation</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeCodes">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeExtra.length">
-    <h2>Extra Unused Data</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeExtra">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeSuggestion.length">
-    <h2>More Suggestions</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeSuggestion">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
-  <div *ngIf="r.reportCdeSpellcheck.length">
-    <h2>Spellcheck</h2>
-    <ul>
-      <li *ngFor="let e of r.reportCdeSpellcheck">{{r.displayError(e)}}</li>
-    </ul>
-  </div>
+<section
+        *ngIf="r.reportCdeCodes.length || r.reportCdeExtra.length || r.reportCdeSpellcheck.length || r.reportCdeSuggestion.length">
+    <hr>
+    <h1>Suggestions to Review:</h1>
+    <p>We recommend that you review the following, but you may submit without changing anything.</p>
+    <div *ngIf="r.reportCdeCodes.length">
+        <h2>Code Validation</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeCodes">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeExtra.length">
+        <h2>Extra Unused Data</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeExtra">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeSuggestion.length">
+        <h2>More Suggestions</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeSuggestion">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeSpellcheck.length">
+        <h2>Spellcheck</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeSpellcheck">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+
+    <div *ngIf="r.reportDuplicatedCDEs.length">
+        <h2>Duplicated CDEs</h2>
+        <ul>
+            <li *ngFor="let e of r.reportDuplicatedCDEs" [innerHTML]="r.displayError(e) | cdeSafeHtml"></li>
+        </ul>
+    </div>
+
 </section>

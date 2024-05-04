@@ -17,7 +17,7 @@
       "https://vpc-cde-us-east-1-7-1-4kxvq5ggwivwbfdlzhpg45j5wi.us-east-1.es.amazonaws.com"
     ],
     "number_of_replicas": 0,
-    "esIndexVersion": "v13"
+    "esIndexVersion": "v15"
   },
   "database": {
     "servers": [
@@ -102,7 +102,7 @@
     "/usr/nlm/cde/kibana/current/bin/kibana"
   ],
   "s3": {
-    "host": "s3.amazonaws.com", 
+    "host": "s3.amazonaws.com",
     "path": "nlm-qa-qa-101-cde-us-east-1"
   },
   "captchaCode": "6LeVaB8TAAAAABPUd_bhoQFgh9WYgbgaWbNaRfan",
