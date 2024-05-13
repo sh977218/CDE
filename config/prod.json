@@ -35,15 +35,15 @@
   "database": {
     "servers": [
       {
-        "host": "us-east-1a-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "host": "cde-mongo-us-east-1a-1.awsprod.nlm.nih.gov",
         "port": 27017
       },
       {
-        "host": "us-east-1b-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "host": "cde-mongo-us-east-1b-1.awsprod.nlm.nih.gov",
         "port": 27017
       },
       {
-        "host": "us-east-1c-1.nlm-prod-cde-mongo.nlm.nih.gov",
+        "host": "cde-mongo-us-east-1c-1.awsprod.nlm.nih.gov",
         "port": 27017
       }
     ],
