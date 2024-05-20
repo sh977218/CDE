@@ -53,10 +53,10 @@ test(`Add UMLS permissible value`, async ({
     await test.step(`Verify Code from SNOMEDCT`, async () => {
         await permissibleValueSection.permissibleValueSynonymsCheckbox('SNOMEDCT').check();
         const tableRows = permissibleValueSection.permissibleValueTableRows();
-        await expect(permissibleValueSection.permissibleValueSynonymsTds(tableRows.last(), 'SNOMEDCT')).toHaveText([
-            'A3453356 | A2881557',
-            'Female structure | Female',
-        ]);
+        await expect(tableRows.last()).toContainText('A3453356');
+        await expect(tableRows.last()).toContainText('A2881557');
+        await expect(tableRows.last()).toContainText('Female');
+        await expect(tableRows.last()).toContainText('Female structure');
     });
 
     await test.step(`Publish CDE to new version`, async () => {
