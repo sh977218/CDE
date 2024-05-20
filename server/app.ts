@@ -235,7 +235,7 @@ function getS3Link(subPath: string): httpProxy.ProxyOptions {
             (proxyReqOpts as any).rejectUnauthorized = false;
             return proxyReqOpts;
         },
-        proxyReqPathResolver: req => `/${config.s3.path}/${subPath + req.url}`
+        proxyReqPathResolver: req => `/${config.s3.path}/build/${subPath + req.url}`
     };
 }
 

@@ -20,8 +20,15 @@ export function cellObjectValue(cell: ExcelValue): Exclude<ExcelValue, CellObjec
     return typeof cell === 'object' && !(cell instanceof Date) ? cell?.v : cell;
 }
 
-export function cellValue(cell: ExcelValue): Exclude<ExcelValue, CellObject> {
-    return trim(cellObjectValue(cell));
+export function cellValue(withError: WithError, cell: ExcelValue): Exclude<ExcelValue, CellObject> {
+    const value = cellObjectValue(cell);
+    if (typeof value === 'string' && value.length === 32767) {
+        withError(
+            'Length',
+            'Maximum cell size of 32767 characters reached. Please split into another column with starting with [2].'
+        );
+    }
+    return trim(value);
 }
 
 export function combineLines(value: string): string;

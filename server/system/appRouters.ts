@@ -26,7 +26,7 @@ export function module() {
 
     let indexHtml = '';
     try {
-        indexHtml = fs.readFileSync(path.join(process.cwd(), '/dist/cde-cli/index.html'), 'UTF-8');
+        indexHtml = fs.readFileSync(path.join(process.cwd(), 'dist/cde-cli/index.html'), 'UTF-8');
     } catch (e) {
         console.error("Missing file index.html. Run 'ng build' and retry");
         process.exit(1);

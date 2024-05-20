@@ -1,17 +1,29 @@
-import {EventEmitter} from 'events';
-import {Response} from 'express';
+import { EventEmitter } from 'events';
+import { Response } from 'express';
+import { config } from 'server';
+import { elasticsearch } from 'server/cde/elastic';
+import { create as deCreate } from 'server/cde/mongo-cde';
+import { CdeFormDocument, create as formCreate } from 'server/form/mongo-form';
+import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
+import {
+    cdeColumns as excelCdeColumns202404,
+    cdeColumnsOrdered as excelCdeColumnsOrdered202404,
+} from 'server/submission/excel202404';
+import { ColumnInformation, RowInformation, valueAsString } from 'server/submission/submissionShared';
+import { esClient, termRegStatus } from 'server/system/elastic';
+import { CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode } from 'server/uts/utsSvc';
 import {
     LoadData,
     ValidationErrors,
     VerifySubmissionFileProgress,
     VerifySubmissionFileReport,
 } from 'shared/boundaryInterfaces/API/submission';
-import {keys} from 'shared/builtIn';
-import {create as deCreate} from 'server/cde/mongo-cde';
-import {CdeFormDocument, create as formCreate} from 'server/form/mongo-form';
-import {DataElement} from 'shared/de/dataElement.model';
-import {CdeForm} from 'shared/form/form.model';
-import {ArrayToType, Cb, Cb1, PermissibleValue, User} from 'shared/models.model';
+import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
+import { keys } from 'shared/builtIn';
+import { DataElement } from 'shared/de/dataElement.model';
+import { convertCdeToQuestion } from 'shared/form/fe';
+import { CdeForm } from 'shared/form/form.model';
+import { ArrayToType, Cb, Cb1, PermissibleValue, User } from 'shared/models.model';
 import {
     cellValue,
     combineLines,
@@ -21,33 +33,23 @@ import {
     trim,
     WithError,
 } from 'shared/node/io/excel';
-import {mapSeries, nextTick} from 'shared/promise';
-import {schedulingExecutor} from 'shared/scheduling';
-import {isString, noop} from 'shared/util';
-import {CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode} from 'server/uts/utsSvc';
+import { mapSeries, nextTick } from 'shared/promise';
+import { schedulingExecutor } from 'shared/scheduling';
+import { SearchSettingsElastic } from 'shared/search/search.model';
+import { isString, noop } from 'shared/util';
 import * as spellChecker from 'simple-spellchecker';
-import {utils, WorkBook} from 'xlsx';
-import {Submission} from 'shared/boundaryInterfaces/db/submissionDb';
-import {DataElementDocument} from 'server/mongo/mongoose/dataElement.mongoose';
-import {ColumnInformation, RowInformation, valueAsString} from 'server/submission/submissionShared';
-import {
-    cdeColumns as excelCdeColumns202401,
-    cdeColumnsOrdered as excelCdeColumnsOrdered202401,
-} from 'server/submission/excel202401';
-import {convertCdeToQuestion} from 'shared/form/fe';
-import {config} from '../config';
-import {esClient, termRegStatus} from '../system/elastic';
-import {SearchSettingsElastic} from 'shared/search/search.model';
-import {elasticsearch} from '../cde/elastic';
+import { utils, WorkBook } from 'xlsx';
 
 // Workbook Versions:
-//     v.2024.01(LATEST): add 'URI/URL'
+//     v.2024.04(LATEST): add version on most tabs
+//     v.2024.01: add 'URI/URL' [MOVED TO v.2024.01]
 //     v.2023.09: add 'Other Identifiers' [MOVED TO v.2024.01]
 //     v.2023.04: same as v.2023.03 [MOVED TO v.2024.01]
 //     v.2023.03(INITIAL VERSION) [MOVED TO v.2024.01]
 // Additional Columns:
 //     Property:
-const workbookVersions = ['v.2023.03', 'v.2023.04', 'v.2023.09', 'v.2024.01'] as const;
+//     [#]
+const workbookVersions = ['v.2023.03', 'v.2023.04', 'v.2023.09', 'v.2024.01', 'v.2024.04'] as const;
 type WorkbookVersion = ArrayToType<typeof workbookVersions>;
 const workbookVersionsStr = workbookVersions.join(', ');
 
@@ -64,7 +66,7 @@ function propertyColumnInformation(propertyName: string): ColumnInformation {
             if (!de.properties) {
                 de.properties = [];
             }
-            de.properties.push({key: propertyName, value: val});
+            de.properties.push({ key: propertyName, value: val });
         },
     };
 }
@@ -92,6 +94,8 @@ export function processWorkBook(
     const dictionary = spellChecker.getDictionarySync('en-US');
     const additionalColumnsOrdered: ColumnInformation[] = [];
     const columnNumber: ColumnInformation[] = [];
+    const splitColumns: ColumnInformation[][] = [];
+    const splitColumnHeadings: Record<string, number> = {};
     const validationErrors: ValidationErrors = {
         cover: [],
         CDEs: [],
@@ -111,7 +115,7 @@ export function processWorkBook(
         code: 0,
         codeTotal: 0,
     };
-    const {run: execute} = schedulingExecutor(100, 0); // limit total server resources used
+    const { run: execute } = schedulingExecutor(100, 0); // limit total server resources used
     let browserTimer: number = 0;
     let closeoutPromiseResolve: Cb | void;
     let updateHandler: Cb1<true | void> | void;
@@ -127,7 +131,7 @@ export function processWorkBook(
         updateHandler = (done: true | void) => {
             if (done) {
                 clearInterval(browserTimer);
-                progress.report = {data, validationErrors};
+                progress.report = { data, validationErrors };
             }
             if (res) {
                 res.send(progress);
@@ -148,7 +152,7 @@ export function processWorkBook(
         if (updateHandler) {
             await updateHandler(true);
         }
-        return {data, validationErrors};
+        return { data, validationErrors };
     });
 
     function processSheetCover(): boolean {
@@ -159,7 +163,7 @@ export function processWorkBook(
             errors.push('Worksheet "Cover Sheet" is missing.');
             return false;
         }
-        const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, {header: 1, defval: null});
+        const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, { header: 1, defval: null });
         let row = 0;
 
         workbookVersion = (rows[row][7] as any) || '';
@@ -167,18 +171,18 @@ export function processWorkBook(
         expectFormTemplate(
             withError(row),
             rows[row++],
-            {7: 'v.2024.01'},
+            { 7: 'v.2024.01' },
             'Submission does not use the current submission template (version v.2024.01). No action is needed from you, but our team may contact you if additional information is required. The current version can always be found in the NLM Common Data Elements Team, in the General channel, under Files, in the CDE_Governance folder.'
         );
-        expectFormTemplate(withError(row), rows[row++], {1: 'CDE Governance Submission Cover Sheet'});
+        expectFormTemplate(withError(row), rows[row++], { 1: 'CDE Governance Submission Cover Sheet' });
         row++;
         row++;
-        expectFormTemplate(withError(row), rows[row++], {1: 'Submission Information'});
-        const submissionName = extractFormValue(withError(row), rows[row++], 2, 9, {1: '*Submission title:'});
+        expectFormTemplate(withError(row), rows[row++], { 1: 'Submission Information' });
+        const submissionName = extractFormValue(withError(row), rows[row++], 2, 9, { 1: '*Submission title:' });
         row++;
-        const submissionUrl = extractFormValue(withError(row), rows[row++], 2, 9, {1: 'Submission URL:'});
+        const submissionUrl = extractFormValue(withError(row), rows[row++], 2, 9, { 1: 'Submission URL:' });
         row++;
-        const submissionVersion = extractFormValue(withError(row), rows[row], 2, 9, {1: '*Version number:'});
+        const submissionVersion = extractFormValue(withError(row), rows[row], 2, 9, { 1: '*Version number:' });
         const numberCDEs = extractFormValue(withError(row), rows[row++], 7, 9, {
             5: 'Number of CDEs in this submission:',
         });
@@ -224,16 +228,16 @@ export function processWorkBook(
             errors.push('Worksheet "CDEs" is missing.');
             return false;
         }
-        const rows = utils.sheet_to_json<Row>(cdesSheet, {header: 1, defval: null});
+        const rows = utils.sheet_to_json<Row>(cdesSheet, { header: 1, defval: null });
         progress.rowTotal += rows.length;
 
-        const columnErrors = getColumnPositions(rows[0], columnNumber, additionalColumnsOrdered);
+        const columnErrors = getColumnPositions(withError(1), rows[0], columnNumber, additionalColumnsOrdered);
         if (columnErrors.length) {
             columnErrors.forEach(message => withError(1)('Column Heading', message));
             return !errors.length;
         }
 
-        expectFormTemplate(withError(2), rows[1], {0: 'Required'});
+        expectFormTemplate(withError(2), rows[1], { 0: 'Required' });
 
         if (!valueAsString(rows[2][0]).startsWith('A unique and unambiguous label to help users')) {
             withError(3)('Template', 'Description Row is missing.');
@@ -302,7 +306,17 @@ export function processWorkBook(
         return !errors.length;
     }
 
+    function getSplitColumnIndex(heading: string) {
+        if (splitColumnHeadings[heading] === undefined) {
+            const newIndex = splitColumns.length;
+            splitColumnHeadings[heading] = newIndex;
+            splitColumns[newIndex] = [];
+        }
+        return splitColumnHeadings[heading];
+    }
+
     function getColumnPositions(
+        withError: WithError,
         headerRow: Row,
         columnNumber: ColumnInformation[],
         additionalColumnsOrdered: ColumnInformation[]
@@ -316,6 +330,7 @@ export function processWorkBook(
                 optionalColumns.push(column);
             }
         });
+        const tabWithIndex = new RegExp(/^\[(\d)\]\s*(.*)$/);
         const errors = headerRow
             .map((h, i) => {
                 const heading = combineLines(valueAsString(h));
@@ -326,8 +341,23 @@ export function processWorkBook(
                         headingMatch = propertyColumnInformation(propertyName);
                         additionalColumnsOrdered.push(headingMatch);
                     } else {
-                        return `Worksheet Column "${heading}" is incorrect. Please remove to continue.`;
+                        const indexMatch = tabWithIndex.exec(heading);
+                        if (indexMatch) {
+                            const baseHeading = indexMatch[2];
+                            const indexFromHeading = parseInt(indexMatch[1], 10) - 1;
+                            headingMatch = {
+                                order: -1,
+                                required: false,
+                                value: null,
+                                setValue: () => {},
+                            };
+                            splitColumns[getSplitColumnIndex(baseHeading)][indexFromHeading] = headingMatch;
+                        } else {
+                            return `Worksheet Column "${heading}" is incorrect. Please remove to continue.`;
+                        }
                     }
+                } else {
+                    splitColumns[getSplitColumnIndex(heading)][0] = headingMatch;
                 }
                 columnNumber[i] = headingMatch;
                 let match = expectedColumns.indexOf(heading);
@@ -346,12 +376,33 @@ export function processWorkBook(
                         `Required Column "${columnHeading}" was not found in the worksheet. Add this column to continue.`
                 )
             );
+        Object.keys(splitColumnHeadings).forEach(key => {
+            const splitColumn = splitColumns[splitColumnHeadings[key]];
+            if (!splitColumn[0]) {
+                withError('Template', key + ': The column without an index is missing');
+            }
+            let index = 0;
+            splitColumn.forEach((colInfo, i) => {
+                if (index !== i) {
+                    withError(
+                        'Template',
+                        key +
+                            `: Indexed Column ${index + 1} is missing while following indexed column ${
+                                i + 1
+                            } has been used.`
+                    );
+                }
+                if (colInfo) {
+                    index++;
+                }
+            });
+        });
         return errors.length
             ? errors.concat(
-                optionalColumns.map(
-                    columnHeading => `Optional Column "${columnHeading}" not used yet in the worksheet. This is okay.`
-                )
-            )
+                  optionalColumns.map(
+                      columnHeading => `Optional Column "${columnHeading}" not used yet in the worksheet. This is okay.`
+                  )
+              )
             : errors;
     }
 
@@ -382,8 +433,8 @@ export function processWorkBook(
             );
         }
         // default to latest
-        cdeColumns = excelCdeColumns202401;
-        cdeColumnsOrdered = excelCdeColumnsOrdered202401;
+        cdeColumns = excelCdeColumns202404;
+        cdeColumnsOrdered = excelCdeColumnsOrdered202404;
     }
 
     function storeCdeData(
@@ -405,7 +456,7 @@ export function processWorkBook(
             return null;
         }
         row.forEach((cell, i) => {
-            const value = cellValue(cell);
+            const value = cellValue(withError, cell);
             const columnInformation = columnNumber[i];
             if (!columnInformation) {
                 withError('Template', `column ${i} is missing.`);
@@ -416,12 +467,20 @@ export function processWorkBook(
             }
             columnInformation.value = value;
         });
+        splitColumns.forEach(split => {
+            split.forEach((colInfo, index, split) => {
+                if (index === 0) {
+                    return;
+                }
+                split[0].value = (split[0]?.value ?? '') + '' + (colInfo.value ?? '');
+            });
+        });
         const de: DataElement = new DataElement();
         de.nihEndorsed = true;
         de.stewardOrg.name = submission.name;
         de.classification.push({
-            stewardOrg: {name: submission.name},
-            elements: [{elements: [], name: submission.version}],
+            stewardOrg: { name: submission.name },
+            elements: [{ elements: [], name: submission.version }],
         });
         de.registrationState.registrationStatus = submission.registrationStatus;
         de.registrationState.administrativeStatus = submission.administrativeStatus;
@@ -632,11 +691,11 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
         form.isBundle = true;
         form.nihEndorsed = true;
         form.stewardOrg.name = submission.name;
-        form.designations.push({designation: name});
-        form.definitions.push({definition: 'This is a bundle.', tags: []});
+        form.designations.push({ designation: name });
+        form.definitions.push({ definition: 'This is a bundle.', tags: [] });
         form.classification.push({
-            stewardOrg: {name: submission.name},
-            elements: [{elements: [], name: submission.version}],
+            stewardOrg: { name: submission.name },
+            elements: [{ elements: [], name: submission.version }],
         });
         form.registrationState.registrationStatus = submission.registrationStatus;
         form.registrationState.administrativeStatus = submission.administrativeStatus;
@@ -658,7 +717,7 @@ function withErrorCapture(location: string, errors: string[]) {
             errors.push(location + ':' + subLocation + ':' + type + ':' + message);
 }
 
-function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Partial<DataElement>): Promise<[]> {
+function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Partial<DataElement>): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const query: any = {
             bool: {
@@ -698,7 +757,7 @@ function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Parti
                     script: {
                         source:
                             "doc['valueDomain.permissibleValues.permissibleValue'].length == " +
-                            cde.valueDomain?.permissibleValues.length || 0,
+                                cde.valueDomain?.permissibleValues.length || 0,
                         lang: 'painless',
                     },
                 },
@@ -734,7 +793,7 @@ function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Parti
     });
 }
 
-function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partial<DataElement>) {
+function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partial<DataElement>): Promise<boolean> {
     return new Promise((resolve, reject) => {
         const designation = (cde.designations || [])[0]?.designation;
         const searchSetting: SearchSettingsElastic = {
