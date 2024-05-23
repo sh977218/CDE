@@ -2,8 +2,8 @@ import { Injectable, Injector } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { jwtDecode } from 'jwt-decode';
-
-const localStorageJwtTokenKey = 'jwtToken';
+import { CookieService } from 'ngx-cookie-service';
+import { UserService } from '_app/user.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -13,26 +13,20 @@ export class TokenInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const http = this.injector.get(HttpClient);
+        const userService = this.injector.get(UserService);
+        const cookieService = this.injector.get(CookieService);
 
         if (request.url.indexOf('/refreshToken') === -1) {
             /* istanbul ignore next */
             if (performance.now() - this.lastJwtRefresh > 20 * 60 * 1000) {
                 this.lastJwtRefresh = performance.now();
-                http.get<{ jwtToken: string }>(`/server/refreshToken`).subscribe(newJwt => {
-                    localStorage.setItem(localStorageJwtTokenKey, newJwt.jwtToken);
-                });
+                http.get(`/server/refreshToken`, { responseType: 'text' }).subscribe();
             }
         }
 
-        const jwtToken = localStorage.getItem(localStorageJwtTokenKey);
+        const jwtToken = cookieService.get('jwtToken');
 
         if (jwtToken) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: `Bearer  ${localStorage.getItem(localStorageJwtTokenKey)}`,
-                },
-            });
-
             try {
                 const decodedToken = jwtDecode(jwtToken);
                 const jwtExpiredTime = decodedToken.exp || 0;
@@ -40,12 +34,12 @@ export class TokenInterceptor implements HttpInterceptor {
                 const isJwtTokenExpired = jwtExpiredTime < nowTime;
 
                 if (isJwtTokenExpired) {
-                    localStorage.removeItem(localStorageJwtTokenKey);
-                    http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe();
+                    http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe(() =>
+                        userService.clear()
+                    );
                 }
             } catch (e) {
-                localStorage.removeItem(localStorageJwtTokenKey);
-                http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe();
+                http.post('/server/system/logout', {}, { responseType: 'text' }).subscribe(() => userService.clear());
             }
         }
 

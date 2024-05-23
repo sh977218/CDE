@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AlertService } from '../alert/alert.service';
 
@@ -28,25 +28,20 @@ export class LoginFederatedComponent {
                         if (window.location.href.indexOf('-green.') !== -1) {
                             body.green = true;
                         }
-                        return http.post<{ jwtToken: string }>('/server/login', body, { withCredentials: true }).pipe(
-                            tap({
-                                next: jwtToken => localStorage.setItem('jwtToken', jwtToken.jwtToken),
-                                error: () => localStorage.removeItem('jwtToken'),
-                            })
-                        );
+                        return http.post('/server/login', body, { withCredentials: true, responseType: 'text' });
                     } else {
                         return throwError(() => new Error('No ticket found.'));
                     }
                 })
             )
             .subscribe({
-                next: url => {
+                next: () => {
                     this.alertService.addAlert('success', `Success logged in.`);
                     window?.opener?.loggedIn();
                     window.close();
                 },
                 error: e => {
-                    localStorage.removeItem('jwtToken'), this.alertService.addAlert('danger', `Error log`);
+                    this.alertService.addAlert('danger', `Error log`);
                     window?.opener?.loggedIn();
                 },
             });

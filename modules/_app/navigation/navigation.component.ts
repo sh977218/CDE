@@ -262,7 +262,6 @@ export class NavigationComponent {
     }
 
     logout() {
-        localStorage.removeItem('jwtToken');
         this.userService.clear();
         this.router.navigate(['/login']);
         this.app.ssoLogout(() => {});

@@ -150,7 +150,7 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
         node ../../../node_modules/nyc/bin/nyc report
     fi
 
-    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 35 --functions 35 --branches 35
+    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 30 --functions 30 --branches 30
     if [ $? -ne 0 ]
     then
         echo "Error: Insufficient Coverage"

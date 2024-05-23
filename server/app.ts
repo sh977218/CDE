@@ -313,14 +313,10 @@ app.use((req, res, next) => {
 });
 
 app.use(async (req, res, next) => {
-    const bearerHeader = req.headers.authorization;
     const bearerCookie = req.cookies.Bearer;
-    if (bearerHeader || bearerCookie) {
-        const bearerToken = bearerHeader || bearerCookie;
-        const bearer = bearerToken.split(' ').filter((a: string) => a.trim().length);
-        const token = bearer[1] || undefined;
+    if (bearerCookie) {
         try {
-            const payload = validateJWToken(token);
+            const payload = validateJWToken(bearerCookie);
             const userObj = await findUserByUsername(payload.sub);
             req.user = userObj;
             next();
@@ -364,8 +360,8 @@ try {
             }
             const jwtToken = generateJwtToken(user.username);
             recordUserLogin(user, req.ip);
-            res.cookie('Bearer', `Bearer ${jwtToken}`);
-            res.send({ jwtToken });
+            res.cookie('Bearer', `${jwtToken}`);
+            res.send();
         }
     });
 
@@ -402,14 +398,14 @@ try {
         }
         const jwtToken = generateJwtToken(user.username);
         recordUserLogin(user, req.ip);
-        res.cookie('Bearer', `Bearer ${jwtToken}`);
-        res.send({ jwtToken });
+        res.cookie('Bearer', `${jwtToken}`);
+        res.send();
     });
 
     app.get('/server/refreshToken', loggedInMiddleware, (req, res) => {
         const jwtToken = generateJwtToken(req.user.username);
-        res.cookie('Bearer', `Bearer ${jwtToken}`);
-        res.send({ jwtToken });
+        res.cookie('Bearer', `${jwtToken}`);
+        res.send();
     });
 
     app.use('/', appModule());

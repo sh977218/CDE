@@ -273,7 +273,7 @@ export function module() {
             return res.status(403).end();
         }
         res.clearCookie('Bearer');
-        res.redirect('/server/login');
+        res.send();
     });
 
     router.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {

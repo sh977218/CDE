@@ -5,7 +5,7 @@ import { NotificationService } from '_app/notifications/notification.service';
 import { InactivityLoggedOutModalComponent } from 'inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 import { isEmpty } from 'lodash';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Cb1, User } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import {
@@ -21,6 +21,7 @@ import {
 import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { removeFromArray } from 'shared/array';
+import { Router } from '@angular/router';
 
 /*
  * 3 ways to get User:
@@ -47,6 +48,7 @@ export class UserService {
     private promise!: Promise<User | undefined>;
 
     constructor(
+        private router: Router,
         @Inject(forwardRef(() => NotificationService))
         private notificationService: NotificationService,
         @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
@@ -76,18 +78,10 @@ export class UserService {
 
     canSeeComment = () => canViewComment(this.user);
 
-    loginViaJwt(jwt: string) {
-        return this.http
-            .post<{ jwtToken: string }>('/server/utslogin', { jwtToken: jwt })
-            .pipe(
-                tap({
-                    next: jwtToken => localStorage.setItem('jwtToken', jwtToken.jwtToken),
-                    error: () => localStorage.removeItem('jwtToken'),
-                })
-            )
-            .subscribe(() => {
-                this.reload();
-            });
+    loginViaJwt(jwtToken: string) {
+        return this.http.post('/server/utslogin', { jwtToken }).subscribe(() => {
+            this.reload();
+        });
     }
 
     async processUser(user: User | undefined): Promise<User> {

@@ -1,6 +1,7 @@
-import { test } from '../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+
+import { test } from '../../fixtures/base-fixtures';
 
 test.describe(`@a11y accessibility test`, async () => {
     test(`Home page`, async () => {});

@@ -79,7 +79,7 @@
               "modules/styles.scss"
             ],
             "scripts": [
-              "node_modules/material-design-lite/material.js",
+              "node_modules/material-design-lite/material.js"
             ]
           },
           "configurations": {
@@ -338,17 +338,18 @@
       "architect": {
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
-          "options": {
+          "options":  {
             "customWebpackConfig": {
               "path": "e2e-playwright/coverage.webpack.js"
             },
-            "outputPath": "build/dist/e2e-coverage",
+            "outputPath": "build/dist/cde-cli",
             "index": "modules/_app/src/index.html",
             "main": "modules/_app/src/main.ts",
             "polyfills": "modules/_app/src/polyfills.ts",
             "tsConfig": "tsconfigApp.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
+              "date-fns",
               "async",
               "diff-match-patch",
               "file-saver",
@@ -357,7 +358,8 @@
               "jxon",
               "lodash",
               "mousetrap",
-              "mobx"
+              "mobx",
+              "date-fns"
             ],
             "assets": [
               {
@@ -390,20 +392,36 @@
               "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "node_modules/@ali-hm/angular-tree-component/css/angular-tree-component.css",
               "node_modules/js-toggle-switch/dist/toggle-switch.css",
-              "modules/angular-aio-toc/toc.global.scss",
+              "modules/app.scss",
               "modules/_app/navigation/navigation.global.scss",
-              "modules/nativeRender/nativeRender.global.scss",
-              "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
+              "modules/adminItem/draftSlider/draftSlider.global.scss",
+              "modules/angular-aio-toc/toc.global.scss",
               "modules/form/displayProfile/displayProfile.global.scss",
               "modules/form/formDescription/formDescription.global.scss",
-              "modules/adminItem/draftSlider/draftSlider.global.scss",
-              "modules/app.scss"
+              "modules/inlineAreaEdit/inlineAreaEdit.global.scss",
+              "modules/nativeRender/nativeRender.global.scss",
+              "modules/submission/submissionEdit.component.global.scss",
+              "modules/styles.scss"
             ],
             "scripts": [
-              "node_modules/material-design-lite/material.js",
+              "node_modules/material-design-lite/material.js"
             ]
           },
           "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "modules/environments/environment.ts",
+                  "with": "modules/environments/environment.playwright.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -413,7 +431,7 @@
               ]
             }
           },
-          "defaultConfiguration": "prod"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
@@ -423,9 +441,7 @@
           },
           "configurations": {
             "playwright": {
-              "browserTarget": "e2e-coverage:build:production",
-              "liveReload": false,
-              "watch": false
+              "browserTarget": "e2e-coverage:build:development"
             }
           },
           "defaultConfiguration": "development"

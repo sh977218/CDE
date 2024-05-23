@@ -85,7 +85,7 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
         await fs.writeFile(nycOutput, coverage);
     } else {
         // API testing don't output coverage
-        const isDebug = testInfo.project.name === 'CDE-smokeTest';
+        const isDebug = ['CDE-smokeTest', 'CDE-oneTest'].includes(testInfo.project.name);
         const isApiTesting = testInfo.titlePath.filter(t => t.includes('API') || t.includes('api')).length > 0;
         if (isDebug || isApiTesting) {
             console.info(`No coverage needed for debug or api testing: ${testInfo.titlePath.join(' -> ')}`);
