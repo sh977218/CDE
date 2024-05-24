@@ -27,7 +27,7 @@
   },
   "elastic": {
     "hosts": [
-      "https://vpc-cde-us-east-1-7-1-psvmuqygp3k6aptsijb5xwhosu.us-east-1.es.amazonaws.com"
+      "https://cde-search-us-east-1.awsprod.nlm.nih.gov"
     ],
     "inject_bulk_size": 50,
     "esIndexVersion": "v15"

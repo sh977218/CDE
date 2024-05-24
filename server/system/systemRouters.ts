@@ -29,7 +29,7 @@ import { version } from 'server/version';
 import { consoleLog, loginModel } from 'server/log/dbLogger';
 import { ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
-import { reIndex } from 'server/system/elastic';
+import { elasticsearchInfo, reIndex } from 'server/system/elastic';
 import { byId, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import { removeFromArrayBy } from 'shared/array';
@@ -239,6 +239,11 @@ export function module() {
     router.get('/indexCurrentNumDoc/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         const index = indices[+req.params.indexPosition];
         return res.send({ count: index.count, totalCount: index.totalCount });
+    });
+
+    router.get('/esVersion', isSiteAdminMiddleware, async (req, res) => {
+        const esInfo = await elasticsearchInfo();
+        res.send(esInfo.version);
     });
 
     router.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {

@@ -54,4 +54,8 @@ export class SettingMenuPo {
     spellCheckMenu() {
         return this.page.getByTestId(`spell-check`);
     }
+
+    serverStatusMenu() {
+        return this.page.getByTestId(`server-status`);
+    }
 }

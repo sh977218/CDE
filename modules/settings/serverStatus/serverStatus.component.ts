@@ -21,9 +21,11 @@ export class ServerStatusComponent {
     isDone: boolean = false;
     linkedForms: { total: number; done: number } = { total: 0, done: 0 };
     statuses: any[] = [];
+    esInfo$;
 
     constructor(private alert: AlertService, private http: HttpClient, public dialog: MatDialog) {
         this.refreshStatus();
+        this.esInfo$ = http.get(`/server/system/esVersion`);
     }
 
     reIndex() {

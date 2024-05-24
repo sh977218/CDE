@@ -14,7 +14,7 @@
   "expressLogFile": "/var/nlm/logs/cde.log",
   "elastic": {
     "hosts": [
-      "https://vpc-cde-us-east-1-7-1-4kxvq5ggwivwbfdlzhpg45j5wi.us-east-1.es.amazonaws.com"
+      "https://cde-search-us-east-1.awsqa.nlm.nih.gov"
     ],
     "number_of_replicas": 0,
     "esIndexVersion": "v15"

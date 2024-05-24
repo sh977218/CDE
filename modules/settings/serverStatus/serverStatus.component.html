@@ -3,8 +3,12 @@
 <div class="boxed-div">
     <h4>Elastic Search</h4>
     <hr/>
+    <div>
+        <label>Elasticsearch version</label>
+        <pre data-testid="es-info">{{esInfo$ | async |json }}</pre>
+    </div>
     <div *ngFor="let i of esIndices; let $index = index">
-        <button class="button" (click)="openConfirmReindexModal($index)">
+        <button mat-fab extended color="primary" class="button" (click)="openConfirmReindexModal($index)">
             <mat-icon>refresh</mat-icon>
             Re-index: <b>{{i.name}}</b> / {{i.indexName}}
         </button>
@@ -15,7 +19,7 @@
 
     <button class="button" (click)="syncLinkedForms()">Sync Linked Forms</button>
     <form (ngSubmit)="syncLinkedFormWithCdeTinyId(cdeTinyIdInput.value)">
-        <mat-label>CDE TinyId: </mat-label>
+        <mat-label>CDE TinyId:</mat-label>
         <input mat-input #cdeTinyIdInput/>
         <button class="button" type="submit">Sync Linked Forms with tinyId</button>
     </form>

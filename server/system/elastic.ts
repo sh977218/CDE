@@ -463,6 +463,11 @@ const searchTemplate: { [key: string]: any } = {
     },
 };
 
+export async function elasticsearchInfo() {
+    const esResponse = await esClient.info();
+    return esResponse.body;
+}
+
 export function elasticsearchPromise<T extends ModuleItem>(
     type: T,
     query: any,
