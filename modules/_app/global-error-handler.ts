@@ -3,7 +3,7 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 import { ClientErrorExtraInfo } from 'shared/log/audit';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class GlobalErrorHandler implements ErrorHandler {
     constructor(private injector: Injector, private logger: NGXLogger) {}
 

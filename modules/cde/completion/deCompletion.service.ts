@@ -7,7 +7,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataElement } from 'shared/de/dataElement.model';
 import { SearchSettings } from 'shared/search/search.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DeCompletionService {
     private searchSettings = new SearchSettings();
     private searchTerms = new Subject<string>();

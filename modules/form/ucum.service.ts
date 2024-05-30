@@ -10,7 +10,7 @@ export interface UcumSynonyms {
     synonyms: string[];
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UcumService {
     uomUnitMap = new Map<string, string[]>();
 

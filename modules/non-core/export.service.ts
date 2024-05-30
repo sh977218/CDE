@@ -37,7 +37,7 @@ export interface ExportRecordSettings {
     status?: CurationStatus;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ExportService {
     constructor(
         private alertService: AlertService,

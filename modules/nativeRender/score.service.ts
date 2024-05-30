@@ -9,7 +9,7 @@ interface ErrorOrScore {
     sum?: number;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ScoreService {
     INPUT_SCORE_MAP!: Map<string, FormQuestion[]>;
     elt!: CdeForm;

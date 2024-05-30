@@ -8,7 +8,7 @@ import {
     StatusValidationRulesByOrgReg,
 } from 'shared/organization/organization';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RegistrationValidatorService {
     constructor(private orgHelperService: OrgHelperService) {}
 

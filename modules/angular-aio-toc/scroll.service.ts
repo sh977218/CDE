@@ -13,7 +13,7 @@ export const topMargin = 16;
 /**
  * A service that scrolls document elements into view
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ScrollService implements OnDestroy {
     private _topOffset!: number | null;
     private _topOfPageElement!: Element;

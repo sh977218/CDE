@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 type Value = any;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LocalStorageService {
     setItem(key: string, value: Value) {
         localStorage.setItem(prefix(key), typeof value === 'object' ? JSON.stringify(value) : value);

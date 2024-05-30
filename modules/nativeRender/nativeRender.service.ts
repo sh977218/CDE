@@ -31,7 +31,7 @@ import {
 import { addFormIds, isQuestion, iterateFeSync } from 'shared/form/fe';
 import { SkipLogicOperators } from 'shared/form/skipLogic';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NativeRenderService {
     get nativeRenderType(): DisplayType {
         return this._nativeRenderType;

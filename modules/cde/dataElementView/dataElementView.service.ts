@@ -6,7 +6,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DataElementViewService {
     constructor(private http: HttpClient, private userService: UserService) {}
 

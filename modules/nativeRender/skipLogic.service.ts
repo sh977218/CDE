@@ -4,7 +4,7 @@ import { NativeRenderService } from 'nativeRender/nativeRender.service';
 import { isQuestion } from 'shared/form/fe';
 import { FormElement, FormElementsContainer } from 'shared/form/form.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SkipLogicService {
     constructor(private errorHandler: ErrorHandler) {}
 

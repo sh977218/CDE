@@ -12,7 +12,7 @@ export class SettingsComponent {
     isMobile: boolean = window.innerWidth < 576;
     opened: boolean = true;
 
-    constructor(private router: Router, public userSvc: UserService) {
+    constructor(private router: Router, public userService: UserService) {
         router.events.subscribe(val => {
             if (this.isMobile) {
                 this.drawer.close();

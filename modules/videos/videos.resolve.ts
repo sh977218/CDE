@@ -5,7 +5,7 @@ import { Article } from 'shared/article/article.model';
 import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class VideosResolve {
     constructor(private router: Router, public http: HttpClient) {}
 

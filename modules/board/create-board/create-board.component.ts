@@ -23,7 +23,7 @@ export class CreateBoardComponent {
     constructor(
         public dialog: MatDialog,
         private alert: AlertService,
-        public userSvc: UserService,
+        public userService: UserService,
         public myBoardService: MyBoardsService
     ) {}
 

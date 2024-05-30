@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class BackForwardService {
     isBackForward = false;
     hasNavigated = false;

@@ -11,7 +11,7 @@ interface OrgDetailedInfo {
     [org: string]: Organization;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OrgHelperService {
     private orgsDetailedInfo: OrgDetailedInfo = {};
     private promise!: Promise<OrgDetailedInfo>;

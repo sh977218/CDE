@@ -24,13 +24,13 @@ export class CdeStatusReportComponent implements OnInit {
     constructor(
         private exportSvc: ExportService,
         private orgSvc: OrgHelperService,
-        private userSvc: UserService,
+        private userService: UserService,
         private route: ActivatedRoute
     ) {}
 
     ngOnInit() {
         this.orgSvc.then(() => {
-            this.userSvc.waitForUser().then(
+            this.userService.waitForUser().then(
                 () => {
                     this.exportSvc.exportSearchResults(
                         'validationRules',

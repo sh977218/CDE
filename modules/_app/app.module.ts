@@ -21,27 +21,16 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { environment } from 'environments/environment';
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
-import { BackForwardService } from '_app/backForward.service';
 import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
 import { IEBannerComponent } from '_app/banner/ieBanner.component';
-import { ElasticService } from '_app/elastic.service';
 import { NavigationComponent } from '_app/navigation/navigation.component';
-import { NotificationService } from '_app/notifications/notification.service';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
-import { UserService } from '_app/user.service';
 import { AlertModule } from 'alert/alert.module';
-import { LocalStorageService } from 'non-core/localStorage.service';
-import { OrgHelperService } from 'non-core/orgHelper.service';
-import { FormResolve } from 'form/formDescription/form.resolve';
 import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
 import { GlobalErrorHandler } from '_app/global-error-handler';
 import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
 import { FooterComponent } from 'footer/footer.component';
-import { MyBoardsService } from 'board/myBoards.service';
 import { LoginComponent } from '../login/login.component';
-import { LoginResolve } from '../login/login.resolve';
-import { ResourceResolve } from '../resources/resources.resolve';
-import { VideosResolve } from '../videos/videos.resolve';
 import { TokenInterceptor } from './token.interceptor';
 
 @NgModule({
@@ -84,17 +73,6 @@ import { TokenInterceptor } from './token.interceptor';
         TruncateLongNamePipe,
     ],
     providers: [
-        FormResolve,
-        LocalStorageService,
-        BackForwardService,
-        ElasticService,
-        NotificationService,
-        UserService,
-        OrgHelperService,
-        MyBoardsService,
-        LoginResolve,
-        ResourceResolve,
-        VideosResolve,
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     ],

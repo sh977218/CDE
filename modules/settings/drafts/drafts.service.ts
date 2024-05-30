@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Article } from 'shared/article/article.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DraftsService {
     constructor(public http: HttpClient) {}
 

@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Organization } from 'shared/organization/organization';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ManagedOrgsResolve {
     constructor(private router: Router, private http: HttpClient) {}
 

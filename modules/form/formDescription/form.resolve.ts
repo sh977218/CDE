@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { EMPTY, of } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class FormResolve {
     constructor(
         @Inject(forwardRef(() => Router)) private router: Router,

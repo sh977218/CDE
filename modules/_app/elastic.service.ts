@@ -19,7 +19,7 @@ import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.mode
 
 const includeRetiredSessionKey = 'nlmcde.includeRetired';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ElasticService implements OnDestroy {
     includeRetired?: boolean;
     searchSettings!: UserSearchSettings;

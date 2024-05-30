@@ -13,7 +13,7 @@
                                data-testid="viewing-history">
                     Viewing History
                 </mat-list-item>
-                <ng-container *ngIf="userSvc.isOrgCurator()">
+                <ng-container *ngIf="userService.isOrgCurator()">
                     <mat-divider></mat-divider>
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="myDrafts" data-testid="drafts">
                         Drafts
@@ -23,12 +23,12 @@
                                        data-testid="my-drafts">
                             My Drafts
                         </mat-list-item>
-                        <mat-list-item id="myOrgDrafts" *ngIf="userSvc.isOrgAdmin()"
+                        <mat-list-item id="myOrgDrafts" *ngIf="userService.isOrgAdmin()"
                                        [routerLinkActive]="['isActive']" routerLink="myOrgDrafts"
                                        data-testid="my-organizations-drafts">
                             My Organizations' Drafts
                         </mat-list-item>
-                        <mat-list-item id="allDrafts" *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="allDrafts" *ngIf="userService.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="allDrafts"
                                        data-testid="all-drafts">
                             All Drafts
@@ -45,19 +45,19 @@
                                    data-testid="my-comments">
                         My Comments
                     </mat-list-item>
-                    <mat-list-item id="myOrgComments" *ngIf="userSvc.isOrgAdmin()"
+                    <mat-list-item id="myOrgComments" *ngIf="userService.isOrgAdmin()"
                                    [routerLinkActive]="['isActive']" routerLink="myOrgComments"
                                    data-testid="my-organizations-comments">
                         My Organizations' Comments
                     </mat-list-item>
-                    <mat-list-item id="allComments" *ngIf="userSvc.isOrgAuthority()"
+                    <mat-list-item id="allComments" *ngIf="userService.isOrgAuthority()"
                                    [routerLinkActive]="['isActive']" routerLink="allComments"
                                    data-testid="all-comments">
                         All Comments
                     </mat-list-item>
                 </mat-list>
 
-                <ng-container *ngIf="userSvc.isOrgAdmin()">
+                <ng-container *ngIf="userService.isOrgAdmin()">
                     <mat-divider></mat-divider>
                     <mat-list-item [routerLinkActive]="['isActive']" routerLink="orgAdmin"
                                    data-testid="my-organizations">
@@ -76,22 +76,22 @@
                                        data-testid="editors">
                             Editors
                         </mat-list-item>
-                        <mat-list-item id="manageOrganizations" *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="manageOrganizations" *ngIf="userService.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="orgsEdit"
                                        data-testid="manage-organizations">
                             Manage Organizations
                         </mat-list-item>
-                        <mat-list-item id="tagsManagement" *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="tagsManagement" *ngIf="userService.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="tagsManagement"
                                        data-testid="manage-tags">
                             Manage Tags
                         </mat-list-item>
-                        <mat-list-item id="propertiesManagement" *ngIf="userSvc.isOrgAuthority()"
+                        <mat-list-item id="propertiesManagement" *ngIf="userService.isOrgAuthority()"
                                        [routerLinkActive]="['isActive']" routerLink="propertiesManagement"
                                        data-testid="manage-properties">
                             Manage Properties
                         </mat-list-item>
-                        <mat-list-item id="stewardTransfer" *ngIf="userSvc.user?.orgAdmin.length > 1"
+                        <mat-list-item id="stewardTransfer" *ngIf="userService.user?.orgAdmin.length > 1"
                                        [routerLinkActive]="['isActive']" routerLink="stewardOrgTransfer"
                                        data-testid="steward-transfer">
                             Steward Transfer
@@ -100,22 +100,22 @@
                 </ng-container>
 
                 <mat-divider></mat-divider>
-                <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                <mat-list-item *ngIf="userService.isOrgAuthority()"
                                id="users" [routerLinkActive]="['isActive']" routerLink="users"
                                data-testid="users">
                     Users
                 </mat-list-item>
-                <mat-list-item *ngIf="userSvc.isDocumentEditor()"
+                <mat-list-item *ngIf="userService.isDocumentEditor()"
                                id="articles" [routerLinkActive]="['isActive']" routerLink="articles"
                                data-testid="articles">
                     Articles
                 </mat-list-item>
-                <mat-list-item *ngIf="userSvc.isOrgAuthority()"
+                <mat-list-item *ngIf="userService.isOrgAuthority()"
                                [routerLinkActive]="['isActive']" routerLink="dataValidation"
                                data-testid="data-loading">
                     Data Loading
                 </mat-list-item>
-                <mat-list *ngIf="userSvc.isOrgAuthority()" style="margin-left: 1rem">
+                <mat-list *ngIf="userService.isOrgAuthority()" style="margin-left: 1rem">
                     <mat-list-item id="dataValidation" [routerLinkActive]="['isActive']"
                                    routerLink="dataValidation" data-testid="validation">
                         Validation
@@ -126,12 +126,12 @@
                     </mat-list-item>
                 </mat-list>
 
-                <mat-list-item *ngIf="userSvc.isNlmCurator()"
+                <mat-list-item *ngIf="userService.isNlmCurator()"
                                [routerLinkActive]="['isActive']" routerLink="submissionWorkbookValidation">
                     Submission Workbook Validation
                 </mat-list-item>
 
-                <ng-container *ngIf="userSvc.user?.siteAdmin">
+                <ng-container *ngIf="userService.user?.siteAdmin">
                     <mat-divider></mat-divider>
                     <mat-list-item id="siteAdmins" [routerLinkActive]="['isActive']" routerLink="siteAdmins"
                                    data-testid="site-admins">

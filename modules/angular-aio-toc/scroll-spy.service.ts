@@ -113,7 +113,7 @@ export class ScrollSpiedElementGroup {
     }
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ScrollSpyService {
     private spiedElementGroups: ScrollSpiedElementGroup[] = [];
     private onStopListening = new Subject();

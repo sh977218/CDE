@@ -4,7 +4,7 @@ import { trim } from 'lodash';
 import { FormElement, FormElementsContainer, SkipLogic } from 'shared/form/form.model';
 import { getLabel, getQuestionPriorByLabel, getQuestionsPrior, tokenSplitter } from 'shared/form/skipLogic';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SkipLogicValidateService {
     previousSkipLogicPriorToSelect = '';
     optionsMap: Map<string, string> = new Map();

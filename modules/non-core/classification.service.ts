@@ -13,7 +13,7 @@ import {
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ClassificationService {
     constructor(
         private alert: AlertService,

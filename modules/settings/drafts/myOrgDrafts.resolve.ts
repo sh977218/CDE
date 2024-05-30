@@ -4,7 +4,7 @@ import { EMPTY } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DraftsService } from 'settings/drafts/drafts.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MyOrgDraftsResolve {
     constructor(private router: Router, private draftSvc: DraftsService) {}
 

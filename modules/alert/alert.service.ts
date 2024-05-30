@@ -18,7 +18,7 @@ export class Alert {
     }
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AlertService {
     alertTime = 90000;
 

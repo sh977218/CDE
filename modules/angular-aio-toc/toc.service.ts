@@ -12,7 +12,7 @@ export interface TocItem {
     title: string;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TocService {
     tocList = new ReplaySubject<TocItem[]>(1);
     activeItemIndex = new ReplaySubject<number | null>(1);

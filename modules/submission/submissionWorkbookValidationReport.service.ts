@@ -11,7 +11,7 @@ export interface ReportCategory {
     rows: (number | string)[];
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SubmissionWorkbookValidationReportService {
     report?: VerifySubmissionFileReport;
     reportCdeCodes: ReportCategory[] = [];

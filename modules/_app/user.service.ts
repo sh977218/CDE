@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
  *     2. userService.waitForUser - asynchronous Promise, one-time, used for completing actions, can get stale, logged out is rejected
  *     3. userService.subscribe - asynchronous custom Callback, always up-to-date, need to unsubscribe
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
     private _user: User | undefined = undefined;
 

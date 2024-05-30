@@ -3,7 +3,7 @@ import { UserService } from '_app/user.service';
 import { Item, UserRole } from 'shared/models.model';
 import { canEditCuratedItem, isOrgCurator, isSiteAdmin, hasRole } from 'shared/security/authorizationShared';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class IsAllowedService {
     constructor(private userService: UserService) {}
 

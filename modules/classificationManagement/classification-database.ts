@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ClassificationNode } from 'classificationManagement/classification-node';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ClassificationDatabase {
     dataChange = new BehaviorSubject<ClassificationNode[]>([]);
 

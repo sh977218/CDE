@@ -17,7 +17,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MyBoardsService implements OnDestroy {
     boards?: Board[];
     filter: BoardFilter & {
