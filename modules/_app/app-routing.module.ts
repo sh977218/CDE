@@ -112,11 +112,6 @@ const appRoutes: Routes = [
         data: { title: 'Login', preload: false },
     },
     {
-        path: 'ieDiscontinued',
-        loadComponent: () => import('ie-discontinued/ieDiscontinued.component').then(c => c.IeDiscontinuedComponent),
-        data: { title: 'Upgrade Browser', preload: false },
-    },
-    {
         path: 'myBoards',
         loadComponent: () => import('board/myBoards/myBoards.component').then(c => c.MyBoardsComponent),
         data: { title: 'My Boards', preload: false },

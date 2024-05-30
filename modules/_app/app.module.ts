@@ -22,7 +22,6 @@ import { environment } from 'environments/environment';
 import { CdeAppComponent } from '_app/app.component';
 import { CdeAppRoutingModule } from '_app/app-routing.module';
 import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
-import { IEBannerComponent } from '_app/banner/ieBanner.component';
 import { NavigationComponent } from '_app/navigation/navigation.component';
 import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
 import { AlertModule } from 'alert/alert.module';
@@ -67,7 +66,6 @@ import { TokenInterceptor } from './token.interceptor';
     declarations: [
         CdeAppComponent,
         NotificationDialogComponent,
-        IEBannerComponent,
         ShutdownBannerComponent,
         NavigationComponent,
         TruncateLongNamePipe,
