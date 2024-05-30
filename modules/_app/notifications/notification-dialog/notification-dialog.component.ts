@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
     selector: 'notification-dialog',
     templateUrl: 'notification-dialog.component.html',
     styleUrls: ['notification-dialog.component.scss'],
+    standalone: true,
 })
 export class NotificationDialogComponent {
     constructor(

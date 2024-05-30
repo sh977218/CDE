@@ -9,9 +9,9 @@ import {
     Inject,
     Renderer2,
 } from '@angular/core';
-import { MatButton } from '@angular/material/button';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { NavigationEnd, Params, Router } from '@angular/router';
+import { MatButton, MatButtonModule } from '@angular/material/button';
+import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { NavigationEnd, Params, Router, RouterModule } from '@angular/router';
 import { CdeAppComponent } from '_app/app.component';
 import { NotificationService } from '_app/notifications/notification.service';
 import { UserService } from '_app/user.service';
@@ -19,6 +19,16 @@ import { interruptEvent } from 'non-core/browser';
 import { concat, cumulative, range } from 'shared/array';
 import { assertTrue } from 'shared/models.model';
 import { canClassify, hasPrivilege, isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
+import { UswdsBannerComponent } from '_app/banner/uswdsBanner.component';
+import { ShutdownBannerComponent } from '_app/banner/shutdownBanner.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { NotificationDialogComponent } from '_app/notifications/notification-dialog/notification-dialog.component';
+import { FooterComponent } from 'footer/footer.component';
+import { NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { TruncateLongNamePipe } from '_app/truncateLongName.pipe';
+import { MatListModule } from '@angular/material/list';
 
 const NAV_Z_INDEX_STANDARD = '1';
 const NAV_Z_INDEX_ACTIVE = '1050';
@@ -87,6 +97,24 @@ type CdeNavMenu = (CdeNavMenuItem & {
     selector: 'cde-navigation',
     templateUrl: './navigation.component.html',
     styleUrls: ['./navigation.component.scss'],
+    standalone: true,
+    imports: [
+        RouterModule,
+        UswdsBannerComponent,
+        ShutdownBannerComponent,
+        MatToolbarModule,
+        MatIconModule,
+        MatSidenavModule,
+        NotificationDialogComponent,
+        FooterComponent,
+        NgIf,
+        NgForOf,
+        MatButtonModule,
+        MatMenuModule,
+        UpperCasePipe,
+        TruncateLongNamePipe,
+        MatListModule,
+    ],
 })
 export class NavigationComponent {
     interruptEvent = interruptEvent;

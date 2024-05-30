@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Article } from 'shared/article/article.model';
+import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
     selector: 'cde-shutdown-banner',
@@ -9,6 +10,8 @@ import { Article } from 'shared/article/article.model';
     styleUrls: ['./shutdownBanner.component.scss'],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, AsyncPipe],
 })
 export class ShutdownBannerComponent {
     shutdownBannerContent$: Observable<Article>;

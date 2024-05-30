@@ -62,14 +62,12 @@ import { TokenInterceptor } from './token.interceptor';
         UswdsBannerComponent,
         FooterComponent,
         LoginComponent,
-    ],
-    declarations: [
-        CdeAppComponent,
-        NotificationDialogComponent,
-        ShutdownBannerComponent,
-        NavigationComponent,
         TruncateLongNamePipe,
+        ShutdownBannerComponent,
+        NotificationDialogComponent,
+        NavigationComponent,
     ],
+    declarations: [CdeAppComponent],
     providers: [
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },

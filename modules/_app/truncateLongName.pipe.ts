@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'cdeTruncateLongName' })
+@Pipe({ name: 'cdeTruncateLongName', standalone: true })
 export class TruncateLongNamePipe implements PipeTransform {
     transform(input: string) {
         if (input === undefined || input === null || input === '') {
