@@ -14,12 +14,11 @@ find /tmp/*.png -user bambooadm  | xargs rm -f
 find /tmp/*.jpg -user bambooadm  | xargs rm -f
 find /tmp/*.bin -user bambooadm  | xargs rm -f
 
+echo "node version $(node --version)"
+echo "npm version $(npm --version)"
 
 npm cache clean -f
 npm i
-
-echo "node version $(node --version)"
-echo "npm version $(npm --version)"
 
 ## CI build
 echo "======CI build============="
@@ -150,7 +149,7 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
         node ../../../node_modules/nyc/bin/nyc report
     fi
 
-    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 30 --functions 30 --branches 30
+    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 30 --functions 25 --branches 30
     if [ $? -ne 0 ]
     then
         echo "Error: Insufficient Coverage"

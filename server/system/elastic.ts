@@ -34,7 +34,7 @@ import {
     User,
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { hasRole, hasRolePrivilege, isOrgAuthority } from 'shared/security/authorizationShared';
+import { hasRolePrivilege, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 
 export type ElasticCondition = any;
@@ -418,22 +418,15 @@ export function hideRetired(settings: SearchSettingsElastic, user?: User) {
 
 export function getAllowedStatuses(user: User | undefined, settings: SearchSettingsElastic): CurationStatus[] {
     const allowedStatusesSet = new Set<CurationStatus>(['Preferred Standard', 'Standard', 'Qualified']);
+
     if (hasRolePrivilege(user, 'universalSearch')) {
-        allowedStatusesSet.add('Recorded');
-        allowedStatusesSet.add('Candidate');
+        if (user && user.viewDrafts) {
+            allowedStatusesSet.add('Recorded');
+            allowedStatusesSet.add('Candidate');
+        }
         allowedStatusesSet.add('Incomplete');
     }
 
-    if (myOrgs(user).includes(settings.selectedOrg || '') || myOrgs(user).includes(settings.selectedOrgAlt || '')) {
-        allowedStatusesSet.add('Recorded');
-        allowedStatusesSet.add('Candidate');
-        allowedStatusesSet.add('Incomplete');
-    }
-
-    if (user && user.viewDrafts) {
-        allowedStatusesSet.add('Recorded');
-        allowedStatusesSet.add('Candidate');
-    }
     if (settings.includeRetired) {
         allowedStatusesSet.add('Retired');
     }

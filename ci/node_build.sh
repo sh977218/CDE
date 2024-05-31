@@ -6,11 +6,11 @@ export host_name=`hostname`
 export NODE_ENV=dev-test
 chmod -R 755 $PWD
 
-npm cache clean -f
-npm i
-
 echo "node version $(node --version)"
 echo "npm version $(npm --version)"
+
+npm cache clean -f
+npm i
 
 ## CI build
 echo "======CI build============="

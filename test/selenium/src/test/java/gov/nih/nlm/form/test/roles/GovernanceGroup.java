@@ -9,10 +9,13 @@ public class GovernanceGroup extends NlmCdeBaseTest {
     @Test()
     public void governanceGroup() {
         mustBeLoggedInAs(governanceUser, password);
+        goToSearchSettings();
+        clickElement(By.id("viewPublishAndDraftButton"));
+        checkAlert("Saved");
 
         goToCdeSearch();
         clickElement(By.id("browseOrg-ACRIN"));
-        textPresent("Incomplete (");
+        textPresent("Candidate (");
         clickElement(By.xpath("//a[contains(.,'DCE-MRI Kinetics T1 Mapping Quality Type')]"));
         goToCdeSummary();
         assertNoElt(By.xpath("//cde-registration//button[contains(.,'Edit')]"));

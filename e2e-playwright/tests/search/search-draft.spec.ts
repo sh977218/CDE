@@ -39,7 +39,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
             await expect(searchPage.registrationStatusFilterInput('Incomplete')).toBeHidden();
         });
 
-        await test.step(`Enable view draft can see all status`, async () => {
+        await test.step(`Enable view draft cannot see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
             await page.locator(`id=viewPublishAndDraftButton-input`).check();
@@ -47,7 +47,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
-            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeVisible();
+            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeHidden();
         });
     });
 
@@ -69,7 +69,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
             await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeVisible(); //because CCR has 1 overlap with caBIG
             await expect(searchPage.registrationStatusFilterInput('Incomplete')).toBeHidden();
         });
-        await test.step(`Enable view draft can see all status`, async () => {
+        await test.step(`Enable view draft cannot see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
             await page.locator(`id=viewPublishAndDraftButton-input`).check();
@@ -77,7 +77,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
-            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeVisible();
+            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeVisible(); //because CCR has 1 overlap with caBIG
         });
     });
 
@@ -93,6 +93,35 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
         await expect(searchPage.registrationStatusFilterInput('Incomplete')).toBeVisible();
 
         await test.step(`'ctepAdmin' can not see other organization' all registration status`, async () => {
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
+            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeHidden();
+            await expect(searchPage.registrationStatusFilterInput('Incomplete')).toBeHidden();
+        });
+        await test.step(`Enable view draft cannot see all status`, async () => {
+            await navigationMenu.gotoSettings();
+            await settingMenu.searchSettingsMenu().click();
+            await page.locator(`id=viewPublishAndDraftButton-input`).check();
+            await materialPage.checkAlert('Saved');
+
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
+            await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeHidden();
+        });
+    });
+
+    test(`'universal search can see all org all registration status`, async ({
+        page,
+        materialPage,
+        navigationMenu,
+        searchPage,
+        settingMenu,
+    }) => {
+        await navigationMenu.login(Accounts.nlmCurator);
+        await searchPage.organizationTitleLink().filter({ hasText: `CTEP` }).click();
+        await expect(searchPage.registrationStatusFilterInput('Incomplete')).toBeVisible();
+
+        await test.step(`'nlmCurator' can not see other organization' all registration status`, async () => {
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
             await expect(searchPage.registrationStatusFilterInput('Candidate')).toBeHidden();
