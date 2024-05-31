@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, mergeMap } from 'rxjs/operators';
@@ -6,10 +6,7 @@ import { EMPTY, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class FormResolve {
-    constructor(
-        @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => HttpClient)) private httpClient: HttpClient
-    ) {}
+    constructor(private router: Router, private httpClient: HttpClient) {}
 
     resolve(route: ActivatedRouteSnapshot) {
         const tinyId = route.queryParams.tinyId;

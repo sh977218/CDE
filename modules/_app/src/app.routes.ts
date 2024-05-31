@@ -1,19 +1,17 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { OfflineComponent } from '_app/routing/offline.component';
-import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
-import { FormResolve } from 'form/formDescription/form.resolve';
+import { Routes } from '@angular/router';
 import { LoginFederatedComponent } from '_app/loginFederated.component';
-import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
-import { classifyGuard } from '_app/routerGuard/classifyGuard';
-import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
 import { ManagedOrgsResolve } from 'settings/managedOrgsResolve';
-import { ClassificationService } from 'non-core/classification.service';
-import { LoginResolve } from '../login/login.resolve';
+import { classifyGuard } from '_app/routerGuard/classifyGuard';
+import { loggedInGuard } from '_app/routerGuard/loggedInGuard';
+import { FormResolve } from 'form/formDescription/form.resolve';
+import { LoginResolve } from 'login/login.resolve';
+import { OfflineComponent } from '_app/routing/offline.component';
 import { ResourceResolve } from 'resources/resources.resolve';
-import { VideosResolve } from '../videos/videos.resolve';
+import { VideosResolve } from 'videos/videos.resolve';
+import { orgAuthorityGuard } from '_app/routerGuard/orgAuthorityGuard';
+import { PageNotFoundComponent } from '_app/routing/pageNotFound.component';
 
-const appRoutes: Routes = [
+export const app_routes: Routes = [
     {
         path: 'loginFederated',
         component: LoginFederatedComponent,
@@ -174,17 +172,3 @@ const appRoutes: Routes = [
         data: { title: 'Page Not Found', preload: false },
     },
 ];
-
-@NgModule({
-    imports: [
-        RouterModule.forRoot(appRoutes, {
-            scrollPositionRestoration: 'enabled',
-            anchorScrolling: 'enabled',
-            enableTracing: false, // TODO: dev only
-        }),
-    ],
-    declarations: [OfflineComponent, PageNotFoundComponent],
-    providers: [ManagedOrgsResolve, ClassificationService],
-    exports: [RouterModule],
-})
-export class CdeAppRoutingModule {}

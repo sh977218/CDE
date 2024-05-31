@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { PlatformLocation } from '@angular/common';
 import { NavigationStart, Router } from '@angular/router';
 
@@ -7,11 +7,7 @@ export class BackForwardService {
     isBackForward = false;
     hasNavigated = false;
 
-    constructor(
-        @Inject(forwardRef(() => PlatformLocation))
-        private location: PlatformLocation,
-        @Inject(forwardRef(() => Router)) private router: Router
-    ) {
+    constructor(private location: PlatformLocation, private router: Router) {
         location.onPopState(() => {
             this.isBackForward = true;
             this.hasNavigated = false;

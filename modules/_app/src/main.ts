@@ -1,13 +1,12 @@
+import { bootstrapApplication } from '@angular/platform-browser';
 import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { environment } from 'environments/environment';
-import { CdeAppModule } from '_app/app.module';
+import { CdeAppComponent } from '_app/app.component';
+import { appConfig } from '_app/src/app.config';
 
 if (environment.production) {
     enableProdMode();
 }
 
-platformBrowserDynamic()
-    .bootstrapModule(CdeAppModule)
-    .catch(err => console.error(err));
+bootstrapApplication(CdeAppComponent, appConfig).catch(err => console.error(err));

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
@@ -8,7 +8,7 @@ export class NotificationService {
     serverErrorNumber = 0;
     clientErrorNumber = 0;
 
-    constructor(@Inject(forwardRef(() => HttpClient)) public http: HttpClient) {}
+    constructor(public http: HttpClient) {}
 
     toggle() {
         this.show = !this.show;

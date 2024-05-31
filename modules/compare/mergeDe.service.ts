@@ -16,9 +16,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataElement } from 'shared/de/dataElement.model';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class MergeDeService {
     constructor(private http: HttpClient) {}
 

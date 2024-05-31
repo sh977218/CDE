@@ -4,9 +4,7 @@ import {
     Component,
     ComponentFactoryResolver,
     ElementRef,
-    forwardRef,
     HostListener,
-    Inject,
     Renderer2,
 } from '@angular/core';
 import { MatButton, MatButtonModule } from '@angular/material/button';
@@ -243,17 +241,14 @@ export class NavigationComponent {
     sectionActive: SECTIONS = -1;
 
     constructor(
-        @Inject(forwardRef(() => ApplicationRef))
         private appRef: ApplicationRef,
-        @Inject(forwardRef(() => CdeAppComponent)) private app: CdeAppComponent,
-        @Inject(forwardRef(() => ComponentFactoryResolver))
+        private app: CdeAppComponent,
         private componentFactoryResolver: ComponentFactoryResolver,
-        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
-        @Inject(forwardRef(() => NotificationService))
+        private http: HttpClient,
         public notificationService: NotificationService,
-        @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => UserService)) public userService: UserService,
-        @Inject(forwardRef(() => Renderer2)) private ren: Renderer2
+        private router: Router,
+        public userService: UserService,
+        private ren: Renderer2
     ) {
         this.router.events.subscribe(event => {
             if (event instanceof NavigationEnd) {

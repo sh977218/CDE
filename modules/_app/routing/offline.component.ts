@@ -11,5 +11,6 @@ import { Component } from '@angular/core';
             </h1>
         </div>
     `,
+    standalone: true,
 })
 export class OfflineComponent {}

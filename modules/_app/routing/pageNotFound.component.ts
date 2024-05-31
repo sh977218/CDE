@@ -10,5 +10,6 @@ import { Component } from '@angular/core';
             <em>Please check the url. Broken links can be reported using reporting tool at the bottom of the page.</em>
         </div>
     `,
+    standalone: true,
 })
 export class PageNotFoundComponent {}

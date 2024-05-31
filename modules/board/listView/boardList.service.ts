@@ -1,9 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Board } from 'shared/models.model';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class BoardListService {
     board!: Board;
     currentPage!: number;

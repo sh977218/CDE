@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { forwardRef, Inject, Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { DataElement, DataElementElastic, ElasticElement } from 'shared/de/dataElement.model';
@@ -27,10 +27,9 @@ export class ElasticService implements OnDestroy {
     unsubscribeUser?: () => void;
 
     constructor(
-        @Inject(forwardRef(() => HttpClient)) public http: HttpClient,
-        @Inject(forwardRef(() => LocalStorageService))
+        public http: HttpClient,
         private localStorageService: LocalStorageService,
-        @Inject(forwardRef(() => UserService)) private userService: UserService
+        private userService: UserService
     ) {
         this.loadSearchSettings();
     }

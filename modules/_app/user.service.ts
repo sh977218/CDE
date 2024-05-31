@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from '_app/notifications/notification.service';
 import { InactivityLoggedOutModalComponent } from 'inactivity-logged-out-modal/inactivity-logged-out-modal.component';
@@ -49,10 +49,9 @@ export class UserService {
 
     constructor(
         private router: Router,
-        @Inject(forwardRef(() => NotificationService))
         private notificationService: NotificationService,
-        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
-        @Inject(forwardRef(() => MatDialog)) private dialog: MatDialog
+        private http: HttpClient,
+        private dialog: MatDialog
     ) {
         this.reload();
         this.resetInactivityTimeout();

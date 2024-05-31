@@ -18,9 +18,7 @@ import { CdeForm } from 'shared/form/form.model';
 import { CbErr1 } from 'shared/models.model';
 import { MergeDeService } from './mergeDe.service';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class MergeFormService {
     error: any = {};
     maxNumberQuestions!: number;

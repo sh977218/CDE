@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { CbErr, Elt } from 'shared/models.model';
 import { Organization, StatusValidationRules } from 'shared/organization/organization';
@@ -17,8 +17,8 @@ export class OrgHelperService {
     private promise!: Promise<OrgDetailedInfo>;
 
     constructor(
-        @Inject(forwardRef(() => HttpClient)) private http: HttpClient,
-        @Inject(forwardRef(() => UserService)) private userService: UserService // only used for synchronous showWorkingGroup
+        private http: HttpClient,
+        private userService: UserService // only used for synchronous showWorkingGroup
     ) {
         this.reload();
     }

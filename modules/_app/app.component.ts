@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, ElementRef, forwardRef, Inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
@@ -7,10 +7,14 @@ import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { environment } from 'environments/environment';
+import { NgIf } from '@angular/common';
+import { NavigationComponent } from '_app/navigation/navigation.component';
 
 @Component({
     selector: 'nih-cde',
     templateUrl: 'app.component.html',
+    imports: [NgIf, NavigationComponent],
+    standalone: true,
 })
 export class CdeAppComponent {
     @ViewChild('receiver') receiver?: ElementRef<HTMLIFrameElement>;
@@ -20,17 +24,14 @@ export class CdeAppComponent {
     ssoServerReceiver?: SafeResourceUrl;
 
     constructor(
-        @Inject(forwardRef(() => ActivatedRoute))
         protected route: ActivatedRoute,
-        @Inject(forwardRef(() => BackForwardService))
         backForwardService: BackForwardService,
-        @Inject(forwardRef(() => DomSanitizer)) private sanitizer: DomSanitizer,
-        @Inject(forwardRef(() => MatIconRegistry)) iconReg: MatIconRegistry,
-        @Inject(forwardRef(() => NotificationService))
+        private sanitizer: DomSanitizer,
+        iconReg: MatIconRegistry,
         private notificationService: NotificationService,
-        @Inject(forwardRef(() => Router)) private router: Router,
-        @Inject(forwardRef(() => Title)) private title: Title,
-        @Inject(forwardRef(() => UserService)) private userService: UserService
+        private router: Router,
+        private title: Title,
+        private userService: UserService
     ) {
         this.userService.waitForUser().catch((err?: HttpErrorResponse) => {
             if (err && err.status === 0 && err.statusText === 'Unknown Error') {
