@@ -41,11 +41,23 @@ export function buildElasticSearchQueryOrg(user: User | undefined, settings: Sea
 }
 
 function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic) {
+    if (!Array.isArray(settings.excludeOrgs)) {
+        settings.excludeOrgs = [];
+    }
+    if (!Array.isArray(settings.selectedCopyrightStatus)) {
+        settings.selectedCopyrightStatus = [];
+    }
+    if (!Array.isArray(settings.selectedDatatypes)) {
+        settings.selectedDatatypes = [];
+    }
     if (!Array.isArray(settings.selectedElements)) {
         settings.selectedElements = [];
     }
     if (!Array.isArray(settings.selectedElementsAlt)) {
         settings.selectedElementsAlt = [];
+    }
+    if (!Array.isArray(settings.selectedStatuses)) {
+        settings.selectedStatuses = [];
     }
 
     const query = generateQuery(user, settings);
@@ -234,9 +246,9 @@ function generateSort(settings: SearchSettingsElastic) {
 }
 
 function generateAggregation(module: string, user: User | undefined, settings: SearchSettingsElastic) {
-    const selectedStatuses = (settings.selectedStatuses || []).map(termRegStatus);
-    const selectedDatatypes = (settings.selectedDatatypes || []).map(termDatatype);
-    const selectedCopyrightStatus = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
+    const selectedStatuses = settings.selectedStatuses.map(termRegStatus);
+    const selectedDatatypes = settings.selectedDatatypes.map(termDatatype);
+    const selectedCopyrightStatus = settings.selectedCopyrightStatus.map(termCopyrightStatus);
 
     const orgs: any = {
         filter: { bool: { filter: [] } },
@@ -316,9 +328,9 @@ function generateAggregation(module: string, user: User | undefined, settings: S
 
 function generatePostFilter(user: User | undefined, settings: SearchSettingsElastic) {
     const postFilter: any = { bool: { filter: [] } };
-    const selectedStatuses = (settings.selectedStatuses || []).map(termRegStatus);
-    const selectedDatatypes = (settings.selectedDatatypes || []).map(termDatatype);
-    const selectedCopyrightStatus = (settings.selectedCopyrightStatus || []).map(termCopyrightStatus);
+    const selectedStatuses = settings.selectedStatuses.map(termRegStatus);
+    const selectedDatatypes = settings.selectedDatatypes.map(termDatatype);
+    const selectedCopyrightStatus = settings.selectedCopyrightStatus.map(termCopyrightStatus);
     if (selectedStatuses.length) {
         postFilter.bool.filter.push({ bool: { should: selectedStatuses } });
     }
