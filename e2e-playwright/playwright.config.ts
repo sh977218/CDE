@@ -6,7 +6,7 @@ const config: PlaywrightTestConfig = defineConfig({
     globalSetup: require.resolve('./setup.e2e-spec'),
     globalTeardown: require.resolve('./teardown.e2e-spec'),
     /* Maximum time one test can run for. */
-    maxFailures: 10,
+    maxFailures: !!process.env.CI ? 10 : 0,
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */

@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
+test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test.describe(`Server log`, async () => {
     const badSearchInput = `some very bad input &*(`;
     const serverErrorMessage = `ReferenceError: trigger is not defined`;
@@ -52,7 +54,7 @@ test.describe(`Server log`, async () => {
             await expect(materialPage.paginatorRangeLabel()).toContainText(/1 – \d* of \d*/);
             await expect(materialPage.matSortedHeader()).toHaveText('Date');
             expect(await materialPage.matSortedIndicator()).toContain('desc');
-            await expect(page.getByText(badSearchInput)).toBeVisible();
+            await expect(page.getByText(badSearchInput).first()).toBeVisible();
             await expect(page.getByText(serverErrorMessage)).toBeVisible();
         });
     });

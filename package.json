@@ -89,7 +89,7 @@
     "reporter": "html"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "7.10.0",
+    "@elastic/elasticsearch": "7.17.0",
     "@lhncbc/ucum-lhc": "^4.1.4",
     "@socket.io/mongo-adapter": "^0.1.0",
     "ajv": "^6.10.2",
