@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Data, NavigationEnd, Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '_app/notifications/notification.service';
 import { BackForwardService } from '_app/backForward.service';
 import { UserService } from '_app/user.service';
@@ -30,7 +30,6 @@ export class CdeAppComponent {
         iconReg: MatIconRegistry,
         private notificationService: NotificationService,
         private router: Router,
-        private title: Title,
         private userService: UserService
     ) {
         this.userService.waitForUser().catch((err?: HttpErrorResponse) => {
@@ -40,21 +39,9 @@ export class CdeAppComponent {
                 });
                 return;
             }
-
-            this.attemptSsoLogin();
-        });
-
-        this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                let r = this.route;
-                while (r.firstChild) {
-                    r = r.firstChild;
-                }
-                if (r.outlet === 'primary') {
-                    r.data.subscribe((data: Data) =>
-                        this.title.setTitle(data.title || 'NIH Common Data Elements (CDE) Repository')
-                    );
-                }
+            if (environment.production) {
+                // this line makes the entire application loads 3 times in development, we skip this in dev mode
+                this.attemptSsoLogin();
             }
         });
 

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationConfig, ErrorHandler, importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
-import { provideRouter, RouterModule } from '@angular/router';
+import { provideRouter, RouterModule, TitleStrategy } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -24,6 +24,7 @@ import { environment } from 'environments/environment';
 
 import { GlobalErrorHandler } from '_app/global-error-handler';
 import { TokenInterceptor } from '_app/token.interceptor';
+import { PageTitleStrategy } from '_app/page-title-strategy';
 import { app_routes } from '_app/src/app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -46,6 +47,7 @@ export const appConfig: ApplicationConfig = {
             MatListModule,
             ScrollingModule,
         ]),
+        { provide: TitleStrategy, useClass: PageTitleStrategy },
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         importProvidersFrom(

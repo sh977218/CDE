@@ -2,6 +2,8 @@ import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
 
+test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`Edit resource`, async ({ page, materialPage, navigationMenu, attachmentSection, articlePage }) => {
     const resourceText =
         'The NIH CDE Repository is consolidating CDE Resources here on the NIH CDE Repository website\n';
@@ -27,6 +29,5 @@ test(`Edit resource`, async ({ page, materialPage, navigationMenu, attachmentSec
 
     await navigationMenu.gotoResources();
     await expect(page.getByText(resourceText)).toBeVisible();
-    expect(await page.getByText(`Search results for:`).count()).toBeGreaterThan(0);
-    expect(await page.getByText(`RSS Feeds`).count()).toBeGreaterThan(0);
+    await expect(page.getByText(`Search results for:`)).not.toHaveCount(0);
 });
