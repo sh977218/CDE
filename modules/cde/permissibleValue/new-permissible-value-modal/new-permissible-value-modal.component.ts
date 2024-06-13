@@ -47,7 +47,7 @@ export class NewPermissibleValueModalComponent {
     }
 
     lookupUmls() {
-        this.searchTerms.next(this.newPermissibleValue.valueMeaningName);
+        this.searchTerms.next(this.newPermissibleValue.valueMeaningName || '');
     }
 
     saveDialog() {

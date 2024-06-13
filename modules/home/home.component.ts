@@ -3,6 +3,7 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { environment } from 'environments/environment';
+import { lastValueFrom } from 'rxjs';
 import { HomepageGetResponse } from 'shared/boundaryInterfaces/API/system';
 import { assertUnreachable } from 'shared/models.model';
 import { SearchSettings, SearchType } from 'shared/search/search.model';
@@ -36,12 +37,9 @@ export class HomeComponent implements OnInit {
         }
 
         if (!this.updates) {
-            this.http
-                .get<HomepageGetResponse>('/server/home')
-                .toPromise()
-                .then(homeData => {
-                    this.updates = homeData && Array.isArray(homeData?.body?.updates) ? homeData.body.updates : [];
-                });
+            lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')).then(homeData => {
+                this.updates = homeData && Array.isArray(homeData?.body?.updates) ? homeData.body.updates : [];
+            });
         }
     }
 

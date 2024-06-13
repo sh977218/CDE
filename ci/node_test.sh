@@ -1,5 +1,6 @@
 echo "Running this from CDE repo!!!!"
 export PATH=/usr/nlm/apps/node/current/bin:/usr/nlm/apps/git/bin:$PATH
+export PATH=/usr/bin/node:$PATH
 export SPAWN_WRAP_SHIM_ROOT=/usr/nlm/apps/bamboo-agent/home/tmp
 export host_name=`hostname`
 export NODE_ENV=dev-test
@@ -13,13 +14,12 @@ find /tmp/*.png -user bambooadm  | xargs rm -f
 find /tmp/*.jpg -user bambooadm  | xargs rm -f
 find /tmp/*.bin -user bambooadm  | xargs rm -f
 
-if [ "$host_name" == "dvlb7cde02" ]
-then
-    export PATH=/usr/nlm/apps/node/node-16.19.0/bin:$PATH
-fi
 
 npm cache clean -f
-npm i --legacy-peer-deps
+npm i
+
+echo "node version $(node --version)"
+echo "npm version $(npm --version)"
 
 ## CI build
 echo "======CI build============="
@@ -68,14 +68,14 @@ sleep 15
 echo $! > testLogin.pid
 
 ### Create test.log so NodeJs server output can be piped to
-cd build
+cd build || exit 1
 touch test.log;
 chmod -R 755 $PWD
 
 ### Start node process with package nyc so coverage information can be outputed.
 ### Again pipe process ID to test.pid so later on teardown can kill this process too.
-npm i nyc
-node --max_old_space_size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
+NODE_OPTIONS="--max-old-space-size=8192" npm i nyc
+node --max-old-space-size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
 echo $! > test.pid
 sleep 15
 
@@ -104,7 +104,7 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     mkdir $downloadFolder
 
     export forkNb=6
-    cd test/selenium
+    cd test/selenium || exit 1
 
     if [ "$host_name" == "dvlb7cde01" ]
     then
@@ -141,7 +141,7 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     #mkdir -p build/npmlog
     #grep /usr/nlm/apps/bamboo-agent/home/temp/log_spool/$bamboo_plan_storageTag-$bamboo_shortJobKey-$bamboo_buildNumber.log -oe "/home/bambooadm/\.npm/_logs/.*\.log" | xargs cp -t build/npmlog
 
-    cd build
+    cd build || exit 1
 
     echo "========Rune selenium coverage report=========="
     if [ "$BROWSER" == 'coverage' ]

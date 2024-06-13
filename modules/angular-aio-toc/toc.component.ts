@@ -107,7 +107,7 @@ export class TocComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.onDestroy.next();
+        this.onDestroy.next(void 0);
     }
 
     toggle(canScroll = true) {

@@ -1,4 +1,4 @@
-// node -max-old-space-size=8192 ingester/cadsrForms/getForms.js 15 40
+// node --max-old-space-size=8192 ingester/cadsrForms/getForms.js 15 40
 // The loader has a few issues: "Exit code 3, Exit code 8, Process out of memory" - Any of these can randomly occur.
 // The best strategy is just to run load of all, wait when it crashes and run the rest.
 

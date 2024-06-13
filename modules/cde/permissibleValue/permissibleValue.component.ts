@@ -14,7 +14,7 @@ import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-perm
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { NonCoreModule } from 'non-core/noncore.module';
-import { Subject } from 'rxjs';
+import { lastValueFrom, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
     DataElement,
@@ -308,98 +308,88 @@ export class PermissibleValueComponent {
                         },
                     ];
                 } else if (src === 'UMLS') {
-                    this.http
-                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
-                        .toPromise()
-                        .then(
-                            res => {
-                                this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
+                    lastValueFrom(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
+                        res => {
+                            this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
+                                return {
+                                    code: r.ui,
+                                    meaning: r.name,
+                                };
+                            });
+                        },
+                        () => this.alert.addAlert('danger', 'Error query UMLS.')
+                    );
+                } else if (source === 'UMLS') {
+                    lastValueFrom(this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)).then(
+                        res => {
+                            this.SOURCES[src].codes[code] = res.result
+                                .filter((r: any) => r.termType === this.SOURCES[src].termType)
+                                .map((r: any) => {
                                     return {
                                         code: r.ui,
                                         meaning: r.name,
                                     };
                                 });
-                            },
-                            () => this.alert.addAlert('danger', 'Error query UMLS.')
-                        );
-                } else if (source === 'UMLS') {
-                    this.http
-                        .get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)
-                        .toPromise()
-                        .then(
-                            res => {
-                                this.SOURCES[src].codes[code] = res.result
-                                    .filter((r: any) => r.termType === this.SOURCES[src].termType)
-                                    .map((r: any) => {
-                                        return {
-                                            code: r.ui,
-                                            meaning: r.name,
-                                        };
-                                    });
-                            },
-                            () => {
-                                this.SOURCES[src].codes[code] = [
-                                    {
-                                        code: 'Error looking up synonyms. Please try again later.',
-                                        meaning: '',
-                                    },
-                                ];
-                                this.alert.addAlert('danger', 'Error query UMLS.');
-                            }
-                        );
+                        },
+                        () => {
+                            this.SOURCES[src].codes[code] = [
+                                {
+                                    code: 'Error looking up synonyms. Please try again later.',
+                                    meaning: '',
+                                },
+                            ];
+                            this.alert.addAlert('danger', 'Error query UMLS.');
+                        }
+                    );
                 } else {
-                    this.http
-                        .get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)
-                        .toPromise()
-                        .then(
-                            umlsResult => {
-                                if (umlsResult?.result?.results?.length > 0) {
-                                    const umlsCui = umlsResult.result.results[0].ui;
-                                    this.http
-                                        .get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`)
-                                        .toPromise()
-                                        .then(
-                                            srcResult => {
-                                                if (srcResult?.result.length > 0) {
-                                                    const sortedResult = srcResult.result.sort((a: any, b: any) =>
-                                                        a.name.localeCompare(b.name)
-                                                    );
-                                                    this.SOURCES[src].codes[code] = sortedResult.map((r: any) => {
-                                                        return {
-                                                            code: r.code.substring(r.code.lastIndexOf('/') + 1),
-                                                            meaning: r.name,
-                                                        };
-                                                    });
-                                                } else {
-                                                    this.SOURCES[src].codes[code] = [
-                                                        {
-                                                            code: 'No code synonyms found',
-                                                            meaning: 'No code synonyms found',
-                                                        },
-                                                    ];
-                                                }
-                                            },
-                                            () => {
-                                                this.SOURCES[src].codes[code] = [
-                                                    {
-                                                        code: 'Error looking up synonyms. Please try again later.',
-                                                        meaning: 'Error looking up synonyms. Please try again later.',
-                                                    },
-                                                ];
-                                            }
-                                        );
-                                }
-                            },
-                            () => {
-                                this.SOURCES[src].codes[code] = [
-                                    {
-                                        code: 'Error looking up synonyms. Please try again later.',
-                                        meaning: '',
+                    lastValueFrom(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
+                        umlsResult => {
+                            if (umlsResult?.result?.results?.length > 0) {
+                                const umlsCui = umlsResult.result.results[0].ui;
+                                lastValueFrom(
+                                    this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`)
+                                ).then(
+                                    srcResult => {
+                                        if (srcResult?.result.length > 0) {
+                                            const sortedResult = srcResult.result.sort((a: any, b: any) =>
+                                                a.name.localeCompare(b.name)
+                                            );
+                                            this.SOURCES[src].codes[code] = sortedResult.map((r: any) => {
+                                                return {
+                                                    code: r.code.substring(r.code.lastIndexOf('/') + 1),
+                                                    meaning: r.name,
+                                                };
+                                            });
+                                        } else {
+                                            this.SOURCES[src].codes[code] = [
+                                                {
+                                                    code: 'No code synonyms found',
+                                                    meaning: 'No code synonyms found',
+                                                },
+                                            ];
+                                        }
                                     },
-                                ];
-                                this.alert.addAlert('danger', 'Error query UMLS.');
+                                    () => {
+                                        this.SOURCES[src].codes[code] = [
+                                            {
+                                                code: 'Error looking up synonyms. Please try again later.',
+                                                meaning: 'Error looking up synonyms. Please try again later.',
+                                            },
+                                        ];
+                                    }
+                                );
                             }
-                        );
+                        },
+                        () => {
+                            this.SOURCES[src].codes[code] = [
+                                {
+                                    code: 'Error looking up synonyms. Please try again later.',
+                                    meaning: '',
+                                },
+                            ];
+                            this.alert.addAlert('danger', 'Error query UMLS.');
+                        }
+                    );
                 }
             } else {
                 this.SOURCES[src].codes[code] = [
@@ -477,11 +467,11 @@ export class PermissibleValueComponent {
 
     async validatePVAgainstUMLS(vd: ValueDomainValueList) {
         this.umlsValidationLoading = true;
-        this.umlsValidationResults = await this.http
-            .post('/server/de/umls', vd.permissibleValues, {
+        this.umlsValidationResults = await lastValueFrom(
+            this.http.post('/server/de/umls', vd.permissibleValues, {
                 responseType: 'text',
             })
-            .toPromise();
+        );
         this.umlsValidationLoading = false;
     }
 

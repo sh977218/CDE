@@ -25,7 +25,7 @@ import { fileInputToFormData } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
@@ -361,32 +361,31 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return (this.draftSaving = this.http
-            .put<DataElement>('/server/de/draft/' + elt.tinyId, elt)
-            .toPromise()
-            .then(
-                newElt => {
-                    this.draftSaving = undefined;
-                    if (newElt) {
-                        this.eltLoadedFromOwnUpdate(newElt);
-                    }
-                    if (this.unsaved) {
-                        this.unsaved = false;
-                        return this.saveDraft(elt);
-                    }
-                    this.savingText = 'Saved';
-                    setTimeout(() => {
-                        this.savingText = '';
-                    }, 3000);
-                    return newElt;
-                },
-                err => {
-                    this.draftSaving = undefined;
-                    this.savingText = 'Save Error. Please reload and redo.';
-                    this.alert.httpErrorAlert(err);
-                    throw err;
+        return (this.draftSaving = lastValueFrom(
+            this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, elt)
+        ).then(
+            newElt => {
+                this.draftSaving = undefined;
+                if (newElt) {
+                    this.eltLoadedFromOwnUpdate(newElt);
                 }
-            ));
+                if (this.unsaved) {
+                    this.unsaved = false;
+                    return this.saveDraft(elt);
+                }
+                this.savingText = 'Saved';
+                setTimeout(() => {
+                    this.savingText = '';
+                }, 3000);
+                return newElt;
+            },
+            err => {
+                this.draftSaving = undefined;
+                this.savingText = 'Save Error. Please reload and redo.';
+                this.alert.httpErrorAlert(err);
+                throw err;
+            }
+        ));
     }
 
     filterReferenceDocument(elt: DataElement) {

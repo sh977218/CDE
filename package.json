@@ -51,8 +51,8 @@
     "ts": "npx ts-node -P tsconfigNode.json"
   },
   "engines": {
-    "node": "16.x",
-    "npm": "8.x"
+    "node": ">= 18",
+    "npm": ">= 10"
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
@@ -148,7 +148,7 @@
     "shared": "file:./shared",
     "shortid": "^2.2.15",
     "simple-spellchecker": "^1.0.0",
-    "socket.io": "^4.5.1",
+    "socket.io": "4.6.1",
     "source-map-support": "^0.5.21",
     "streamifier": "0.1.1",
     "swagger-tools": "^0.10.4",
@@ -200,7 +200,7 @@
     "@types/cron": "^1.7.2",
     "@types/csurf": "^1.11.2",
     "@types/deep-diff": "0.0.31",
-    "@types/diff-match-patch": "^1.0.32",
+    "@types/diff-match-patch": "1.0.32",
     "@types/ejs": "^3.0.4",
     "@types/express-http-proxy": "^1.6.3",
     "@types/express-serve-static-core": "^4.17.28",
@@ -277,7 +277,7 @@
     "gulp-usemin": "0.3.30",
     "hammerjs": "^2.0.8",
     "html-loader": "0.5.1",
-    "husky": "^8.0.1",
+    "husky": "^9.0.11",
     "intl": "1.2.5",
     "istanbul-instrumenter-loader": "^3.0.1",
     "js-toggle-switch": "^0.1.3",
@@ -298,10 +298,9 @@
     "reflect-metadata": "^0.1.13",
     "rollup": "^1.32.1",
     "rollup-plugin-uglify": "^6.0.4",
-    "rxjs": "^6.6.2",
-    "rxjs-compat": "^6.6.3",
+    "rxjs": "^7.8.1",
     "selenium-webdriver": "^4.0.0-alpha.5",
-    "socket.io-client": "^4.4.1",
+    "socket.io-client": "4.6.1",
     "stacktrace-parser": "^0.1.10",
     "style-loader": "^1.2.1",
     "svg-url-loader": "^7.1.1",

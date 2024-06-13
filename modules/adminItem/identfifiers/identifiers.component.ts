@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
+import { lastValueFrom } from 'rxjs';
 import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { isCdeForm } from 'shared/item';
 import { CdeId, IdSource, Item } from 'shared/models.model';
@@ -54,13 +55,12 @@ export class IdentifiersComponent {
         if (this.idSourcesPromise) {
             return this.idSourcesPromise;
         } else {
-            return (this.idSourcesPromise = this.http
-                .get<IdSourcesResponse>('/server/system/idSources')
-                .toPromise()
-                .catch(err => {
-                    this.alert.httpErrorAlert(err);
-                    return [];
-                }));
+            return (this.idSourcesPromise = lastValueFrom(
+                this.http.get<IdSourcesResponse>('/server/system/idSources')
+            ).catch(err => {
+                this.alert.httpErrorAlert(err);
+                return [];
+            }));
         }
     }
 

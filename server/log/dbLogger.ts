@@ -1,10 +1,14 @@
 import { Request } from 'express';
 import { Document, Model } from 'mongoose';
 import { config } from 'server';
+import { cdeAuditModel } from 'server/cde/mongo-cde';
 import { handleConsoleError } from 'server/errorHandler';
+import { formAuditModel } from 'server/form/mongo-form';
 import { clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema } from 'server/log/schemas';
+import { classificationAuditModel } from 'server/system/classificationAuditDb';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
+import { getRealIp } from 'server/system/trafficFilterSvc';
 import { UserFull } from 'server/user/userDb';
 import {
     HttpLog,
@@ -25,9 +29,6 @@ import {
     ItemLogResponse,
 } from 'shared/log/audit';
 import { Cb, CbError, CbError1 } from 'shared/models.model';
-import { cdeAuditModel } from '../cde/mongo-cde';
-import { formAuditModel } from '../form/mongo-form';
-import { classificationAuditModel } from '../system/classificationAuditDb';
 
 const moment = require('moment');
 const userAgent = require('useragent');
@@ -306,7 +307,6 @@ export function logError(message: ErrorMessage, callback?: Cb) {
 }
 
 export function logClientError(req: Request, done: Cb) {
-    const getRealIp = (req: any) => req._remoteAddress;
     const clientErrorLog = req.body;
     const ua = userAgent.is(req.headers['user-agent']);
     if (ua.chrome) {

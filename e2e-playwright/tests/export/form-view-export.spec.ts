@@ -96,7 +96,7 @@ test.describe(`Form view export`, async () => {
             await navigationMenu.gotoFormByName(formName);
             await page.locator('#export').click();
             const downloadPromise = page.waitForEvent('download');
-            await materialPage.matMenuItem('NIH/CDE Schema JSON file Schema').click();
+            await materialPage.matMenuItem('NIH/CDE Schema JSON file').click();
             await materialPage.checkAlert(`Export downloaded.`);
             const download = await downloadPromise;
             await download.saveAs(download.suggestedFilename());
@@ -131,7 +131,7 @@ test.describe(`Form view export`, async () => {
             await page.locator('#export').click();
             const [newPage] = await Promise.all([
                 page.context().waitForEvent('page'),
-                materialPage.matMenuItem('NIH/CDE Schema JSON preview Schema').click(),
+                materialPage.matMenuItem('NIH/CDE Schema JSON preview').click(),
             ]);
             const expectedContents = [
                 '{"title":"CRF","uri":"https://commondataelements.ninds.nih.gov/Doc/EPI/F1126_Adverse_Event_Tracking_Log.docx"}',
@@ -181,7 +181,7 @@ test.describe(`Form view export`, async () => {
         await navigationMenu.gotoFormByName(formName);
         await page.locator('#export').click();
         const downloadPromise = page.waitForEvent('download');
-        await materialPage.matMenuItem('REDCap CSV archive Information').click();
+        await materialPage.matMenuItem('REDCap CSV archive').click();
         await materialPage.checkAlert(`Export downloaded.`);
         const download = await downloadPromise;
         await download.saveAs(download.suggestedFilename());

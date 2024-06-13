@@ -7,10 +7,9 @@ cd build
 touch test.log;
 chmod -R 755 $PWD
 
-npm i nyc
+NODE_OPTIONS="--max-old-space-size=8192" npm i nyc
 
-#npm i --legacy-peer-deps nyc
-node --max_old_space_size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
+node --max-old-space-size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
 
 #npm run start:coverage
 sleep 10

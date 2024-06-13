@@ -3,6 +3,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
+import { lastValueFrom } from 'rxjs';
 import { concat, deduplicate, orderedSetAdd, sortFirst } from 'shared/array';
 import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 import { administrativeStatuses, curationStatus } from 'shared/models.model';
@@ -200,17 +201,13 @@ export class SubmissionManagementComponent implements OnDestroy {
     }
 
     decline(submission: Submission) {
-        this.http
-            .post('/server/submission/decline', { _id: submission._id })
-            .toPromise()
+        lastValueFrom(this.http.post('/server/submission/decline', { _id: submission._id }))
             .then(() => this.alert.addAlert('info', 'Declined'))
             .then(() => this.reload());
     }
 
     delete(submission: Submission) {
-        this.http
-            .delete('/server/submission/' + submission._id)
-            .toPromise()
+        lastValueFrom(this.http.delete('/server/submission/' + submission._id))
             .then(() => this.alert.addAlert('info', 'Deleted'))
             .then(() => this.reload());
     }
@@ -282,12 +279,9 @@ export class SubmissionManagementComponent implements OnDestroy {
             this.submissions = [];
             return Promise.resolve();
         }
-        return this.http
-            .get<Submission[]>('/server/submission/')
-            .toPromise()
-            .then(response => {
-                this.submissions = response;
-            });
+        return lastValueFrom(this.http.get<Submission[]>('/server/submission/')).then(response => {
+            this.submissions = response;
+        });
     }
 
     openAttachment(fileId: string) {

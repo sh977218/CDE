@@ -44,7 +44,7 @@ import { initEs } from 'server/system/elastic';
 import { startSocketIoServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { module as systemModule } from 'server/system/systemRouters';
-import { banHackers, banIp, bannedIps, blockBannedIps } from 'server/system/trafficFilterSvc';
+import { banHackers, banIp, bannedIps, blockBannedIps, getRealIp } from 'server/system/trafficFilterSvc';
 import { module as userModule } from 'server/user/userRoutes';
 import { module as utsModule } from 'server/uts/utsRoutes';
 import { canClassifyOrg, isDocumentationEditor } from 'shared/security/authorizationShared';
@@ -165,16 +165,6 @@ declare global {
         }
     }
 }
-
-const getRealIp = (req: Request): string => {
-    if (req._remoteAddress) {
-        return req._remoteAddress;
-    }
-    if (req.ip) {
-        return req.ip;
-    }
-    return '';
-};
 
 // check https
 app.use((req, res, next) => {
@@ -359,7 +349,7 @@ try {
                 user = await addNewUser({ username: profile.utsUser.username });
             }
             const jwtToken = generateJwtToken(user.username);
-            recordUserLogin(user, req.ip);
+            recordUserLogin(user, getRealIp(req));
             res.cookie('Bearer', `${jwtToken}`);
             res.send();
         }
@@ -397,7 +387,7 @@ try {
             return;
         }
         const jwtToken = generateJwtToken(user.username);
-        recordUserLogin(user, req.ip);
+        recordUserLogin(user, getRealIp(req));
         res.cookie('Bearer', `${jwtToken}`);
         res.send();
     });

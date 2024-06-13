@@ -23,7 +23,7 @@ import { fileInputToFormData, isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { assertUnreachable, Cb, Cb1, Comment, Elt, Item } from 'shared/models.model';
 import {
     DataElement,
@@ -412,31 +412,28 @@ export class FormViewComponent implements OnInit, OnDestroy {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return (this.draftSaving = this.http
-            .put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)
-            .toPromise()
-            .then(
-                newElt => {
-                    this.draftSaving = undefined;
-                    elt.__v = newElt.__v;
-                    this.validate(elt);
-                    if (this.unsaved) {
-                        this.unsaved = false;
-                        return this.saveDraft(elt);
-                    }
-                    this.savingText = 'Saved';
-                    setTimeout(() => {
-                        this.savingText = '';
-                    }, 3000);
-                    return elt;
-                },
-                err => {
-                    this.draftSaving = undefined;
-                    this.savingText = 'Save Error. Please reload and redo.';
-                    this.alert.httpErrorAlert(err);
-                    throw err;
+        return (this.draftSaving = lastValueFrom(this.http.put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)).then(
+            newElt => {
+                this.draftSaving = undefined;
+                elt.__v = newElt.__v;
+                this.validate(elt);
+                if (this.unsaved) {
+                    this.unsaved = false;
+                    return this.saveDraft(elt);
                 }
-            ));
+                this.savingText = 'Saved';
+                setTimeout(() => {
+                    this.savingText = '';
+                }, 3000);
+                return elt;
+            },
+            err => {
+                this.draftSaving = undefined;
+                this.savingText = 'Save Error. Please reload and redo.';
+                this.alert.httpErrorAlert(err);
+                throw err;
+            }
+        ));
     }
 
     saveDraftVoid(elt: CdeFormDraft): void {

@@ -9,7 +9,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { httpErrorMessage } from 'non-core/angularHelper';
 import { fileInputToFormData, interruptEvent, openUrl } from 'non-core/browser';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { orderedSetAdd } from 'shared/array';
 import { SubmissionAttachResponse, VerifySubmissionFileProgress } from 'shared/boundaryInterfaces/API/submission';
@@ -169,12 +169,12 @@ export class SubmissionEditComponent implements OnDestroy {
             (submissionId: string) => {},
             (user, submissionId) => {
                 if (submissionId !== this.submission._id) {
-                    this.http
-                        .get<Submission>('/server/submission/' + submissionId)
-                        .toPromise()
-                        .then((s: Submission) => {
+                    lastValueFrom(this.http.get<Submission>('/server/submission/' + submissionId)).then(
+                        (s: Submission) => {
                             this.submissionLoaded(s);
-                        }, noop);
+                        },
+                        noop
+                    );
                 }
             }
         );
@@ -402,7 +402,7 @@ export class SubmissionEditComponent implements OnDestroy {
             return;
         }
         this.save()
-            .then(() => this.http.post('/server/submission/endorse', { _id: this.submission._id }).toPromise())
+            .then(() => lastValueFrom(this.http.post('/server/submission/endorse', { _id: this.submission._id })))
             .then(() => this.alert.addAlert('info', 'Endorsed'))
             .then(() => this.close())
             .catch(err => this.alert.addAlert('error', httpErrorMessage(err)));
@@ -476,12 +476,11 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     getSubmissionFileUpdate(): Promise<void> {
-        return this.http
-            .post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFileUpdate', {
+        return lastValueFrom(
+            this.http.post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFileUpdate', {
                 _id: this.submission._id,
             })
-            .toPromise()
-            .then(progress => this.getSubmissionFileUpdateProgress(progress));
+        ).then(progress => this.getSubmissionFileUpdateProgress(progress));
     }
 
     getSubmissionFileUpdateProgress(progress: VerifySubmissionFileProgress) {
@@ -566,20 +565,17 @@ export class SubmissionEditComponent implements OnDestroy {
             return Promise.reject('Version is required');
         }
         this.defaultValues(submission);
-        return this.http
-            .put<Submission>('/server/submission/', submission)
-            .toPromise()
-            .then(
-                s => {
-                    this.forwardToExisting(s._id);
-                    this.submissionLoaded(s);
-                    return this.submission as Submission;
-                },
-                (err: HttpErrorResponse) => {
-                    this.alert.addAlert('fail', httpErrorMessage(err));
-                    return Promise.reject(err);
-                }
-            );
+        return lastValueFrom(this.http.put<Submission>('/server/submission/', submission)).then(
+            s => {
+                this.forwardToExisting(s._id);
+                this.submissionLoaded(s);
+                return this.submission as Submission;
+            },
+            (err: HttpErrorResponse) => {
+                this.alert.addAlert('fail', httpErrorMessage(err));
+                return Promise.reject(err);
+            }
+        );
     }
 
     saveAndExit() {
@@ -643,19 +639,16 @@ export class SubmissionEditComponent implements OnDestroy {
             return;
         }
         this.save()
-            .then(() => this.http.post('/server/submission/submit', { _id: this.submission._id }).toPromise())
+            .then(() => lastValueFrom(this.http.post('/server/submission/submit', { _id: this.submission._id })))
             .then(() => this.alert.addAlert('info', 'Submitted'))
             .then(() => this.close());
     }
 
     updateNlmCurators() {
-        this.http
-            .get<string[]>('/server/user/nlmCuratorNames')
-            .toPromise()
-            .then(users => {
-                this.allNlmCurators = users.length ? users : [''];
-                this.searchCtrlNlmCurator.setValue(null);
-            });
+        lastValueFrom(this.http.get<string[]>('/server/user/nlmCuratorNames')).then(users => {
+            this.allNlmCurators = users.length ? users : [''];
+            this.searchCtrlNlmCurator.setValue(null);
+        });
         this.page2.controls.nlmCurators.markAsTouched();
     }
 
@@ -663,24 +656,20 @@ export class SubmissionEditComponent implements OnDestroy {
         if (!this.page2.value.submitterOrganization) {
             return;
         }
-        this.http
-            .get<string[]>('/server/user/orgCuratorNames/' + this.page2.value.submitterOrganization)
-            .toPromise()
-            .then(users => {
-                this.allOrgCurators = users.length ? users : [''];
-                this.searchCtrlOrgCurator.setValue(null);
-            });
+        lastValueFrom(
+            this.http.get<string[]>('/server/user/orgCuratorNames/' + this.page2.value.submitterOrganization)
+        ).then(users => {
+            this.allOrgCurators = users.length ? users : [''];
+            this.searchCtrlOrgCurator.setValue(null);
+        });
         this.page2.controls.organizationCurators.markAsTouched();
     }
 
     updateReviewers() {
-        this.http
-            .get<string[]>('/server/user/governanceReviewerNames')
-            .toPromise()
-            .then(users => {
-                this.allReviewers = users.length ? users : [''];
-                this.searchCtrlReviewer.setValue(null);
-            });
+        lastValueFrom(this.http.get<string[]>('/server/user/governanceReviewerNames')).then(users => {
+            this.allReviewers = users.length ? users : [''];
+            this.searchCtrlReviewer.setValue(null);
+        });
         this.page2.controls.governanceReviewers.markAsTouched();
     }
 
@@ -693,12 +682,11 @@ export class SubmissionEditComponent implements OnDestroy {
             cde: 0,
         };
         this.r.report = undefined;
-        this.http
-            .post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFile', {
+        lastValueFrom(
+            this.http.post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFile', {
                 _id: this.submission._id,
             })
-            .toPromise()
-            .then(progress => this.getSubmissionFileUpdateProgress(progress));
+        ).then(progress => this.getSubmissionFileUpdateProgress(progress));
     }
 }
 

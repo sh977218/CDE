@@ -14,11 +14,12 @@ const keepHackerForDuration = 1000 * 60 * 60 * 24;
 setInterval(async () => {
     const foundOne = await getTrafficFilter();
     // release IPs, but keep track for a day
-    foundOne.ipList = foundOne.ipList.filter(ipElt => ((Date.now() - ipElt.date) < (keepHackerForDuration * ipElt.strikes)));
+    foundOne.ipList = foundOne.ipList.filter(ipElt => Date.now() - ipElt.date < keepHackerForDuration * ipElt.strikes);
     foundOne.save();
-    bannedIps = foundOne.ipList.filter(ipElt => ((Date.now() - ipElt.date) < releaseHackersFrequency * ipElt.strikes)).map(r => r.ip);
+    bannedIps = foundOne.ipList
+        .filter(ipElt => Date.now() - ipElt.date < releaseHackersFrequency * ipElt.strikes)
+        .map(r => r.ip);
 }, 30 * 1000);
-
 
 function addBan(req: Request) {
     const ip = getRealIp(req);
@@ -29,7 +30,7 @@ function addBan(req: Request) {
 export const banHackers: RequestHandler = (req, res, next) => {
     let banHim = false;
     banEndsWith.forEach(ban => {
-        if (req.originalUrl.slice(-(ban.length)) === ban) {
+        if (req.originalUrl.slice(-ban.length) === ban) {
             addBan(req);
             banHim = true;
         }
@@ -42,10 +43,10 @@ export const banHackers: RequestHandler = (req, res, next) => {
     });
 
     banContains.forEach(ban => {
-       if (req.originalUrl.toLowerCase().indexOf(ban) > -1) {
-           addBan(req);
-           banHim = true;
-       }
+        if (req.originalUrl.toLowerCase().indexOf(ban) > -1) {
+            addBan(req);
+            banHim = true;
+        }
     });
 
     if (banHim) {
@@ -57,8 +58,10 @@ export const banHackers: RequestHandler = (req, res, next) => {
 
 export const blockBannedIps: RequestHandler = (req, res, next) => {
     if (bannedIps.indexOf(getRealIp(req)) !== -1) {
-        res.status(403).send('Access is temporarily disabled. If you think you received this response in error, please contact' +
-            ' support. Otherwise, please try again in an hour.');
+        res.status(403).send(
+            'Access is temporarily disabled. If you think you received this response in error, please contact' +
+                ' support. Otherwise, please try again in an hour.'
+        );
     } else {
         next();
     }
@@ -72,8 +75,14 @@ export async function getTrafficFilter() {
     return foundOne;
 }
 
-export function getRealIp(request: Request): string {
-    return request._remoteAddress || request.ip;
+export function getRealIp(req: Request): string {
+    if (req._remoteAddress) {
+        return req._remoteAddress;
+    }
+    if (req.ip) {
+        return req.ip;
+    }
+    return '';
 }
 
 export async function banIp(ip: string, reason: string) {

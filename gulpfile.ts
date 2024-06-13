@@ -12,6 +12,7 @@ require('es6-promise').polyfill();
 const APP_DIR = __dirname;
 const BUILD_DIR = appDir(config.node.buildDir);
 const runInAppOptions = {cwd: APP_DIR};
+const runInBuildOptions = {cwd: BUILD_DIR};
 const nodeCmd = isRunningAsTs() ? 'npx ts-node -P tsconfigNode.json ' : 'node ';
 const fullBuild = process.argv.includes('--full');
 
@@ -24,11 +25,11 @@ if (hostname) {
     console.log(`no hostname found.`);
 }
 
-function appDir(path: string) {
+function appDir(path: string = '.') {
     return resolve(APP_DIR, path);
 }
 
-function buildDir(path: string) {
+function buildDir(path: string = '.') {
     return resolve(BUILD_DIR, path);
 }
 
@@ -59,6 +60,7 @@ gulp.task('environmentInfo', async function npm() {
     await run('npm -v', runInAppOptions);
     await run('npm cache verify', runInAppOptions);
     await run('mongo --version', runInAppOptions);
+    await run('echo NODE_ENV:$NODE_ENV');
 });
 
 gulp.task('buildNode', function buildNode() {
@@ -82,12 +84,12 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
     ]
     const streamArray: NodeJS.ReadWriteStream[] = [];
     assetFolders.forEach(folder => {
-        streamArray.push(gulp.src(appDir('./' + folder + '/**'))
-            .pipe(gulp.dest(BUILD_DIR + '/' + folder + '/')));
+        streamArray.push(gulp.src(appDir(folder + '/**'))
+            .pipe(gulp.dest(buildDir( folder + '/'))));
     });
 
     streamArray.push(gulp.src(appDir('./config/*.json'))
-        .pipe(gulp.dest(BUILD_DIR + '/config/')));
+        .pipe(gulp.dest(buildDir('./config/'))));
 
     // build dir may not be a sub-folder, need packages
     streamArray.push(gulp.src(appDir('./package.json'))
@@ -97,44 +99,46 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
             ? replace('noop', 'noop')
             : replace('"ingester": "file:./ingester",', '')
         )
-        .pipe(gulp.dest(BUILD_DIR + '/')));
+        .pipe(gulp.dest(buildDir())));
     streamArray.push(gulp.src(appDir('./packages/**'))
-        .pipe(gulp.dest(BUILD_DIR + '/packages/')));
+        .pipe(gulp.dest(buildDir( './packages/'))));
 
     // from buildNode
     streamArray.push(gulp.src('./modules/**')
-        .pipe(gulp.dest(BUILD_DIR + '/modules/')));
+        .pipe(gulp.dest(buildDir('./modules/'))));
     streamArray.push(gulp.src(appDir('./server/bot/*.ejs'))
-        .pipe(gulp.dest(BUILD_DIR + '/server/bot/')));
+        .pipe(gulp.dest(buildDir('./server/bot/'))));
     streamArray.push(gulp.src('./server/**')
-        .pipe(gulp.dest(BUILD_DIR + '/server/'))
+        .pipe(gulp.dest(buildDir('./server/')))
         .on('end', () => {
             streamArray.push(gulp.src('./server/globals.js')
                 .pipe(replace("APP_DIR = __dirname + '/../..'", "APP_DIR = __dirname + '/..'"))
-                .pipe(gulp.dest(BUILD_DIR + '/server/')));
+                .pipe(gulp.dest(buildDir('server/'))));
         }));
     streamArray.push(gulp.src('./shared/**')
-        .pipe(gulp.dest(BUILD_DIR + '/shared/')));
+        .pipe(gulp.dest(buildDir('shared/'))));
 
     if (fullBuild) {
         streamArray.push(gulp.src(appDir('./ingester/**/*.js'))
-            .pipe(gulp.dest(BUILD_DIR + '/ingester/')));
-        streamArray.push(gulp.src('./ingester/**')
-            .pipe(gulp.dest(BUILD_DIR + '/ingester/')));
-        streamArray.push(gulp.src('./scripts/**')
-            .pipe(gulp.dest(BUILD_DIR + '/scripts/')));
+            .pipe(gulp.dest(buildDir('./ingester/'))));
+        streamArray.push(gulp.src(appDir('./ingester/**'))
+            .pipe(gulp.dest(buildDir('./ingester/'))));
+        streamArray.push(gulp.src(appDir('./scripts/**'))
+            .pipe(gulp.dest(buildDir('./scripts/'))));
     }
 
     return merge(streamArray);
 });
 
-gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps(cb) {
-    gulp.src(buildDir('./package.json'))
-        .pipe(gulp.dest(BUILD_DIR))
-        .on('error', cb)
-        .on('end', () => {
-            run('npm i --legacy-peer-deps --omit=dev', {cwd: BUILD_DIR}).then(cb, cb);
-        });
+gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps() {
+    return new Promise((resolve, reject) => {
+        gulp.src(buildDir('./package.json'))
+            .pipe(gulp.dest(buildDir()))
+            .on('error', reject)
+            .on('end', () => {
+                run('NODE_OPTIONS="--max-old-space-size=8192" npm i --omit=dev', runInBuildOptions).then(resolve, reject);
+            });
+    });
 });
 
 gulp.task('es', function es() {
@@ -195,12 +199,12 @@ gulp.task('mongorestoretest', function mongorestore() {
     return run('mongorestore ' + args.join(' '), runInAppOptions);
 });
 
-gulp.task('injectElastic', ['es', 'mongorestoretest', 'mongorestoretestlog'], function injectElastic() {
+gulp.task('prepareApp', ['copyNpmDeps', 'checkDbConnection']);
+
+gulp.task('injectElastic', ['prepareApp', 'es', 'mongorestoretest', 'mongorestoretestlog'], function injectElastic() {
     return node('scripts/indexDb');
 });
 
 gulp.task('refreshDbs', ['es', 'mongorestoretest', 'injectElastic']);
-
-gulp.task('prepareApp', ['copyNpmDeps', 'checkDbConnection']);
 
 gulp.task('default', ['environmentInfo', 'refreshDbs', 'prepareApp']);

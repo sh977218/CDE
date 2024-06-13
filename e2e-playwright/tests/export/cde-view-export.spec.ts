@@ -17,7 +17,7 @@ test.describe(`CDE view export`, async () => {
         test(`as file`, async ({ page, materialPage }) => {
             await page.locator('#export').click();
             const downloadPromise = page.waitForEvent('download');
-            await materialPage.matMenuItem('NIH/CDE Schema JSON file Schema').click();
+            await materialPage.matMenuItem('NIH/CDE Schema JSON file').click();
             await materialPage.checkAlert(`Export downloaded.`);
             const download = await downloadPromise;
             await download.saveAs(download.suggestedFilename());
@@ -46,7 +46,7 @@ test.describe(`CDE view export`, async () => {
             await page.locator('#export').click();
             const [newPage] = await Promise.all([
                 page.context().waitForEvent('page'),
-                materialPage.matMenuItem('NIH/CDE Schema JSON preview Schema').click(),
+                materialPage.matMenuItem('NIH/CDE Schema JSON preview').click(),
             ]);
             const expectedContents = [
                 `"designations":[{"tags":["Health"],"designation":"Spinal column injury number"`,
