@@ -47,6 +47,13 @@
     </div>
 
     <div>
+        <dt>Used by:</dt>
+        <dd itemprop="usedBy">
+            {{elt.usedBy?.join(', ')}}
+        </dd>
+    </div>
+
+    <div>
         <dt>Origin:</dt>
         <dd data-testid="origin">
             <cde-inline-edit id="origin" [(model)]="elt.origin" [isAllowed]="canEdit"
