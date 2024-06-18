@@ -1,4 +1,5 @@
 import { Response, Router } from 'express';
+import * as multer from 'multer';
 import { config } from 'server';
 import {
     addValidationWhitelist,
@@ -6,43 +7,32 @@ import {
     getValidationWhitelists,
     runValidationOnLoadCSV,
     spellcheckCSVLoad,
-    updateValidationWhitelist
+    updateValidationWhitelist,
 } from 'server/loader/validators';
-
-import * as multer from 'multer';
-import { processWorkBook } from 'server/submission/submissionSvc';
-import { read as readXlsx } from 'xlsx';
 
 export function module() {
     const router = Router();
 
-    router.post('/validateCSVLoad', multer({
-        ...config.multer,
-        storage: multer.memoryStorage()
-    }).any(), async (req, res) => {
-        if (!req.files) {
-            res.status(400).send('No file uploaded for validation');
-            return;
+    router.post(
+        '/validateCSVLoad',
+        multer({
+            ...config.multer,
+            storage: multer.memoryStorage(),
+        }).any(),
+        async (req, res) => {
+            if (!req.files) {
+                res.status(400).send('No file uploaded for validation');
+                return;
+            }
+            const fileBuffer = (req.files as any)[0].buffer;
+            const reportOutput = await runValidationOnLoadCSV(fileBuffer);
+            res.send(reportOutput);
         }
-        const fileBuffer = (req.files as any)[0].buffer;
-        const reportOutput = await runValidationOnLoadCSV(fileBuffer);
-        res.send(reportOutput);
-    });
+    );
 
-    router.post('/validateSubmissionWorkbookLoad', multer({
-        ...config.multer,
-        storage: multer.memoryStorage()
-    }).any(), async (req, res) => {
-        if (!req.files) {
-            res.status(400).send('No file uploaded for validation');
-            return;
-        }
-        const fileBuffer = (req.files as any)[0].buffer;
-        const reportOutput = await processWorkBook({} as any, readXlsx(fileBuffer));
-        res.send(reportOutput);
-    });
-
-    router.post('/spellcheckCSVLoad', multer({...config.multer, storage: multer.memoryStorage()}).any(),
+    router.post(
+        '/spellcheckCSVLoad',
+        multer({ ...config.multer, storage: multer.memoryStorage() }).any(),
         async (req, res): Promise<Response> => {
             if (!req.files) {
                 return res.status(400).send('No file uploaded for spell check');

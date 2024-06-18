@@ -6,7 +6,7 @@ test.describe.configure({ retries: 0 }); // no retries for edits
 
 test.describe(`Submission Workbook Validator`, async () => {
     test('Validate', async ({ page, materialPage, navigationMenu }) => {
-        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.login(Accounts.nlmCurator);
         await navigationMenu.gotoSettings();
         await navigationMenu.gotoSettingsSubmissionWorkbookValidation();
         await page.setInputFiles(

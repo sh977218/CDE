@@ -189,6 +189,24 @@ export function module() {
         emitter.emit('data', res);
     });
 
+    router.post(
+        '/validateSubmissionWorkbookLoad',
+        canSubmissionSubmitMiddleware,
+        multer({
+            ...config.multer,
+            storage: multer.memoryStorage(),
+        }).any(),
+        async (req, res) => {
+            if (!req.files) {
+                res.status(400).send('No file uploaded for validation');
+                return;
+            }
+            const fileBuffer = (req.files as any)[0].buffer;
+            const reportOutput = await processWorkBook({} as any, readXlsx(fileBuffer));
+            res.send(reportOutput);
+        }
+    );
+
     router.post('/submit', canSubmissionSubmitMiddleware, (req, res): Promise<Response> => {
         return dbPlugins.submission.byId(req.body._id).then(async dbSubmission => {
             if (!dbSubmission) {

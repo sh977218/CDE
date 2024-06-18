@@ -30,7 +30,7 @@ export class SubmissionWorkbookValidationComponent {
             const formData = new FormData();
             formData.append('uploadedFile', files[0]);
             this.fileValidating = true;
-            this.http.post<any>('/server/loader/validateSubmissionWorkbookLoad', formData).subscribe(
+            this.http.post<any>('/server/submission/validateSubmissionWorkbookLoad', formData).subscribe(
                 response => {
                     this.fileValidating = false;
                     this.r.report = response;
