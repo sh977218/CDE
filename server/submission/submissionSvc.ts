@@ -480,7 +480,7 @@ export function processWorkBook(
         de.stewardOrg.name = submission.name;
         de.classification.push({
             stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.version }],
+            elements: [{ elements: [], name: submission.name }],
         });
         de.registrationState.registrationStatus = submission.registrationStatus;
         de.registrationState.administrativeStatus = submission.administrativeStatus;
@@ -695,7 +695,7 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
         form.definitions.push({ definition: 'This is a bundle.', tags: [] });
         form.classification.push({
             stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.version }],
+            elements: [{ elements: [], name: submission.name }],
         });
         form.registrationState.registrationStatus = submission.registrationStatus;
         form.registrationState.administrativeStatus = submission.administrativeStatus;
