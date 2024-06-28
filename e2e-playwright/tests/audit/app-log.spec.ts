@@ -14,6 +14,7 @@ test.describe(`App log`, async () => {
 
         await test.step(`Search with date range and ip`, async () => {
             await materialPage.matDatePicker(page.locator(`[data-testid="app-log-date-picker-toggle"]`)).click();
+            await page.click('.mat-calendar-previous-button');
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(28).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();

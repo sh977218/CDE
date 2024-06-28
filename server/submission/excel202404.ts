@@ -1,4 +1,5 @@
 import { arrayMismatch, ColumnInformation, valueAsString, valueToArray } from 'server/submission/submissionShared';
+import { push3 } from 'shared/array';
 import { DataType, fixDatatype, valueDomain } from 'shared/de/dataElement.model';
 import { PermissibleValueCodeSystem, permissibleValueCodeSystems, ReferenceDocument } from 'shared/models.model';
 
@@ -506,6 +507,35 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 de.valueDomain.datatypeExternallyDefined = {};
             }
             de.valueDomain.datatypeExternallyDefined.link = val;
+        },
+    },
+    Classification: {
+        order: 21,
+        required: false,
+        value: null,
+        setValue: (withError, de, v) => {
+            const val = valueAsString(v);
+            if (!de.classification) {
+                de.classification = [];
+            }
+            const classification = de.classification;
+            val.split('\n').forEach(flatClassification => {
+                const elements = flatClassification.split(';');
+                if (!elements[0]) {
+                    return;
+                }
+                const firstLevel =
+                    classification.find(c => c.stewardOrg.name === elements[0]) ||
+                    push3(classification, { stewardOrg: { name: elements[0] }, elements: [] });
+                elements
+                    .slice(1)
+                    .reduce(
+                        (elements, element) =>
+                            (elements.find(e => e.name === element) || push3(elements, { name: element, elements: [] }))
+                                .elements,
+                        firstLevel.elements
+                    );
+            });
         },
     },
 };
