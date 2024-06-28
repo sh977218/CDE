@@ -1,4 +1,5 @@
 import {
+    ArrayToType,
     CdeId,
     CodeAndSystem,
     Definition,
@@ -29,6 +30,29 @@ import {
 import { iterateFeSync } from 'shared/form/fe';
 
 export type QuestionValue = any;
+
+class EltRefCaching extends EltRef {
+    ids!: CdeId[];
+}
+
+class InForm {
+    form!: EltRefCaching;
+}
+
+export class QuestionCde extends EltRefCaching {
+    derivationRules: DerivationRule[] = []; // copied from original data element
+}
+
+class Section {}
+
+export class SkipLogic {
+    action?: string;
+    condition: string = '';
+    validationError?: string;
+}
+
+export const displayAsValueList = ['radio/checkbox/select', 'likert scale'] as const;
+export type DisplayAsValueList = ArrayToType<typeof displayAsValueList>;
 
 export class CdeForm<T extends FormElement = FormElement> extends Elt implements FormElementsContainer {
     copyright?: {
@@ -123,7 +147,7 @@ export class CdeForm<T extends FormElement = FormElement> extends Elt implements
                         if (!Array.isArray(q.question.cde.permissibleValues)) {
                             q.question.cde.permissibleValues = [];
                         }
-                        if (!displayAsValueListList.includes(q.question.displayAs)) {
+                        if (!displayAsValueList.includes(q.question.displayAs)) {
                             q.question.displayAs = 'radio/checkbox/select';
                         }
                         break;
@@ -204,10 +228,6 @@ export class DisplayProfile {
 }
 
 export type DisplayType = 'Follow-up' | 'Dynamic';
-
-class EltRefCaching extends EltRef {
-    ids!: CdeId[];
-}
 
 export class ExternalMappings {
     [system: string]: any;
@@ -314,10 +334,6 @@ export type FormElementFollow = FormInForm<FormElementFollow> | FormSection<Form
 export type FormOrElement = CdeForm | FormElement;
 export type FormOrElementFollow = CdeFormFollow | FormElementFollow;
 
-class InForm {
-    form!: EltRefCaching;
-}
-
 export class MetadataTag {
     key: string;
     value?: any;
@@ -385,12 +401,13 @@ export type QuestionValueList = DatatypeContainerValueList &
     QuestionPart & {
         answers: PermissibleValue[]; // mutable
         cde: QuestionCdeValueList;
-        displayAs: displayAsValueList;
+        displayAs: DisplayAsValueList;
         multiselect?: boolean;
     };
 
-export type displayAsValueList = 'radio/checkbox/select' | 'likert scale';
-export const displayAsValueListList = ['radio/checkbox/select', 'likert scale'];
+export type QuestionCdeValueList = QuestionCde & {
+    permissibleValues: PermissibleValue[];
+};
 
 export function question(): Partial<Question> {
     return {
@@ -401,20 +418,4 @@ export function question(): Partial<Question> {
         uomsAlias: [],
         uomsValid: [],
     };
-}
-
-export class QuestionCde extends EltRefCaching {
-    derivationRules: DerivationRule[] = []; // copied from original data element
-}
-
-export type QuestionCdeValueList = QuestionCde & {
-    permissibleValues: PermissibleValue[];
-};
-
-class Section {}
-
-export class SkipLogic {
-    action?: string;
-    condition: string = '';
-    validationError?: string;
 }

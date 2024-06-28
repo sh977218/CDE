@@ -83,6 +83,7 @@ app.use(
                 'cdn.jsdelivr.net',
                 'script.crazyegg.com',
                 'cdnjs.cloudflare.com',
+                'dap.digitalgov.gov',
                 '*.nih.gov',
                 'ajax.googleapis.com',
                 'www.googletagmanager.com',
