@@ -2,8 +2,8 @@ import { EventEmitter } from 'events';
 import { Response } from 'express';
 import { config } from 'server';
 import { elasticsearch } from 'server/cde/elastic';
-import { create as deCreate } from 'server/cde/mongo-cde';
-import { CdeFormDocument, create as formCreate } from 'server/form/mongo-form';
+import { create as deCreate, dataElementSourceModel } from 'server/cde/mongo-cde';
+import { CdeFormDocument, create as formCreate, formSourceModel } from 'server/form/mongo-form';
 import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
 import {
     cdeColumns as excelCdeColumns202404,
@@ -12,6 +12,7 @@ import {
 import { ColumnInformation, RowInformation, valueAsString } from 'server/submission/submissionShared';
 import { esClient, termRegStatus } from 'server/system/elastic';
 import { CDE_SYSTEM_TO_UMLS_SYSTEM_MAP, searchBySystemAndCode } from 'server/uts/utsSvc';
+import { push3 } from 'shared/array';
 import {
     LoadData,
     ValidationErrors,
@@ -23,7 +24,8 @@ import { keys } from 'shared/builtIn';
 import { DataElement } from 'shared/de/dataElement.model';
 import { convertCdeToQuestion } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
-import { ArrayToType, Cb, Cb1, PermissibleValue, User } from 'shared/models.model';
+import { isDataElement } from 'shared/item';
+import { ArrayToType, Cb, Cb1, Item, PermissibleValue, User } from 'shared/models.model';
 import {
     cellValue,
     combineLines,
@@ -262,6 +264,8 @@ export function processWorkBook(
                     if (info.bundleName) {
                         bundle(submission, data.forms, info.bundleName, de);
                     }
+
+                    rawSource(de, submission);
 
                     const label = de.designations?.[0].designation;
                     if (label) {
@@ -635,7 +639,8 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
                         reject(err);
                         return;
                     }
-                    resolve(de);
+                    const deObj: DataElement = de.toObject();
+                    deSourceCreate(deObj, submission.name).then(() => resolve(de), reject);
                 });
             });
         })
@@ -659,7 +664,8 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
                         reject(err);
                         return;
                     }
-                    resolve(f);
+                    const formObj: CdeForm = f.toObject();
+                    formSourceCreate(formObj, submission.name).then(() => resolve(f), reject);
                 });
             });
         })
@@ -690,6 +696,11 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
         form.imported = Date.now();
         form.isBundle = true;
         form.nihEndorsed = true;
+        form.copyright = { text: submissionCopyright(submission), urls: [] };
+        if (form.copyright.text?.substring((form.copyright.text?.indexOf('Free -- Publicly Available') + 1) * 26)) {
+            // 26 is length of string
+            form.isCopyrighted = true;
+        }
         form.stewardOrg.name = submission.name;
         form.designations.push({ designation: name });
         form.definitions.push({ definition: 'This is a bundle.', tags: [] });
@@ -832,4 +843,57 @@ function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partia
             }
         });
     });
+}
+
+function deSourceCreate(de: DataElement, source: string) {
+    const sourceDoc = new dataElementSourceModel(de);
+    sourceDoc.source = source;
+    return sourceDoc.save();
+}
+
+function formSourceCreate(form: CdeForm, source: string) {
+    const sourceDoc = new formSourceModel(form);
+    sourceDoc.source = source;
+    return sourceDoc.save();
+}
+
+function rawSource(item: Item, submission: Submission) {
+    if (!item.sources) {
+        item.sources = [];
+    }
+    const existingSources = item.sources.filter(s => s.sourceName === submission.name);
+    const rawSource = existingSources[0] || push3(item.sources, { sourceName: submission.name });
+    rawSource.imported = new Date();
+    rawSource.copyright = { value: submissionCopyright(submission) };
+    if (isDataElement(item)) {
+        rawSource.datatype = item.valueDomain.datatype;
+    }
+    rawSource.administrativeStatus = item.registrationState.administrativeStatus;
+    rawSource.registrationStatus = item.registrationState.registrationStatus;
+}
+
+function submissionCopyright(submission: Submission): string {
+    let copyrightText = '';
+    if (submission.licensePublic) {
+        copyrightText += 'Free -- Publicly Available';
+    }
+    if (submission.licenseAttribution) {
+        copyrightText += (copyrightText ? ', ' : '') + 'Free -- Attribution Required';
+    }
+    if (submission.licensePermission) {
+        copyrightText += (copyrightText ? ', ' : '') + 'Free -- Permission Required';
+    }
+    if (submission.licenseCost) {
+        copyrightText += (copyrightText ? ', ' : '') + 'Proprietary -- Cost/Purchase Required';
+    }
+    if (submission.licenseTraining) {
+        copyrightText += (copyrightText ? ', ' : '') + 'Proprietary -- Training Required';
+    }
+    if (submission.licenseOther) {
+        copyrightText += (copyrightText ? ', ' : '') + 'Other';
+    }
+    if (submission.licenseInformation) {
+        copyrightText += (copyrightText ? ', ' : '') + submission.licenseInformation;
+    }
+    return copyrightText;
 }

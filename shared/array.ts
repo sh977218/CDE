@@ -56,9 +56,15 @@ export function partition<T>(arr: T[], condition: CbRet3<boolean, T, number, T[]
 }
 
 export function push2<T>(array: T[], ...element: T[]): T[] {
-    // push that returns
+    // push that returns array
     array.push(...element);
     return array;
+}
+
+export function push3<T>(array: T[], element: T): T {
+    // push that returns element
+    array.push(element);
+    return element;
 }
 
 export function range(num: number): number[] {

@@ -393,7 +393,6 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     endorse() {
-        this.endorsed = true;
         if (this.page1.invalid || this.page2.invalid || this.page3.invalid) {
             this.page1Submitted = true;
             this.page2Submitted = true;
@@ -401,6 +400,7 @@ export class SubmissionEditComponent implements OnDestroy {
             this.page4Submitted = true;
             return;
         }
+        this.endorsed = true;
         this.save()
             .then(() => lastValueFrom(this.http.post('/server/submission/endorse', { _id: this.submission._id })))
             .then(() => this.alert.addAlert('info', 'Endorsed'))
