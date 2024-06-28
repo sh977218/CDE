@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgForOf, NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { FormQuestion } from 'shared/form/form.model';
 
 @Component({
     templateUrl: './questionAccordingList.component.html',
@@ -10,5 +11,5 @@ import { RouterLink } from '@angular/router';
     standalone: true,
 })
 export class QuestionAccordionListComponent {
-    @Input() formElements: any[] = [];
+    @Input() formElements: FormQuestion[] = [];
 }

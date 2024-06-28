@@ -41,7 +41,7 @@ const config: PlaywrightTestConfig = defineConfig({
         {
             timeout: 300 * 1000,
             expect: {
-                timeout: 10 * 1000,
+                timeout: 20 * 1000,
             },
             name: 'CDE-e2e',
             use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },

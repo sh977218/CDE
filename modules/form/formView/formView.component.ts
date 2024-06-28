@@ -39,6 +39,7 @@ import {
     FormElement,
     FormElementsContainer,
     FormInForm,
+    FormQuestion,
     FormQuestionDraft,
     QuestionCdeValueList,
 } from 'shared/form/form.model';
@@ -339,7 +340,10 @@ export class FormViewComponent implements OnInit, OnDestroy {
     }
 
     openFormCdesModal(elt: CdeFormDraft) {
-        this.dialog.open(FormCdesModalComponent, { width: '800px', data: formQuestions(elt) });
+        this.dialog.open<FormCdesModalComponent, FormQuestion[], never>(FormCdesModalComponent, {
+            width: '800px',
+            data: formQuestions(elt),
+        });
     }
 
     getFormCdes(elt: CdeFormDraft) {
