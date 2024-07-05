@@ -24,7 +24,7 @@ const toolTipMap = new Map([
     ['Permissible Values', 'List of allowable answers, if the CDE data type is value list'],
     ['Nb of PVs', 'The number of allowable answers for a CDE'],
     ['Steward', 'The organization responsible for the CDEs/Forms'],
-    ['Used by', 'Organizations using the CDEs/Forms'],
+    ['Used By', 'Organizations using the CDEs/Forms'],
     [
         'Registration Status',
         'Indicates where a CDE/Form is in the review/vetting process. For more details, please visit the Guide',
@@ -158,7 +158,7 @@ export class TableListComponent implements OnInit {
             this.headings.push(new Heading('Steward'));
         }
         if (tableSetup.usedBy) {
-            this.headings.push(new Heading('Used by'));
+            this.headings.push(new Heading('Used By'));
         }
         if (tableSetup.registrationStatus) {
             this.headings.push(new Heading('Registration Status'));
@@ -354,7 +354,7 @@ export class TableListComponent implements OnInit {
             this.headings.push(new Heading('Steward'));
         }
         if (tableSetup.usedBy) {
-            this.headings.push(new Heading('Used by'));
+            this.headings.push(new Heading('Used By'));
         }
         if (tableSetup.registrationStatus) {
             this.headings.push(new Heading('Registration Status'));

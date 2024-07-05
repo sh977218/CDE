@@ -14,7 +14,7 @@ public class FormTableView extends BaseFormTest {
 
         textNotPresent("Other Names");
         textPresent("Steward");
-        textPresent("Used by");
+        textPresent("Used By");
         textPresent("Identifiers");
         textPresent("Questions");
 
@@ -37,7 +37,7 @@ public class FormTableView extends BaseFormTest {
 
         textPresent("Other Names");
         textNotPresent("Steward");
-        textNotPresent("Used by");
+        textNotPresent("Used By");
         textNotPresent("Identifiers");
         textNotPresent("Questions", By.cssSelector("thead"));
 

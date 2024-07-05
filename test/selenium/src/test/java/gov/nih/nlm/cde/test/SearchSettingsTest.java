@@ -17,7 +17,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Permissible Values");
         textPresent("Steward");
         textPresent("Question Texts");
-        textPresent("Used by");
+        textPresent("Used By");
         textPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
         textNotPresent("Other Names");
@@ -35,7 +35,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by");
+        textPresent("Used By");
         textPresent("NLM ID");
         textNotPresent("Registration Status", By.id("gridList"));
         textPresent("Identifiers");
@@ -55,7 +55,7 @@ public class SearchSettingsTest extends NlmCdeBaseTest {
         textNotPresent("Other Names");
         textPresent("Permissible Values");
         textPresent("Steward");
-        textPresent("Used by");
+        textPresent("Used By");
         textPresent("Registration Status");
         textPresent("Identifiers");
     }
