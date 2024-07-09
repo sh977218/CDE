@@ -16,9 +16,15 @@ export function establishConnection(dbConfig: any) {
     }
 
     establishedConnections[uri] = createConnection(uri, dbConfig.options as ConnectOptions)
-        .once('open', () => noDbLogger.info('Connection open to ' + dbConfig.db))
-        .on('error', error => noDbLogger.info('Error connection open to ' + error))
-        .on('reconnected', () => noDbLogger.info('Connection open to ' + dbConfig.db));
+        .once('open', () => {
+            noDbLogger.info('Connection open to ' + dbConfig.db);
+        })
+        .on('error', error => {
+            noDbLogger.info('Error connection open to ' + error);
+        })
+        .on('reconnected', () => {
+            noDbLogger.info('Connection open to ' + dbConfig.db);
+        });
 
     return establishedConnections[uri];
 }

@@ -108,8 +108,8 @@ export const statusValidationRuleSchema = new Schema({
 export const designationSchema = new Schema(
     {
         designation: StringType,
-        tags: [StringType],
-        sources: { type: [StringType], default: undefined },
+        tags: { type: [StringType], default: [] },
+        sources: { type: [StringType], default: [] },
     },
     { _id: false }
 );
@@ -118,8 +118,8 @@ export const definitionSchema = new Schema(
     {
         definition: { type: String, required: true, minlength: 1 },
         definitionFormat: StringType,
-        tags: [StringType],
-        sources: { type: [StringType], default: undefined },
+        tags: { type: [StringType], default: [] },
+        sources: { type: [StringType], default: [] },
     },
     { _id: false }
 );

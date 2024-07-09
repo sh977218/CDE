@@ -21,8 +21,8 @@ export class CreateFormFromBoardModalComponent {
         private http: HttpClient
     ) {
         this.elt = new CdeForm();
-        this.elt.designations.push({ designation: board.name });
-        this.elt.definitions.push({ definition: '', tags: [] });
+        this.elt.designations.push({ designation: board.name, tags: [], sources: [] });
+        this.elt.definitions.push({ definition: '', tags: [], sources: [] });
         this.elt.formElements.push(new FormSection());
         this.http.get<BoardDe>('/server/board/' + board.id + '/0/500').subscribe(
             res => {

@@ -230,6 +230,8 @@ export class FormDescriptionQuestionDetailComponent implements OnInit {
         if ((value || '').trim()) {
             designations.push({
                 designation: value.trim(),
+                tags: [],
+                sources: [],
             });
         }
 

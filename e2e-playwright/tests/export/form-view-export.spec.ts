@@ -108,7 +108,7 @@ test.describe(`Form view export`, async () => {
                     '"valueMeaningName":"Yes"',
                     '"registrationState":{"registrationStatus":"Qualified","administrativeStatus":"Published"}',
                     '"stewardOrg":{"name":"NINDS"}',
-                    '"designations":[{"tags":[],"designation":"Adverse Event Tracking Log"',
+                    '"designations":[{"sources":[],"tags":[],"designation":"Adverse Event Tracking Log"',
                     'isBundle',
                 ];
 
@@ -139,7 +139,7 @@ test.describe(`Form view export`, async () => {
                 '"valueMeaningName":"Yes"',
                 '"registrationState":{"registrationStatus":"Qualified","administrativeStatus":"Published"}',
                 '"stewardOrg":{"name":"NINDS"}',
-                '"designations":[{"tags":[],"designation":"Adverse Event Tracking Log"',
+                '"designations":[{"sources":[],"tags":[],"designation":"Adverse Event Tracking Log"',
                 'isBundle',
             ];
             for (const expectedContent of expectedContents) {

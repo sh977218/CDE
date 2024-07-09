@@ -20,7 +20,7 @@ export class QuestionSearchModalComponent implements AfterViewChecked {
         private dialogRef: MatDialogRef<QuestionSearchModalComponent>,
         public deCompletionService: DeCompletionService
     ) {
-        this.newDataElement.designations.push({ designation: '', tags: ['Question Text'] });
+        this.newDataElement.designations.push({ designation: '', tags: ['Question Text'], sources: [] });
         this.deCompletionService.suggestedCdes = [];
         if (data.questionModelMode) {
             this.questionModelMode = data.questionModelMode;

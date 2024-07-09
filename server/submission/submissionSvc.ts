@@ -702,8 +702,8 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
             form.isCopyrighted = true;
         }
         form.stewardOrg.name = submission.name;
-        form.designations.push({ designation: name });
-        form.definitions.push({ definition: 'This is a bundle.', tags: [] });
+        form.designations.push({ designation: name, tags: [], sources: [] });
+        form.definitions.push({ definition: 'This is a bundle.', tags: [], sources: [] });
         form.classification.push({
             stewardOrg: { name: submission.name },
             elements: [{ elements: [], name: submission.name }],

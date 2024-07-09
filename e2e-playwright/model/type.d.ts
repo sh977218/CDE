@@ -71,11 +71,13 @@ export type EditDefinitionConfig = EditDesignationConfig & {
 export type Designation = {
     designation: string;
     tags: string[];
+    sources: string[];
 };
 
 export type Definition = {
     definition: string;
     tags: string[];
+    sources: string[];
 };
 
 export type Concept = {

@@ -478,13 +478,15 @@ export type Instruction = FormattedValue;
 
 export interface Designation {
     designation: string;
-    tags?: string[];
+    tags: string[];
+    sources: string[];
 }
 
 export interface Definition {
     definition: string;
     definitionFormat?: 'html' | undefined; // TODO: change to use FormattedValue
     tags: string[];
+    sources: string[];
 }
 
 export interface DerivationRule {

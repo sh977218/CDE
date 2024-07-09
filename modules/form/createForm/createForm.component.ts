@@ -42,8 +42,8 @@ export class CreateFormComponent implements OnInit {
         if (!this.elt) {
             this.elt = new CdeForm();
             this.elt.classification = [];
-            this.elt.designations.push({ designation: '' });
-            this.elt.definitions.push({ definition: '', tags: [] });
+            this.elt.designations.push({ designation: '', tags: [], sources: [] });
+            this.elt.definitions.push({ definition: '', tags: [], sources: [] });
         }
     }
 

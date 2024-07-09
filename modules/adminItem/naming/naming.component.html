@@ -23,6 +23,10 @@
             <cde-tag [tags]="designation.tags" [allTags]="allTags"
                      [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
         </dd>
+        <dt>Name Source:</dt>
+        <dd attr.itemprop="designationTags_{{i}}">
+            {{designation.sources?.join(', ')}}
+        </dd>
     </dl>
 
     <button *ngIf="canEdit" class="button" (click)="openNewDesignationModal()">
@@ -55,6 +59,10 @@
         <dd attr.itemprop="definitionTags_{{i}}">
             <cde-tag [tags]="definition.tags" [allTags]="allTags"
                      [canEdit]="canEdit" (changed)="eltChange.emit();"></cde-tag>
+        </dd>
+        <dt>Name Source:</dt>
+        <dd attr.itemprop="designationTags_{{i}}">
+            {{definition.sources?.join(', ')}}
         </dd>
     </dl>
     <button *ngIf="canEdit" class="button" (click)="openNewDefinitionModal()">

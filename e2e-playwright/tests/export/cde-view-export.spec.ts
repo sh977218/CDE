@@ -24,8 +24,8 @@ test.describe(`CDE view export`, async () => {
             const downloadedFile = await download.path();
             if (downloadedFile) {
                 const expectedContents = [
-                    `"designations":[{"tags":["Health"],"designation":"Spinal column injury number"`,
-                    `"definitions":[{"definition":"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.","tags":["Health"]`,
+                    `"designations":[{"sources":[],"tags":["Health"],"designation":"Spinal column injury number"`,
+                    `"definitions":[{"sources":[],"definition":"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.","tags":["Health"]`,
                     `"partOfBundles":["Qy8A7JBBYg"]`,
                 ];
 
@@ -49,8 +49,8 @@ test.describe(`CDE view export`, async () => {
                 materialPage.matMenuItem('NIH/CDE Schema JSON preview').click(),
             ]);
             const expectedContents = [
-                `"designations":[{"tags":["Health"],"designation":"Spinal column injury number"`,
-                `"definitions":[{"definition":"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.","tags":["Health"]`,
+                `"designations":[{"sources":[],"tags":["Health"],"designation":"Spinal column injury number"`,
+                `"definitions":[{"sources":[],"definition":"Number assigned to the spinal column injury. The spinal column injuries are assigned numbers starting with the most cephalic spinal column injury.","tags":["Health"]`,
                 `"partOfBundles":["Qy8A7JBBYg"]`,
             ];
             for (const expectedContent of expectedContents) {

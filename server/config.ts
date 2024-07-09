@@ -25,12 +25,18 @@ export const config = Config as any;
                 database.options.tlsCertificateKeyFile = database.sslCertPath;
             }
         }
+        if (database.options.tlsAllowInvalidCertificates) {
+            uriOptions.push('tlsAllowInvalidCertificates=true');
+        }
         database.uri = 'mongodb://';
         if (database.username) {
-            database.uri = database.uri + database.username + ':' + database.password + '@'
-
+            database.uri = database.uri + database.username + ':' + database.password + '@';
         }
-        database.uri = database.uri + config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+        database.uri =
+            database.uri +
+            config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') +
+            '/' +
+            database.db;
         if (uriOptions.length) {
             database.uri += '?' + uriOptions.join('&');
         }
@@ -38,12 +44,10 @@ export const config = Config as any;
 });
 
 config.elastic.options = {
-    nodes: config.elastic.hosts.map((s: string) => (
-        {
-            url: new URL(s),
-            ssl: {rejectUnauthorized: false}
-        }
-    ))
+    nodes: config.elastic.hosts.map((s: string) => ({
+        url: new URL(s),
+        ssl: { rejectUnauthorized: false },
+    })),
 };
 
 config.database.log.cappedCollectionSizeMB = config.database.log.cappedCollectionSizeMB || 1024 * 1024 * 250;
