@@ -17,7 +17,7 @@
       "https://cde-search-us-east-1.awsqa.nlm.nih.gov"
     ],
     "number_of_replicas": 0,
-    "esIndexVersion": "v15"
+    "esIndexVersion": "v16"
   },
   "database": {
     "servers": [

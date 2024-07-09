@@ -29,6 +29,7 @@ config/qa-mig.json
 config/migration.json
 config/peter.json
 config/my-qa.json
+config/my-prod.json
 mongo.pem.txt
 mongo-rootca.pem.txt
 

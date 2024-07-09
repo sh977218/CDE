@@ -30,7 +30,7 @@
       "https://cde-search-us-east-1.awsprod.nlm.nih.gov"
     ],
     "inject_bulk_size": 50,
-    "esIndexVersion": "v15"
+    "esIndexVersion": "v16"
   },
   "database": {
     "servers": [
