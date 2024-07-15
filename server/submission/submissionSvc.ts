@@ -162,7 +162,7 @@ export function processWorkBook(
         const withError = withErrorCapture('Cover Sheet', errors);
         const coverSheet = wb.Sheets['Cover Sheet'];
         if (!coverSheet) {
-            errors.push('Worksheet "Cover Sheet" is missing.');
+            withError(0)('Template', 'Worksheet "Cover Sheet" is missing.');
             return false;
         }
         const rows = utils.sheet_to_json<(string | null)[]>(coverSheet, { header: 1, defval: null });
@@ -200,23 +200,25 @@ export function processWorkBook(
         if (submissionName && typeof submissionName === 'string') {
             data.metadata.name = submissionName;
             if (submission.name !== data.metadata.name) {
-                errors.push(
+                withError(4)(
+                    'Code',
                     `Submission name "${submission.name}" does not match workbook title "${data.metadata.name}"`
                 );
             }
         } else {
-            errors.push('Submission name is required.');
+            withError(4)('Required', 'Submission name is required.');
         }
 
         if (submissionVersion && (typeof submissionVersion === 'number' || typeof submissionVersion === 'string')) {
             data.metadata.version = valueAsString(submissionVersion) || null;
             if (submission.version !== data.metadata.version) {
-                errors.push(
+                withError(6)(
+                    'Code',
                     `Submission version "${submission.version}" does not match workbook version "${data.metadata.version}"`
                 );
             }
         } else {
-            errors.push('Submission version is required.');
+            withError(6)('Required', 'Submission version is required.');
         }
 
         return !errors.length;
@@ -227,7 +229,7 @@ export function processWorkBook(
         const withError = withErrorCapture('CDEs sheet', errors);
         const cdesSheet = wb.Sheets.CDEs;
         if (!cdesSheet) {
-            errors.push('Worksheet "CDEs" is missing.');
+            withError(0)('Template', 'Worksheet "CDEs" is missing.');
             return false;
         }
         const rows = utils.sheet_to_json<Row>(cdesSheet, { header: 1, defval: null });

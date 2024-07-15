@@ -15,13 +15,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { DeleteWithConfirmModule } from 'deleteWithConfirm/deleteWithConfirm.module';
+import { SafeHtmlPipe } from 'non-core/pipes/safeHtml.pipe';
 import { SubmissionEditComponent } from 'submission/submissionEdit.component';
 import { SubmissionManagementComponent } from 'submission/submissionManagement.component';
 import { SubmissionViewComponent } from 'submission/submissionView.component';
 import { SubmissionWorkbookValidationReportComponent } from 'submission/submissionWorkbookValidationReport.component';
 import { SubmissionWorkbookValidationReportService } from 'submission/submissionWorkbookValidationReport.service';
 import { SubmissionPreviewComponent } from 'submission/submissionPreview.component';
-import { SafeHtmlPipe } from '../non-core/pipes/safeHtml.pipe';
 
 const routes: Routes = [
     { path: '', component: SubmissionManagementComponent },

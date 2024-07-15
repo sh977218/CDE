@@ -628,6 +628,9 @@ export class SubmissionEditComponent implements OnDestroy {
         (this._submission as Submission) = s;
         this.defaultValues(this.submission);
         this.copySubmissionToForm();
+        if (this.submission.endorsed) {
+            this.endorsed = true;
+        }
     }
 
     submit() {

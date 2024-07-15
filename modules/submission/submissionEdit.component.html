@@ -4,6 +4,10 @@
     </ng-template>
     <mat-step [stepControl]="page1" label="Collection Details">
         <form [formGroup]="page1" (ngSubmit)="page1Submitted=true; !page1.invalid && saveIfChanged(page1) && stepper.next()">
+            <div *ngIf="endorsed" class="alert alert-info text-center" style="margin: 5px 16px 24px">
+                <mat-icon>check</mat-icon>
+                This submission has already been endorsed. No further actions are available.
+            </div>
             <div *ngIf="page1Submitted && page1.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
                 <mat-icon>warning</mat-icon>
                 Please complete all required fields. Missing Fields marked "Incomplete".
@@ -93,6 +97,10 @@
     </mat-step>
     <mat-step [stepControl]="page2" label="Contact Information">
         <form [formGroup]="page2" (ngSubmit)="page2Submitted=true; !page2.invalid && saveIfChanged(page2) && stepper.next()">
+            <div *ngIf="endorsed" class="alert alert-info text-center" style="margin: 5px 16px 24px">
+                <mat-icon>check</mat-icon>
+                This submission has already been endorsed. No further actions are available.
+            </div>
             <div *ngIf="page2Submitted && page2.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
                 <mat-icon>warning</mat-icon>
                 Please complete all required fields. Missing Fields marked "Incomplete".
@@ -307,6 +315,10 @@
     </mat-step>
     <mat-step [stepControl]="page3" label="License & Upload">
         <form class="container" [formGroup]="page3" (ngSubmit)="page3Submitted=true; !page3.invalid && saveIfChanged(page3) && stepper.next()">
+            <div *ngIf="endorsed" class="alert alert-info text-center" style="margin: 5px 16px 24px">
+                <mat-icon>check</mat-icon>
+                This submission has already been endorsed. No further actions are available.
+            </div>
             <div *ngIf="page3Submitted && page3.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
                 <mat-icon>warning</mat-icon>
                 Please complete all required fields. Missing Fields marked "Incomplete".
@@ -441,6 +453,10 @@
     </mat-step>
     <mat-step label="Review & Submit">
         <div class="container">
+            <div *ngIf="endorsed" class="alert alert-info text-center" style="margin: 5px 16px 24px">
+                <mat-icon>check</mat-icon>
+                This submission has already been endorsed. No further actions are available.
+            </div>
             <div *ngIf="page4Submitted && page1.invalid" class="contentPane alert text-center" style="margin: 5px 16px 24px">
                 <mat-icon>warning</mat-icon>
                 Please complete all required fields on page 1. Missing Fields marked "Incomplete".
@@ -540,8 +556,8 @@
                     <button *ngIf="canSave" type="button" class="fake-link" (click)="saveAndExit()">Save</button>
                     <button *ngIf="canSave && !canReview" type="submit" class="button" (click)="submit()">Submit</button>
                     <button *ngIf="canSave && canReview && !endorsed" type="submit" class="button success" (click)="endorse()">Endorse</button>
-                    <span *ngIf="endorsed">
-                        <mat-icon class="spin">auto_renew</mat-icon>
+                    <span *ngIf="endorsed && !submission.endorsed">
+                        <mat-icon class="spin">autorenew</mat-icon>
                     </span>
                 </div>
             </div>

@@ -519,8 +519,8 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 de.classification = [];
             }
             const classification = de.classification;
-            val.split('\n').forEach(flatClassification => {
-                const elements = flatClassification.split(';');
+            val.split('|').forEach(flatClassification => {
+                const elements = flatClassification.trim().split(';');
                 if (!elements[0]) {
                     return;
                 }
