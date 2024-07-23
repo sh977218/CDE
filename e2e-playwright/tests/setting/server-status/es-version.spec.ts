@@ -6,5 +6,5 @@ test(`es version`, async ({ page, navigationMenu, settingMenu }) => {
     await navigationMenu.login(Accounts.nlm);
     await navigationMenu.gotoSettings();
     await settingMenu.serverStatusMenu().click();
-    await expect(page.getByTestId(`es-info`)).toContainText(/"number": "7.6.\d"/);
+    await expect(page.getByTestId(`es-info`)).toContainText(`"number": "7.17.`);
 });

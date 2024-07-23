@@ -53,6 +53,7 @@ import { addNewUser, findUserByUsername } from './user/userDb';
 import { recordUserLogin } from './log/dbLogger';
 import fetch from 'node-fetch';
 import { generateJwtToken, validateJWToken } from './jwtTokenSvc';
+
 const passport = require('passport'); // must use require to preserve this pointer
 
 require('source-map-support').install();
@@ -318,6 +319,19 @@ app.use(async (req, res, next) => {
     } else {
         next();
     }
+});
+
+app.use('/api/**', async (req, res, next) => {
+    if (!req.user) {
+        if (req.query.apiKey) {
+            const utsResp = await fetch(`${config.uts.apiKeyValidation}${req.query.apiKey}`);
+            const utsJson = await utsResp.json();
+            if (utsJson.valid) {
+                req.user = { username: utsJson.username };
+            }
+        }
+    }
+    next();
 });
 
 try {

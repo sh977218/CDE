@@ -127,4 +127,13 @@ test.describe(`API testing`, async () => {
             });
         });
     });
+
+    test(`See CDE PVs with API key`, async ({ page }) => {
+        const apiKey = 'f8e163df-6601-4444-b290-e904de1aedea';
+        const cdeTinyId = 'mkmhYJOnk7l';
+        await page.goto(`/api/de/${cdeTinyId}`);
+        await expect(page.getByText(`Login to see the value.`)).toBeVisible();
+        await page.goto(`/api/de/${cdeTinyId}?apiKey=${apiKey}`);
+        await expect(page.getByText(`Login to see the value.`)).toBeHidden();
+    });
 });
