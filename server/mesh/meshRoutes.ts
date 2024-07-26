@@ -1,33 +1,23 @@
-import { Dictionary, each } from 'async';
+import { each } from 'async';
 import { RequestHandler, Router } from 'express';
-import fetch from 'node-fetch';
-import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
-import { byEltId, byFlatClassification, byId, MeshClassificationDocument, newMesh } from 'server/mesh/meshDb';
-import { handleErrors, json } from 'shared/fetch';
-import { Cb1 } from 'shared/models.model';
-import { config } from 'server';
-import { handleError, handleNotFound } from '../errorHandler';
 import * as multer from 'multer';
-import { updateMeshMappings } from './meshService';
-
-const meshTopTreeMap: Dictionary<string> = {
-    A: 'Anatomy',
-    B: 'Organisms',
-    C: 'Diseases',
-    D: 'Chemicals and Drugs',
-    E: 'Analytical, Diagnostic and Therapeutic Techniques, and Equipment',
-    F: 'Psychiatry and Psychology',
-    G: 'Phenomena and Processes',
-    H: 'Disciplines and Occupations',
-    I: 'Anthropology, Education, Sociology, and Social Phenomena',
-    J: 'Technology, Industry, and Agriculture',
-    K: 'Humanities',
-    L: 'Information Science',
-    M: 'Named Groups',
-    N: 'Health Care',
-    V: 'Publication Characteristics',
-    Z: 'Geographicals',
-};
+import fetch from 'node-fetch';
+import { config } from 'server';
+import { handleError, handleNotFound } from 'server/errorHandler';
+import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
+import {
+    byEltId,
+    byFlatClassification,
+    byId,
+    deleteAll,
+    findAll,
+    MeshClassificationDocument,
+    newMesh,
+} from 'server/mesh/meshDb';
+import { updateMeshMappings } from 'server/mesh/meshService';
+import { handleErrors, json } from 'shared/fetch';
+import { meshLevel1Map } from 'shared/mesh/mesh';
+import { Cb1 } from 'shared/models.model';
 
 export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
     const router = Router();
@@ -65,9 +55,9 @@ export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
         }
     });
 
-    // router.get('/meshClassifications', (req, res) => {
-    //     findAll(handleError({req, res}, mm => res.send(mm)));
-    // });
+    router.get('/meshClassifications', (req, res) => {
+        findAll(handleError({ req, res }, mm => res.send(mm)));
+    });
 
     router.get('/meshClassification', (req, res) => {
         if (!req.query.classification) {
@@ -101,6 +91,16 @@ export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
         }
     );
 
+    router.post('/deleteMeshMapping', (req, res) => {
+        deleteAll(err => {
+            if (err) {
+                res.status(400).send();
+            } else {
+                res.send();
+            }
+        });
+    });
+
     return router;
 }
 
@@ -120,7 +120,7 @@ function flatTreesFromMeshDescriptorArray(descArr: string[], cb: Cb1<string[]>) 
                                 .then(handleErrors)
                                 .then(json)
                                 .then((oneTreeBody: any) => {
-                                    let flatTree: string = meshTopTreeMap[treeNumber.t.substr(0, 1)];
+                                    let flatTree: string = meshLevel1Map[treeNumber.t.substr(0, 1) as 'A'];
                                     if (oneTreeBody && oneTreeBody.length > 0) {
                                         flatTree =
                                             flatTree +

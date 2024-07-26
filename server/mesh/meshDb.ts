@@ -1,9 +1,9 @@
 import * as mongoose from 'mongoose';
 import { Document, Model } from 'mongoose';
-import { addStringtype } from 'server/system/mongoose-stringtype';
 import { config } from 'server';
-import { CbError1, MeshClassification } from 'shared/models.model';
-import { establishConnection } from '../system/connections';
+import { establishConnection } from 'server/system/connections';
+import { addStringtype } from 'server/system/mongoose-stringtype';
+import { CbError, CbError1, MeshClassification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -36,6 +36,10 @@ export function byEltId(eltId: string, callback: CbError1<MeshClassificationDocu
 
 export function byFlatClassification(flatClassification: string, callback: CbError1<MeshClassificationDocument[]>) {
     meshClassificationModal.find({ flatClassification }, callback);
+}
+
+export function deleteAll(cb: CbError) {
+    meshClassificationModal.deleteMany({}, cb);
 }
 
 export function findAll(callback: CbError1<MeshClassificationDocument[]>) {

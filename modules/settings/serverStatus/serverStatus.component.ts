@@ -2,7 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmReindexModalComponent } from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
+import { MeshSyncService } from 'settings/mesh-mapping/meshSync.service';
+import {
+    ConfirmReindexModalComponent,
+    ConfirmReindexModalData,
+    ConfirmReindexModalOutput,
+} from 'settings/serverStatus/confirm-reindex-modal/confirm-reindex-modal.component';
 
 @Component({
     selector: 'cde-server-status',
@@ -19,13 +24,16 @@ export class ServerStatusComponent {
     esIndices!: { name: string; indexName: string; count: number; totalCount: number }[];
     indexToReindex!: number;
     isDone: boolean = false;
-    meshSyncs: any;
-
     linkedForms: { total: number; done: number } = { total: 0, done: 0 };
     statuses: any[] = [];
     esInfo$;
 
-    constructor(private alert: AlertService, private http: HttpClient, public dialog: MatDialog) {
+    constructor(
+        private http: HttpClient,
+        private alert: AlertService,
+        public dialog: MatDialog,
+        public meshSync: MeshSyncService
+    ) {
         this.refreshStatus();
         this.esInfo$ = http.get(`/server/system/esVersion`);
     }
@@ -67,14 +75,16 @@ export class ServerStatusComponent {
 
     openConfirmReindexModal(index: number) {
         this.esIndices[index].count = 0;
+        const options: ConfirmReindexModalData['options'] = {};
         this.dialog
-            .open<ConfirmReindexModalComponent, { index: number; indexName: string }, boolean | undefined>(
+            .open<ConfirmReindexModalComponent, ConfirmReindexModalData, ConfirmReindexModalOutput>(
                 ConfirmReindexModalComponent,
                 {
                     width: '800px',
                     data: {
                         index,
                         indexName: this.esIndices[index].indexName,
+                        options,
                     },
                 }
             )
@@ -85,31 +95,6 @@ export class ServerStatusComponent {
                     this.reIndex();
                 }
             });
-    }
-
-    syncMesh() {
-        this.http.post('/server/mesh/syncWithMesh', {}).subscribe();
-        const indexFn = setInterval(() => {
-            this.http.get<any>('/server/mesh/syncWithMesh').subscribe(
-                res => {
-                    this.meshSyncs = [];
-                    for (const p in res) {
-                        if (res.hasOwnProperty(p)) {
-                            this.meshSyncs.push(res[p]);
-                        }
-                    }
-                    if (res.dataelement.done === res.dataelement.total && res.form.done === res.form.total) {
-                        clearInterval(indexFn);
-                        this.alert.addAlert('success', 'Done syncing');
-                        this.meshSyncs = null;
-                    }
-                },
-                () => {
-                    clearInterval(indexFn);
-                    this.alert.addAlert('danger', 'Unexpected error syncing');
-                }
-            );
-        }, 1000);
     }
 
     syncLinkedForms() {

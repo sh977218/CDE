@@ -307,7 +307,7 @@
             </div>
         </div>
         <!-- TOPIC AGGREGATIONS -->
-        <div *ngIf="aggregations.meshTrees.meshTrees.buckets" #topicSection
+        <div *ngIf="aggregations.meshTrees.meshTrees.buckets?.length" #topicSection
              tourAnchor="meshTopicListHolder"
              id="meshTreesListHolder" class="searchFilterCollapse">
             <div class="searchFilterCollapseHeading" (click)="topicSection.classList.toggle('collapsed')">
@@ -318,9 +318,9 @@
                 </span>
             </div>
             <div class="searchFilterCollapseContent">
-                <ng-container *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast"
-                              id="topic-{{e}}" class="hand-cursor" (click)="selectTopic(e)" role="link">
-                    <div *ngIf="!isLast; else topicSelf" class="treeParent">
+                <ng-container *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast">
+                    <div *ngIf="!isLast; else topicSelf" id="topic-{{e}}" class="treeParent hand-cursor"
+                         (click)="selectTopic(e)" role="link">
                         <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
                         <a class="treeItemText">{{ e }}</a>
                     </div>

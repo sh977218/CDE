@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
-import { Request, RequestHandler, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { GridFSFile } from 'mongodb';
 import { Cursor, QueryOptions } from 'mongoose';
 import { config, ObjectId } from 'server';
@@ -29,7 +29,7 @@ import { version } from 'server/version';
 import { consoleLog, loginModel } from 'server/log/dbLogger';
 import { ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import { indices } from 'server/system/elasticSearchInit';
-import { elasticsearchInfo, reIndex } from 'server/system/elastic';
+import { deleteIndex, elasticsearchInfo, reIndex } from 'server/system/elastic';
 import { byId, usersByName } from 'server/user/userDb';
 import { status } from 'server/siteAdmin/status';
 import { removeFromArrayBy } from 'shared/array';
@@ -41,7 +41,7 @@ import {
     IdSourceResponse,
     IdSourcesResponse,
 } from 'shared/boundaryInterfaces/API/system';
-import { CbError, User } from 'shared/models.model';
+import { CbError } from 'shared/models.model';
 import { Readable } from 'stream';
 import { promisify } from 'util';
 import { flattenFormElement } from 'shared/form/fe';
@@ -251,12 +251,19 @@ export function module() {
 
     router.post('/reindex/:indexPosition', isSiteAdminMiddleware, (req, res) => {
         const index = indices[+req.params.indexPosition];
-        reIndex(index, () => {
-            setTimeout(() => {
-                index.count = 0;
-                index.totalCount = 0;
-            }, 5000);
-        });
+        const reIndexCb = () => {
+            reIndex(index, () => {
+                setTimeout(() => {
+                    index.count = 0;
+                    index.totalCount = 0;
+                }, 5000);
+            });
+        };
+        if (req.body.deleteIndex) {
+            deleteIndex(index, reIndexCb);
+        } else {
+            reIndexCb();
+        }
         return res.send();
     });
 

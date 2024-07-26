@@ -51,6 +51,7 @@ import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.c
 import { CommentsComponent } from 'settings/comments/comments.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { DataValidationComponent } from 'settings/dataValidation/dataValidation.component';
+import { MeshSyncService } from 'settings/mesh-mapping/meshSync.service';
 import { SpellCheckComponent } from 'settings/spellcheck/spellcheck.component';
 import { DraftsComponent } from 'settings/drafts/drafts.component';
 import { DraftsService } from 'settings/drafts/drafts.service';
@@ -345,7 +346,14 @@ const appRoutes: Routes = [
         ViewingHistoryComponent,
     ],
     exports: [],
-    providers: [DraftsService, MyDraftsResolve, MyOrgDraftsResolve, AllDraftsResolve, ManagedOrgsResolve],
+    providers: [
+        DraftsService,
+        MeshSyncService,
+        MyDraftsResolve,
+        MyOrgDraftsResolve,
+        AllDraftsResolve,
+        ManagedOrgsResolve,
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SettingsModule {}

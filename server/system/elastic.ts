@@ -135,6 +135,10 @@ function daoMap(key: 'cde' | 'form' | 'board' | 'cdeSuggest' | 'formSuggest'): D
     }[key];
 }
 
+export function deleteIndex(index: ElasticIndex, cb: Cb) {
+    esClient.indices.delete({ index: index.indexName, timeout: '6s' }, cb);
+}
+
 export function reIndex(index: ElasticIndex, cb: Cb) {
     reIndexStream({ query: daoMap(index.name), indexes: [index] }, cb);
 }

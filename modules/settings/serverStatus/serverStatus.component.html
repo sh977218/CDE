@@ -17,8 +17,8 @@
         </mat-progress-bar>
     </div>
 
-    <button class="button" (click)="syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
-    <div *ngFor="let meshSync of meshSyncs">
+    <button class="button" (click)="meshSync.syncMesh()" id="syncWithMeshButton">Sync with MeSH</button>
+    <div *ngFor="let meshSync of meshSync.meshSyncs">
         <mat-progress-bar *ngIf="meshSync.total > 0 && meshSync.done > 0"
                           [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
         </mat-progress-bar>

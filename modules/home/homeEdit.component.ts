@@ -16,7 +16,7 @@ import {
     HomepagePutResponse,
 } from 'shared/boundaryInterfaces/API/system';
 import { HomePageDraft, UpdateCard } from 'shared/singleton.model';
-import { isString } from 'shared/util';
+import { isT } from 'shared/util';
 
 @Component({
     templateUrl: './homeEdit.component.html',
@@ -99,7 +99,7 @@ export class HomeEditComponent {
             .then(drafts => {
                 const [draft, original] = drafts;
                 if (draft) {
-                    const keepIds = (original ? original.body.updates : []).map(u => u.image?.fileId).filter(isString);
+                    const keepIds = (original ? original.body.updates : []).map(u => u.image?.fileId).filter(isT);
                     return Promise.all(
                         draft.body.updates.map(u => {
                             if (u.image && !keepIds.includes(u.image.fileId)) {
@@ -197,7 +197,7 @@ export class HomeEditComponent {
                     Promise.all(
                         (original ? original.body.updates : [])
                             .map(u => u.image?.fileId)
-                            .filter(isString)
+                            .filter(isT)
                             .filter(fileId => homepage.body.updates.every(u => u.image?.fileId !== fileId))
                             .map(fileId => this.attachmentDelete(fileId))
                     )

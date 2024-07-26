@@ -1,13 +1,39 @@
 <h1>Mesh Mapping</h1>
 
 <div>
-    <p>Upload Mesh Mapping CSV</p>
-    <label>
-        <button class="button"  (click)="fileInput.click()">
-            <mat-icon>cloud_upload</mat-icon>
-            Upload CSV file
+    <p>Upload Mesh Mapping Excel</p>
+    <div *ngIf="!loading else loadingTemplate">
+        <button *ngIf="!confirmDelete; else askConfirmDelete" class="button fail" (click)="confirmDelete = true">
+            <mat-icon>delete</mat-icon>
+            Delete Mesh Mapping and All Edits
         </button>
-        <span class="file-name">{{ selectedFile?.name }}</span>
-    </label>
-    <input hidden (change)="onFileSelected($event)" #fileInput type="file">
+        <ng-template #askConfirmDelete>
+            <span class="badge badge-secondary" style="font-size: 75%">Confirm Delete
+                <a title="Delete" class="badge badge-danger fake-button" role="button" tabindex="0"
+                    (click)="deleteMapping(); confirmDelete = false" href="javascript:void(0);">Delete <mat-icon class="cdeMatIcon">check</mat-icon></a>
+                <a id="cancelRemoveProperty-" title="Cancel" class="badge badge-secondary fake-button" role="button" tabindex="0"
+                    (click)="confirmDelete = false" href="javascript:void(0);">Cancel <mat-icon class="cdeMatIcon">cancel</mat-icon></a>
+            </span>
+        </ng-template>
+
+        <label style="vertical-align: top">
+            <button class="button"  (click)="fileInput.click()">
+                <mat-icon>cloud_upload</mat-icon>
+                Upload Excel file with Sheet "SmallestClassDedup"
+            </button>
+            <span class="file-name">{{ selectedFile?.name }}</span>
+        </label>
+
+        <button class="button" (click)="meshSync.syncMesh()" id="syncWithMeshButton">Sync MeSH to ElasticSearch</button>
+        <div *ngFor="let meshSync of meshSync.meshSyncs">
+            <mat-progress-bar *ngIf="meshSync.total > 0 && meshSync.done > 0"
+                              [max]="meshSync.total" [value]="meshSync.done * 100 / meshSync.total">
+            </mat-progress-bar>
+        </div>
+    </div>
+    <ng-template #loadingTemplate>
+        <mat-icon class="spin">autorenew</mat-icon>
+    </ng-template>
+    <input hidden (change)="onFileSelected($event)" #fileInput type="file"
+           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 </div>

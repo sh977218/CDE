@@ -1,5 +1,6 @@
+import { updateMeshByClassification } from 'server/mesh/meshDb';
+import { getTreePathsAsName } from 'server/mesh/utsMesh';
 import { read, utils } from 'xlsx';
-import { updateMeshByClassification } from './meshDb';
 
 type MeshCsvRow = {
     Classification: string;
@@ -15,7 +16,8 @@ type meshClassification = {
 
 export async function updateMeshMappings(csvFileBuffer: Buffer) {
     const workbook = read(csvFileBuffer);
-    const meshRows: MeshCsvRow[] = utils.sheet_to_json(workbook.Sheets['Classifs to MeSH_CSV for demo']);
+    const meshRows: MeshCsvRow[] = utils.sheet_to_json(workbook.Sheets['SmallestClassDedup']);
+    const unitOfWork: Promise<void>[] = [];
     const reducedMeshRows = meshRows.reduce((accumulator: meshClassification[], currentValue, index) => {
         const existObj = accumulator.filter(
             (a: meshClassification) => a.flatClassification === currentValue.Classification
@@ -24,14 +26,20 @@ export async function updateMeshMappings(csvFileBuffer: Buffer) {
             existObj.flatTrees.push(...currentValue['Mesh Name']);
             existObj.meshDescriptors.push(...currentValue['Mesh UI']);
         } else {
-            accumulator.push({
-                flatClassification: currentValue.Classification,
-                flatTrees: [currentValue['Mesh Name']],
-                meshDescriptors: [currentValue['Mesh UI']],
-            });
+            unitOfWork.push(
+                (async () => {
+                    accumulator.push({
+                        flatClassification: currentValue.Classification,
+                        // flatTrees: [currentValue['Mesh Name']],
+                        flatTrees: (await getTreePathsAsName(currentValue['Mesh UI'])).map(path => path.join(';')),
+                        meshDescriptors: [currentValue['Mesh UI']],
+                    });
+                })()
+            );
         }
         return accumulator;
     }, []);
+    await Promise.all(unitOfWork);
     for (const meshRow of reducedMeshRows) {
         const flatClassification = meshRow.flatClassification;
         const flatTrees = [...new Set(meshRow.flatTrees)];

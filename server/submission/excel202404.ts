@@ -13,7 +13,7 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.designations) {
                 de.designations = [];
             }
-            de.designations.push({ designation: valueAsString(v), tags: [] });
+            de.designations.push({ designation: valueAsString(v), sources: [de.stewardOrg?.name || ''], tags: [] });
         },
     },
     'CDE Data Type': {
@@ -90,7 +90,11 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.definitions) {
                 de.definitions = [];
             }
-            de.definitions.push({ definition: valueAsString(v) || ' ', tags: [] });
+            de.definitions.push({
+                definition: valueAsString(v) || ' ',
+                sources: [de.stewardOrg?.name || ''],
+                tags: [],
+            });
         },
     },
     'Preferred Question Text': {
@@ -101,7 +105,11 @@ export const cdeColumns: Record<string, ColumnInformation> = {
             if (!de.designations) {
                 de.designations = [];
             }
-            de.designations.push({ designation: valueAsString(v) || ' ', tags: ['Preferred Question Text'] });
+            de.designations.push({
+                designation: valueAsString(v) || ' ',
+                sources: [de.stewardOrg?.name || ''],
+                tags: ['Preferred Question Text'],
+            });
         },
     },
     'Unit of Measure': {

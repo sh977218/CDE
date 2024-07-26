@@ -29,21 +29,42 @@ export function decamelize(str: string = '', sep: string = ' '): string {
         .toLowerCase();
 }
 
-export function isString(s: string | undefined): s is string {
-    return !!s;
+function toS(obj: any) {
+    return Object.prototype.toString.call(obj);
+}
+export function isDate(obj: any): obj is Date {
+    return toS(obj) === '[object Date]';
+}
+export function isRegExp(obj: any): obj is RegExp {
+    return toS(obj) === '[object RegExp]';
+}
+export function isError(obj: any): obj is Error {
+    return toS(obj) === '[object Error]';
+}
+export function isBoolean(obj: any): obj is boolean {
+    return toS(obj) === '[object Boolean]';
+}
+export function isNumber(obj: any): obj is number {
+    return toS(obj) === '[object Number]';
+}
+export function isString(obj: any): obj is string {
+    return toS(obj) === '[object String]';
 }
 
-export function noop(...args: any[]): void {
+export function isT<T>(t: T | null | undefined): t is T {
+    return !!t;
 }
+
+export function noop(...args: any[]): void {}
 
 export function ownKeys<T extends {}>(obj?: T): (keyof T)[] {
-    return obj ? Object.keys(obj).filter(k => obj.hasOwnProperty(k)) as (keyof T)[] : [];
+    return obj ? (Object.keys(obj).filter(k => obj.hasOwnProperty(k)) as (keyof T)[]) : [];
 }
 
 export function stringToArray<T extends string = string>(arrayString: string, delim = ';'): T[] {
-    return arrayString ? arrayString.split(delim) as T[] : [];
+    return arrayString ? (arrayString.split(delim) as T[]) : [];
 }
 
 export function stringCompare(a: string, b: string): number {
-    return a > b ? 1 : (a < b ? -1 : 0);
+    return a > b ? 1 : a < b ? -1 : 0;
 }

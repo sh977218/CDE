@@ -38,7 +38,7 @@ import {
 import { mapSeries, nextTick } from 'shared/promise';
 import { schedulingExecutor } from 'shared/scheduling';
 import { SearchSettingsElastic } from 'shared/search/search.model';
-import { isString, noop } from 'shared/util';
+import { isT, noop } from 'shared/util';
 import * as spellChecker from 'simple-spellchecker';
 import { utils, WorkBook } from 'xlsx';
 
@@ -375,7 +375,7 @@ export function processWorkBook(
                     optionalColumns.splice(match, 1);
                 }
             })
-            .filter(isString)
+            .filter(isT)
             .concat(
                 expectedColumns.map(
                     columnHeading =>
@@ -812,6 +812,7 @@ function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partia
         const searchSetting: SearchSettingsElastic = {
             nihEndorsed: true,
             excludeOrgs: [],
+            meshTree: '',
             resultPerPage: 20,
             selectedDatatypes: [],
             selectedCopyrightStatus: [],

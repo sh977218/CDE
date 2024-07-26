@@ -45,6 +45,9 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
         // from a;b;c to a a;b a;b;c
         classifToTrees[mapping.flatClassification] = [];
         mapping.flatTrees.forEach(treeNode => {
+            if (!treeNode) {
+                return;
+            }
             classifToTrees[mapping.flatClassification].push(treeNode);
             while (treeNode.indexOf(';') > -1) {
                 treeNode = treeNode.substr(0, treeNode.lastIndexOf(';'));

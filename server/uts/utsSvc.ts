@@ -28,22 +28,37 @@ const ttys: Dictionary<string> = {
 
 function logRejected(message: string) {
     return (error: Error) => {
-        respondError({details: 'UMLS failed: ' + message})(error);
+        respondError({ details: 'UMLS failed: ' + message })(error);
         throw error;
     };
 }
 
-function checkForVsacErrorPage(body: string): string {
+function checkForUtsErrorObj(obj: any) {
+    if (obj.status && obj.name && obj.message) {
+        console.log('checkForVsacErrorObj received Error object');
+        throw obj;
+    }
+    return obj;
+}
+
+function checkForUtsErrorPage(body: string): string {
     if (body.indexOf('<html>') !== -1) {
         throw new Error('error response');
     }
     return body;
 }
 
-const umlsServerText = serverRequest(config.umls.wsHost, 1, 5, 0).requestText;
+const { requestJson: umlsServerJson, requestText: umlsServerText } = serverRequest(config.umls.wsHost, 1, 5, 0);
+
+export function umlsServerRequestJson<T>(path: string, options: RequestInit, okStatuses?: number[]): Promise<T> {
+    return umlsServerJson<T>(path, options, okStatuses)
+        .then(checkForUtsErrorObj)
+        .catch(logRejected(`${config.umls.wsHost + path}`));
+}
+
 export function umlsServerRequestText(path: string, options?: RequestInit, okStatuses?: number[]): Promise<string> {
     return umlsServerText(path, options, okStatuses)
-        .then(checkForVsacErrorPage)
+        .then(checkForUtsErrorPage)
         .catch(logRejected(`${config.umls.wsHost + path}`));
 }
 
