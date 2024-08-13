@@ -64,9 +64,12 @@ test(`Import permissible value from CDE`, async ({
 
     await test.step(`Verify history`, async () => {
         await page.getByRole('heading', { name: 'History' }).scrollIntoViewIfNeeded();
-        await historySection.selectHistoryTableRowsToCompare(0, 1);
-        await expect(
-            materialPage.matDialog().getByText(`Code Name:Native Hawaiian or Other Pacific Islander`)
-        ).toBeVisible();
+
+        await test.step(`Verify compare`, async () => {
+            await historySection.selectHistoryTableRowsToCompare(0, 1);
+            await expect(
+                materialPage.matDialog().getByText(`Code Name:Native Hawaiian or Other Pacific Islander`)
+            ).toBeVisible();
+        });
     });
 });

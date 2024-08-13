@@ -54,6 +54,11 @@ test(`Reorder CDE concepts`, async ({
         await page.getByRole('heading', { name: 'History' }).scrollIntoViewIfNeeded();
         await expect(historySection.historyTableRows().first()).toContainText(versionInfo.changeNote);
 
+        await test.step(`Verify compare`, async () => {
+            await historySection.selectHistoryTableRowsToCompare(0, 1);
+            await materialPage.closeMatDialog();
+        });
+
         await test.step(`Verify prior element`, async () => {
             const [newPage] = await Promise.all([
                 page.context().waitForEvent('page'),
@@ -66,9 +71,6 @@ test(`Reorder CDE concepts`, async ({
             await newPage.getByRole('heading', { name: 'Concepts' }).scrollIntoViewIfNeeded();
             await newPage.close();
         });
-
-        await historySection.selectHistoryTableRowsToCompare(0, 1);
-        await materialPage.closeMatDialog();
     });
 
     await test.step(`Verify CDE audit`, async () => {

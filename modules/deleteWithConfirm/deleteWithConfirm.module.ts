@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CKEditorModule } from 'ng2-ckeditor';
 
 import { MatIconModule } from '@angular/material/icon';
 import { DeleteWithConfirmComponent } from 'deleteWithConfirm/deleteWithConfirm.component';
+import { RichTextEditorComponent } from 'rich-text-editor/rich-text-editor.component';
 
 @NgModule({
-    imports: [CKEditorModule, CommonModule, FormsModule, MatIconModule],
+    imports: [RichTextEditorComponent, CommonModule, FormsModule, MatIconModule],
     declarations: [DeleteWithConfirmComponent],
     exports: [DeleteWithConfirmComponent],
     providers: [],

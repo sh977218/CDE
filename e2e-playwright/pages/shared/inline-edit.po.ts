@@ -26,12 +26,7 @@ export class InlineEditPo {
      */
     private ckEditTextarea(containerLocator: Locator, html = false) {
         if (html) {
-            return containerLocator.locator(`//*[contains(@id,'cke_') and contains(@id,'_contents')]`).locator(` div`);
-            /*return containerLocator
-                .locator(`cde-inline-area-edit`, {
-                    has: this.page.locator(`textarea`),
-                })
-                .locator(`.cke_contents`);*/
+            return containerLocator.getByRole(`textbox`);
         } else {
             return containerLocator.locator(`cde-inline-area-edit textarea`);
         }

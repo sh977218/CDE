@@ -38,6 +38,7 @@ export class SaveModalPo {
     async waitForDraftSaveComplete() {
         const viewChangeButton = this.page.locator(`#viewChangesBtn`);
         await viewChangeButton.waitFor();
+        await this.page.waitForLoadState('networkidle');
         await expect(viewChangeButton).toHaveText('Changed');
     }
 

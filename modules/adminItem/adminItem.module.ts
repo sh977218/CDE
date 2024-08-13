@@ -45,7 +45,6 @@ import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { InlineSelectEditModule } from 'inlineSelectEdit/inlineSelectEdit.module';
 import { InlineViewModule } from 'inlineView/inlineView.module';
-import { CKEditorModule } from 'ng2-ckeditor';
 import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
@@ -58,11 +57,12 @@ import { ClassifyItemDialogComponent } from './classification/classify-item-dial
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatRadioModule } from '@angular/material/radio';
+import { RichTextEditorComponent } from 'rich-text-editor/rich-text-editor.component';
 
 @NgModule({
     imports: [
         CommonModule,
-        CKEditorModule,
+        RichTextEditorComponent,
         FormsModule,
         RouterModule,
         TreeModule,

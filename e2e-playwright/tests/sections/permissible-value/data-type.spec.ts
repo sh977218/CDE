@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
-import { Designation, Definition, Version } from '../../../model/type';
+import { Version, DataType } from '../../../model/type';
 import { CdeTinyIds } from '../../../data/cde-tinyId';
 import { Accounts } from '../../../data/user';
 
 test.describe.configure({ retries: 0 });
-test(`Edit CDE names`, async ({
+test(`Edit CDE data type`, async ({
     request,
     page,
     materialPage,
@@ -13,25 +13,22 @@ test(`Edit CDE names`, async ({
     itemLogAuditPage,
     auditTab,
     saveModal,
-    generateDetailsSection,
+    permissibleValueSection,
     identifierSection,
     historySection,
 }) => {
-    const cdeName = 'Mediastinal Lymph Node Physical Examination Specify';
+    const cdeName = 'Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency';
 
-    const newDesignation: Designation = {
-        designation: `[designation change number 1] ${new Date().toISOString()}`,
-        sources: [],
-        tags: [],
-    };
-    const newDefinition: Definition = {
-        definition: `[definition change number 1] ${new Date().toISOString()}`,
-        sources: [],
-        tags: [],
+    const newDataType: DataType = {
+        datatype: `Text`,
+        minimalLength: 789,
+        maximalLength: 987,
+        datatypeTextRegex: 'newRegex',
+        datatypeTextRule: 'newRule',
     };
     const versionInfo: Version = {
         newVersion: '',
-        changeNote: '[add namings]',
+        changeNote: '[edit data type]',
     };
 
     let existingVersion = '';
@@ -47,9 +44,8 @@ test(`Edit CDE names`, async ({
         existingVersion = await page.locator(`[itemprop="version"]`).innerText();
     });
 
-    await test.step(`edit name and definition, then save`, async () => {
-        await generateDetailsSection.editNameByIndex(0, newDesignation);
-        await generateDetailsSection.editDefinitionByIndex(0, newDefinition);
+    await test.step(`edit data type, then save`, async () => {
+        await permissibleValueSection.editDataType(newDataType);
         await saveModal.newVersionByType('cde', versionInfo);
     });
     await test.step(`Verify version number`, async () => {
@@ -59,6 +55,20 @@ test(`Edit CDE names`, async ({
     await test.step(`Verify history`, async () => {
         await page.getByRole('heading', { name: 'History' }).scrollIntoViewIfNeeded();
         await expect(historySection.historyTableRows().first()).toContainText(versionInfo.changeNote);
+
+        await test.step(`Verify compare`, async () => {
+            await historySection.selectHistoryTableRowsToCompare(0, 1);
+            await expect(materialPage.matDialog().getByText(newDataType.datatype).first()).toBeVisible();
+            await expect(
+                materialPage.matDialog().getByText(newDataType.minimalLength!.toString()).first()
+            ).toBeVisible();
+            await expect(
+                materialPage.matDialog().getByText(newDataType.maximalLength!.toString()).first()
+            ).toBeVisible();
+            await expect(materialPage.matDialog().getByText(newDataType.datatypeTextRegex!).first()).toBeVisible();
+            await expect(materialPage.matDialog().getByText(newDataType.datatypeTextRule!).first()).toBeVisible();
+            await materialPage.closeMatDialog();
+        });
 
         await test.step(`Verify prior element`, async () => {
             const [newPage] = await Promise.all([
@@ -70,8 +80,10 @@ test(`Edit CDE names`, async ({
             await newPage.getByText(`view the current version here`).click();
             await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
             await newPage.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
-            await expect(newPage.getByText(newDesignation.designation).first()).toBeVisible();
-            await expect(newPage.getByText(newDefinition.definition).first()).toBeVisible();
+            await expect(newPage.getByText(newDataType.minimalLength!.toString()).first().first()).toBeVisible();
+            await expect(newPage.getByText(newDataType.minimalLength!.toString()).first().first()).toBeVisible();
+            await expect(newPage.getByText(newDataType.datatypeTextRegex!).first().first()).toBeVisible();
+            await expect(newPage.getByText(newDataType.datatypeTextRule!).first().first()).toBeVisible();
             await newPage.close();
         });
     });
@@ -87,7 +99,7 @@ test(`Edit CDE names`, async ({
         await materialPage.matSpinnerShowAndGone();
         await itemLogAuditPage.expandLogRecordByName(cdeName);
         const detailLocator = page.locator(`.example-element-detail`);
-        await expect(detailLocator.getByText(newDesignation.designation + cdeName).first()).toBeVisible();
+        await expect(detailLocator.getByText(`Permissible Values - Value Type`).first()).toBeVisible();
     });
 
     await test.step(`Verify API`, async () => {

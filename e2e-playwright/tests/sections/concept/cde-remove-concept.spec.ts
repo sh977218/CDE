@@ -51,6 +51,14 @@ test(`Remove CDE concepts`, async ({
         await page.getByRole('heading', { name: 'History' }).scrollIntoViewIfNeeded();
         await expect(historySection.historyTableRows().first()).toContainText(versionInfo.changeNote);
 
+        await test.step(`Verify compare`, async () => {
+            await historySection.selectHistoryTableRowsToCompare(0, 1);
+            await expect(materialPage.matDialog().getByText(existingConceptCodes[0])).toBeVisible();
+            await expect(materialPage.matDialog().getByText(existingConceptCodes[1])).toBeVisible();
+            await expect(materialPage.matDialog().getByText(existingConceptCodes[2])).toBeVisible();
+            await materialPage.closeMatDialog();
+        });
+
         await test.step(`Verify prior element`, async () => {
             const [newPage] = await Promise.all([
                 page.context().waitForEvent('page'),
@@ -69,12 +77,6 @@ test(`Remove CDE concepts`, async ({
             await expect(newPage.getByText(existingConceptCodes[2])).toBeHidden();
             await newPage.close();
         });
-
-        await historySection.selectHistoryTableRowsToCompare(0, 1);
-        await expect(materialPage.matDialog().getByText(existingConceptCodes[0])).toBeVisible();
-        await expect(materialPage.matDialog().getByText(existingConceptCodes[1])).toBeVisible();
-        await expect(materialPage.matDialog().getByText(existingConceptCodes[2])).toBeVisible();
-        await materialPage.closeMatDialog();
     });
 
     await test.step(`Verify CDE audit`, async () => {

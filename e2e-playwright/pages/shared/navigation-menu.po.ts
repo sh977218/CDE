@@ -152,9 +152,14 @@ export class NavigationMenuPo {
     /**
      * Description - This method search Form name with double quote, make sure login first
      * @param formName
+     * @param byPassSearch - Go to form directly by URL, which by pass search form name or tinyId
      */
-    async gotoFormByName(formName: string) {
+    async gotoFormByName(formName: string, byPassSearch = false) {
         const tinyId = FormTinyIds[formName];
+        if (byPassSearch) {
+            await this.page.goto(`/formView?tinyId=${tinyId}`);
+            return;
+        }
         await this.gotoFormSearch();
         await this.searchPage.searchWithString(`"${formName}"`);
         await this.page.locator(`[id="linkToElt_0"]`).click();

@@ -17,12 +17,9 @@
             <button class="button small light" [class.active]="localFormat === 'html'" (click)="setHtml(true)">Rich Text</button>
         </div>
 
-        <ckeditor *ngIf="localFormat === 'html'; else editText" [config]="{extraPlugins: 'divarea'}"
-                  [(ngModel)]="value">
-        </ckeditor>
-
-        <ng-template #editText>
-            <textarea [(ngModel)]="value" class="form-control"></textarea>
+        <textarea *ngIf="localFormat !== 'html'; else richTextEditor" [(ngModel)]="value" class="form-control"></textarea>
+        <ng-template #richTextEditor>
+            <cde-rich-text-editor name="definition" [value]="value" (valueChanged)="value = $event"></cde-rich-text-editor>
         </ng-template>
 
         <div class="actions">

@@ -16,13 +16,13 @@
                 <button class="button light" [class.active]="newProperty.valueFormat"
                         (click)="newProperty.valueFormat = 'html'">Rich Text
                 </button>
-                <textarea name="definition" *ngIf="newProperty.valueFormat !== 'html'"
+                <ng-container  *ngIf="newProperty.valueFormat !== 'html';else richTextEditor"></ng-container>
+                <textarea name="definition"
                           [(ngModel)]="newProperty.value" class="form-control" Placeholder="Property Value"
                           required></textarea>
-                <ckeditor name="definition" *ngIf="newProperty.valueFormat === 'html'"
-                          [config]="{extraPlugins: 'divarea'}" [(ngModel)]="newProperty.value"
-                          Placeholder="Property Value">
-                </ckeditor>
+                <ng-template #richTextEditor>
+                    <cde-rich-text-editor name="definition" [value]="newProperty.value" (valueChanged)="newProperty.value = $event"></cde-rich-text-editor>
+                </ng-template>
             </div>
         </div>
         <div class="alert alert-info">

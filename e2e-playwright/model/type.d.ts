@@ -80,6 +80,19 @@ export type Definition = {
     sources: string[];
 };
 
+type DataTypeBase = {
+    datatype: string;
+};
+
+type DataTypeText = DataTypeBase & {
+    maximalLength?: number;
+    minimalLength?: number;
+    datatypeTextRegex?: string;
+    datatypeTextRule?: string;
+};
+
+export type DataType = DataTypeText;
+
 export type Concept = {
     conceptName: string;
     conceptId: string;

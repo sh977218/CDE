@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { PermissibleValue } from '../../model/type';
+import { DataType, PermissibleValue } from '../../model/type';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { SaveModalPo } from '../shared/save-modal.po';
 import { MaterialPo } from '../shared/material.po';
@@ -71,6 +71,46 @@ export class PermissibleValuePo {
 
     removeOidMappingButton() {
         return this.page.getByRole('button', { name: 'Remove Mapping' });
+    }
+
+    private async changeDataType(newDataType: string) {
+        await this.page.getByPlaceholder('Select data type').click();
+        await this.materialPage.matOptionByText(newDataType).click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async editDataType(newDataType: DataType) {
+        await this.changeDataType(newDataType.datatype);
+        if (newDataType.datatype === 'Text') {
+            if (newDataType.minimalLength !== undefined) {
+                const locator = this.page.locator(`[itemprop="datatypeTextMin"]`);
+                await this.inlineEdit.editIcon(locator).click();
+                await this.inlineEdit.inputField(locator).fill(newDataType.minimalLength.toString());
+                await this.inlineEdit.confirmButton(locator).click();
+                await this.saveModal.waitForDraftSaveComplete();
+            }
+            if (newDataType.maximalLength !== undefined) {
+                const locator = this.page.locator(`[itemprop="datatypeTextMax"]`);
+                await this.inlineEdit.editIcon(locator).click();
+                await this.inlineEdit.inputField(locator).fill(newDataType.maximalLength.toString());
+                await this.inlineEdit.confirmButton(locator).click();
+                await this.saveModal.waitForDraftSaveComplete();
+            }
+            if (newDataType.datatypeTextRegex !== undefined) {
+                const locator = this.page.locator(`[itemprop="datatypeTextRegex"]`);
+                await this.inlineEdit.editIcon(locator).click();
+                await this.inlineEdit.inputField(locator).fill(newDataType.datatypeTextRegex.toString());
+                await this.inlineEdit.confirmButton(locator).click();
+                await this.saveModal.waitForDraftSaveComplete();
+            }
+            if (newDataType.datatypeTextRule !== undefined) {
+                const locator = this.page.locator(`[itemprop="datatypeTextRule"]`);
+                await this.inlineEdit.editIcon(locator).click();
+                await this.inlineEdit.inputField(locator).fill(newDataType.datatypeTextRule.toString());
+                await this.inlineEdit.confirmButton(locator).click();
+                await this.saveModal.waitForDraftSaveComplete();
+            }
+        }
     }
 
     async updateOid(oid: string) {

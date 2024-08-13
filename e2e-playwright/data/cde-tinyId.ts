@@ -24,4 +24,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Specimen Block Received Count': 'fPFAp0Onkcx',
     'Noncompliant Reason Text': 'tAgDWySuF0y',
     'Patient Health Questionnaire Depression (PHQ-9) - Sleep impairment score': 'APaPdyRYjQa',
+    'Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency': 'rM71OwARaT5',
 };

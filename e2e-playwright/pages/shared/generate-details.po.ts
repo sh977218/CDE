@@ -172,6 +172,7 @@ export class GenerateDetailsPo {
         }
         await this.updateRegistrationStatusModal.saveRegistrationStatusButton().click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.saveModal.waitForDraftSaveComplete();
     };
 
     async addName(newDesignation: Designation) {
