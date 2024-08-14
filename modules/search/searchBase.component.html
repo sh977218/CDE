@@ -455,7 +455,7 @@
                                     <img *ngIf="org.endorsed" src="/assets/img/endorsedRibbonIcon.png" class="mR">
                                     <span id="browseOrg-{{org.name}}" data-testid="browse-org" class="fake-link">{{org.name}}</span>
                                 </legend>
-                                <div *ngIf="org.longName">{{org.longName}}</div>
+                                <div *ngIf="org.longName" class="max-sm:hidden">{{org.longName}}</div>
                                 <div class="welcomeCount"><span id="nbOfElts-{{org.name}}">{{org.count}}</span>
                                     elements
                                 </div>
