@@ -10,14 +10,11 @@ export function getCdeCsvHeader(settings: TableViewFields): string {
     if (settings.naming) {
         cdeHeader += ', Other Names';
     }
-    if (settings.permissibleValues || settings.pvCodeNames) {
+    if (settings.permissibleValues) {
         cdeHeader += ', Value Type';
     }
     if (settings.permissibleValues) {
         cdeHeader += ', Permissible Values';
-    }
-    if (settings.pvCodeNames) {
-        cdeHeader += ', Code Names';
     }
     if (settings.nbOfPVs) {
         cdeHeader += ', Nb of Permissible Values';
@@ -78,15 +75,12 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
             .map(n => n.designation)
             .filter(n => n);
     }
-    if (settings && (settings.permissibleValues || settings.pvCodeNames)) {
+    if (settings && settings.permissibleValues) {
         cde.valueDomainType = (ele as DataElementElastic).valueDomain.datatype;
     }
     const pvs = ((ele as DataElementElastic).valueDomain as ValueDomainValueList).permissibleValues;
     if (settings && settings.permissibleValues) {
         cde.permissibleValues = (pvs || []).slice(0, 50).map((pv: PermissibleValue) => pv.permissibleValue);
-    }
-    if (settings && settings.pvCodeNames) {
-        cde.pvCodeNames = (pvs || []).slice(0, 50).map((pv: PermissibleValue) => pv.valueMeaningName);
     }
     if (settings && settings.nbOfPVs) {
         cde.nbOfPVs = pvs?.length || 0;

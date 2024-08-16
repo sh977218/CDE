@@ -39,5 +39,6 @@ export class AttachmentPo {
     async setDefaultAttachmentByIndex(index: number) {
         await this.attachments().nth(index).getByTestId(`show-attachment-in-search-result-checkbox`).check();
         await expect(this.attachments().nth(index).getByTestId(`default-attachment-checkbox`)).toHaveText('Yes');
+        await this.materialPage.checkAlert('Saved');
     }
 }

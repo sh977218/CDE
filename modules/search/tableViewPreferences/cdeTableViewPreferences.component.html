@@ -34,12 +34,6 @@
                     </mat-checkbox>
                 </mat-list-item>
                 <mat-list-item role="listitem">
-                    <mat-checkbox (change)="changed.emit()" id="pvCodeNames" name="pvCodeNames"
-                                  [(ngModel)]="searchSettings.tableViewFields.pvCodeNames">
-                        Code Names
-                    </mat-checkbox>
-                </mat-list-item>
-                <mat-list-item role="listitem">
                     <mat-checkbox (change)="changed.emit()" id="nbOfPVs" name="nbOfPVs"
                                   [(ngModel)]="searchSettings.tableViewFields.nbOfPVs">
                         Number of Permissible Values

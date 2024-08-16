@@ -104,7 +104,6 @@ const userSchema = new Schema(
                 naming: Boolean,
                 questionTexts: Boolean,
                 permissibleValues: Boolean,
-                pvCodeNames: Boolean,
                 nbOfPVs: Boolean,
                 uom: Boolean,
                 stewardOrg: Boolean,

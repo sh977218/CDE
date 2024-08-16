@@ -170,7 +170,6 @@ export class ElasticService implements OnDestroy {
                 naming: false,
                 questionTexts: true,
                 permissibleValues: true,
-                pvCodeNames: false,
                 nbOfPVs: true,
                 uom: false,
                 stewardOrg: true,

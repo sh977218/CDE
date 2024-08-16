@@ -145,9 +145,6 @@ export class TableListComponent implements OnInit {
         if (tableSetup.permissibleValues) {
             this.headings.push(new Heading('Permissible Values'));
         }
-        if (tableSetup.pvCodeNames) {
-            this.headings.push(new Heading('Code Names'));
-        }
         if (tableSetup.nbOfPVs) {
             this.headings.push(new Heading('Nb of PVs'));
         }
@@ -223,16 +220,6 @@ export class TableListComponent implements OnInit {
                     values: TableListComponent.truncatedList(
                         e.valueDomain.datatype === 'Value List' ? e.valueDomain.permissibleValues : undefined,
                         pv => pv.permissibleValue
-                    ),
-                });
-            }
-            if (tableSetup.pvCodeNames) {
-                row.push({
-                    css: 'permissibleValues multiline-ellipsis',
-                    datatype: e.valueDomain.datatype,
-                    values: TableListComponent.truncatedList(
-                        e.valueDomain.datatype === 'Value List' ? e.valueDomain.permissibleValues : undefined,
-                        pv => pv.valueMeaningName || ''
                     ),
                 });
             }

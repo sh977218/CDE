@@ -214,7 +214,6 @@ export class MaterialPo {
         await waitForIdSourceApiPromise;
         await this.page.locator('#uom').click();
         await this.page.locator('#naming').click();
-        await this.page.locator('#pvCodeNames').click();
         await this.page.locator('#administrativeStatus').click();
         await this.page.locator('#source').click();
         await this.page.locator('#updated').click();

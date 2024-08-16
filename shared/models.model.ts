@@ -683,7 +683,6 @@ export interface TableViewFields {
     nbOfPVs?: boolean;
     numQuestions?: boolean;
     permissibleValues?: boolean;
-    pvCodeNames?: boolean;
     questionTexts?: boolean;
     registrationStatus?: boolean;
     source?: boolean;
