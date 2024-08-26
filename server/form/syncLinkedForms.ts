@@ -2,13 +2,13 @@ import { config, dbPlugins } from 'server';
 import { getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 import { esClient } from 'server/system/elastic';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { ElasticSearchResponseBody } from 'shared/elastic';
 import { CdeFormElastic } from 'shared/form/form.model';
-import { ElasticQueryResponse } from 'shared/models.model';
 
 export let syncLinkedFormsProgress: any = {done: 0, total: 0};
 
 async function extractedSyncLinkedForms(cde: DataElement) {
-    const esResult: { body: ElasticQueryResponse<CdeFormElastic> } = await esClient.search({
+    const esResult: { body: ElasticSearchResponseBody<CdeFormElastic> } = await esClient.search<CdeFormElastic>({
         index: config.elastic.formIndex.name,
         q: cde.tinyId,
         size: 200
@@ -26,6 +26,9 @@ async function extractedSyncLinkedForms(cde: DataElement) {
     };
 
     esResult.body.hits.hits.forEach(h => {
+        if (!h._source) {
+            return;
+        }
         linkedForms.forms.push({
             tinyId: h._source.tinyId,
             registrationStatus: h._source.registrationState.registrationStatus,

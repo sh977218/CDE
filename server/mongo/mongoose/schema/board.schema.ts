@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { respondError } from 'server/errorHandler';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { Board } from 'shared/models.model';
+import { Board } from 'shared/board.model';
 
 addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;

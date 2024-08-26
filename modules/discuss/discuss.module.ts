@@ -1,13 +1,14 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
-import { CommentsComponent } from 'discuss/components/comments/comments.component';
-import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
+import { CommentsComponent } from 'discuss/components/comments/comments.component';
+import { DiscussAreaComponent } from 'discuss/components/discussArea/discussArea.component';
+import { LatestCommentsComponent } from 'discuss/components/latestComments/latestComments.component';
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         MatDialogModule,
         MatPaginatorModule,
+        RouterLink,
         // non-core
 
         // internal

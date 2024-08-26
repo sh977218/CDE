@@ -24,7 +24,8 @@ import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { lastValueFrom, Observable } from 'rxjs';
-import { assertUnreachable, Cb, Cb1, Comment, Elt, Item } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { assertUnreachable, Cb, Cb1, Comment, Elt } from 'shared/models.model';
 import {
     DataElement,
     DatatypeContainerDate,

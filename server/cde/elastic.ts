@@ -4,8 +4,8 @@ import { storeQuery } from 'server/log/storedQueryDb';
 import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
 import { elasticsearchPromise as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
-import { DataElement } from 'shared/de/dataElement.model';
-import { CbError1, SearchResponseAggregationDe, User } from 'shared/models.model';
+import { DataElement, ElasticResponseDataDe } from 'shared/de/dataElement.model';
+import { CbError, CbError1, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
 import { copyShallow } from 'shared/util';
@@ -65,13 +65,13 @@ export function updateOrInsertImpl(elt: DataElement): void {
 export function elasticsearch(
     user: User,
     settings: SearchSettingsElastic,
-    cb: CbError1<SearchResponseAggregationDe | void>
+    cb: CbError1<ElasticResponseDataDe | void>
 ) {
     const query = buildElasticSearchQueryCde(user, settings);
-    elasticSearchShared('cde', query, settings).then(result => {
+    elasticSearchShared('cde', query).then(result => {
         if (result && result.cdes && result.cdes.length > 0) {
             storeQuery(settings);
         }
         cb(null, result);
-    }, cb);
+    }, cb as CbError);
 }

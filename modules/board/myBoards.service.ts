@@ -1,21 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { Dictionary } from 'async';
-import { BoardFilter } from 'shared/board/board.model';
-import {
-    Board,
-    ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseAggregations,
-    ModuleItem,
-} from 'shared/models.model';
-import { noop } from 'shared/util';
-import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
 import { AlertService } from 'alert/alert.service';
+import { Dictionary } from 'async';
+import { PinBoardSnackbarComponent } from 'board/snackbar/pinBoardSnackbar.component';
+import { Board } from 'shared/board.model';
+import { BoardFilter } from 'shared/board.model';
 import { MAX_PINS } from 'shared/constants';
 import { DataElement } from 'shared/de/dataElement.model';
+import { ElasticQueryResponseAggregationBucket, ElasticSearchResponseBody } from 'shared/elastic';
 import { CdeForm } from 'shared/form/form.model';
+import { ModuleItem } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
+import { isT, noop } from 'shared/util';
 
 @Injectable({ providedIn: 'root' })
 export class MyBoardsService implements OnDestroy {
@@ -71,25 +68,32 @@ export class MyBoardsService implements OnDestroy {
     }
 
     loadMyBoards(type?: ModuleItem, cb = noop) {
-        this.filter.selectedShareStatus = this.filter.shareStatus.filter(a => a.checked).map(a => a.key);
-        this.filter.selectedTags = this.filter.tags.filter(a => a.checked).map(a => a.key);
-        this.filter.selectedTypes = this.filter.types.filter(a => a.checked).map(a => a.key);
-        this.http.post<ElasticQueryResponseAggregations<Board>>('/server/board/myBoards', this.filter).subscribe(
+        function getChecked(buckets: ElasticQueryResponseAggregationBucket[]): string[] {
+            return buckets.filter(a => a.checked).map(a => a.key);
+        }
+        this.filter.selectedShareStatus = getChecked(this.filter.shareStatus);
+        this.filter.selectedTags = getChecked(this.filter.tags);
+        this.filter.selectedTypes = getChecked(this.filter.types);
+
+        this.http.post<ElasticSearchResponseBody<Board>>('/server/board/myBoards', this.filter).subscribe(
             res => {
                 if (res.hits) {
                     this.boards = res.hits.hits.map(h => {
+                        if (!h._source) {
+                            return undefined;
+                        }
                         h._source._id = h._id;
                         return h._source;
-                    });
-                    this.filter.tags = res.aggregations.tagAgg.buckets;
+                    }).filter(isT);
+                    this.filter.tags = (res.aggregations!.tagAgg as any).buckets;
                     this.filter.tags.forEach(t => (t.checked = this.filter.selectedTags.indexOf(t.key) > -1));
-                    this.filter.types = res.aggregations.typeAgg.buckets;
-                    this.filter.shareStatus = res.aggregations.ssAgg.buckets;
+                    this.filter.types = (res.aggregations!.typeAgg as any).buckets;
+                    this.filter.shareStatus = (res.aggregations!.ssAgg as any).buckets;
                     this.filter.shareStatus.forEach(
                         ss => (ss.checked = this.filter.selectedShareStatus.indexOf(ss.key) > -1)
                     );
                     this.filter.types.forEach(t => (t.checked = this.filter.selectedTypes.indexOf(t.key) > -1));
-                    this.filter.suggestTags = res.aggregations.tagAgg.buckets.map(t => t.key);
+                    this.filter.suggestTags = (res.aggregations!.tagAgg as any).buckets.map((t: any) => t.key);
                 }
                 this.reloading = false;
                 if (type && this.boards) {

@@ -1,4 +1,5 @@
-import { Board, ObjectId } from 'shared/models.model';
+import { Board } from 'shared/board.model';
+import { ObjectId } from 'shared/models.model';
 
 export interface BoardDb {
     byId(id: string): Promise<Board | null>;

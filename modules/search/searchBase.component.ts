@@ -12,24 +12,24 @@ import { paramsToQueryString, trackByKey, trackByName } from 'non-core/angularHe
 import { scrollTo } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
+import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
-import { DataType } from 'shared/de/dataElement.model';
-import { uriViewBase } from 'shared/item';
+import { DataType, ElasticResponseDataDe } from 'shared/de/dataElement.model';
+import {
+    ElasticQueryResponseAggregation,
+    ElasticQueryResponseAggregationBucket,
+    ElasticQueryResponseHit
+} from 'shared/elastic';
+import { ElasticResponseDataForm } from 'shared/form/form.model';
+import { ItemElastic, uriViewBase } from 'shared/item';
 import {
     assertUnreachable,
     Cb1,
     CopyrightStatus,
     CurationStatus,
-    ElasticQueryResponseAggregation,
-    ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseHit,
-    ItemElastic,
     ModuleItem,
-    SearchResponseAggregationDe,
-    SearchResponseAggregationForm,
-    SearchResponseAggregationItem,
 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
@@ -37,7 +37,6 @@ import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { copyrightStatusList } from 'shared/copyrightStatusShared';
 import { noop, ownKeys, stringToArray } from 'shared/util';
-import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 
 type ItemSuggest = any;
 type NamedCounts = { name: string; count: number }[];
@@ -60,6 +59,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
     _searchType: SearchType = 'cde';
     add!: EventEmitter<any>;
+    // aggregations?: ElasticSearchResponseAggregations<ItemElastic>;
     aggregations?: ElasticQueryResponseAggregation;
     aggregationsFlatClassifications?: NamedCounts;
     aggregationsFlatClassificationsAlt?: NamedCounts;
@@ -626,8 +626,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.elasticService.generalSearchQuery(
             settings,
             this.module,
-            (err?: string, resultNonAgg?: any, corrected?: boolean) => {
-                const result: SearchResponseAggregationItem = resultNonAgg;
+            (err, result, corrected) => {
                 this.searchedTerm = this.searchSettings.q;
                 if (corrected && this.searchedTerm) {
                     this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
@@ -642,18 +641,18 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.searching = false;
                     return;
                 }
-                this.numPages = Math.ceil(result.totalNumber / this.searchSettings.resultPerPage);
+                this.numPages = Math.ceil(result.totalItems / this.searchSettings.resultPerPage);
                 this.took = result.took;
-                this.totalItems = result.totalNumber;
+                this.totalItems = result.totalItems;
                 this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
                 this.elts =
                     this.module === 'form'
-                        ? (result as SearchResponseAggregationForm).forms
-                        : (result as SearchResponseAggregationDe).cdes;
+                        ? (result as ElasticResponseDataForm).forms
+                        : (result as ElasticResponseDataDe).cdes;
                 const elts = this.elts;
 
-                if (this.searchSettings.page === 1 && result.totalNumber > 0) {
+                if (this.searchSettings.page === 1 && result.totalItems > 0) {
                     let maxJump = 0;
                     let maxJumpIndex = 100;
                     this.elts.map((e, i) => {
@@ -682,10 +681,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     });
                 }, noop);
 
-                this.aggregations = result.aggregations;
+                const aggregations: ElasticQueryResponseAggregation = result.aggregations as any;
+                this.aggregations = aggregations;
 
-                this.aggregationsFlatClassifications = this.aggregations.flatClassifications
-                    ? this.aggregations.flatClassifications.flatClassifications.buckets.map(
+                this.aggregationsFlatClassifications = aggregations.flatClassifications
+                    ? aggregations.flatClassifications.flatClassifications.buckets.map(
                           (c: ElasticQueryResponseAggregationBucket) => ({
                               name: c.key.split(';').pop() || '',
                               count: c.doc_count,
@@ -693,9 +693,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                       )
                     : [];
 
-                if (this.aggregations.flatClassificationsAlt !== undefined) {
+                if (aggregations.flatClassificationsAlt !== undefined) {
                     this.aggregationsFlatClassificationsAlt =
-                        this.aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
+                        aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
                             (c: ElasticQueryResponseAggregationBucket) => ({
                                 name: c.key.split(';').pop() || '',
                                 count: c.doc_count,
@@ -706,16 +706,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.aggregationsExcludeClassification = [];
                 }
 
-                if (this.aggregations.meshTrees !== undefined) {
+                if (aggregations.meshTrees !== undefined) {
                     if (this.searchSettings.meshTree) {
-                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                        this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
                             (c: ElasticQueryResponseAggregationBucket) => ({
                                 name: c.key.split(';').pop() || '',
                                 count: c.doc_count,
                             })
                         );
                     } else {
-                        this.aggregationsTopics = this.aggregations.meshTrees.meshTrees.buckets.map(
+                        this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
                             (c: ElasticQueryResponseAggregationBucket) => ({
                                 name: c.key.split(';')[0],
                                 count: c.doc_count,
@@ -726,7 +726,6 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.aggregationsTopics = [];
                 }
 
-                const aggregations = this.aggregations;
                 const orgsCreatedPromise = new Promise<void>(resolve => {
                     this.filterOutWorkingGroups(() => {
                         this.orgHelperService.then(() => {
@@ -738,7 +737,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
 
                 this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
                 this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-                this.aggregations.statuses.statuses.buckets.sort(
+                aggregations.statuses.statuses.buckets.sort(
                     (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
                         SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
                 );
@@ -773,7 +772,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     this.topics = {};
                     const topics = this.topics;
                     this.topicsKeys.length = 0;
-                    this.aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(
+                    aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(
                         (term: ElasticQueryResponseAggregationBucket) => {
                             const spli: string[] = term.key.split(';');
                             if (!topics[spli[0]]) {
@@ -886,6 +885,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this._searchType = searchType;
         switch (searchType) {
             case 'cde':
+                this.searchSettings.copyrightStatus.length = 0;
                 if (this.module === 'form' || this.searchSettings.nihEndorsed) {
                     this.searchSettings.nihEndorsed = false;
                     this.module = 'cde';
@@ -893,6 +893,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 }
                 return;
             case 'endorsedCde':
+                this.searchSettings.copyrightStatus.length = 0;
                 if (this.module === 'form' || !this.searchSettings.nihEndorsed) {
                     this.searchSettings.nihEndorsed = true;
                     this.module = 'cde';

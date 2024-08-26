@@ -5,9 +5,8 @@ import { ElasticService } from '_app/elastic.service';
 import { AlertService } from 'alert/alert.service';
 import { MoreLikeThisDataElement } from 'cde/mlt/moreLikeThis.component';
 import { DataElement, DataSet } from 'shared/de/dataElement.model';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
 import { SearchSettings } from 'shared/search/search.model';
-import { ElasticQueryResponseForm } from 'shared/models.model';
 
 @Component({
     selector: 'cde-related-content[elt]',
@@ -39,7 +38,7 @@ export class RelatedContentComponent implements OnInit {
         this.elasticService.generalSearchQuery(
             this.elasticService.buildElasticQuerySettings(searchSettings),
             'form',
-            (err?: string, result?: ElasticQueryResponseForm) => {
+            (err?: string, result?: ElasticResponseDataForm) => {
                 if (err || !result) {
                     return;
                 }

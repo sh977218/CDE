@@ -1,7 +1,7 @@
 import { diff as deepDiff } from 'deep-diff';
 import { ItemDocument } from 'server/system/mongo-data';
 import { DataElement } from 'shared/de/dataElement.model';
-import { Item } from 'shared/models.model';
+import { Item } from 'shared/item';
 
 export function diff(newElt: ItemDocument, oldElt: ItemDocument) {
     function deIdentifyItem(elt: Item) {

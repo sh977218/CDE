@@ -1,5 +1,6 @@
 import { DataElementElastic, ValueDomainValueList } from 'shared/de/dataElement.model';
-import { ItemElastic, PermissibleValue, TableViewFields } from 'shared/models.model';
+import { ItemElastic } from 'shared/item';
+import { PermissibleValue, TableViewFields } from 'shared/models.model';
 
 export function getCdeCsvHeader(settings: TableViewFields): string {
     let cdeHeader = 'Name';

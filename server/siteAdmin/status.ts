@@ -52,15 +52,15 @@ export function isElasticUp(cb: Cb1<boolean | void>) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);
         } else {
-            if (response.body.indexOf('red') === 0) {
+            if ((response.body as any).indexOf('red') === 0) {
                 statusReport.elastic.up = false;
                 statusReport.elastic.message = 'Cluster status is Red.';
                 cb();
-            } else if (response.body.indexOf('yellow') === 0) {
+            } else if ((response.body as any).indexOf('yellow') === 0) {
                 statusReport.elastic.up = true;
                 statusReport.elastic.message = 'Cluster status is Yellow.';
                 cb();
-            } else if (response.body.indexOf('green') === 0) {
+            } else if ((response.body as any).indexOf('green') === 0) {
                 statusReport.elastic.up = true;
                 delete statusReport.elastic.message;
                 cb(true);
@@ -77,7 +77,7 @@ export async function deleteEsIndex(deleteIndexDone: Cb1<string>) {
     const clusterIndices = await esClient.cat.indices<any>({format: 'json'});
     for (const index of clusterIndices.body) {
         const found = find(indices, (i) => i.indexName === index.index);
-        if (!found) {
+        if (!found && index.index) {
             await esClient.indices.delete({index: index.index});
         }
     }
@@ -149,49 +149,11 @@ setInterval(() => {
             if (!notificationTimeout) {
                 // delay sending notify if report stays different for 1 minute
                 notificationTimeout = setTimeout(() => {
-                    // send notification now
                     lastReport = newReport;
-                    const msg = JSON.stringify({
-                        title: 'Elastic Search Index Issue',
-                        options: {
-                            body: 'Status reports not normal',
-                            icon: '/assets/img/NIH-CDE.png',
-                            badge: '/assets/img/NIH-CDE-Logo-Simple.png',
-                            tag: 'cde-es-issue',
-                            actions: [
-                                {
-                                    action: 'site-mgt-action',
-                                    title: 'View',
-                                    icon: '/assets/img/NIH-CDE-Logo-Simple.png'
-                                }
-                            ]
-                        }
-                    });
-
                     logError({
                         message: 'Elastic Search Status',
                         details: newReport
                     });
-
-                    const mismatched = statusReport.elastic.indices.filter(index => index.message && index.message.startsWith('Count mismatch'));
-                    if (mismatched.length) {
-                        const reindexMsg = JSON.stringify({
-                            title: 'Elastic Search Index Issue',
-                            options: {
-                                body: 'Document count does not match for index: ' + mismatched.join(', '),
-                                icon: '/assets/img/NIH-CDE.png',
-                                badge: '/assets/img/NIH-CDE-Logo-Simple.png',
-                                tag: 'cde-es-issue',
-                                actions: [
-                                    {
-                                        action: 'site-mgt-action',
-                                        title: 'View and Reindex',
-                                        icon: '/assets/img/NIH-CDE-Logo-Simple.png'
-                                    }
-                                ]
-                            }
-                        });
-                    }
                 }, config.status.timeouts.notificationTimeout);
             }
         } else {

@@ -6,8 +6,7 @@ import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHi
 import { lastValueFrom } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
-import { ITEM_MAP } from 'shared/item';
-import { Item } from 'shared/models.model';
+import { Item, ITEM_MAP } from 'shared/item';
 import { UserService } from '_app/user.service';
 
 class HistoryDe extends DataElement {

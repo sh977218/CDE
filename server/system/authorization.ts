@@ -1,5 +1,7 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express';
 import { respondError } from 'server/errorHandler';
+import { Board } from 'shared/board.model';
+import { Item } from 'shared/item';
 import {
     canAttach,
     canBundle,
@@ -18,7 +20,7 @@ import {
     isOrgCurator,
     isSiteAdmin,
 } from 'shared/security/authorizationShared';
-import { Board, Item, User } from 'shared/models.model';
+import { User } from 'shared/models.model';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 

@@ -1,5 +1,6 @@
 import { Document, Model } from 'mongoose';
-import { CbError, Elt, Item } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { CbError, Elt } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 
 export function attachmentRemove(collection: Model<Elt & Document>, id: string, cb: CbError) {

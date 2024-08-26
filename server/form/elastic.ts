@@ -4,9 +4,9 @@ import { logError } from 'server/log/dbLogger';
 import { buildElasticSearchQueryForm } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
-import { CdeForm } from 'shared/form/form.model';
+import { CdeForm, ElasticResponseDataForm } from 'shared/form/form.model';
 import { copyShallow } from 'shared/util';
-import { CbError1, SearchResponseAggregationForm, User } from 'shared/models.model';
+import { CbError, CbError1, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { storeQuery } from '../log/storedQueryDb';
 
@@ -66,13 +66,13 @@ export function updateOrInsertImpl(elt: CdeForm): void {
 export function elasticsearchForm(
     user: User,
     settings: SearchSettingsElastic,
-    cb: CbError1<SearchResponseAggregationForm | void>
+    cb: CbError1<ElasticResponseDataForm | void>
 ) {
     const query = buildElasticSearchQueryForm(user, settings);
-    elasticSearchShared('form', query, settings).then(result => {
+    elasticSearchShared('form', query).then(result => {
         if (result && result.forms && result.forms.length > 0) {
             storeQuery(settings);
         }
         cb(null, result);
-    }, cb);
+    }, cb as CbError);
 }

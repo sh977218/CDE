@@ -1,6 +1,7 @@
 import { unionWith } from 'lodash';
 import { addCategory, findSteward } from 'shared/classification/classificationShared';
-import { ClassificationElement, Elt, Item } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { ClassificationElement, Elt } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import {
     attachmentComparator,

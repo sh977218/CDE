@@ -5,12 +5,10 @@ import { CdeTableViewPreferencesComponent } from 'search/tableViewPreferences/cd
 import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/formTableViewPreferencesComponent';
 import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
+import { Item, ItemElastic } from 'shared/item';
 import {
     CdeId,
     Designation,
-    ElasticQueryResponseForm,
-    Item,
-    ItemElastic,
     ModuleItem,
     UserSearchSettings,
 } from 'shared/models.model';
@@ -305,7 +303,7 @@ export class TableListComponent implements OnInit {
                 this.esService.generalSearchQuery(
                     lfSettings,
                     'form',
-                    (err?: string, result?: ElasticQueryResponseForm) => {
+                    (err, result) => {
                         if (result && result.forms) {
                             if (result.forms.length > 5) {
                                 result.forms.length = 5;

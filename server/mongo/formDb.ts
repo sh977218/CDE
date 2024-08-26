@@ -10,7 +10,8 @@ import { esClient } from 'server/system/elastic';
 import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import { itemAsElastic } from 'shared/item';
-import { Attachment, ElasticQueryResponse } from 'shared/models.model';
+import { Attachment } from 'shared/models.model';
+import { isT } from 'shared/util';
 
 const formHooks: CrudHooks<CdeForm, ObjectId> = {
     read: {
@@ -54,7 +55,7 @@ class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
     cache = {
         byTinyIdList: (idList: string[], size: number): Promise<CdeFormElastic[]> => {
             idList = idList.filter(id => !!id);
-            return esClient.search<ElasticQueryResponse<CdeFormElastic>>({
+            return esClient.search<CdeFormElastic>({
                 index: config.elastic.formIndex.name,
                 body: {
                     query: {
@@ -67,8 +68,10 @@ class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
             })
                 .then(response => {
                     // TODO: possible to move this sort to elastic search?
-                    response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-                    return response.body.hits.hits.map(h => h._source);
+                    response.body.hits.hits.sort((a, b) => idList.indexOf(a._id as string) - idList.indexOf(b._id as string));
+                    return response.body.hits.hits
+                        .map(h => h._source)
+                        .filter(isT);
                 });
         }
     }

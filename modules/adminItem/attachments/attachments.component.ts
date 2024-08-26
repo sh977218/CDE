@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '_app/user.service';
-import { Attachment, Item } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { Attachment } from 'shared/models.model';
 
 @Component({
     selector: 'cde-attachments[elt]',

@@ -2,12 +2,13 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
-
 import { UserService } from '_app/user.service';
-import { Board, Item, ModuleItem } from 'shared/models.model';
+import { AlertService } from 'alert/alert.service';
 import { CreateBoardModalComponent } from 'board/create-board/create-board-modal.component';
 import { MyBoardsService } from 'board/myBoards.service';
-import { AlertService } from 'alert/alert.service';
+import { Board } from 'shared/board.model';
+import { Item } from 'shared/item';
+import { ModuleItem } from 'shared/models.model';
 
 @Component({
     selector: 'cde-create-board',

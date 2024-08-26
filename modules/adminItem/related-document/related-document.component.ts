@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddRelatedDocumentModalComponent } from 'adminItem/related-document/add-related-document-modal/add-related-document-modal.component';
-import { Item } from 'shared/models.model';
+import { Item } from 'shared/item';
 
 @Component({
     selector: 'cde-related-document',

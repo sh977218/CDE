@@ -1,8 +1,7 @@
 import { dbPlugins } from 'server';
 import { saveClassificationAudit } from 'server/system/classificationAuditDb';
-import { getModule, getName } from 'shared/elt/elt';
+import { getModule, getName, Item } from 'shared/item';
 import { ClassificationAuditLog } from 'shared/log/audit';
-import { Item } from 'shared/models.model';
 
 export function addToClassifAudit(msg: ClassificationAuditLog) {
     const persistClassifRecord = (elt: Item | null) => {

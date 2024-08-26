@@ -16,7 +16,9 @@ import { AlertService } from 'alert/alert.service';
 import { convertToCsv, getCdeCsvHeader, projectItemForExport } from 'core/system/export';
 import { saveAs } from 'file-saver';
 import { handleDropdown } from 'non-core/dropdown';
-import { Board, ClassificationClassified, ItemElastic, ListTypes } from 'shared/models.model';
+import { Board } from 'shared/board.model';
+import { ItemElastic } from 'shared/item';
+import { ClassificationClassified, ListTypes } from 'shared/models.model';
 import { BoardListService } from 'board/listView/boardList.service';
 
 export interface BoardQuery {

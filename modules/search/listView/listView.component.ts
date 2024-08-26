@@ -14,7 +14,8 @@ import { BoardCdeSummaryListComponent } from 'cde/listView/boardCdeSummaryList.c
 import { BoardFormSummaryListComponent } from 'form/listView/boardFormSummaryList.component';
 import { CdeAccordionListComponent } from 'cde/listView/cdeAccordionList.component';
 import { ElasticService } from '_app/elastic.service';
-import { Elt, Item, ListTypes } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { Elt, ListTypes } from 'shared/models.model';
 import { CdeSummaryListContentComponent } from 'cde/listView/cdeSummaryListContent.component';
 import { FormAccordionListComponent } from 'form/listView/formAccordionList.component';
 import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';

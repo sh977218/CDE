@@ -3,7 +3,8 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { cloneDeep } from 'lodash';
-import { administrativeStatuses, CurationStatus, Item, RegistrationState } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { administrativeStatuses, CurationStatus, RegistrationState } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { statusList } from 'shared/regStatusShared';
 

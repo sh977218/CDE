@@ -1,3 +1,4 @@
+import { ElasticSearchResponseAggregations, ElasticSearchResponseBody } from 'shared/elastic';
 import { CdeId, CurationStatus, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
 import { Question } from 'shared/form/form.model';
 import { copyValueDomain } from 'shared/datatype';
@@ -145,6 +146,16 @@ export interface DataElementElastic extends DataElement, ElasticElement {
     };
     valueDomain: ValueDomain & { nbOfPVs?: number };
 }
+
+export interface ElasticResponseData<T> {
+    aggregations: ElasticSearchResponseAggregations<T>,
+    maxScore: number
+    took: ElasticSearchResponseBody<T>['took'],
+    totalItems: number,
+}
+export type ElasticResponseDataDe = ElasticResponseData<DataElementElastic> & {
+    cdes: DataElementElastic[];
+};
 
 export type DataType =
     | 'Date'

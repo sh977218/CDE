@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { Board } from 'shared/models.model';
+import { Board } from 'shared/board.model';
 
 @Component({
     templateUrl: './board-overview-edit-modal.component.html',

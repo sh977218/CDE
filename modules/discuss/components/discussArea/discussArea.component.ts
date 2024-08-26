@@ -5,7 +5,9 @@ import { AlertService } from 'alert/alert.service';
 import { Dictionary } from 'async';
 import { curry } from 'lodash';
 import { IsAllowedService } from 'non-core/isAllowed.service';
-import { Board, Comment, Item } from 'shared/models.model';
+import { Board } from 'shared/board.model';
+import { Item } from 'shared/item';
+import { Comment } from 'shared/models.model';
 import { canCommentManage } from 'shared/security/authorizationShared';
 
 const tabMap: Dictionary<string> = {

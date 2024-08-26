@@ -1,3 +1,4 @@
+import { QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
 import { EventEmitter } from 'events';
 import { Response } from 'express';
 import { config } from 'server';
@@ -21,11 +22,12 @@ import {
 } from 'shared/boundaryInterfaces/API/submission';
 import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 import { keys } from 'shared/builtIn';
-import { DataElement } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { esqBool, esqBoolMustNot, esqTerm } from 'shared/elastic';
 import { convertCdeToQuestion } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
-import { isDataElement } from 'shared/item';
-import { ArrayToType, Cb, Cb1, Item, PermissibleValue, User } from 'shared/models.model';
+import { isDataElement, Item } from 'shared/item';
+import { ArrayToType, Cb, Cb1, PermissibleValue, User } from 'shared/models.model';
 import {
     cellValue,
     combineLines,
@@ -732,24 +734,12 @@ function withErrorCapture(location: string, errors: string[]) {
 
 function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Partial<DataElement>): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const query: any = {
-            bool: {
-                must: [
-                    {
-                        term: {
-                            nihEndorsed: true,
-                        },
-                    },
-                ],
-                filter: {
-                    bool: {
-                        must_not: [termRegStatus('Retired')],
-                    },
-                },
-            },
-        };
+        const boolMust: QueryDslQueryContainer[] = [
+            esqTerm('nihEndorsed', true)
+        ];
+
         (cde.designations || []).forEach(d => {
-            query.bool.must.push({
+            boolMust.push({
                 more_like_this: {
                     fields: ['designations.designation'],
                     like: d.designation,
@@ -760,49 +750,37 @@ function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Parti
         });
 
         if (cde.valueDomain?.datatype === 'Value List') {
-            query.bool.must.push({
-                term: {
-                    'valueDomain.datatype': 'Value List',
-                },
-            });
-            query.bool.must.push({
+            boolMust.push(esqTerm('valueDomain.datatype', 'Value List'));
+            boolMust.push({
                 script: {
                     script: {
                         source:
                             "doc['valueDomain.permissibleValues.permissibleValue'].length == " +
-                                cde.valueDomain?.permissibleValues.length || 0,
+                            (cde.valueDomain?.permissibleValues.length || 0),
                         lang: 'painless',
                     },
                 },
             });
         } else {
-            query.bool.must.push({
-                term: {
-                    'valueDomain.datatype': cde.valueDomain?.datatype,
-                },
-            });
+            boolMust.push(esqTerm('valueDomain.datatype', cde.valueDomain!.datatype));
         }
         const queryBody = {
             index: config.elastic.index.name,
             body: {
-                query,
+                query: esqBool(null, boolMust, esqBoolMustNot(termRegStatus('Retired'))),
             },
         };
-        esClient.search(queryBody, (err: any, result: any) => {
-            if (err) {
-                reject(err);
-            } else {
-                result.body.hits.hits.forEach((hit: any) => {
-                    withError(
-                        'Duplicated CDEs',
-                        `'${(cde.designations || [])[0]?.designation}' matched tinyId: '${hit._id}' '${
-                            hit._source.primaryNameCopy
-                        }'`
-                    );
-                });
-                resolve(true);
-            }
-        });
+        esClient.search<DataElementElastic>(queryBody).then(result => {
+            result.body.hits.hits.forEach((hit: any) => {
+                withError(
+                    'Duplicated CDEs',
+                    `'${(cde.designations || [])[0]?.designation}' matched tinyId: '${hit._id}' '${
+                        hit._source.primaryNameCopy
+                    }'`
+                );
+            });
+            resolve(true);
+        }, reject);
     });
 }
 

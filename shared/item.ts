@@ -1,6 +1,17 @@
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import { CdeForm, CdeFormElastic, FormElement } from 'shared/form/form.model';
-import { Item, ModuleAll } from 'shared/models.model';
+import {
+    DataElement,
+    DataElementElastic, ElasticResponseDataDe,
+} from 'shared/de/dataElement.model';
+import {
+    CdeForm,
+    CdeFormElastic, ElasticResponseDataForm,
+    FormElement,
+} from 'shared/form/form.model';
+import { ModuleAll, ModuleItem } from 'shared/models.model';
+
+export type Item = DataElement | CdeForm;
+export type ItemElastic = DataElementElastic | CdeFormElastic;
+export type ElasticResponseDataItem = ElasticResponseDataDe | ElasticResponseDataForm;
 
 interface ItemActionsApi {
     api: string;
@@ -60,6 +71,20 @@ export const ITEM_MAP: {
         viewById: '/formView?formId=',
     },
 };
+
+export function deOrForm(module: ModuleItem) {
+    return module === 'form' ? 'form' : 'de';
+}
+
+export function getModule(elt: Item): ModuleItem {
+    return !!(elt as CdeForm).formElements ? 'form' : 'cde';
+}
+
+export function getName(elt: Item | ItemElastic): string {
+    return (elt as ItemElastic).primaryNameCopy
+        ? (elt as ItemElastic).primaryNameCopy
+        : elt.designations[0].designation;
+}
 
 export function itemAsElastic<T extends DataElement | CdeForm>(
     doc: T

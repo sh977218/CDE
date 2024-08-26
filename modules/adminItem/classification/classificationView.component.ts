@@ -6,7 +6,8 @@ import { DeleteClassificationModalComponent } from 'adminItem/classification/del
 import { IsAllowedService } from 'non-core/isAllowed.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { cumulative } from 'shared/array';
-import { Classification, ClassificationElement, Item } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { Classification, ClassificationElement } from 'shared/models.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 

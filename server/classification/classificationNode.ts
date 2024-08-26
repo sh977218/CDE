@@ -6,7 +6,8 @@ import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
 import { addCategory, findSteward, removeCategory } from 'shared/classification/classificationShared';
-import { Classification, Item, ItemClassification, ItemClassificationElt } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { Classification, ItemClassification, ItemClassificationElt } from 'shared/models.model';
 
 const trimClassif = (elt: Item) => {
     elt.classification.forEach((steward, i) => {

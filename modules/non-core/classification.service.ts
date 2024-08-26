@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { AlertService } from 'alert/alert.service';
 import { uniqWith, isEqual } from 'lodash';
 import { LocalStorageService } from 'non-core/localStorage.service';
+import { Item } from 'shared/item';
 import {
     Cb1,
     CbErrorObj,
-    Item,
     ItemClassification,
     ItemClassificationElt,
     ItemClassificationNew,
@@ -69,7 +69,7 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org,
         };
-        this.http.post(endPoint, deleteBody).subscribe(() => cb(), cb);
+        this.http.post(endPoint, deleteBody).subscribe({next: () => cb(), error: cb});
     }
 
     removeOrgClassification(deleteClassification: ItemClassification, next: Cb1<string>) {

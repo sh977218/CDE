@@ -3,7 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddPropertyModalComponent } from 'adminItem/properties/add-property-modal/add-property-modal.component';
 import { AlertService } from 'alert/alert.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { Item, Property } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { Property } from 'shared/models.model';
 import { noop } from 'shared/util';
 
 @Component({

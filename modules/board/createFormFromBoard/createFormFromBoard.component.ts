@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Board } from 'shared/models.model';
 import { CreateFormFromBoardModalComponent } from 'board/createFormFromBoard/create-form-from-board-modal/create-form-from-board-modal.component';
+import { Board } from 'shared/board.model';
 
 @Component({
     selector: 'cde-create-form-from-board',

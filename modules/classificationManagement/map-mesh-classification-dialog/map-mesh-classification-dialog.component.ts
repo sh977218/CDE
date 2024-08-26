@@ -1,16 +1,16 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DialogData } from 'classificationManagement/dialog-data';
-import { MatInputModule } from '@angular/material/input';
 import { NgForOf, NgIf } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, Inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { AlertService } from 'alert/alert.service';
+import { DialogData } from 'classificationManagement/dialog-data';
 import { empty, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
-import { ElasticQueryResponse } from 'shared/models.model';
-import { HttpClient } from '@angular/common/http';
-import { AlertService } from '../../alert/alert.service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ElasticSearchResponseBody } from 'shared/elastic';
 
 @Component({
     selector: 'map-mesh-classification-dialog',
@@ -59,7 +59,7 @@ export class MapMeshClassificationDialogComponent {
                     const url =
                         'https://meshb.nlm.nih.gov/api/search/record?searchInField=termDescriptor&searchType=exactMatch&q=' +
                         term;
-                    return term ? this.http.get<ElasticQueryResponse<any>>(url) : empty();
+                    return term ? this.http.get<ElasticSearchResponseBody<any>>(url) : empty();
                 })
             )
             .subscribe(

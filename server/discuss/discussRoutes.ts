@@ -8,7 +8,9 @@ import { handleNotFound, handleError, respondError } from 'server/errorHandler';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import { ioServer } from 'server/system/ioServer';
 import { createMessage, fetchItem, Message } from 'server/system/mongo-data';
-import { Board, Cb1, Item, ModuleAll } from 'shared/models.model';
+import { Board } from 'shared/board.model';
+import { Item } from 'shared/item';
+import { Cb1, ModuleAll } from 'shared/models.model';
 
 require('express-async-errors');
 
@@ -168,8 +170,9 @@ export function module(roleConfig: { allComments: RequestHandler, canSeeComment:
     return router;
 }
 
-const ioServerCommentUpdated = (username: string, roomId: string) =>
-    ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
+function ioServerCommentUpdated(username: string, roomId: string) {
+    return ioServer.of('/comment').to(roomId).emit('commentUpdated', {username});
+}
 
 function getCommentItem(handlerOptions: { req: Request, res: Response },
                         comment: CommentDocument,

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import { ItemElastic } from 'shared/models.model';
+import { ItemElastic } from 'shared/item';
 
 @Component({
     selector: 'cde-summary-heading[elt][eltIndex][urlPrefix]',

@@ -3,7 +3,7 @@ import { Cursor, Document, Model, QueryOptions } from 'mongoose';
 import { config } from 'server';
 import { boardSchema } from 'server/mongo/mongoose/schema/board.schema';
 import { establishConnection } from 'server/system/connections';
-import { Board } from 'shared/models.model';
+import { Board } from 'shared/board.model';
 
 export type BoardDocument = Document<ObjectId, {}, Board> & Board;
 

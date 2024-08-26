@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { DataElementService } from 'cde/dataElement.service';
-import { Board, BoardDe } from 'shared/models.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
+import { Board, BoardDe } from 'shared/board.model';
 import { DataElement, isElasticDataElementClipped } from 'shared/de/dataElement.model';
 import { convertCdeToQuestion } from 'shared/form/fe';
 import { CdeForm, FormSection } from 'shared/form/form.model';

@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { CdeFormElastic } from 'shared/form/form.model';
+import { CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
 import { SearchSettings } from 'shared/search/search.model';
-import { ElasticQueryResponseForm, Elt } from 'shared/models.model';
+import { Elt } from 'shared/models.model';
 import { ElasticService } from '_app/elastic.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormSummaryListContentComponent } from 'form/listView/formSummaryListContent.component';
@@ -25,7 +25,7 @@ export class LinkedFormModalComponent {
         this.elasticService.generalSearchQuery(
             this.elasticService.buildElasticQuerySettings(searchSettings),
             'form',
-            (err?: string, result?: ElasticQueryResponseForm) => {
+            (err?: string, result?: ElasticResponseDataForm) => {
                 if (err || !result) {
                     return;
                 }

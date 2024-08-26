@@ -16,8 +16,9 @@ import { validateBody } from 'server/system/bodyValidator';
 import { buildElasticSearchQueryBoard } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise } from 'server/system/elastic';
 import { removeFromArrayBy } from 'shared/array';
+import { Board, BoardPin } from 'shared/board.model';
 import { MAX_PINS } from 'shared/constants';
-import { Board, BoardPin, Elt, ModuleItem } from 'shared/models.model';
+import { Elt, ModuleItem } from 'shared/models.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { stripBsonIds } from 'shared/exportShared';
 
@@ -235,10 +236,10 @@ export function module() {
             return res.status(404).send();
         }
         const query = buildElasticSearchQueryBoard(req.user, req.body.query);
-        if (query.size > MAX_PINS) {
+        if ((query.size ?? 0) > MAX_PINS) {
             return res.status(403).send('Maximum number excesses.');
         }
-        return elasticsearchPromise('cde', query, req.body.query)
+        return elasticsearchPromise('cde', query)
             .then(result => {
                 board.pins = uniqBy(board.pins.concat(result.cdes.map(mapToBoardPin)), 'tinyId');
                 return dbPlugins.board.save(board).then(() => res.send('Added to Board'));

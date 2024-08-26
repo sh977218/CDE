@@ -1,5 +1,6 @@
 import { exec, ExecOptions } from 'child_process';
 import { Client } from '@elastic/elasticsearch';
+import { Client as ClientNewType } from '@elastic/elasticsearch/api/new';
 import * as gulp from 'gulp';
 import * as replace from 'gulp-replace';
 import * as merge from 'merge-stream';
@@ -142,14 +143,14 @@ gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps() {
 });
 
 gulp.task('es', function es() {
-    const esClient = new Client({
+    const esClient: ClientNewType = new Client({
         nodes: config.elastic.hosts.map((s: string) => (
             {
                 url: new URL(s),
                 ssl: {rejectUnauthorized: false}
             }
         ))
-    });
+    }) as any;
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise<void>((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);

@@ -5,7 +5,8 @@ import { UserService } from '_app/user.service';
 import { RegistrationStatusModalComponent } from 'adminItem/registration/registration-status-modal/registration-status-modal.component';
 import { AlertService } from 'alert/alert.service';
 import { DataElement } from 'shared/de/dataElement.model';
-import { AdministrativeStatus, administrativeStatuses, Item, RegistrationState } from 'shared/models.model';
+import { Item } from 'shared/item';
+import { AdministrativeStatus, administrativeStatuses, RegistrationState } from 'shared/models.model';
 
 @Component({
     selector: 'cde-registration',

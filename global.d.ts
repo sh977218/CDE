@@ -1,5 +1,5 @@
 import { UserDocument } from 'server/user/userDb';
-import { Item } from 'shared/models.model';
+import { Item } from 'shared/item';
 
 declare global {
     namespace Express {

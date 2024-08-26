@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { deOrForm } from 'shared/elt/elt';
-import { Item } from 'shared/models.model';
+import { deOrForm, Item } from 'shared/item';
 
 @Component({
     selector: 'cde-admin-item-sources[elt]',

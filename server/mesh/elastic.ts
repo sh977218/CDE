@@ -1,11 +1,14 @@
+import { BulkRequest, ScrollResponse } from '@elastic/elasticsearch/api/types';
 import { Dictionary, each, ErrorCallback } from 'async';
-import * as _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import { consoleLog } from 'server/log/dbLogger';
 import { findAll, MeshClassificationDocument } from 'server/mesh/meshDb';
 import { errorLogger } from 'server/system/logging';
 import { config } from 'server';
 import { esClient } from 'server/system/elastic';
-import { CbError, ElasticQueryResponse, ItemElastic } from 'shared/models.model';
+import { ElasticSearchResponseBody, responseHitsTotal } from 'shared/elastic';
+import { ItemElastic } from 'shared/item';
+import { CbError } from 'shared/models.model';
 
 interface IndexType {
     index: string;
@@ -59,16 +62,19 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
     const classifToSimpleTrees: Dictionary<string[]> = {};
     allMappings.forEach(m => (classifToSimpleTrees[m.flatClassification] = m.flatTrees));
 
-    const searches: IndexType[] = [_.cloneDeep(searchTemplate.cde), _.cloneDeep(searchTemplate.form)];
+    const searches: IndexType[] = [cloneDeep(searchTemplate.cde), cloneDeep(searchTemplate.form)];
     searches.forEach((search: any) => {
         search.scroll = '2m';
         search.body = {};
     });
 
-    function scrollThrough(scrollId: string, s: IndexType, cb: CbError) {
+    function scrollThrough(scrollId: string | undefined, s: IndexType, cb: CbError) {
+        if (!scrollId) {
+            return;
+        }
         esClient.scroll(
-            { scrollId, scroll: '1m' } as any,
-            (err: Error | null, response: { body: ElasticQueryResponse<ItemElastic> }) => {
+            { scroll_id: scrollId, scroll: '1m' },
+            (err: Error | null, response: { body: ScrollResponse<ItemElastic> }) => {
                 /* istanbul ignore if */
                 if (err) {
                     lock = false;
@@ -78,28 +84,28 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
                     });
                     cb(err);
                 } else {
-                    processScroll((response.body as any)._scroll_id, s, response.body, cb);
+                    processScroll(response.body._scroll_id, s, response.body, cb);
                 }
             }
         );
     }
 
     async function processScroll(
-        newScrollId: string,
+        newScrollId: string | undefined,
         s: IndexType,
-        response: ElasticQueryResponse<ItemElastic>,
+        response: ScrollResponse<ItemElastic>,
         cb: CbError
     ) {
         const sName = s.index === config.elastic.index.name ? 'dataelement' : 'form';
         // @TODO remove after ES7 upgrade
-        let total = response.hits.total;
-        if ((total as any).value > -1) {
-            total = (total as any).value;
-        }
+        const total = responseHitsTotal(response);
         meshSyncStatus[sName].total = total;
         if (response.hits.hits.length > 0) {
-            const request: any = { body: [] };
+            const request: BulkRequest = { body: [] };
             response.hits.hits.forEach(hit => {
+                if (!hit._source) {
+                    return;
+                }
                 const thisElt = hit._source;
                 const trees: Set<string> = new Set();
                 const simpleTrees: Set<string> = new Set();
@@ -116,14 +122,14 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
                     }
                 });
                 if (trees.size > 0) {
-                    request.body.push({
+                    request.body?.push({
                         update: {
                             _index: s.index,
                             _id: thisElt.tinyId,
                             _type: '_doc',
                         },
                     });
-                    request.body.push({
+                    request.body?.push({
                         doc: {
                             flatMeshTrees: Array.from(trees),
                             flatMeshSimpleTrees: Array.from(simpleTrees),
@@ -132,7 +138,7 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
                 }
                 meshSyncStatus[sName].done++;
             });
-            if (request.body.length > 0) {
+            if ((request.body?.length ?? 0) > 0) {
                 esClient.bulk(request, (err: Error | null) => {
                     /* istanbul ignore if */
                     if (err) {
@@ -154,12 +160,12 @@ function doSyncWithMesh(allMappings: MeshClassificationDocument[], callback: Err
     each(
         searches,
         async search => {
-            const response = await esClient.search(search);
+            const response = await esClient.search<ItemElastic>(search);
             await new Promise(resolve =>
                 processScroll(
                     response.body._scroll_id,
                     search,
-                    response.body as ElasticQueryResponse<ItemElastic>,
+                    response.body as ElasticSearchResponseBody<ItemElastic>,
                     resolve
                 )
             );

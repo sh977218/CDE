@@ -1,3 +1,4 @@
+import { ElasticSearchResponseBody } from 'shared/elastic';
 import {
     ArrayToType,
     CdeId,
@@ -22,7 +23,7 @@ import {
     DatatypeContainerText,
     DatatypeContainerTime,
     DatatypeContainerValueList,
-    ElasticElement,
+    ElasticElement, ElasticResponseData,
     QuestionTypeDate,
     QuestionTypeNumber,
     QuestionTypeText,
@@ -199,6 +200,10 @@ export interface CdeFormElastic extends CdeForm, ElasticElement {
     numQuestions?: number;
     copyrightStatus: string;
 }
+
+export type ElasticResponseDataForm = ElasticResponseData<CdeFormElastic> & {
+    forms: CdeFormElastic[];
+};
 
 export class CopyrightURL {
     url = '';

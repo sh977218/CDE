@@ -1,10 +1,10 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
+import { Item } from 'shared/item';
 import {
     Cb1,
     Classification,
     ClassificationElement,
     ClassificationElementsContainer,
-    Item,
     ObjectId,
 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';

@@ -3,7 +3,8 @@ import { createIndexJson as boardCreateIndexJson } from 'server/board/elasticSea
 import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { CdeForm, CdeFormElastic, FormElement, FormQuestion } from 'shared/form/form.model';
-import { Cb1, CbError1, ClassificationElement, Item, ItemElastic } from 'shared/models.model';
+import { Item, ItemElastic } from 'shared/item';
+import { Cb1, CbError1, ClassificationElement } from 'shared/models.model';
 
 const primaryNameSuggest = {
     type: 'text',

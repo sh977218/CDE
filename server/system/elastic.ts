@@ -1,5 +1,12 @@
-import { eachOf, filter, forEach } from 'async';
+import {
+    QueryDslQueryContainer,
+    ScrollRequest, ScrollResponse,
+    SearchRequest,
+    SearchResponse
+} from '@elastic/elasticsearch/api/types';
 import { Client } from '@elastic/elasticsearch';
+import { ApiResponse, Client as ClientNewType } from '@elastic/elasticsearch/api/new';
+import { eachOf, filter, forEach } from 'async';
 import { Agent } from 'https';
 import { Cursor, QueryOptions } from 'mongoose';
 import fetch from 'node-fetch';
@@ -14,28 +21,33 @@ import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
 import { errorLogger } from 'server/system/logging';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { concat } from 'shared/array';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import { handleErrors, json } from 'shared/fetch';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { Board } from 'shared/board.model';
 import {
-    Board,
+    DataElement,
+    DataElementElastic,
+    ElasticResponseDataDe
+} from 'shared/de/dataElement.model';
+import {
+    ElasticSearchResponse,
+    ElasticSearchResponseAggregations,
+    ElasticSearchResponseBody, esqBoolFilter, esqBoolMustNot, esqBoolShould, esqTerm,
+    responseHitsTotal
+} from 'shared/elastic';
+import { handleErrors, json } from 'shared/fetch';
+import { CdeForm, CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
+import { Item, ItemElastic } from 'shared/item';
+import {
     Cb,
     Cb1,
     CbError1,
     CopyrightStatus,
     CurationStatus,
-    ElasticQueryResponse,
-    ElasticQueryResponseAggregations,
-    Item,
-    ItemElastic,
     ModuleItem,
-    SearchResponseAggregationDe,
-    SearchResponseAggregationForm,
     User,
 } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { hasRolePrivilege, isOrgAuthority } from 'shared/security/authorizationShared';
-import { noop } from 'shared/util';
+import { copyDeep, noop } from 'shared/util';
 
 export type ElasticCondition = any;
 export type MongoCondition = any;
@@ -65,7 +77,7 @@ interface DbStream {
     indexes: ElasticIndex[];
 }
 
-export const esClient = new Client(config.elastic.options);
+export const esClient: ClientNewType = new Client(config.elastic.options) as any;
 
 export function removeElasticFields(eltElastic: DataElementElastic): DataElement;
 export function removeElasticFields(eltElastic: CdeFormElastic): CdeForm;
@@ -314,7 +326,7 @@ function createIndex(dbStream: DbStream, cb: Cb) {
                             timeout: '10s',
                             body: index.indexJson,
                         },
-                        err => {
+                        (err: Error | null) => {
                             if (err) {
                                 respondError()(err);
                                 doneOne(err);
@@ -360,9 +372,12 @@ export function completionSuggest(
     user: User,
     settings: SearchSettingsElastic,
     index: ElasticIndex,
-    cb: CbError1<ElasticQueryResponse<ItemElastic> | void>
+    cb: CbError1<ElasticSearchResponseBody<ItemElastic> | void>
 ) {
-    const suggestQuery: any = {
+    const postFilterFilters: QueryDslQueryContainer[] = [
+        esqBoolShould(regStatusFilter(user, settings))
+    ];
+    const suggestQuery: SearchRequest['body'] = {
         query: {
             match: {
                 nameSuggest: {
@@ -370,50 +385,42 @@ export function completionSuggest(
                 },
             },
         },
-        post_filter: {
-            bool: {
-                filter: [{ bool: { should: regStatusFilter(user, settings) } }],
-            },
-        },
+        post_filter: esqBoolFilter(postFilterFilters),
     };
 
     if (index.name === 'cdeSuggest') {
-        suggestQuery.post_filter.bool.filter.push({
-            must_not: {
-                term: { noRenderAllowed: true },
-            },
-        });
+        postFilterFilters.push(esqBoolMustNot(esqTerm('noRenderAllowed', true)));
     }
 
-    esClient.search(
+    esClient.search<ItemElastic>(
         {
             index: index.name,
             body: suggestQuery,
         },
-        (error, response) => {
+        (error: Error | null, response) => {
             if (error) {
                 cb(error);
             } else {
-                cb(null, response.body as ElasticQueryResponse<ItemElastic>);
+                cb(null, response.body);
             }
         }
     );
 }
 
-export function termDatatype(dataType: string) {
-    return { term: { 'valueDomain.datatype': dataType } };
+export function termDatatype(dataType: string): QueryDslQueryContainer {
+    return esqTerm('valueDomain.datatype', dataType);
 }
 
-export function termRegStatus(regStatus: CurationStatus) {
-    return { term: { 'registrationState.registrationStatus': regStatus } };
+export function termRegStatus(regStatus: CurationStatus): QueryDslQueryContainer {
+    return esqTerm('registrationState.registrationStatus', regStatus);
 }
 
-export function termCopyrightStatus(copyrightStatus: CopyrightStatus) {
-    return { term: { copyrightStatus: copyrightStatus } };
+export function termCopyrightStatus(copyrightStatus: CopyrightStatus): QueryDslQueryContainer {
+    return esqTerm('copyrightStatus', copyrightStatus);
 }
 
-export function termStewardOrg(org: string) {
-    return { term: { 'stewardOrg.name': org } };
+export function termStewardOrg(org: string): QueryDslQueryContainer {
+    return esqTerm('stewardOrg.name', org);
 }
 
 export function hideRetired(settings: SearchSettingsElastic, user?: User) {
@@ -438,20 +445,20 @@ export function getAllowedStatuses(user: User | undefined, settings: SearchSetti
     return Array.from(allowedStatusesSet);
 }
 
-export function regStatusFilter(user: User | undefined, settings: SearchSettingsElastic): { term: any }[] {
+export function regStatusFilter(user: User | undefined, settings: SearchSettingsElastic): QueryDslQueryContainer[] {
     const allowedStatuses = getAllowedStatuses(user, settings);
-    return concat<{ term: any }>(allowedStatuses.map(termRegStatus), myOrgs(user).map(termStewardOrg));
+    return concat<QueryDslQueryContainer>(allowedStatuses.map(termRegStatus), myOrgs(user).map(termStewardOrg));
 }
 
-export function copyrightStatusFilter(): { term: any }[] {
+export function copyrightStatusFilter(): QueryDslQueryContainer[] {
     return [
-        { term: { copyrightStatus: 'Public domain, free to use' } },
-        { term: { copyrightStatus: 'Copyrighted, but free to use' } },
-        { term: { copyrightStatus: 'Copyrighted, with restrictions' } },
+        termCopyrightStatus('Public domain, free to use'),
+        termCopyrightStatus('Copyrighted, but free to use'),
+        termCopyrightStatus('Copyrighted, with restrictions'),
     ];
 }
 
-const searchTemplate: { [key: string]: any } = {
+const searchTemplate: Record<ModuleItem, SearchRequest> = {
     cde: {
         index: config.elastic.index.name,
     },
@@ -467,32 +474,30 @@ export async function elasticsearchInfo() {
 
 export function elasticsearchPromise<T extends ModuleItem>(
     type: T,
-    query: any,
-    settings: any
-): Promise<T extends 'cde' ? SearchResponseAggregationDe : SearchResponseAggregationForm> {
+    query: SearchRequest['body']
+): Promise<T extends 'cde' ? ElasticResponseDataDe : ElasticResponseDataForm> {
     return new Promise((resolve, reject) => {
-        elasticsearch(type, query, settings, (err, result) => (err || !result ? reject(err) : resolve(result)));
+        elasticsearch(type, query, (err, result) => (err || !result ? reject(err) : resolve(result)));
     });
 }
 
 export function elasticsearch<T extends ModuleItem>(
     type: T,
-    query: any,
-    settings: any,
-    cb: CbError1<(T extends 'cde' ? SearchResponseAggregationDe : SearchResponseAggregationForm) | void>
+    query: SearchRequest['body'],
+    cb: CbError1<(T extends 'cde' ? ElasticResponseDataDe : ElasticResponseDataForm) | void>
 ): void {
     const search = searchTemplate[type];
     if (!search) {
         return cb(new Error('Invalid query'));
     }
     search.body = query;
-    search.body.track_total_hits = true;
-    esClient.search(search, (error: any, resp: any) => {
+    search.track_total_hits = true;
+    esClient.search<ItemElastic>(search, (error, resp) => {
         if (error) {
             if (resp && resp.statusCode) {
                 const errorObj = {
                     origin: 'system.elastic.elasticsearch',
-                    badInput: resp.body.error.type === 'search_phase_execution_exception',
+                    badInput: (resp.body as any).error.type === 'search_phase_execution_exception',
                     stack: error.stack,
                     details: JSON.stringify(query),
                 };
@@ -510,34 +515,16 @@ export function elasticsearch<T extends ModuleItem>(
             });
             return cb(new Error('Server Error'));
         }
-        const response = resp.body as ElasticQueryResponseAggregations<ItemElastic>;
-        if (response.hits.total === 0 && config.name.indexOf('Prod') === -1) {
+
+        const response: ElasticSearchResponseBody<ItemElastic> = resp.body;
+        if (responseHitsTotal(response) === 0 && config.name.indexOf('Prod') === -1) {
             consoleLog('No response. QUERY: ' + JSON.stringify(query), 'debug');
         }
 
         const items: ItemElastic[] = [];
-        const result = {
-            _shards: {
-                failed: 0,
-                successful: 0,
-                total: 0,
-            },
-            aggregations: response.aggregations,
-            hits: { hits: [], max_score: 0, total: 0 },
-            timed_out: false,
-            totalNumber: response.hits.total,
-            maxScore: response.hits.max_score,
-            took: response.took,
-            cdes: type === 'cde' ? (items as DataElementElastic[]) : undefined,
-            forms: type === 'form' ? (items as CdeFormElastic[]) : undefined,
-        } as unknown as T extends 'cde' ? SearchResponseAggregationDe : SearchResponseAggregationForm;
-        // @TODO remove after full migration to ES7
-        if ((result.totalNumber as any).value > -1) {
-            result.totalNumber = (result.totalNumber as any).value;
-        }
         for (const hit of response.hits.hits) {
             const thisCde = hit._source as DataElementElastic;
-            thisCde.score = hit._score;
+            thisCde.score = hit._score ?? 0;
             if (
                 thisCde.valueDomain &&
                 thisCde.valueDomain.datatype === 'Value List' &&
@@ -551,7 +538,23 @@ export function elasticsearch<T extends ModuleItem>(
             thisCde.highlight = hit.highlight;
             items.push(thisCde);
         }
-        return cb(null, result);
+
+        return cb(null, type === 'cde'
+            ? {
+                aggregations: response.aggregations as ElasticSearchResponseAggregations<DataElementElastic>,
+                cdes: items as DataElementElastic[],
+                maxScore: response.max_score ?? 0,
+                took: response.took,
+                totalItems: responseHitsTotal(response)
+            } as T extends 'cde' ? ElasticResponseDataDe : never
+            : {
+                aggregations: response.aggregations as ElasticSearchResponseAggregations<CdeFormElastic>,
+                forms: items as CdeFormElastic[],
+                maxScore: response.max_score ?? 0,
+                took: response.took,
+                totalItems: responseHitsTotal(response)
+            } as T extends 'cde' ? never : ElasticResponseDataForm
+        );
     });
 }
 
@@ -565,11 +568,11 @@ function lockElasticSearchExportLock() {
     lock = true;
 }
 
-export function elasticSearchExport(type: 'cde', query: any, dataCb: CbError1<DataElementElastic | void>): void;
-export function elasticSearchExport(type: 'form', query: any, dataCb: CbError1<CdeFormElastic | void>): void;
+export function elasticSearchExport(type: 'cde', query: NonNullable<SearchRequest['body']>, dataCb: CbError1<DataElementElastic | void>): void;
+export function elasticSearchExport(type: 'form', query: NonNullable<SearchRequest['body']>, dataCb: CbError1<CdeFormElastic | void>): void;
 export async function elasticSearchExport(
     type: ModuleItem,
-    query: any,
+    query: NonNullable<SearchRequest['body']>,
     dataCb: CbError1<DataElementElastic | void> | CbError1<CdeFormElastic | void>
 ) {
     setTimeout(releaseElasticSearchExportLock, 60 * 60 * 5);
@@ -583,12 +586,12 @@ export async function elasticSearchExport(
     query.size = 500;
     delete query.aggregations;
 
-    const search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    const search = copyDeep(searchTemplate[type]);
     search.scroll = '1m';
     search.body = query;
 
-    function scrollThrough(response: any) {
-        esClient.scroll({ scrollId: response._scroll_id, scroll: '1m' } as any, (err: Error | null, response: any) => {
+    function scrollThrough(responsePrevious: SearchResponse<ItemElastic>) {
+        esClient.scroll({ scrollId: responsePrevious._scroll_id, scroll: '1m' } as ScrollRequest, (err: Error | null, response: ApiResponse<ScrollResponse>) => {
             if (err) {
                 releaseElasticSearchExportLock();
                 errorLogger.error('Error: Elastic Search Scroll Access Error', {
@@ -597,12 +600,12 @@ export async function elasticSearchExport(
                 });
                 streamCb(new Error('ES Error'));
             } else {
-                processScroll(response.body);
+                processScroll(response.body as any);
             }
         });
     }
 
-    function processScroll(response: any) {
+    function processScroll(response: SearchResponse<ItemElastic>) {
         if (response.hits.hits.length === 0) {
             releaseElasticSearchExportLock();
             streamCb(null);
@@ -614,38 +617,31 @@ export async function elasticSearchExport(
         }
     }
 
-    const response = await esClient.search(search);
+    const response = await esClient.search<ItemElastic>(search);
     processScroll(response.body);
 }
 
-export function scrollExport(query: any, type: ModuleItem, cb: CbError1<any>) {
+export function scrollExport(query: NonNullable<SearchRequest['body']>, type: ModuleItem, cb: CbError1<ElasticSearchResponse<ElasticSearchResponseBody<ItemElastic>>>) {
     query.size = 100;
     delete query.aggregations;
 
-    const search = JSON.parse(JSON.stringify(searchTemplate[type]));
+    const search = copyDeep(searchTemplate[type]);
     search.scroll = '1m';
     search.body = query;
 
-    esClient.search(search, cb);
+    esClient.search<ItemElastic>(search, cb);
 }
 
-export function scrollNext(scrollId: string, cb: CbError1<any>) {
+export function scrollNext(scrollId: string, cb: CbError1<ApiResponse<ScrollResponse<CdeFormElastic>>>) {
     esClient.scroll({ scrollId, scroll: '1m' } as any, cb);
 }
 
 export const queryMostViewed = {
     size: 10,
-    query: {
-        bool: {
-            filter: [
-                {
-                    bool: {
-                        should: [termRegStatus('Standard'), termRegStatus('Qualified')],
-                    },
-                },
-            ],
-        },
-    },
+    query: esqBoolFilter(esqBoolShould([
+        termRegStatus('Standard'),
+        termRegStatus('Qualified')
+    ])),
     sort: {
         views: 'desc',
     },
@@ -653,17 +649,10 @@ export const queryMostViewed = {
 
 export const queryNewest = {
     size: 10,
-    query: {
-        bool: {
-            filter: [
-                {
-                    bool: {
-                        should: [termRegStatus('Standard'), termRegStatus('Qualified')],
-                    },
-                },
-            ],
-        },
-    },
+    query: esqBoolFilter(esqBoolShould([
+        termRegStatus('Standard'),
+        termRegStatus('Qualified')
+    ])),
     sort: {
         _script: {
             type: 'number',

@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Board } from 'shared/models.model';
+import { Board } from 'shared/board.model';
 
 @Injectable({ providedIn: 'root' })
 export class BoardListService {

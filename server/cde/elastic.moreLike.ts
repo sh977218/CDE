@@ -2,7 +2,14 @@ import { config } from 'server';
 import { handleNotFound } from 'server/errorHandler';
 import { esClient } from 'server/system/elastic';
 import { DataElementElastic } from 'shared/de/dataElement.model';
-import { Cb1, ElasticQueryResponse } from 'shared/models.model';
+import {
+    ElasticSearchResponse,
+    ElasticSearchResponseBody, esqBool,
+    esqBoolMustNot,
+    esqTerm,
+    responseHitsTotal
+} from 'shared/elastic';
+import { Cb1 } from 'shared/models.model';
 
 interface MoreLike {
     cdes: DataElementElastic[];
@@ -29,60 +36,45 @@ export function moreLike(id: string, callback: Cb1<MoreLike>) {
     const query = {
         index: config.elastic.index.name,
         body: {
-            query: {
-                bool: {
-                    must: {
-                        more_like_this: {
-                            fields: mltConf.mlt_fields,
-                            like: [
-                                {
-                                    _id: id
-                                }
-                            ],
-                            min_term_freq: 1,
-                            min_doc_freq: 1,
-                            min_word_length: 2
-                        }
-                    },
-                    filter: {
-                        bool: {
-                            must_not: [
-                                {
-                                    term: {
-                                        'registrationState.registrationStatus': 'Retired'
-                                    }
-                                },
-                                {
-                                    term: {
-                                        isFork: 'true'
-                                    }
-                                }
-                            ]
-                        }
+            query: esqBool(
+                null,
+                {
+                    more_like_this: {
+                        fields: mltConf.mlt_fields,
+                        like: [
+                            {
+                                _id: id
+                            }
+                        ],
+                        min_term_freq: 1,
+                        min_doc_freq: 1,
+                        min_word_length: 2
                     }
-                }
-            }
+                },
+                esqBoolMustNot([
+                    esqTerm('registrationState.registrationStatus', 'Retired'),
+                    esqTerm('isFork', 'true')
+                ])
+            )
         }
     };
-    esClient.search(query, handleNotFound<{ body: ElasticQueryResponse<DataElementElastic> }>({}, response => {
+    esClient.search<DataElementElastic>(query, handleNotFound<ElasticSearchResponse<ElasticSearchResponseBody<DataElementElastic>>>({}, response => {
             const body = response.body;
             const result: MoreLike = {
                 cdes: [],
-                pages: Math.ceil(body.hits.total / limit),
+                pages: Math.ceil(responseHitsTotal(body) / limit),
                 page: Math.ceil(from / limit),
-                totalNumber: body.hits.total,
+                totalNumber: responseHitsTotal(body),
             };
-            // @TODO remove after full migration to ES7
-            if ((result.totalNumber as any).value) {
-                result.totalNumber = (result.totalNumber as any).value;
-            }
             body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
-                if (thisCde.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
+                if (thisCde?.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
                     && thisCde.valueDomain.permissibleValues.length > 10) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
-                result.cdes.push(thisCde);
+                if (thisCde) {
+                    result.cdes.push(thisCde);
+                }
             });
             callback(result);
         })

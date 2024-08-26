@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { Concept, DataElement } from 'shared/de/dataElement.model';
-import { Item } from 'shared/models.model';
-import { concat } from 'shared/array';
 import { Router } from '@angular/router';
+import { Concept, DataElement } from 'shared/de/dataElement.model';
+import { concat } from 'shared/array';
+import { Item } from 'shared/item';
 
 type ConceptTypes = 'dataElementConcept' | 'objectClass' | 'property';
 interface Config {

@@ -152,7 +152,7 @@ export function module() {
                 hideProprietaryCodes(data, req.user);
                 const documentIndex = ((settings.page || 1) - 1) * settings.resultPerPage;
                 res.send({
-                    resultsTotal: result.totalNumber,
+                    resultsTotal: result.totalItems,
                     resultsRetrieved: data.length,
                     from: documentIndex >= 0 ? documentIndex + 1 : 1,
                     docs: data,
@@ -199,7 +199,7 @@ export function module() {
             if (err || !resp) {
                 throw new Error('/cdeCompletion error: ' + JSON.stringify(err).substring(1, 200));
             }
-            resp.hits.hits.forEach(r => (r._index = undefined));
+            resp.hits.hits.forEach(r => ((r._index as any) = undefined));
             res.send(resp.hits.hits);
         });
     });

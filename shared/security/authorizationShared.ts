@@ -1,5 +1,7 @@
 import { intersection, union } from 'lodash';
-import { assertUnreachable, Board, Comment, isBoard, Item, rolesEnum, User, UserRole } from 'shared/models.model';
+import { Board, isBoard } from 'shared/board.model';
+import { Item } from 'shared/item';
+import { assertUnreachable, Comment, rolesEnum, User, UserRole } from 'shared/models.model';
 
 export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
 type Privileges = Record<Privilege, boolean>;

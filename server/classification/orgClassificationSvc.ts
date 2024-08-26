@@ -75,7 +75,7 @@ export async function deleteOrgClassification(
     parallel(
         [
             done =>
-                elasticsearchPromise('cde', query, settings).then(
+                elasticsearchPromise('cde', query).then(
                     result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
@@ -113,7 +113,7 @@ export async function deleteOrgClassification(
                     }
                 ),
             done =>
-                elasticsearchPromise('form', query, settings).then(
+                elasticsearchPromise('form', query).then(
                     result => {
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);
@@ -185,7 +185,7 @@ export async function renameOrgClassification(
     parallel(
         [
             done =>
-                elasticsearchPromise('cde', query, settings).then(
+                elasticsearchPromise('cde', query).then(
                     result => {
                         /* istanbul ignore else */
                         if (result && result.cdes && result.cdes.length > 0) {
@@ -230,7 +230,7 @@ export async function renameOrgClassification(
                     }
                 ),
             done =>
-                elasticsearchPromise('form', query, settings).then(
+                elasticsearchPromise('form', query).then(
                     result => {
                         /* istanbul ignore else */
                         if (result && result.forms && result.forms.length > 0) {
@@ -326,7 +326,7 @@ export async function reclassifyOrgClassification(
     parallel(
         [
             done =>
-                elasticsearchPromise('cde', query, settings).then(
+                elasticsearchPromise('cde', query).then(
                     result => {
                         if (result && result.cdes && result.cdes.length > 0) {
                             const tinyIds = result.cdes.map(c => c.tinyId);
@@ -364,7 +364,7 @@ export async function reclassifyOrgClassification(
                     }
                 ),
             done =>
-                elasticsearchPromise('form', query, settings).then(
+                elasticsearchPromise('form', query).then(
                     result => {
                         if (result && result.forms && result.forms.length > 0) {
                             const tinyIds = result.forms.map(c => c.tinyId);

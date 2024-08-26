@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ScrollResponse } from '@elastic/elasticsearch/api/types';
 import { ElasticService } from '_app/elastic.service';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
@@ -15,14 +16,13 @@ import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
 import { lastValueFrom } from 'rxjs';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { ElasticSearchResponseBody, responseHitsTotal } from 'shared/elastic';
+import { CdeForm, CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
+import { Item, ItemElastic } from 'shared/item';
 import {
     Cb1,
     CurationStatus,
-    ElasticQueryResponse,
-    ElasticQueryResponseForm,
-    Item,
-    ItemElastic,
+    ModuleItem,
 } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 import { noop } from 'shared/util';
@@ -61,7 +61,7 @@ export class ExportService {
                             this.elasticService.generalSearchQuery(
                                 lfSettings,
                                 'form',
-                                (err?: string, esRes?: ElasticQueryResponseForm) => resolve(esRes && esRes.forms)
+                                (err?: string, esRes?: ElasticResponseDataForm) => resolve(esRes && esRes.forms)
                             );
                         });
                         if (forms && forms.length) {
@@ -72,14 +72,14 @@ export class ExportService {
             } else {
                 const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
                 let esResp = await lastValueFrom(
-                    this.http.post<ElasticQueryResponse>('/server/form/scrollExport', lfSettings)
+                    this.http.post<ElasticSearchResponseBody<ItemElastic>>('/server/form/scrollExport', lfSettings)
                 );
                 let totalNbOfForms = 0;
                 let formCounter = 0;
                 const nonEmptyResults = result.filter(r => r !== undefined);
-                const intersectOnBatch = (esResp: ElasticQueryResponse) => {
+                const intersectOnBatch = (esResp: ElasticSearchResponseBody<any>) => {
                     if (esResp.hits.hits.length) {
-                        totalNbOfForms = (esResp as any).hits.total;
+                        totalNbOfForms = responseHitsTotal(esResp);
                         for (const hit of (esResp as any).hits.hits) {
                             formCounter++;
                             const esForm = hit._source;
@@ -115,7 +115,7 @@ export class ExportService {
                     keepScrolling = intersectOnBatch(esResp);
                     // tslint:disable-next-line:max-line-length
                     esResp = await lastValueFrom(
-                        this.http.get<ElasticQueryResponse>('/server/form/scrollExport/' + (esResp as any)._scroll_id)
+                        this.http.get<ScrollResponse<CdeFormElastic>>('/server/form/scrollExport/' + (esResp as any)._scroll_id)
                     );
                 }
             }
@@ -153,7 +153,7 @@ export class ExportService {
 
     exportSearchResults(
         type: 'csv' | 'json' | 'odm' | 'validationRules' | 'xml',
-        module: 'cde' | 'form',
+        module: ModuleItem,
         exportSettings: ExportRecordSettings,
         cb?: Cb1<ExportRecord[] | undefined>
     ) {

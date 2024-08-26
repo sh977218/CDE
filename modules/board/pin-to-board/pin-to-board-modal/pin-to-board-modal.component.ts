@@ -2,7 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/myBoards.service';
-import { Board, ModuleItem } from 'shared/models.model';
+import { Board } from 'shared/board.model';
+import { ModuleItem } from 'shared/models.model';
 
 @Component({
     templateUrl: './pin-to-board-modal.component.html',

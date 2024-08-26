@@ -1,11 +1,12 @@
 import 'server/globals';
 import { Client } from '@elastic/elasticsearch';
+import { Client as ClientNewType } from '@elastic/elasticsearch/api/new';
 import { config } from 'server';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { flattenFormElement } from 'shared/form/fe';
-import { ElasticQueryResponse } from 'shared/models.model';
+
 const XLSX = require('xlsx');
 
 const cond = {noRenderAllowed: true, tinyId: {$in:
@@ -13,7 +14,7 @@ const cond = {noRenderAllowed: true, tinyId: {$in:
             ['QJOUwY4CAM','XyWzqt6p8','m1fTbJSrFe','QJV0Kca6U','QJsx6Q8iOt_','7yvWqF6T8']}};
 
 const cdesToBeDeleted: any  = {};
-export const esClient = new Client(config.elastic.options);
+export const esClient: ClientNewType = new Client(config.elastic.options) as any;
 
 async function reportForm() {
     const forms: any = await formModel.find(cond);
@@ -68,11 +69,11 @@ function addToCdesToBeDeleted(form: any, cdes: any) {
 }
 
 async function isThisCdeUsedOnRenderForm(tinyId: string): Promise<DataElementElastic['linkedForms']['forms'][0] | undefined> {
-    const esResult: { body: ElasticQueryResponse<DataElementElastic> } = await esClient.search({
+    const esResult = await esClient.search<DataElementElastic>({
         index: config.elastic.index.name,
         q: `tinyId:${tinyId}`,
     });
-    if (!esResult.body.hits.hits[0]._source.linkedForms) {
+    if (!esResult.body.hits.hits[0]._source?.linkedForms) {
         return;
     }
     for (const f of esResult.body.hits.hits[0]._source.linkedForms.forms) {

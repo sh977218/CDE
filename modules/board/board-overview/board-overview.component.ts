@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Board } from 'shared/models.model';
+import { Router } from '@angular/router';
+import { UserService } from '_app/user.service';
+import { AlertService } from 'alert/alert.service';
 import { BoardOverviewEditModalComponent } from 'board/board-overview/board-overview-edit-modal/board-overview-edit-modal.component';
 import { BoardOverviewDeleteModalComponent } from 'board/board-overview/board-overview-delete-modal/board-overview-delete-modal.component';
-import { UserService } from '_app/user.service';
 import { MyBoardsService } from 'board/myBoards.service';
-import { Router } from '@angular/router';
-import { AlertService } from 'alert/alert.service';
+import { Board } from 'shared/board.model';
 
 @Component({
     selector: 'cde-board-overview',

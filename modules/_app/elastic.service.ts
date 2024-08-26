@@ -2,18 +2,21 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import { DataElement, DataElementElastic, ElasticElement } from 'shared/de/dataElement.model';
-import { deOrForm } from 'shared/elt/elt';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
 import {
-    ItemElastic,
+    DataElement,
+    DataElementElastic,
+    ElasticElement, ElasticResponseDataDe,
+} from 'shared/de/dataElement.model';
+import {
+    CdeForm,
+    CdeFormElastic, ElasticResponseDataForm
+} from 'shared/form/form.model';
+import { deOrForm, ElasticResponseDataItem, ItemElastic } from 'shared/item';
+import {
     UserSearchSettings,
-    SearchResponseAggregationItem,
-    SearchResponseAggregationForm,
-    SearchResponseAggregationDe,
     CbErr2,
     Cb2,
-    CbErr1,
+    CbErr1, ModuleItem,
 } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 
@@ -64,58 +67,58 @@ export class ElasticService implements OnDestroy {
         };
     }
 
-    generalSearchQuery(
+    generalSearchQuery<T extends ElasticResponseDataDe>(
         settings: SearchSettingsElastic,
         type: 'cde',
-        cb: CbErr2<SearchResponseAggregationDe, boolean>
+        cb: CbErr2<T, boolean>
     ): void;
-    generalSearchQuery(
+    generalSearchQuery<T extends ElasticResponseDataForm>(
         settings: SearchSettingsElastic,
         type: 'form',
-        cb: CbErr2<SearchResponseAggregationForm, boolean>
+        cb: CbErr2<T, boolean>
     ): void;
-    generalSearchQuery(
+    generalSearchQuery<T extends ElasticResponseDataItem>(
         settings: SearchSettingsElastic,
-        type: 'cde' | 'form',
-        cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>
+        type: ModuleItem,
+        cb: CbErr2<T, boolean>
     ): void;
-    generalSearchQuery(
+    generalSearchQuery<T extends ElasticResponseDataItem>(
         settings: SearchSettingsElastic,
-        type: 'cde' | 'form',
-        cb: CbErr2<SearchResponseAggregationDe, boolean> | CbErr2<SearchResponseAggregationForm, boolean>
+        type: ModuleItem,
+        cb: CbErr2<T, boolean>
     ): void {
         const search = (
-            good: Cb2<SearchResponseAggregationItem, boolean | void>,
-            bad: CbErr2<SearchResponseAggregationItem, boolean | void>
+            good: Cb2<ElasticResponseDataItem, boolean | void>,
+            bad: CbErr2<ElasticResponseDataItem, boolean | void>
         ) => {
             let url = '/server/de/search';
             if (type === 'form') {
                 url = '/server/form/search';
             }
-            this.http.post<SearchResponseAggregationItem>(url, settings).subscribe(good as any, bad as any);
+            this.http.post<ElasticResponseDataItem>(url, settings).subscribe(good as any, bad as any);
         };
 
-        const success: Cb2<SearchResponseAggregationItem, boolean | void> = (
-            response: SearchResponseAggregationItem,
+        const success: Cb2<ElasticResponseDataItem, boolean | void> = (
+            response: ElasticResponseDataItem,
             isRetry = false
         ) => {
             if (type === 'cde') {
-                const responseDe = response as SearchResponseAggregationDe;
+                const responseDe = response as ElasticResponseDataDe;
                 ElasticService.highlightResults(responseDe.cdes);
                 responseDe.cdes.forEach(DataElement.validate);
             } else {
-                const responseForm = response as SearchResponseAggregationForm;
+                const responseForm = response as ElasticResponseDataForm;
                 ElasticService.highlightResults(responseForm.forms);
                 responseForm.forms.forEach(CdeForm.validate);
             }
-            (cb as CbErr2<SearchResponseAggregationItem, boolean | void>)(undefined, response, isRetry);
+            (cb as CbErr2<ElasticResponseDataItem, boolean | void>)(undefined, response, isRetry);
         };
 
         search(success, () => {
             if (settings.searchTerm) {
                 settings.searchTerm = settings.searchTerm.replace(/[^\w\s]/gi, '');
             }
-            search(response => success(response, true), cb as CbErr2<SearchResponseAggregationItem, boolean | void>);
+            search(response => success(response, true), cb as CbErr2<ElasticResponseDataItem, boolean | void>);
         });
     }
 
@@ -123,7 +126,7 @@ export class ElasticService implements OnDestroy {
         return this.searchSettings.defaultSearchView;
     }
 
-    getExport(query: SearchSettingsElastic, type: 'cde' | 'form', cb: CbErr1<ItemElastic[] | void>) {
+    getExport(query: SearchSettingsElastic, type: ModuleItem, cb: CbErr1<ItemElastic[] | void>) {
         this.http.post<ItemElastic[]>(`/server/${deOrForm(type)}/searchExport`, query).subscribe(
             response => cb(undefined, response),
             (err: HttpErrorResponse) => {

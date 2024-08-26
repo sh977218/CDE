@@ -4,8 +4,8 @@ import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { respondError } from 'server/errorHandler';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
 import { BoardDocument, boardModel } from 'server/mongo/mongoose/board.mongoose';
+import { Board } from 'shared/board.model';
 import { BoardDb } from 'shared/boundaryInterfaces/db/boardDb';
-import { Board } from 'shared/models.model';
 import { copyShallow } from 'shared/util';
 
 const boardHooks: CrudHooks<Board, ObjectId> = {

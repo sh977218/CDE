@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Item } from 'shared/models.model';
+import { Item } from 'shared/item';
 
 @Component({
     templateUrl: './compareHistoryContent.component.html',

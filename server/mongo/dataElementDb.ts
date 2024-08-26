@@ -10,8 +10,10 @@ import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dat
 import { esClient } from 'server/system/elastic';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { ElasticSearchResponse, ElasticSearchResponseBody } from 'shared/elastic';
 import { itemAsElastic } from 'shared/item';
-import { Attachment, ElasticQueryResponse } from 'shared/models.model';
+import { Attachment } from 'shared/models.model';
+import { isT } from 'shared/util';
 
 const dataElementHooks: CrudHooks<DataElement, ObjectId> = {
     read: {
@@ -61,7 +63,7 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
     cache = {
         byTinyIdList: (idList: string[], size: number): Promise<DataElementElastic[]> => {
             idList = idList.filter(id => !!id);
-            return esClient.search<ElasticQueryResponse<DataElementElastic>>({
+            return esClient.search<DataElementElastic>({
                 index: config.elastic.index.name,
                 body: {
                     query: {
@@ -74,8 +76,10 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
             })
                 .then(response => {
                     // TODO: possible to move this sort to elastic search?
-                    response.body.hits.hits.sort((a, b) => idList.indexOf(a._id) - idList.indexOf(b._id));
-                    return response.body.hits.hits.map(h => h._source);
+                    response.body.hits.hits.sort((a, b) => idList.indexOf(a._id as string) - idList.indexOf(b._id as string));
+                    return response.body.hits.hits
+                        .map(h => h._source)
+                        .filter(isT);
                 });
         }
     }
