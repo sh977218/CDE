@@ -63,10 +63,10 @@ test.describe(`Submission Manage`, async () => {
         await expect(submissionManagePage.tableRows().nth(3).locator('.cell').nth(1)).toContainText('NLM');
     });
 
-    test('View Submission', async ({ page, submissionManagePage }) => {
+    test('View Submission', async ({ page, materialPage, submissionManagePage }) => {
         await submissionManagePage.tableAction(0).click();
         await button(submissionManagePage.tableActionMenu(), 'View').click();
-        await expect(page.locator('mat-dialog-container')).toBeVisible();
+        await expect(materialPage.matDialog()).toBeVisible();
         await expect(page.getByPlaceholder('Ex. Topic Collection 1')).toHaveValue('NINDS');
         await expect(page.getByPlaceholder('Ex. Topic Collection 1')).toBeDisabled();
         await expect(button(page, 'Save')).toHaveCount(0);

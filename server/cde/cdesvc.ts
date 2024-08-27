@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { dbPlugins } from 'server';
+import { elasticsearch } from 'server/cde/elastic';
 import { moreLike } from 'server/cde/elastic.moreLike';
 import {
     create as deCreate,
@@ -11,14 +12,18 @@ import {
     update, findModifiedElementsSince, derivationByInputs
 } from 'server/cde/mongo-cde';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler';
+import { consoleLog } from 'server/log/dbLogger';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
 import { addCdeToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
+import { BatchModifyRequest } from 'shared/boundaryInterfaces/API/deAndForm';
 import { DataElement } from 'shared/de/dataElement.model';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
+import { incrementVersion } from 'shared/elt/elt';
 import { stripBsonIdsElt } from 'shared/exportShared';
 import { PermissibleValue, User } from 'shared/models.model';
+import { searchSettingsElasticToQueryString } from 'shared/search/search.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 const js2xml = require('js2xmlparser');
@@ -38,6 +43,56 @@ const sendDataElement = (req: Request, res: Response) => (dataElement: DataEleme
     addCdeToViewHistory(dataElement, req.user);
     return res.send(dataElement);
 };
+
+export function batchModify(req: Request, res: Response): Promise<Response> {
+    const body = req.body as BatchModifyRequest;
+    return new Promise<Response>(resolve => {
+        elasticsearch(req.user, body.searchSettings, (err, result) => {
+            if (err || !result) {
+                return resolve(res.status(400).send('invalid query'));
+            }
+            if (result.cdes.length !== body.count) {
+                return resolve(res.status(400).send('search count does not match'));
+            }
+            const editRegStatus = body.editRegStatus?.from && !!body.editRegStatus.to ? body.editRegStatus : null;
+            const editAdminStatus = body.editAdminStatus?.from && !!body.editAdminStatus.to ? body.editAdminStatus : null;
+            consoleLog(`Running Batch Modify from search "/cde/search?${searchSettingsElasticToQueryString(body.searchSettings)}"`
+                + (editRegStatus ? ` (Modify registration status from ${editRegStatus.from} to ${editRegStatus.to})` : '')
+                + (editAdminStatus ? ` (Modify administrative status from ${editAdminStatus.from} to ${editAdminStatus.to})` : '')
+                + ` on ${body.count} data elements.`, 'info');
+            const notModified: string[] = [];
+            // TODO: existing drafts?? reject?
+            return Promise.all(result.cdes.map(de =>
+                dbPlugins.dataElement.byTinyId(de.tinyId).then(dbDataElement => {
+                    if (!dbDataElement) {
+                        return;
+                    }
+                    let modified = false;
+                    if (editRegStatus) {
+                        if (editRegStatus.from === dbDataElement.registrationState.registrationStatus) {
+                            dbDataElement.registrationState.registrationStatus = editRegStatus.to;
+                            modified = true;
+                        }
+                    }
+                    if (editAdminStatus) {
+                        if (editAdminStatus.from === dbDataElement.registrationState.administrativeStatus) {
+                            dbDataElement.registrationState.administrativeStatus = editAdminStatus.to;
+                            modified = true;
+                        }
+                    }
+                    if (modified) {
+                        dbDataElement.changeNote = 'Batch update from search';
+                        incrementVersion(dbDataElement, '.sb');
+                        return update(dbDataElement, req.user);
+                    } else {
+                        notModified.push(dbDataElement.tinyId);
+                    }
+                })
+            ))
+                .then(() => resolve(res.send(notModified)));
+        });
+    });
+}
 
 export function byId(req: Request, res: Response): Promise<Response> {
     const id = req.params.id;

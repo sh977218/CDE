@@ -2,6 +2,7 @@ import { Response, Router } from 'express';
 import { toInteger } from 'lodash';
 import { config, dbPlugins } from 'server';
 import {
+    batchModify,
     byId,
     byTinyId,
     byTinyIdAndVersion,
@@ -31,7 +32,7 @@ import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware,
     canEditByTinyIdMiddleware,
-    canEditMiddleware,
+    canEditMiddleware, isOrgAuthorityMiddleware,
     nocacheMiddleware,
 } from 'server/system/authorization';
 import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
@@ -114,6 +115,7 @@ export function module() {
 
     router.get('/api/de/:tinyId/latestVersion/', nocacheMiddleware, latestVersionByTinyId);
     router.post('/server/de', canCreateMiddleware, create);
+    router.post('/server/de/batchModify', isOrgAuthorityMiddleware, batchModify);
     router.post('/server/de/publish', canEditMiddlewareDe, publishFromDraft);
     router.post('/server/de/publishExternal', canEditMiddlewareDe, publishExternal);
 

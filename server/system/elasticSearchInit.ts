@@ -89,6 +89,7 @@ export const createIndexJson = {
             registrationState: {
                 properties: {
                     registrationStatus: { type: 'keyword' },
+                    administrativeStatus: { type: 'keyword' },
                 },
             },
             source: { type: 'keyword' },
@@ -203,6 +204,7 @@ export const createFormIndexJson = {
             registrationState: {
                 properties: {
                     registrationStatus: { type: 'keyword' },
+                    administrativeStatus: { type: 'keyword' },
                 },
             },
             source: { type: 'keyword' },

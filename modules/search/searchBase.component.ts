@@ -15,6 +15,7 @@ import { OrgHelperService } from 'non-core/orgHelper.service';
 import { OrgDetailModalComponent } from 'org-detail-modal/org-detail-modal.component';
 import { Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
+import { BatchModifyComponent, BatchModifyDialogData } from 'search/bastchModify/batchModify.component';
 import { addOrRemoveFromArray, removeFromArray } from 'shared/array';
 import { DataType, ElasticResponseDataDe } from 'shared/de/dataElement.model';
 import {
@@ -24,10 +25,17 @@ import {
 } from 'shared/elastic';
 import { ElasticResponseDataForm } from 'shared/form/form.model';
 import { ItemElastic, uriViewBase } from 'shared/item';
-import { assertUnreachable, Cb1, CopyrightStatus, CurationStatus, ModuleItem } from 'shared/models.model';
+import {
+    AdministrativeStatus,
+    assertUnreachable,
+    Cb1,
+    CopyrightStatus,
+    CurationStatus,
+    ModuleItem,
+} from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
-import { isSiteAdmin } from 'shared/security/authorizationShared';
+import { isOrgAuthority, isSiteAdmin } from 'shared/security/authorizationShared';
 import { orderedList, statusList } from 'shared/regStatusShared';
 import { copyrightStatusList } from 'shared/copyrightStatusShared';
 import { noop, ownKeys, stringToArray } from 'shared/util';
@@ -176,6 +184,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.q = this.searchTerm = params.q;
             this.searchSettings.copyrightStatus = stringToArray(params.copyrightStatus);
             this.searchSettings.regStatuses = stringToArray(params.regStatuses);
+            this.searchSettings.adminStatuses = stringToArray(params.adminStatuses);
             this.searchSettings.selectedOrg = params.selectedOrg;
             this.searchSettings.selectedOrgAlt = params.selectedOrgAlt;
             this.altClassificationFilterMode = !!params.selectedOrgAlt;
@@ -199,6 +208,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.searchSettings.datatypes = [];
         }
         addOrRemoveFromArray(this.searchSettings.datatypes, datatype);
+        this.doSearch();
+    }
+
+    addAdminStatusFilter(status: AdministrativeStatus) {
+        if (!this.searchSettings.adminStatuses) {
+            this.searchSettings.adminStatuses = [];
+        }
+        addOrRemoveFromArray(this.searchSettings.adminStatuses, status);
         this.doSearch();
     }
 
@@ -316,6 +333,12 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         this.doSearch();
     }
 
+    clearSelectedAdminStatus(status: AdministrativeStatus) {
+        if (this.searchSettings.adminStatuses && removeFromArray(this.searchSettings.adminStatuses, status)) {
+            this.doSearch();
+        }
+    }
+
     clearSelectedDatatype(datatype: DataType) {
         if (this.searchSettings.datatypes && removeFromArray(this.searchSettings.datatypes, datatype)) {
             this.doSearch();
@@ -386,13 +409,16 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.searchSettings.q) {
             searchTerms.q = this.searchSettings.q;
         }
-        if (this.searchSettings.copyrightStatus && this.searchSettings.copyrightStatus.length > 0) {
+        if (this.searchSettings.copyrightStatus?.length > 0) {
             searchTerms.copyrightStatus = this.searchSettings.copyrightStatus.join(';');
         }
-        if (this.searchSettings.regStatuses && this.searchSettings.regStatuses.length > 0) {
+        if (this.searchSettings.regStatuses?.length > 0) {
             searchTerms.regStatuses = this.searchSettings.regStatuses.join(';');
         }
-        if (this.searchSettings.datatypes && this.searchSettings.datatypes.length > 0) {
+        if (this.searchSettings.adminStatuses?.length > 0) {
+            searchTerms.adminStatuses = this.searchSettings.adminStatuses.join(';');
+        }
+        if (this.searchSettings.datatypes?.length > 0) {
             searchTerms.datatypes = this.searchSettings.datatypes.join(';');
         }
         if (this.searchSettings.selectedOrg) {
@@ -410,7 +436,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         if (this.searchSettings.excludeAllOrgs) {
             searchTerms.excludeAllOrgs = true;
         }
-        if (this.searchSettings.excludeOrgs && this.searchSettings.excludeOrgs.length > 0) {
+        if (this.searchSettings.excludeOrgs?.length > 0) {
             searchTerms.excludeOrgs = this.searchSettings.excludeOrgs.join(';');
         }
         if (pageNumber > 1) {
@@ -534,6 +560,14 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return res.length > 50 ? res.substr(0, 49) + '...' : res;
     }
 
+    hasSelectedAdminStatuses() {
+        return (
+            this.searchSettings.adminStatuses &&
+            this.searchSettings.adminStatuses.length > 0 &&
+            this.searchSettings.adminStatuses.length !== 8
+        );
+    }
+
     hasSelectedClassifications() {
         return this.searchSettings.selectedOrg;
     }
@@ -570,6 +604,10 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         return this.resultsView === 'table' && this.isSearched();
     }
 
+    isOrgAuth() {
+        return isOrgAuthority(this.userService.user);
+    }
+
     isSearched(): boolean {
         return !!(
             this.searchSettings.q ||
@@ -580,6 +618,15 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             this.hasSelectedCopyrightStatuses() ||
             this.searchSettings.meshTree
         );
+    }
+
+    openBatchModify() {
+        const data: BatchModifyDialogData = {
+            module: this.module,
+            searchSettings: this.searchSettings,
+            selectedCount: this.totalItems || 0,
+        };
+        this.dialog.open<BatchModifyComponent, BatchModifyDialogData>(BatchModifyComponent, { width: '600px', data });
     }
 
     openOrgDetails(org: Organization) {
@@ -732,7 +779,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                 (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
                     SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
             );
-            this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
+            aggregations.adminStatuses.adminStatuses.buckets.sort((a: { key: string }, b: { key: string }): number =>
+                    SearchBaseComponent.compareString(a.key, b.key));
+                this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
 
             if (!this.isSearched()) {
                 this.orgs = [];
@@ -903,21 +952,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    termSearch(reset?: boolean) {
+    termSearch() {
         if (!this.searchTerm) {
             return;
         }
         this.searchSettings.q = this.searchTerm;
-        if (reset) {
-            this.searchSettings.page = 1;
-            this.searchSettings.regStatuses.length = 0;
-            this.searchSettings.datatypes.length = 0;
-            this.searchSettings.classification.length = 0;
-            this.searchSettings.classificationAlt.length = 0;
-            this.searchSettings.selectedOrgAlt = undefined;
-            this.altClassificationFilterMode = false;
-            this.excludeOrgFilterMode = false;
-        }
         if (this.searchSettings.meshTree) {
             let index = this.searchSettings.meshTree.indexOf(';');
             if (index > -1) {

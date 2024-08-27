@@ -102,10 +102,6 @@ export class GenerateDetailsPo {
         return this.page.getByTestId(`updated-by`);
     }
 
-    registrationStatusLabel() {
-        return this.page.getByTestId(`registration-status-label`);
-    }
-
     registrationStatus() {
         return this.page.getByTestId(`registration-status`);
     }

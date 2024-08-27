@@ -22,13 +22,12 @@ import { TableListComponent } from 'search/listView/tableList.component';
         CommonModule,
         FormsModule,
         RouterModule.forChild([]),
-        // non-core
-        MatIconModule,
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
         MatTabsModule,
         MatTooltipModule,
+        //
         PinToBoardModule,
     ],
     declarations: [

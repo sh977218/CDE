@@ -5,6 +5,7 @@ import { config, dbPlugins } from 'server';
 import { handleError, handleNotFound, respondError } from 'server/errorHandler';
 import { elasticsearchForm } from 'server/form/elastic';
 import {
+    batchModify,
     bundleCreate,
     bundleDestroy,
     byId,
@@ -170,6 +171,7 @@ export function module() {
     });
 
     router.post('/server/form', canCreateMiddleware, create);
+    router.post('/server/form/batchModify', isOrgAuthorityMiddleware, batchModify);
     router.post('/server/form/publish', canEditMiddlewareForm, publishFromDraft);
     router.post('/server/form/publishExternal', canEditMiddlewareForm, publishExternal);
 

@@ -27,7 +27,8 @@ export class CompareItemComponent implements OnInit {
         { label: 'noRenderAllowed', match: false, property: 'noRenderAllowed' },
         { label: 'Steward Org', match: false, property: 'stewardOrg.name' },
         { label: 'Version', match: false, property: 'version' },
-        { label: 'Status', match: false, property: 'registrationState.registrationStatus' },
+        { label: 'Registration Status', match: false, property: 'registrationState.registrationStatus' },
+        { label: 'Administrative Status', match: false, property: 'registrationState.administrativeStatus' },
         { label: 'Unit of Measure', match: false, property: 'valueDomain.uom' },
         { label: 'Data Type', match: false, property: 'valueDomain.datatype' },
         {

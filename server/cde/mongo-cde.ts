@@ -12,7 +12,7 @@ import {
 import { splitError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { auditModifications, generateTinyId } from 'server/system/mongo-data';
+import { auditModifications, generateTinyId, updateElt, updateMetadata } from 'server/system/mongo-data';
 import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
@@ -133,7 +133,8 @@ export function draftsList(
 }
 
 export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElementDocument | void>): void {
-    updateUser(elt, user);
+    wipeDatatype(elt);
+    updateMetadata(elt, user);
     dataElementDraftModel.findById(
         elt._id,
         splitError(cb, doc => {
@@ -187,36 +188,32 @@ export function create(elt: DataElement, user: User, callback: CbError1<DataElem
 }
 
 export function update(elt: DataElementDraft, user: User, options: UpdateEltOptions = {}): Promise<DataElement> {
-    return dataElementModel.findById(elt._id, null, null).then(dataElement => {
+    // version and changeNote are already saved on the draft
+    return dataElementModel.findById(elt._id, null, null).then(dbDataElement => {
         /* istanbul ignore if */
-        if (!dataElement) {
+        if (!dbDataElement) {
             throw new Error('Document Not Found');
         }
         /* istanbul ignore if */
-        if (dataElement.archived) {
+        if (dbDataElement.archived) {
             throw new Error('You are trying to edit an archived element');
         }
-        delete elt._id;
-        /* istanbul ignore if */
-        if (!elt.history) {
-            elt.history = [];
-        }
-        elt.history.push(dataElement._id);
-        updateUser(elt, user);
+        updateElt(elt, dbDataElement, user);
+        wipeDatatype(elt);
 
         // user cannot edit sources.
         if (!options.updateSource) {
-            elt.sources = dataElement.sources;
+            elt.sources = dbDataElement.sources;
         }
 
         // because it's draft not edit attachment
         if (!options.updateAttachments) {
-            elt.attachments = dataElement.attachments;
+            elt.attachments = dbDataElement.attachments;
         }
 
         // created & createdBy cannot be changed.
-        elt.created = dataElement.created;
-        elt.createdBy = dataElement.createdBy;
+        elt.created = dbDataElement.created;
+        elt.createdBy = dbDataElement.createdBy;
 
         const newElt = new dataElementModel(elt);
 
@@ -224,7 +221,7 @@ export function update(elt: DataElementDraft, user: User, options: UpdateEltOpti
         return dataElementModel
             .findOneAndUpdate(
                 {
-                    _id: dataElement._id,
+                    _id: dbDataElement._id,
                     archived: false,
                 },
                 { $set: { archived: true } },
@@ -237,12 +234,12 @@ export function update(elt: DataElementDraft, user: User, options: UpdateEltOpti
                 }
                 return newElt.save().then(
                     savedElt => {
-                        auditModificationsDe(user, dataElement, savedElt);
+                        auditModificationsDe(user, dbDataElement, savedElt);
                         return savedElt;
                     },
                     err =>
                         dataElementModel
-                            .findOneAndUpdate({ _id: dataElement._id }, { $set: { archived: false } })
+                            .findOneAndUpdate({ _id: dbDataElement._id }, { $set: { archived: false } })
                             .then(() => Promise.reject(err))
                 );
             });
@@ -276,12 +273,4 @@ export function originalSourceByTinyIdSourceName(
     cb: CbError1<DataElementDocument>
 ) {
     dataElementSourceModel.findOne({ tinyId, source: sourceName }, cb);
-}
-
-function updateUser(elt: DataElement, user: User) {
-    wipeDatatype(elt);
-    elt.updated = new Date();
-    elt.updatedBy = {
-        username: user.username,
-    };
 }

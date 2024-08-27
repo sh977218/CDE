@@ -10,7 +10,6 @@ import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dat
 import { esClient } from 'server/system/elastic';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
-import { ElasticSearchResponse, ElasticSearchResponseBody } from 'shared/elastic';
 import { itemAsElastic } from 'shared/item';
 import { Attachment } from 'shared/models.model';
 import { isT } from 'shared/util';
@@ -48,6 +47,7 @@ const dataElementHooks: CrudHooks<DataElement, ObjectId> = {
         post: item => {
             if (item) {
                 updateOrInsert(item);
+                // TODO: audit log
             }
             return item;
         },
@@ -59,6 +59,7 @@ const dataElementHooks: CrudHooks<DataElement, ObjectId> = {
 };
 
 class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements DataElementDb {
+    // TODO: DB Model service that catches disconnect errors, waits by polling(connection-wide) until restored to retry before returning, new requests backlogged
     constructor(model: Model<DataElementDocument>) {
         super(model, dataElementHooks, 'updated');
     }

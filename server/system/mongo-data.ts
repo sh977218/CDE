@@ -13,7 +13,7 @@ import { Board } from 'shared/board.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Item } from 'shared/item';
-import { CbError, CbError1, EltLog, ModuleAll, User } from 'shared/models.model';
+import { CbError, CbError1, Elt, EltLog, ModuleAll, User } from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
 
@@ -201,4 +201,32 @@ export function fetchItem(module: ModuleAll, tinyId: string): Promise<Board | It
 export function sortArrayByArray(unSortArray: Item[], targetArray: ObjectId[]) {
     const stringArray = targetArray.map(t => t.toString());
     unSortArray.sort((a, b) => stringArray.indexOf(a._id.toString()) - stringArray.indexOf(b._id.toString()));
+}
+
+export function updateElt(elt: Elt, dbElt: Elt, user: User): void {
+    delete elt._id;
+    /* mongoose appears to drop classifications with _id, the whole subtree */
+    elt.classification.forEach(c => {
+        if (typeof (c as any)._id !== 'undefined') {
+            delete (c as any)._id;
+        }
+        c.elements.forEach(e => {
+            if (typeof (c as any)._id !== 'undefined') {
+                delete (c as any)._id;
+            }
+        });
+    });
+    /* istanbul ignore if */
+    if (!elt.history) {
+        elt.history = [];
+    }
+    elt.history.push(dbElt._id);
+    updateMetadata(elt, user);
+}
+
+export function updateMetadata(elt: Elt, user: User) {
+    elt.updated = new Date();
+    elt.updatedBy = {
+        username: user.username,
+    };
 }

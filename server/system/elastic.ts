@@ -398,6 +398,10 @@ export function completionSuggest(
     );
 }
 
+export function termAdminStatus(adminStatus: string): QueryDslQueryContainer {
+    return esqTerm('registrationState.administrativeStatus', adminStatus);
+}
+
 export function termDatatype(dataType: string): QueryDslQueryContainer {
     return esqTerm('valueDomain.datatype', dataType);
 }

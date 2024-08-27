@@ -8,7 +8,7 @@ import { updateOrInsertDocument } from 'server/form/elastic';
 import { auditSchema as formAuditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
-import { auditModifications, generateTinyId } from 'server/system/mongo-data';
+import { auditModifications, generateTinyId, updateElt, updateMetadata } from 'server/system/mongo-data';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { CdeForm } from 'shared/form/form.model';
 import { CbError1, EltLog, User } from 'shared/models.model';
@@ -122,7 +122,7 @@ export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]> {
 }
 
 export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument | void>) {
-    updateUser(elt, user);
+    updateMetadata(elt, user);
     formDraftModel.findById(
         elt._id,
         splitError(cb, doc => {
@@ -146,45 +146,40 @@ export function draftSave(elt: CdeForm, user: User, cb: CbError1<CdeFormDocument
 /* ---------- PUT NEW REST API above ---------- */
 
 export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {}): Promise<CdeForm> {
-    return formModel.findById(elt._id, null, null).then(form => {
+    return formModel.findById(elt._id, null, null).then(dbForm => {
         /* istanbul ignore if */
-        if (!form) {
+        if (!dbForm) {
             throw new Error('Document does not exist.');
         }
         /* istanbul ignore if */
-        if (form.archived) {
+        if (dbForm.archived) {
             throw new Error('You are trying to edit an archived element');
         }
-        delete elt._id;
-        /* istanbul ignore if */
-        if (!elt.history) {
-            elt.history = [];
-        }
-        elt.history.push(form._id);
-        updateUser(elt, user);
+
+        updateElt(elt, dbForm, user);
 
         // user cannot edit sources.
         if (!options.updateSource) {
-            elt.sources = form.sources;
+            elt.sources = dbForm.sources;
         }
 
         // because it's draft not edit attachment
         if (!options.updateAttachments) {
-            elt.attachments = form.attachments;
+            elt.attachments = dbForm.attachments;
         }
 
         // loader skip update formElements, i.e. Qualified PhenX forms, PHQ-9
         /* istanbul ignore if */
         if (options.skipFormElements) {
-            elt.formElements = form.formElements;
+            elt.formElements = dbForm.formElements;
         }
 
         // created & createdBy cannot be changed.
-        elt.created = form.created;
-        elt.createdBy = form.createdBy;
+        elt.created = dbForm.created;
+        elt.createdBy = dbForm.createdBy;
 
         // updated by special process, not editing
-        elt.isBundle = form.isBundle;
+        elt.isBundle = dbForm.isBundle;
 
         const newElt = new formModel(elt);
 
@@ -192,7 +187,7 @@ export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {})
         return formModel
             .findOneAndUpdate(
                 {
-                    _id: form._id,
+                    _id: dbForm._id,
                     archived: false,
                 },
                 { $set: { archived: true } },
@@ -205,12 +200,12 @@ export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {})
                 }
                 return newElt.save().then(
                     savedElt => {
-                        auditModificationsForm(user, form, savedElt);
+                        auditModificationsForm(user, dbForm, savedElt);
                         return savedElt;
                     },
                     err =>
                         formModel
-                            .findOneAndUpdate({ _id: form._id }, { $set: { archived: false } })
+                            .findOneAndUpdate({ _id: dbForm._id }, { $set: { archived: false } })
                             .then(/* istanbul ignore next */ () => Promise.reject(err))
                 );
             });
@@ -234,11 +229,4 @@ export function create(elt: CdeForm, user: User, callback: CbError1<CdeFormDocum
 
 export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string, cb: CbError1<CdeFormDocument>) {
     formSourceModel.findOne({ tinyId, source: sourceName }, cb);
-}
-
-function updateUser(elt: CdeForm, user: User) {
-    elt.updated = new Date();
-    elt.updatedBy = {
-        username: user.username,
-    };
 }

@@ -1,3 +1,5 @@
+import { CurationStatus } from 'shared/models.model';
+
 export type ACCOUNT_KEYS =
     | 'nlm'
     | 'userExistingInUtsButNotCDE'
@@ -127,17 +129,8 @@ export type Property = {
 
 export type AlertType = 'Data Element saved.' | 'Form saved.';
 
-export type RegistrationStatusType =
-    | 'Incomplete'
-    | 'Recorded'
-    | 'Candidate'
-    | 'Qualified'
-    | 'Standard'
-    | 'Preferred Standard'
-    | 'Retired';
-
 export type RegistrationStatus = {
-    status: RegistrationStatusType;
+    status: CurationStatus;
     effectiveDate?: string;
     untilDate?: string;
     administrativeStatus?: string;

@@ -66,7 +66,6 @@ export class HistoryComponent {
     numberSelected = 0;
     priorElementsFull!: History[];
     priorElements!: History[];
-
     showVersioned = false;
     toggled = false;
 
@@ -77,21 +76,8 @@ export class HistoryComponent {
         public userService: UserService
     ) {}
 
-    selectRow(index: number) {
-        const priorElt = this.priorElementsFull[index];
-        if (this.numberSelected === 2 && !priorElt.selected) {
-            priorElt.selected = false;
-        } else if (this.numberSelected === 2 && priorElt.selected) {
-            priorElt.selected = false;
-            this.numberSelected--;
-        } else {
-            priorElt.selected = !priorElt.selected;
-            if (priorElt.selected) {
-                this.numberSelected++;
-            } else {
-                this.numberSelected--;
-            }
-        }
+    countSelected() {
+        this.numberSelected = this.priorElements.filter(h => h.selected).length;
     }
 
     openHistoryCompareModal() {
@@ -124,12 +110,19 @@ export class HistoryComponent {
     }
 
     expandList() {
+        this.priorElements.forEach((h, i) => {
+            this.priorElementsFull[i].selected = h.selected;
+        });
         this.priorElements = this.priorElementsFull;
         this.toggled = true;
     }
 
     collapseList() {
         this.priorElements = this.priorElementsFull.slice(0, 4);
+        this.priorElementsFull.slice(4).forEach(h => {
+            h.selected = false;
+        })
+        this.countSelected();
         this.toggled = false;
     }
 }

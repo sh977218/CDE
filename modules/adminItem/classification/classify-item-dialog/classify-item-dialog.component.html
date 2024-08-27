@@ -24,7 +24,7 @@
                             <button mat-icon-button disabled></button>
                         </ng-template>
                         <span [id]="getHtmlId(node)" class="me-2" data-testid="tree-node-text">{{node.name}}</span>
-                        <button mat-raised-button color="primary" (click)="classifyItemByTree(node)">
+                        <button class="button" (click)="classifyItemByTree(node)">
                             Classify
                         </button>
                     </mat-tree-node>

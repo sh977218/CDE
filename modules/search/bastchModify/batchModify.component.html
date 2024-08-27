@@ -1,0 +1,66 @@
+<div *ngIf="!isReview" style="margin: 16px">
+    <h1>Batch Modify</h1>
+    <div style="margin: 8px; font-size: larger; font-weight: bold">
+        Selected: {{data.selectedCount + ' ' + (data.module === 'cde' ? 'Data Elements' : 'Forms')}}
+    </div>
+    <div style="margin: 8px">
+        <span class="sectionTitle">Registration Status:</span>
+        {{ data.searchSettings.regStatuses.length === 0 ? 'Search has no registration status selected' : '' }}
+        {{ data.searchSettings.regStatuses.length === 1 ? data.searchSettings.regStatuses[0] : '' }}
+        {{ data.searchSettings.regStatuses.length > 1 ? 'Search has too many registration statuses selected' : '' }}
+        <ng-container *ngIf="data.searchSettings.regStatuses.length === 1">
+            <button *ngIf="!editRegStatus; else changeRegistrationStatus" class="button" (click)="changeRegStatus()">Change</button>
+        </ng-container>
+        <ng-template #changeRegistrationStatus>
+            <label style="margin-left: 8px">
+                To:
+                <select [(ngModel)]="editRegStatus.to" placeholder="Select...">
+                    <option *ngFor="let regStatus of regStatusTo" [value]="regStatus">{{regStatus}}</option>
+                </select>
+            </label>
+        </ng-template>
+    </div>
+    <div style="margin: 8px">
+        <span class="sectionTitle">Administrative Status:</span>
+        {{ data.searchSettings.adminStatuses.length === 0 ? 'Search has no administrative status selected' : '' }}
+        {{ data.searchSettings.adminStatuses.length === 1 ? data.searchSettings.adminStatuses[0] : '' }}
+        {{ data.searchSettings.adminStatuses.length > 1 ? 'Search has too many administrative statuses selected' : '' }}
+        <ng-container *ngIf="data.searchSettings.adminStatuses.length === 1">
+            <button *ngIf="!editAdminStatus; else changeAdministrativeStatus" class="button" (click)="changeAdminStatus()">Change</button>
+        </ng-container>
+        <ng-template #changeAdministrativeStatus>
+            <label style="margin-left: 8px">
+                To:
+                <select [(ngModel)]="editAdminStatus.to" placeholder="Select...">
+                    <option *ngFor="let adminStatus of adminStatusTo" [value]="adminStatus">{{adminStatus}}</option>
+                </select>
+            </label>
+        </ng-template>
+    </div>
+    <button *ngIf="editRegStatus?.to || editAdminStatus?.to"
+            class="button success" style="float: right; margin-bottom: 16px" (click)="review()">Modify All</button>
+</div>
+<div *ngIf="isReview" style="margin: 16px">
+    <h1>Batch Modify</h1>
+    <div style="margin: 8px; font-size: larger; font-weight: bold">
+        Selected: {{data.selectedCount + ' ' + (data.module === 'cde' ? 'Data Elements' : 'Forms')}}
+    </div>
+    <div *ngIf="editRegStatus?.from && editRegStatus.to" style="margin: 8px">
+        <span class="sectionTitle">Registration Status:</span>
+        <span style="margin-right: 8px">From: {{editRegStatus.from}}</span>
+        <span style="margin-right: 8px">To: {{editRegStatus.to}}</span>
+    </div>
+    <div *ngIf="editAdminStatus?.from && editAdminStatus.to" style="margin: 8px">
+        <span class="sectionTitle">Administrative Status:</span>
+        <span style="margin-right: 8px">From: {{editAdminStatus.from}}</span>
+        <span style="margin-right: 8px">To: {{editAdminStatus.to}}</span>
+    </div>
+    <div style="margin: 8px; margin-top: 16px">
+        <button *ngIf="!isProcessing" class="button secondary" (click)="isReview = false">Cancel</button>
+        <button *ngIf="!isProcessing; else loading" class="button success" (click)="process()">Submit</button>
+    </div>
+</div>
+
+<ng-template #loading>
+    <mat-icon class="spin" style="vertical-align: text-bottom">autorenew</mat-icon>
+</ng-template>

@@ -29,3 +29,22 @@ export function deepCopyElt(elt: Elt): Elt {
 export function filterClassificationPerUser(elt: Elt, userOrgs: string[]) {
     elt.classification = elt.classification.filter(c => userOrgs.indexOf(c.stewardOrg.name) !== -1);
 }
+
+export function incrementVersion(elt: Elt, tieBreaker?: string) {
+    const version = elt.version;
+    if (!version) {
+        elt.version = '1';
+        return;
+    }
+    const asNumber = parseInt(version, 10);
+    if (asNumber + '' === version) {
+        elt.version = asNumber + 1 + '';
+        return;
+    }
+    // TODO: letter increment
+    if (tieBreaker) {
+        elt.version = version + tieBreaker;
+        return;
+    }
+    elt.version = version + '.1';
+}

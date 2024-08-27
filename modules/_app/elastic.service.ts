@@ -46,6 +46,7 @@ export class ElasticService implements OnDestroy {
             page: queryParams.page,
             includeAggregations: true,
             meshTree: queryParams.meshTree,
+            selectedAdminStatuses: queryParams.adminStatuses || [],
             selectedStatuses: queryParams.regStatuses || [],
             selectedDatatypes: queryParams.datatypes || [],
             selectedCopyrightStatus: queryParams.copyrightStatus || [],

@@ -1,5 +1,6 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { RegistrationStatusType } from '../../model/type';
+import { AdministrativeStatus, CurationStatus } from 'shared/models.model';
+import { id } from '../../../e2e-playwright/pages/util';
 
 export class SearchPagePo {
     protected page: Page;
@@ -17,11 +18,15 @@ export class SearchPagePo {
     }
 
     searchResultNumber() {
-        return this.page.locator(`[id="searchResultNum"]`);
+        return id(this.page, 'searchResultNum');
     }
 
     organizationTitleLink() {
         return this.page.getByTestId(`browse-org`);
+    }
+
+    classificationChild(name: string) {
+        return id(this.page, `classif-${name}`);
     }
 
     classificationFilterText() {
@@ -44,10 +49,14 @@ export class SearchPagePo {
         return this.page.locator(`[data-testid="active-filter-registration-status"]`);
     }
 
+    administrativeStatus(status: AdministrativeStatus) {
+        return id(this.page, `adminstatus-${status}`);
+    }
+
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {
-                has: this.page.locator(`text=${organization}`),
+                hasText: organization,
             })
             .click();
         await this.page.waitForSelector(`text=${organization}`);
@@ -64,7 +73,7 @@ export class SearchPagePo {
             });
         return classificationNumber
             ? classificationLocator.locator('[data-testid="classification-text"]', {
-                  has: this.page.locator(`text="${'' + classificationNumber}"`),
+                  hasText: '' + classificationNumber,
               })
             : classificationLocator;
     }
@@ -73,35 +82,35 @@ export class SearchPagePo {
         return this.page
             .getByTestId(`classification-${alt ? 'alt-' : ''}filter-selected`)
             .locator('[data-testid="classification-text"]', {
-                has: this.page.locator(`text="${classificationText}"`),
+                hasText: classificationText,
             });
     }
 
     altClassificationFilterModeToggle(): Locator {
-        return this.page.locator(`[id="altClassificationFilterModeToggle"]`);
+        return id(this.page, 'altClassificationFilterModeToggle');
     }
 
     copyrightStatusFilter(status: string): Locator {
         return this.page
             .locator(`[data-testid='copyright-status-filter']`, {
-                has: this.page.locator(`text=${status}`),
+                hasText: status,
             })
             .locator('input');
     }
 
-    registrationStatusFilter(status: RegistrationStatusType) {
+    registrationStatusFilter(status: CurationStatus) {
         return this.page.locator(`[data-testid='registration-status-filter']`, {
-            has: this.page.locator(`text=${status}`),
+            hasText: status,
         });
     }
 
-    registrationStatusFilterInput(status: RegistrationStatusType): Locator {
+    registrationStatusFilterInput(status: CurationStatus): Locator {
         return this.registrationStatusFilter(status).locator('input');
     }
 
     dataTypeFilter(datatype: string): Locator {
         return this.page.locator(`[data-testid='datatype-filter']`, {
-            has: this.page.locator(`text=${datatype}`),
+            hasText: datatype,
         });
     }
 
@@ -126,15 +135,15 @@ export class SearchPagePo {
     }
 
     goToElt(index: number): Locator {
-        return this.page.locator(`[id="linkToElt_${index}"]`);
+        return id(this.page, `linkToElt_${index}`);
     }
 
     pinElement(index: number): Locator {
-        return this.page.locator(`[id="pinToBoard_${index}"]`);
+        return id(this.page, `pinToBoard_${index}`);
     }
 
     pinAll(): Locator {
-        return this.page.locator(`[id="pinAll"]`);
+        return id(this.page, 'pinAll');
     }
 
     pinBoardModal(): Locator {

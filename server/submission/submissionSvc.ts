@@ -790,6 +790,7 @@ function findDuplicatedCdeInEsUsingPlainSearch(withError: WithError, cde: Partia
             excludeOrgs: [],
             meshTree: '',
             resultPerPage: 20,
+            selectedAdminStatuses: [],
             selectedDatatypes: [],
             selectedCopyrightStatus: [],
             selectedStatuses: [],

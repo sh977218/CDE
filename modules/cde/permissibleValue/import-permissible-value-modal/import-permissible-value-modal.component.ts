@@ -10,6 +10,7 @@ import { CdeSearchComponent } from 'cde/search/cdeSearch.component';
 })
 export class ImportPermissibleValueModalComponent {
     searchSettings: SearchSettings = {
+        adminStatuses: [],
         classification: [],
         classificationAlt: [],
         datatypes: ['Value List'],

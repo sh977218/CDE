@@ -177,6 +177,20 @@
                     </div>
                     <div class="flex-break"></div>
                 </ng-container>
+                <ng-container *ngIf="hasSelectedAdminStatuses()">
+                    <div *ngFor="let s of searchSettings.adminStatuses" class="activeFilterClause">
+                        <span class="status_crumb pill" role="button" tabindex="0"
+                              data-testid="active-filter-administrative-status"
+                              aria-label="Remove this administrative statuses filter"
+                              matTooltip="Remove this administrative statuses filter"
+                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              (click)="clearSelectedAdminStatus(s)">
+                            <span class="text">{{ s }}</span>
+                            <span class="close">X</span>
+                        </span>
+                    </div>
+                    <div class="flex-break"></div>
+                </ng-container>
                 <ng-container *ngIf="module === 'cde' && hasSelectedDatatypes()">
                     <div *ngFor="let d of searchSettings.datatypes" class="activeFilterClause">
                         <span class="datatype_crumb pill" role="button" tabindex="0"
@@ -213,6 +227,96 @@
                     <img src="/assets/img/endorsedRibbonIcon.png" alt="Endorsed Ribbon"
                          style="height: 19px; vertical-align: text-top">
                 </label>
+            </div>
+        </div>
+        <!-- COPYRIGHT STATUS AGGREGATION -->
+        <div *ngIf="aggregations.copyrightStatus?.copyrightStatus?.buckets" #copyrightStatusSection class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="copyrightStatusSection.classList.toggle('collapsed')">
+                Copyright Status
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let t of aggregations.copyrightStatus.copyrightStatus.buckets">
+                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
+                           data-testid="copyright-status-filter"
+                           [matTooltip]="getCopyrightStatusHelp(t.key)"
+                           [attr.aria-label]="getCopyrightStatusHelp(t.key)"
+                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
+                        <input type="checkbox" id="copyright-status-{{t.key}}" class="checkbox treeItemText"
+                               [ngModel]="searchSettings.copyrightStatus && searchSettings.copyrightStatus.indexOf(t.key) > -1"
+                               (change)="addCopyrightStatusFilter(t.key)"/>
+                        {{ t.key }} ({{ t.doc_count }})
+                    </label>
+                </ng-container>
+            </div>
+        </div>
+        <!-- REGISTRATION STATUS AGGREGATION -->
+        <div *ngIf="aggregations.statuses.statuses.buckets" #regStatusSection class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="regStatusSection.classList.toggle('collapsed')">
+                Registration Status
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
+                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
+                           data-testid="registration-status-filter"
+                           [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
+                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
+                        <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
+                               [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
+                               (change)="addStatusFilter(t.key)"/>
+                        {{ t.key }} ({{ t.doc_count }})
+                    </label>
+                </ng-container>
+            </div>
+        </div>
+        <!--ADMINISTRATIVE STATUS AGGREGATION-->
+        <div *ngIf="aggregations.adminStatuses?.adminStatuses.buckets && isOrgAuth()" #adminStatusSection class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="adminStatusSection.classList.toggle('collapsed')">
+                Administrative Status
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let t of aggregations.adminStatuses.adminStatuses.buckets">
+                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
+                           [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
+                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
+                        <input type="checkbox" id="adminstatus-{{t.key}}" class="checkbox treeItemText"
+                               [ngModel]="searchSettings.adminStatuses && searchSettings.adminStatuses.indexOf(t.key) > -1"
+                               (change)="addAdminStatusFilter(t.key)"/>
+                        {{ t.key }} ({{ t.doc_count }})
+                    </label>
+                </ng-container>
+            </div>
+        </div>
+        <!--DATA TYPE AGGREGATION-->
+        <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" #datatypeSection
+             id="datatypeListHolder" class="searchFilterCollapse">
+            <div class="searchFilterCollapseHeading" (click)="datatypeSection.classList.toggle('collapsed')">
+                Data Types
+                <span style="display: inline-block; width: 19px">
+                    <span class="keyboard-arrow down"></span>
+                    <span class="keyboard-arrow up"></span>
+                </span>
+            </div>
+            <div class="searchFilterCollapseContent">
+                <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
+                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover" data-testid="datatype-filter">
+                        <input type="checkbox" id="datatype-{{t.key}}" class="checkbox treeItemText"
+                               [ngModel]="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1"
+                               (change)="addDatatypeFilter(t.key)"/>
+                        {{ t.key }} ({{ t.doc_count }})
+                    </label>
+                </ng-container>
             </div>
         </div>
         <!-- CLASSIFICATION AGGREGATIONS -->
@@ -340,78 +444,6 @@
                 </div>
             </div>
         </div>
-        <!-- COPYRIGHT STATUS AGGREGATION -->
-        <div *ngIf="aggregations.copyrightStatus?.copyrightStatus?.buckets" #copyrightStatusSection
-
-             id="copyrightStatusListHolder" class="searchFilterCollapse">
-            <div class="searchFilterCollapseHeading" (click)="copyrightStatusSection.classList.toggle('collapsed')">
-                Copyright Status
-                <span style="display: inline-block; width: 19px">
-                    <span class="keyboard-arrow down"></span>
-                    <span class="keyboard-arrow up"></span>
-                </span>
-            </div>
-            <div class="searchFilterCollapseContent">
-                <ng-container *ngFor="let t of aggregations.copyrightStatus.copyrightStatus.buckets">
-                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
-                           data-testid="copyright-status-filter"
-                           [matTooltip]="getCopyrightStatusHelp(t.key)"
-                           [attr.aria-label]="getCopyrightStatusHelp(t.key)"
-                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
-                        <input type="checkbox" id="copyright-status-{{t.key}}" class="checkbox treeItemText"
-                               [ngModel]="searchSettings.copyrightStatus && searchSettings.copyrightStatus.indexOf(t.key) > -1"
-                               (change)="addCopyrightStatusFilter(t.key)"/>
-                        {{ t.key }} ({{ t.doc_count }})
-                    </label>
-                </ng-container>
-            </div>
-        </div>
-        <!-- REGISTRATION STATUS AGGREGATION -->
-        <div *ngIf="aggregations.statuses.statuses.buckets" #regStatusSection
-
-             id="registrationStatusListHolder" class="searchFilterCollapse">
-            <div class="searchFilterCollapseHeading" (click)="regStatusSection.classList.toggle('collapsed')">
-                Registration Status
-                <span style="display: inline-block; width: 19px">
-                    <span class="keyboard-arrow down"></span>
-                    <span class="keyboard-arrow up"></span>
-                </span>
-            </div>
-            <div class="searchFilterCollapseContent">
-                <ng-container *ngFor="let t of aggregations.statuses.statuses.buckets">
-                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover"
-                           data-testid="registration-status-filter"
-                           [matTooltip]="getRegStatusHelp(t.key)" [attr.aria-label]="getRegStatusHelp(t.key)"
-                           matTooltipClass="cdeTooltip" [matTooltipPosition]="isSearchDesktop ? 'right' : 'above'">
-                        <input type="checkbox" id="regstatus-{{t.key}}" class="checkbox treeItemText"
-                               [ngModel]="searchSettings.regStatuses && searchSettings.regStatuses.indexOf(t.key) > -1"
-                               (change)="addStatusFilter(t.key)"/>
-                        {{ t.key }} ({{ t.doc_count }})
-                    </label>
-                </ng-container>
-            </div>
-        </div>
-        <!--DATA TYPE AGGREGATION-->
-        <div *ngIf="module === 'cde' && aggregations.datatype.datatype.buckets.length" #datatypeSection
-              id="datatypeListHolder" class="searchFilterCollapse">
-            <div class="searchFilterCollapseHeading" (click)="datatypeSection.classList.toggle('collapsed')">
-                Data Types
-                <span style="display: inline-block; width: 19px">
-                    <span class="keyboard-arrow down"></span>
-                    <span class="keyboard-arrow up"></span>
-                </span>
-            </div>
-            <div class="searchFilterCollapseContent">
-                <ng-container *ngFor="let t of aggregations.datatype.datatype.buckets">
-                    <label *ngIf="t.doc_count > 0" class="treeItem input-hover" data-testid="datatype-filter">
-                        <input type="checkbox" id="datatype-{{t.key}}" class="checkbox treeItemText"
-                               [ngModel]="searchSettings.datatypes && searchSettings.datatypes.indexOf(t.key) > -1"
-                               (change)="addDatatypeFilter(t.key)"/>
-                        {{ t.key }} ({{ t.doc_count }})
-                    </label>
-                </ng-container>
-            </div>
-        </div>
     </div>
     <!-- CONTENT -->
     <div class="content searchResultsView">
@@ -448,13 +480,14 @@
                                     <mat-icon svgIcon="thumb_tack"></mat-icon>
                                     Pin All
                                 </button>
-                                <button id="export" class="button light" style="margin-right: 0"
+                                <button id="export" class="button light"
                                         [matMenuTriggerFor]="exportMenu">
                                     <mat-icon>play_for_work</mat-icon>
                                     Export All
                                     <mat-icon>arrow_drop_down</mat-icon>
                                 </button>
                             </ng-container>
+                            <button *ngIf="isOrgAuth()" class="button light" (click)="openBatchModify()">Modify All</button>
                         </ng-container>
                     </div>
                 </div>

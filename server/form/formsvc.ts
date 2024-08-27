@@ -11,18 +11,23 @@ import {
     CdeFormDraft
 } from 'server/form/mongo-form';
 import { splitError, handleError, handleNotFound, respondError } from 'server/errorHandler';
+import { elasticsearchForm } from 'server/form/elastic';
 import { getFormNih } from 'server/form/nihForm';
 import { getFormOdm } from 'server/form/odmForm';
+import { consoleLog } from 'server/log/dbLogger';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';
 import { addFormToViewHistory, sortArrayByArray } from 'server/system/mongo-data';
+import { BatchModifyRequest } from 'shared/boundaryInterfaces/API/deAndForm';
 import { FormBundleRequestHandler } from 'shared/boundaryInterfaces/API/form';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
+import { incrementVersion } from 'shared/elt/elt';
 import { addFormIds, iterateFe, trimWholeForm } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
 import { formToQuestionnaire } from 'shared/mapping/fhir/to/toQuestionnaire';
 import { CbError1, User } from 'shared/models.model';
+import { searchSettingsElasticToQueryString } from 'shared/search/search.model';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 import { promisify } from 'util';
 
@@ -101,6 +106,56 @@ function wipeRenderDisallowed(form: CdeForm, user: User) {
     if (form && form.noRenderAllowed && !canEditCuratedItem(user, form)) {
         form.formElements = [];
     }
+}
+
+export function batchModify(req: Request, res: Response): Promise<Response> {
+    const body = req.body as BatchModifyRequest;
+    return new Promise<Response>(resolve => {
+        elasticsearchForm(req.user, body.searchSettings, (err, result) => {
+            if (err || !result) {
+                return resolve(res.status(400).send('invalid query'));
+            }
+            if (result.forms.length !== body.count) {
+                return resolve(res.status(400).send('search count does not match'));
+            }
+            const editRegStatus = body.editRegStatus?.from && !!body.editRegStatus.to ? body.editRegStatus : null;
+            const editAdminStatus = body.editAdminStatus?.from && !!body.editAdminStatus.to ? body.editAdminStatus : null;
+            consoleLog(`Running Batch Modify from search "/form/search?${searchSettingsElasticToQueryString(body.searchSettings)}"`
+                + (editRegStatus ? ` (Modify registration status from ${editRegStatus.from} to ${editRegStatus.to})` : '')
+                + (editAdminStatus ? ` (Modify administrative status from ${editAdminStatus.from} to ${editAdminStatus.to})` : '')
+                + ` on ${body.count} forms.`, 'info');
+            const notModified: string[] = [];
+            // TODO: existing drafts?? reject?
+            return Promise.all(result.forms.map(form =>
+                dbPlugins.form.byTinyId(form.tinyId).then(dbForm => {
+                    if (!dbForm) {
+                        return;
+                    }
+                    let modified = false;
+                    if (editRegStatus) {
+                        if (editRegStatus.from === dbForm.registrationState.registrationStatus) {
+                            dbForm.registrationState.registrationStatus = editRegStatus.to;
+                            modified = true;
+                        }
+                    }
+                    if (editAdminStatus) {
+                        if (editAdminStatus.from === dbForm.registrationState.administrativeStatus) {
+                            dbForm.registrationState.administrativeStatus = editAdminStatus.to;
+                            modified = true;
+                        }
+                    }
+                    if (modified) {
+                        dbForm.changeNote = 'Batch update from search';
+                        incrementVersion(dbForm, '.sb');
+                        return update(dbForm, req.user);
+                    } else {
+                        notModified.push(dbForm.tinyId);
+                    }
+                })
+            ))
+                .then(() => resolve(res.send(notModified)));
+        });
+    });
 }
 
 export const bundleCreate: FormBundleRequestHandler = (req, res) => {

@@ -371,7 +371,6 @@
               <div>
                 <button class="button small light" (click)="view(s)">View</button>
                 <button class="button small light" routerLink="/collection/edit" [queryParams]="{_id: s._id}">Edit</button>
-                <button class="button small">Change Status</button>
                 <span class="fake-link" role="link" tabindex="0" (click)="openAttachment(s.attachmentWorkbook.fileId)">
                   <i>Download Submission</i>
                   <mat-icon style="margin-left: 3px">download</mat-icon>

@@ -20,13 +20,13 @@
 
         <div *ngIf="descriptorID">
             {{descriptorID}} -- {{descriptorName}}
-            <button *ngIf="descriptorName.length > 0" mat-raised-button id="addMeshDescButton"
-                    type="submit" [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
+            <button *ngIf="descriptorName.length > 0" id="addMeshDescButton" type="submit" class="button"
+                    [disabled]="mapping.meshDescriptors.indexOf(descriptorID) > -1">Add
             </button>
         </div>
 
     </div>
     <div mat-dialog-actions>
-        <button mat-raised-button [mat-dialog-close] id="cancelMapClassificationMeshBtn">Close</button>
+        <button class="button" [mat-dialog-close] id="cancelMapClassificationMeshBtn">Close</button>
     </div>
 </form>

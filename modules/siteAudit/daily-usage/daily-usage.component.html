@@ -1,6 +1,6 @@
 <div class="p-5">
     <form (ngSubmit)="generateReport()">
-        <button mat-raised-button type="submit" color="primary">Generate</button>
+        <button type="submit" class="button">Generate</button>
         <mat-form-field class="example-form-field">
             <mat-label>Days</mat-label>
             <input matInput type="number" [formControl]="numberOfDays">
@@ -39,7 +39,7 @@
                     <th mat-header-cell *matHeaderCellDef> Known Usernames</th>
                     <td mat-cell *matCellDef="let row">
                         {{ row.usernames?.join(', ') }}
-                        <button *ngIf="!row.usernames" mat-raised-button color="primary" (click)="lookupUsername(row)">
+                        <button *ngIf="!row.usernames" class="button" (click)="lookupUsername(row)">
                             Reveal
                         </button>
                     </td>

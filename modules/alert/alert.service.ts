@@ -18,18 +18,20 @@ export class Alert {
     }
 }
 
+type AlertTypes = 'success' | 'danger' | 'error' | 'fail' | 'info' | 'warning' | '';
+
 @Injectable({ providedIn: 'root' })
 export class AlertService {
     alertTime = 90000;
 
     constructor(private snackBar: MatSnackBar, private userService: UserService) {}
 
-    addAlert(type: string, message: string) {
+    addAlert(type: AlertTypes, message: string) {
         const config = { duration: type === 'danger' ? 0 : this.alertTime };
         this.snackBar.open(message, 'Dismiss', config);
     }
 
-    addAlertFromComponent<T>(type: string, component: ComponentType<T>, data: any) {
+    addAlertFromComponent<T>(type: AlertTypes, component: ComponentType<T>, data: any) {
         const config = { duration: type === 'danger' ? 0 : this.alertTime };
         this.snackBar.openFromComponent(component, {
             ...config,

@@ -8,6 +8,7 @@ import { myOrgs } from 'server/orgManagement/orgSvc';
 import {
     getAllowedStatuses,
     hideRetired,
+    termAdminStatus,
     termCopyrightStatus,
     termDatatype,
     termRegStatus,
@@ -295,7 +296,9 @@ function generateAggregation(
     user: User | undefined,
     settings: SearchSettingsElastic
 ): Record<string, AggregationsAggregationContainer> {
+    // the 4 multiselect aggregations: registrationStatus, administrativeStatus, datatype(CDE), copyright(Form)
     const selectedStatuses = settings.selectedStatuses.map(termRegStatus);
+    const selectedAdminStatuses = settings.selectedAdminStatuses.map(termAdminStatus);
     const selectedDatatypes = settings.selectedDatatypes.map(termDatatype);
     const selectedCopyrightStatus = settings.selectedCopyrightStatus.map(termCopyrightStatus);
 
@@ -306,11 +309,13 @@ function generateAggregation(
     const meshTreeFilters: QueryDslQueryContainer[] = [];
     const orgFilters: QueryDslQueryContainer[] = [];
     const statusFilters: QueryDslQueryContainer[] = [];
+    const adminStatusFilters: QueryDslQueryContainer[] = [];
     const twoLevelMeshFilters: QueryDslQueryContainer[] = [];
 
     if (selectedStatuses.length) {
         // does not include statuses agg
         const statusTerms = esqBoolShould(selectedStatuses);
+        adminStatusFilters.push(statusTerms);
         datatypeFilters.push(statusTerms);
         copyrightFilters.push(statusTerms);
         orgFilters.push(statusTerms);
@@ -319,10 +324,23 @@ function generateAggregation(
         flatClassificationFilters.push(statusTerms);
         flatClassificationAltFilters.push(statusTerms);
     }
+    if (selectedAdminStatuses.length) {
+        // does not include admin statuses org
+        const adminStatusTerms = esqBoolShould(selectedAdminStatuses);
+        statusFilters.push(adminStatusTerms);
+        datatypeFilters.push(adminStatusTerms);
+        copyrightFilters.push(adminStatusTerms);
+        orgFilters.push(adminStatusTerms);
+        meshTreeFilters.push(adminStatusTerms);
+        twoLevelMeshFilters.push(adminStatusTerms);
+        flatClassificationFilters.push(adminStatusTerms);
+        flatClassificationAltFilters.push(adminStatusTerms);
+    }
     if (selectedDatatypes.length) {
         // does not include datatype agg
         const datatypeTerms = esqBoolShould(selectedDatatypes);
         statusFilters.push(datatypeTerms);
+        adminStatusFilters.push(datatypeTerms);
         copyrightFilters.push(datatypeTerms);
         orgFilters.push(datatypeTerms);
         meshTreeFilters.push(datatypeTerms);
@@ -333,6 +351,7 @@ function generateAggregation(
         // does not include copyrightStatus agg
         const copyrightStatusTerms = esqBoolShould(selectedCopyrightStatus);
         statusFilters.push(copyrightStatusTerms);
+        adminStatusFilters.push(copyrightStatusTerms);
         datatypeFilters.push(copyrightStatusTerms);
         orgFilters.push(copyrightStatusTerms);
         meshTreeFilters.push(copyrightStatusTerms);
@@ -348,6 +367,7 @@ function generateAggregation(
             order: { _key: 'desc' },
         }),
         statuses: esqAggregate('statuses', statusFilters, { field: 'registrationState.registrationStatus' }),
+        adminStatuses: esqAggregate('adminStatuses', adminStatusFilters, { field : 'registrationState.administrativeStatus' }),
         meshTrees: esqAggregate('meshTrees', meshTreeFilters, {
             include: settings.meshTree?.length ? escapeRegExp(settings.meshTree) + ';[^;]+' : '[^;]+',
             field: 'flatMeshTrees',
@@ -383,14 +403,20 @@ function generateAggregation(
     return aggregation;
 }
 
+// need to do filter after the search because the 4 multiselect aggregations do not filter so are not a part of the query
 function generatePostFilter(user: User | undefined, settings: SearchSettingsElastic): QueryDslQueryContainer {
+    // the 4 multiselect aggregations: registrationStatus, administrativeStatus, datatype(CDE), copyright(Form)
     const filters: QueryDslQueryContainer[] = [];
     const selectedStatuses = settings.selectedStatuses.map(termRegStatus);
+    const selectedAdminStatuses = settings.selectedAdminStatuses.map(termAdminStatus);
     const selectedDatatypes = settings.selectedDatatypes.map(termDatatype);
     const selectedCopyrightStatus = settings.selectedCopyrightStatus.map(termCopyrightStatus);
 
     if (selectedStatuses.length) {
         filters.push(esqBoolShould(selectedStatuses));
+    }
+    if (selectedAdminStatuses.length) {
+        filters.push(esqBoolShould(selectedAdminStatuses));
     }
     if (selectedDatatypes.length) {
         filters.push(esqBoolShould(selectedDatatypes));
