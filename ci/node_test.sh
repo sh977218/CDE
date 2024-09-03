@@ -84,6 +84,7 @@ echo "+========Run Playwright test...========="
 #export PATH=/usr/nlm/apps/node/current/bin:$PATH
 echo "Install playwright dependencies"
 cd ..
+npx playwright install-deps
 npx playwright install
 npm run playwright
 

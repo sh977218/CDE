@@ -108,7 +108,6 @@ app.use(
                 'www.googletagmanager.com',
             ],
             connectSrc: ['*'],
-            reportUri: 'https://nlmoccs.report-uri.com/r/d/csp/reportOnly',
             workerSrc: ['*', 'blob:'],
         },
     })
