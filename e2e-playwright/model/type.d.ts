@@ -1,5 +1,3 @@
-import { PermissibleValueCodeSystem } from 'shared/models.model';
-
 export type ACCOUNT_KEYS =
     | 'nlm'
     | 'userExistingInUtsButNotCDE'
@@ -25,7 +23,8 @@ export type ACCOUNT_KEYS =
     | 'unpinUser'
     | 'viewingHistoryUser'
     | 'boardExportUser'
-    | 'formLinkedFormsUser';
+    | 'formLinkedFormsUser'
+    | 'testuser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
 export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';
@@ -153,4 +152,15 @@ export type PermissibleValue = {
     conceptSource?: string;
     valueMeaningCode?: string;
     codeSystemName?: string;
+};
+
+export type Organization = {
+    orgName: string;
+    orgLongName?: string;
+    orgMailAddress?: string;
+    orgEmailAddress?: string;
+    orgPhoneNumber?: string;
+    orgUri?: string;
+    orgWorkingGroup?: string;
+    orgExtraInfo?: string;
 };

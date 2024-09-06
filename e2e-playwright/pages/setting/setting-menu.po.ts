@@ -58,4 +58,8 @@ export class SettingMenuPo {
     serverStatusMenu() {
         return this.page.getByTestId(`server-status`);
     }
+
+    siteAdminMenu() {
+        return this.page.getByTestId('site-admins');
+    }
 }

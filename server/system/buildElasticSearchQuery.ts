@@ -1,7 +1,8 @@
 import {
-    AggregationsAggregationContainer, QueryDslOperator,
+    AggregationsAggregationContainer,
+    QueryDslOperator,
     QueryDslQueryContainer,
-    SearchHighlight
+    SearchHighlight,
 } from '@elastic/elasticsearch/api/types';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import {
@@ -14,11 +15,12 @@ import {
 } from 'server/system/elastic';
 import {
     ElasticSearchRequestBody,
-    esqAggregate, esqBool,
+    esqAggregate,
+    esqBool,
     esqBoolFilter,
     esqBoolMust,
     esqBoolShould,
-    esqTerm
+    esqTerm,
 } from 'shared/elastic';
 import { CurationStatus, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
@@ -37,23 +39,39 @@ function escapeRegExp(str: string) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('<', '');
 }
 
-export function buildElasticSearchQueryCde(user: User | undefined, settings: SearchSettingsElastic): ElasticSearchRequestBody {
+export function buildElasticSearchQueryCde(
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): ElasticSearchRequestBody {
     return buildElasticSearchQuery('cde', user, settings);
 }
 
-export function buildElasticSearchQueryForm(user: User | undefined, settings: SearchSettingsElastic): ElasticSearchRequestBody {
+export function buildElasticSearchQueryForm(
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): ElasticSearchRequestBody {
     return buildElasticSearchQuery('form', user, settings);
 }
 
-export function buildElasticSearchQueryBoard(user: User | undefined, settings: SearchSettingsElastic): ElasticSearchRequestBody {
+export function buildElasticSearchQueryBoard(
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): ElasticSearchRequestBody {
     return buildElasticSearchQuery('board', user, settings);
 }
 
-export function buildElasticSearchQueryOrg(user: User | undefined, settings: SearchSettingsElastic): ElasticSearchRequestBody {
+export function buildElasticSearchQueryOrg(
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): ElasticSearchRequestBody {
     return buildElasticSearchQuery('org', user, settings);
 }
 
-function buildElasticSearchQuery(module: string, user: User | undefined, settings: SearchSettingsElastic): ElasticSearchRequestBody {
+function buildElasticSearchQuery(
+    module: string,
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): ElasticSearchRequestBody {
     if (!Array.isArray(settings.excludeOrgs)) {
         settings.excludeOrgs = [];
     }
@@ -100,16 +118,16 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic):
             function_score: {
                 query: hasSearchTerm
                     ? {
-                        query_string: {
-                            analyze_wildcard: true,
-                            default_operator: 'AND' as QueryDslOperator,
-                            query: settings.searchTerm || '',
-                        },
-                    }
+                          query_string: {
+                              analyze_wildcard: true,
+                              default_operator: 'AND' as QueryDslOperator,
+                              query: settings.searchTerm || '',
+                          },
+                      }
                     : undefined,
                 functions: [
                     {
-                        script_score: {script}
+                        script_score: { script },
                     },
                 ],
             },
@@ -130,7 +148,7 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic):
                 },
                 functions: [
                     {
-                        script_score: {script},
+                        script_score: { script },
                     },
                 ],
             },
@@ -152,7 +170,7 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic):
                     },
                     functions: [
                         {
-                            script_score: { script }
+                            script_score: { script },
                         },
                     ],
                 },
@@ -165,7 +183,7 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic):
             dis_max: {
                 queries: boolMust0DismaxQueries,
             },
-        }
+        },
     ];
     const boolMustNot: QueryDslQueryContainer[] = [];
     const filterOR: QueryDslQueryContainer[] = getAllowedStatuses(user, settings).map(termRegStatus);
@@ -177,10 +195,12 @@ function generateQuery(user: User | undefined, settings: SearchSettingsElastic):
     // if I'm one or more organizations' orgAdmin, orgEditor or orgCurator, I'll be able to see those Orgs all status
     const organizationsUserBelongsTo = myOrgs(user);
     if (organizationsUserBelongsTo.length) {
-        filterOR.push(esqBoolMust([
-            esqBoolShould(organizationsUserBelongsTo.map(termStewardOrg)),
-            esqBoolShould((['Incomplete', 'Candidate'] as CurationStatus[]).map(termRegStatus)),
-        ]));
+        filterOR.push(
+            esqBoolMust([
+                esqBoolShould(organizationsUserBelongsTo.map(termStewardOrg)),
+                esqBoolShould((['Incomplete', 'Candidate'] as CurationStatus[]).map(termRegStatus)),
+            ])
+        );
     }
 
     if (settings.nihEndorsed) {
@@ -270,7 +290,11 @@ function generateSort(settings: SearchSettingsElastic) {
     return sort;
 }
 
-function generateAggregation(module: string, user: User | undefined, settings: SearchSettingsElastic): Record<string, AggregationsAggregationContainer> {
+function generateAggregation(
+    module: string,
+    user: User | undefined,
+    settings: SearchSettingsElastic
+): Record<string, AggregationsAggregationContainer> {
     const selectedStatuses = settings.selectedStatuses.map(termRegStatus);
     const selectedDatatypes = settings.selectedDatatypes.map(termDatatype);
     const selectedCopyrightStatus = settings.selectedCopyrightStatus.map(termCopyrightStatus);
@@ -284,7 +308,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
     const statusFilters: QueryDslQueryContainer[] = [];
     const twoLevelMeshFilters: QueryDslQueryContainer[] = [];
 
-    if (selectedStatuses.length) { // does not include statuses agg
+    if (selectedStatuses.length) {
+        // does not include statuses agg
         const statusTerms = esqBoolShould(selectedStatuses);
         datatypeFilters.push(statusTerms);
         copyrightFilters.push(statusTerms);
@@ -294,7 +319,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         flatClassificationFilters.push(statusTerms);
         flatClassificationAltFilters.push(statusTerms);
     }
-    if (selectedDatatypes.length) { // does not include datatype agg
+    if (selectedDatatypes.length) {
+        // does not include datatype agg
         const datatypeTerms = esqBoolShould(selectedDatatypes);
         statusFilters.push(datatypeTerms);
         copyrightFilters.push(datatypeTerms);
@@ -303,7 +329,8 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         flatClassificationFilters.push(datatypeTerms);
         flatClassificationAltFilters.push(datatypeTerms);
     }
-    if (module === 'form' && selectedCopyrightStatus.length) { // does not include copyrightStatus agg
+    if (module === 'form' && selectedCopyrightStatus.length) {
+        // does not include copyrightStatus agg
         const copyrightStatusTerms = esqBoolShould(selectedCopyrightStatus);
         statusFilters.push(copyrightStatusTerms);
         datatypeFilters.push(copyrightStatusTerms);
@@ -318,7 +345,7 @@ function generateAggregation(module: string, user: User | undefined, settings: S
         orgs: esqAggregate('orgs', orgFilters, {
             field: 'classification.stewardOrg.name',
             size: 500,
-            order: { _key: 'desc' }
+            order: { _key: 'desc' },
         }),
         statuses: esqAggregate('statuses', statusFilters, { field: 'registrationState.registrationStatus' }),
         meshTrees: esqAggregate('meshTrees', meshTreeFilters, {

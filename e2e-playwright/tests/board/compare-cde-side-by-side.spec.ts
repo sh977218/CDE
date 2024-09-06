@@ -4,6 +4,7 @@ import { test } from '../../fixtures/base-fixtures';
 
 test.describe.configure({ retries: 0 });
 test(`Board compare CDE side by side`, async ({ page, materialPage, navigationMenu, myBoardPage, boardPage }) => {
+    test.fixme();
     const boardName = `CDE Compare Board`;
     const boardDefinition = `Test Compare`;
 

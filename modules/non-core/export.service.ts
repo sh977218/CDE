@@ -19,11 +19,7 @@ import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { ElasticSearchResponseBody, responseHitsTotal } from 'shared/elastic';
 import { CdeForm, CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
 import { Item, ItemElastic } from 'shared/item';
-import {
-    Cb1,
-    CurationStatus,
-    ModuleItem,
-} from 'shared/models.model';
+import { Cb1, CurationStatus, ModuleItem } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 import { noop } from 'shared/util';
 
@@ -115,7 +111,9 @@ export class ExportService {
                     keepScrolling = intersectOnBatch(esResp);
                     // tslint:disable-next-line:max-line-length
                     esResp = await lastValueFrom(
-                        this.http.get<ScrollResponse<CdeFormElastic>>('/server/form/scrollExport/' + (esResp as any)._scroll_id)
+                        this.http.get<ScrollResponse<CdeFormElastic>>(
+                            '/server/form/scrollExport/' + (esResp as any)._scroll_id
+                        )
                     );
                 }
             }

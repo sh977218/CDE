@@ -11,7 +11,6 @@ import { BoardModule } from 'board/board.module';
 import { CdeAccordionListComponent } from 'cde/listView/cdeAccordionList.component';
 import { CdeGeneralDetailsComponent } from 'cde/summary/cdeGeneralDetails.component';
 import { ValueDomainSummaryComponent } from 'cde/summary/valueDomainSummary.component';
-import { DiscussModule } from 'discuss/discuss.module';
 import { SearchModule } from 'search/search.module';
 import { PinToBoardModule } from 'board/pin-to-board.module';
 
@@ -29,7 +28,6 @@ import { PinToBoardModule } from 'board/pin-to-board.module';
         AdminItemModule,
         BoardModule,
         PinToBoardModule,
-        DiscussModule,
         SearchModule,
     ],
     declarations: [CdeAccordionListComponent, CdeGeneralDetailsComponent, ValueDomainSummaryComponent],

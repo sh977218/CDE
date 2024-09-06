@@ -1,8 +1,9 @@
 import { test } from '../../../fixtures/base-fixtures';
 import { expect } from '@playwright/test';
 import { Accounts } from '../../../data/user';
+import { Organization } from '../../../model/type';
 
-const newOrganization = {
+const newOrganization: Organization = {
     orgName: 'MLB ' + new Date().toISOString(),
     orgLongName: 'Medical Language Branch',
     orgMailAddress: '9000 Rockville Pike, Bethesda, Maryland 20982 USA',
@@ -24,12 +25,7 @@ test.describe(`My organization`, async () => {
         await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await settingMenu.manageOrganizationsMenu().click();
-        await manageOrganizationsPage.newOrganizationName().fill(newOrganization.orgName);
-        await manageOrganizationsPage.newOrganizationLongName().fill(newOrganization.orgLongName);
-        await manageOrganizationsPage.newOrganizationWorkingGroup().selectOption(newOrganization.orgWorkingGroup);
-        await manageOrganizationsPage.newOrganizationSubmit().click();
-        await materialPage.checkAlert('Saved');
-
+        await manageOrganizationsPage.addNewOrg(newOrganization);
         const managedOrganizationsLocator = manageOrganizationsPage.managedOrganizations(newOrganization.orgName);
 
         const organizationNameLocator = manageOrganizationsPage.organizationName(managedOrganizationsLocator);
@@ -40,12 +36,7 @@ test.describe(`My organization`, async () => {
             manageOrganizationsPage.organizationWorkingGroup(managedOrganizationsLocator);
         await expect(organizationWorkingGroupLocator).toBeVisible();
 
-        const organizationMailAddressLocator =
-            manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator);
-        await inlineEdit.editIcon(organizationMailAddressLocator).click();
-        await inlineEdit.inputField(organizationMailAddressLocator).fill(newOrganization.orgMailAddress);
-        await inlineEdit.confirmButton(organizationMailAddressLocator).click();
-        await materialPage.checkAlert('Saved');
+        await manageOrganizationsPage.editOrg(newOrganization);
         await expect(manageOrganizationsPage.organizationMailAddress(managedOrganizationsLocator)).toBeVisible();
     });
 });

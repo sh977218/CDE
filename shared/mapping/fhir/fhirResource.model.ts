@@ -247,7 +247,6 @@ export class FhirObservation extends FhirObservationComponent implements FhirEff
     basedOn?: FhirReference<any>[];
     bodySite?: FhirCodeableConcept;
     category?: FhirCodeableConcept[];
-    comment?: string;
     component?: FhirObservationComponent[];
     context?: FhirReference<FhirEncounter | any>;
     device?: FhirReference<FhirDevice | FhirDeviceMetric>;

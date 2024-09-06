@@ -18,13 +18,6 @@
     </mat-sidenav>
     <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '272px'">
         <mat-sidenav-container [hasBackdrop]="false">
-            <mat-sidenav #commentDrawer mode="side" position="start">
-                <div *ngIf="elt && userService.canSeeComment()">
-                    <cde-discuss-area *ngIf="elt" [currentTab]="currentTab" [elt]="elt"
-                                      (highlightedTabsChange)="loadHighlightedTabs($event)"
-                                      [eltName]="elt.designations[0].designation"></cde-discuss-area>
-                </div>
-            </mat-sidenav>
             <mat-sidenav-content>
                 <div *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
                     <h1 id="top-of-page" data-testid="form-view-title" style="display: inline">
@@ -209,13 +202,6 @@
                                 (click)="openFormCdesModal(elt)">
                             <mat-icon>list</mat-icon>
                             <span class="button-label">CDEs</span>
-                        </button>
-                        <button *ngIf="elt && userService.canSeeComment()" id="discussBtn" class="button" title="Discuss Form"
-                                (click)="commentDrawer.toggle();">
-                            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': hasComments && !commentMode}">
-                                comment
-                            </mat-icon>
-                            <span class="button-label">Discuss</span>
                         </button>
                         <ng-container *ngIf="elt.isDraft">
                             <button id="deleteDraftBtn" class="button fail" title="Delete Draft" data-testid="delete-draft"

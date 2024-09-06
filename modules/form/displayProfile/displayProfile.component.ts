@@ -223,7 +223,6 @@ function getSampleElt(): CdeForm {
         nihEndorsed: false,
         attachments: [],
         classification: [],
-        comments: [],
         created: '01-01-2018',
         definitions: [],
         designations: [],

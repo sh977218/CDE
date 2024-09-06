@@ -46,31 +46,31 @@ export class PinToBoardDirective {
                         description: '',
                         shareStatus: 'Private',
                     };
-                    this.http.post<Board>('/server/board', newBoard).subscribe(this.ngHelper.httpClientObserver(
-                        board => {
-                            this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(this.ngHelper.httpClientObserver(
-                                () => {
+                    this.http.post<Board>('/server/board', newBoard).subscribe(
+                        this.ngHelper.httpClientObserver(board => {
+                            this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
+                                this.ngHelper.httpClientObserver(() => {
                                     this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
                                         message:
                                             this.eltsToPin?.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                         boardId: board._id,
                                         boardName: 'New Board',
                                     });
-                                }
-                            ));
-                        }
-                    ));
+                                })
+                            );
+                        })
+                    );
                 } else if (this.myBoardService.boards?.length === 1) {
                     const board = this.myBoardService.boards[0];
-                    this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(this.ngHelper.httpClientObserver(
-                        () => {
+                    this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
+                        this.ngHelper.httpClientObserver(() => {
                             this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
                                 message: this.eltsToPin?.length === 1 ? 'Pinned to ' : 'All elements pinned to ',
                                 boardId: board._id,
                                 boardName: board.name,
                             });
-                        }
-                    ));
+                        })
+                    );
                 } else {
                     const data = module;
                     this.dialog
@@ -79,8 +79,8 @@ export class PinToBoardDirective {
                         .subscribe(board => {
                             if (board) {
                                 if (this.eltsToPin?.length) {
-                                    this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(this.ngHelper.httpClientObserver(
-                                        () => {
+                                    this.myBoardService.addToBoard(board, module, this.eltsToPin).subscribe(
+                                        this.ngHelper.httpClientObserver(() => {
                                             this.alert.addAlertFromComponent('success', PinBoardSnackbarComponent, {
                                                 message:
                                                     this.eltsToPin?.length === 1
@@ -89,8 +89,8 @@ export class PinToBoardDirective {
                                                 boardId: board._id,
                                                 boardName: board.name,
                                             });
-                                        }
-                                    ));
+                                        })
+                                    );
                                 } else if (this.elasticsearchPinQuery) {
                                     this.myBoardService.addAllToBoard(board, module, this.elasticsearchPinQuery);
                                 }

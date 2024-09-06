@@ -4,10 +4,11 @@ import { esClient } from 'server/system/elastic';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import {
     ElasticSearchResponse,
-    ElasticSearchResponseBody, esqBool,
+    ElasticSearchResponseBody,
+    esqBool,
     esqBoolMustNot,
     esqTerm,
-    responseHitsTotal
+    responseHitsTotal,
 } from 'shared/elastic';
 import { Cb1 } from 'shared/models.model';
 
@@ -25,8 +26,8 @@ const mltConf = {
         'valueDomain.permissibleValues.permissibleValue',
         'valueDomain.permissibleValues.valueMeaningName',
         'valueDomain.permissibleValues.valueMeaningCode',
-        'property.concepts.name'
-    ]
+        'property.concepts.name',
+    ],
 };
 
 export function moreLike(id: string, callback: Cb1<MoreLike>) {
@@ -43,22 +44,21 @@ export function moreLike(id: string, callback: Cb1<MoreLike>) {
                         fields: mltConf.mlt_fields,
                         like: [
                             {
-                                _id: id
-                            }
+                                _id: id,
+                            },
                         ],
                         min_term_freq: 1,
                         min_doc_freq: 1,
-                        min_word_length: 2
-                    }
+                        min_word_length: 2,
+                    },
                 },
-                esqBoolMustNot([
-                    esqTerm('registrationState.registrationStatus', 'Retired'),
-                    esqTerm('isFork', 'true')
-                ])
-            )
-        }
+                esqBoolMustNot([esqTerm('registrationState.registrationStatus', 'Retired'), esqTerm('isFork', 'true')])
+            ),
+        },
     };
-    esClient.search<DataElementElastic>(query, handleNotFound<ElasticSearchResponse<ElasticSearchResponseBody<DataElementElastic>>>({}, response => {
+    esClient.search<DataElementElastic>(
+        query,
+        handleNotFound<ElasticSearchResponse<ElasticSearchResponseBody<DataElementElastic>>>({}, response => {
             const body = response.body;
             const result: MoreLike = {
                 cdes: [],
@@ -68,8 +68,12 @@ export function moreLike(id: string, callback: Cb1<MoreLike>) {
             };
             body.hits.hits.forEach(hit => {
                 const thisCde = hit._source;
-                if (thisCde?.valueDomain && thisCde.valueDomain.datatype === 'Value List' && thisCde.valueDomain.permissibleValues
-                    && thisCde.valueDomain.permissibleValues.length > 10) {
+                if (
+                    thisCde?.valueDomain &&
+                    thisCde.valueDomain.datatype === 'Value List' &&
+                    thisCde.valueDomain.permissibleValues &&
+                    thisCde.valueDomain.permissibleValues.length > 10
+                ) {
                     thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
                 }
                 if (thisCde) {

@@ -4,10 +4,9 @@ import { Observer } from 'rxjs';
 
 @Injectable()
 export class AngularHelperService {
-    constructor(private alert: AlertService) {
-    }
+    constructor(private alert: AlertService) {}
 
     httpClientObserver<T>(next: (t: T) => void): Observer<T> {
-        return {next, error: err => this.alert.httpErrorAlert(err), complete: () => {}}
+        return { next, error: err => this.alert.httpErrorAlert(err), complete: () => {} };
     }
 }

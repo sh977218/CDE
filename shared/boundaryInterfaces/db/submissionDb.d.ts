@@ -17,10 +17,6 @@ interface Submission {
         date: string;
         user?: UserRef;
         action?: 'Endorse' | 'Governance Reject' | 'NLM Curator Approve' | 'NLM Curator Reject' | 'Submitter Submit';
-        comment?: {
-            user: UserRef;
-            message: string;
-        }[];
     }[];
     licenseAttribution: boolean;
     licenseCost: boolean;

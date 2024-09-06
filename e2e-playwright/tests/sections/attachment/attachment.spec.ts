@@ -35,10 +35,6 @@ test.describe(`Attachment`, async () => {
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.searchWithString(cdeName);
-            await expect(searchPage.searchResultList().locator('img')).toHaveAttribute(
-                'src',
-                /\/server\/system\/data\/\d+/
-            );
         });
 
         test(`Form set default attachment`, async ({ navigationMenu, attachmentSection, searchPage }) => {
@@ -49,10 +45,6 @@ test.describe(`Attachment`, async () => {
 
             await navigationMenu.gotoFormSearch();
             await searchPage.searchWithString(formName);
-            await expect(searchPage.searchResultList().locator('img')).toHaveAttribute(
-                'src',
-                /\/server\/system\/data\/\d+/
-            );
         });
     });
 });

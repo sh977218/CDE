@@ -28,7 +28,6 @@ public interface USERNAME {
     String classificationMgtUser_username = "classMgtUser";
     String transferStewardUser_username = "transferStewardUser";
     String documentationEditor_username = "docEditor";
-    String tableViewUser_username = "tableViewUser";
     String pinAllBoardUser_username = "pinAllBoardUser";
     String testEditor_username = "testEditor";
     String classifyBoardUser_username = "classifyBoardUser";
@@ -38,6 +37,5 @@ public interface USERNAME {
     // One user only has one role, test management page authorization.
     String nlmCuratorUser_username = "nlmCurator";
     String orgAdminUser_username = "orgAdminUser";
-    String orgAuthorityUser_username = "orgAuthorityUser";
     String password = "pass";
 }

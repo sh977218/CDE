@@ -1,10 +1,13 @@
 import { ApiResponse } from '@elastic/elasticsearch/api/new';
 import {
     AggregationsAggregationContainer,
-    AggregationsTermsAggregation, FieldValue, QueryDslBoolQuery,
-    QueryDslQueryContainer, QueryDslTermQuery,
+    AggregationsTermsAggregation,
+    FieldValue,
+    QueryDslBoolQuery,
+    QueryDslQueryContainer,
+    QueryDslTermQuery,
     SearchRequest,
-    SearchResponse
+    SearchResponse,
 } from '@elastic/elasticsearch/api/types';
 
 // Aliases
@@ -12,7 +15,6 @@ export type ElasticSearchRequestBody = NonNullable<SearchRequest['body']>;
 export type ElasticSearchResponse<T> = ApiResponse<T>;
 export type ElasticSearchResponseBody<T> = SearchResponse<T>;
 export type ElasticSearchResponseAggregations<T> = ElasticSearchResponseBody<T>['aggregations'];
-
 
 export interface ElasticQueryResponseAggregationBucket {
     checked: boolean;
@@ -38,35 +40,35 @@ export interface ElasticQueryResponseAggregation {
     };
 }
 
-
-export type ElasticQueryError = null
+export type ElasticQueryError =
+    | null
     | {
-    status: 406;
-    error: string;
-}
+          status: 406;
+          error: string;
+      }
     | {
-    status: 400;
-    error: {
-        type: 'parsing_exception' | 'search_phase_execution_exception';
-        reason: string;
-        line?: number;
-        col?: number;
-        root_cause: {
-            type: 'parsing_exception' | 'search_phase_execution_exception';
-            reason: string;
-            line?: number;
-            col?: number;
-        }[];
-    };
-}
+          status: 400;
+          error: {
+              type: 'parsing_exception' | 'search_phase_execution_exception';
+              reason: string;
+              line?: number;
+              col?: number;
+              root_cause: {
+                  type: 'parsing_exception' | 'search_phase_execution_exception';
+                  reason: string;
+                  line?: number;
+                  col?: number;
+              }[];
+          };
+      }
     | {
-    status: 500;
-    error: {
-        type: 'json_parse_exception';
-        reason: string;
-        root_cause: { type: 'json_parse_exception'; reason: string }[];
-    };
-};
+          status: 500;
+          error: {
+              type: 'json_parse_exception';
+              reason: string;
+              root_cause: { type: 'json_parse_exception'; reason: string }[];
+          };
+      };
 
 export function responseHitsTotal<T>(res: ElasticSearchResponseBody<T>): number {
     const value = res.hits.total;
@@ -76,13 +78,15 @@ export function responseHitsTotal<T>(res: ElasticSearchResponseBody<T>): number 
     return value ?? 0;
 }
 
-
-
 /*
  * ES Query DSL
  */
 
-export function esqAggregate(name: string, filters: QueryDslQueryContainer[], terms: AggregationsTermsAggregation): AggregationsAggregationContainer {
+export function esqAggregate(
+    name: string,
+    filters: QueryDslQueryContainer[],
+    terms: AggregationsTermsAggregation
+): AggregationsAggregationContainer {
     return {
         filter: esqBoolFilter(filters),
         aggs: { [name]: { terms: terms } },
@@ -113,12 +117,12 @@ export function esqBool(
     if (should) {
         boolQuery.should = should;
     }
-    return {bool: boolQuery};
+    return { bool: boolQuery };
 }
 
 // does not score, only excludes
 export function esqBoolFilter(query: QueryDslQueryContainer | QueryDslQueryContainer[]): QueryDslQueryContainer {
-    return { bool: { filter: query}}
+    return { bool: { filter: query } };
 }
 
 // AND operation on queriesAND input

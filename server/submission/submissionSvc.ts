@@ -734,9 +734,7 @@ function withErrorCapture(location: string, errors: string[]) {
 
 function findDuplicatedCdeInEsUsingMoreLikeThis(withError: WithError, cde: Partial<DataElement>): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        const boolMust: QueryDslQueryContainer[] = [
-            esqTerm('nihEndorsed', true)
-        ];
+        const boolMust: QueryDslQueryContainer[] = [esqTerm('nihEndorsed', true)];
 
         (cde.designations || []).forEach(d => {
             boolMust.push({

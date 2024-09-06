@@ -1,9 +1,9 @@
 import { intersection, union } from 'lodash';
 import { Board, isBoard } from 'shared/board.model';
 import { Item } from 'shared/item';
-import { assertUnreachable, Comment, rolesEnum, User, UserRole } from 'shared/models.model';
+import { assertUnreachable, rolesEnum, User, UserRole } from 'shared/models.model';
 
-export type Privilege = 'attach' | 'changeStatus' | 'comment' | 'commentManage' | 'create' | 'edit';
+export type Privilege = 'attach' | 'changeStatus' | 'create' | 'edit';
 type Privileges = Record<Privilege, boolean>;
 type PrivilegesRegistry = Record<string, Privileges>;
 
@@ -21,24 +21,18 @@ type RolePrivilegesRegistry = Record<UserRole, RolePrivileges>;
 const orgEditorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
     attach: false,
     changeStatus: true,
-    comment: true,
-    commentManage: false,
     create: true,
     edit: true,
 });
 const orgCuratorDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
     attach: false,
     changeStatus: false,
-    comment: true,
-    commentManage: true,
     create: false,
     edit: false,
 });
 const orgAdminDefaultPrivileges: Readonly<Privileges> = Object.freeze<Privileges>({
     attach: false,
     changeStatus: false,
-    comment: true,
-    commentManage: true,
     create: false,
     edit: false,
 });
@@ -67,13 +61,6 @@ export const orgAdminPrivileges: Readonly<PrivilegesRegistry> = Object.freeze<Pr
 export const rolePrivileges: Readonly<RolePrivilegesRegistry> = Object.freeze<RolePrivilegesRegistry>({
     AttachmentReviewer: {}, // token role
     BoardPublisher: {},
-    CommentAuthor: {
-        universalComment: true,
-    },
-    CommentReviewer: {
-        // token role
-        universalComment: true,
-    },
     DocumentationEditor: {}, // token role
     GovernanceGroup: {
         universalComment: true,
@@ -120,38 +107,8 @@ export function canClassifyOrg(user: User | undefined, org: string | undefined):
     return hasPrivilegeForOrg(user, 'edit', org);
 }
 
-export function canViewComment(user: User | undefined): boolean {
-    return isOrgAdmin(user) || isOrgCurator(user) || isOrgAuthority(user) || isSiteAdmin(user);
-}
-
 export function canEditArticle(user: User | undefined): boolean {
     return hasRole(user, 'DocumentationEditor');
-}
-
-export function canComment(user: User, item: Item | Board): boolean {
-    if (!user || !item) {
-        return false;
-    }
-    return isBoard(item) ? hasPrivilege(user, 'comment') : hasPrivilegeForOrg(user, 'comment', item.stewardOrg.name);
-}
-
-export function canCommentManage(
-    user: User | undefined,
-    item: Board | Item | undefined,
-    comment: Comment | undefined
-): boolean {
-    if (!user || !comment) {
-        return false;
-    }
-    if (isSiteAdmin(user) || user.username === comment.user.username) {
-        return true;
-    }
-    if (!item) {
-        return false;
-    }
-    return isBoard(item)
-        ? item.owner.username === user.username
-        : item.stewardOrg && hasPrivilegeForOrg(user, 'commentManage', (item as Item).stewardOrg.name);
 }
 
 export function canEditCuratedItem(user: User | undefined, item: Item | undefined): boolean {
@@ -279,10 +236,6 @@ export function hasPrivilegeInRoles(user: User, privilege: Privilege): boolean {
             return hasRolePrivilege(user, 'universalAttach');
         case 'changeStatus':
             return false;
-        case 'comment':
-            return hasRolePrivilege(user, 'universalComment');
-        case 'commentManage':
-            return hasRolePrivilege(user, 'universalCommentManage');
         case 'create':
             return hasRolePrivilege(user, 'universalCreate');
         case 'edit':

@@ -21,7 +21,6 @@ export function assertUnreachable(x: never): never {
 }
 
 export interface Attachment {
-    comment?: string;
     fileid: string;
     filename?: string;
     filesize?: number;
@@ -132,31 +131,6 @@ export class CodeAndSystem {
     }
 }
 
-export class CommentSingle {
-    _id!: ObjectId;
-    created: Date = new Date();
-    pendingApproval?: boolean;
-    status: string = 'active';
-    text?: string;
-    user!: {
-        _id: ObjectId;
-        username: string;
-    };
-}
-
-export class CommentReply extends CommentSingle {}
-
-export class Comment extends CommentSingle {
-    currentComment: boolean = false; // calculated, used by CommentsComponent
-    currentlyReplying?: boolean; // calculated, used by CommentsComponent
-    element: {
-        eltId: ObjectId;
-        eltType: ModuleAll;
-    } = { eltId: '', eltType: 'cde' };
-    linkedTab: string = '';
-    replies: CommentReply[] = [];
-}
-
 export type CopyrightStatus =
     | 'Public domain, free to use'
     | 'Copyrighted, but free to use'
@@ -186,12 +160,6 @@ export class DataSource {
 
 export type DateType = Date | string | number; // number on server, string transport, Date on load from db or on create in client
 
-export interface DiscussionComments {
-    currentCommentsPage: number;
-    latestComments: Comment[];
-    totalItems: number;
-}
-
 export abstract class Elt {
     static getEltUrl: (elt: Elt) => string;
     /* tslint:disable */
@@ -204,7 +172,6 @@ export abstract class Elt {
     changeNote?: string;
     checked?: boolean; // volatile, used by board compare side-by-side
     classification: Classification[] = []; // mutable
-    comments: Comment[] = []; // mutable
     created?: DateType = new Date();
     createdBy?: UserRef;
     definitions: Definition[] = [];
@@ -446,7 +413,7 @@ export type NotificationSettingsMediaType = 'drawer' | 'push';
 export type NotificationSettingsMedia = {
     [key in NotificationSettingsMediaType]: boolean | undefined;
 };
-export type NotificationSettingsType = 'approvalAttachment' | 'approvalComment' | 'comment';
+export type NotificationSettingsType = 'approvalAttachment';
 export type NotificationSettings = {
     [key in NotificationSettingsType]?: NotificationSettingsMedia;
 };
@@ -558,17 +525,8 @@ export interface Task {
     url?: string;
 }
 
-export type TaskIdType =
-    | 'attachment'
-    | 'board'
-    | 'cde'
-    | 'clientError'
-    | 'comment'
-    | 'commentReply'
-    | 'form'
-    | 'serverError'
-    | 'versionUpdate';
-export type TaskType = 'approve' | 'comment' | 'error' | 'message' | 'vote';
+export type TaskIdType = 'attachment' | 'board' | 'cde' | 'clientError' | 'form' | 'serverError' | 'versionUpdate';
+export type TaskType = 'approve' | 'error' | 'message' | 'vote';
 export type TaskSource = 'calculated' | 'user';
 export const TASK_STATE_UNREAD = 1;
 
@@ -576,8 +534,6 @@ export type UserRole = ArrayToType<typeof rolesEnum>;
 export const rolesEnum = [
     'AttachmentReviewer',
     'BoardPublisher',
-    'CommentAuthor',
-    'CommentReviewer',
     'DocumentationEditor',
     'GovernanceGroup',
     'NlmCurator',

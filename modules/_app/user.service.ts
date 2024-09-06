@@ -14,11 +14,9 @@ import {
     isOrgAuthority,
     hasRolePrivilege,
     isSiteAdmin,
-    canViewComment,
     canEditArticle,
     isNlmCurator,
 } from 'shared/security/authorizationShared';
-import { newNotificationSettings, newNotificationSettingsMediaDrawer } from 'shared/user';
 import { INACTIVE_TIMEOUT } from 'shared/constants';
 import { removeFromArray } from 'shared/array';
 import { Router } from '@angular/router';
@@ -74,9 +72,6 @@ export class UserService {
     isNlmCurator = () => isNlmCurator(this.user);
     isSiteAdmin = () => isSiteAdmin(this.user);
     isDocumentEditor = () => canEditArticle(this.user);
-
-    canSeeComment = () => canViewComment(this.user);
-
     loginViaJwt(jwtToken: string) {
         return this.http.post('/server/utslogin', { jwtToken }).subscribe(() => {
             this.reload();
@@ -191,12 +186,6 @@ function validate(user: User): User {
     }
     if (!user.orgEditor) {
         user.orgEditor = [];
-    }
-    if (!user.notificationSettings) {
-        user.notificationSettings = newNotificationSettings();
-    }
-    if (!user.notificationSettings.comment) {
-        user.notificationSettings.comment = newNotificationSettingsMediaDrawer();
     }
     return user;
 }

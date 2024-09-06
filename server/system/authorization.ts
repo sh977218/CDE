@@ -9,7 +9,6 @@ import {
     canEditCuratedItem,
     canSubmissionReview,
     canSubmissionSubmit,
-    canViewComment,
     hasPrivilegeForOrg,
     hasPrivilegeInRoles,
     hasRole,
@@ -167,14 +166,6 @@ export const canEditByTinyIdMiddleware =
 
 export const canEditArticleMiddleware: RequestHandler = (req, res, next) => {
     if (canEditArticle(req.user)) {
-        next();
-    } else {
-        return res.status(401).send();
-    }
-};
-
-export const canSeeCommentMiddleware: RequestHandler = (req, res, next) => {
-    if (req.isAuthenticated() && canViewComment(req.user)) {
         next();
     } else {
         return res.status(401).send();

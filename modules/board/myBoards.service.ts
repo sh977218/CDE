@@ -78,13 +78,15 @@ export class MyBoardsService implements OnDestroy {
         this.http.post<ElasticSearchResponseBody<Board>>('/server/board/myBoards', this.filter).subscribe(
             res => {
                 if (res.hits) {
-                    this.boards = res.hits.hits.map(h => {
-                        if (!h._source) {
-                            return undefined;
-                        }
-                        h._source._id = h._id;
-                        return h._source;
-                    }).filter(isT);
+                    this.boards = res.hits.hits
+                        .map(h => {
+                            if (!h._source) {
+                                return undefined;
+                            }
+                            h._source._id = h._id;
+                            return h._source;
+                        })
+                        .filter(isT);
                     this.filter.tags = (res.aggregations!.tagAgg as any).buckets;
                     this.filter.tags.forEach(t => (t.checked = this.filter.selectedTags.indexOf(t.key) > -1));
                     this.filter.types = (res.aggregations!.typeAgg as any).buckets;

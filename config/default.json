@@ -140,7 +140,6 @@
   "modules": {
     "forms": {
       "attachments": true,
-      "comments": true,
       "sectionLevels": 10,
       "localRender": true,
       "loincRender": true,
@@ -148,7 +147,6 @@
     },
     "cde": {
       "attachments": true,
-      "comments": true,
       "audit": true
     }
   },

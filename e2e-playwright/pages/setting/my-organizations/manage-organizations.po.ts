@@ -1,10 +1,17 @@
 import { Locator, Page } from '@playwright/test';
+import { MaterialPo } from '../../../pages/shared/material.po';
+import { Organization } from '../../../model/type';
+import { InlineEditPo } from '../../../pages/shared/inline-edit.po';
 
 export class ManageOrganizationsPo {
     private readonly page: Page;
+    private readonly materialPage: MaterialPo;
+    private readonly inlineEdit: InlineEditPo;
 
-    constructor(page: Page) {
+    constructor(page: Page, materialPage: MaterialPo, inlineEdit: InlineEditPo) {
         this.page = page;
+        this.materialPage = materialPage;
+        this.inlineEdit = inlineEdit;
     }
 
     newOrganizationName() {
@@ -61,5 +68,28 @@ export class ManageOrganizationsPo {
 
     organizationWorkingGroup(locator: Locator) {
         return locator.getByTestId('organization-working-group');
+    }
+
+    async addNewOrg(newOrganization: Organization) {
+        await this.newOrganizationName().fill(newOrganization.orgName);
+        if (newOrganization.orgLongName) {
+            await this.newOrganizationLongName().fill(newOrganization.orgLongName);
+        }
+        if (newOrganization.orgWorkingGroup) {
+            await this.newOrganizationWorkingGroup().selectOption(newOrganization.orgWorkingGroup);
+        }
+        await this.newOrganizationSubmit().click();
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async editOrg(organization: Organization) {
+        const managedOrganizationsLocator = this.managedOrganizations(organization.orgName);
+        if (organization.orgMailAddress) {
+            const organizationMailAddressLocator = this.organizationMailAddress(managedOrganizationsLocator);
+            await this.inlineEdit.editIcon(organizationMailAddressLocator).click();
+            await this.inlineEdit.inputField(organizationMailAddressLocator).fill(organization.orgMailAddress);
+            await this.inlineEdit.confirmButton(organizationMailAddressLocator).click();
+        }
+        await this.materialPage.checkAlert('Saved');
     }
 }

@@ -19,11 +19,6 @@
     <mat-sidenav-content [style.margin-left]="isMobile ? '0' : '300px'">
         <mat-sidenav-container [hasBackdrop]="false">
             <mat-sidenav #commentDrawer mode="side" position="end">
-                <div *ngIf="elt && userService.canSeeComment()">
-                    <cde-discuss-area [currentTab]="currentTab" [elt]="elt"
-                                      (highlightedTabsChange)="loadHighlightedTabs($event)"
-                                      [eltName]="elt.designations[0].designation"></cde-discuss-area>
-                </div>
             </mat-sidenav>
             <mat-sidenav-content>
                 <div *ngIf="elt" class="content" itemscope="https://schema.org/MedicalCode">
@@ -109,14 +104,6 @@
                                 (click)="openCopyElementModal(elt)" color="primary">
                             <mat-icon>content_copy</mat-icon>
                             <span class="button-label"> Copy</span>
-                        </button>
-                        <button *ngIf="elt && userService.canSeeComment()"
-                                id="discussBtn" class="button light" title="Discuss CDE"
-                                (click)="commentDrawer.toggle()">
-                            <mat-icon [ngClass]="{'faa-wrench faa-slow animated': comments.length && !commentMode}">
-                                comment
-                            </mat-icon>
-                            <span class="button-label" style="margin-left: .25rem"> Discuss</span>
                         </button>
                         <ng-container *ngIf="elt.isDraft">
                             <button id="deleteDraftBtn" class="button fail" title="Delete Draft" data-testid="delete-draft"

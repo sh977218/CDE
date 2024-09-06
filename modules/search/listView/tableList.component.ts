@@ -6,12 +6,7 @@ import { FormTableViewPreferencesComponent } from 'search/tableViewPreferences/f
 import { DataElementElastic, DataType } from 'shared/de/dataElement.model';
 import { CdeFormElastic } from 'shared/form/form.model';
 import { Item, ItemElastic } from 'shared/item';
-import {
-    CdeId,
-    Designation,
-    ModuleItem,
-    UserSearchSettings,
-} from 'shared/models.model';
+import { CdeId, Designation, ModuleItem, UserSearchSettings } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 
 const toolTipMap = new Map([
@@ -300,27 +295,23 @@ export class TableListComponent implements OnInit {
                 const lfSettings = this.esService.buildElasticQuerySettings(new SearchSettings(e.tinyId));
 
                 const values: { tinyId: string; name: string }[] = [];
-                this.esService.generalSearchQuery(
-                    lfSettings,
-                    'form',
-                    (err, result) => {
-                        if (result && result.forms) {
-                            if (result.forms.length > 5) {
-                                result.forms.length = 5;
-                            }
-                            result.forms.forEach(crf =>
-                                values.push({
-                                    name: crf.primaryNameCopy,
-                                    tinyId: crf.tinyId,
-                                })
-                            );
+                this.esService.generalSearchQuery(lfSettings, 'form', (err, result) => {
+                    if (result && result.forms) {
+                        if (result.forms.length > 5) {
+                            result.forms.length = 5;
                         }
-                        row.push({
-                            css: 'linkedForms',
-                            values,
-                        });
+                        result.forms.forEach(crf =>
+                            values.push({
+                                name: crf.primaryNameCopy,
+                                tinyId: crf.tinyId,
+                            })
+                        );
                     }
-                );
+                    row.push({
+                        css: 'linkedForms',
+                        values,
+                    });
+                });
             }
             return row;
         });

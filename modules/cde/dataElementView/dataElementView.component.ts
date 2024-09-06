@@ -30,7 +30,7 @@ import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import { Item } from 'shared/item';
-import { Cb1, Comment, Elt } from 'shared/models.model';
+import { Cb1, Elt } from 'shared/models.model';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { WINDOW, WINDOW_PROVIDERS } from 'window.service';
@@ -38,7 +38,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DatePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { TocModule } from 'angular-aio-toc/toc.module';
-import { DiscussModule } from 'discuss/discuss.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { PinToBoardModule } from 'board/pin-to-board.module';
@@ -74,7 +73,6 @@ import { IsAllowedService } from 'non-core/isAllowed.service';
         NgIf,
         MatSidenavModule,
         TocModule,
-        DiscussModule,
         MatIconModule,
         RouterLink,
         NgForOf,
@@ -196,11 +194,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             this._elt = elt;
             this.title.setTitle('Data Element: ' + Elt.getLabel(elt));
             this.validate(elt);
-            this.loadComments(elt, () => {
-                setTimeout(() => {
-                    this.viewReady();
-                }, 0);
-            });
+            setTimeout(() => this.viewReady());
             if (this.userService.user) {
                 checkPvUnicity(elt.valueDomain);
             }
@@ -234,20 +228,6 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             queryParams: this.route.snapshot.queryParams,
             replaceUrl: true,
         });
-    }
-
-    loadComments(de: DataElement, cb = noop) {
-        if (this.userService.canSeeComment()) {
-            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + de.tinyId).subscribe(
-                res => {
-                    this.comments = res;
-                    cb();
-                },
-                err => this.alert.httpErrorAlert(err, 'Error loading comments.')
-            );
-        } else {
-            cb();
-        }
     }
 
     loadElt(cb: Cb1<DataElement> = noop) {

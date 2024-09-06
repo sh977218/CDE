@@ -27,15 +27,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.time.Duration;
 import java.util.*;
@@ -320,7 +317,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected String cssInputCheckboxChecked = "[type='checkbox']:checked";
     protected String cssInputCheckboxNotChecked = "[type='checkbox']:not(:checked)";
     protected String cssInputRadioChecked = "[type='radio']:checked";
-    protected String cssInputRadioNotChecked = "[type='radio']:not(:checked)";
 
     protected void cdeFormTitleExists() {
         findElement(By.cssSelector("h1"));
@@ -421,11 +417,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textNotPresent("Guides");
     }
 
-    protected void goToAudit() {
-        goToUserMenu();
-        clickElement(By.id("user_audit"));
-    }
-
     protected void goToHelp() {
         scrollToTop();
         hoverOverElement(findElement(By.id("helpLink")));
@@ -439,16 +430,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     protected void goToStewardTransfer() {
         goToSettings();
         clickElement(By.id("stewardTransfer"));
-    }
-
-    protected void goToTagsManagement() {
-        goToSettings();
-        clickElement(By.id("tagsManagement"));
-    }
-
-    protected void goToPropertyKeysManagement() {
-        goToSettings();
-        clickElement(By.id("propertiesManagement"));
     }
 
     protected void goToIdSources() {
@@ -478,12 +459,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent("Admins for this Organization:", By.id("settingsContent"));
     }
 
-    protected void goToEditors() {
-        goToSettings();
-        clickElement(By.id("editors"));
-        textPresent("Editors for this Organization:", By.id("settingsContent"));
-    }
-
     protected void goToMyDrafts() {
         goToSettings();
         clickElement(By.id("myDrafts"));
@@ -499,21 +474,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         goToSettings();
         clickElement(By.id("allDrafts"));
         textPresent("All Drafts", By.id("settingsContent"));
-    }
-
-    protected void goToMyComments() {
-        goToSettings();
-        clickElement(By.id("myComments"));
-    }
-
-    protected void goToMyOrgComments() {
-        goToSettings();
-        clickElement(By.id("myOrgComments"));
-    }
-
-    protected void goToAllComments() {
-        goToSettings();
-        clickElement(By.id("allComments"));
     }
 
     protected void goToSearchPreferences() {
@@ -536,11 +496,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         goToSettings();
         clickElement(By.id("profile"));
         textPresent("Profile", By.id("settingsContent"));
-    }
-
-    protected void goToSpellCheck() {
-        goToSettings();
-        clickElement(By.id("spellCheck"));
     }
 
     protected int getNumberOfResults() {
@@ -633,19 +588,9 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath("//*[@id='mat-tab-label-0-2']"));
     }
 
-    protected void goToDisplayProfiles() {
-        clickElement(By.xpath("//li//a[text()='Display Profiles']"));
-    }
-
     protected void goToHistory() {
         clickElement(By.xpath("//li/a[text()='History']"));
         findElement(By.xpath("//li[a[text()='History']][contains(@class,'active')]"));
-    }
-
-    protected void goToDiscussArea() {
-        clickElement(By.id("discussBtn"));
-        findElement(By.xpath("//cde-discuss-area"));
-        Assert.assertEquals(driver.findElements(By.xpath("//cde-discuss-area")).size(), 1);
     }
 
     private void goToElementByName(String name, String type) {
@@ -691,10 +636,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void searchActiveFilter(String text) {
         findElement(By.xpath("//*[contains(@class,'pill')]/*[@class='text'][text()='" + text + "']"));
-    }
-
-    protected void searchActiveFilter(String text, String parent) {
-        findElement(By.xpath(parent + "//*[contains(@class,'pill')]/*[@class='text'][text()='" + text + "']"));
     }
 
     protected void assertNoElt(By by) {
@@ -797,19 +738,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return driver.findElements(by).size();
     }
 
-    protected void waitForDownload(String fileName) {
-        for (int i = 0; i < 30; i++) {
-            try {
-                String actual = new String(Files.readAllBytes(Paths.get(downloadFolder + "/" + fileName)));
-                if (actual.length() > 0) {
-                    i = 30;
-                }
-            } catch (IOException e) {
-                hangon(2);
-            }
-        }
-    }
-
     protected List<WebElement> findElements(By by) {
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(by));
         return driver.findElements(by);
@@ -872,17 +800,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
      */
     public void modalGone() {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//mat-dialog-container")));
-    }
-
-    public String alertText() {
-        String snackTxt;
-        try {
-            // sometimes, the snack goes from processing to done and selenium will mark as stale
-            snackTxt = findElement(By.cssSelector("simple-snack-bar [matsnackbarlabel]")).getText();
-        } catch (StaleElementReferenceException e) {
-            snackTxt = findElement(By.cssSelector("simple-snack-bar [matsnackbarlabel]")).getText();
-        }
-        return snackTxt;
     }
 
     public void closeAlert() {
@@ -1159,10 +1076,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         return currentTab;
     }
 
-    protected void fillInput(String type, String value) {
-        findElement(By.xpath("//label[text()='" + type + "']/following-sibling::input")).sendKeys(value);
-    }
-
     protected void showSearchFilters() {
         WebElement showHideFilterButton = findElement(By.id("showHideFilters"));
 
@@ -1198,38 +1111,12 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.className("cdk-overlay-pane"));
     }
 
-    private void openAudit(String type, String name) {
-        mustBeLoggedInAs(nlm_username, nlm_password);
-        goToAudit();
-
-        clickElement(By.xpath("//div[. = '" + type + " Audit Log']"));
-        for (Integer i = 0; i < 10; i++) {
-            hangon(1);
-            try {
-                wait.until(ExpectedConditions.textToBePresentInElementLocated(
-                        By.cssSelector("mat-accordion"), name));
-                break;
-            } catch (Exception e) {
-                paginatorNext();
-            }
-
-        }
-        clickElement(By.xpath("//mat-accordion//mat-panel-title[contains (., '" + name + "')]"));
-    }
-
     public void paginatorPrevious() {
         clickElement(By.cssSelector("button.mat-mdc-paginator-navigation-previous"));
     }
 
     public void paginatorNext() {
         clickElement(By.cssSelector("button.mat-mdc-paginator-navigation-next"));
-    }
-
-    protected void downloadAsFile() {
-        goToSearchPreferences();
-        clickElement(By.xpath("//label[contains(.,'File')]"));
-        clickElement(By.xpath("//button[contains(.,'Save')]"));
-        closeAlert();
     }
 
     protected void downloadAsTab() {
@@ -1243,14 +1130,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         goToSearchPreferences();
         clickElement(By.xpath("//label[input[@type='checkbox']][normalize-space()='Include Retired Content (this session only)']"));
         clickElement(By.xpath("//button[contains(.,'Save')]"));
-    }
-
-    protected void loadDefaultTableViewSettings() {
-        clickElement(By.id("list_gridView"));
-        openTableViewPreferenceModal();
-        clickElement(By.id("loadDefaultTableViewSettingsBtn"));
-        checkAlert("Default settings loaded");
-        closeTableViewPreferenceModal();
     }
 
     protected void editDesignationByIndex(int index, String newDesignation, String[] tags) {
@@ -1517,28 +1396,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
-    protected void addClassificationByTree(String org, String[] classificationArray, String alertText) {
-        clickElement(By.id("openClassificationModalBtn"));
-        textPresent("By recently added");
-
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        for (int i = 0; i < classificationArray.length - 1; i++) {
-            classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
-        }
-        classifySubmit(classificationArray, alertText);
-    }
-
-    protected void _addClassificationByTree(String org, String[] classificationArray, String alertText) {
-        clickElement(By.id("openClassifyCdesModalBtn"));
-        textPresent("By recently added");
-
-        new Select(findElement(By.id("selectClassificationOrg"))).selectByVisibleText(org);
-        for (int i = 0; i < classificationArray.length - 1; i++) {
-            classifyToggle(Arrays.copyOfRange(classificationArray, 0, i + 1));
-        }
-        classifySubmit(classificationArray, alertText);
-    }
-
     public void startEditQuestionById(String id) {
         clickElement(By.xpath("//*[@id='" + id + "']//*[contains(@class,'questionLabel')]"));
     }
@@ -1653,67 +1510,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         textPresent(text, By.xpath("(//*[@id='" + SWAGGER_API_TYPE.get(api) + "']//*[@class='response']//pre)[1]"));
     }
 
-    protected void selectDisplayProfileByName(String name) {
-        clickElement(By.id("select_display_profile"));
-        clickElement(By.xpath("//button[@role='menuitem' and normalize-space() = '" + name + "']"));
-    }
-
-    /**
-     * This method is used to edit registration status for cde or form.
-     *
-     * @param index      Permissible Value Index from 0.
-     * @param value      Permissible Value.
-     * @param codeName   Permissible Value Code Name.
-     * @param code       Permissible Value Code.
-     * @param codeSystem Permissible Value Code System
-     */
-    protected void editPermissibleValueByIndex(int index, String value, String codeName, String code, String codeSystem, String codeDescription) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pv_" + index)));
-        if (value != null) {
-            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//i"));
-            findElement(By.xpath("//*[@id='pvValue_" + index + "']//input")).sendKeys(value);
-            hangon(2);
-            clickElement(By.xpath("//*[@id='pvValue_" + index + "']//button[text()='Confirm']"));
-
-        }
-        if (codeName != null) {
-            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//i"));
-            findElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//input")).sendKeys(codeName);
-            hangon(2);
-            clickElement(By.xpath("//*[@id='pvMeaningName_" + index + "']//button[text()='Confirm']"));
-        }
-        if (code != null) {
-            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//i"));
-            findElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//input")).sendKeys(codeName);
-            hangon(2);
-            clickElement(By.xpath("//*[@id='pvMeaningCode_" + index + "']//button[text()='Confirm']"));
-        }
-        if (codeSystem != null) {
-            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//i"));
-            findElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//input")).sendKeys(codeName);
-            hangon(2);
-            clickElement(By.xpath("//*[@id='pvCodeSystem_" + index + "']//button[text()='Confirm']"));
-        }
-        if (codeDescription != null) {
-            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//i"));
-            findElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//input")).sendKeys(codeName);
-            hangon(2);
-            clickElement(By.xpath("//*[@id='pvMeaningDefinition_" + index + "']//button[text()='Confirm']"));
-        }
-    }
-
-    protected void editOrigin(String origin, boolean append) {
-        clickElement(By.xpath("//*[@id='origin']//mat-icon[normalize-space() = 'edit']"));
-        if (!append) {
-            findElement(By.xpath("//*[@id='origin']//input")).clear();
-            hangon(2);
-        }
-        findElement(By.xpath("//*[@id='origin']//input")).sendKeys(origin);
-        hangon(2);
-        clickElement(By.xpath("//*[@id='origin']//button[text()='Confirm']"));
-        textPresent(origin, By.id("origin"));
-    }
-
     protected void checkSearchResultInfo(String term, String[] classif, String[] classifAlt, String[] status, String[] datatype) {
         if (term != null) textPresent(term, By.id("term_crumb"));
         if (classif != null) {
@@ -1765,111 +1561,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         }
     }
 
-    protected void addComment(String message) {
-        findElement(By.id("newCommentTextArea")).sendKeys(message);
-        hangon(2);
-        clickElement(By.id("commentBtn"));
-        isCommentOrReplyExists(message, true);
-    }
-
-    protected void replyComment(int index, String message) {
-        findElement(By.id("newReplyTextArea_" + index)).sendKeys(message);
-        clickElement(By.id("replyBtn_" + index));
-        isCommentOrReplyExists(message, true);
-    }
-
-    protected void removeComment(String message) {
-        goToDiscussArea();
-        String xpath = getCommentIconXpath(message, "comment", "remove");
-        clickElement(By.xpath(xpath));
-        isCommentOrReplyExists(message, false);
-    }
-
-    protected void removeReply(String message) {
-        goToDiscussArea();
-        String xpath = getCommentIconXpath(message, "reply", "remove");
-        clickElement(By.xpath(xpath));
-        isCommentOrReplyExists(message, false);
-    }
-
-    private void assertClass(By by, String className, boolean contains) {
-        for (Integer i = 0; i < 10; i++) {
-            try {
-                Assert.assertEquals(findElement(by).getAttribute("class").contains(className), contains);
-                break;
-            } catch (Exception e) {
-                if (i == 9)
-                    Assert.fail("Could not find class: " + className + ". Actual: " + findElement(by).getAttribute("class"));
-                hangon(1);
-            }
-        }
-    }
-
-    protected void resolveReply(String message) {
-        String xpath = getCommentIconXpath(message, "reply", "resolve");
-        clickElement(By.xpath(xpath));
-    }
-
-    protected void resolveComment(String message) {
-        goToDiscussArea();
-        String xpath = getCommentIconXpath(message, "comment", "resolve");
-        clickElement(By.xpath(xpath));
-        isCommentOrReplyExists(message, true);
-        findElement(By.xpath("//div[normalize-space()='" + message + "']/span[contains(@class, 'strike')]"));
-    }
-
-    protected void isReplyStrike(String message, boolean result) {
-        findElement(By.xpath("//div[contains(@class, 'replyBody') and normalize-space()='" + message + "']" + (
-                result
-                        ? "/span[contains(@class,'strike')]"
-                        : "/span[not(contains(@class,'strike'))]"
-        )));
-    }
-
-    protected void reopenReply(String message) {
-        String xpath = getCommentIconXpath(message, "reply", "reopen");
-        clickElement(By.xpath(xpath));
-    }
-
-    protected void reopenComment(String message) {
-        goToDiscussArea();
-        assertClass(By.xpath("//div[normalize-space()='" + message + "']/span"), "strike", true);
-        String xpath = getCommentIconXpath(message, "comment", "reopen");
-        clickElement(By.xpath(xpath));
-        isCommentOrReplyExists(message, true);
-        try {
-            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                    By.xpath("//div[normalize-space()='" + message + "']/span"),
-                    "class", "strike")));
-        } catch (StaleElementReferenceException e) {
-            wait.until(ExpectedConditions.not(ExpectedConditions.attributeContains(
-                    By.xpath("//div[normalize-space()='" + message + "']/span"),
-                    "class", "strike")));
-        }
-    }
-
-    private Map<String, String> COMMENT_Title_Case_MAP = new HashMap<String, String>() {
-        {
-            put("comment", "Comment");
-            put("reply", "Reply");
-        }
-    };
-
-    private String getCommentIconXpath(String message, String messageType, String iconType) {
-        String titleCase = COMMENT_Title_Case_MAP.get(messageType);
-        return "//div[normalize-space()='" + message + "']/preceding-sibling::div[contains(@class,'" + messageType + "Header')]//*[contains(@id,'" + iconType + titleCase + "_')]";
-    }
-
-    protected void checkCurrentCommentByIndex(int index, boolean isCurrent) {
-        scrollToViewById("commentDiv_" + index);
-        Assert.assertEquals(isCurrent, findElement(By.id("commentDiv_" + index)).getAttribute("class").contains("currentComment"));
-    }
-
-    protected void isCommentOrReplyExists(String commentText, boolean exist) {
-        if (exist) textPresent(commentText, By.xpath("//cde-comments"));
-        else textNotPresent(commentText, By.xpath("//cde-comments"));
-    }
-
     protected void selectArticleByKey(String key) {
         clickElement(By.xpath("//*[@id='selectArticleKey']//mat-select"));
         selectMatDropdownByText(key);
@@ -1882,12 +1573,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
             extraChecksFunc.accept(index);
         }
         clickElement(By.xpath("//button[@id='q_select_name_" + index + "']"));
-    }
-
-    protected void selectQuestionNoLabel(String questionId) {
-        clickElement(By.xpath("//*[@id='" + questionId + "']//mat-icon[contains(@class,'changeQuestionLabelIcon')]"));
-        textPresent("Select a question label from a CDE Name");
-        clickElement(By.id("selectQuestionNoLabel"));
     }
 
     protected void searchUsername(String searchUsername) {
@@ -1947,10 +1632,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         findElement(By.xpath(xpathSelect + "//*[contains(@id,'mat-select-value-')][contains(., '" + optionText + "')]"));
     }
 
-    protected void clickMatSelect() {
-        clickElement(By.xpath("//mat-select"));
-    }
-
     protected void propertyEditText(String property, String text) {
         clickElement(By.xpath("//*[@itemprop='" + property + "']//mat-icon[normalize-space() = 'edit']"));
         findElement(By.xpath("//*[@itemprop='" + property + "']//input")).clear();
@@ -1961,17 +1642,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
     protected void selectMatDropdownByText(String text) {
         clickElement(By.xpath(xpathMatDropdownByText(text)));
-    }
-
-    protected void removeMatChipByText(String text) {
-        clickElement(By.xpath("//mat-chip[span[normalize-space() = '" + text + "']]//mat-icon[text()='cancel']"));
-        assertNoElt(By.xpath("//mat-chip[span[normalize-space() = '" + text + "']]"));
-    }
-
-    protected void addMatChipByTextArray(String[] chips) {
-        for (String chip : chips) {
-            addMatChipByText(chip);
-        }
     }
 
     protected void addMatChipByText(String chip) {

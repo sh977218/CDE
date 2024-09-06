@@ -62,11 +62,7 @@ export function updateOrInsertImpl(elt: DataElement): void {
     });
 }
 
-export function elasticsearch(
-    user: User,
-    settings: SearchSettingsElastic,
-    cb: CbError1<ElasticResponseDataDe | void>
-) {
+export function elasticsearch(user: User, settings: SearchSettingsElastic, cb: CbError1<ElasticResponseDataDe | void>) {
     const query = buildElasticSearchQueryCde(user, settings);
     elasticSearchShared('cde', query).then(result => {
         if (result && result.cdes && result.cdes.length > 0) {

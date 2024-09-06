@@ -13,11 +13,11 @@ interface IndexStatus {
     message?: string;
 }
 
-export const statusReport: { elastic: { up: boolean | string, indices: IndexStatus[], message?: string } } = {
+export const statusReport: { elastic: { up: boolean | string; indices: IndexStatus[]; message?: string } } = {
     elastic: {
         up: false,
-        indices: []
-    }
+        indices: [],
+    },
 };
 
 export function everythingOk() {
@@ -32,8 +32,13 @@ export function status(req: Request, res: Response) {
     }
 }
 
-export function checkElasticCount(count: number, index: string, type: string, cb: (status: boolean, errMsg?: string) => void) {
-    esClient.count({index}, (err, response: { body: { count: number }, statusCode: number | null }) => {
+export function checkElasticCount(
+    count: number,
+    index: string,
+    type: string,
+    cb: (status: boolean, errMsg?: string) => void
+) {
+    esClient.count({ index }, (err, response: { body: { count: number }; statusCode: number | null }) => {
         if (err) {
             cb(false, 'Error retrieving index count: ' + err);
             return;
@@ -47,7 +52,7 @@ export function checkElasticCount(count: number, index: string, type: string, cb
 }
 
 export function isElasticUp(cb: Cb1<boolean | void>) {
-    esClient.cat.health({h: 'st'}, (err, response) => {
+    esClient.cat.health({ h: 'st' }, (err, response) => {
         if (err) {
             statusReport.elastic.up = 'No Response on Health Check: ' + err;
             cb(false);
@@ -74,11 +79,11 @@ export function isElasticUp(cb: Cb1<boolean | void>) {
 }
 
 export async function deleteEsIndex(deleteIndexDone: Cb1<string>) {
-    const clusterIndices = await esClient.cat.indices<any>({format: 'json'});
+    const clusterIndices = await esClient.cat.indices<any>({ format: 'json' });
     for (const index of clusterIndices.body) {
-        const found = find(indices, (i) => i.indexName === index.index);
+        const found = find(indices, i => i.indexName === index.index);
         if (!found && index.index) {
-            await esClient.indices.delete({index: index.index});
+            await esClient.indices.delete({ index: index.index });
         }
     }
     deleteIndexDone('success.');
@@ -88,51 +93,54 @@ export function getStatus(getStatusDone: Cb) {
     isElasticUp(() => {
         if (statusReport.elastic.up) {
             const tempIndices: IndexStatus[] = [];
-            const condition = {archived: false};
-            series([
-                done => {
-                    dbPlugins.dataElement.count(condition).then(deCount => {
-                        indices[0].totalCount = deCount;
-                        checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
-                            tempIndices.push({
-                                name: config.elastic.index.name,
-                                up,
-                                message
+            const condition = { archived: false };
+            series(
+                [
+                    done => {
+                        dbPlugins.dataElement.count(condition).then(deCount => {
+                            indices[0].totalCount = deCount;
+                            checkElasticCount(deCount, config.elastic.index.name, 'dataelement', (up, message) => {
+                                tempIndices.push({
+                                    name: config.elastic.index.name,
+                                    up,
+                                    message,
+                                });
+                                done();
                             });
-                            done();
-                        });
-                    }, done);
-                },
-                done => {
-                    dbPlugins.form.count(condition).then(formCount => {
-                        indices[1].totalCount = formCount;
-                        checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
-                            tempIndices.push({
-                                name: config.elastic.formIndex.name,
-                                up,
-                                message
+                        }, done);
+                    },
+                    done => {
+                        dbPlugins.form.count(condition).then(formCount => {
+                            indices[1].totalCount = formCount;
+                            checkElasticCount(formCount, config.elastic.formIndex.name, 'form', (up, message) => {
+                                tempIndices.push({
+                                    name: config.elastic.formIndex.name,
+                                    up,
+                                    message,
+                                });
+                                done();
                             });
-                            done();
-                        });
-                    }, done);
-                },
-                done => {
-                    dbPlugins.board.count({}).then(boardCount => {
-                        indices[2].totalCount = boardCount;
-                        checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
-                            tempIndices.push({
-                                name: config.elastic.boardIndex.name,
-                                up,
-                                message
+                        }, done);
+                    },
+                    done => {
+                        dbPlugins.board.count({}).then(boardCount => {
+                            indices[2].totalCount = boardCount;
+                            checkElasticCount(boardCount, config.elastic.boardIndex.name, 'board', (up, message) => {
+                                tempIndices.push({
+                                    name: config.elastic.boardIndex.name,
+                                    up,
+                                    message,
+                                });
+                                done();
                             });
-                            done();
-                        });
-                    }, done);
+                        }, done);
+                    },
+                ],
+                () => {
+                    statusReport.elastic.indices = tempIndices;
+                    getStatusDone();
                 }
-            ], () => {
-                statusReport.elastic.indices = tempIndices;
-                getStatusDone();
-            });
+            );
         }
     });
 }
@@ -152,7 +160,7 @@ setInterval(() => {
                     lastReport = newReport;
                     logError({
                         message: 'Elastic Search Status',
-                        details: newReport
+                        details: newReport,
                     });
                 }, config.status.timeouts.notificationTimeout);
             }

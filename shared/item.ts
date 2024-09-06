@@ -1,12 +1,5 @@
-import {
-    DataElement,
-    DataElementElastic, ElasticResponseDataDe,
-} from 'shared/de/dataElement.model';
-import {
-    CdeForm,
-    CdeFormElastic, ElasticResponseDataForm,
-    FormElement,
-} from 'shared/form/form.model';
+import { DataElement, DataElementElastic, ElasticResponseDataDe } from 'shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic, ElasticResponseDataForm, FormElement } from 'shared/form/form.model';
 import { ModuleAll, ModuleItem } from 'shared/models.model';
 
 export type Item = DataElement | CdeForm;

@@ -148,10 +148,10 @@ export interface DataElementElastic extends DataElement, ElasticElement {
 }
 
 export interface ElasticResponseData<T> {
-    aggregations: ElasticSearchResponseAggregations<T>,
-    maxScore: number
-    took: ElasticSearchResponseBody<T>['took'],
-    totalItems: number,
+    aggregations: ElasticSearchResponseAggregations<T>;
+    maxScore: number;
+    took: ElasticSearchResponseBody<T>['took'];
+    totalItems: number;
 }
 export type ElasticResponseDataDe = ElasticResponseData<DataElementElastic> & {
     cdes: DataElementElastic[];

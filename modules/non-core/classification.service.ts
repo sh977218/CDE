@@ -4,13 +4,7 @@ import { AlertService } from 'alert/alert.service';
 import { uniqWith, isEqual } from 'lodash';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { Item } from 'shared/item';
-import {
-    Cb1,
-    CbErrorObj,
-    ItemClassification,
-    ItemClassificationElt,
-    ItemClassificationNew,
-} from 'shared/models.model';
+import { Cb1, CbErrorObj, ItemClassification, ItemClassificationElt, ItemClassificationNew } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 
 @Injectable({ providedIn: 'root' })
@@ -69,7 +63,7 @@ export class ClassificationService {
             eltId: elt._id,
             orgName: org,
         };
-        this.http.post(endPoint, deleteBody).subscribe({next: () => cb(), error: cb});
+        this.http.post(endPoint, deleteBody).subscribe({ next: () => cb(), error: cb });
     }
 
     removeOrgClassification(deleteClassification: ItemClassification, next: Cb1<string>) {

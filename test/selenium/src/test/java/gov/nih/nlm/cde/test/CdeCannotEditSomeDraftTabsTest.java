@@ -17,8 +17,6 @@ public class CdeCannotEditSomeDraftTabsTest extends NlmCdeBaseTest {
         textPresent("Classification is not available in Drafts.");
         goToAttachments();
         textPresent("Attachments are not available in Drafts.");
-        clickElement(By.id("discussBtn"));
-        textPresent("Discussion is not available in Drafts.");
 
         textPresent("DRAFT", By.cssSelector(".toggle-switch"));
         textNotPresent("Published", By.cssSelector(".toggle-switch"));

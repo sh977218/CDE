@@ -20,17 +20,11 @@ import { DataType, ElasticResponseDataDe } from 'shared/de/dataElement.model';
 import {
     ElasticQueryResponseAggregation,
     ElasticQueryResponseAggregationBucket,
-    ElasticQueryResponseHit
+    ElasticQueryResponseHit,
 } from 'shared/elastic';
 import { ElasticResponseDataForm } from 'shared/form/form.model';
 import { ItemElastic, uriViewBase } from 'shared/item';
-import {
-    assertUnreachable,
-    Cb1,
-    CopyrightStatus,
-    CurationStatus,
-    ModuleItem,
-} from 'shared/models.model';
+import { assertUnreachable, Cb1, CopyrightStatus, CurationStatus, ModuleItem } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
 import { SearchSettings } from 'shared/search/search.model';
 import { isSiteAdmin } from 'shared/security/authorizationShared';
@@ -623,175 +617,171 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
             Object.assign(this.searchSettings, this.searchSettingsInput);
         }
         const settings = this.elasticService.buildElasticQuerySettings(this.searchSettings);
-        this.elasticService.generalSearchQuery(
-            settings,
-            this.module,
-            (err, result, corrected) => {
-                this.searchedTerm = this.searchSettings.q;
-                if (corrected && this.searchedTerm) {
-                    this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
-                }
-                if (err || !result || !result.aggregations) {
-                    this.alert.addAlert('danger', 'There was a problem with your query');
-                    this.elts = [];
-                    this.searching = false;
-                    return;
-                }
-                if (timestamp < lastQueryTimeStamp) {
-                    this.searching = false;
-                    return;
-                }
-                this.numPages = Math.ceil(result.totalItems / this.searchSettings.resultPerPage);
-                this.took = result.took;
-                this.totalItems = result.totalItems;
-                this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
+        this.elasticService.generalSearchQuery(settings, this.module, (err, result, corrected) => {
+            this.searchedTerm = this.searchSettings.q;
+            if (corrected && this.searchedTerm) {
+                this.searchedTerm = this.searchedTerm.replace(/[^\w\s]/gi, '');
+            }
+            if (err || !result || !result.aggregations) {
+                this.alert.addAlert('danger', 'There was a problem with your query');
+                this.elts = [];
+                this.searching = false;
+                return;
+            }
+            if (timestamp < lastQueryTimeStamp) {
+                this.searching = false;
+                return;
+            }
+            this.numPages = Math.ceil(result.totalItems / this.searchSettings.resultPerPage);
+            this.took = result.took;
+            this.totalItems = result.totalItems;
+            this.totalItemsLimited = this.totalItems <= 10000 ? this.totalItems : 10000;
 
-                this.elts =
-                    this.module === 'form'
-                        ? (result as ElasticResponseDataForm).forms
-                        : (result as ElasticResponseDataDe).cdes;
-                const elts = this.elts;
+            this.elts =
+                this.module === 'form'
+                    ? (result as ElasticResponseDataForm).forms
+                    : (result as ElasticResponseDataDe).cdes;
+            const elts = this.elts;
 
-                if (this.searchSettings.page === 1 && result.totalItems > 0) {
-                    let maxJump = 0;
-                    let maxJumpIndex = 100;
-                    this.elts.map((e, i) => {
-                        if (!elts[i + 1]) {
-                            return;
-                        }
-                        const jump = e.score - elts[i + 1].score;
-                        if (jump > maxJump) {
-                            maxJump = jump;
-                            maxJumpIndex = i + 1;
-                        }
-                    });
-
-                    if (maxJump > result.maxScore / 4) {
-                        this.cutoffIndex = maxJumpIndex;
-                    } else {
-                        this.cutoffIndex = 100;
+            if (this.searchSettings.page === 1 && result.totalItems > 0) {
+                let maxJump = 0;
+                let maxJumpIndex = 100;
+                this.elts.map((e, i) => {
+                    if (!elts[i + 1]) {
+                        return;
                     }
+                    const jump = e.score - elts[i + 1].score;
+                    if (jump > maxJump) {
+                        maxJump = jump;
+                        maxJumpIndex = i + 1;
+                    }
+                });
+
+                if (maxJump > result.maxScore / 4) {
+                    this.cutoffIndex = maxJumpIndex;
                 } else {
                     this.cutoffIndex = 100;
                 }
+            } else {
+                this.cutoffIndex = 100;
+            }
 
-                this.orgHelperService.then(() => {
-                    elts.forEach(elt => {
-                        elt.usedBy = this.orgHelperService.getUsedBy(elt);
-                    });
-                }, noop);
+            this.orgHelperService.then(() => {
+                elts.forEach(elt => {
+                    elt.usedBy = this.orgHelperService.getUsedBy(elt);
+                });
+            }, noop);
 
-                const aggregations: ElasticQueryResponseAggregation = result.aggregations as any;
-                this.aggregations = aggregations;
+            const aggregations: ElasticQueryResponseAggregation = result.aggregations as any;
+            this.aggregations = aggregations;
 
-                this.aggregationsFlatClassifications = aggregations.flatClassifications
-                    ? aggregations.flatClassifications.flatClassifications.buckets.map(
-                          (c: ElasticQueryResponseAggregationBucket) => ({
-                              name: c.key.split(';').pop() || '',
-                              count: c.doc_count,
-                          })
-                      )
-                    : [];
+            this.aggregationsFlatClassifications = aggregations.flatClassifications
+                ? aggregations.flatClassifications.flatClassifications.buckets.map(
+                      (c: ElasticQueryResponseAggregationBucket) => ({
+                          name: c.key.split(';').pop() || '',
+                          count: c.doc_count,
+                      })
+                  )
+                : [];
 
-                if (aggregations.flatClassificationsAlt !== undefined) {
-                    this.aggregationsFlatClassificationsAlt =
-                        aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({
-                                name: c.key.split(';').pop() || '',
-                                count: c.doc_count,
-                            })
-                        );
+            if (aggregations.flatClassificationsAlt !== undefined) {
+                this.aggregationsFlatClassificationsAlt =
+                    aggregations.flatClassificationsAlt.flatClassificationsAlt.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({
+                            name: c.key.split(';').pop() || '',
+                            count: c.doc_count,
+                        })
+                    );
+            } else {
+                this.aggregationsFlatClassificationsAlt = [];
+                this.aggregationsExcludeClassification = [];
+            }
+
+            if (aggregations.meshTrees !== undefined) {
+                if (this.searchSettings.meshTree) {
+                    this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({
+                            name: c.key.split(';').pop() || '',
+                            count: c.doc_count,
+                        })
+                    );
                 } else {
-                    this.aggregationsFlatClassificationsAlt = [];
-                    this.aggregationsExcludeClassification = [];
+                    this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
+                        (c: ElasticQueryResponseAggregationBucket) => ({
+                            name: c.key.split(';')[0],
+                            count: c.doc_count,
+                        })
+                    );
                 }
+            } else {
+                this.aggregationsTopics = [];
+            }
 
-                if (aggregations.meshTrees !== undefined) {
-                    if (this.searchSettings.meshTree) {
-                        this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({
-                                name: c.key.split(';').pop() || '',
-                                count: c.doc_count,
-                            })
-                        );
-                    } else {
-                        this.aggregationsTopics = aggregations.meshTrees.meshTrees.buckets.map(
-                            (c: ElasticQueryResponseAggregationBucket) => ({
-                                name: c.key.split(';')[0],
-                                count: c.doc_count,
-                            })
-                        );
-                    }
-                } else {
-                    this.aggregationsTopics = [];
-                }
+            const orgsCreatedPromise = new Promise<void>(resolve => {
+                this.filterOutWorkingGroups(() => {
+                    this.orgHelperService.then(() => {
+                        this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
+                    }, noop);
+                    resolve();
+                });
+            });
 
-                const orgsCreatedPromise = new Promise<void>(resolve => {
-                    this.filterOutWorkingGroups(() => {
-                        this.orgHelperService.then(() => {
-                            this.orgHelperService.addLongNameToOrgs(aggregations.orgs.buckets);
-                        }, noop);
-                        resolve();
-                    });
+            this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
+            this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
+            aggregations.statuses.statuses.buckets.sort(
+                (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
+                    SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
+            );
+            this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
+
+            if (!this.isSearched()) {
+                this.orgs = [];
+                const orgs = this.orgs;
+
+                orgsCreatedPromise.then(() => {
+                    this.orgHelperService.then(orgsDetailedInfo => {
+                        this.orgHelperService.sortOrganizationsEndorsedFirst(aggregations.orgs.buckets);
+                        aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
+                            const orgsDetailedInfoMapped = orgsDetailedInfo[orgBucket.key];
+                            if (orgsDetailedInfo[orgBucket.key]) {
+                                orgs.push({
+                                    endorsed: orgsDetailedInfoMapped.endorsed,
+                                    classifications: [],
+                                    name: orgBucket.key,
+                                    longName: orgsDetailedInfo[orgBucket.key].longName,
+                                    count: orgBucket.doc_count,
+                                    uri: orgsDetailedInfo[orgBucket.key].uri,
+                                    extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
+                                    htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
+                                    cdeStatusValidationRules: [],
+                                });
+                            }
+                        });
+                    }, noop);
                 });
 
-                this.aggregationsFlatClassifications.sort(SearchBaseComponent.compareObjName);
-                this.aggregationsFlatClassificationsAlt.sort(SearchBaseComponent.compareObjName);
-                aggregations.statuses.statuses.buckets.sort(
-                    (a: ElasticQueryResponseAggregationBucket, b: ElasticQueryResponseAggregationBucket) =>
-                        SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
-                );
-                this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
-
-                if (!this.isSearched()) {
-                    this.orgs = [];
-                    const orgs = this.orgs;
-
-                    orgsCreatedPromise.then(() => {
-                        this.orgHelperService.then(orgsDetailedInfo => {
-                            this.orgHelperService.sortOrganizationsEndorsedFirst(aggregations.orgs.buckets);
-                            aggregations.orgs.buckets.forEach((orgBucket: ElasticQueryResponseAggregationBucket) => {
-                                const orgsDetailedInfoMapped = orgsDetailedInfo[orgBucket.key];
-                                if (orgsDetailedInfo[orgBucket.key]) {
-                                    orgs.push({
-                                        endorsed: orgsDetailedInfoMapped.endorsed,
-                                        classifications: [],
-                                        name: orgBucket.key,
-                                        longName: orgsDetailedInfo[orgBucket.key].longName,
-                                        count: orgBucket.doc_count,
-                                        uri: orgsDetailedInfo[orgBucket.key].uri,
-                                        extraInfo: orgsDetailedInfo[orgBucket.key].extraInfo,
-                                        htmlOverview: orgsDetailedInfo[orgBucket.key].htmlOverview,
-                                        cdeStatusValidationRules: [],
-                                    });
-                                }
-                            });
-                        }, noop);
-                    });
-
-                    this.topics = {};
-                    const topics = this.topics;
-                    this.topicsKeys.length = 0;
-                    aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(
-                        (term: ElasticQueryResponseAggregationBucket) => {
-                            const spli: string[] = term.key.split(';');
-                            if (!topics[spli[0]]) {
-                                topics[spli[0]] = [];
-                            }
-                            topics[spli[0]].push({ name: spli[1], count: term.doc_count });
+                this.topics = {};
+                const topics = this.topics;
+                this.topicsKeys.length = 0;
+                aggregations.twoLevelMesh.twoLevelMesh.buckets.forEach(
+                    (term: ElasticQueryResponseAggregationBucket) => {
+                        const spli: string[] = term.key.split(';');
+                        if (!topics[spli[0]]) {
+                            topics[spli[0]] = [];
                         }
-                    );
-                    for (const prop in this.topics) {
-                        if (this.topics.hasOwnProperty(prop)) {
-                            this.topicsKeys.push(prop);
-                        }
+                        topics[spli[0]].push({ name: spli[1], count: term.doc_count });
                     }
-                    this.topicsKeys.sort();
+                );
+                for (const prop in this.topics) {
+                    if (this.topics.hasOwnProperty(prop)) {
+                        this.topicsKeys.push(prop);
+                    }
                 }
-                this.scrollHistoryLoad();
-                this.searching = false;
+                this.topicsKeys.sort();
             }
-        );
+            this.scrollHistoryLoad();
+            this.searching = false;
+        });
     }
 
     reset() {

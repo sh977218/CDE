@@ -11,6 +11,12 @@ import { PluckPipe } from 'non-core/pipes/pluck.pipe';
     imports: [],
     declarations: [PlaceHoldEmptyPipe, PluckPipe],
     exports: [PlaceHoldEmptyPipe, PluckPipe],
-    providers: [AngularHelperService, ClassificationService, ExportService, IsAllowedService, RegistrationValidatorService],
+    providers: [
+        AngularHelperService,
+        ClassificationService,
+        ExportService,
+        IsAllowedService,
+        RegistrationValidatorService,
+    ],
 })
 export class NonCoreModule {}

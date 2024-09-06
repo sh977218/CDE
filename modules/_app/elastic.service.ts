@@ -2,22 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { UserService } from '_app/user.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
-import {
-    DataElement,
-    DataElementElastic,
-    ElasticElement, ElasticResponseDataDe,
-} from 'shared/de/dataElement.model';
-import {
-    CdeForm,
-    CdeFormElastic, ElasticResponseDataForm
-} from 'shared/form/form.model';
+import { DataElement, DataElementElastic, ElasticElement, ElasticResponseDataDe } from 'shared/de/dataElement.model';
+import { CdeForm, CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
 import { deOrForm, ElasticResponseDataItem, ItemElastic } from 'shared/item';
-import {
-    UserSearchSettings,
-    CbErr2,
-    Cb2,
-    CbErr1, ModuleItem,
-} from 'shared/models.model';
+import { UserSearchSettings, CbErr2, Cb2, CbErr1, ModuleItem } from 'shared/models.model';
 import { SearchSettings, SearchSettingsElastic } from 'shared/search/search.model';
 
 const includeRetiredSessionKey = 'nlmcde.includeRetired';

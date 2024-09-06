@@ -25,7 +25,7 @@ import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
 import { lastValueFrom, Observable } from 'rxjs';
 import { Item } from 'shared/item';
-import { assertUnreachable, Cb, Cb1, Comment, Elt } from 'shared/models.model';
+import { assertUnreachable, Cb, Cb1, Elt } from 'shared/models.model';
 import {
     DataElement,
     DatatypeContainerDate,
@@ -53,7 +53,6 @@ import { DatePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet } from '@angular/com
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { TocModule } from 'angular-aio-toc/toc.module';
-import { DiscussModule } from 'discuss/discuss.module';
 import { AdminItemModule } from 'adminItem/adminItem.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -97,7 +96,6 @@ export class LocatableError {
         MatProgressSpinnerModule,
         MatSidenavModule,
         TocModule,
-        DiscussModule,
         AdminItemModule,
         MatIconModule,
         RouterLink,
@@ -264,11 +262,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             addFormIds(elt);
             this._elt = elt;
             this.title.setTitle('Form: ' + Elt.getLabel(elt));
-            this.loadComments(elt, () => {
-                setTimeout(() => {
-                    this.viewReady();
-                }, 0);
-            });
+            setTimeout(() => this.viewReady());
             if (this._elt.registrationState.registrationStatus === 'Retired') {
                 this.loadCurrentVersionFormName();
             }
@@ -300,21 +294,6 @@ export class FormViewComponent implements OnInit, OnDestroy {
             }
         }
         return this.hasDrafts;
-    }
-
-    loadComments(form: CdeForm, cb = noop) {
-        if (this.userService.canSeeComment()) {
-            this.http.get<Comment[]>('/server/discuss/comments/eltId/' + form.tinyId).subscribe(
-                res => {
-                    this.hasComments = res && res.length > 0;
-                    this.tabsCommented = res.map(c => c.linkedTab + '_tab');
-                    cb();
-                },
-                err => this.alert.httpErrorAlert(err, 'Error loading comments.')
-            );
-        } else {
-            cb();
-        }
     }
 
     loadElt(cb: Cb1<CdeFormDraft> = noop) {

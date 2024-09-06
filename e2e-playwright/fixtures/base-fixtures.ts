@@ -244,8 +244,8 @@ const baseFixture = baseTest.extend<{
     editorsPage: async ({ page, materialPage }, use) => {
         await use(new EditorsPo(page, materialPage));
     },
-    manageOrganizationsPage: async ({ page }, use) => {
-        await use(new ManageOrganizationsPo(page));
+    manageOrganizationsPage: async ({ page, materialPage, inlineEdit }, use) => {
+        await use(new ManageOrganizationsPo(page, materialPage, inlineEdit));
     },
     manageTagsPropertiesPage: async ({ page, materialPage }, use) => {
         await use(new ManageTagsPropertiesPo(page, materialPage));

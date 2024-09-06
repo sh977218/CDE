@@ -10,7 +10,7 @@ import { copyShallow } from 'shared/util';
 
 const boardHooks: CrudHooks<Board, ObjectId> = {
     read: {
-        post: (board) => {
+        post: board => {
             if (board) {
                 board.elementType = 'board';
             }
@@ -18,7 +18,7 @@ const boardHooks: CrudHooks<Board, ObjectId> = {
         },
     },
     save: {
-        pre: (board) => {
+        pre: board => {
             delete (board as any).elementType;
             return board;
         },
@@ -26,20 +26,20 @@ const boardHooks: CrudHooks<Board, ObjectId> = {
             if (board) {
                 const elasticBoard = copyShallow(board);
                 delete elasticBoard._id;
-                updateOrInsertBoardById(board._id.toString(), elasticBoard)
-                    .catch(respondError({publicMessage: 'Unable to index board: ' + board._id}));
+                updateOrInsertBoardById(board._id.toString(), elasticBoard).catch(
+                    respondError({ publicMessage: 'Unable to index board: ' + board._id })
+                );
             }
             return board;
         },
     },
     delete: {
-        pre: (_id) => _id,
-        post: (_id) => {
-            deleteBoardById(_id.toString())
-                .catch(respondError({publicMessage: 'Unable to remove board: ' + _id}));
+        pre: _id => _id,
+        post: _id => {
+            deleteBoardById(_id.toString()).catch(respondError({ publicMessage: 'Unable to remove board: ' + _id }));
         },
     },
-}
+};
 
 class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
     constructor(model: Model<BoardDocument>) {
@@ -51,7 +51,7 @@ class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
     }
 
     byIdAndOwner(id: string, ownerId: string): Promise<Board | null> {
-        return this.findOne({_id: new ObjectId(id), 'owner.userId': ownerId});
+        return this.findOne({ _id: new ObjectId(id), 'owner.userId': ownerId });
     }
 
     byKey(key: string): Promise<Board | null> {
@@ -63,7 +63,7 @@ class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
     }
 
     countByUser(userId: string): Promise<number> {
-        return this.count({'owner.userId': userId});
+        return this.count({ 'owner.userId': userId });
     }
 
     deleteOneById(_id: ObjectId): Promise<void> {
@@ -72,7 +72,9 @@ class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
 
     save(board: Board): Promise<Board> {
         return Promise.resolve(this.hooks.save.pre(board))
-            .then(board => this.model.findOneAndReplace({_id: new ObjectId(board._id)}, board, {new: true, upsert: true}))
+            .then(board =>
+                this.model.findOneAndReplace({ _id: new ObjectId(board._id) }, board, { new: true, upsert: true })
+            )
             .then(doc => doc.toObject<Board>())
             .then(board => (this.hooks.save.post as (b: Board) => PromiseOrValue<Board>)(board)); // TODO: TypeScript/issues/37181
     }

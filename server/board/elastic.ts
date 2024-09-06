@@ -15,54 +15,56 @@ if (config.elastic.boardIndex.name === 'auto') {
 const boardIndexName = config.elastic.boardIndex.name;
 
 export function boardRefresh() {
-    return esClient.indices.refresh({index: config.elastic.boardIndex.name});
+    return esClient.indices.refresh({ index: config.elastic.boardIndex.name });
 }
 
 export function updateOrInsertBoardById(id: string, board: Omit<Board, '_id'>): Promise<void> {
-    return esClient.index({
-        index: config.elastic.boardIndex.name,
-        type: '_doc',
-        id,
-        body: board
-    }).then();
+    return esClient
+        .index({
+            index: config.elastic.boardIndex.name,
+            type: '_doc',
+            id,
+            body: board,
+        })
+        .then();
 }
 
 export function deleteBoardById(id: string): Promise<void> {
-    return esClient.delete({
-        index: config.elastic.boardIndex.name,
-        id,
-    }).then();
+    return esClient
+        .delete({
+            index: config.elastic.boardIndex.name,
+            id,
+        })
+        .then();
 }
 
 export function myBoards(user: User, filter: BoardFilter) {
     const sort: SortOptions = {};
     if (filter.sortBy) {
-        sort[filter.sortBy] = {order: filter.sortDirection};
+        sort[filter.sortBy] = { order: filter.sortDirection };
     } else {
-        sort.updatedDate = {order: 'asc'};
+        sort.updatedDate = { order: 'asc' };
     }
 
-    const boolMust: QueryDslQueryContainer[] = [
-        esqTerm('owner.username', {value: user.username.toLowerCase()})
-    ];
+    const boolMust: QueryDslQueryContainer[] = [esqTerm('owner.username', { value: user.username.toLowerCase() })];
     if (filter.selectedTypes) {
         filter.selectedTypes.forEach(t => {
             if (t !== 'All') {
-                boolMust.push(esqTerm('type', {value: t}));
+                boolMust.push(esqTerm('type', { value: t }));
             }
         });
     }
     if (filter.selectedTags) {
         filter.selectedTags.forEach(t => {
             if (t !== 'All') {
-                boolMust.push(esqTerm('tags', {value: t}));
+                boolMust.push(esqTerm('tags', { value: t }));
             }
         });
     }
     if (filter.selectedShareStatus) {
         filter.selectedShareStatus.forEach(ss => {
             if (ss !== 'All') {
-                boolMust.push(esqTerm('shareStatus', {value: ss}));
+                boolMust.push(esqTerm('shareStatus', { value: ss }));
             }
         });
     }
@@ -73,11 +75,11 @@ export function myBoards(user: User, filter: BoardFilter) {
             size: 100,
             query: esqBoolMust(boolMust),
             aggs: {
-                typeAgg: {terms: {field: 'type'}},
-                tagAgg: {terms: {field: 'tags', size: 50}},
-                ssAgg: {terms: {field: 'shareStatus'}}
+                typeAgg: { terms: { field: 'type' } },
+                tagAgg: { terms: { field: 'tags', size: 50 } },
+                ssAgg: { terms: { field: 'shareStatus' } },
             },
-            sort
-        }
+            sort,
+        },
     });
 }

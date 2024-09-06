@@ -48,7 +48,6 @@ import { NonCoreModule } from 'non-core/noncore.module';
 import { SearchModule } from 'search/search.module';
 import { ArticleAdminComponent } from 'settings/article/articleAdmin.component';
 import { ArticleHelpDialogComponent } from 'settings/article/articleHelpDialog.component';
-import { CommentsComponent } from 'settings/comments/comments.component';
 import { AllDraftsResolve } from 'settings/drafts/allDrafts.resolve';
 import { DataValidationComponent } from 'settings/dataValidation/dataValidation.component';
 import { MeshSyncService } from 'settings/mesh-mapping/meshSync.service';
@@ -116,14 +115,6 @@ const appRoutes: Routes = [
                 resolve: { drafts: MyDraftsResolve },
                 data: { title: 'My Drafts' },
             },
-            {
-                path: 'myComments',
-                component: CommentsComponent,
-                data: {
-                    title: 'My Comments',
-                    commentsUrl: '/server/discuss/myComments/',
-                },
-            },
             // Org Authority Can Access
             {
                 path: 'orgAdmin',
@@ -154,14 +145,6 @@ const appRoutes: Routes = [
                 component: DraftsComponent,
                 resolve: { drafts: MyOrgDraftsResolve },
                 data: { title: "My Organizations' Drafts" },
-            },
-            {
-                path: 'myOrgComments',
-                component: CommentsComponent,
-                data: {
-                    title: "My Organizations' Comments",
-                    commentsUrl: '/server/discuss/orgComments/',
-                },
             },
             {
                 path: 'tagsManagement',
@@ -196,15 +179,6 @@ const appRoutes: Routes = [
                 component: UsersMgtComponent,
                 canActivate: [orgAdminGuard],
                 data: { title: 'Users' },
-            },
-            {
-                path: 'allComments',
-                component: CommentsComponent,
-                canActivate: [orgAuthorityGuard],
-                data: {
-                    title: 'All Comments',
-                    commentsUrl: '/server/discuss/allComments/',
-                },
             },
             {
                 path: 'allDrafts',
@@ -318,7 +292,6 @@ const appRoutes: Routes = [
     declarations: [
         ArticleHelpDialogComponent,
         ArticleAdminComponent,
-        CommentsComponent,
         DraftsComponent,
         EditSiteAdminsComponent,
         IdSourcesComponent,

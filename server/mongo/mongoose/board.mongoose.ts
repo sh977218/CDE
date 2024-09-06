@@ -11,5 +11,5 @@ const conn = establishConnection(config.database.appData);
 export const boardModel: Model<BoardDocument> = conn.model('PinningBoard', boardSchema);
 
 export function getStream(condition: any): Cursor<BoardDocument, QueryOptions<Board>> {
-    return boardModel.find(condition).sort({_id: -1}).cursor();
+    return boardModel.find(condition).sort({ _id: -1 }).cursor();
 }

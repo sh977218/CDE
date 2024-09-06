@@ -77,7 +77,6 @@
   "modules": {
     "forms": {
       "attachments": true,
-      "comments": true,
       "sectionLevels": 10,
       "localRender": false,
       "loincRender": true,
@@ -86,7 +85,6 @@
     "article": true,
     "cde": {
       "attachments": true,
-      "comments": true,
       "highlight": true,
       "audit": true
     }

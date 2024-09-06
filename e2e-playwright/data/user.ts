@@ -104,4 +104,8 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'formLinkedFormsUser',
         password: DEFAULT_PASSWORD,
     },
+    testuser: {
+        username: 'testuser',
+        password: DEFAULT_PASSWORD,
+    },
 };

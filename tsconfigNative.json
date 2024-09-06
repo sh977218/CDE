@@ -44,7 +44,6 @@
     "modules/classificationManagement",
     "modules/compare",
     "modules/deleteWithConfirm",
-    "modules/discuss",
     "modules/embedded",
     "modules/form",
     "modules/home",

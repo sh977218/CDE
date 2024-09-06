@@ -37,7 +37,6 @@
     "../../shared/search",
     "../../shared/security",
     "../../shared/singleton.model.ts",
-    "../../shared/user.ts",
     "../../shared/util.ts",
     "src/test.ts",
     "src/**/*.spec.ts",

@@ -19,7 +19,6 @@ import { module as attachmentModule } from 'server/attachment/attachmentRoutes';
 import { module as boardModule } from 'server/board/boardRoutes';
 import { module as deModule } from 'server/cde/deRouters';
 import { module as classificationModule } from 'server/classification/classificationRoutes';
-import { module as discussModule } from 'server/discuss/discussRoutes';
 import { module as formModule } from 'server/form/formRouters';
 import { module as loaderModule } from 'server/loader/loaderRoutes';
 import { module as logModule } from 'server/log/logRoutes';
@@ -33,7 +32,6 @@ import { module as appModule, respondHomeFull } from 'server/system/appRouters';
 import {
     canAttachMiddleware,
     canEditArticleMiddleware,
-    canSeeCommentMiddleware,
     checkEditing,
     isOrgAdminMiddleware,
     isOrgAuthorityMiddleware,
@@ -42,7 +40,6 @@ import {
 } from 'server/system/authorization';
 import { establishConnection } from 'server/system/connections';
 import { initEs } from 'server/system/elastic';
-import { startSocketIoServer } from 'server/system/ioServer';
 import { errorLogger, expressLogger } from 'server/system/logging';
 import { module as systemModule } from 'server/system/systemRouters';
 import { banHackers, banIp, bannedIps, blockBannedIps, getRealIp } from 'server/system/trafficFilterSvc';
@@ -422,13 +419,6 @@ try {
         attachmentModule(dbPlugins.article, isDocumentationEditor)
     );
     app.use(
-        '/server/discuss',
-        discussModule({
-            allComments: isOrgAuthorityMiddleware,
-            canSeeComment: canSeeCommentMiddleware,
-        })
-    );
-    app.use(
         '/server/log',
         logModule({
             feedbackLog: isOrgAuthorityMiddleware,
@@ -544,7 +534,6 @@ app.use(((err, req, res, next) => {
 
 domain.run(async () => {
     const server = http.createServer(app);
-    await startSocketIoServer(server, expressSettings, mongoClient);
     server.listen(app.get('port'), () => {
         console.log('Express server listening on port ' + app.get('port'));
     });
