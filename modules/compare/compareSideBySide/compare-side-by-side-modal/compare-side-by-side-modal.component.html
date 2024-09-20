@@ -36,7 +36,7 @@
     <ng-container *ngFor="let option of options">
         <div *ngIf="option.displayAs.display" id="{{option.displayAs.label}}" class="{{option.displayAs.label}}">
             <div style="overflow: hidden">
-                <strong>{{ option.displayAs.label }}</strong>
+                <strong>{{ option.displayAs.label }}</strong>  <mat-icon *ngIf="option.partialMatches.length" aria-label="Open compare detail modal" fontIcon="details" (click)="openCompareSideBySideDetailModal(option)"></mat-icon>
                 <ng-container *ngIf="fullMatched">
                     <div *ngFor="let fullMatch of option.fullMatches" class="splitHalf">
                         <div class="noLeftPadding" data-testid="compare-left-container">
@@ -58,7 +58,6 @@
                     </div>
                 </ng-container>
                 <ng-container *ngIf="partialMatched">
-
                     <div *ngFor="let partialMatch of option.partialMatches" class="splitHalf">
                         <div class="noLeftPadding" data-testid="compare-left-container">
                             <div class="partialMatch" data-testid="partial-match">
@@ -81,7 +80,6 @@
                     </div>
                 </ng-container>
                 <ng-container *ngIf="notMatched">
-
                     <div *ngIf="option.leftNotMatches.length>0 || option.rightNotMatches.length>0" class="splitHalf">
                         <div class="noLeftPadding" data-testid="compare-left-container">
                             <div *ngFor="let leftNotMatch of option.leftNotMatches" class="notMatch"

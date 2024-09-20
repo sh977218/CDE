@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormElement, FormElementsContainer, QuestionValueList } from 'shared/form/form.model';
 import {
     Concept,
@@ -25,6 +25,7 @@ import { CompareItem } from 'compare/compareSideBySide/compare-item';
 import { CompareQuestion } from 'compare/compareSideBySide/compare-question';
 import { CompareForm } from 'compare/compareSideBySide/compare-form';
 import { tap } from 'rxjs/operators';
+import { CompareSideBySideDetailComponent } from 'compare/compare-side-by-side-detail/compare-side-by-side-detail.component';
 
 interface CompareOption<T> {
     displayAs: {
@@ -70,7 +71,8 @@ export class CompareSideBySideModalComponent {
         private alert: AlertService,
         private http: HttpClient,
         public isAllowedModel: IsAllowedService,
-        @Inject(MAT_DIALOG_DATA) public selectedDEs: CompareItem[] = []
+        @Inject(MAT_DIALOG_DATA) public selectedDEs: CompareItem[] = [],
+        public dialog: MatDialog
     ) {
         this.doCompare(selectedDEs[0], selectedDEs[1], () => {});
     }
@@ -694,5 +696,18 @@ export class CompareSideBySideModalComponent {
         } else {
             return value;
         }
+    }
+
+    openCompareSideBySideDetailModal(option: CompareOption<any>) {
+        this.dialog
+            .open(CompareSideBySideDetailComponent, {
+                width: '1200px',
+                data: {
+                    left: get(this.left, option.displayAs.property),
+                    right: get(this.right, option.displayAs.property),
+                },
+            })
+            .afterClosed()
+            .subscribe();
     }
 }
