@@ -340,9 +340,6 @@ export function riverFunction(_elt: Item, cb: Cb1<Item | void>) {
         const de = elt as DataElementElastic;
         if (de.valueDomain && de.valueDomain.datatype === 'Value List' && de.valueDomain.permissibleValues) {
             de.valueDomain.nbOfPVs = de.valueDomain.permissibleValues.length;
-            if (de.valueDomain.permissibleValues.length > 20) {
-                de.valueDomain.permissibleValues.length = 20;
-            }
         }
 
         const form = elt as CdeFormElastic;

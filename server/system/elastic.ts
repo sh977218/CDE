@@ -520,14 +520,6 @@ export function elasticsearch<T extends ModuleItem>(
         for (const hit of response.hits.hits) {
             const thisCde = hit._source as DataElementElastic;
             thisCde.score = hit._score ?? 0;
-            if (
-                thisCde.valueDomain &&
-                thisCde.valueDomain.datatype === 'Value List' &&
-                thisCde.valueDomain.permissibleValues &&
-                thisCde.valueDomain.permissibleValues.length > 10
-            ) {
-                thisCde.valueDomain.permissibleValues = thisCde.valueDomain.permissibleValues.slice(0, 10);
-            }
             thisCde.properties = [];
             thisCde.flatProperties = [];
             thisCde.highlight = hit.highlight;
