@@ -81,7 +81,7 @@ export function projectItemForExport(ele: ItemElastic, settings?: TableViewField
     }
     const pvs = ((ele as DataElementElastic).valueDomain as ValueDomainValueList).permissibleValues;
     if (settings && settings.permissibleValues) {
-        cde.permissibleValues = (pvs || []).slice(0, 50).map((pv: PermissibleValue) => pv.permissibleValue);
+        cde.permissibleValues = (pvs || []).map((pv: PermissibleValue) => pv.permissibleValue);
     }
     if (settings && settings.nbOfPVs) {
         cde.nbOfPVs = pvs?.length || 0;
