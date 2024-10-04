@@ -91,6 +91,9 @@ function buildElasticSearchQuery(
     if (!Array.isArray(settings.selectedStatuses)) {
         settings.selectedStatuses = [];
     }
+    if (!Array.isArray(settings.selectedAdminStatuses)) {
+        settings.selectedAdminStatuses = [];
+    }
 
     const from = generateFrom(settings);
     const size = generateSize(settings);
