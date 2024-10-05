@@ -48,13 +48,9 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     confirmSave() {
-        if (InlineAreaEditComponent.isInvalidHtml(this.value)) {
-            alert('Error. Img src may only be a relative url starting with /data');
-        } else {
-            this.editMode = false;
-            this.defFormatChange.emit(this.localFormat);
-            this.modelChange.emit(this.value);
-        }
+        this.editMode = false;
+        this.defFormatChange.emit(this.localFormat);
+        this.modelChange.emit(this.value);
     }
 
     discard() {

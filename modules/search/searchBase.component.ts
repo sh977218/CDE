@@ -780,8 +780,9 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
                     SearchBaseComponent.getRegStatusIndex(a) - SearchBaseComponent.getRegStatusIndex(b)
             );
             aggregations.adminStatuses.adminStatuses.buckets.sort((a: { key: string }, b: { key: string }): number =>
-                    SearchBaseComponent.compareString(a.key, b.key));
-                this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
+                SearchBaseComponent.compareString(a.key, b.key)
+            );
+            this.aggregationsTopics.sort(SearchBaseComponent.compareObjName);
 
             if (!this.isSearched()) {
                 this.orgs = [];

@@ -258,4 +258,13 @@ export class NavigationMenuPo {
     async gotoAbout() {
         await this.clickUntilUrl(this.page.locator(`#aboutLink`), /\/about/);
     }
+
+    async gotoContactUs() {
+        await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
+        const [newPage] = await Promise.all([
+            this.page.context().waitForEvent('page'),
+            this.materialPage.matMenuItem('Contact Us').click(),
+        ]);
+        return newPage;
+    }
 }

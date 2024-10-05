@@ -42,4 +42,15 @@ test.describe(`App Routing @oneTest`, async () => {
             });
         }
     });
+
+    test.describe(`404 page`, async () => {
+        test(`wrong route`, async ({ page }) => {
+            await page.goto(`/abc`);
+            await expect(page).toHaveTitle('Page Not Found');
+        });
+        test(`wrong tinyId`, async ({ page }) => {
+            await page.goto(`/deView?tinyId=abc`);
+            await expect(page).toHaveTitle('Page Not Found');
+        });
+    });
 });

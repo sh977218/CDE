@@ -11,7 +11,7 @@ export function byClass(page: Page | Locator, c: string): Locator {
 // "has" requires a relative locator so locator() needs to be called twice with the same selector
 export function has(page: Page | Locator, selector: string, hasFn: (locator: Locator) => Locator) {
     return page.locator(selector, {
-        has: hasFn(page.locator(selector))
+        has: hasFn(page.locator(selector)),
     });
 }
 
