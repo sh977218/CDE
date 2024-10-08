@@ -9,7 +9,6 @@ export function diff(newElt: ItemDocument, oldElt: ItemDocument) {
         delete elt._id;
         elt.archived = false;
         delete elt.changeNote;
-        elt.comments = [];
         elt.history = [];
         delete elt.updated;
         delete elt.updatedBy;

@@ -2,6 +2,7 @@
 *.orig
 *.pem
 *.sqlite
+*.log
 .nide
 bin
 build/
@@ -25,9 +26,10 @@ ssl/
 my-*
 config/cluster.json
 config/local.json
-config/qa-mig.json
+config/qa-*.json
 config/migration.json
 config/peter.json
+config/prod-*.json
 config/my-qa.json
 config/my-prod.json
 mongo.pem.txt

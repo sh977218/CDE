@@ -184,11 +184,7 @@ export function updateUser(user: User, fields: Partial<UserFull>): Promise<UserF
         update.email = fields.email;
     }
     if (fields.notificationSettings) {
-        if (
-            fields.notificationSettings.approvalAttachment ||
-            fields.notificationSettings.approvalComment ||
-            fields.notificationSettings.comment
-        ) {
+        if (fields.notificationSettings.approvalAttachment) {
             update.notificationSettings = fields.notificationSettings;
         }
     }

@@ -121,7 +121,7 @@ export class HistoryComponent {
         this.priorElements = this.priorElementsFull.slice(0, 4);
         this.priorElementsFull.slice(4).forEach(h => {
             h.selected = false;
-        })
+        });
         this.countSelected();
         this.toggled = false;
     }

@@ -609,7 +609,7 @@ export function processWorkBook(
             }
 
             if (value) {
-                const terms = value.replace(/([\s*“”‘’'|—="!…:_.,;(){}–\-`?/\[\]]+)/g, '§sep§').split('§sep§');
+                const terms = value.replace(/([\s*“”’|—="!…:_.,;(){}–\-`?/\[\]]+)/g, '§sep§').split('§sep§');
                 for (let term of terms) {
                     if (!/\d/.test(term) && term.toUpperCase() !== term) {
                         // skip if contains number or in ALL CAPS

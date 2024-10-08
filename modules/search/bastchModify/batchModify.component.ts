@@ -14,7 +14,8 @@ import {
     administrativeStatuses,
     ClassificationClassified,
     curationStatus,
-    CurationStatus, ModuleItem
+    CurationStatus,
+    ModuleItem,
 } from 'shared/models.model';
 import { SearchSettings } from 'shared/search/search.model';
 
@@ -28,14 +29,14 @@ export interface BatchModifyDialogData {
     templateUrl: './batchModify.component.html',
     styleUrls: ['./batchModify.component.scss'],
     standalone: true,
-    imports: [AsyncPipe, NgIf, NgForOf, FormsModule, MatIconModule, AdminItemModule, SearchModule]
+    imports: [AsyncPipe, NgIf, NgForOf, FormsModule, MatIconModule, AdminItemModule, SearchModule],
 })
 export class BatchModifyComponent {
     addClassification: ClassificationClassified[] = [];
     administrativeStatuses = administrativeStatuses;
     adminStatusTo?: AdministrativeStatus[];
-    editAdminStatus?: {from: AdministrativeStatus, to?: AdministrativeStatus};
-    editRegStatus?: {from: CurationStatus, to?: CurationStatus};
+    editAdminStatus?: { from: AdministrativeStatus; to?: AdministrativeStatus };
+    editRegStatus?: { from: CurationStatus; to?: CurationStatus };
     isProcessing: boolean = false;
     isReview: boolean = false;
     regStatus = curationStatus;
@@ -46,35 +47,39 @@ export class BatchModifyComponent {
         private alert: AlertService,
         private elasticService: ElasticService,
         private http: HttpClient,
-        public dialogRef: MatDialogRef<BatchModifyComponent>,
-    ) {
-    }
+        public dialogRef: MatDialogRef<BatchModifyComponent>
+    ) {}
 
     changeAdminStatus() {
-        this.editAdminStatus={from: this.data.searchSettings.adminStatuses[0]};
-        this.updateAdminStatusToList()
+        this.editAdminStatus = { from: this.data.searchSettings.adminStatuses[0] };
+        this.updateAdminStatusToList();
     }
 
     changeRegStatus() {
-        this.editRegStatus = {from: this.data.searchSettings.regStatuses[0]};
+        this.editRegStatus = { from: this.data.searchSettings.regStatuses[0] };
         this.updateRegStatusToList();
     }
 
     process() {
         this.isProcessing = true;
-        this.http.post<string[]>(`/server/${this.data.module === 'cde' ? 'de' : 'form'}/batchModify`, {
-            searchSettings: this.elasticService.buildElasticQuerySettings(this.data.searchSettings),
-            count: this.data.selectedCount,
-            editAdminStatus: this.editAdminStatus,
-            editRegStatus: this.editRegStatus,
-        } as BatchModifyRequest).subscribe((notModified) => {
-            this.dialogRef.close();
-            if (!notModified || notModified.length === 0) {
-                this.alert.addAlert('success', 'Batch Modification finished');
-            } else {
-                this.alert.addAlert('danger', 'Batch Modifications not complete: ' + notModified.join(', '));
-            }
-        }, err => {});
+        this.http
+            .post<string[]>(`/server/${this.data.module === 'cde' ? 'de' : 'form'}/batchModify`, {
+                searchSettings: this.elasticService.buildElasticQuerySettings(this.data.searchSettings),
+                count: this.data.selectedCount,
+                editAdminStatus: this.editAdminStatus,
+                editRegStatus: this.editRegStatus,
+            } as BatchModifyRequest)
+            .subscribe(
+                notModified => {
+                    this.dialogRef.close();
+                    if (!notModified || notModified.length === 0) {
+                        this.alert.addAlert('success', 'Batch Modification finished');
+                    } else {
+                        this.alert.addAlert('danger', 'Batch Modifications not complete: ' + notModified.join(', '));
+                    }
+                },
+                err => {}
+            );
     }
 
     review() {
@@ -83,7 +88,8 @@ export class BatchModifyComponent {
 
     updateAdminStatusToList() {
         this.adminStatusTo = this.editAdminStatus?.from
-            ? this.administrativeStatuses.filter(s => s !== this.editAdminStatus?.from) : [];
+            ? this.administrativeStatuses.filter(s => s !== this.editAdminStatus?.from)
+            : [];
         if (this.editAdminStatus?.to && !this.adminStatusTo.includes(this.editAdminStatus?.to)) {
             this.editAdminStatus.to = undefined;
         }
@@ -91,7 +97,8 @@ export class BatchModifyComponent {
 
     updateRegStatusToList() {
         this.regStatusTo = this.editRegStatus?.from
-            ? this.regStatus.filter(reg => reg !== this.editRegStatus?.from) : [];
+            ? this.regStatus.filter(reg => reg !== this.editRegStatus?.from)
+            : [];
         if (this.editRegStatus?.to && !this.regStatusTo.includes(this.editRegStatus.to)) {
             this.editRegStatus.to = undefined;
         }
