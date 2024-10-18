@@ -8,8 +8,8 @@ import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 export type SubmissionDocument = Document<ObjectId, {}, Submission> & Submission;
 
 const conn = establishConnection(config.database.appData);
-export const submissionModel: Model<SubmissionDocument> = conn.model('submission', submissionSchema);
+export const submissionModel: Model<SubmissionDocument> = conn.model('submission', submissionSchema) as any;
 
 export function getStream(condition: any): Cursor<SubmissionDocument, QueryOptions<Submission>> {
-    return submissionModel.find(condition).sort({_id: -1}).cursor();
+    return submissionModel.find(condition).sort({ _id: -1 }).cursor();
 }

@@ -48,8 +48,8 @@ export function module(roleConfig: { manage: RequestHandler; search: RequestHand
     });
 
     router.get('/orgCuratorNames/:org', canSubmissionSubmitMiddleware, (req, res) => {
-        orgCurators([req.params.org], (err, users) => {
-            if (err && !users) {
+        orgCurators([req.params.org]).then(users => {
+            if (!users) {
                 res.status(400).send();
             }
             res.send(users.map(u => u.username));

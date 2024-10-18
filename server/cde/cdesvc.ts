@@ -5,13 +5,18 @@ import { moreLike } from 'server/cde/elastic.moreLike';
 import {
     create as deCreate,
     DataElementDraft,
-    dataElementModel, draftById as deDraftById, draftByTinyId as deDraftByTinyId, draftDelete as deDraftDelete,
+    dataElementModel,
+    draftById as deDraftById,
+    draftByTinyId as deDraftByTinyId,
+    draftDelete as deDraftDelete,
     draftSave as deDraftSave,
     inCdeView,
     originalSourceByTinyIdSourceName as deOriginalSourceByTinyIdSourceName,
-    update, findModifiedElementsSince, derivationByInputs
+    update,
+    findModifiedElementsSince,
+    derivationByInputs,
 } from 'server/cde/mongo-cde';
-import { handleError, handleNotFound, respondError } from 'server/errorHandler';
+import { handleNotFound, respondError } from 'server/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
@@ -28,21 +33,23 @@ import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 const js2xml = require('js2xmlparser');
 
-const sendDataElement = (req: Request, res: Response) => (dataElement: DataElement): Response => {
-    if (!req.user) {
-        hideProprietaryCodes(dataElement);
-    }
-    if (req.query.type === 'xml') {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-        res.setHeader('Content-Type', 'application/xml');
-        const cde = dataElement;
-        return res.send(js2xml('dataElement', stripBsonIdsElt(cde)));
-    }
-    inCdeView(dataElement);
-    addCdeToViewHistory(dataElement, req.user);
-    return res.send(dataElement);
-};
+const sendDataElement =
+    (req: Request, res: Response) =>
+    (dataElement: DataElement): Response => {
+        if (!req.user) {
+            hideProprietaryCodes(dataElement);
+        }
+        if (req.query.type === 'xml') {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+            res.setHeader('Content-Type', 'application/xml');
+            const cde = dataElement;
+            return res.send(js2xml('dataElement', stripBsonIdsElt(cde)));
+        }
+        inCdeView(dataElement);
+        addCdeToViewHistory(dataElement, req.user);
+        return res.send(dataElement);
+    };
 
 export function batchModify(req: Request, res: Response): Promise<Response> {
     const body = req.body as BatchModifyRequest;
@@ -55,112 +62,128 @@ export function batchModify(req: Request, res: Response): Promise<Response> {
                 return resolve(res.status(400).send('search count does not match'));
             }
             const editRegStatus = body.editRegStatus?.from && !!body.editRegStatus.to ? body.editRegStatus : null;
-            const editAdminStatus = body.editAdminStatus?.from && !!body.editAdminStatus.to ? body.editAdminStatus : null;
-            consoleLog(`Running Batch Modify from search "/cde/search?${searchSettingsElasticToQueryString(body.searchSettings)}"`
-                + (editRegStatus ? ` (Modify registration status from ${editRegStatus.from} to ${editRegStatus.to})` : '')
-                + (editAdminStatus ? ` (Modify administrative status from ${editAdminStatus.from} to ${editAdminStatus.to})` : '')
-                + ` on ${body.count} data elements.`, 'info');
+            const editAdminStatus =
+                body.editAdminStatus?.from && !!body.editAdminStatus.to ? body.editAdminStatus : null;
+            consoleLog(
+                `Running Batch Modify from search "/cde/search?${searchSettingsElasticToQueryString(
+                    body.searchSettings
+                )}"` +
+                    (editRegStatus
+                        ? ` (Modify registration status from ${editRegStatus.from} to ${editRegStatus.to})`
+                        : '') +
+                    (editAdminStatus
+                        ? ` (Modify administrative status from ${editAdminStatus.from} to ${editAdminStatus.to})`
+                        : '') +
+                    ` on ${body.count} data elements.`,
+                'info'
+            );
             const notModified: string[] = [];
             // TODO: existing drafts?? reject?
-            return Promise.all(result.cdes.map(de =>
-                dbPlugins.dataElement.byTinyId(de.tinyId).then(dbDataElement => {
-                    if (!dbDataElement) {
-                        return;
-                    }
-                    let modified = false;
-                    if (editRegStatus) {
-                        if (editRegStatus.from === dbDataElement.registrationState.registrationStatus) {
-                            dbDataElement.registrationState.registrationStatus = editRegStatus.to;
-                            modified = true;
+            return Promise.all(
+                result.cdes.map(de =>
+                    dbPlugins.dataElement.byTinyId(de.tinyId).then(dbDataElement => {
+                        if (!dbDataElement) {
+                            return;
                         }
-                    }
-                    if (editAdminStatus) {
-                        if (editAdminStatus.from === dbDataElement.registrationState.administrativeStatus) {
-                            dbDataElement.registrationState.administrativeStatus = editAdminStatus.to;
-                            modified = true;
+                        let modified = false;
+                        if (editRegStatus) {
+                            if (editRegStatus.from === dbDataElement.registrationState.registrationStatus) {
+                                dbDataElement.registrationState.registrationStatus = editRegStatus.to;
+                                modified = true;
+                            }
                         }
-                    }
-                    if (modified) {
-                        dbDataElement.changeNote = 'Batch update from search';
-                        incrementVersion(dbDataElement, '.sb');
-                        return update(dbDataElement, req.user);
-                    } else {
-                        notModified.push(dbDataElement.tinyId);
-                    }
-                })
-            ))
-                .then(() => resolve(res.send(notModified)));
+                        if (editAdminStatus) {
+                            if (editAdminStatus.from === dbDataElement.registrationState.administrativeStatus) {
+                                dbDataElement.registrationState.administrativeStatus = editAdminStatus.to;
+                                modified = true;
+                            }
+                        }
+                        if (modified) {
+                            dbDataElement.changeNote = 'Batch update from search';
+                            incrementVersion(dbDataElement, '.sb');
+                            return update(dbDataElement, req.user);
+                        } else {
+                            notModified.push(dbDataElement.tinyId);
+                        }
+                    })
+                )
+            ).then(() => resolve(res.send(notModified)));
         });
     });
 }
 
 export function byId(req: Request, res: Response): Promise<Response> {
     const id = req.params.id;
-    return dbPlugins.dataElement.byId(id)
-        .then(item => {
-            if (!item) {
-                return res.status(404).send();
-            }
-            return sendDataElement(req, res)(item);
-        }, respondError({req, res}));
+    return dbPlugins.dataElement.byId(id).then(item => {
+        if (!item) {
+            return res.status(404).send();
+        }
+        return sendDataElement(req, res)(item);
+    }, respondError({ req, res }));
 }
 
 export function byTinyId(req: Request, res: Response): Promise<Response> {
     const tinyId = req.params.tinyId;
-    return dbPlugins.dataElement.byTinyId(tinyId)
-        .then(item => {
-            if (!item) {
-                handleNotFound({req,res})(null, null);
-                return res;
-            }
-            return sendDataElement(req, res)(item);
-        }, respondError({req, res}));
+    return dbPlugins.dataElement.byTinyId(tinyId).then(item => {
+        if (!item) {
+            handleNotFound({ req, res })(null, null);
+            return res;
+        }
+        return sendDataElement(req, res)(item);
+    }, respondError({ req, res }));
 }
 
 export function priorDataElements(req: Request, res: Response): Promise<Response> {
     const id = req.params.id;
-    return dbPlugins.dataElement.byId(id)
+    return dbPlugins.dataElement
+        .byId(id)
         .then(dataElement => {
             if (!dataElement) {
                 return res.status(404).send();
             }
             const history = dataElement.history.concat([dataElement._id]).reverse();
-            return dataElementModel.find({}, {
-                'updatedBy.username': 1,
-                updated: 1,
-                changeNote: 1,
-                version: 1,
-                elementType: 1
-            }).where('_id').in(history)
+            return dataElementModel
+                .find(
+                    {},
+                    {
+                        'updatedBy.username': 1,
+                        updated: 1,
+                        changeNote: 1,
+                        version: 1,
+                        elementType: 1,
+                    }
+                )
+                .where('_id')
+                .in(history)
                 .then(priorDataElements => {
                     sortArrayByArray(priorDataElements, history);
                     return res.send(priorDataElements);
                 });
         })
-        .catch(respondError({req, res}));
+        .catch(respondError({ req, res }));
 }
 
 export function byTinyIdAndVersion(req: Request, res: Response): Promise<Response> {
-    const {tinyId, version} = req.params;
-    return dbPlugins.dataElement.byTinyIdAndVersion(tinyId, version)
-        .then(dataElement => {
-            if (!dataElement) {
-                handleNotFound({req,res})(null, null);
-                return res;
-            }
-            if (!req.user) {
-                hideProprietaryCodes(dataElement);
-            }
-            return res.send(dataElement);
-        }, respondError({req, res}));
+    const { tinyId, version } = req.params;
+    return dbPlugins.dataElement.byTinyIdAndVersion(tinyId, version).then(dataElement => {
+        if (!dataElement) {
+            handleNotFound({ req, res })(null, null);
+            return res;
+        }
+        if (!req.user) {
+            hideProprietaryCodes(dataElement);
+        }
+        return res.send(dataElement);
+    }, respondError({ req, res }));
 }
 
 export function draftForEditByTinyId(req: Request, res: Response): Promise<Response> {
     const tinyId = req.params.tinyId;
-    return dbPlugins.dataElement.byTinyId(tinyId)
+    return dbPlugins.dataElement
+        .byTinyId(tinyId)
         .then(elt => {
             if (!elt || !canEditCuratedItem(req.user, elt)) {
-                return res.send();  // WORKAROUND: send empty instead of 404 because angular litters console
+                return res.send(); // WORKAROUND: send empty instead of 404 because angular litters console
             }
             return (function getDraft(): Promise<Response> {
                 return deDraftByTinyId(tinyId).then(draft => {
@@ -175,25 +198,25 @@ export function draftForEditByTinyId(req: Request, res: Response): Promise<Respo
                 });
             })();
         })
-        .catch(respondError({req, res}));
+        .catch(respondError({ req, res }));
 }
 
-export function draftSave(req: RequestWithItem, res: Response) {
+export function draftSave(req: RequestWithItem, res: Response): Response | Promise<Response> {
     const elt = req.body;
     const tinyId = req.params.tinyId;
     if (!elt || !tinyId || elt.tinyId !== tinyId || elt._id !== req.item._id.toString()) {
         return res.status(400).send();
     }
-    deDraftSave(elt, req.user, handleError({req, res}, elt => {
+    return deDraftSave(elt, req.user).then(elt => {
         if (!elt) {
             return res.status(409).send('Edited by someone else. Please refresh and redo.');
         }
-        res.send(elt);
-    }));
+        return res.send(elt);
+    }, respondError({ req, res }));
 }
 
 export function draftDelete(req: Request, res: Response): Promise<Response> {
-    return deDraftDelete(req.params.tinyId).then(() => res.send(), respondError({req, res}));
+    return deDraftDelete(req.params.tinyId).then(() => res.send(), respondError({ req, res }));
 }
 
 export function byTinyIdList(req: Request, res: Response) {
@@ -201,42 +224,46 @@ export function byTinyIdList(req: Request, res: Response) {
     return dbPlugins.dataElement.byTinyIdListElastic(tinyIdList).then(items => {
         hideProprietaryCodes(items, req.user);
         return res.send(items);
-    })
+    });
 }
 
 export function latestVersionByTinyId(req: Request, res: Response): Promise<Response> {
-    return dbPlugins.dataElement.versionByTinyId(req.params.tinyId)
-        .then(version => res.send(version), respondError({req, res}));
+    return dbPlugins.dataElement
+        .versionByTinyId(req.params.tinyId)
+        .then(version => res.send(version), respondError({ req, res }));
 }
 
 export function create(req: Request, res: Response) {
     const elt = req.body;
     const user = req.user;
-    if (!elt.stewardOrg || !elt.stewardOrg.name) { // validation???
+    if (!elt.stewardOrg || !elt.stewardOrg.name) {
+        // validation???
         return res.status(400).send();
     }
-    deCreate(elt, user, handleError({req, res}, dataElement => res.send(dataElement)));
+    deCreate(elt, user).then(dataElement => res.send(dataElement), respondError({ req, res }));
 }
 
-function publish(req: RequestWithItem, res: Response, draft: DataElementDraft, options: UpdateEltOptions = {}): Promise<Response> {
+function publish(
+    req: RequestWithItem,
+    res: Response,
+    draft: DataElementDraft,
+    options: UpdateEltOptions = {}
+): Promise<Response> {
     if (!draft) {
         return Promise.resolve(res.status(400).send());
     }
     const eltToArchive = req.item;
-    return orgByName(eltToArchive.stewardOrg.name).then(org => {
-        if (!org) {
-            return res.status(404).send();
-        }
-        if (badWorkingGroupStatus(eltToArchive, org)) {
-            return res.status(403).send();
-        }
-        return update(draft, req.user, options).then(doc =>
-            deDraftDelete(draft.tinyId).then(() =>
-                res.send(doc)
-            )
-        );
-    })
-        .catch(respondError({req, res}));
+    return orgByName(eltToArchive.stewardOrg.name)
+        .then(org => {
+            if (!org) {
+                return res.status(404).send();
+            }
+            if (badWorkingGroupStatus(eltToArchive, org)) {
+                return res.status(403).send();
+            }
+            return update(draft, req.user, options).then(doc => deDraftDelete(draft.tinyId).then(() => res.send(doc)));
+        })
+        .catch(respondError({ req, res }));
 }
 
 export function publishFromDraft(req: Request, res: Response): Promise<Response> {
@@ -249,7 +276,7 @@ export function publishFromDraft(req: Request, res: Response): Promise<Response>
             return res.status(400).send('Cannot publish this old version. Reload and redo.');
         }
         return publish(req, res, draft.toObject());
-    }, respondError({req, res}));
+    }, respondError({ req, res }));
 }
 
 export function publishExternal(req: Request, res: Response) {
@@ -260,9 +287,9 @@ export function publishExternal(req: Request, res: Response) {
         }
         return publish(req, res, de, {
             updateAttachments: true,
-            updateSource: true
+            updateSource: true,
         });
-    }, respondError({req, res}));
+    }, respondError({ req, res }));
 }
 
 export function viewHistory(req: Request, res: Response): Promise<Response> {
@@ -276,25 +303,22 @@ export function viewHistory(req: Request, res: Response): Promise<Response> {
             tinyIdList.push(splice);
         }
     });
-    return dbPlugins.dataElement.byTinyIdListElastic(tinyIdList)
-        .then(dataElements => {
-            hideProprietaryCodes(dataElements, req.user);
-            return res.send(dataElements);
-        }, respondError({req, res}));
+    return dbPlugins.dataElement.byTinyIdListElastic(tinyIdList).then(dataElements => {
+        hideProprietaryCodes(dataElements, req.user);
+        return res.send(dataElements);
+    }, respondError({ req, res }));
 }
 
-export function originalSourceByTinyIdSourceName(req: Request, res: Response) {
+export function originalSourceByTinyIdSourceName(req: Request, res: Response): Promise<Response> {
     const tinyId = req.params.tinyId;
     const sourceName = req.params.sourceName;
-    deOriginalSourceByTinyIdSourceName(tinyId, sourceName,
-        handleError({req, res}, originalSource => {
-            if (originalSource) {
-                res.send(originalSource);
-            } else {
-                res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
-            }
-        })
-    );
+    return deOriginalSourceByTinyIdSourceName(tinyId, sourceName).then(originalSource => {
+        if (originalSource) {
+            return res.send(originalSource);
+        } else {
+            return res.status(404).send('No ' + sourceName + ' source file found for ' + tinyId);
+        }
+    }, respondError({ req, res }));
 }
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -343,12 +367,14 @@ export function moreLikeThis(req: Request, res: Response) {
     });
 }
 
-export function modifiedElements(req: Request, res: Response) {
+export function modifiedElements(req: Request, res: Response): Response | Promise<Response> {
     const dString = req.query.from as string;
     const r = /20[0-2][0-9]-[0-1][0-9]-[0-3][0-9]/;
 
     function badDate() {
-        res.status(300).send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
+        return res
+            .status(300)
+            .send('Invalid date format, please provide as: /api/cde/modifiedElements?from=2015-12-24');
     }
 
     if (!r.test(dString)) {
@@ -356,10 +382,9 @@ export function modifiedElements(req: Request, res: Response) {
     }
 
     const date = new Date(dString);
-    findModifiedElementsSince(date,
-        (err, elts) => res.send(elts.map(e => ({tinyId: e._id}))));
+    return findModifiedElementsSince(date).then(elts => res.send(elts.map(e => ({ tinyId: e._id }))));
 }
 
 export function derivationOutputs(req: Request, res: Response) {
-    derivationByInputs(req.params.inputCdeTinyId, handleError({req, res}, cdes => res.send(cdes)));
+    derivationByInputs(req.params.inputCdeTinyId).then(cdes => res.send(cdes), respondError({ req, res }));
 }

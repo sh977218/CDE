@@ -10,17 +10,20 @@ const Schema = mongoose.Schema;
 const StringType = (Schema.Types as any).StringType;
 
 export const validationWhitelistJson = {
-    collectionName: {type: StringType, index: true, unique: true, description: 'Name of CDE load'},
+    collectionName: { type: StringType, index: true, unique: true, description: 'Name of CDE load' },
     terms: {
         type: [StringType],
         description: 'Whitelisted terms',
-        default: []
-    }
-}
+        default: [],
+    },
+};
 
 export const validationWhitelistSchema = new Schema(validationWhitelistJson, {
     collection: 'validationwhitelist',
 });
 
 const conn = establishConnection(config.database.appData);
-export const validationWhitelistModel: Model<Document & ValidationWhitelist> = conn.model('ValidationWhitelist', validationWhitelistSchema);
+export const validationWhitelistModel: Model<Document & ValidationWhitelist> = conn.model(
+    'ValidationWhitelist',
+    validationWhitelistSchema
+) as any;

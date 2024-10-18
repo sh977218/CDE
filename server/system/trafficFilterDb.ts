@@ -8,24 +8,27 @@ import { TrafficFilter } from 'shared/security/trafficFilter';
 addStringtype(mongoose);
 
 const conn = establishConnection(config.database.appData);
-export const trafficFilterSchema = new Schema({
-    ipList: [
-        {
-            ip: String,
-            date: {type: Date, default: Date.now()},
-            reason: String,
-            strikes: {type: Number, default: 1}
-        }
-    ]
-}, {});
+export const trafficFilterSchema = new Schema(
+    {
+        ipList: [
+            {
+                ip: String,
+                date: { type: Date, default: Date.now() },
+                reason: String,
+                strikes: { type: Number, default: 1 },
+            },
+        ],
+    },
+    {}
+);
 
-const trafficFilterModel: Model<Document & TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema);
+const trafficFilterModel: Model<Document & TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema) as any;
 
-export async function initTrafficFilter() {
-    trafficFilterModel.deleteMany({});
-    return new trafficFilterModel({ipList: []}).save();
+export async function initTrafficFilter(): Promise<Document & TrafficFilter> {
+    await trafficFilterModel.deleteMany({});
+    return new trafficFilterModel({ ipList: [] }).save();
 }
 
-export function findAnyOne() {
-    return trafficFilterModel.findOne({}).exec();
+export function findAnyOne(): Promise<(Document & TrafficFilter) | null> {
+    return trafficFilterModel.findOne({});
 }

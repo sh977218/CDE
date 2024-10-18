@@ -225,76 +225,81 @@ export function reIndexStream(dbStream: DbStream, cb?: Cb) {
         const cursor = dbStream.query.dao.getStream(dbStream.query.condition);
 
         (function processOneDocument(cursor) {
-            cursor.next((err: Error | null, doc) => {
-                if (err) {
-                    // err
-                    consoleLog('Error getting cursor: ' + err);
-                    return;
-                }
-                if (!doc) {
-                    // end
-                    eachOf(
-                        dbStream.indexes,
-                        (index: ElasticIndex, i, doneOne) => {
-                            inject(i as number, () => {
-                                const info =
-                                    'done ingesting ' +
-                                    index.name +
-                                    ' ' +
-                                    index.indexName +
-                                    ' in : ' +
-                                    (new Date().getTime() - startTime) / 1000 +
-                                    ' secs. count: ' +
-                                    index.count;
-                                noDbLogger.info(info);
-                                consoleLog(info);
-                                doneOne();
-                            });
-                        },
-                        () => {
-                            if (cb) {
-                                cb();
+            cursor.next().then(
+                doc => {
+                    if (!doc) {
+                        // end
+                        eachOf(
+                            dbStream.indexes,
+                            (index: ElasticIndex, i, doneOne) => {
+                                inject(i as number, () => {
+                                    const info =
+                                        'done ingesting ' +
+                                        index.name +
+                                        ' ' +
+                                        index.indexName +
+                                        ' in : ' +
+                                        (new Date().getTime() - startTime) / 1000 +
+                                        ' secs. count: ' +
+                                        index.count;
+                                    noDbLogger.info(info);
+                                    consoleLog(info);
+                                    doneOne();
+                                });
+                            },
+                            () => {
+                                if (cb) {
+                                    cb();
+                                }
                             }
-                        }
-                    );
-                    return;
-                }
-                // data
-                const docObj: ItemElastic = doc.toObject() as any;
-                dbStream.indexes.forEach((index, i) => {
-                    riverFunctions[i](docObj, (doc: Item | void) => {
-                        if (!doc) {
-                            return;
-                        }
+                        );
+                        return;
+                    }
+                    // data
+                    const docObj: ItemElastic = doc.toObject() as any;
+                    dbStream.indexes.forEach((index, i) => {
+                        riverFunctions[i](docObj, (doc: Item | void) => {
+                            if (!doc) {
+                                return;
+                            }
 
-                        function nextCommand(json: any) {
-                            nextCommandOffset += nextCommandBuffer.write(
-                                JSON.stringify(json) + '\n',
+                            function nextCommand(json: any) {
+                                nextCommandOffset += nextCommandBuffer.write(
+                                    JSON.stringify(json) + '\n',
+                                    nextCommandOffset
+                                );
+                            }
+
+                            nextCommandOffset = 0;
+                            nextCommand({
+                                index: {
+                                    _index: index.indexName,
+                                    _type: '_doc',
+                                    _id: doc.tinyId || doc._id,
+                                },
+                            });
+                            delete doc._id;
+                            nextCommand(doc);
+                            if (bufferOffsets[i] + nextCommandOffset > BUFFER_MAX_SIZE) {
+                                inject(i);
+                            }
+                            bufferOffsets[i] += nextCommandBuffer.copy(
+                                buffers[i],
+                                bufferOffsets[i],
+                                0,
                                 nextCommandOffset
                             );
-                        }
-
-                        nextCommandOffset = 0;
-                        nextCommand({
-                            index: {
-                                _index: index.indexName,
-                                _type: '_doc',
-                                _id: doc.tinyId || doc._id,
-                            },
+                            index.count++;
                         });
-                        delete doc._id;
-                        nextCommand(doc);
-                        if (bufferOffsets[i] + nextCommandOffset > BUFFER_MAX_SIZE) {
-                            inject(i);
-                        }
-                        bufferOffsets[i] += nextCommandBuffer.copy(buffers[i], bufferOffsets[i], 0, nextCommandOffset);
-                        index.count++;
                     });
-                });
-                setTimeout(() => {
-                    processOneDocument(cursor);
-                }, 0);
-            });
+                    setTimeout(() => {
+                        processOneDocument(cursor);
+                    }, 0);
+                },
+                err => {
+                    consoleLog('Error getting cursor: ' + err);
+                }
+            );
         })(cursor);
     });
 }

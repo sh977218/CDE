@@ -24,7 +24,7 @@ import {
 } from 'server/cde/cdesvc';
 import { elasticsearch } from 'server/cde/elastic';
 import { validatePvs } from 'server/cde/utsValidate';
-import { handleError, respondError } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { storeQuery } from 'server/log/storedQueryDb';
 import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { writeOutArrayStream } from 'shared/node/expressUtil';
@@ -32,7 +32,8 @@ import { respondHomeFull } from 'server/system/appRouters';
 import {
     canCreateMiddleware,
     canEditByTinyIdMiddleware,
-    canEditMiddleware, isOrgAuthorityMiddleware,
+    canEditMiddleware,
+    isOrgAuthorityMiddleware,
     nocacheMiddleware,
 } from 'server/system/authorization';
 import { buildElasticSearchQueryCde } from 'server/system/buildElasticSearchQuery';
@@ -68,14 +69,12 @@ export function module() {
                     'registrationState.registrationStatus': 'Qualified',
                 };
                 dbPlugins.dataElement.count(cond).then(totalCount => {
-                    dataElementModel.find(
-                        cond,
-                        'tinyId designations',
-                        {
+                    dataElementModel
+                        .find<DataElementDocument>(cond, 'tinyId designations', {
                             skip: pageSize * (pageNum - 1),
                             limit: pageSize,
-                        },
-                        handleError<DataElementDocument[]>({ req, res }, cdes => {
+                        })
+                        .then(cdes => {
                             let totalPages = totalCount / pageSize;
                             if (totalPages % 1 > 0) {
                                 totalPages = totalPages + 1;
@@ -85,8 +84,7 @@ export function module() {
                                 totalPages,
                                 selectedOrg,
                             });
-                        })
-                    );
+                        }, respondError({ req, res }));
                 }, respondError({ req, res }));
             } else {
                 res.render('bot/cdeSearch');

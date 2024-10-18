@@ -8,7 +8,7 @@ import { Board } from 'shared/board.model';
 export type BoardDocument = Document<ObjectId, {}, Board> & Board;
 
 const conn = establishConnection(config.database.appData);
-export const boardModel: Model<BoardDocument> = conn.model('PinningBoard', boardSchema);
+export const boardModel: Model<BoardDocument> = conn.model('PinningBoard', boardSchema) as any;
 
 export function getStream(condition: any): Cursor<BoardDocument, QueryOptions<Board>> {
     return boardModel.find(condition).sort({ _id: -1 }).cursor();

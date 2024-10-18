@@ -3,7 +3,7 @@ import { config, dbPlugins, ObjectId } from 'server';
 import { diff } from 'server/cde/cdediff';
 import { DataElementDocument } from 'server/cde/mongo-cde';
 import { moduleToDbName } from 'server/dbPlugins';
-import { handleError } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
@@ -13,7 +13,7 @@ import { Board } from 'shared/board.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Item } from 'shared/item';
-import { CbError, CbError1, Elt, EltLog, ModuleAll, User } from 'shared/models.model';
+import { Elt, EltLog, ModuleAll, User } from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
 
@@ -73,21 +73,19 @@ export interface Message {
 export type MessageDocument = Document & Message;
 
 const conn = establishConnection(config.database.appData);
-export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue);
-export const messageModel: Model<MessageDocument> = conn.model('Message', message);
+export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue) as any;
+export const messageModel: Model<MessageDocument> = conn.model('Message', message) as any;
 
-export function jobStatus(type: string, callback: CbError1<Document & JobStatus>) {
-    jobQueueModel.findOne({ type }, callback);
+export function jobStatus(type: string): Promise<(Document & JobStatus) | null> {
+    return jobQueueModel.findOne({ type });
 }
 
-export function updateJobStatus(type: string, status: string, callback?: CbError): Promise<void> | void {
-    return callback
-        ? jobQueueModel.updateOne({ type }, { status }, { upsert: true }).exec(callback)
-        : jobQueueModel.updateOne({ type }, { status }, { upsert: true }).then();
+export function updateJobStatus(type: string, status: string): Promise<void> {
+    return jobQueueModel.updateOne({ type }, { status }, { upsert: true }).then();
 }
 
-export function removeJobStatus(type: string, callback: CbError) {
-    jobQueueModel.deleteMany({ type }, callback);
+export function removeJobStatus(type: string) {
+    return jobQueueModel.deleteMany({ type });
 }
 
 export function addCdeToViewHistory(elt: Item, user: User) {
@@ -101,7 +99,7 @@ export function addCdeToViewHistory(elt: Item, user: User) {
             $slice: 1000,
         },
     };
-    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null, err => {
+    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null).catch(err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addCdeToViewHistory',
@@ -123,7 +121,7 @@ export function addFormToViewHistory(elt: Item, user: User) {
             $slice: 1000,
         },
     };
-    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null, err => {
+    userModel.updateOne({ _id: user._id }, { $push: updStmt }, null).catch(err => {
         if (err) {
             errorLogger.error('Error: Cannot update viewing history', {
                 origin: 'cde.mongo-cde.addFormToViewHistory',
@@ -160,7 +158,7 @@ export function auditModifications<T extends Document>(auditDb: Model<T>) {
             message.diff = diff(newItem, oldItem) as any;
         }
 
-        new auditDb(message).save(handleError());
+        new auditDb(message).save().catch(respondError());
     };
 }
 
@@ -173,17 +171,6 @@ export interface FileCreateInfo {
 
 export function generateTinyId() {
     return shortIdGenerate().replace(/-/g, '_');
-}
-
-export function createMessage(msg: Omit<Message, '_id'>, cb: CbError1<MessageDocument> = () => {}) {
-    msg.states = [
-        {
-            action: 'Filed',
-            date: new Date(),
-            comment: 'cmnt',
-        },
-    ];
-    new messageModel(msg).save(cb);
 }
 
 export function fetchItem(module: 'board', tinyId: string): Promise<Board | null>;

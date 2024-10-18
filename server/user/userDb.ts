@@ -3,7 +3,7 @@ import { Document, Model, Query } from 'mongoose';
 import { config, ObjectId } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { CbError1, ModuleAll, rolesEnum, User } from 'shared/models.model';
+import { ModuleAll, rolesEnum, User } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -135,22 +135,21 @@ export const userRefSchema = {
     username: { type: StringType, index: true },
 };
 export type UserDocument = Document<ObjectId, {}, UserFull> & UserFull;
-export const userModel: Model<UserDocument> = conn.model('User', userSchema);
+export const userModel: Model<UserDocument> = conn.model('User', userSchema) as any;
 
 const userProject = { password: 0 };
 
-export function addUser(user: Omit<UserFull, '_id'>, callback: CbError1<UserDocument>) {
+export function addUser(user: Omit<UserFull, '_id'>): Promise<UserDocument | null> {
     user.username = user.username.toLowerCase();
-    new userModel(user).save(callback);
+    return new userModel(user).save();
 }
 
 export function updateUserIps(
     userId: ObjectId,
     ips: string[],
-    lastLoginInformation: UserFull['lastLoginInformation'],
-    callback: CbError1<UserDocument | null>
-): void {
-    userModel.findByIdAndUpdate(
+    lastLoginInformation: UserFull['lastLoginInformation']
+): Promise<UserDocument | null> {
+    return userModel.findByIdAndUpdate(
         userId,
         {
             lockCounter: 0,
@@ -158,20 +157,19 @@ export function updateUserIps(
             knownIPs: ips,
             lastLoginInformation,
         },
-        { new: true },
-        callback
+        { new: true }
     );
 }
 
-export function userByName(name: string, callback?: CbError1<UserDocument>): Query<UserDocument | null, UserDocument> {
-    return userModel.findOne({ username: new RegExp('^' + name + '$', 'i') }, callback);
+export function userByName(name: string): Query<UserDocument | null, UserDocument> {
+    return userModel.findOne({ username: new RegExp('^' + name + '$', 'i') });
 }
 
-export function byId(id: string, callback?: CbError1<UserDocument | null>) {
-    return userModel.findById(id, userProject, callback);
+export function byId(id: string): Promise<UserDocument | null> {
+    return userModel.findById(id, userProject);
 }
 
-export function findUserByUsername(username: string) {
+export function findUserByUsername(username: string): Promise<UserDocument | null> {
     return userModel.findOne({ username: new RegExp('^' + username + '$', 'i') }, userProject);
 }
 
@@ -213,16 +211,16 @@ export function updateUser(user: User, fields: Partial<UserFull>): Promise<UserF
         });
 }
 
-export function usersByName(name: string, callback: CbError1<UserDocument[]>) {
-    userModel.find({ username: new RegExp('^' + name + '$', 'i') }, userProject, callback);
+export function usersByName(name: string): Promise<UserDocument[]> {
+    return userModel.find({ username: new RegExp('^' + name + '$', 'i') }, userProject);
 }
 
-export function usersByUsername(username: string) {
+export function usersByUsername(username: string): Promise<UserDocument[]> {
     return userModel.find({ username: new RegExp(username, 'i') }, userProject);
 }
 
-export function userByUsername(username: string, callback: CbError1<UserDocument | null>) {
-    userModel.findOne({ username: new RegExp(username, 'i') }, userProject, callback);
+export function userByUsername(username: string): Promise<UserDocument | null> {
+    return userModel.findOne({ username: new RegExp(username, 'i') }, userProject);
 }
 
 export function byUsername(username: string): Promise<UserDocument | null> {
@@ -235,8 +233,8 @@ export function addNewUser(user: Partial<UserFull>) {
 }
 
 // Site Admin
-export function usernamesByIp(ip: string, callback: CbError1<UserDocument[]>) {
-    userModel.find({ knownIPs: { $in: [ip] } }, { username: 1 }, callback);
+export function usernamesByIp(ip: string): Promise<UserDocument[]> {
+    return userModel.find({ knownIPs: { $in: [ip] } }, { username: 1 });
 }
 
 export function siteAdmins(): Promise<UserDocument[]> {
@@ -260,10 +258,10 @@ export function orgAdmins() {
     return userModel.find({ orgAdmin: { $not: { $size: 0 } } }).sort({ username: 1 });
 }
 
-export function orgCurators(orgs: string[], callback: CbError1<UserDocument[]>) {
-    userModel.find().where('orgCurator').in(orgs).exec(callback);
+export function orgCurators(orgs: string[]): Promise<UserDocument[]> {
+    return userModel.find().where('orgCurator').in(orgs).exec();
 }
 
-export function orgEditors(orgs: string[], callback: CbError1<UserDocument[]>) {
-    userModel.find().where('orgEditor').in(orgs).exec(callback);
+export function orgEditors(orgs: string[]): Promise<UserDocument[]> {
+    return userModel.find().where('orgEditor').in(orgs).exec();
 }

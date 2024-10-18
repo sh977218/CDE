@@ -6,17 +6,17 @@ import { CbError1 } from 'shared/models.model';
 import { inherits } from 'util';
 import { Logger, transports, Transport } from 'winston';
 
-export const mongoLogger = (transports as any).MongoLogger = function(options: any) {
+export const mongoLogger = ((transports as any).MongoLogger = function (options: any) {
     this.name = 'mongoLogger';
     this.json = true;
     this.level = options.level || 'info';
-};
+});
 
-export const mongoErrorLogger = (transports as any).MongoErrorLogger = function(options: any) {
+export const mongoErrorLogger = ((transports as any).MongoErrorLogger = function (options: any) {
     this.name = 'mongoErrorLogger';
     this.json = true;
     this.level = options.level || 'error';
-};
+});
 
 inherits(mongoLogger, Transport);
 inherits(mongoErrorLogger, Transport);
@@ -79,11 +79,7 @@ mongoErrorLogger.prototype.log = (level: string, msg: string, meta: any) => {
         if (meta.request) {
             message.request = generateErrorLogRequest(meta.request);
         }
-        logError(message, (err?: Error) => {
-            if (err) {
-                noDbLogger.error('Cannot log to DB (3): ' + msg);
-            }
-        });
+        logError(message);
     } catch (e) {
         noDbLogger.error('Cannot log to DB (4): ' + e);
     }
@@ -93,32 +89,32 @@ const expressLoggerCnf = {
     transports: [
         // @ts-ignore
         new mongoLogger({
-            json: true
-        })
-    ]
+            json: true,
+        }),
+    ],
 };
 
 const expressErrorLoggerCnf = {
     transports: [
         // @ts-ignore
         new mongoErrorLogger({
-            json: true
-        })
-    ]
+            json: true,
+        }),
+    ],
 };
 
 if (config.expressToStdout) {
     const consoleLogCnf = {
         level: 'verbose',
         colorize: true,
-        timestamp: true
+        timestamp: true,
     };
     expressLoggerCnf.transports.push(new transports.Console(consoleLogCnf));
     expressErrorLoggerCnf.transports.push(new transports.Console(consoleLogCnf));
 }
 
-export const expressLogger = new (Logger)(expressLoggerCnf);
-export const errorLogger = new (Logger)(expressErrorLoggerCnf);
+export const expressLogger = new Logger(expressLoggerCnf);
+export const errorLogger = new Logger(expressErrorLoggerCnf);
 
 export function generateErrorLogRequest(req: Request) {
     let body;
@@ -139,6 +135,6 @@ export function generateErrorLogRequest(req: Request) {
         body,
         username,
         userAgent: req.headers['user-agent'],
-        ip: req.ip
+        ip: req.ip,
     };
 }

@@ -4,7 +4,7 @@ import { Request, Response, Router } from 'express';
 import { GridFSFile } from 'mongodb';
 import { Cursor, QueryOptions } from 'mongoose';
 import { config, ObjectId } from 'server';
-import { handleError, respondError } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import {
     isOrgAuthorityMiddleware,
     isOrgCuratorMiddleware,
@@ -65,7 +65,7 @@ export function module() {
         '0 */60 * * * *',
         async () => {
             consoleLog(`Running sync isBundle & partOfBundles at ${new Date()}`);
-            const cdesPartOfBundle = await dataElementModel.find({
+            const cdesPartOfBundle: DataElementDocument[] = await dataElementModel.find({
                 partOfBundles: { $exists: true, $not: { $size: 0 } },
                 archived: false,
             });
@@ -103,87 +103,89 @@ export function module() {
             setTimeout(
                 () => {
                     try {
-                        jobStatus('SiteMap', (err, j) => {
-                            if (err) {
-                                consoleLog(`Error getting SiteMap job status: ${err}`, 'error');
-                                return;
-                            }
-                            if (j) {
-                                return;
-                            }
-                            gfs.then(gfs =>
-                                gfs
-                                    .find({ filename: '/app/sitemap.txt' })
-                                    .toArray()
-                                    .then(files => {
-                                        const file = files[0];
-                                        if (!!file && fileCreatedToday(file)) {
-                                            return;
-                                        }
-                                        updateJobStatus('SiteMap', 'Generating');
-                                        consoleLog('Creating sitemap');
-                                        const readable = new Readable();
-                                        const siteMapLines: string[] = [];
-                                        const cond = {
-                                            archived: false,
-                                            'registrationState.registrationStatus': 'Qualified',
-                                        };
+                        jobStatus('SiteMap').then(
+                            j => {
+                                if (j) {
+                                    return;
+                                }
+                                gfs.then(gfs =>
+                                    gfs
+                                        .find({ filename: '/app/sitemap.txt' })
+                                        .toArray()
+                                        .then(files => {
+                                            const file = files[0];
+                                            if (!!file && fileCreatedToday(file)) {
+                                                return;
+                                            }
+                                            updateJobStatus('SiteMap', 'Generating');
+                                            consoleLog('Creating sitemap');
+                                            const readable = new Readable();
+                                            const siteMapLines: string[] = [];
+                                            const cond = {
+                                                archived: false,
+                                                'registrationState.registrationStatus': 'Qualified',
+                                            };
 
-                                        function handleStream(
-                                            stream: Cursor<ItemDocument, QueryOptions>,
-                                            formatter: (doc: ItemDocument) => string,
-                                            cb: CbError
-                                        ) {
-                                            stream.on('data', doc => siteMapLines.push(formatter(doc)));
-                                            stream.on('err', cb);
-                                            stream.on('end', cb);
-                                        }
+                                            function handleStream(
+                                                stream: Cursor<ItemDocument, QueryOptions>,
+                                                formatter: (doc: ItemDocument) => string,
+                                                cb: CbError
+                                            ) {
+                                                stream.on('data', doc => siteMapLines.push(formatter(doc)));
+                                                stream.on('err', cb);
+                                                stream.on('end', cb);
+                                            }
 
-                                        return Promise.all([
-                                            promisify(handleStream)(
-                                                dataElementModel.find(cond, 'tinyId').cursor(),
-                                                doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId
-                                            ),
-                                            promisify(handleStream)(
-                                                formModel.find(cond, 'tinyId').cursor(),
-                                                doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId
-                                            ),
-                                        ]).then(() => {
-                                            readable.push(siteMapLines.join('\n'));
-                                            readable.push(null);
-                                            (file && file._id
-                                                ? gfs.delete(file._id).catch(err => {
-                                                      consoleLog(`Error removing old sitemap file: ${err}`, 'error');
-                                                  })
-                                                : Promise.resolve()
-                                            )
-                                                .then(() =>
-                                                    addFile(
-                                                        {
-                                                            filename: '/app/sitemap.txt',
-                                                            stream: readable,
-                                                        },
-                                                        {
-                                                            contentType: 'plain/text',
-                                                        }
-                                                    )
+                                            return Promise.all([
+                                                promisify(handleStream)(
+                                                    dataElementModel.find(cond, 'tinyId').cursor(),
+                                                    doc => config.publicUrl + '/deView?tinyId=' + doc.tinyId
+                                                ),
+                                                promisify(handleStream)(
+                                                    formModel.find(cond, 'tinyId').cursor(),
+                                                    doc => config.publicUrl + '/formView?tinyId=' + doc.tinyId
+                                                ),
+                                            ]).then(() => {
+                                                readable.push(siteMapLines.join('\n'));
+                                                readable.push(null);
+                                                (file && file._id
+                                                    ? gfs.delete(file._id).catch(err => {
+                                                          consoleLog(
+                                                              `Error removing old sitemap file: ${err}`,
+                                                              'error'
+                                                          );
+                                                      })
+                                                    : Promise.resolve()
                                                 )
-                                                .then(() => {
-                                                    consoleLog('done with sitemap');
-                                                    removeJobStatus('SiteMap', () => {});
-                                                })
-                                                .catch(err => {
-                                                    consoleLog(`Error with sitemap file: ${err}`, 'error');
-                                                });
-                                        });
-                                    })
-                            ).catch(err => {
-                                consoleLog(`Error finding sitemap file: ${err}`, 'error');
-                            });
-                        });
+                                                    .then(() =>
+                                                        addFile(
+                                                            {
+                                                                filename: '/app/sitemap.txt',
+                                                                stream: readable,
+                                                            },
+                                                            {
+                                                                contentType: 'plain/text',
+                                                            }
+                                                        )
+                                                    )
+                                                    .then(() => {
+                                                        consoleLog('done with sitemap');
+                                                        removeJobStatus('SiteMap');
+                                                    })
+                                                    .catch(err => {
+                                                        consoleLog(`Error with sitemap file: ${err}`, 'error');
+                                                    });
+                                            });
+                                        })
+                                ).catch(err => {
+                                    consoleLog(`Error finding sitemap file: ${err}`, 'error');
+                                });
+                            },
+                            err => consoleLog(`Error getting SiteMap job status: ${err}`, 'error')
+                        );
                     } catch (err) {
                         consoleLog('Cron Sunday 4:07 AM did not complete due to error: ' + err);
-                        removeJobStatus('SiteMap', () => {});
+                        removeJobStatus('SiteMap');
                     }
                 },
                 process.env.NODE_ENV === 'dev-test' ? 0 : Math.floor(Math.random() * 3600000) + 1
@@ -226,15 +228,17 @@ export function module() {
         if (!jobType) {
             return res.status(400).end();
         }
-        jobStatus(jobType, (err, j) => {
-            if (err) {
-                return res.status(409).send('Error - job status ' + jobType);
+        jobStatus(jobType).then(
+            j => {
+                if (j) {
+                    return res.send({ done: false });
+                }
+                res.send({ done: true });
+            },
+            err => {
+                res.status(409).send('Error - job status ' + jobType);
             }
-            if (j) {
-                return res.send({ done: false });
-            }
-            res.send({ done: true });
-        });
+        );
     });
 
     /* ---------- PUT NEW REST API above ---------- */
@@ -291,19 +295,13 @@ export function module() {
         res.send();
     });
 
-    router.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res) => {
+    router.get('/user/:search', nocacheMiddleware, loggedInMiddleware, (req, res): Response | Promise<Response> => {
         if (!req.params.search) {
             return res.send({});
         } else if (req.params.search === 'me') {
-            byId(
-                req.user._id,
-                handleError({ req, res }, user => res.send(user))
-            );
+            return byId(req.user._id).then(user => res.send(user), respondError({ req, res }));
         } else {
-            usersByName(
-                req.params.search,
-                handleError({ req, res }, users => res.send(users))
-            );
+            return usersByName(req.params.search).then(users => res.send(users), respondError({ req, res }));
         }
     });
 

@@ -16,41 +16,45 @@ const commonEmbedSchema = {
     nameLabel: StringType,
     pageSize: Number,
     primaryDefinition: {
-        show: {type: Boolean, default: false},
+        show: { type: Boolean, default: false },
         label: StringType,
-        style: StringType
+        style: StringType,
     },
     registrationStatus: {
-        show: {type: Boolean, default: false},
-        label: StringType
+        show: { type: Boolean, default: false },
+        label: StringType,
     },
-    lowestRegistrationStatus: {type: StringType, enum: orderedList},
+    lowestRegistrationStatus: { type: StringType, enum: orderedList },
     properties: [
         {
             label: StringType,
             key: StringType,
-            limit: Number
-        }
+            limit: Number,
+        },
     ],
-    otherNames: [{
-        label: StringType,
-        tags: StringType,
-        contextName: StringType
-    }],
-    classifications: [{
-        label: StringType,
-        startsWith: StringType,
-        exclude: StringType,
-        selectedOnly: Boolean
-    }],
+    otherNames: [
+        {
+            label: StringType,
+            tags: StringType,
+            contextName: StringType,
+        },
+    ],
+    classifications: [
+        {
+            label: StringType,
+            startsWith: StringType,
+            exclude: StringType,
+            selectedOnly: Boolean,
+        },
+    ],
     ids: [
         {
             idLabel: StringType,
             source: StringType,
             version: Boolean,
-            versionLabel: StringType
-        }
-    ]
+            versionLabel: StringType,
+        },
+    ],
 };
 const embedJson = {
     org: StringType,
@@ -60,19 +64,19 @@ const embedJson = {
     cde: {
         ...commonEmbedSchema,
         linkedForms: {
-            show: {type: Boolean, default: false},
-            label: StringType
+            show: { type: Boolean, default: false },
+            label: StringType,
         },
         permissibleValues: Boolean,
     },
     form: {
         ...commonEmbedSchema,
-        cdes: {type: Boolean, default: false},
-        nbOfQuestions: {type: Boolean, default: false}
-    }
+        cdes: { type: Boolean, default: false },
+        nbOfQuestions: { type: Boolean, default: false },
+    },
 };
 
 const embedSchema = new Schema(embedJson);
 
 export type EmbedDocument = Document & Embed;
-export const embedModel: Model<EmbedDocument> = conn.model('Embed', embedSchema);
+export const embedModel: Model<EmbedDocument> = conn.model('Embed', embedSchema) as any;

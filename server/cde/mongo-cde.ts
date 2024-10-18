@@ -9,14 +9,13 @@ import {
     dataElementSourceSchema,
     draftSchema,
 } from 'server/cde/schemas';
-import { splitError } from 'server/errorHandler';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { auditModifications, generateTinyId, updateElt, updateMetadata } from 'server/system/mongo-data';
 import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
-import { CbError1, EltLog, User } from 'shared/models.model';
+import { EltLog, User } from 'shared/models.model';
 
 const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
 
@@ -76,25 +75,21 @@ dataElementSchema.pre('save', preSave);
 dataElementSourceSchema.pre('save', preSave);
 
 const conn = establishConnection(config.database.appData);
-export const dataElementModel: Model<DataElementDocument> = conn.model('DataElement', dataElementSchema);
-export const dataElementDraftModel: Model<DataElementDraftDocument> = conn.model('DataElementDraft', draftSchema);
+export const dataElementModel: Model<DataElementDocument> = conn.model('DataElement', dataElementSchema) as any;
+export const dataElementDraftModel: Model<DataElementDraftDocument> = conn.model(
+    'DataElementDraft',
+    draftSchema
+) as any;
 export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.model(
     'DataElementSource',
     dataElementSourceSchema
-);
-export const cdeAuditModel: Model<Document & EltLog> = conn.model('CdeAudit', deAuditSchema);
+) as any;
+export const cdeAuditModel: Model<Document & EltLog> = conn.model('CdeAudit', deAuditSchema) as any;
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
 
-export function byTinyId(tinyId: string): Promise<DataElementDocument | null>;
-export function byTinyId(tinyId: string, cb: CbError1<DataElementDocument | null>): void;
-export function byTinyId(
-    tinyId: string,
-    cb?: CbError1<DataElementDocument | null>
-): Promise<DataElementDocument | null> | void {
-    return cb
-        ? dataElementModel.findOne({ tinyId, archived: false }).exec(cb)
-        : dataElementModel.findOne({ tinyId, archived: false }).then();
+export function byTinyId(tinyId: string): Promise<DataElementDocument | null> {
+    return dataElementModel.findOne({ tinyId, archived: false }).then();
 }
 
 export function draftById(_id: ObjectId): Promise<DataElementDraftDocument> {
@@ -114,12 +109,7 @@ export function draftDelete(tinyId: string): Promise<void> {
     return dataElementDraftModel.deleteMany({ tinyId }).then();
 }
 
-export function draftsList(criteria: any): Promise<DataElementDraftDocument[]>;
-export function draftsList(criteria: any, cb: CbError1<DataElementDraftDocument>): void;
-export function draftsList(
-    criteria: any,
-    cb?: CbError1<DataElementDraftDocument>
-): void | Promise<DataElementDraftDocument[]> {
+export function draftsList(criteria: any): Promise<DataElementDraftDocument[]> {
     return dataElementDraftModel
         .find(criteria, {
             'designations.designation': 1,
@@ -129,30 +119,24 @@ export function draftsList(
             'updatedBy.username': 1,
         })
         .sort({ updated: -1 })
-        .exec(cb as any);
+        .exec();
 }
 
-export function draftSave(elt: DataElement, user: User, cb: CbError1<DataElementDocument | void>): void {
+export function draftSave(elt: DataElement, user: User): Promise<DataElementDocument | null> {
     wipeDatatype(elt);
     updateMetadata(elt, user);
-    dataElementDraftModel.findById(
-        elt._id,
-        splitError(cb, doc => {
-            if (!doc) {
-                new dataElementDraftModel(elt).save(cb);
-                return;
-            }
-            /* istanbul ignore if */
-            if (doc.__v !== elt.__v) {
-                return cb(null);
-            }
-            const version = elt.__v;
-            elt.__v++;
-            dataElementDraftModel.findOneAndUpdate({ _id: elt._id, __v: version }, elt, { new: true }, (err, doc) =>
-                cb(err, doc === null ? undefined : doc)
-            );
-        })
-    );
+    return dataElementDraftModel.findById(elt._id).then(doc => {
+        if (!doc) {
+            return new dataElementDraftModel(elt).save();
+        }
+        /* istanbul ignore if */
+        if (doc.__v !== elt.__v) {
+            return Promise.resolve(null);
+        }
+        const version = elt.__v;
+        elt.__v++;
+        return dataElementDraftModel.findOneAndUpdate({ _id: elt._id, __v: version }, elt, { new: true }).then();
+    });
 }
 
 /* ---------- PUT NEW REST API Implementation above  ---------- */
@@ -171,7 +155,7 @@ export function inCdeView(cde: DataElement) {
     }
 }
 
-export function create(elt: DataElement, user: User, callback: CbError1<DataElementDocument>) {
+export function create(elt: DataElement, user: User): Promise<DataElementDocument> {
     wipeDatatype(elt);
     elt.created = Date.now();
     elt.createdBy = {
@@ -179,11 +163,9 @@ export function create(elt: DataElement, user: User, callback: CbError1<DataElem
     };
     const newItem = new dataElementModel(elt);
     newItem.tinyId = generateTinyId();
-    newItem.save((err, newElt) => {
-        callback(err, newElt);
-        if (!err) {
-            auditModificationsDe(user, null, newElt);
-        }
+    return newItem.save().then(newElt => {
+        auditModificationsDe(user, null, newElt);
+        return newElt;
     });
 }
 
@@ -246,31 +228,27 @@ export function update(elt: DataElementDraft, user: User, options: UpdateEltOpti
     });
 }
 
-export function derivationByInputs(inputTinyId: string, cb: CbError1<DataElementDocument[]>) {
-    dataElementModel.find({ archived: false, 'derivationRules.inputs': inputTinyId }).exec(cb);
+export function derivationByInputs(inputTinyId: string): Promise<DataElementDocument[]> {
+    return dataElementModel.find({ archived: false, 'derivationRules.inputs': inputTinyId }).exec();
 }
 
-export function findModifiedElementsSince(date: Date | string | number, cb: CbError1<DataElementDocument[]>) {
-    dataElementModel.aggregate(
-        [
-            {
-                $match: {
-                    archived: false,
-                    updated: { $gte: date },
-                },
+export function findModifiedElementsSince(date: Date | string | number): Promise<DataElementDocument[]> {
+    return dataElementModel.aggregate([
+        {
+            $match: {
+                archived: false,
+                updated: { $gte: date },
             },
-            { $limit: 2000 },
-            { $sort: { updated: -1 } },
-            { $group: { _id: '$tinyId' } } as any,
-        ],
-        cb
-    );
+        },
+        { $limit: 2000 },
+        { $sort: { updated: -1 } },
+        { $group: { _id: '$tinyId' } } as any,
+    ]);
 }
 
 export function originalSourceByTinyIdSourceName(
     tinyId: string,
-    sourceName: string,
-    cb: CbError1<DataElementDocument>
-) {
-    dataElementSourceModel.findOne({ tinyId, source: sourceName }, cb);
+    sourceName: string
+): Promise<DataElementDocument | null> {
+    return dataElementSourceModel.findOne({ tinyId, source: sourceName });
 }

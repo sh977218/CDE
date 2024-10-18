@@ -637,16 +637,9 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
             dataElement.imported = new Date();
             // dataElement.partOfBundles is form names
             // TODO custom tinyId
-            return new Promise((resolve, reject) => {
-                deCreate(dataElement as DataElement, user, (err, de) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    const deObj: DataElement = de.toObject();
-                    deSourceCreate(deObj, submission.name).then(() => resolve(de), reject);
-                });
-            });
+            return deCreate(dataElement as DataElement, user).then(de =>
+                deSourceCreate(de.toObject(), submission.name).then(() => de)
+            );
         })
     ).filter(de => !!de) as DataElementDocument[];
     const forms = (
@@ -662,16 +655,9 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
                     }
                 }
             });
-            return new Promise((resolve, reject) => {
-                formCreate(form as CdeForm, user, (err, f) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    const formObj: CdeForm = f.toObject();
-                    formSourceCreate(formObj, submission.name).then(() => resolve(f), reject);
-                });
-            });
+            return formCreate(form as CdeForm, user).then(f =>
+                formSourceCreate(f.toObject(), submission.name).then(() => f)
+            );
         })
     ).filter(form => !!form) as CdeFormDocument[];
     await mapSeries<DataElementDocument, DataElementDocument | void>(des, de => {

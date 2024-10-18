@@ -7,4 +7,4 @@ import { IdSource } from 'shared/models.model';
 export type IdSourceDocument = Document<string, {}, IdSource> & IdSource;
 
 const conn = establishConnection(config.database.appData);
-export const idSourceModel: Model<IdSourceDocument> = conn.model('IdSource', idSourceSchema);
+export const idSourceModel: Model<IdSourceDocument> = conn.model('IdSource', idSourceSchema) as any;

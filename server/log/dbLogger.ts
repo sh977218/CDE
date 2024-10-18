@@ -1,25 +1,31 @@
 import { Request } from 'express';
-import { Document, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { config } from 'server';
 import { cdeAuditModel } from 'server/cde/mongo-cde';
-import { handleConsoleError } from 'server/errorHandler';
 import { formAuditModel } from 'server/form/mongo-form';
-import { clientErrorSchema, consoleLogSchema, logErrorSchema, logSchema, loginSchema } from 'server/log/schemas';
+import {
+    clientErrorSchema,
+    consoleLogSchema,
+    logErrorSchema,
+    logSchema,
+    loginSchema,
+    ClientErrorDocument,
+    ErrorLogDocument,
+    HttpLogDocument,
+    AppLogDocument,
+    LoginRecordDocument,
+} from 'server/log/schemas';
 import { classificationAuditModel } from 'server/system/classificationAuditDb';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';
 import { getRealIp } from 'server/system/trafficFilterSvc';
 import { UserFull } from 'server/user/userDb';
 import {
-    HttpLog,
     HttpLogResponse,
-    AppLog,
     AppLogResponse,
     DailyUsage,
     ServerErrorResponse,
-    ClientError,
     ClientErrorResponse,
-    LoginRecord,
     ServerErrorSearchRequest,
     HttpLogSearchRequest,
     AppLogSearchRequest,
@@ -28,42 +34,21 @@ import {
     LoginRecordSearchRequest,
     ItemLogResponse,
 } from 'shared/log/audit';
-import { Cb, CbError, CbError1 } from 'shared/models.model';
+import { Cb, CbError } from 'shared/models.model';
 
 const moment = require('moment');
 const userAgent = require('useragent');
 
-export type ClientErrorDocument = Document & ClientError;
-
-export interface ErrorLog {
-    message: string;
-    date: string;
-    details?: string;
-    origin: string;
-    stack: string;
-    request?: {
-        url: string;
-        method: string;
-        params: string;
-        body: string;
-        username: string;
-        userAgent: string;
-        ip: string;
-        errorCode: string;
-        errorType: string;
-    };
-}
-
 const conn = establishConnection(config.database.log);
-const logModel: Model<Document & HttpLog> = conn.model('DbLogger', logSchema);
-export const logErrorModel: Model<Document & ErrorLog> = conn.model('DbErrorLogger', logErrorSchema);
+const logModel: Model<HttpLogDocument> = conn.model('DbLogger', logSchema);
+export const logErrorModel: Model<ErrorLogDocument> = conn.model('DbErrorLogger', logErrorSchema);
 export const clientErrorModel: Model<ClientErrorDocument> = conn.model('DbClientErrorLogger', clientErrorSchema);
-const consoleLogModel: Model<Document & AppLog> = conn.model('consoleLogs', consoleLogSchema);
-export const loginModel: Model<Document & LoginRecord> = conn.model('logins', loginSchema);
+const consoleLogModel: Model<AppLogDocument> = conn.model('consoleLogs', consoleLogSchema);
+export const loginModel: Model<LoginRecordDocument> = conn.model('logins', loginSchema);
 
 export function consoleLog(message: string, level: 'debug' | 'error' | 'info' | 'warning' = 'debug') {
     // no express errors see dbLogger.log(message)
-    new consoleLogModel({ message, level }).save(err => {
+    new consoleLogModel({ message, level }).save().catch(err => {
         if (err) {
             noDbLogger.error('Cannot log to DB: ' + err);
         }
@@ -87,7 +72,7 @@ export function log(message: MorganLogMessage, callback?: CbError) {
     }
 
     if (message.httpStatus !== '304') {
-        new logModel(message).save(err => {
+        new logModel(message).save().catch(err => {
             if (err) {
                 noDbLogger.info('ERROR: ' + err);
             }
@@ -114,7 +99,7 @@ interface ErrorMessage {
     stack?: string;
 }
 
-export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogResponse>) {
+export function httpLogs(body: HttpLogSearchRequest): Promise<HttpLogResponse> {
     const currentPage = body.currentPage || 0;
     const itemsPerPage = body.pageSize || 50;
     const sortBy = body.sortBy || 'url';
@@ -131,21 +116,24 @@ export function httpLogs(body: HttpLogSearchRequest, callback: CbError1<HttpLogR
     if (body.toDate) {
         modal.where('date').lte(moment(body.toDate).endOf('day'));
     }
-    modal.clone().count((err, totalItems) => {
-        modal
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .limit(itemsPerPage)
-            .skip(skip)
-            .exec((err, logs) => {
-                callback(err, {
+    return modal
+        .clone()
+        .countDocuments()
+        .exec()
+        .then(totalItems =>
+            modal
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .limit(itemsPerPage)
+                .skip(skip)
+                .exec()
+                .then(logs => ({
                     logs,
                     totalItems,
-                });
-            });
-    });
+                }))
+        );
 }
 
-export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResponse>) {
+export function appLogs(body: AppLogSearchRequest): Promise<AppLogResponse> {
     const currentPage = body.currentPage || 0;
     const itemsPerPage = body.pageSize || 50;
     const sortBy = body.sortBy || 'url';
@@ -157,21 +145,24 @@ export function appLogs(body: AppLogSearchRequest, callback: CbError1<AppLogResp
         modal.where('date').gte(moment(body.fromDate));
     }
     modal.where('date').lte(moment(toDate));
-    modal.clone().count((err, totalItems) => {
-        modal
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .limit(itemsPerPage)
-            .skip(skip)
-            .exec((err, logs) => {
-                callback(err, {
+    return modal
+        .clone()
+        .countDocuments()
+        .exec()
+        .then(totalItems =>
+            modal
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .limit(itemsPerPage)
+                .skip(skip)
+                .exec()
+                .then(logs => ({
                     logs,
                     totalItems,
-                });
-            });
-    });
+                }))
+        );
 }
 
-export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callback: CbError1<ItemLogResponse>) => {
+export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest): Promise<ItemLogResponse> => {
     const currentPage = body.currentPage || 0;
     const itemsPerPage = body.pageSize || 50;
     const sortBy = body.sortBy || 'date';
@@ -182,34 +173,35 @@ export const itemLog = (auditDb: Model<any>, body: ItemLogSearchRequest, callbac
         condition['user.username'].$nin.push('batchloader');
     }
     const modal = auditDb.find(condition, { elements: { $slice: 10 } });
-    modal.clone().count((err, totalItems) => {
-        modal
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .limit(itemsPerPage)
-            .skip(skip)
-            .exec((err, logs) => {
-                callback(err, {
+    return modal
+        .clone()
+        .countDocuments()
+        .then(totalItems =>
+            modal
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .limit(itemsPerPage)
+                .skip(skip)
+                .exec()
+                .then(logs => ({
                     logs,
                     totalItems,
-                });
-            });
-    });
+                }))
+        );
 };
 
 export const itemLogByModule = (
     module: 'de' | 'form' | 'classification',
-    body: ItemLogSearchRequest,
-    cb: CbError1<ItemLogResponse>
-) => {
+    body: ItemLogSearchRequest
+): Promise<ItemLogResponse> => {
     const modalMap = {
         de: cdeAuditModel,
         form: formAuditModel,
         classification: classificationAuditModel,
     };
-    itemLog(modalMap[module], body, cb);
+    return itemLog(modalMap[module], body);
 };
 
-export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<ServerErrorResponse>) {
+export function serverErrors(body: ServerErrorSearchRequest): Promise<ServerErrorResponse> {
     const currentPage = body.currentPage || 0;
     const itemsPerPage = body.pageSize || 50;
     const sortBy = body.sortBy || 'date';
@@ -226,21 +218,24 @@ export function serverErrors(body: ServerErrorSearchRequest, callback: CbError1<
         delete condition.badInput;
     }
     const modal = logErrorModel.find(condition);
-    modal.clone().count((err, totalItems) => {
-        modal
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .limit(itemsPerPage)
-            .skip(skip)
-            .exec((err, logs) => {
-                callback(err, {
+    return modal
+        .clone()
+        .countDocuments()
+        .exec()
+        .then(totalItems =>
+            modal
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .limit(itemsPerPage)
+                .skip(skip)
+                .exec()
+                .then(logs => ({
                     logs,
                     totalItems,
-                });
-            });
-    });
+                }))
+        );
 }
 
-export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<ClientErrorResponse>) {
+export function clientErrors(body: ClientErrorSearchRequest): Promise<ClientErrorResponse> {
     const currentPage = body.currentPage || 0;
     const itemsPerPage = body.pageSize || 50;
     const sortBy = body.sortBy || 'date';
@@ -254,18 +249,20 @@ export function clientErrors(body: ClientErrorSearchRequest, callback: CbError1<
         userAgent: { $in: body.includeUserAgents },
     };
     const modal = clientErrorModel.find(condition);
-    modal.clone().count((err, totalItems) => {
-        modal
-            .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
-            .limit(itemsPerPage)
-            .skip(skip)
-            .exec((err, logs) => {
-                callback(err, {
+    return modal
+        .clone()
+        .countDocuments()
+        .then(totalItems =>
+            modal
+                .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
+                .limit(itemsPerPage)
+                .skip(skip)
+                .exec()
+                .then(logs => ({
                     logs,
                     totalItems,
-                });
-            });
-    });
+                }))
+        );
 }
 
 export async function loginRecord(body: LoginRecordSearchRequest) {
@@ -275,7 +272,7 @@ export async function loginRecord(body: LoginRecordSearchRequest) {
     const sortDirection = body.sortDir || 'asc';
     const skip = currentPage * itemsPerPage;
     const modal = loginModel.find();
-    const totalItems = await modal.clone().count();
+    const totalItems = await modal.clone().countDocuments();
     const logs = await modal
         .sort({ [sortBy]: sortDirection === 'asc' ? 1 : -1 })
         .limit(itemsPerPage)
@@ -284,7 +281,7 @@ export async function loginRecord(body: LoginRecordSearchRequest) {
     return { logs, totalItems };
 }
 
-export function logError(message: ErrorMessage, callback?: Cb) {
+export function logError(message: ErrorMessage) {
     // all server errors, express and not
     if (!message.date) {
         message.date = new Date();
@@ -297,12 +294,11 @@ export function logError(message: ErrorMessage, callback?: Cb) {
         console.log(message);
         console.log('--- END Server Error---');
     }
-    new logErrorModel(message).save(
-        handleConsoleError<Document & ErrorLog>({}, () => {
-            if (callback) {
-                callback();
-            }
-        })
+    new logErrorModel(message).save().then(
+        () => {},
+        err => {
+            noDbLogger.info('ERROR Cannot log to DB (3): ' + err);
+        }
     );
 }
 
@@ -326,51 +322,46 @@ export function logClientError(req: Request, done: Cb) {
     if (req.user) {
         clientErrorLog.username = req.user.username;
     }
-    new clientErrorModel(clientErrorLog).save(
-        handleConsoleError<ClientErrorDocument>({}, () => {
-            done();
-        })
-    );
+    new clientErrorModel(clientErrorLog).save().then(done, err => {
+        noDbLogger.info('ERROR: ' + err);
+    });
 }
 
-export function getClientErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
+export function getClientErrorsNumber(user: UserFull): Promise<number> {
     const condition =
         user.notificationDate && user.notificationDate.clientLogDate
             ? { date: { $gt: user.notificationDate.clientLogDate } }
             : {};
-    clientErrorModel.countDocuments(condition).exec(callback);
+    return clientErrorModel.countDocuments(condition).exec();
 }
 
-export function getServerErrorsNumber(user: UserFull, callback: (error: Error | null, n: number) => void) {
+export function getServerErrorsNumber(user: UserFull): Promise<number> {
     const condition =
         user.notificationDate && user.notificationDate.serverLogDate
             ? ({ date: { $gt: user.notificationDate.serverLogDate } } as any)
             : {};
-    logErrorModel.countDocuments(condition).exec(callback);
+    return logErrorModel.countDocuments(condition).exec();
 }
 
-export function usageByDay(numberOfDays: number = 3, callback: CbError1<DailyUsage[]>) {
+export function usageByDay(numberOfDays: number = 3): Promise<DailyUsage[]> {
     const d = new Date();
     d.setDate(d.getDate() - numberOfDays);
     //noinspection JSDuplicatedDeclaration
-    logModel.aggregate(
-        [
-            { $match: { $and: [{ date: { $exists: true } }, { date: { $gte: d } }] } },
-            {
-                $group: {
-                    _id: {
-                        ip: '$remoteAddr',
-                        year: { $year: '$date' },
-                        month: { $month: '$date' },
-                        day: { $dayOfMonth: '$date' },
-                    } as any,
-                    hits: { $sum: 1 },
-                    latestDate: { $max: '$date' },
-                },
+    return logModel.aggregate([
+        { $match: { $and: [{ date: { $exists: true } }, { date: { $gte: d } }] } },
+        {
+            $group: {
+                _id: {
+                    ip: '$remoteAddr',
+                    year: { $year: '$date' },
+                    month: { $month: '$date' },
+                    day: { $dayOfMonth: '$date' },
+                } as any,
+                hits: { $sum: 1 },
+                latestDate: { $max: '$date' },
             },
-        ],
-        callback
-    );
+        },
+    ]);
 }
 
 export function recordUserLogin(user: UserFull, ip: string) {

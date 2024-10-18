@@ -12,10 +12,7 @@ const url = 'mongodb://' + (database.username ? database.username + ':' + databa
     + '/' + database.db;
 let db;
 
-MongoClient.connect(url, (err, client) => {
-    if (err) {
-        throw err;
-    }
+MongoClient.connect(url).then(client => {
     db = client.db(database.db);
     if (!db) {
         throw new Error('login server initialization failed');

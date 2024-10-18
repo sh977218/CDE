@@ -3,7 +3,7 @@ import { Document, Model } from 'mongoose';
 import { config } from 'server';
 import { establishConnection } from 'server/system/connections';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { CbError, CbError1, MeshClassification } from 'shared/models.model';
+import { MeshClassification } from 'shared/models.model';
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -24,30 +24,30 @@ const conn = establishConnection(config.database.appData);
 const meshClassificationModal: Model<MeshClassificationDocument> = conn.model(
     'meshClassification',
     MeshClassificationSchema
-);
+) as any;
 
-export function byId(id: string, callback: CbError1<MeshClassificationDocument>) {
-    meshClassificationModal.findById(id, callback);
+export function byId(id: string): Promise<MeshClassificationDocument | null> {
+    return meshClassificationModal.findById(id);
 }
 
-export function byEltId(eltId: string, callback: CbError1<MeshClassificationDocument[]>) {
-    meshClassificationModal.find({ eltId }, callback);
+export function byEltId(eltId: string): Promise<MeshClassificationDocument[]> {
+    return meshClassificationModal.find({ eltId });
 }
 
-export function byFlatClassification(flatClassification: string, callback: CbError1<MeshClassificationDocument[]>) {
-    meshClassificationModal.find({ flatClassification }, callback);
+export function byFlatClassification(flatClassification: string): Promise<MeshClassificationDocument[]> {
+    return meshClassificationModal.find({ flatClassification });
 }
 
-export function deleteAll(cb: CbError) {
-    meshClassificationModal.deleteMany({}, cb);
+export function deleteAll() {
+    return meshClassificationModal.deleteMany({});
 }
 
-export function findAll(callback: CbError1<MeshClassificationDocument[]>) {
-    meshClassificationModal.find({}, callback);
+export function findAll(): Promise<MeshClassificationDocument[]> {
+    return meshClassificationModal.find({});
 }
 
-export function newMesh(mesh: MeshClassification, callback: CbError1<MeshClassificationDocument>) {
-    new meshClassificationModal(mesh).save(callback);
+export function newMesh(mesh: MeshClassification): Promise<MeshClassificationDocument> {
+    return new meshClassificationModal(mesh).save();
 }
 
 export async function updateMeshByClassification(

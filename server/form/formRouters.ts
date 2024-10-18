@@ -28,7 +28,6 @@ import {
 } from 'server/form/formsvc';
 import { formModel } from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsByCdeTinyId, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
-import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
     completionSuggest,
@@ -98,31 +97,24 @@ export function module() {
                     archived: false,
                     'registrationState.registrationStatus': 'Qualified',
                 };
-                formModel.countDocuments(
-                    cond,
-                    undefined,
-                    handleNotFound({ req, res }, totalCount => {
-                        formModel.find(
-                            cond,
-                            'tinyId designations',
-                            {
-                                skip: pageSize * (pageNum - 1),
-                                limit: pageSize,
-                            },
-                            handleError<FormDocument[]>({ req, res }, forms => {
-                                let totalPages = totalCount / pageSize;
-                                if (totalPages % 1 > 0) {
-                                    totalPages = totalPages + 1;
-                                }
-                                res.render('bot/formSearchOrg', {
-                                    forms,
-                                    totalPages,
-                                    selectedOrg,
-                                });
-                            })
-                        );
-                    })
-                );
+                formModel.countDocuments(cond, undefined).then(totalCount => {
+                    formModel
+                        .find(cond, 'tinyId designations', {
+                            skip: pageSize * (pageNum - 1),
+                            limit: pageSize,
+                        })
+                        .then(forms => {
+                            let totalPages = totalCount / pageSize;
+                            if (totalPages % 1 > 0) {
+                                totalPages = totalPages + 1;
+                            }
+                            res.render('bot/formSearchOrg', {
+                                forms,
+                                totalPages,
+                                selectedOrg,
+                            });
+                        }, respondError({ req, res }));
+                }, respondError({ req, res }));
             } else {
                 res.render('bot/formSearch');
             }

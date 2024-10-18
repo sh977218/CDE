@@ -56,7 +56,7 @@
       "options": {
         "ssl": true,
         "replicaSet": "cde",
-        "sslValidate": false
+        "tlsInsecure": true
       }
     },
     "log": {
@@ -68,7 +68,7 @@
       "options": {
         "ssl": true,
         "replicaSet": "cde",
-        "sslValidate": false
+        "tlsInsecure": true
       }
     },
     "migration": {
@@ -80,7 +80,7 @@
       "options": {
         "ssl": true,
         "replicaSet": "cde",
-        "sslValidate": false
+        "tlsInsecure": true
       }
     }
   },

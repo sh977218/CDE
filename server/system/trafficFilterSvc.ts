@@ -1,6 +1,8 @@
 import { Request, RequestHandler } from 'express';
+import { Document } from 'mongoose';
 import { config } from 'server';
 import { findAnyOne, initTrafficFilter } from 'server/system/trafficFilterDb';
+import { TrafficFilter } from 'shared/security/trafficFilter';
 
 export let bannedIps: string[] = [];
 const banEndsWith: string[] = config.banEndsWith || [];
@@ -67,7 +69,7 @@ export const blockBannedIps: RequestHandler = (req, res, next) => {
     }
 };
 
-export async function getTrafficFilter() {
+export async function getTrafficFilter(): Promise<Document & TrafficFilter> {
     let foundOne = await findAnyOne();
     if (!foundOne) {
         foundOne = await initTrafficFilter();

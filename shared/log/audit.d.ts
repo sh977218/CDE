@@ -7,13 +7,13 @@ export interface HttpLogResponse {
 
 export interface HttpLog {
     _id: string;
-    date: string;
+    date: Date;
     httpStatus: string;
     level: string;
     method: string;
     referrer: string;
     remoteAddr: string;
-    responseTime: string;
+    responseTime: number;
     url: string;
 }
 

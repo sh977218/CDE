@@ -15,7 +15,7 @@ async function doOneCollection(collection: Model<CdeFormDocument>) {
     const allNamingTags = await collection.distinct('designations.tags', cond);
     const namingResult = await Promise.all(allNamingTags.map(async tag => {
             const query = {'designations.tags': tag, ...cond};
-            const count = await collection.count(query);
+            const count = await collection.countDocuments(query);
             return {
                 tag,
                 count
@@ -25,7 +25,7 @@ async function doOneCollection(collection: Model<CdeFormDocument>) {
     const allDefinitionTags = await collection.distinct('definitions.tags', cond);
     const definitionResult = await Promise.all(allDefinitionTags.map(async tag => {
             const query = {'definitions.tags': tag, ...cond};
-            const count = await collection.count(query);
+            const count = await collection.countDocuments(query);
             return {
                 tag,
                 count

@@ -1,5 +1,5 @@
-import { RequestHandler, Router } from 'express';
-import { handleError, handleNotFound } from 'server/errorHandler';
+import { RequestHandler, Response, Router } from 'express';
+import { respondError } from 'server/errorHandler';
 import {
     appLogs,
     clientErrors,
@@ -18,69 +18,57 @@ import { isSiteAdminMiddleware } from '../system/authorization';
 export function module(roleConfig: { feedbackLog: RequestHandler; superLog: RequestHandler }) {
     const router = Router();
 
-    router.post('/httpLogs', roleConfig.superLog, (req, res) => {
-        httpLogs(
-            req.body,
-            handleError({ req, res }, result => res.send(result))
-        );
-    });
+    router.post(
+        '/httpLogs',
+        roleConfig.superLog,
+        (req, res): Promise<Response> => httpLogs(req.body).then(result => res.send(result), respondError({ req, res }))
+    );
 
-    router.post('/appLogs', roleConfig.superLog, (req, res) => {
-        appLogs(
-            req.body,
-            handleError({ req, res }, result => res.send(result))
-        );
-    });
+    router.post(
+        '/appLogs',
+        roleConfig.superLog,
+        (req, res): Promise<Response> => appLogs(req.body).then(result => res.send(result), respondError({ req, res }))
+    );
 
-    router.get('/dailyUsageReportLogs/:numberOfDays', roleConfig.superLog, (req, res) => {
+    router.get('/dailyUsageReportLogs/:numberOfDays', roleConfig.superLog, (req, res): Promise<Response> => {
         const numberOfDays = parseInt(req.params.numberOfDays, 10) || 3;
-        usageByDay(
-            numberOfDays,
-            handleError({ req, res }, result => res.send(result))
-        );
+        return usageByDay(numberOfDays).then(result => res.send(result), respondError({ req, res }));
     });
 
-    router.post('/itemLog/:module', roleConfig.feedbackLog, (req, res) => {
+    router.post('/itemLog/:module', roleConfig.feedbackLog, (req, res): Response | Promise<Response> => {
         if (!['de', 'form', 'classification'].includes(req.params.module)) {
             return res.status(400).send('Module needs to be "de", "form" or "classification".');
         }
-        itemLogByModule(
-            req.params.module as unknown as 'de' | 'form' | 'classification',
-            req.body,
-            handleError({ req, res }, result => res.send(result))
+        return itemLogByModule(req.params.module as unknown as 'de' | 'form' | 'classification', req.body).then(
+            result => res.send(result),
+            respondError({ req, res })
         );
     });
 
-    router.post('/serverErrors', roleConfig.superLog, (req, res) => {
-        serverErrors(
-            req.body,
-            handleError({ req, res }, result => {
-                res.send(result);
-                userModel
-                    .findOneAndUpdate(
-                        { username: req.user.username },
-                        { $set: { 'notificationDate.serverLogDate': new Date() } },
-                        {}
-                    )
-                    .exec();
-            })
-        );
+    router.post('/serverErrors', roleConfig.superLog, (req, res): Promise<Response> => {
+        return serverErrors(req.body).then(result => {
+            userModel
+                .findOneAndUpdate(
+                    { username: req.user.username },
+                    { $set: { 'notificationDate.serverLogDate': new Date() } },
+                    {}
+                )
+                .exec();
+            return res.send(result);
+        }, respondError({ req, res }));
     });
 
     router.post('/clientErrors', roleConfig.superLog, async (req, res) => {
-        clientErrors(
-            req.body,
-            handleNotFound({ req, res }, result => {
-                res.send(result);
-                userModel
-                    .findOneAndUpdate(
-                        { username: req.user.username },
-                        { $set: { 'notificationDate.clientLogDate': new Date() } },
-                        {}
-                    )
-                    .exec();
-            })
-        );
+        clientErrors(req.body).then(result => {
+            userModel
+                .findOneAndUpdate(
+                    { username: req.user.username },
+                    { $set: { 'notificationDate.clientLogDate': new Date() } },
+                    {}
+                )
+                .exec();
+            return res.send(result);
+        }, respondError({ req, res }));
     });
 
     router.post('/loginRecords', isSiteAdminMiddleware, async (req, res) => {
@@ -88,16 +76,10 @@ export function module(roleConfig: { feedbackLog: RequestHandler; superLog: Requ
     });
 
     router.get('/serverErrorsNumber', roleConfig.superLog, async (req, res) => {
-        getServerErrorsNumber(
-            req.user,
-            handleError({ req, res }, result => res.send({ count: result }))
-        );
+        getServerErrorsNumber(req.user).then(result => res.send({ count: result }), respondError({ req, res }));
     });
     router.get('/clientErrorsNumber', roleConfig.superLog, (req, res) => {
-        getClientErrorsNumber(
-            req.user,
-            handleError({ req, res }, result => res.send({ count: result }))
-        );
+        getClientErrorsNumber(req.user).then(result => res.send({ count: result }), respondError({ req, res }));
     });
 
     router.post('/clientExceptionLogs', (req, res) => {

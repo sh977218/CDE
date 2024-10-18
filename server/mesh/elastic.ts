@@ -27,7 +27,7 @@ const searchTemplate = {
 };
 
 export function syncWithMesh(cb?: ErrorCallback) {
-    findAll((err, allMappings) => doSyncWithMesh(allMappings, cb));
+    findAll().then(allMappings => doSyncWithMesh(allMappings, cb));
 }
 
 let lock = false;

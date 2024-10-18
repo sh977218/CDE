@@ -1,19 +1,11 @@
 import { each } from 'async';
-import { RequestHandler, Router } from 'express';
+import { RequestHandler, Response, Router } from 'express';
 import * as multer from 'multer';
 import fetch from 'node-fetch';
 import { config } from 'server';
-import { handleError, handleNotFound } from 'server/errorHandler';
+import { respondError } from 'server/errorHandler';
 import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
-import {
-    byEltId,
-    byFlatClassification,
-    byId,
-    deleteAll,
-    findAll,
-    MeshClassificationDocument,
-    newMesh,
-} from 'server/mesh/meshDb';
+import { byEltId, byFlatClassification, byId, deleteAll, findAll, newMesh } from 'server/mesh/meshDb';
 import { updateMeshMappings } from 'server/mesh/meshService';
 import { handleErrors, json } from 'shared/fetch';
 import { meshLevel1Map } from 'shared/mesh/mesh';
@@ -22,11 +14,8 @@ import { Cb1 } from 'shared/models.model';
 export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
     const router = Router();
 
-    router.get('/eltId/:eltId', (req, res) => {
-        byEltId(
-            req.params.eltId,
-            handleNotFound({ req, res }, (mm: any) => res.send(mm.length ? mm[0] : '{}'))
-        );
+    router.get('/eltId/:eltId', (req, res): Promise<Response> => {
+        return byEltId(req.params.eltId).then(mm => res.send(mm.length ? mm[0] : '{}'));
     });
 
     router.post('/meshClassification', (req, res) => {
@@ -35,37 +24,34 @@ export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
             delete req.body._id;
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, trees => {
                 req.body.flatTrees = trees;
-                byId(
-                    id,
-                    handleNotFound({ req, res }, elt => {
-                        elt.meshDescriptors = req.body.meshDescriptors;
-                        elt.flatTrees = req.body.flatTrees;
-                        elt.save(handleError<MeshClassificationDocument>({ req, res }, o => res.send(o)));
-                    })
-                );
+                return byId(id).then(elt => {
+                    if (!elt) {
+                        return res.status(404).send();
+                    }
+                    elt.meshDescriptors = req.body.meshDescriptors;
+                    elt.flatTrees = req.body.flatTrees;
+                    return elt.save().then(o => res.send(o), respondError({ req, res }));
+                }, respondError({ req, res }));
             });
         } else {
             flatTreesFromMeshDescriptorArray(req.body.meshDescriptors, trees => {
                 req.body.flatTrees = trees;
-                newMesh(
-                    req.body,
-                    handleError({ req, res }, (o: any) => res.send(o))
-                );
+                newMesh(req.body).then(o => res.send(o), respondError({ req, res }));
             });
         }
     });
 
-    router.get('/meshClassifications', (req, res) => {
-        findAll(handleError({ req, res }, mm => res.send(mm)));
+    router.get('/meshClassifications', (req, res): Promise<Response> => {
+        return findAll().then(mm => res.send(mm), respondError({ req, res }));
     });
 
-    router.get('/meshClassification', (req, res) => {
+    router.get('/meshClassification', (req, res): Response | Promise<Response> => {
         if (!req.query.classification) {
             return res.status(400).send('Missing Classification Parameter');
         }
-        byFlatClassification(
-            req.query.classification as string,
-            handleNotFound({ req, res }, mm => res.send(mm[0]))
+        return byFlatClassification(req.query.classification as string).then(
+            mm => res.send(mm[0]),
+            respondError({ req, res })
         );
     });
 
@@ -91,14 +77,8 @@ export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
         }
     );
 
-    router.post('/deleteMeshMapping', (req, res) => {
-        deleteAll(err => {
-            if (err) {
-                res.status(400).send();
-            } else {
-                res.send();
-            }
-        });
+    router.post('/deleteMeshMapping', (req, res): Promise<Response> => {
+        return deleteAll().then(() => res.send(), respondError({ req, res }));
     });
 
     return router;
