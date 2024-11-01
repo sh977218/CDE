@@ -37,6 +37,7 @@ export const config = Config as any;
             config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') +
             '/' +
             database.db;
+        // OOO: --authenticationDatabase comes from:   1. authSource   2. this uri '/db'   3. 'admin'
         if (uriOptions.length) {
             database.uri += '?' + uriOptions.join('&');
         }

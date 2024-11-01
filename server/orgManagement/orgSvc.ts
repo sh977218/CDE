@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { dataElementModel } from 'server/cde/mongo-cde';
 import { respondError } from 'server/errorHandler';
-import { formModel } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
 import { addOrgByName, managedOrgs, orgByName } from 'server/orgManagement/orgDb';
 import {
     byId,

@@ -1,83 +1,24 @@
-import * as Ajv from 'ajv';
-import { readdirSync, readFileSync } from 'fs';
-import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
-import { resolve } from 'path';
-import { config, ObjectId } from 'server';
-import { updateOrInsertDocument } from 'server/form/elastic';
-import { auditSchema as formAuditSchema, draftSchema, formSchema, formSourceSchema } from 'server/form/schemas';
-import { establishConnection } from 'server/system/connections';
-import { errorLogger } from 'server/system/logging';
+import { ObjectId } from 'server';
+import {
+    formAuditModel,
+    FormDocument,
+    FormDraftDocument,
+    formDraftModel,
+    formModel,
+    formSourceModel,
+} from 'server/mongo/mongoose/form.mongoose';
 import { auditModifications, generateTinyId, updateElt, updateMetadata } from 'server/system/mongo-data';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
 import { CdeForm } from 'shared/form/form.model';
-import { EltLog, User } from 'shared/models.model';
-
-export type CdeFormDocument = Document<ObjectId, {}, CdeForm> & CdeForm;
-export type CdeFormDraft = CdeForm;
-export type CdeFormDraftDocument = Document<ObjectId, {}, CdeFormDraft> & CdeFormDraft;
-export type CdeFormSource = CdeForm;
-export type CdeFormSourceDocument = Document<ObjectId, {}, CdeFormSource> & CdeFormSource;
-
-const ajvElt = new Ajv({ allErrors: true });
-readdirSync(resolve(global.assetDir('shared/de/assets/'))).forEach(file => {
-    if (file.indexOf('.schema.json') > -1) {
-        ajvElt.addSchema(require(global.assetDir('shared/de/assets', file)));
-    }
-});
-export let validateSchema: any;
-const file = readFileSync(resolve(global.assetDir('shared/form/assets/form.schema.json')));
-try {
-    const schema = JSON.parse(file.toString());
-    schema.$async = true;
-    validateSchema = validateSchema = ajvElt.compile(schema);
-} catch (err) {
-    console.log('Error: form.schema.json does not compile. ' + err);
-    process.exit(1);
-}
-
-const preSave: PreSaveMiddlewareFunction<CdeFormDocument> = function preSave(this: CdeFormDocument, next) {
-    const elt = this;
-
-    /* istanbul ignore if */
-    if (elt.archived) {
-        return next();
-    }
-    validateSchema(elt).then(
-        () => {
-            try {
-                updateOrInsertDocument(elt);
-            } catch (exception) {
-                // TODO: remove logging, error is passed out of this layer, handleError should fail-back and tee to no-db logger
-                errorLogger.error(`Error Indexing Form ${elt.tinyId}`, {
-                    details: exception,
-                    stack: new Error().stack,
-                });
-            }
-            next();
-        },
-        (err: any) => {
-            err.tinyId = elt.tinyId;
-            err.eltId = elt._id.toString();
-            next(err);
-        }
-    );
-};
-formSchema.pre('save', preSave);
-formSourceSchema.pre('save', preSave);
-
-const conn = establishConnection(config.database.appData);
-export const formModel: Model<CdeFormDocument> = conn.model('Form', formSchema) as any;
-export const formDraftModel: Model<CdeFormDraftDocument> = conn.model('Draft', draftSchema) as any;
-export const formSourceModel: Model<CdeFormSourceDocument> = conn.model('formsources', formSourceSchema) as any;
-export const formAuditModel: Model<Document & EltLog> = conn.model('FormAudit', formAuditSchema) as any;
+import { User } from 'shared/models.model';
 
 const auditModificationsForm = auditModifications(formAuditModel);
 
-export function byTinyId(tinyId: string): Promise<CdeFormDocument | null> {
+export function byTinyId(tinyId: string): Promise<FormDocument | null> {
     return formModel.findOne({ archived: false, tinyId }).then();
 }
 
-export function draftById(_id: ObjectId): Promise<CdeFormDocument> {
+export function draftById(_id: ObjectId): Promise<FormDocument> {
     return formDraftModel
         .findOne({
             _id,
@@ -86,7 +27,7 @@ export function draftById(_id: ObjectId): Promise<CdeFormDocument> {
         .then();
 }
 
-export function draftByTinyId(tinyId: string): Promise<CdeFormDraftDocument> {
+export function draftByTinyId(tinyId: string): Promise<FormDraftDocument> {
     return formDraftModel
         .findOne({
             tinyId,
@@ -100,7 +41,7 @@ export function draftDelete(tinyId: string): Promise<void> {
     return formDraftModel.deleteMany({ tinyId }).then();
 }
 
-export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]> {
+export function draftsList(criteria: any): Promise<FormDraftDocument[]> {
     return formDraftModel
         .find(criteria, {
             'designations.designation': 1,
@@ -113,7 +54,7 @@ export function draftsList(criteria: any): Promise<CdeFormDraftDocument[]> {
         .then();
 }
 
-export function draftSave(elt: CdeForm, user: User): Promise<CdeFormDocument | null> {
+export function draftSave(elt: CdeForm, user: User): Promise<FormDocument | null> {
     updateMetadata(elt, user);
     return formDraftModel.findById(elt._id).then(doc => {
         if (!doc) {
@@ -130,7 +71,7 @@ export function draftSave(elt: CdeForm, user: User): Promise<CdeFormDocument | n
 
 /* ---------- PUT NEW REST API above ---------- */
 
-export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {}): Promise<CdeFormDocument> {
+export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {}): Promise<FormDocument> {
     return formModel.findById(elt._id, null, null).then(dbForm => {
         /* istanbul ignore if */
         if (!dbForm) {
@@ -197,7 +138,7 @@ export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {})
     });
 }
 
-export function create(elt: CdeForm, user: User): Promise<CdeFormDocument> {
+export function create(elt: CdeForm, user: User): Promise<FormDocument> {
     elt.created = Date.now();
     elt.createdBy = {
         username: user.username,
@@ -210,6 +151,6 @@ export function create(elt: CdeForm, user: User): Promise<CdeFormDocument> {
     });
 }
 
-export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string): Promise<CdeFormDocument | null> {
+export function originalSourceByTinyIdSourceName(tinyId: string, sourceName: string): Promise<FormDocument | null> {
     return formSourceModel.findOne({ tinyId, source: sourceName });
 }

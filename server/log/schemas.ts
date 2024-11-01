@@ -2,26 +2,7 @@ import * as mongoose from 'mongoose';
 import { Document, Schema } from 'mongoose';
 import { config } from 'server';
 import { addStringtype } from 'server/system/mongoose-stringtype';
-import { AppLog, ClientError, HttpLog, LoginRecord } from 'shared/log/audit';
-
-export interface ErrorLog {
-    message: string;
-    date: string;
-    details?: string;
-    origin: string;
-    stack: string;
-    request?: {
-        url: string;
-        method: string;
-        params: string;
-        body: string;
-        username: string;
-        userAgent: string;
-        ip: string;
-        errorCode: string;
-        errorType: string;
-    };
-}
+import { AppLog, ClientError, ErrorLog, HttpLog, LoginRecord } from 'shared/log/audit';
 
 export type AppLogDocument = Document & AppLog;
 export type ClientErrorDocument = Document & ClientError;

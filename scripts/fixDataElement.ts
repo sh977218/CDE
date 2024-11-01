@@ -1,12 +1,12 @@
 import 'server/globals';
 import { Model } from 'mongoose';
-import { DataElementDocument, dataElementModel } from 'server/cde/mongo-cde';
+import { DataElement, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doOneCollection(collection: Model<DataElementDocument>) {
+async function doOneCollection(collection: Model<DataElement>) {
     const cond = {};
     const cursor = collection.find(cond).cursor();
     return cursor.eachAsync(async model => {

@@ -1,5 +1,5 @@
 import 'server/globals';
-import { DataElementDocument, dataElementModel } from 'server/cde/mongo-cde';
+import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { organizationModel } from 'server/orgManagement/orgDb';
 
 process.on('unhandledRejection', (error) => {

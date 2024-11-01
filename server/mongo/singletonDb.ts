@@ -1,26 +1,26 @@
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { SingletonDocument, singletonModel } from 'server/mongo/mongoose/singleton.mongoose';
+import { singletonModel } from 'server/mongo/mongoose/singleton.mongoose';
 import { SingletonDb } from 'shared/boundaryInterfaces/db/singletonDb';
 import { SingletonServer as Singleton } from 'shared/singleton.model';
 
 const singletonHooks: CrudHooks<Singleton, string> = {
     read: {
-        post: (singleton) => singleton,
+        post: singleton => singleton,
     },
     save: {
-        pre: (singleton) => singleton,
-        post: (singleton) => singleton,
+        pre: singleton => singleton,
+        post: singleton => singleton,
     },
     delete: {
-        pre: (_id) => _id,
-        post: (_id) => {},
+        pre: _id => _id,
+        post: _id => {},
     },
 };
 
 class SingletonDbMongo extends BaseDb<Singleton, string> implements SingletonDb {
-    constructor(model: Model<SingletonDocument>) {
+    constructor(model: Model<Singleton>) {
         super(model, singletonHooks, 'updated');
     }
 
@@ -37,23 +37,24 @@ class SingletonDbMongo extends BaseDb<Singleton, string> implements SingletonDb 
     }
 
     startEdit(_id: string, user: ObjectId): Promise<Singleton | null> {
-        return this.model.findOneAndUpdate(
-            {_id, updateInProgress: null},
-            {$set: {updateInProgress: {updated: new Date(), updatedBy: user}}},
-            {upsert: true, new: true}
-        )
+        return this.model
+            .findOneAndUpdate(
+                { _id, updateInProgress: null },
+                { $set: { updateInProgress: { updated: new Date(), updatedBy: user } } },
+                { upsert: true, new: true }
+            )
             .then(newSingleton => newSingleton.toObject<Singleton>());
     }
 
     update(_id: string, query: {}, userId: ObjectId, setClause: {}): Promise<Singleton> {
-        return this.model.findOneAndUpdate(
-            Object.assign(query, {_id}),
-            {$set: Object.assign({updated: new Date(), updatedBy: userId}, setClause)},
-            {upsert: true, new: true}
-        )
+        return this.model
+            .findOneAndUpdate(
+                Object.assign(query, { _id }),
+                { $set: Object.assign({ updated: new Date(), updatedBy: userId }, setClause) },
+                { upsert: true, new: true }
+            )
             .then(newSingleton => newSingleton.toObject<Singleton>())
-            .then(singleton => (this.hooks.save.post as (a: Singleton) =>
-                PromiseOrValue<Singleton>)(singleton)); // TODO: TypeScript/issues/37181
+            .then(singleton => (this.hooks.save.post as (a: Singleton) => PromiseOrValue<Singleton>)(singleton)); // TODO: TypeScript/issues/37181
     }
 }
 

@@ -1,4 +1,4 @@
-import { Document, Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 export type PromiseOrValue<T> = T | Promise<T>;
 
@@ -18,7 +18,7 @@ export interface CrudHooks<T, U> {
 
 export abstract class BaseDb<T, U> {
     protected constructor(
-        protected model: Model<Document<U, {}, T> & T>,
+        protected model: Model<T>,
         protected hooks: CrudHooks<T, U>,
         protected updateDateField: keyof T | null
     ) {}

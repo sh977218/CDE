@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { JobStatus, Message } from 'server/system/mongo-data';
 import { addStringtype } from './mongoose-stringtype';
 import { orderedList } from 'shared/regStatusShared';
 import { administrativeStatuses } from 'shared/models.model';
@@ -231,7 +232,7 @@ const boardApprovalSchema = {
     element: elementRefSchema,
 };
 
-export const message = new Schema(
+export const message = new Schema<Message>(
     {
         recipient: {
             name: StringType,
@@ -256,7 +257,7 @@ export const message = new Schema(
     { collection: 'messages' }
 );
 
-export const jobQueue = new Schema(
+export const jobQueue = new Schema<JobStatus>(
     {
         type: StringType,
         status: { type: StringType, enum: ['Running'] },

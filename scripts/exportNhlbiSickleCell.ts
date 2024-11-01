@@ -1,5 +1,5 @@
 import 'server/globals';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 import * as XLSX from 'xlsx';
 
 process.on('unhandledRejection', (error) => {
@@ -86,7 +86,7 @@ async function run() {
         archived: false
     };
 
-    const cursor = await dataElementModel.find(cond).cursor();
+    const cursor = await getStream(cond);
     const csvData: any[] = [];
 
     return cursor.eachAsync(async model => {

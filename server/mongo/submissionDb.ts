@@ -1,17 +1,17 @@
 import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
-import { SubmissionDocument, submissionModel } from 'server/mongo/mongoose/submission.mongoose';
+import { Submission, submissionModel } from 'server/mongo/mongoose/submission.mongoose';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { Submission, SubmissionDb } from 'shared/boundaryInterfaces/db/submissionDb';
+import { SubmissionDb } from 'shared/boundaryInterfaces/db/submissionDb';
 
 const submissionHooks: CrudHooks<Submission, ObjectId> = {
     read: {
-        post: (submission) => {
+        post: submission => {
             return submission;
         },
     },
     save: {
-        pre: (submission) => {
+        pre: submission => {
             submission.dateModified = new Date().toJSON();
             return submission;
         },
@@ -20,13 +20,13 @@ const submissionHooks: CrudHooks<Submission, ObjectId> = {
         },
     },
     delete: {
-        pre: (_id) => _id,
-        post: (_id) => {},
+        pre: _id => _id,
+        post: _id => {},
     },
-}
+};
 
 class SubmissionDbMongo extends BaseDb<Submission, ObjectId> implements SubmissionDb {
-    constructor(model: Model<SubmissionDocument>) {
+    constructor(model: Model<Submission>) {
         super(model, submissionHooks, 'dateModified');
     }
 
@@ -35,7 +35,7 @@ class SubmissionDbMongo extends BaseDb<Submission, ObjectId> implements Submissi
     }
 
     byNameAndVersion(name: string, version: string): Promise<Submission | null> {
-        return this.findOne({name, version});
+        return this.findOne({ name, version });
     }
 
     byKey(key: string): Promise<Submission | null> {
@@ -57,7 +57,7 @@ class SubmissionDbMongo extends BaseDb<Submission, ObjectId> implements Submissi
 
     save(submission: Submission): Promise<Submission> {
         return Promise.resolve(this.hooks.save.pre(submission))
-            .then(s => this.model.findOneAndReplace({_id: new ObjectId(s._id)}, s, {new: true, upsert: true}))
+            .then(s => this.model.findOneAndReplace({ _id: new ObjectId(s._id) }, s, { new: true, upsert: true }))
             .then(doc => doc.toObject<Submission>())
             .then(s => (this.hooks.save.post as (c: Submission) => PromiseOrValue<Submission>)(s)); // TODO: TypeScript/issues/37181
     }

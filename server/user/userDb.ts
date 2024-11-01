@@ -34,6 +34,8 @@ export interface UserFull extends User {
     password: string;
 }
 
+export type UserDocument = Document<ObjectId, {}, UserFull> & UserFull;
+
 const notificationTypesSchema = new Schema(
     {
         drawer: Boolean,
@@ -62,7 +64,7 @@ const publishedFormSchema = new Schema(
     { _id: false }
 );
 
-const userSchema = new Schema(
+const userSchema = new Schema<UserDocument>(
     {
         username: { type: StringType, lowercase: true, trim: true, unique: true },
         commentNotifications: [commentNotificationSchema],
@@ -134,8 +136,7 @@ export const userRefSchema = {
     _id: Schema.Types.ObjectId,
     username: { type: StringType, index: true },
 };
-export type UserDocument = Document<ObjectId, {}, UserFull> & UserFull;
-export const userModel: Model<UserDocument> = conn.model('User', userSchema) as any;
+export const userModel: Model<UserDocument> = conn.model('User', userSchema);
 
 const userProject = { password: 0 };
 

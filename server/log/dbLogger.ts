@@ -1,8 +1,6 @@
 import { Request } from 'express';
 import { Model } from 'mongoose';
 import { config } from 'server';
-import { cdeAuditModel } from 'server/cde/mongo-cde';
-import { formAuditModel } from 'server/form/mongo-form';
 import {
     clientErrorSchema,
     consoleLogSchema,
@@ -15,6 +13,8 @@ import {
     AppLogDocument,
     LoginRecordDocument,
 } from 'server/log/schemas';
+import { cdeAuditModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formAuditModel } from 'server/mongo/mongoose/form.mongoose';
 import { classificationAuditModel } from 'server/system/classificationAuditDb';
 import { establishConnection } from 'server/system/connections';
 import { noDbLogger } from 'server/system/noDbLogger';

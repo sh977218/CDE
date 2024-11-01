@@ -3,8 +3,7 @@ import { Model } from 'mongoose';
 import { deleteBoardById, updateOrInsertBoardById } from 'server/board/elastic';
 import { respondError } from 'server/errorHandler';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { BoardDocument, boardModel } from 'server/mongo/mongoose/board.mongoose';
-import { Board } from 'shared/board.model';
+import { Board, boardModel } from 'server/mongo/mongoose/board.mongoose';
 import { BoardDb } from 'shared/boundaryInterfaces/db/boardDb';
 import { copyShallow } from 'shared/util';
 
@@ -42,7 +41,7 @@ const boardHooks: CrudHooks<Board, ObjectId> = {
 };
 
 class BoardDbMongo extends BaseDb<Board, ObjectId> implements BoardDb {
-    constructor(model: Model<BoardDocument>) {
+    constructor(model: Model<Board>) {
         super(model, boardHooks, 'updatedDate');
     }
 

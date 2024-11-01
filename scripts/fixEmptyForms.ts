@@ -1,6 +1,6 @@
 import 'server/globals';
-import { CdeFormDocument, formModel } from 'server/form/mongo-form';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel, getStream } from 'server/mongo/mongoose/form.mongoose';
 import { iterateFeSync } from 'shared/form/fe';
 import { FormQuestion } from 'shared/form/form.model';
 const XLSX = require('xlsx');
@@ -31,10 +31,10 @@ async function run(options: any){
         'm1_5Mu668'
     ];
 
-    const cursor = await formModel.find(cond).cursor();
+    const cursor = await getStream(cond);
     const rows: any[] = [];
     let formData: any = {};
-    return cursor.eachAsync(async (model: CdeFormDocument) => {
+    return cursor.eachAsync(async (model) => {
         console.log(`Start Form ${model.tinyId}`);
         const questions: FormQuestion[] = [];
         iterateFeSync(model, undefined, undefined, fe => {

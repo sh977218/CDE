@@ -4,8 +4,6 @@ import { elasticsearch } from 'server/cde/elastic';
 import { moreLike } from 'server/cde/elastic.moreLike';
 import {
     create as deCreate,
-    DataElementDraft,
-    dataElementModel,
     draftById as deDraftById,
     draftByTinyId as deDraftByTinyId,
     draftDelete as deDraftDelete,
@@ -18,6 +16,7 @@ import {
 } from 'server/cde/mongo-cde';
 import { handleNotFound, respondError } from 'server/errorHandler';
 import { consoleLog } from 'server/log/dbLogger';
+import { DataElementDraft, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { orgByName } from 'server/orgManagement/orgDb';
 import { badWorkingGroupStatus, hideProprietaryIds } from 'server/system/adminItemSvc';
 import { RequestWithItem } from 'server/system/authorization';

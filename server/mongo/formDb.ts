@@ -2,13 +2,12 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { config } from 'server';
 import { updateOrInsert } from 'server/form/elastic';
-import { validateSchema } from 'server/form/mongo-form';
 import { AttachableDb } from 'server/mongo/base/attachableDb';
 import { CrudHooks, isNotNull, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { FormDocument, formModel } from 'server/mongo/mongoose/form.mongoose';
+import { CdeForm, formModel, validateSchema } from 'server/mongo/mongoose/form.mongoose';
 import { esClient } from 'server/system/elastic';
 import { FormDb } from 'shared/boundaryInterfaces/db/formDb';
-import { CdeForm, CdeFormElastic } from 'shared/form/form.model';
+import { CdeFormElastic } from 'shared/form/form.model';
 import { itemAsElastic } from 'shared/item';
 import { Attachment } from 'shared/models.model';
 import { isT } from 'shared/util';
@@ -51,7 +50,7 @@ const formHooks: CrudHooks<CdeForm, ObjectId> = {
 };
 
 class FormDbMongo extends AttachableDb<CdeForm, ObjectId> implements FormDb {
-    constructor(model: Model<FormDocument>) {
+    constructor(model: Model<CdeForm>) {
         super(model, formHooks, 'updated');
     }
 

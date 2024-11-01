@@ -1,10 +1,10 @@
 import { find, slice, sortBy, uniqWith } from 'lodash';
-import { Item } from 'shared/item';
 import {
     Cb1,
     Classification,
     ClassificationElement,
     ClassificationElementsContainer,
+    Elt,
     ObjectId,
 } from 'shared/models.model';
 import { Organization } from 'shared/organization/organization';
@@ -45,7 +45,7 @@ export function addCategoriesToTree(tree: ClassificationElementsContainer, categ
     });
 }
 
-export function arrangeClassification(item: Item, orgName: string): void {
+export function arrangeClassification(item: Elt, orgName: string): void {
     if (item.classification) {
         item.classification.unshift(
             item.classification.splice(
@@ -131,7 +131,7 @@ export function fetchLevel(tree: Classification, fields: string[]): Classificati
     return tempTree;
 }
 
-export function findSteward(item: Item, orgName: string): { index: number; object: Classification } | undefined {
+export function findSteward(item: Elt, orgName: string): { index: number; object: Classification } | undefined {
     if (!item || !item.classification) {
         return;
     }
@@ -190,7 +190,7 @@ export function renameCategory(tree: Classification, fields: string[], newName: 
     }
 }
 
-export function sortClassification(item: Item): Item {
+export function sortClassification(item: Elt): Elt {
     function sortElements(elements: ClassificationElement[] = []) {
         elements.sort((c1, c2) => c1.name.localeCompare(c2.name));
         elements.forEach(e => sortElements(e.elements));
@@ -203,7 +203,7 @@ export function sortClassification(item: Item): Item {
     return item;
 }
 
-export function transferClassifications(source: Item, destination: Item): void {
+export function transferClassifications(source: Elt, destination: Elt): void {
     if (source.classification) {
         if (!destination.classification) {
             destination.classification = [];

@@ -1,10 +1,8 @@
 import { Document, Model } from 'mongoose';
 import { config, dbPlugins, ObjectId } from 'server';
 import { diff } from 'server/cde/cdediff';
-import { DataElementDocument } from 'server/cde/mongo-cde';
 import { moduleToDbName } from 'server/dbPlugins';
 import { respondError } from 'server/errorHandler';
-import { CdeFormDocument } from 'server/form/mongo-form';
 import { establishConnection } from 'server/system/connections';
 import { errorLogger } from 'server/system/logging';
 import { jobQueue, message } from 'server/system/schemas';
@@ -13,15 +11,16 @@ import { Board } from 'shared/board.model';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Item } from 'shared/item';
-import { Elt, EltLog, ModuleAll, User } from 'shared/models.model';
+import { DateType, Elt, EltLog, ModuleAll, User } from 'shared/models.model';
 import { generate as shortIdGenerate } from 'shortid';
 import { Readable } from 'stream';
 
-interface JobStatus {
+export interface JobStatus {
     _id: ObjectId;
+    type: string;
+    status: 'Running';
+    error: string;
 }
-
-export type ItemDocument = DataElementDocument | CdeFormDocument;
 
 export interface Message {
     _id: ObjectId;
@@ -41,6 +40,20 @@ export interface Message {
         date: Date;
     }[];
     type: 'CommentApproval' | 'CommentReply';
+    typeAttachmentApproval?: {
+        fileid: string;
+        filename: string;
+        filetype: string;
+        uploadDate: DateType;
+        comment: string;
+        uploadedBy: {
+            username: string;
+        };
+        filesize: number;
+        isDefault: boolean;
+        pendingApproval: boolean;
+        scanned: boolean;
+    };
     typeBoardApproval?: {
         element: {
             elementType: any;
@@ -68,15 +81,33 @@ export interface Message {
             name: string;
         };
     };
+    typeRequest?: {
+        source: {
+            tinyId: string;
+            id: string;
+        };
+        destination: {
+            tinyId: string;
+        };
+        mergeFields: {
+            ids: boolean;
+            designations: boolean;
+            definitions: boolean;
+            attachments: boolean;
+            properties: boolean;
+            classifications: boolean;
+        };
+    };
 }
 
+export type JobStatusDocument = Document & JobStatus;
 export type MessageDocument = Document & Message;
 
 const conn = establishConnection(config.database.appData);
-export const jobQueueModel: Model<Document & JobStatus> = conn.model('JobQueue', jobQueue) as any;
-export const messageModel: Model<MessageDocument> = conn.model('Message', message) as any;
+export const jobQueueModel: Model<JobStatus> = conn.model('JobQueue', jobQueue);
+export const messageModel: Model<Message> = conn.model('Message', message);
 
-export function jobStatus(type: string): Promise<(Document & JobStatus) | null> {
+export function jobStatus(type: string): Promise<JobStatusDocument | null> {
     return jobQueueModel.findOne({ type });
 }
 
@@ -133,8 +164,8 @@ export function addFormToViewHistory(elt: Item, user: User) {
 }
 
 // WARNING: destroys oldItem and newItem by calling cdediff
-export function auditModifications<T extends Document>(auditDb: Model<T>) {
-    return (user: User, oldItem: ItemDocument | null, newItem: ItemDocument) => {
+export function auditModifications<T extends EltLog>(auditDb: Model<T>) {
+    return (user: User, oldItem: (Elt & Document) | null, newItem: Elt & Document) => {
         const message: EltLog = {
             adminItem: {
                 _id: newItem._id,

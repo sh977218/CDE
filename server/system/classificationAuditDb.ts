@@ -6,7 +6,7 @@ import { addStringtype } from 'server/system/mongoose-stringtype';
 import { orderedList } from 'shared/regStatusShared';
 import { ClassificationAuditLog } from 'shared/log/audit';
 
-type ClassificationAuditDocument = Document<ObjectId, {}, ClassificationAuditLog> & ClassificationAuditLog;
+type ClassificationAuditLogDocument = Document<ObjectId, {}, ClassificationAuditLog> & ClassificationAuditLog;
 
 addStringtype(mongoose);
 const Schema = mongoose.Schema;
@@ -14,7 +14,7 @@ const StringType = (Schema.Types as any).StringType;
 
 const conn = establishConnection(config.database.appData);
 
-export const classificationAuditSchema = new Schema(
+export const classificationAuditSchema = new Schema<ClassificationAuditLog>(
     {
         date: { type: Date, default: Date.now, index: true },
         user: {
@@ -37,11 +37,11 @@ export const classificationAuditSchema = new Schema(
     { collection: 'classificationAudit' }
 );
 
-export const classificationAuditModel: Model<ClassificationAuditDocument> = conn.model(
+export const classificationAuditModel: Model<ClassificationAuditLog> = conn.model(
     'classificationAudit',
     classificationAuditSchema
-) as any;
+);
 
-export function saveClassificationAudit(msg: ClassificationAuditLog): Promise<ClassificationAuditDocument> {
+export function saveClassificationAudit(msg: ClassificationAuditLog): Promise<ClassificationAuditLogDocument> {
     return new classificationAuditModel(msg).save();
 }

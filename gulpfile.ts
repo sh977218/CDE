@@ -151,6 +151,7 @@ gulp.task('es', function es() {
             }
         ))
     }) as any;
+    esClient.info().then(info => console.log(info));
     return Promise.all(
         indices.map((index: ElasticIndex) => new Promise<void>((resolve, reject) => {
             console.log('Deleting es index: ' + index.indexName);

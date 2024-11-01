@@ -7,17 +7,15 @@ import { elasticsearch } from 'server/cde/elastic';
 import {
     byTinyId as deByTinyId,
     create as deCreate,
-    dataElementSourceModel,
     update as deUpdate,
 } from 'server/cde/mongo-cde';
 import {
-    CdeFormDocument,
     byTinyId as formByTinyId,
     create as formCreate,
-    formSourceModel,
     update as formUpdate
 } from 'server/form/mongo-form';
-import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
+import { DataElementDocument, dataElementSourceModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { FormDocument, formSourceModel } from 'server/mongo/mongoose/form.mongoose';
 import {
     cdeColumns as excelCdeColumns202404,
     cdeColumnsOrdered as excelCdeColumnsOrdered202404,
@@ -803,7 +801,7 @@ export async function publishItems(submission: Submission, report: VerifySubmiss
             }
         })
     ).filter(isT);
-    const createdForms: CdeFormDocument[] = (
+    const createdForms: FormDocument[] = (
         await mapSeries(report.data.forms, form => {
             if (!form) {
                 return Promise.resolve(null);

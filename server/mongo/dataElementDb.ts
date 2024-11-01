@@ -3,10 +3,9 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { config } from 'server';
 import { updateOrInsert } from 'server/cde/elastic';
-import { validateSchema } from 'server/cde/mongo-cde';
 import { AttachableDb } from 'server/mongo/base/attachableDb';
 import { CrudHooks, isNotNull, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { dataElementModel, validateSchema } from 'server/mongo/mongoose/dataElement.mongoose';
 import { esClient } from 'server/system/elastic';
 import { DataElementDb } from 'shared/boundaryInterfaces/db/dataElementDb';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
@@ -60,7 +59,7 @@ const dataElementHooks: CrudHooks<DataElement, ObjectId> = {
 
 class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements DataElementDb {
     // TODO: DB Model service that catches disconnect errors, waits by polling(connection-wide) until restored to retry before returning, new requests backlogged
-    constructor(model: Model<DataElementDocument>) {
+    constructor(model: Model<DataElement>) {
         super(model, dataElementHooks, 'updated');
     }
 

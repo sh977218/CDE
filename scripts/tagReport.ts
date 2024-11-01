@@ -1,13 +1,14 @@
 import 'server/globals';
 import { Model } from 'mongoose';
-import { CdeFormDocument, formModel } from 'server/form/mongo-form';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
+import { Elt } from 'shared/models.model';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doOneCollection(collection: Model<CdeFormDocument>) {
+async function doOneCollection(collection: Model<Elt>) {
     const cond = {
         archived: false,
         'registrationState.registrationStatus': {$nin: ['Retired', 'Incomplete']}

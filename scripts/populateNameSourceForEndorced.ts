@@ -1,16 +1,12 @@
 import 'server/globals';
-import {Model} from 'mongoose';
-import {
-    formDraftModel,
-    formModel,
-    formSourceModel
-} from 'server/form/mongo-form';
+import { Model } from 'mongoose';
 import {
     dataElementDraftModel,
     dataElementModel,
     dataElementSourceModel
-} from 'server/cde/mongo-cde';
-import {Elt} from "shared/models.model";
+} from 'server/mongo/mongoose/dataElement.mongoose';
+import { formDraftModel, formModel, formSourceModel } from 'server/mongo/mongoose/form.mongoose';
+import { Elt } from "shared/models.model";
 
 process.on('unhandledRejection', (error) => {
     console.log(error);

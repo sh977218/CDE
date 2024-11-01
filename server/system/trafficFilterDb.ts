@@ -8,7 +8,7 @@ import { TrafficFilter } from 'shared/security/trafficFilter';
 addStringtype(mongoose);
 
 const conn = establishConnection(config.database.appData);
-export const trafficFilterSchema = new Schema(
+export const trafficFilterSchema = new Schema<TrafficFilter>(
     {
         ipList: [
             {
@@ -22,7 +22,7 @@ export const trafficFilterSchema = new Schema(
     {}
 );
 
-const trafficFilterModel: Model<Document & TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema) as any;
+const trafficFilterModel: Model<TrafficFilter> = conn.model('trafficFilter', trafficFilterSchema);
 
 export async function initTrafficFilter(): Promise<Document & TrafficFilter> {
     await trafficFilterModel.deleteMany({});

@@ -2,8 +2,8 @@ import 'server/globals';
 import { Client } from '@elastic/elasticsearch';
 import { Client as ClientNewType } from '@elastic/elasticsearch/api/new';
 import { config } from 'server';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
 import { DataElementElastic } from 'shared/de/dataElement.model';
 import { flattenFormElement } from 'shared/form/fe';
 
@@ -17,7 +17,7 @@ const cdesToBeDeleted: any  = {};
 export const esClient: ClientNewType = new Client(config.elastic.options) as any;
 
 async function reportForm() {
-    const forms: any = await formModel.find(cond);
+    const forms = await formModel.find(cond);
     console.log(`${forms.length} forms`);
     for (const form of forms) {
         const questions = flattenFormElement(form);

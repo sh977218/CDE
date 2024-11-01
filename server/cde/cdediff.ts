@@ -1,10 +1,10 @@
 import { diff as deepDiff } from 'deep-diff';
-import { ItemDocument } from 'server/system/mongo-data';
+import { Document } from 'mongoose';
 import { DataElement } from 'shared/de/dataElement.model';
-import { Item } from 'shared/item';
+import { Elt } from 'shared/models.model';
 
-export function diff(newElt: ItemDocument, oldElt: ItemDocument) {
-    function deIdentifyItem(elt: Item) {
+export function diff(newElt: Elt & Document, oldElt: Elt & Document) {
+    function deIdentifyItem(elt: Elt) {
         elt.__v = 0;
         delete elt._id;
         elt.archived = false;

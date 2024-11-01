@@ -76,7 +76,7 @@ const embedJson = {
     },
 };
 
-const embedSchema = new Schema(embedJson);
+const embedSchema = new Schema<Embed>(embedJson);
 
 export type EmbedDocument = Document & Embed;
-export const embedModel: Model<EmbedDocument> = conn.model('Embed', embedSchema) as any;
+export const embedModel: Model<Embed> = conn.model('Embed', embedSchema);

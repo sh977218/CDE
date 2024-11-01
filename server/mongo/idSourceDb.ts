@@ -1,25 +1,24 @@
 import { Model } from 'mongoose';
 import { BaseDb, CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { IdSourceDocument, idSourceModel } from 'server/mongo/mongoose/isSource.mongoose';
+import { IdSource, idSourceModel } from 'server/mongo/mongoose/idSource.mongoose';
 import { IdSourceDb } from 'shared/boundaryInterfaces/db/idSourceDb';
-import { IdSource } from 'shared/models.model';
 
 const idSourceHooks: CrudHooks<IdSource, string> = {
     read: {
-        post: (idSource) => idSource,
+        post: idSource => idSource,
     },
     save: {
-        pre: (idSource) => idSource,
-        post: (idSource) => idSource,
+        pre: idSource => idSource,
+        post: idSource => idSource,
     },
     delete: {
-        pre: (_id) => _id,
-        post: (_id) => {},
+        pre: _id => _id,
+        post: _id => {},
     },
 };
 
 class IdSourceDbMongo extends BaseDb<IdSource, string> implements IdSourceDb {
-    constructor(model: Model<IdSourceDocument>) {
+    constructor(model: Model<IdSource>) {
         super(model, idSourceHooks, null);
     }
 
@@ -32,15 +31,20 @@ class IdSourceDbMongo extends BaseDb<IdSource, string> implements IdSourceDb {
     }
 
     findAll(): Promise<IdSource[]> {
-        return this.model.find()
-            .then(docs => Promise.all(docs
-                .map(doc => doc.toObject<IdSource>())
-                .map(idSource => (this.hooks.read.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource))
-            ));
+        return this.model
+            .find()
+            .then(docs =>
+                Promise.all(
+                    docs
+                        .map(doc => doc.toObject<IdSource>())
+                        .map(idSource => (this.hooks.read.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource))
+                )
+            );
     }
 
     save(idSource: IdSource): Promise<IdSource> {
-        return new this.model(idSource).save()
+        return new this.model(idSource)
+            .save()
             .then(doc => doc.toObject<IdSource>())
             .then(idSource => (this.hooks.save.post as (i: IdSource) => PromiseOrValue<IdSource>)(idSource));
     }
@@ -49,10 +53,9 @@ class IdSourceDbMongo extends BaseDb<IdSource, string> implements IdSourceDb {
         const newIdSource: Omit<IdSource, '_id'> = {
             linkTemplateDe: idSource.linkTemplateDe,
             linkTemplateForm: idSource.linkTemplateForm,
-            version: idSource.version
+            version: idSource.version,
         };
-        return this.model.updateOne({_id: id}, newIdSource, {upsert: true, new: true})
-            .then();
+        return this.model.updateOne({ _id: id }, newIdSource, { upsert: true, new: true }).then();
     }
 }
 

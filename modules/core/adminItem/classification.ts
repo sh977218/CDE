@@ -35,7 +35,7 @@ export function classifyItem(item: Item, orgName: string, classifPath: string[])
     }
 }
 
-export function flattenClassification(elt: Item): string[] {
+export function flattenClassification(elt: Elt): string[] {
     function doClassif(currentString: string, classif: ClassificationElement, result: string[]) {
         if (currentString.length > 0) {
             currentString = currentString + ' | ';

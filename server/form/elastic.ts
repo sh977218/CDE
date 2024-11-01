@@ -1,6 +1,6 @@
 import { config } from 'server';
-import { CdeFormDocument } from 'server/form/mongo-form';
 import { logError } from 'server/log/dbLogger';
+import { FormDocument } from 'server/mongo/mongoose/form.mongoose';
 import { buildElasticSearchQueryForm } from 'server/system/buildElasticSearchQuery';
 import { elasticsearchPromise as elasticSearchShared, esClient } from 'server/system/elastic';
 import { riverFunction, suggestRiverFunction } from 'server/system/elasticSearchInit';
@@ -15,7 +15,7 @@ export function updateOrInsert(elt: CdeForm): CdeForm {
     return elt;
 }
 
-export function updateOrInsertDocument(elt: CdeFormDocument) {
+export function updateOrInsertDocument(elt: FormDocument) {
     return updateOrInsertImpl(elt.toObject());
 }
 

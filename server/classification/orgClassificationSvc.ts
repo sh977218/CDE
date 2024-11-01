@@ -1,14 +1,16 @@
 import { QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
 import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
-import { PipelineStage } from 'mongoose';
-import { byTinyId as deByTinyId, dataElementModel } from 'server/cde/mongo-cde';
+import { Document, PipelineStage } from 'mongoose';
+import { byTinyId as deByTinyId } from 'server/cde/mongo-cde';
 import { respondError } from 'server/errorHandler';
-import { byTinyId as formByTinyId, formModel } from 'server/form/mongo-form';
+import { byTinyId as formByTinyId } from 'server/form/mongo-form';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
 import { OrganizationDocument, orgByName } from 'server/orgManagement/orgDb';
 import { addToClassifAudit } from 'server/system/classificationAuditSvc';
 import { elasticsearchPromise } from 'server/system/elastic';
-import { ItemDocument, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
 import {
     addCategoriesToOrg,
     addCategoriesToTree,
@@ -19,12 +21,12 @@ import {
     OrgClassificationAggregate,
     renameCategory,
 } from 'shared/classification/classificationShared';
-import { Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
+import { Classification, Elt, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQueryOrg } from 'server/system/buildElasticSearchQuery';
 import { esqTerm } from 'shared/elastic';
 
-export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
+export function classifyItem(item: Elt & Document, orgName: string, categories: string[]): void {
     item.classification = defaultArray(item.classification);
     let classification = find(
         item.classification,
@@ -364,7 +366,7 @@ export async function reclassifyOrgClassification(
     );
 }
 
-export function renameClassifyElt(item: ItemDocument, orgName: string, categories: string[], newName: string): void {
+export function renameClassifyElt(item: Elt & Document, orgName: string, categories: string[], newName: string): void {
     item.classification = defaultArray(item.classification);
     const classification = find(
         item.classification,
@@ -380,7 +382,7 @@ export function renameClassifyElt(item: ItemDocument, orgName: string, categorie
     }
 }
 
-export function unclassifyElt(item: ItemDocument, orgName: string, categories: string[]): any {
+export function unclassifyElt(item: Elt & Document, orgName: string, categories: string[]): any {
     const classification = find(
         item.classification,
         (o: Classification) => o.stewardOrg && o.stewardOrg.name === orgName

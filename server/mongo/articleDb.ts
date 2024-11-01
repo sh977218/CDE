@@ -2,27 +2,26 @@ import { ObjectId } from 'mongodb';
 import { Model } from 'mongoose';
 import { AttachableDb } from 'server/mongo/base/attachableDb';
 import { CrudHooks, PromiseOrValue } from 'server/mongo/base/baseDb';
-import { ArticleDocument, articleModel } from 'server/mongo/mongoose/article.mongoose';
-import { Article } from 'shared/article/article.model';
+import { Article, articleModel } from 'server/mongo/mongoose/article.mongoose';
 import { ArticleDb } from 'shared/boundaryInterfaces/db/articleDb';
 import { Attachment } from 'shared/models.model';
 
 const articleHooks: CrudHooks<Article, ObjectId> = {
     read: {
-        post: (article) => article,
+        post: article => article,
     },
     save: {
-        pre: (article) => article,
-        post: (article) => article,
+        pre: article => article,
+        post: article => article,
     },
     delete: {
-        pre: (_id) => _id,
-        post: (_id) => {},
+        pre: _id => _id,
+        post: _id => {},
     },
 };
 
 class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleDb {
-    constructor(model: Model<ArticleDocument>) {
+    constructor(model: Model<Article>) {
         super(model, articleHooks, 'updated');
     }
 
@@ -35,7 +34,7 @@ class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleD
     }
 
     byKey(key: string): Promise<Article | null> {
-        return this.findOne({key});
+        return this.findOne({ key });
     }
 
     exists(query: any): Promise<boolean> {
@@ -51,11 +50,12 @@ class ArticleDbMongo extends AttachableDb<Article, ObjectId> implements ArticleD
     }
 
     update(article: Article): Promise<Article> {
-        return this.model.findOneAndUpdate(
-            {key: article.key},
-            {$set: {body: article.body, updated: new Date(), active: article.active}},
-            {upsert: true, new: true}
-        )
+        return this.model
+            .findOneAndUpdate(
+                { key: article.key },
+                { $set: { body: article.body, updated: new Date(), active: article.active } },
+                { upsert: true, new: true }
+            )
             .then(newArticle => {
                 return newArticle.toObject<Article>();
             })

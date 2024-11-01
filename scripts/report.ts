@@ -1,7 +1,8 @@
 import 'server/globals';
-import { dataElementModel } from 'server/cde/mongo-cde';
 import { isEmpty } from 'lodash';
-import { formModel } from 'server/form/mongo-form';
+import { getStream as getDeStream } from 'server/mongo/mongoose/dataElement.mongoose';
+import { getStream as getFormStream } from 'server/mongo/mongoose/form.mongoose';
+import { Elt } from 'shared/models.model';
 
 const XLSX = require('xlsx');
 
@@ -16,7 +17,7 @@ export function isNotEmpty<T>(o: T) {
 
 const cond = {archived: false};
 
-function eltToRow(modelObj: any) {
+function eltToRow(modelObj: Elt) {
     const row = {
         tinyID: modelObj.tinyId,
         Sources: modelObj.sources.map((s: any) => s.sourceName).join(';'),
@@ -29,7 +30,7 @@ function eltToRow(modelObj: any) {
 
 async function reportDataElement() {
     const csvData: any[] = [];
-    const cursor = dataElementModel.find(cond).cursor();
+    const cursor = getDeStream(cond);
     return cursor.eachAsync(async (model: any) => {
         const modelObj = model.toObject();
         const row = eltToRow(modelObj);
@@ -44,8 +45,8 @@ async function reportDataElement() {
 
 async function reportForm() {
     const csvData: any[] = [];
-    const cursor = formModel.find(cond).cursor();
-    return cursor.eachAsync(async (model: any) => {
+    const cursor = getFormStream(cond);
+    return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
         const row = eltToRow(modelObj);
         csvData.push(row);

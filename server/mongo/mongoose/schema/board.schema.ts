@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Schema } from 'mongoose';
+import { Board } from 'server/mongo/mongoose/board.mongoose';
 import { addStringtype } from 'server/system/mongoose-stringtype';
 
 addStringtype(mongoose);
@@ -14,7 +15,7 @@ const pinSchema = new Schema(
     { _id: false }
 );
 
-export const boardSchema = new Schema(
+export const boardSchema = new Schema<Board>(
     {
         name: StringType,
         description: StringType,

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
-import { CdeFormDocument, formModel, formSourceModel } from 'server/form/mongo-form';
-import { CdeForm, FormElement, FormSectionOrForm } from 'shared/form/form.model';
+import { CdeForm, formModel, formSourceModel } from 'server/mongo/mongoose/form.mongoose';
+import { FormElement, FormSectionOrForm } from 'shared/form/form.model';
 import { isQuestion } from 'shared/form/fe';
 
 export async function fixFormElements(formObj: CdeForm) {
@@ -53,7 +53,7 @@ process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doOneCollection(model: Model<CdeFormDocument>) {
+async function doOneCollection(model: Model<CdeForm>) {
     const cond = {
         archived: false
     };

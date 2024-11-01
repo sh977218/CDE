@@ -26,8 +26,8 @@ import {
     publishExternal,
     viewHistory,
 } from 'server/form/formsvc';
-import { formModel } from 'server/form/mongo-form';
 import { syncLinkedForms, syncLinkedFormsByCdeTinyId, syncLinkedFormsProgress } from 'server/form/syncLinkedForms';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
 import { validateBody } from 'server/system/bodyValidator';
 import {
     completionSuggest,

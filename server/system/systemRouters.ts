@@ -1,10 +1,21 @@
 import { CronJob } from 'cron';
 import * as csrf from 'csurf';
 import { Request, Response, Router } from 'express';
+import { union, uniq } from 'lodash';
 import { GridFSFile } from 'mongodb';
 import { Cursor, QueryOptions } from 'mongoose';
 import { config, ObjectId } from 'server';
 import { respondError } from 'server/errorHandler';
+import { draftsList as deDraftsList } from 'server/cde/mongo-cde';
+import { draftsList as formDraftsList } from 'server/form/mongo-form';
+import { syncLinkedForms } from 'server/form/syncLinkedForms';
+import { consoleLog, loginModel } from 'server/log/dbLogger';
+import { syncWithMesh } from 'server/mesh/elastic';
+import { addFile, getFileAndRespond, gfs } from 'server/mongo/mongo/gfs';
+import { DataElementDocument, dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { FormDocument, formModel } from 'server/mongo/mongoose/form.mongoose';
+import { myOrgs } from 'server/orgManagement/orgSvc';
+import { status } from 'server/siteAdmin/status';
 import {
     isOrgAuthorityMiddleware,
     isOrgCuratorMiddleware,
@@ -12,12 +23,8 @@ import {
     loggedInMiddleware,
     nocacheMiddleware,
 } from 'server/system/authorization';
-import { DataElementDocument, draftsList as deDraftsList } from 'server/cde/mongo-cde';
-import { draftsList as formDraftsList, formModel } from 'server/form/mongo-form';
-import { addFile, getFileAndRespond, gfs } from 'server/mongo/mongo/gfs';
-import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
-import { myOrgs } from 'server/orgManagement/orgSvc';
-import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
+import { deleteIndex, elasticsearchInfo, reIndex } from 'server/system/elastic';
+import { indices } from 'server/system/elasticSearchInit';
 import {
     createIdSource,
     deleteIdSource,
@@ -25,15 +32,11 @@ import {
     isSourceById,
     updateIdSource,
 } from 'server/system/idSourceSvc';
-import { version } from 'server/version';
-import { consoleLog, loginModel } from 'server/log/dbLogger';
-import { ItemDocument, jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
-import { indices } from 'server/system/elasticSearchInit';
-import { deleteIndex, elasticsearchInfo, reIndex } from 'server/system/elastic';
+import { jobStatus, removeJobStatus, updateJobStatus } from 'server/system/mongo-data';
+import { getRealIp, getTrafficFilter } from 'server/system/trafficFilterSvc';
 import { byId, usersByName } from 'server/user/userDb';
-import { status } from 'server/siteAdmin/status';
+import { version } from 'server/version';
 import { removeFromArrayBy } from 'shared/array';
-import { union, uniq } from 'lodash';
 import {
     IdSourceGetResponse,
     IdSourcePutResponse,
@@ -41,12 +44,10 @@ import {
     IdSourceResponse,
     IdSourcesResponse,
 } from 'shared/boundaryInterfaces/API/system';
+import { flattenFormElement } from 'shared/form/fe';
 import { CbError } from 'shared/models.model';
 import { Readable } from 'stream';
 import { promisify } from 'util';
-import { flattenFormElement } from 'shared/form/fe';
-import { syncLinkedForms } from 'server/form/syncLinkedForms';
-import { syncWithMesh } from '../mesh/elastic';
 
 require('express-async-errors');
 const passport = require('passport'); // must use require to preserve this pointer
@@ -127,8 +128,8 @@ export function module() {
                                             };
 
                                             function handleStream(
-                                                stream: Cursor<ItemDocument, QueryOptions>,
-                                                formatter: (doc: ItemDocument) => string,
+                                                stream: Cursor<DataElementDocument | FormDocument, QueryOptions>,
+                                                formatter: (doc: DataElementDocument | FormDocument) => string,
                                                 cb: CbError
                                             ) {
                                                 stream.on('data', doc => siteMapLines.push(formatter(doc)));

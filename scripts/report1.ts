@@ -1,6 +1,10 @@
 import { Model } from 'mongoose';
-import { DataElementDocument, dataElementModel } from 'server/cde/mongo-cde';
 import { isEmpty } from 'lodash';
+import {
+    DataElement,
+    dataElementModel,
+    getStream
+} from 'server/mongo/mongoose/dataElement.mongoose';
 
 const XLSX = require('xlsx');
 
@@ -86,7 +90,7 @@ export function mongoEltToExportElt(elt: any) {
     return results;
 }
 
-async function phenxReport(collection: Model<DataElementDocument>) {
+async function phenxReport(collection: Model<DataElement>) {
     let csvData: any[] = [];
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
@@ -107,7 +111,7 @@ async function phenxReport(collection: Model<DataElementDocument>) {
     });
 }
 
-async function neiReport(collection: Model<DataElementDocument>) {
+async function neiReport(collection: Model<DataElement>) {
     let csvData: any[] = [];
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
@@ -128,7 +132,7 @@ async function neiReport(collection: Model<DataElementDocument>) {
     });
 }
 
-async function nciReport(collection: Model<DataElementDocument>) {
+async function nciReport(collection: Model<DataElement>) {
     let csvData: any[] = [];
     const cond = {
         'registrationState.registrationStatus': {$ne: 'Retired'},
@@ -156,7 +160,7 @@ async function reportByStatus(status: string) {
         'registrationState.registrationStatus': status,
         archived: false,
     };
-    const cursor = dataElementModel.find(cond).cursor();
+    const cursor = getStream(cond);
     return cursor.eachAsync(async model => {
         const modelObj = model.toObject();
         const rows = _mongoEltToExportElt(modelObj);

@@ -1,16 +1,21 @@
 import 'server/globals';
 import { Model } from 'mongoose';
-import { CdeFormDocument, formDraftModel, formModel, formSourceModel } from 'server/form/mongo-form';
-import { dataElementDraftModel, dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
+import {
+    dataElementDraftModel,
+    dataElementModel,
+    dataElementSourceModel
+} from 'server/mongo/mongoose/dataElement.mongoose';
+import { formDraftModel, formModel, formSourceModel } from 'server/mongo/mongoose/form.mongoose';
+import { Elt } from 'shared/models.model';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
 });
 
-async function doOneCollection(collection: Model<CdeFormDocument>) {
+async function doOneCollection(collection: Model<Elt>) {
     const cond = {archived: false};
     const cursor = collection.find(cond).cursor();
-    return cursor.eachAsync(async (model: any) => {
+    return cursor.eachAsync(async (model) => {
         const modelObj = model.toObject();
         console.log(`start ${modelObj.tinyId}  .`);
         const registrationStatus = modelObj.registrationState.registrationStatus;

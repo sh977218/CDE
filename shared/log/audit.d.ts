@@ -7,7 +7,7 @@ export interface HttpLogResponse {
 
 export interface HttpLog {
     _id: string;
-    date: Date;
+    date: DateType;
     httpStatus: string;
     level: string;
     method: string;
@@ -23,7 +23,7 @@ export interface AppLogResponse {
 }
 
 export interface AppLog {
-    date: number;
+    date: DateType;
     message: string;
     level: 'debug' | 'info' | 'warning' | 'error';
 }
@@ -88,7 +88,7 @@ export interface ServerError {
     origin: string;
     stack: string;
     details?: string;
-    date: string;
+    date: DateType;
 }
 
 export interface ClientErrorResponse {
@@ -99,6 +99,9 @@ export interface ClientErrorResponse {
 export interface ClientError {
     date?: string;
     message: string;
+    name?: string;
+    origin?: string;
+    stack?: string;
     url: string;
     userAgent?: string;
     username?: string;
@@ -110,13 +113,33 @@ export interface ClientErrorExtraInfo {
     url: string;
 }
 
+export interface ErrorLog {
+    message: string;
+    date: DateType;
+    details?: string;
+    origin: string;
+    stack: string;
+    badInput?: boolean;
+    request?: {
+        url: string;
+        method: string;
+        params: string;
+        body: string;
+        username: string;
+        userAgent: string;
+        ip: string;
+        errorCode: string;
+        errorType: string;
+    };
+}
+
 export interface LoginRecordResponse {
     logs: LoginRecord[];
     totalItems: number;
 }
 
 export interface LoginRecord {
-    date: string;
+    date: DateType;
     user: string;
     email?: string;
     ip: string;

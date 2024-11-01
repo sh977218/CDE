@@ -1,5 +1,5 @@
 import 'server/globals';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
 import { PermissibleValue, PermissibleValueCodeSystem } from 'shared/models.model';
 import { readFile, utils } from 'xlsx';
 

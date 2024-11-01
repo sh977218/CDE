@@ -7,4 +7,4 @@ import { SingletonServer as Singleton } from 'shared/singleton.model';
 export type SingletonDocument = Document<string, {}, Singleton> & Singleton;
 
 const conn = establishConnection(config.database.appData);
-export const singletonModel: Model<SingletonDocument> = conn.model('singleton', singletonSchema) as any;
+export const singletonModel: Model<Singleton> = conn.model('singleton', singletonSchema);

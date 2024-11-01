@@ -1,7 +1,8 @@
 import 'server/globals';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { CdeFormDocument, formModel, formSourceModel } from 'server/form/mongo-form';
 import { Model } from 'mongoose';
+import { dataElementModel } from 'server/mongo/mongoose/dataElement.mongoose';
+import { formModel } from 'server/mongo/mongoose/form.mongoose';
+import { Elt } from 'shared/models.model';
 
 process.on('unhandledRejection', (error) => {
     console.log(error);
@@ -13,7 +14,7 @@ const cond = {
     archived: false
 };
 
-async function doOneCollection (model: Model<CdeFormDocument>){
+async function doOneCollection (model: Model<Elt>){
     const cursor = await model.find(cond).cursor();
     return cursor.eachAsync(async model => {
         const mergedToTinyId = model.changeNote?.split(' ').at(-1) || '';

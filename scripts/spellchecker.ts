@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import { dataElementModel, getStream } from 'server/mongo/mongoose/dataElement.mongoose';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeId } from 'shared/models.model';
 const spellChecker = require('simple-spellchecker');
@@ -83,7 +83,7 @@ async function run() {
             archived: false};
     let cdeCount = await dataElementModel.countDocuments(cond);
     console.log(`TODO: ${cdeCount}`);
-    const cursor = dataElementModel.find(cond).cursor();
+    const cursor = getStream(cond);
     cursor.eachAsync(async (cde: any) => {
         cdeCount--;
 

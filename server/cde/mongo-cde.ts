@@ -1,90 +1,18 @@
-import * as Ajv from 'ajv';
-import { isEmpty } from 'lodash';
-import { Document, Model, PreSaveMiddlewareFunction } from 'mongoose';
 import { config, ObjectId } from 'server';
-import { updateOrInsertDocument } from 'server/cde/elastic';
 import {
-    auditSchema as deAuditSchema,
-    dataElementSchema,
-    dataElementSourceSchema,
-    draftSchema,
-} from 'server/cde/schemas';
-import { establishConnection } from 'server/system/connections';
-import { errorLogger } from 'server/system/logging';
+    cdeAuditModel,
+    DataElement,
+    DataElementDocument,
+    DataElementDraft,
+    DataElementDraftDocument,
+    dataElementDraftModel,
+    dataElementModel,
+    dataElementSourceModel,
+} from 'server/mongo/mongoose/dataElement.mongoose';
 import { auditModifications, generateTinyId, updateElt, updateMetadata } from 'server/system/mongo-data';
-import { DataElement as DataElementClient } from 'shared/de/dataElement.model';
 import { wipeDatatype } from 'shared/de/dataElement.model';
 import { UpdateEltOptions } from 'shared/de/updateEltOptions';
-import { EltLog, User } from 'shared/models.model';
-
-const dataElementSchemaJson = require(global.assetDir('shared/de/assets/dataElement.schema.json'));
-
-export type DataElement = DataElementClient;
-export type DataElementDocument = Document<ObjectId, {}, DataElement> & DataElement;
-export type DataElementDraft = DataElement;
-export type DataElementDraftDocument = Document<ObjectId, {}, DataElementDraft> & DataElementDraft;
-export type DataElementSource = DataElement;
-export type DataElementSourceDocument = Document<ObjectId, {}, DataElementSource> & DataElementSource;
-
-const ajvElt = new Ajv({ allErrors: true });
-ajvElt.addSchema(require(global.assetDir('shared/de/assets/adminItem.schema')));
-export let validateSchema: any;
-try {
-    const schema = dataElementSchemaJson;
-    (schema as any).$async = true;
-    validateSchema = validateSchema = ajvElt.compile(schema);
-} catch (err) {
-    console.log('Error: dataElement.schema.json does not compile. ' + err);
-    process.exit(1);
-}
-
-const preSave: PreSaveMiddlewareFunction<DataElementDocument> = function preSave(this, next) {
-    const elt = this;
-
-    /* istanbul ignore if */
-    if (elt.archived) {
-        return next();
-    }
-    validateSchema(elt).then(
-        () => {
-            try {
-                updateOrInsertDocument(elt);
-            } catch (exception) {
-                errorLogger.error(`Error Indexing CDE ${elt.tinyId}`, {
-                    details: exception,
-                    stack: new Error().stack,
-                });
-            }
-
-            const valueDomain = elt.valueDomain;
-            /* istanbul ignore if */
-            if (valueDomain.datatype === 'Value List' && isEmpty(valueDomain.permissibleValues)) {
-                next(new Error(`Cde ${elt.tinyId} Value List with empty permissible values.`));
-            } else {
-                next();
-            }
-        },
-        (err: any) => {
-            err.tinyId = elt.tinyId;
-            err.eltId = elt._id.toString();
-            next(err);
-        }
-    );
-};
-dataElementSchema.pre('save', preSave);
-dataElementSourceSchema.pre('save', preSave);
-
-const conn = establishConnection(config.database.appData);
-export const dataElementModel: Model<DataElementDocument> = conn.model('DataElement', dataElementSchema) as any;
-export const dataElementDraftModel: Model<DataElementDraftDocument> = conn.model(
-    'DataElementDraft',
-    draftSchema
-) as any;
-export const dataElementSourceModel: Model<DataElementSourceDocument> = conn.model(
-    'DataElementSource',
-    dataElementSourceSchema
-) as any;
-export const cdeAuditModel: Model<Document & EltLog> = conn.model('CdeAudit', deAuditSchema) as any;
+import { User } from 'shared/models.model';
 
 const auditModificationsDe = auditModifications(cdeAuditModel);
 
@@ -92,11 +20,11 @@ export function byTinyId(tinyId: string): Promise<DataElementDocument | null> {
     return dataElementModel.findOne({ tinyId, archived: false }).then();
 }
 
-export function draftById(_id: ObjectId): Promise<DataElementDraftDocument> {
+export function draftById(_id: ObjectId): Promise<DataElementDraftDocument | null> {
     return dataElementDraftModel.findOne({ _id }).then();
 }
 
-export function draftByTinyId(tinyId: string): Promise<DataElementDraftDocument> {
+export function draftByTinyId(tinyId: string): Promise<DataElementDraftDocument | null> {
     return dataElementDraftModel
         .findOne({
             archived: false,

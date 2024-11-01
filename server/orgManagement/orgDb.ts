@@ -11,7 +11,7 @@ addStringtype(mongoose);
 const StringType = (Schema.Types as any).StringType;
 
 const conn = establishConnection(config.database.appData);
-export const orgSchema = new Schema(
+export const orgSchema = new Schema<Organization>(
     {
         name: StringType,
         longName: StringType,
@@ -42,7 +42,7 @@ export const orgSchema = new Schema(
 );
 export type OrganizationDocument = Document & Organization;
 
-export const organizationModel: Model<OrganizationDocument> = conn.model('Org', orgSchema) as any;
+export const organizationModel: Model<Organization> = conn.model('Org', orgSchema);
 const orgDetailProject = {
     _id: 0,
     name: 1,

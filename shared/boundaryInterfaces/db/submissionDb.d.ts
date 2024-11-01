@@ -39,7 +39,7 @@ interface Submission {
     organizationPocLast: string;
     registrationStatus: CurationStatus;
     submitterEmail: string;
-    submitterId: string;
+    submitterId: ObjectId;
     submitterOrganization: string;
     submitterNameTitle?: string;
     submitterNameFirst: string;
