@@ -2,7 +2,7 @@ import * as Config from 'config';
 
 export const config = Config as any;
 
-['log', 'appData', 'migration'].forEach(databaseName => {
+['log', 'appData'].forEach(databaseName => {
     const database = config.database[databaseName];
     if (database) {
         const uriOptions: string[] = [];

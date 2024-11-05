@@ -42,6 +42,7 @@
       "sslCertPath": "/etc/ssl/certs/mongo.pem",
       "options": {
         "ssl": true,
+        "authSource": "nlmcde",
         "replicaSet": "cde",
         "tlsInsecure": true
       }
@@ -54,6 +55,7 @@
       "sslCertPath": "/etc/ssl/certs/mongo.pem",
       "options": {
         "ssl": true,
+        "authSource": "cde-logs",
         "replicaSet": "cde",
         "tlsInsecure": true
       }

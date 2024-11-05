@@ -1,12 +1,12 @@
-import { exec, ExecOptions } from 'child_process';
-import { Client } from '@elastic/elasticsearch';
-import { Client as ClientNewType } from '@elastic/elasticsearch/api/new';
+import {exec, ExecOptions} from 'child_process';
+import {Client} from '@elastic/elasticsearch';
+import {Client as ClientNewType} from '@elastic/elasticsearch/api/new';
 import * as gulp from 'gulp';
 import * as replace from 'gulp-replace';
 import * as merge from 'merge-stream';
-import { resolve } from 'path';
-import { ElasticIndex, indices } from 'server/system/elasticSearchInit';
-import { config } from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
+import {resolve} from 'path';
+import {ElasticIndex, indices} from 'server/system/elasticSearchInit';
+import {config} from 'server/config'; // gulpfile: cannot use 'server' because it connects to db
 
 require('es6-promise').polyfill();
 
@@ -60,7 +60,7 @@ gulp.task('environmentInfo', async function npm() {
     await run('node --version', runInAppOptions);
     await run('npm -v', runInAppOptions);
     await run('npm cache verify', runInAppOptions);
-    await run('mongo --version', runInAppOptions);
+    await run('mongorestore --version', runInAppOptions);
     await run('echo NODE_ENV:$NODE_ENV');
 });
 
@@ -86,7 +86,7 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
     const streamArray: NodeJS.ReadWriteStream[] = [];
     assetFolders.forEach(folder => {
         streamArray.push(gulp.src(appDir(folder + '/**'))
-            .pipe(gulp.dest(buildDir( folder + '/'))));
+            .pipe(gulp.dest(buildDir(folder + '/'))));
     });
 
     streamArray.push(gulp.src(appDir('./config/*.json'))
@@ -102,7 +102,7 @@ gulp.task('copyCodeToBuildDir', ['buildNode'], function copyCode() {
         )
         .pipe(gulp.dest(buildDir())));
     streamArray.push(gulp.src(appDir('./packages/**'))
-        .pipe(gulp.dest(buildDir( './packages/'))));
+        .pipe(gulp.dest(buildDir('./packages/'))));
 
     // from buildNode
     streamArray.push(gulp.src('./modules/**')
@@ -137,7 +137,7 @@ gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps() {
             .pipe(gulp.dest(buildDir()))
             .on('error', reject)
             .on('end', () => {
-                run('NODE_OPTIONS="--max-old-space-size=8192" npm i --omit=dev', runInBuildOptions).then(resolve, reject);
+                run('npm i --omit=dev', runInBuildOptions).then(resolve, reject);
             });
     });
 });
@@ -177,9 +177,11 @@ gulp.task('mongorestoretestlog', function mongorestore() {
     const password = config.database.log.password;
     const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     const db = config.database.log.db;
-    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/cde-logs-test/'];
-
-    if (username)  {
+    const args = ['--authenticationDatabase=admin -h', hostname, '-d', db, '--drop', 'test/data/cde-logs-test/'];
+    if (process.env.CI) {
+        args.push('--ssl', '--tlsInsecure')
+    }
+    if (username) {
         args.push('-u', username, '-p', password)
     }
 
@@ -191,9 +193,11 @@ gulp.task('mongorestoretest', function mongorestore() {
     const password = config.database.appData.password;
     const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     const db = config.database.appData.db;
-    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/test/'];
-
-    if (username)  {
+    const args = ['--authenticationDatabase=admin -h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    if (process.env.CI) {
+        args.push('--ssl', '--tlsInsecure')
+    }
+    if (username) {
         args.push('-u', username, '-p', password)
     }
 

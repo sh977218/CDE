@@ -7,7 +7,7 @@ cd build
 touch test.log;
 chmod -R 755 $PWD
 
-NODE_OPTIONS="--max-old-space-size=8192" npm i nyc
+npm i nyc
 
 node --max-old-space-size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
 

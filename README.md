@@ -9,7 +9,7 @@
 
 ### Create & Configure Application Environment
 Add to ~/.bashrc:
-```sh
+```shell
 export PATH=<Node>:<JDK bin>:<MongoDB bin>:<Gradle bin>:<Maven bin>:$PATH
 export JAVA_HOME=<JDK>
 export GRADLE_HOME=<Gradle>
@@ -22,68 +22,108 @@ export NODE_ENV=test
 The NODE_CONFIG credentials are used for UMLS and VSAC ticket service validation and TGT used in the application whether the user is signed in or not. (Federated service validation is used for user sign in.)
 
 ### Configure Mongo db
-1. Open a terminal, run  
-```sh
-$> mongod --dbpath /path/to/data/db
-```
+1. Start MongoDB server, with auth disabled
+   1. CLI
+       ```shell
+       $> mongod --dbpath /path/to/data/db
+       ```
+   2. mongo config
+       ```shell
+       $> mongod -f /path/to/mongo/config.cfg
+       ```
+       ```yaml
+        ## example of /path/to/mongo/config.cfg
+        storage:
+          dbPath: /path/to/data/db
+        security:
+          authorization: enabled # here is the config for auth
+          keyFile: /path/to/data/db/mongodb.key # this key is needed if auth enabled
+       ```
+
+3. Add system user, this user is used by manipulate system admin permission, note it does not have permission to read/write in other db
+    ```shell
+    use admin;
+    db.createUser(
+      {
+        user: "siteRootAdmin",
+        pwd: "password",
+        roles: [
+               {role: 'root', db: 'admin' }
+               ]
+      }
+    )
+    ```
+
+2. Add application CDE user,  this user is used by `restore-test-instance.sh`
+    ```shell
+    use admin;
+    db.createUser(
+      {
+        user: "cdeuser",
+        pwd: "password",
+        roles: [
+                {role: 'readWrite', db: 'test'},
+                {role: 'readWrite', db: 'cde-logs-test'}
+              ]
+      }
+    )
+   ```
+
+3. Restart MongoDB server, with auth enabled
 
 ### Preparing to run app (run each step in a separated terminal)
 1. Install dependencies 
-```sh 
-$/cde/> npm i
-```
-2. Build server side
-```sh
-$/cde/> npm run gulp
-```
-3. Build Angular so Node server has index.html to serve.
-```sh
-$/cde/> ng b cde-cli
-$/cde/> ng b nativeRender
-```
-4. Start Node server
-```sh
-$/cde/> npm start
-```
+    ```shell
+    $/cde/> npm i
+    ```
+2. Build server and client code
+    ```shell
+    $/cde/> npm run build
+    ```
+3. Start Node server
+    ```shell
+    $/cde/> npm run start
+    ```
 4. Start login server, mocking NIH CIT login
-```sh
-$/cde/> npm run testServer
-```
+    ```shell
+    $/cde/> npm run testServer
+    ```
 5. Start CDE application
-```sh
-$/cde/> ng s cde-cli
-```
+    ```shell
+    $/cde/> ng s cde-cli
+    ```
 6. Start Native Render application
-```sh
-$/cde/> ng s nativeRender --port 4300
-```
+    ```shell
+    $/cde/> ng s nativeRender --port 4300
+    ```
 7. Open browser to view application `http://localhost:4200/home`
 
+### Troubleshoot
+1. If your terminal encounters error: `An unhandled exception occurred: Cannot find module 'webpack-dev-server' error.`
+    ```shell
+    $/cde/> rm -rf node_modules package-lock.json
+    $/cde/> npm cache clean --force
+    $/cde/> npm cache verify
+    $/cde/> npm i
+    ```
 
-If your terminal encounters error: `An unhandled exception occurred: Cannot find module 'webpack-dev-server' error.`
-```sh
-$/cde/> rm -rf node_modules package-lock.json
-$/cde/> npm cache clean --force
-$/cde/> npm cache verify
-$/cde/> npm i
-```
-
-If your IDE encounters error:`'bash' is not recognized as an internal or external command,
+2. If your IDE encounters error:`'bash' is not recognized as an internal or external command,
 operable program or batch file.
 `
-```sh
-$/cde/> npm config set script-shell "/c//tools//git//bin//bash.exe"
-````
+    ```shell
+    $/cde/> npm config set script-shell "/c//tools//git//bin//bash.exe"
+    ````
 
 # Test
-## Prerequisites 
+## Selenium
+### Prerequisites 
 * Selenium-Server-Standalone
 * Chromedriver
 * Java JRE
 * Java JDK
 * Intellij Community Edition
 
-## Set up
+### Set up
 (Note, in the following instructions, we make reference to something called PATH TO. Replace the "PATH TO"'s with the actual paths to the directories in question)
 
 First, edit your bashrc file to include the following:
@@ -97,23 +137,23 @@ First, edit your bashrc file to include the following:
 Next, open Intellij, create a new project rooted at C:\PATH TO\cde\test\selenium
 
 
-## Running the tests
+### Running the tests
 In the following order, run these commands, all of them either in their own terminals, or as a daemon:
 1. `sh hubStart`
-1. `sh nodeStart`     
+2. `sh nodeStart`     
 
 Now, you need the app running in some way when you run the test.
 
 We have included a script, start-test-instance.sh, that, in addition to running all the tests, also runs the app. We suggest that you use it.
 
-(Don’t forget to have elastic and mongo running while you run the app, even if you are running it throught he start-test-instance script)
+(Don’t forget to have elastic and mongo running while you run the app, even if you are running it through he start-test-instance script)
 
 If, for some reason, you don't want to use it (for example, if you just want to run one test), you will need to run the app before you can run any tests
 
-## Code Coverage
+### Code Coverage
 Run in Bamboo and override variable "browser" with value "coverage"
 
-## Setting Environment
+### Setting Environment
 Node and Angular environments needs to be dialed-in in unison in order to properly set the environment servers the application will use.
 
 | NODE_ENV Environment | CLI Environment | Local Servers                      | Login Server  | Notes                        |
@@ -133,6 +173,10 @@ Node and Angular environments needs to be dialed-in in unison in order to proper
 * Set Angular CLI Dev
   * `"devApp": "ng serve cde-cli --configuration=<environment>",`
 
+## Playwright
+### Running the tests
+* npm run playwright:ui
+
 # Code Maintenance
 ## Folder Structure
 * Business Rules and Models go into __shared/__
@@ -147,7 +191,7 @@ Update route information in __swagger.yaml__. Restart the server to read it in.
 Swagger-tools inserts its own route `/docs` using middleware and creates this page. The page is embedded using an __< iframe >__.
 
 ## Client
-### CDER CSS Components (commons.scss)
+### CDE CSS Components (commons.scss)
 * Arrows
   * <span class="keyboard-arrow left"></span>
 * Checkbox
@@ -158,7 +202,7 @@ Swagger-tools inserts its own route `/docs` using middleware and creates this pa
   * <span class="pill"
 * USWDS implementations:
   * Card
-    * <div class="uswdsCard"
+  * `<div class="uswdsCard"></div>`
 * Included styles h1-h6, .hero, .note, .subtitle
 
 ### Theming

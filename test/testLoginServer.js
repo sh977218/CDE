@@ -8,8 +8,7 @@ const {randomUUID} = require("node:crypto");
 
 const database = config.database.appData;
 const url = 'mongodb://' + (database.username ? database.username + ':' + database.password + '@' : '')
-    + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',')
-    + '/' + database.db;
+    + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',');
 let db;
 
 MongoClient.connect(url).then(client => {
