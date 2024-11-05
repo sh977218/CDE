@@ -40,6 +40,7 @@
     "gulpJs": "npx gulp --gulpfile ./buildNode/gulpfile.js",
     "lint": "ng lint cde-cli",
     "playwright": "playwright test -c e2e-playwright --project=CDE-e2e",
+    "playwright:smoke": "playwright test -c e2e-playwright --project=CDE-smokeTest --headed",
     "playwright:oneTest": "playwright test -c e2e-playwright --project=CDE-oneTest --headed",
     "playwright:ui": "playwright test -c e2e-playwright --project=CDE-e2e --ui",
     "start": "npm run startJs",
