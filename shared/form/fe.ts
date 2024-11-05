@@ -177,6 +177,34 @@ export function isSection(fe: FormElement): fe is FormSection {
     return fe && fe.elementType === 'section';
 }
 
+export function iterateOwnFesSync<T extends FormElementGeneric<T> = FormElement>(
+    fes: FormElementGeneric<T>[],
+    sectionCb: (fe: FormSection<T>, i: number) => void,
+    questionCb: (fe: FormQuestion<T>, i: number) => void
+): void {
+    if (Array.isArray(fes)) {
+        fes.forEach((fe, i) => {
+            switch (fe.elementType) {
+                case 'form':
+                    break;
+                case 'section':
+                    sectionCb(fe, i);
+                    iterateOwnFesSync(fe.formElements, sectionCb, questionCb);
+                    break;
+                case 'question':
+                    questionCb(fe, i);
+                    break;
+            }
+        });
+    }
+}
+
+export function getOwnQuestions<T extends FormElementGeneric<T> = FormElement>(fes: FormElementGeneric<T>[]): FormQuestion<T>[] {
+    const questions: FormQuestion<T>[] = [];
+    iterateOwnFesSync(fes, () => {}, (question) => questions.push(question));
+    return questions;
+}
+
 // implemented options: return, skip
 // feCb(fe, cbContinue(error, newOptions), options)
 //     cbContinue skip: noopSkipIterCb()

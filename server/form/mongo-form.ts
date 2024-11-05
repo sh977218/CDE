@@ -130,7 +130,7 @@ export function draftSave(elt: CdeForm, user: User): Promise<CdeFormDocument | n
 
 /* ---------- PUT NEW REST API above ---------- */
 
-export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {}): Promise<CdeForm> {
+export function update(elt: CdeForm, user: User, options: UpdateEltOptions = {}): Promise<CdeFormDocument> {
     return formModel.findById(elt._id, null, null).then(dbForm => {
         /* istanbul ignore if */
         if (!dbForm) {

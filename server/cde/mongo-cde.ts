@@ -169,7 +169,11 @@ export function create(elt: DataElement, user: User): Promise<DataElementDocumen
     });
 }
 
-export function update(elt: DataElementDraft, user: User, options: UpdateEltOptions = {}): Promise<DataElement> {
+export function update(
+    elt: DataElementDraft,
+    user: User,
+    options: UpdateEltOptions = {}
+): Promise<DataElementDocument> {
     // version and changeNote are already saved on the draft
     return dataElementModel.findById(elt._id, null, null).then(dbDataElement => {
         /* istanbul ignore if */

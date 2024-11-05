@@ -532,6 +532,10 @@ export const cdeColumns: Record<string, ColumnInformation> = {
                 if (!elements[0]) {
                     return;
                 }
+                if (elements.length < 2) {
+                    withError('Required', 'Classification requires at least 2 items or none. Cannot be 1.');
+                    elements.push('>>>>> MISSING CLASSIFICATION <<<<<');
+                }
                 const firstLevel =
                     classification.find(c => c.stewardOrg.name === elements[0]) ||
                     push3(classification, { stewardOrg: { name: elements[0] }, elements: [] });

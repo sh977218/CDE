@@ -1,5 +1,18 @@
+import { addToArray } from 'shared/array';
 import { ElasticSearchResponseAggregations, ElasticSearchResponseBody } from 'shared/elastic';
-import { CdeId, CurationStatus, DerivationRule, Elt, PermissibleValue } from 'shared/models.model';
+import {
+    CdeId,
+    ClassificationElement,
+    ClassificationElementsContainer,
+    CurationStatus,
+    DataSource,
+    Definition,
+    DerivationRule,
+    Designation,
+    Elt,
+    PermissibleValue,
+    Property,
+} from 'shared/models.model';
 import { Question } from 'shared/form/form.model';
 import { copyValueDomain } from 'shared/datatype';
 import { Dictionary } from 'async';
@@ -389,6 +402,87 @@ export function isElasticDataElementClipped(elt: DataElementElastic): boolean {
         elt.valueDomain.permissibleValues &&
         elt.valueDomain.permissibleValues.length > 9
     );
+}
+
+export function mergeDataElement(source: Partial<DataElement>, target: DataElement) {
+    source.designations?.forEach(s => {
+        const td: Designation = target.designations.filter(t => t.designation === s.designation)[0];
+        if (td) {
+            s.tags.forEach(tag => {
+                addToArray(td.tags, tag);
+            });
+        } else {
+            target.designations.push(s);
+        }
+    });
+    source.definitions?.forEach(s => {
+        const td: Definition = target.definitions.filter(t => t.definition === s.definition)[0];
+        if (!td) {
+            target.definitions.push(s);
+        }
+    });
+    // PVs?
+    if (!target.dataElementConcept?.concepts) {
+        if (!target.dataElementConcept) {
+            target.dataElementConcept = {};
+        }
+        target.dataElementConcept.concepts = source.dataElementConcept?.concepts;
+    } else {
+        source.dataElementConcept?.concepts?.forEach(s => {
+            const td: Concept | undefined = target.dataElementConcept?.concepts?.filter(
+                t => t.origin === s.origin && t.originId === s.originId
+            )[0];
+            if (!td) {
+                target.dataElementConcept!.concepts!.push(s);
+            }
+        });
+    }
+    source.ids?.forEach(s => {
+        const ti: CdeId | undefined = target.ids.filter(t => t.source === s.source && t.id === s.id)[0];
+        if (!ti) {
+            target.ids.push(s);
+        }
+    });
+    source.referenceDocuments?.forEach(s => {
+        target.referenceDocuments.push(s);
+    });
+    source.sources?.forEach(s => {
+        const ts: DataSource | undefined = target.sources.filter(t => t.sourceName === s.sourceName)[0];
+        if (!ts) {
+            target.sources.push(ts);
+        }
+    });
+    source.properties?.forEach(s => {
+        const tp: Property | undefined = target.properties.filter(t => t.key === s.key)[0];
+        if (tp) {
+            if (tp.value) {
+                tp.value += s.value + '';
+            } else {
+                tp.value = s.value;
+            }
+        }
+    });
+    source.classification?.forEach(s => {
+        if (!target.classification) {
+            target.classification = [];
+        }
+        const tc = target.classification.filter(t => t.stewardOrg === s.stewardOrg)[0];
+        if (tc) {
+            s.elements.forEach(e => addClassification(e, tc));
+        } else {
+            target.classification.push(s);
+        }
+        function addClassification(source: ClassificationElement, targetParent: ClassificationElementsContainer) {
+            const match: ClassificationElement | undefined = targetParent.elements.filter(
+                e => e.name === source.name
+            )[0];
+            if (match) {
+                source.elements.forEach(e => addClassification(e, match));
+            } else {
+                targetParent.elements.push(source);
+            }
+        }
+    });
 }
 
 export function wipeDatatype(elt: DataElement): void {

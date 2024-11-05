@@ -20,14 +20,6 @@ export function mapSeries<T, U>(array: T[], iterCb: CbRet3<Promise<U>, T, number
     );
 }
 
-export function nextTick(): Promise<void> {
-    return new Promise(resolve => {
-        process.nextTick(() => {
-            resolve();
-        });
-    });
-}
-
 export async function withRetry<T>(cb: () => Promise<T>, retries: number = 1, waitMs: number = 0): Promise<T> {
     try {
         return await cb();

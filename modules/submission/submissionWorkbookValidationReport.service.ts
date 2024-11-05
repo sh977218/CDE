@@ -19,6 +19,7 @@ export class SubmissionWorkbookValidationReportService {
     reportCdeColumnExtra: string[] = [];
     reportCdeColumnOptional: string[] = [];
     reportCdeColumnRequired: string[] = [];
+    reportCdeReuse: ReportCategory[] = [];
     reportCdeExtra: ReportCategory[] = [];
     reportCdeLength: ReportCategory[] = [];
     reportCdeManual: ReportCategory[] = [];
@@ -49,6 +50,7 @@ export class SubmissionWorkbookValidationReportService {
         this.reportCdeRequired.length = 0;
         this.reportCdeSpellcheck.length = 0;
         this.reportCdeTemplate.length = 0;
+        this.reportCdeReuse.length = 0;
         if (!this.report) {
             return Promise.reject();
         }
@@ -183,6 +185,13 @@ export class SubmissionWorkbookValidationReportService {
             }
             addLine('');
         }
+        if (this.reportCdeReuse.length) {
+            addLine('Data Element Reuse Mismatch');
+            for (const e of this.reportCdeReuse) {
+                addLine(`\t${this.displayError(e)}`);
+            }
+            addLine('');
+        }
 
         addLine('');
         addLine('');
@@ -226,7 +235,7 @@ export class SubmissionWorkbookValidationReportService {
             addLine('');
         }
         if (this.reportDuplicatedCDEs.length) {
-            addLine('DuplicatedCDEsCheck');
+            addLine('Duplicated CDEs Check');
             for (const e of this.reportDuplicatedCDEs) {
                 addLine(`\t${this.displayError(e)}`);
             }
@@ -255,6 +264,8 @@ export class SubmissionWorkbookValidationReportService {
                 return this.reportCdeManual;
             case 'Required':
                 return this.reportCdeRequired;
+            case 'Reuse':
+                return this.reportCdeReuse;
             case 'Spellcheck':
                 return this.reportCdeSpellcheck;
             case 'Suggestion':

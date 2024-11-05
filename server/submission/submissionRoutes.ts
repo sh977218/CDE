@@ -241,6 +241,7 @@ export function module() {
                 }
                 processWorkBook(dbSubmission, readXlsx(data))
                     .then(async report => {
+                        // verify no critical errors, or don't save anything
                         await publishItems(dbSubmission, report, req.user);
                         await createOrg(dbSubmission.name);
                         dbSubmission.administrativeStatus = 'Published';

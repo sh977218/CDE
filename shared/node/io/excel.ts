@@ -7,6 +7,7 @@ export type ErrorTypes =
     | 'Length'
     | 'Manual Intervention'
     | 'Required'
+    | 'Reuse'
     | 'Spellcheck'
     | 'Suggestion'
     | 'Duplicated CDEs'

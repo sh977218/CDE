@@ -46,7 +46,7 @@ const dataElementHooks: CrudHooks<DataElement, ObjectId> = {
         },
         post: item => {
             if (item) {
-                updateOrInsert(item);
+                updateOrInsert(item); // TODO: replace with cache impl
                 // TODO: audit log
             }
             return item;
@@ -149,6 +149,7 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
     }
 
     byTinyIdListElastic(tinyIdList: string[]): Promise<DataElementElastic[]> {
+        // TODO: ElasticSearch no longer clips at 10 PVs
         return this.model
             .find({ archived: false })
             .where('tinyId')
@@ -183,6 +184,8 @@ class DataElementDbMongo extends AttachableDb<DataElement, ObjectId> implements 
     }
 
     updatePropertiesById(_id: ObjectId, setExpression: Partial<DataElement>): Promise<DataElement | null> {
+        // readonly fields: created, createBy
+        // protected fields by security options in code: sources, attachments
         return super.updatePropertiesById(_id, setExpression);
     }
 

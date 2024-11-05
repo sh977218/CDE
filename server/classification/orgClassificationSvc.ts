@@ -1,3 +1,4 @@
+import { QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
 import { eachLimit, parallel } from 'async';
 import { find } from 'lodash';
 import { PipelineStage } from 'mongoose';
@@ -283,7 +284,7 @@ export async function reclassifyOrgClassification(
     settings.selectedOrg = oldClassification.orgName;
     settings.selectedElements = oldClassification.categories;
     const query = buildElasticSearchQueryOrg(user, settings);
-    query.query?.bool?.must_not?.push(
+    (query.query!.bool!.must_not! as QueryDslQueryContainer[]).push(
         esqTerm('flatClassifications', [newClassification.orgName, ...newClassification.categories].join(';'))
     );
     query.size = 500;

@@ -1,10 +1,22 @@
 import { QueryDslQueryContainer } from '@elastic/elasticsearch/api/types';
 import { EventEmitter } from 'events';
 import { Response } from 'express';
-import { config } from 'server';
+import { intersection } from 'lodash';
+import { config, dbPlugins } from 'server';
 import { elasticsearch } from 'server/cde/elastic';
-import { create as deCreate, dataElementSourceModel } from 'server/cde/mongo-cde';
-import { CdeFormDocument, create as formCreate, formSourceModel } from 'server/form/mongo-form';
+import {
+    byTinyId as deByTinyId,
+    create as deCreate,
+    dataElementSourceModel,
+    update as deUpdate,
+} from 'server/cde/mongo-cde';
+import {
+    CdeFormDocument,
+    byTinyId as formByTinyId,
+    create as formCreate,
+    formSourceModel,
+    update as formUpdate
+} from 'server/form/mongo-form';
 import { DataElementDocument } from 'server/mongo/mongoose/dataElement.mongoose';
 import {
     cdeColumns as excelCdeColumns202404,
@@ -22,12 +34,12 @@ import {
 } from 'shared/boundaryInterfaces/API/submission';
 import { Submission } from 'shared/boundaryInterfaces/db/submissionDb';
 import { keys } from 'shared/builtIn';
-import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
+import { DataElement, DataElementElastic, mergeDataElement, ValueDomainValueList } from 'shared/de/dataElement.model';
 import { esqBool, esqBoolMustNot, esqTerm } from 'shared/elastic';
-import { convertCdeToQuestion } from 'shared/form/fe';
+import { convertCdeToQuestion, getOwnQuestions } from 'shared/form/fe';
 import { CdeForm } from 'shared/form/form.model';
 import { isDataElement, Item } from 'shared/item';
-import { ArrayToType, Cb, Cb1, PermissibleValue, User } from 'shared/models.model';
+import { ArrayToType, Cb, Cb1, Elt, PermissibleValue, User } from 'shared/models.model';
 import {
     cellValue,
     combineLines,
@@ -37,7 +49,8 @@ import {
     trim,
     WithError,
 } from 'shared/node/io/excel';
-import { mapSeries, nextTick } from 'shared/promise';
+import { nextTick } from 'shared/node/nodeUtil';
+import { mapSeries } from 'shared/promise';
 import { schedulingExecutor } from 'shared/scheduling';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { isT, noop } from 'shared/util';
@@ -56,6 +69,8 @@ import { utils, WorkBook } from 'xlsx';
 const workbookVersions = ['v.2023.03', 'v.2023.04', 'v.2023.09', 'v.2024.01', 'v.2024.04'] as const;
 type WorkbookVersion = ArrayToType<typeof workbookVersions>;
 const workbookVersionsStr = workbookVersions.join(', ');
+const BUNDLE_TOKEN = 'New Bundle: ';
+const BUNDLE_TOKEN_LENGTH = 12;
 
 function propertyColumnInformation(propertyName: string): ColumnInformation {
     return {
@@ -112,6 +127,7 @@ export function processWorkBook(
         dataElements: [],
         forms: [],
     };
+    const existingBundles: Record<string, string[][]> = {};
     const progress: VerifySubmissionFileProgress = {
         row: 0,
         rowTotal: 0,
@@ -152,12 +168,14 @@ export function processWorkBook(
         browserTimer = setInterval(updateHandler, 5000) as any;
     }
     processSheetCover();
-    return processSheetCDEs().then(async () => {
-        if (updateHandler) {
-            await updateHandler(true);
-        }
-        return { data, validationErrors };
-    });
+    return processSheetCDEs()
+        .then(postDataProcessing)
+        .then(async () => {
+            if (updateHandler) {
+                await updateHandler(true);
+            }
+            return { data, validationErrors };
+        });
 
     function processSheetCover(): boolean {
         const errors = validationErrors.cover;
@@ -296,22 +314,25 @@ export function processWorkBook(
         });
 
         async function processDe(withError: WithError, de: Partial<DataElement>) {
+            // process de synchronously because the parent call is asynchronous
             if (!de) {
                 return;
             }
             // await findDuplicatedCdeInEsUsingMoreLikeThis(withError, de);
             await findDuplicatedCdeInEsUsingPlainSearch(withError, de);
-
             await processIds(withError, de);
-            if (de.valueDomain?.datatype === 'Value List') {
-                await processPVs(withError, de);
-            }
+            await processPVs(withError, de);
             spellcheckDe(withError, de, dictionary);
+            await validateReuseByTinyid(withError, de);
         }
 
         await Promise.all(deProcessing);
 
         return !errors.length;
+    }
+
+    async function postDataProcessing() {
+        await reuseBundles();
     }
 
     function getSplitColumnIndex(heading: string) {
@@ -484,14 +505,7 @@ export function processWorkBook(
             });
         });
         const de: DataElement = new DataElement();
-        de.nihEndorsed = true;
-        de.stewardOrg.name = submission.name;
-        de.classification.push({
-            stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.name }],
-        });
-        de.registrationState.registrationStatus = submission.registrationStatus;
-        de.registrationState.administrativeStatus = submission.administrativeStatus;
+        eltCommon(de, submission);
         cdeColumnsOrdered.forEach(columnInfo => {
             columnInfo.setValue(withError, de, columnInfo.value, info);
         });
@@ -625,52 +639,212 @@ export function processWorkBook(
             }
         }
     }
+
+    async function validateReuseByTinyid(withError: WithError, dataElement: Partial<DataElement>) {
+        if (!dataElement.tinyId) {
+            return;
+        }
+
+        const existingDe = await deByTinyId(dataElement.tinyId);
+        if (!existingDe) {
+            withError('Reuse', `Data element ${dataElement.tinyId} does not exist`);
+            return;
+        }
+        if (!existingDe.nihEndorsed) {
+            withError('Reuse', `Data element ${dataElement.tinyId} is not endorsed. Must be endorsed to reuse.`);
+            return;
+        }
+
+        const existingPreferredDesignation = existingDe.designations.filter(designation =>
+            designation.tags.includes('Preferred Question Text')
+        )[0];
+        const submittedPreferredDesignation = dataElement.designations?.filter(designation =>
+            designation.tags.includes('Preferred Question Text')
+        )[0];
+        const existingPf = existingPreferredDesignation?.designation?.trim();
+        const newPf = submittedPreferredDesignation?.designation?.trim();
+        if (existingPf && newPf && existingPf != newPf) {
+            withError(
+                'Reuse',
+                `${dataElement.tinyId}: New preferred designation "${newPf}" does not match existing "${existingPf}"`
+            );
+        }
+
+        if (existingDe.valueDomain.datatype !== dataElement.valueDomain?.datatype) {
+            withError(
+                'Reuse',
+                `${dataElement.tinyId}: New datatype "${dataElement.valueDomain?.datatype}" does not match existing "${existingDe.valueDomain.datatype}"`
+            );
+        }
+        if (existingDe.valueDomain.datatype === 'Value List') {
+            const pvs = existingDe.valueDomain.permissibleValues.concat();
+            (dataElement.valueDomain as ValueDomainValueList).permissibleValues.forEach(newPv => {
+                const matchPv = pvs.filter(
+                    pv =>
+                        pv.permissibleValue === newPv.permissibleValue &&
+                        (!pv.valueMeaningName ||
+                            !newPv.valueMeaningName ||
+                            pv.valueMeaningName === newPv.valueMeaningName) &&
+                        (!pv.valueMeaningCode ||
+                            !newPv.valueMeaningCode ||
+                            pv.valueMeaningCode === newPv.valueMeaningCode) &&
+                        (!pv.codeSystemName || !newPv.codeSystemName || pv.codeSystemName === newPv.codeSystemName) &&
+                        (!pv.conceptId ||
+                            !newPv.conceptId ||
+                            (pv.conceptId === newPv.conceptId && pv.conceptSource === newPv.conceptSource))
+                )[0];
+                if (matchPv) {
+                    pvs.splice(pvs.indexOf(matchPv), 1);
+                } else {
+                    withError(
+                        'Reuse',
+                        `${dataElement.tinyId}: New Permissible Value "${newPv.permissibleValue}" not found in existing`
+                    );
+                }
+            });
+            pvs.forEach(pv => {
+                withError(
+                    'Reuse',
+                    `${dataElement.tinyId}: Existing Permissible Value "${pv.permissibleValue}" not found in submission`
+                );
+            });
+        }
+        // TODO: validate more datatype options
+
+        if (!existingDe.partOfBundles.length && dataElement.partOfBundles?.length) {
+            withError('Reuse', `${dataElement.tinyId}: Cannot reuse a not-bundled data element for a bundle`);
+        }
+        if (existingDe.partOfBundles.length && !dataElement.partOfBundles?.length) {
+            withError('Reuse', `${dataElement.tinyId}: Cannot reuse a bundled data element without a bundle`);
+        }
+        if (dataElement.partOfBundles?.length) {
+            let bundleName = '';
+            dataElement.partOfBundles.forEach(part => {
+                if (part.startsWith(BUNDLE_TOKEN)) {
+                    bundleName = part.substring(BUNDLE_TOKEN_LENGTH);
+                }
+            });
+            if (bundleName) {
+                if (!existingBundles[bundleName]) {
+                    existingBundles[bundleName] = [];
+                }
+                existingBundles[bundleName].push(existingDe.partOfBundles);
+            }
+        }
+
+        if (dataElement.dataElementConcept?.concepts?.length) {
+            const existingConcepts = existingDe.dataElementConcept?.concepts || [];
+            dataElement.dataElementConcept.concepts.forEach(c => {
+                const sameOriginMatches = existingConcepts.filter(e => e.origin === c.origin);
+                if (sameOriginMatches && !sameOriginMatches.filter(e => e.originId === c.originId).length) {
+                    withError(
+                        'Reuse',
+                        `${dataElement.tinyId}: No match for submission concept ${c.origin}:${c.originId}`
+                    );
+                }
+            });
+        }
+
+        if (
+            dataElement.valueDomain?.uom &&
+            existingDe.valueDomain.uom &&
+            dataElement.valueDomain.uom !== existingDe.valueDomain.uom
+        ) {
+            withError(
+                'Reuse',
+                `${dataElement.tinyId}: Submitted unit of measure "${dataElement.valueDomain.uom}" does not match existing "${existingDe.valueDomain.uom}"`
+            );
+        }
+        // TODO: match unit of measure family
+    }
+
+    function reuseBundles() {
+        const bundleNames = Object.keys(existingBundles);
+        return Promise.all(bundleNames.map(name => {
+            const possibleForms = intersection(...existingBundles[name]);
+            return Promise.all(possibleForms.map(tinyId =>
+                dbPlugins.form
+                    .byTinyId(tinyId)
+                    .then(form => {
+                        if (!form?.designations.filter(d => d.designation === name).length
+                            || getOwnQuestions(form.formElements).length > existingBundles[name].length) { // silent filters, hard to trace
+                            return;
+                        }
+                        data.forms
+                            .filter(form => form.designations[0].designation === name)
+                            .map(form => (form.tinyId = tinyId)); // mark new form to not save, reused
+                    })
+            ));
+        }));
+    }
 }
 
 export async function publishItems(submission: Submission, report: VerifySubmissionFileReport, user: User) {
-    const des = (
+    const des: DataElementDocument[] = (
         await mapSeries(report.data.dataElements, dataElement => {
             if (!dataElement) {
                 return Promise.resolve(null);
             }
-            dataElement.created = new Date();
-            dataElement.imported = new Date();
-            // dataElement.partOfBundles is form names
-            // TODO custom tinyId
-            return deCreate(dataElement as DataElement, user).then(de =>
-                deSourceCreate(de.toObject(), submission.name).then(() => de)
-            );
+            if (dataElement.tinyId) {
+                // merge into existing
+                return deByTinyId(dataElement.tinyId).then(existingDe => {
+                    if (!existingDe) {
+                        throw `de ${dataElement.tinyId} does not exist after validation`;
+                    }
+                    mergeDataElement(dataElement, existingDe);
+                    return deUpdate(existingDe, user);
+                });
+            } else {
+                dataElement.imported = new Date();
+                // dataElement.partOfBundles is form names
+                return deCreate(dataElement as DataElement, user).then(de =>
+                    deSourceCreate(de.toObject(), submission.name).then(() => de)
+                );
+            }
         })
-    ).filter(de => !!de) as DataElementDocument[];
-    const forms = (
+    ).filter(isT);
+    const createdForms: CdeFormDocument[] = (
         await mapSeries(report.data.forms, form => {
             if (!form) {
                 return Promise.resolve(null);
             }
-            form.formElements?.forEach(fe => {
-                if (fe.elementType === 'question' && fe.label) {
-                    const deMatches = des.filter(de => de.designations[0].designation === fe.label);
-                    if (deMatches[0]) {
-                        fe.question.cde.tinyId = deMatches[0].tinyId;
+            if (form.tinyId) {
+                return formByTinyId(form.tinyId).then(existingForm => {
+                   if (!existingForm) {
+                       throw `form ${form.tinyId} does not exist after validation`;
+                   }
+                   updateFormForSubmission(form, existingForm);
+                   return formUpdate(existingForm, user);
+                });
+            } else {
+                form.formElements?.forEach(fe => {
+                    if (fe.elementType === 'question' && fe.label) {
+                        const deMatches = des.filter(de => de.designations[0].designation === fe.label);
+                        if (deMatches[0]) {
+                            fe.question.cde.tinyId = deMatches[0].tinyId;
+                        }
                     }
-                }
-            });
-            return formCreate(form as CdeForm, user).then(f =>
-                formSourceCreate(f.toObject(), submission.name).then(() => f)
-            );
+                });
+                form.imported = Date.now();
+                return formCreate(form as CdeForm, user).then(f =>
+                    formSourceCreate(f.toObject(), submission.name).then(() => f)
+                );
+            }
         })
-    ).filter(form => !!form) as CdeFormDocument[];
+    ).filter(isT);
     await mapSeries<DataElementDocument, DataElementDocument | void>(des, de => {
-        if (de.partOfBundles.length) {
-            de.partOfBundles.forEach((name, i, bundles) => {
-                const formMatches = forms.filter(f => f.designations[0].designation === name);
-                if (formMatches[0]) {
-                    bundles[i] = formMatches[0].tinyId;
-                }
-            });
-            return de.save();
-        }
-        return Promise.resolve();
+        return de.partOfBundles.some((nameToken, i, deBundles) => {
+            if (!nameToken.startsWith(BUNDLE_TOKEN)) {
+                return false;
+            }
+            const name = nameToken.substring(BUNDLE_TOKEN_LENGTH);
+            const formMatch = createdForms.filter(f => f.designations[0].designation === name)[0];
+            if (!formMatch) {
+                return false;
+            }
+            deBundles[i] = formMatch.tinyId;
+            return true;
+        }) ? de.save() : Promise.resolve();
     });
 }
 
@@ -678,28 +852,20 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
     if (!de.partOfBundles) {
         de.partOfBundles = [];
     }
-    de.partOfBundles.push(name);
+    de.partOfBundles.push(BUNDLE_TOKEN + name);
 
     let form = forms.find(form => form.designations?.[0].designation === name);
     if (!form) {
         form = new CdeForm();
-        form.imported = Date.now();
+        eltCommon(form, submission);
         form.isBundle = true;
-        form.nihEndorsed = true;
         form.copyright = { text: submissionCopyright(submission), urls: [] };
         if (form.copyright.text?.substring((form.copyright.text?.indexOf('Free -- Publicly Available') + 1) * 26)) {
             // 26 is length of string
             form.isCopyrighted = true;
         }
-        form.stewardOrg.name = submission.name;
         form.designations.push({ designation: name, tags: [], sources: [] });
         form.definitions.push({ definition: 'This is a bundle.', tags: [], sources: [] });
-        form.classification.push({
-            stewardOrg: { name: submission.name },
-            elements: [{ elements: [], name: submission.name }],
-        });
-        form.registrationState.registrationStatus = submission.registrationStatus;
-        form.registrationState.administrativeStatus = submission.administrativeStatus;
         forms.push(form);
     }
     if (!form.formElements) {
@@ -710,6 +876,25 @@ function bundle(submission: Submission, forms: CdeForm[], name: string, de: Data
     if (q) {
         form.formElements.push(q);
     }
+}
+
+function eltClassify(elt: Elt, name: string) {
+    elt.classification.push({
+        stewardOrg: { name: name },
+        elements: [{ elements: [], name: name }],
+    });
+}
+
+function eltCommon(elt: Elt, submission: Submission) {
+    elt.nihEndorsed = true;
+    elt.stewardOrg.name = submission.name;
+    elt.registrationState.registrationStatus = submission.registrationStatus;
+    elt.registrationState.administrativeStatus = submission.administrativeStatus;
+    eltClassify(elt, submission.name);
+}
+
+function updateFormForSubmission(formTemplate: CdeForm, existingForm: CdeForm) {
+    eltClassify(existingForm, formTemplate.stewardOrg.name)
 }
 
 function withErrorCapture(location: string, errors: string[]) {

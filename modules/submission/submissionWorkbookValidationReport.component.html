@@ -16,7 +16,7 @@
         <h1>Summary of Errors</h1>
         <h2>Critical Errors</h2>
         <ng-container
-                *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length; else noCriticalErrors">
+                *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length || r.reportCdeReuse.length; else noCriticalErrors">
             <div>These must be fixed before your submission can be accepted for review.</div>
             <ul>
                 <li *ngIf="r.reportCdeManual.length">Assistance Required: {{ r.reportCdeManual.length }}</li>
@@ -26,6 +26,7 @@
                 <li *ngIf="r.reportCdeLength.length">Length of Lists: {{ r.reportCdeLength.length }}</li>
                 <li *ngIf="r.reportCdeRequired.length">Required Field: {{ r.reportCdeRequired.length }}</li>
                 <li *ngIf="r.reportCdeTemplate.length">Workbook Template: {{ r.reportCdeTemplate.length }}</li>
+                <li *ngIf="r.reportCdeReuse.length">Reuse Data Element Mismatch: {{ r.reportCdeReuse.length }}</li>
             </ul>
         </ng-container>
         <ng-template #noCriticalErrors>
@@ -50,7 +51,7 @@
 </section>
 
 <section
-        *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length">
+        *ngIf="r.reportCdeManual.length || r.reportCdeColumn.length || r.reportCdeLength.length || r.reportCdeRequired.length || r.reportCdeTemplate.length || r.reportCdeReuse.length">
     <hr>
     <h1>Critical Errors:</h1>
     <div *ngIf="r.reportCdeManual.length">
@@ -72,7 +73,7 @@
                 <li *ngFor="let e of r.reportCdeColumnRequired">{{ e }}</li>
             </ul>
         </ng-container>
-        <ng-container *ngIf="r.reportCdeColumnOptional.length">
+        <ng-container>
             <h3>Optional Column Headings not used yet: (For your reference.)</h3>
             <ul>
                 <li *ngFor="let e of r.reportCdeColumnOptional">{{ e }}</li>
@@ -95,6 +96,12 @@
         <h2>Workbook Template</h2>
         <ul>
             <li *ngFor="let e of r.reportCdeTemplate">{{ r.displayError(e) }}</li>
+        </ul>
+    </div>
+    <div *ngIf="r.reportCdeReuse.length">
+        <h2>Reuse Data Element Mismatch</h2>
+        <ul>
+            <li *ngFor="let e of r.reportCdeReuse">{{ r.displayError(e) }}</li>
         </ul>
     </div>
 </section>

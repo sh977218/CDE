@@ -4,7 +4,9 @@
         <mat-expansion-panel *ngFor="let de of r.report.data.dataElements">
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{de.designations[0].designation}}<small *ngIf="de.partOfBundles?.length">&ensp;(part of a bundle)</small>
+                    {{de.designations[0].designation}}
+                    <small *ngIf="de.partOfBundles?.length">&ensp;(part of a bundle)</small>
+                    <small *ngIf="de.tinyId">&ensp;(Reused: <a href="/deView?tinyId={{de.tinyId}}" target="_blank">{{de.tinyId}}</a>)</small>
                 </mat-panel-title>
                 <mat-panel-description></mat-panel-description>
             </mat-expansion-panel-header>
@@ -19,6 +21,7 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{form.designations[0].designation}}
+                    <small *ngIf="form.tinyId">&ensp;(Reused: <a href="/formView?tinyId={{form.tinyId}}" target="_blank">{{form.tinyId}}</a>)</small>
                 </mat-panel-title>
                 <mat-panel-description></mat-panel-description>
             </mat-expansion-panel-header>
