@@ -712,7 +712,11 @@ h3, h4, h5, h6 {
   &.alert {
     background-color: #f4e7df;
     border-left-color: #d04400;
-    padding: 8px;
+  }
+
+  &.warning {
+    background-color: #fff3cd;
+    border-left-color: #ffbe2e;
   }
 }
 

@@ -141,6 +141,10 @@
                                      src="/assets/img/endorsedRibbon.svg">
                                 {{elt?.designations[0]?.designation}}
                             </h1>
+                            <div *ngIf="['NINDS'].includes(elt.stewardOrg.name)" class="contentPane warning" role="alert" data-testid="data-element-view-out-of-date-warning">
+                                <mat-icon>warning</mat-icon>
+                                <strong>Warning:</strong> This version of the CDE might be out of date. For the most current version, please visit <a target="_blank" class="underline" href="https://www.commondataelements.ninds.nih.gov">https://www.commondataelements.ninds.nih.gov</a>
+                            </div>
                             <div *ngIf="elt.partOfBundles?.length" class="bundle-box">
                                 <mat-icon fill="1">error_circle_rounded</mat-icon>
                                 <b>This CDE is part of a bundle.</b> All CDEs within a bundle must be used together. Go

@@ -19,6 +19,10 @@ export class CdePagePo {
         return this.page.getByTestId(`data-element-view-alert`);
     }
 
+    outOfDateAlert() {
+        return this.page.getByTestId(`data-element-view-out-of-date-warning`);
+    }
+
     addToBoard() {
         return this.page.locator(`[id="addToBoard"]`);
     }

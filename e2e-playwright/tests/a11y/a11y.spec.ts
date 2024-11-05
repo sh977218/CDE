@@ -42,8 +42,7 @@ test.describe(`@a11y accessibility test`, async () => {
             const result = await axe.include(`nih-cde`).analyze();
 
             expect(result.violations.length, {
-                message: `
-                test name: ${testInfo.title}
+                message: `\ntest name: ${testInfo.title}
                ${JSON.stringify(result.violations, null, 4)}
                 `,
             }).toBeLessThanOrEqual(0);

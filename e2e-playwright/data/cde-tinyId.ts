@@ -25,4 +25,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Noncompliant Reason Text': 'tAgDWySuF0y',
     'Patient Health Questionnaire Depression (PHQ-9) - Sleep impairment score': 'APaPdyRYjQa',
     'Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency': 'rM71OwARaT5',
+    '36-item Short Form Health Survey (SF-36) - Bodily pain score': '0a4z8t2uH1t',
 };
