@@ -9,7 +9,6 @@ import {
     Output,
     SimpleChanges,
 } from '@angular/core';
-import { environment } from 'environments/environment';
 
 @Component({
     selector: 'cde-inline-area-edit',
@@ -48,6 +47,14 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
     }
 
     confirmSave() {
+        const invalidImgSrcs = this.hasInvalidImgSrc(this.value);
+        if (invalidImgSrcs && invalidImgSrcs.length) {
+            alert(
+                'Error. Img src may only be a relative url starting with /server/system/data/:\n ' +
+                    invalidImgSrcs.join('\n')
+            );
+            return;
+        }
         this.editMode = false;
         this.defFormatChange.emit(this.localFormat);
         this.modelChange.emit(this.value);
@@ -67,25 +74,16 @@ export class InlineAreaEditComponent implements OnInit, AfterViewInit, OnChanges
         this.localFormat = html ? 'html' : '';
     }
 
-    static isInvalidHtml(html: string) {
-        const allowUrls = [environment.publicUrl, (window as any).urlProd];
-        const srcs = html.match(/src\s*=\s*["'](.+?)["']/gi);
-        if (srcs) {
-            for (const src of srcs) {
-                const urls = src.match(/\s*["'](.+?)["']/gi);
-                if (urls) {
-                    for (const url of urls) {
-                        let allow = false;
-                        allowUrls.forEach(allowUrl => {
-                            const index = url.indexOf(allowUrl);
-                            if (index > -1) {
-                                allow = true;
-                            }
-                        });
-                        return !allow;
-                    }
-                }
-            }
+    hasInvalidImgSrc(html: string) {
+        const imgRegex = /<img[^>]+src="([^">]+)"/gi;
+        const srcRegex = /src="([^">]+)"/gi;
+        const imgTags = html.match(imgRegex);
+        if (imgTags) {
+            return imgTags.reduce((previousValue: string[], imgTag) => {
+                const src = imgTag.match(srcRegex);
+                const invalidSrc = src?.filter(url => !url.startsWith('src="/server/system/data/')) || [];
+                return [...previousValue, ...invalidSrc];
+            }, []);
         }
         return false;
     }

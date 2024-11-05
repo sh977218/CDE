@@ -58,6 +58,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatRadioModule } from '@angular/material/radio';
 import { RichTextEditorComponent } from 'rich-text-editor/rich-text-editor.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { RichTextEditorComponent } from 'rich-text-editor/rich-text-editor.compo
         MatMenuModule,
         MatTreeModule,
         MatRadioModule,
+        ClipboardModule,
     ],
     declarations: [
         AttachmentsComponent,

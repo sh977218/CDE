@@ -10,15 +10,18 @@ import {
     BalloonToolbar,
     BlockToolbar,
     Bold,
-    Code,
-    CodeBlock,
     Essentials,
     FindAndReplace,
-    GeneralHtmlSupport,
     Heading,
-    HtmlEmbed,
     Italic,
     Link,
+    Image,
+    ImageInsertViaUrl,
+    ImageResize,
+    ImageEditing,
+    ImageCaption,
+    ImageStyle,
+    ImageToolbar,
     Paragraph,
     SelectAll,
     ShowBlocks,
@@ -32,6 +35,7 @@ import {
     TextTransformation,
     Title,
     Undo,
+    EditorConfig,
 } from 'ckeditor5';
 
 @Component({
@@ -51,7 +55,7 @@ export class RichTextEditorComponent {
 
     public Editor = ClassicEditor;
 
-    public config = {
+    public config: EditorConfig = {
         toolbar: {
             items: [
                 'undo',
@@ -60,18 +64,15 @@ export class RichTextEditorComponent {
                 'showBlocks',
                 'findAndReplace',
                 'selectAll',
-                'textPartLanguage',
                 '|',
                 'heading',
                 '|',
                 'bold',
                 'italic',
-                'code',
                 '|',
                 'link',
+                'insertImage',
                 'insertTable',
-                'codeBlock',
-                'htmlEmbed',
                 '|',
                 'accessibilityHelp',
             ],
@@ -84,15 +85,18 @@ export class RichTextEditorComponent {
             BalloonToolbar,
             BlockToolbar,
             Bold,
-            Code,
-            CodeBlock,
             Essentials,
             FindAndReplace,
-            GeneralHtmlSupport,
             Heading,
-            HtmlEmbed,
             Italic,
             Link,
+            Image,
+            ImageInsertViaUrl,
+            ImageResize,
+            ImageEditing,
+            ImageCaption,
+            ImageStyle,
+            ImageToolbar,
             Paragraph,
             SelectAll,
             ShowBlocks,
@@ -154,16 +158,6 @@ export class RichTextEditorComponent {
                 },
             ],
         },
-        htmlSupport: {
-            allow: [
-                {
-                    name: /^.*$/,
-                    styles: true,
-                    attributes: true,
-                    classes: true,
-                },
-            ],
-        },
         link: {
             addTargetToExternalLinks: false,
             defaultProtocol: 'https://',
@@ -177,10 +171,19 @@ export class RichTextEditorComponent {
                 },
             },
         },
+        image: {
+            toolbar: [
+                'imageStyle:alignLeft',
+                'imageStyle:alignRight',
+                'imageStyle:alignCenter',
+                'imageStyle:side',
+                '|',
+                'imageTextAlternative',
+            ],
+        },
         menuBar: {
             isVisible: true,
         },
-        placeholder: 'Type or paste your content here!',
         table: {
             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties'],
         },

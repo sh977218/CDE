@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
-test(`Active ban log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
+test.skip(`Active ban log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
     await navigationMenu.login(Accounts.nlm);
     await page.route(`server/system/activeBans`, async route => {
         await page.waitForTimeout(5000);

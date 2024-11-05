@@ -44,7 +44,7 @@
                         <mat-icon data-testid="removeAttachmentButton" id="removeAttachment-{{i}}" class="fake-button" role="button" tabindex="0"
                                   title="Remove" (click)="removeAttachment.emit(i)">delete_outline
                         </mat-icon>
-                        <button class="button small mL" (click)="copyUrl(attachment)">
+                        <button class="button small mL" [cdkCopyToClipboard]="'/server/system/data/'+attachment.fileid">
                             <mat-icon id="copyUrl_{{i}}">content_copy</mat-icon>
                             Copy URL
                         </button>
