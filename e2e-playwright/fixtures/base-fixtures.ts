@@ -283,6 +283,7 @@ const ignoredConsoleMessages = [
     `Cannot read properties of undefined (reading '_hostElement')`,
     `Cannot read properties of undefined (reading 'removeEventListener')`,
     `Cannot read properties of null (reading 'writeValue')`,
+    `Third-party cookie will be blocked.`,
 ];
 
 const consoleMessages: string[] = [];

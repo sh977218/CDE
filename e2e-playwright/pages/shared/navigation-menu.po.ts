@@ -243,6 +243,14 @@ export class NavigationMenuPo {
         await this.materialPage.matMenuItem('Guides').click();
     }
 
+    async gotoNihDataSharing() {
+        await this.page.goto('/nihDataSharing');
+    }
+
+    async gotoVideos() {
+        await this.page.goto('/videos');
+    }
+
     async gotoNewFeatures() {
         await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
         await this.materialPage.matMenuItem('New Features').click();

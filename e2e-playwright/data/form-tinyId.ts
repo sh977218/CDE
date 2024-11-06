@@ -23,4 +23,5 @@ export const FormTinyIds: Record<string, string> = {
     'Patient Health Questionnaire - 9 (PHQ-9) Depression Scale': 'mJP_B1HrFg',
     'Dynamic Code List Form': 'XkY_oO2zv',
     DateTypeTest: '7y_PFN4Zr',
+    'Patient Health Questionnaire-2 (PHQ-2) More Questions': 'XJzVXFTZDR',
 };

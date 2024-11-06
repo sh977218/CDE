@@ -106,13 +106,17 @@ export class UsersPagePo {
         }
     }
 
-    async createUserByUsername(username: string) {
+    async createUserByUsername(username: string, userExist = false) {
         await this.createUserButton().click();
         await this.materialPage.matDialog().waitFor();
         await this.page.getByPlaceholder(`New Username`).fill(username);
         await this.materialPage.matDialog().getByRole('button', { name: 'Save' }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-        await this.materialPage.checkAlert(`User created`);
+        if (!userExist) {
+            await this.materialPage.checkAlert(`User created`);
+        } else {
+            await this.materialPage.checkAlert(`Cannot create user. Does it already exist?`);
+        }
     }
 
     searchResultByUsername(username: string) {

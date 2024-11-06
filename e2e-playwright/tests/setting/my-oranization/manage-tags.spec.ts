@@ -30,7 +30,7 @@ test(`Manage tags`, async ({
         await manageTagsPropertiesPage.addTagByOrg(orgName, tag);
         await test.step(`Go to CDE and verify newly added tag available`, async () => {
             await navigationMenu.gotoCdeByName(cdeName);
-            await generateDetailsSection.addName({ designation: 'new name', tags: [tag] });
+            await generateDetailsSection.addName({ designation: 'new name', sources: [], tags: [tag] });
         });
     });
 

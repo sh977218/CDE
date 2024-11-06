@@ -89,7 +89,14 @@ export class ManageOrganizationsPo {
             await this.inlineEdit.editIcon(organizationMailAddressLocator).click();
             await this.inlineEdit.inputField(organizationMailAddressLocator).fill(organization.orgMailAddress);
             await this.inlineEdit.confirmButton(organizationMailAddressLocator).click();
+            await this.materialPage.checkAlert('Saved');
         }
-        await this.materialPage.checkAlert('Saved');
+        if (organization.orgExtraInfo) {
+            const organizationExtraInfoLocator = this.organizationExtraInfo(managedOrganizationsLocator);
+            await this.inlineEdit.editIcon(organizationExtraInfoLocator).click();
+            await this.inlineEdit.inputField(organizationExtraInfoLocator).fill(organization.orgExtraInfo);
+            await this.inlineEdit.confirmButton(organizationExtraInfoLocator).click();
+            await this.materialPage.checkAlert('Saved');
+        }
     }
 }
