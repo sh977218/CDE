@@ -1,12 +1,19 @@
 import { expect, Locator, Page } from '@playwright/test';
 import { AdministrativeStatus, CurationStatus } from 'shared/models.model';
-import { id } from '../../../e2e-playwright/pages/util';
+import { id } from '../../pages/util';
+import { MaterialPo } from '../../pages/shared/material.po';
+import { MyBoardPagePo } from '../../pages/board/my-board-page.po';
+import { DUPLICATE_PINS, MULTIPLE_PINS, SINGLE_PIN } from '../../data/constants';
 
 export class SearchPagePo {
     protected page: Page;
+    protected materialPage: MaterialPo;
+    protected myBoardPage: MyBoardPagePo;
 
-    constructor(page: Page) {
+    constructor(page: Page, materialPage: MaterialPo, myBoardPage: MyBoardPagePo) {
         this.page = page;
+        this.materialPage = materialPage;
+        this.myBoardPage = myBoardPage;
     }
 
     searchResultList() {
@@ -56,10 +63,23 @@ export class SearchPagePo {
     async browseOrganization(organization: string) {
         await this.page
             .locator(`[data-testid="browse-org"]`, {
-                hasText: organization,
+                hasText: new RegExp(`^${organization}$`),
             })
             .click();
         await this.page.waitForSelector(`text=${organization}`);
+    }
+
+    async selectClassification(classificationName: string, numberToBeVerified?: number) {
+        let selector = new RegExp(`^${classificationName}`);
+
+        if (numberToBeVerified !== undefined) {
+            selector = new RegExp(`^${classificationName} (${numberToBeVerified})`);
+        }
+        const orgClassificationFilter = this.classificationFilter().filter({
+            hasText: selector,
+        });
+        await orgClassificationFilter.click();
+        await this.page.waitForTimeout(5000); //@TODO find a better way to know if search result is updated.
     }
 
     classificationFilterByNameAndNumber(
@@ -169,6 +189,7 @@ export class SearchPagePo {
     async searchWithString(s: string, expectedNumberOfResults: null | number = null) {
         await this.searchQueryInput().fill(s);
         await this.searchSubmitButton().click();
+        await this.page.waitForTimeout(5000); // @TODO find a better way to know when search result is updated.
         if (expectedNumberOfResults === null) {
             await expect(this.page.getByText('results. Sorted by relevance.')).toBeVisible({ timeout: 10 * 1000 });
         } else if (expectedNumberOfResults === 0) {
@@ -178,5 +199,34 @@ export class SearchPagePo {
                 timeout: 10 * 1000,
             });
         }
+    }
+
+    async pinCdeToBoardWithModal(cdeName: string, boardName: string) {
+        await this.pinTo(cdeName);
+        await this.myBoardPage.selectBoardToPin(boardName);
+    }
+
+    async pinAllResultWithModal(boardName: string) {
+        await this.page.getByRole('button', { name: 'Pin All' }).click();
+        await this.myBoardPage.selectBoardToPin(boardName, MULTIPLE_PINS);
+    }
+
+    async pinAllCdesWithModal(boardName: string) {
+        await this.page.getByRole('button', { name: 'Pin CDEs' }).click();
+        await this.myBoardPage.selectBoardToPin(boardName, MULTIPLE_PINS);
+    }
+
+    async pinCdeToBoardWithoutModal(cdeName: string, boardName: string, alertMessageCode = SINGLE_PIN) {
+        await this.pinTo(cdeName);
+        if (alertMessageCode === SINGLE_PIN) {
+            await this.materialPage.checkAlert(`Pinned to ${boardName}`);
+        } else {
+            await this.materialPage.checkAlert(`Already added`);
+        }
+    }
+
+    private async pinTo(eltName: string) {
+        await this.searchWithString(eltName, 1);
+        await this.page.locator(`[id="pinToBoard_0"]`).click();
     }
 }

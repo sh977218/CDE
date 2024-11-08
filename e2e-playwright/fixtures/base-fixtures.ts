@@ -211,8 +211,8 @@ const baseFixture = baseTest.extend<{
     navigationMenu: async ({ page, materialPage, searchPage }, use) => {
         await use(new NavigationMenuPo(page, materialPage, searchPage));
     },
-    searchPage: async ({ page }, use) => {
-        await use(new SearchPagePo(page));
+    searchPage: async ({ page, materialPage, myBoardPage }, use) => {
+        await use(new SearchPagePo(page, materialPage, myBoardPage));
     },
     searchPreferencesPage: async ({ page }, use) => {
         await use(new SearchPreferencesPagePo(page));
@@ -284,6 +284,7 @@ const ignoredConsoleMessages = [
     `Cannot read properties of undefined (reading 'removeEventListener')`,
     `Cannot read properties of null (reading 'writeValue')`,
     `Third-party cookie will be blocked.`,
+    `Failed to load resource: the server responded with a status of 403`, // create too many board give 403
 ];
 
 const consoleMessages: string[] = [];

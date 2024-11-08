@@ -12,6 +12,10 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'userExistingInUtsButNotCDE',
         password: DEFAULT_PASSWORD,
     },
+    orgAdminUser: {
+        username: 'orgAdminUser',
+        password: DEFAULT_PASSWORD,
+    },
     orgAuthority: {
         username: 'orgAuthorityUser',
         password: DEFAULT_PASSWORD,
@@ -64,10 +68,6 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'testEditor',
         password: DEFAULT_PASSWORD,
     },
-    classifyBoardUser: {
-        username: 'classifyBoardUser',
-        password: DEFAULT_PASSWORD,
-    },
     formBoardUser: {
         username: `formboarduser`,
         password: DEFAULT_PASSWORD,
@@ -88,6 +88,10 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'hiIamLongerThanSeventeenCharacters',
         password: DEFAULT_PASSWORD,
     },
+    pinuser: {
+        username: 'pinuser',
+        password: DEFAULT_PASSWORD,
+    },
     unpinUser: {
         username: 'unpinuser',
         password: DEFAULT_PASSWORD,
@@ -102,6 +106,42 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
     },
     formLinkedFormsUser: {
         username: 'formLinkedFormsUser',
+        password: DEFAULT_PASSWORD,
+    },
+    classifyBoardUser: {
+        username: 'classifyBoardUser',
+        password: DEFAULT_PASSWORD,
+    },
+    tagBoardUser: {
+        username: 'tagBoardUser',
+        password: DEFAULT_PASSWORD,
+    },
+    pinAllBoardUser: {
+        username: 'pinAllBoardUser',
+        password: DEFAULT_PASSWORD,
+    },
+    doublepinuser: {
+        username: 'doublepinuser',
+        password: DEFAULT_PASSWORD,
+    },
+    boarduserEdit: {
+        username: 'boarduserEdit',
+        password: DEFAULT_PASSWORD,
+    },
+    boardBot: {
+        username: 'boardBot',
+        password: DEFAULT_PASSWORD,
+    },
+    boarduser: {
+        username: 'boarduser',
+        password: DEFAULT_PASSWORD,
+    },
+    boarduser1: {
+        username: 'boarduser1',
+        password: DEFAULT_PASSWORD,
+    },
+    boarduser2: {
+        username: 'boarduser2',
         password: DEFAULT_PASSWORD,
     },
     testuser: {

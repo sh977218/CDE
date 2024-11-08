@@ -128,6 +128,13 @@ test.describe(`API testing`, async () => {
         });
     });
 
+    test.describe('Board API', async () => {
+        test(`page size too large`, async ({ request }) => {
+            const response = await request.get(`/server/board/abc/0/1000`);
+            expect(response.status()).toBe(400);
+        });
+    });
+
     test(`See CDE PVs with API key`, async ({ page }) => {
         const apiKey = 'f8e163df-6601-4444-b290-e904de1aedea';
         const cdeTinyId = 'mkmhYJOnk7l';

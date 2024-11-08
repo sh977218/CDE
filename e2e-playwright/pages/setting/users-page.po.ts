@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
+import { USER_CREATED } from '../../data/constants';
 
 export class UsersPagePo {
     private readonly page: Page;
@@ -106,13 +107,13 @@ export class UsersPagePo {
         }
     }
 
-    async createUserByUsername(username: string, userExist = false) {
+    async createUserByUsername(username: string, alertMessageCode = USER_CREATED) {
         await this.createUserButton().click();
         await this.materialPage.matDialog().waitFor();
         await this.page.getByPlaceholder(`New Username`).fill(username);
         await this.materialPage.matDialog().getByRole('button', { name: 'Save' }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-        if (!userExist) {
+        if (alertMessageCode === USER_CREATED) {
             await this.materialPage.checkAlert(`User created`);
         } else {
             await this.materialPage.checkAlert(`Cannot create user. Does it already exist?`);

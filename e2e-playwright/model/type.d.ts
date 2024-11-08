@@ -3,6 +3,7 @@ import { CurationStatus } from 'shared/models.model';
 export type ACCOUNT_KEYS =
     | 'nlm'
     | 'userExistingInUtsButNotCDE'
+    | 'orgAdminUser'
     | 'orgAuthority'
     | 'nlmCurator'
     | 'ninds'
@@ -14,7 +15,6 @@ export type ACCOUNT_KEYS =
     | 'ctepAdmin'
     | 'cabigEditor'
     | 'testEditor'
-    | 'classifyBoardUser'
     | 'formBoardUser'
     | 'nlmCuratorUser'
     | 'nlmEditorUser'
@@ -22,10 +22,20 @@ export type ACCOUNT_KEYS =
     | 'classificationManageUser'
     | 'workingGroupUser'
     | 'longUsernameUser'
+    | 'pinuser'
     | 'unpinUser'
     | 'viewingHistoryUser'
     | 'boardExportUser'
     | 'formLinkedFormsUser'
+    | 'classifyBoardUser'
+    | 'tagBoardUser'
+    | 'pinAllBoardUser'
+    | 'doublepinuser'
+    | 'boarduserEdit'
+    | 'boardBot'
+    | 'boarduser'
+    | 'boarduser1'
+    | 'boarduser2'
     | 'testuser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
@@ -54,6 +64,8 @@ export type Board = {
     boardName: string;
     boardDefinition: string;
     type: BoardType;
+    public?: boolean;
+    tags?: string[];
 };
 
 export type Version = {

@@ -62,4 +62,34 @@ export class BoardPagePo {
     notMatchContainer() {
         return this.page.locator(`[data-testid="not-match"]`);
     }
+
+    getSideBySideXpath(side: string, section: string, type: string, index: number) {
+        if (side === 'left') side = 'Left';
+        if (side === 'right') side = 'Right';
+
+        if (section === 'steward') section = 'Steward';
+        if (section === 'status') section = 'Status';
+        if (section === 'designation') section = 'Designation';
+        if (section === 'definition') section = 'Definition';
+        if (section === 'identifiers') section = 'Identifiers';
+        if (section === 'Related Documents') section = 'Reference Documents';
+        if (section === 'properties') section = 'Properties';
+        if (section === 'data element concept') section = 'Data Element Concept';
+        if (section === 'questions') section = 'Questions';
+
+        if (type === 'fullmatch') type = 'fullMatch';
+        if (type === 'partialmatch') type = 'partialMatch';
+        if (type === 'notmatch') type = 'notMatch';
+        return (
+            "(//*[@id='" +
+            section +
+            "']//*[contains(@class,'no" +
+            side +
+            "Padding')]//*[contains(@class,'" +
+            type +
+            "')])[" +
+            index +
+            ']'
+        );
+    }
 }

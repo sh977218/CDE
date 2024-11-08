@@ -17,7 +17,7 @@ test(`Classify form from board`, async ({ page, materialPage, navigationMenu, my
     await test.step(`Login and create board`, async () => {
         await navigationMenu.login(Accounts.formBoardUser);
         await navigationMenu.gotoMyBoard();
-        await myBoardPage.createBoard({
+        await myBoardPage.createBoardSuccess({
             boardName,
             boardDefinition,
             type: 'Forms',
