@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
 import {
@@ -11,6 +11,7 @@ import {
 } from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
+import { SORT_DIRECTION_MAP, SORT_DIRECTION_MAP_SORTABLE_ARRAY } from '../../data/constants';
 
 export class GenerateDetailsPo {
     private readonly page: Page;
@@ -186,7 +187,7 @@ export class GenerateDetailsPo {
         await this.saveModal.waitForDraftSaveComplete();
     }
 
-    async editNameByIndex(
+    async editDesignationByIndex(
         index: number,
         newDesignation: Designation,
         config: EditDesignationConfig = { replace: false }
@@ -195,11 +196,51 @@ export class GenerateDetailsPo {
             .getByTestId(`designations-container`)
             .getByTestId(`designation-container`)
             .nth(index);
+        await this.editDesignation(designationRow, newDesignation, config);
+    }
+
+    async editDesignationByName(
+        name: string,
+        newDesignation: Designation,
+        config: EditDesignationConfig = { replace: false }
+    ) {
+        const designationRow = this.page
+            .getByTestId(`designations-container`)
+            .getByTestId(`designation-container`)
+            .filter({ hasText: name });
+        await this.editDesignation(designationRow, newDesignation, config);
+    }
+
+    async deleteDesignationByIndex(index: number) {
+        const designationRow = this.page
+            .getByTestId(`designations-container`)
+            .getByTestId(`designation-container`)
+            .nth(index);
+        await designationRow.locator('[title="Delete Designation"]').click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async deleteDesignationByName(name: string) {
+        // @TODO there is problem with this selector, the text `name` could disappear after other action, i.e. click edit icon. filter will return 0 result
+        const designationRow = this.page
+            .getByTestId(`designations-container`)
+            .getByTestId(`designation-container`)
+            .filter({ hasText: name });
+        await designationRow.locator('[title="Delete Designation"]').click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    private async editDesignation(
+        designationRow: Locator,
+        newDesignation: Designation,
+        config: EditDesignationConfig = { replace: false }
+    ) {
         await this.inlineEdit.editIcon(designationRow).click();
         if (config.replace) {
             await this.inlineEdit.inputField(designationRow).fill(newDesignation.designation);
+        } else {
+            await this.inlineEdit.inputField(designationRow).type(newDesignation.designation);
         }
-        await this.inlineEdit.inputField(designationRow).type(newDesignation.designation);
 
         await this.inlineEdit.confirmButton(designationRow).click();
 
@@ -207,6 +248,21 @@ export class GenerateDetailsPo {
             await this.materialPage.matChipListInput(designationRow).click();
             await this.materialPage.matOptionByText(tag).click();
         }
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async addDefinition(newDefinition: Definition) {
+        await this.page.getByRole('button', { name: `Add Definition`, exact: true }).click();
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByPlaceholder(`Definition`).fill(newDefinition.definition);
+        for (const tag of newDefinition.tags) {
+            await this.materialPage
+                .matChipListInput(this.materialPage.matDialog().locator(`[id="newDefinitionTags"]`))
+                .click();
+            await this.materialPage.matOptionByText(tag).click();
+        }
+        await this.materialPage.matDialog().getByRole('button', { name: `Save`, exact: true }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
         await this.saveModal.waitForDraftSaveComplete();
     }
 
@@ -219,6 +275,36 @@ export class GenerateDetailsPo {
             .getByTestId(`definitions-container`)
             .getByTestId(`definition-container`)
             .nth(index);
+        await this.editDefinition(definitionRow, newDefinition, config);
+    }
+
+    async editDefinitionByName(
+        name: string,
+        newDefinition: Definition,
+        config: EditDefinitionConfig = { replace: false, html: false }
+    ) {
+        // @TODO there is problem with this selector, the text `name` could disappear after other action, i.e. click edit icon. filter will return 0 result
+        const definitionRow = this.page
+            .getByTestId(`definitions-container`)
+            .locator(`[data-testid="definition-container"]`, { hasText: name });
+        await this.editDefinition(definitionRow, newDefinition, config);
+    }
+
+    async deleteDefinitionByDefinition(definition: string) {
+        const definitionRow = this.page
+            .getByTestId(`definitions-container`)
+            .locator(`[data-testid="definition-container"]`, {
+                hasText: definition,
+            });
+        await definitionRow.locator('[title="Delete Definition"]').click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    private async editDefinition(
+        definitionRow: Locator,
+        newDefinition: Definition,
+        config: EditDefinitionConfig = { replace: false, html: false }
+    ) {
         await this.page.waitForTimeout(2000); // give 2 seconds before click edit, this wait is not a 100% sure fix.
         await this.inlineEdit.editIcon(definitionRow).click();
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
@@ -272,6 +358,30 @@ export class GenerateDetailsPo {
         await this.inlineEdit.editIcon(copyrightUrlLocator).click();
         await this.inlineEdit.inputField(copyrightUrlLocator).fill(url);
         await this.inlineEdit.confirmButton(copyrightUrlLocator).click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async reorderDesignations(index: number, direction: string) {
+        const designationRow = this.page
+            .getByTestId(`designations-container`)
+            .getByTestId(`designation-container`)
+            .nth(index);
+        const moveIcon = designationRow
+            .locator('cde-sortable-array')
+            .getByLabel(SORT_DIRECTION_MAP_SORTABLE_ARRAY[direction]);
+        await moveIcon.click();
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async reorderDefinitions(index: number, direction: string) {
+        const definitionRow = this.page
+            .getByTestId(`definitions-container`)
+            .getByTestId(`definition-container`)
+            .nth(index);
+        const moveIcon = definitionRow
+            .locator('cde-sortable-array')
+            .getByLabel(SORT_DIRECTION_MAP_SORTABLE_ARRAY[direction]);
+        await moveIcon.click();
         await this.saveModal.waitForDraftSaveComplete();
     }
 }

@@ -1644,16 +1644,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
         clickElement(By.xpath(xpathMatDropdownByText(text)));
     }
 
-    protected void addMatChipByText(String chip) {
-        findElement(By.xpath("//mat-chip-list//input")).sendKeys(chip + Keys.ENTER);
-    }
-
-    protected void reorderBySection(String section, String direction, int index) {
-        String capDirection = direction.substring(0, 1).toUpperCase() + direction.substring(1);
-        String xpath = "//*[@id='" + section + "-div']//*[contains(@class,'move" + capDirection + "-" + index + "')]";
-        clickElement(By.xpath(xpath));
-    }
-
     protected String xpathContains(String value) {
         return "[contains(.,'" + value + "')]";
     }

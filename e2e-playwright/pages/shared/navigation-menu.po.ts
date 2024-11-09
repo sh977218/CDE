@@ -118,9 +118,14 @@ export class NavigationMenuPo {
     /**
      * Description - This method search CDE name with double quotes, make sure login first
      * @param cdeName
+     * @param byPassSearch - Go to form directly by URL, which by pass search CDE name or tinyId
      */
-    async gotoCdeByName(cdeName: string) {
+    async gotoCdeByName(cdeName: string, byPassSearch = false) {
         const tinyId = CdeTinyIds[cdeName];
+        if (byPassSearch) {
+            await this.page.goto(`/deView?tinyId=${tinyId}`);
+            return;
+        }
         await this.gotoCdeSearch();
         await this.searchPage.searchWithString(`"${cdeName}"`);
         await this.page.locator(`[id="linkToElt_0"]`).click();

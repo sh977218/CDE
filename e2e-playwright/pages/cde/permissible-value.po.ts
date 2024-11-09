@@ -3,6 +3,7 @@ import { DataType, PermissibleValue } from '../../model/type';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { SaveModalPo } from '../shared/save-modal.po';
 import { MaterialPo } from '../shared/material.po';
+import { SORT_DIRECTION_MAP_SORTABLE_ARRAY } from '../../data/constants';
 
 export class PermissibleValuePo {
     private readonly page: Page;
@@ -212,5 +213,12 @@ export class PermissibleValuePo {
             })
             .click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
+    async reorderPV(index: number, direction: string) {
+        const pvRow = this.page.getByTestId(`pvTable`).locator(`tbody tr`).nth(index);
+        const moveIcon = pvRow.locator('cde-sortable-array').getByLabel(SORT_DIRECTION_MAP_SORTABLE_ARRAY[direction]);
+        await moveIcon.click();
+        await this.saveModal.waitForDraftSaveComplete();
     }
 }

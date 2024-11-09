@@ -6,7 +6,7 @@ import { UpdateRegistrationStatusModalPo } from './update-registration-status-mo
 import { Property } from '../../model/type';
 import { SORT_DIRECTION_MAP_SORTABLE_ARRAY } from '../../data/constants';
 
-export class PropertyPo {
+export class RelatedDocumentPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
     private readonly inlineEdit: InlineEditPo;
@@ -27,18 +27,8 @@ export class PropertyPo {
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
     }
 
-    async addProperty(newProperty: Property) {
-        await this.page.getByRole('button', { name: `Add Property`, exact: true }).click();
-        await this.materialPage.matDialog().waitFor();
-        await this.materialPage.matDialog().locator(`[name="newKey"]`).selectOption(newProperty.key);
-        await this.materialPage.matDialog().getByPlaceholder(`Property Value`).fill(newProperty.value);
-        await this.materialPage.matDialog().getByRole('button', { name: `Save`, exact: true }).click();
-        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-        await this.saveModal.waitForDraftSaveComplete();
-    }
-
-    async reorderProperty(index: number, direction: string) {
-        const pvRow = this.page.locator('id=properties-div').locator('dl dt').nth(index);
+    async reorderRelatedDocument(index: number, direction: string) {
+        const pvRow = this.page.locator('id=reference-documents-div').locator('table tbody tr').nth(index);
         const moveIcon = pvRow.locator('cde-sortable-array').getByLabel(SORT_DIRECTION_MAP_SORTABLE_ARRAY[direction]);
         await moveIcon.click();
         await this.saveModal.waitForDraftSaveComplete();

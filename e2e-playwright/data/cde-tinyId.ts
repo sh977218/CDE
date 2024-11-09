@@ -27,4 +27,9 @@ export const CdeTinyIds: Record<string, string> = {
     'Alcohol Smoking and Substance Use Involvement Screening Test (ASSIST) - Cocaine use frequency': 'rM71OwARaT5',
     '36-item Short Form Health Survey (SF-36) - Bodily pain score': '0a4z8t2uH1t',
     'Brief Pain Inventory (BPI) - pain general activity interference scale': 'hPzRsUF_xX5',
+    'cde for test cde reorder detail tabs': '7yl__aTQOe',
+    'Reorder designations cde': '71Cz2vxNv',
+    'Reorder permissible values cde': 'QkOasvgNP',
+    'Reorder properties cde': 'mkgGjDg4D',
+    'Reorder reference document cde': 'QJE9qwgEP',
 };

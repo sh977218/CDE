@@ -34,8 +34,8 @@
             <ng-container *ngIf="userService.isOrgAuthority()">
                 <td>{{priorElement.updatedBy?.username}}</td>
             </ng-container>
-            <td>{{priorElement.changeNote}}</td>
-            <td>
+            <td data-testid="historyTableChangeNote">{{priorElement.changeNote}}</td>
+            <td data-testid="historyTableVersion">
                 <ng-container *ngIf="priorElement.isDraft; else version">DRAFT</ng-container>
                 <ng-template #version>{{priorElement.version}}</ng-template>
             </td>

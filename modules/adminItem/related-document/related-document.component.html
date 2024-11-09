@@ -14,8 +14,8 @@
     <tbody>
     <ng-container *ngFor="let rd of elt.referenceDocuments;let i = index">
         <tr *ngIf="rd.document">
-            <td attr.itemprop="id_{{i}}">{{rd.referenceDocumentId}}</td>
-            <td attr.itemprop="title_{{i}}">{{rd.title}}</td>
+            <td  attr.itemprop="id_{{i}}">{{rd.referenceDocumentId}}</td>
+            <td data-testid="title" attr.itemprop="title_{{i}}">{{rd.title}}</td>
             <td attr.itemprop="uri_{{i}}"><a href="{{rd.uri}}" target="_blank" rel="noopener noreferrer">
                 <mat-icon>open_in_new</mat-icon>
             </a></td>

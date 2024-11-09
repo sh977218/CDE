@@ -20,7 +20,7 @@
                 </mat-icon>
                 <cde-sortable-array [theArray]="elt.properties" [index]="i" *ngIf="canEdit"
                                     (cb)="eltChange.emit()"></cde-sortable-array>
-                {{prop.key}}:
+                <span>{{prop.key}}</span>:
             </dt>
             <dd attr.itemprop="value_{{i}}">
                 <cde-inline-area-edit [(model)]="prop.value" (modelChange)="eltChange.emit()"

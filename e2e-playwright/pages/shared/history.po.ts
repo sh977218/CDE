@@ -18,6 +18,14 @@ export class HistoryPo {
         return this.page.locator(`[data-testid="historyTable"] tbody tr`);
     }
 
+    historyTableChangeNote() {
+        return this.page.getByTestId(`historyTableChangeNote`);
+    }
+
+    historyTableVersion() {
+        return this.page.getByTestId('historyTableVersion');
+    }
+
     /**
      * Description - Select 2 history table rows to compare
      * @param row1 - zero base index, first row to select

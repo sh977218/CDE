@@ -24,4 +24,7 @@ export const FormTinyIds: Record<string, string> = {
     'Dynamic Code List Form': 'XkY_oO2zv',
     DateTypeTest: '7y_PFN4Zr',
     'Patient Health Questionnaire-2 (PHQ-2) More Questions': 'XJzVXFTZDR',
+    'Reorder definition form': 'myYlSJAQD',
+    'form for test cde reorder detail tabs': '7JfJ_nlhg',
+    'Reorder reference document form': '7yxjmyAQP',
 };

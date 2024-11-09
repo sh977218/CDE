@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { Board, ReorderDirection } from '../../model/type';
 import { MaterialPo } from '../shared/material.po';
-import { DUPLICATE_PINS, SINGLE_PIN } from '../../data/constants';
+import { DUPLICATE_PINS, SINGLE_PIN, SORT_DIRECTION_MAP } from '../../data/constants';
 
 export class MyBoardPagePo {
     private readonly page: Page;
@@ -109,16 +109,11 @@ export class MyBoardPagePo {
     }
 
     async reorderPin(index: number, direction: string) {
-        const map: Record<string, string> = {
-            down: 'Down',
-            up: 'Up',
-            top: 'Move to top',
-        };
         const moveIcon = this.page
             .locator('cde-summary-heading')
             .nth(index)
             .locator('cde-list-sort')
-            .getByTitle(map[direction]);
+            .getByTitle(SORT_DIRECTION_MAP[direction]);
         await moveIcon.click();
         await this.materialPage.checkAlert('Saved');
     }

@@ -45,6 +45,7 @@ import { BoardPagePo } from '../pages/board/board-page.po';
 // Shared sections
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
+import { RelatedDocumentPo } from '../pages/shared/related-document.po';
 import { PropertyPo } from '../pages/shared/property.po';
 import { ClassificationPo } from '../pages/shared/classification.po';
 import { AttachmentPo } from '../pages/shared/attachment.po';
@@ -111,6 +112,7 @@ const baseFixture = baseTest.extend<{
     saveModal: SaveModalPo;
     generateDetailsSection: GenerateDetailsPo;
     identifierSection: IdentifierPo;
+    relatedDocumentSection: RelatedDocumentPo;
     propertySection: PropertyPo;
     attachmentSection: AttachmentPo;
     classificationSection: ClassificationPo;
@@ -189,6 +191,12 @@ const baseFixture = baseTest.extend<{
     },
     identifierSection: async ({ page, materialPage }, use) => {
         await use(new IdentifierPo(page, materialPage));
+    },
+    relatedDocumentSection: async (
+        { page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal },
+        use
+    ) => {
+        await use(new RelatedDocumentPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
     propertySection: async ({ page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal }, use) => {
         await use(new PropertyPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));

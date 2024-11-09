@@ -14,17 +14,9 @@ public interface USERNAME {
     String nindsCurator_username = "nindsCurator";
     String wguser_username = "wguser";
     String reguser_username = "reguser";
-    String boarduser1_username = "boarduser1";
-    String boarduser2_username = "boarduser2";
-    String boarduser3_username = "boarduser3";
-    String boarduserEdit_username = "boarduserEdit";
-    String boardUser = "boarduser";
     String classificationMgtUser_username = "classMgtUser";
     String transferStewardUser_username = "transferStewardUser";
-    String pinAllBoardUser_username = "pinAllBoardUser";
     String testEditor_username = "testEditor";
-    String classifyBoardUser_username = "classifyBoardUser";
-    String doublepinuser_username = "doublepinuser";
     // One user only has one role, test management page authorization.
     String password = "pass";
 }
