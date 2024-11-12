@@ -34,6 +34,10 @@ export class GenerateDetailsPo {
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
     }
 
+    get viewCount() {
+        return this.page.getByTestId('views-count');
+    }
+
     // copyright locators
     copyrightCheckbox() {
         return this.page.getByTestId('copyright-checkbox');

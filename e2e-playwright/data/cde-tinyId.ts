@@ -32,4 +32,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Reorder permissible values cde': 'QkOasvgNP',
     'Reorder properties cde': 'mkgGjDg4D',
     'Reorder reference document cde': 'QJE9qwgEP',
+    'Tissue Donor Genetic Testing Other Disease or Disorder Specify': 'nsMXB5NdFBA',
 };

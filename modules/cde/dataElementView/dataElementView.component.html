@@ -124,7 +124,7 @@
                         </ng-container>
                         <div id="viewsCount" style="float: right; font-style: italic; font-size: 14px">
                             <div>
-                                {{elt.views || 0}} Views
+                                <span  data-testid="views-count" >{{elt.views || 0}} </span> Views
                             </div>
                             <div *ngIf="elt.updated">
                                 Updated: {{elt.updated | date: 'MM/dd/yyyy'}}

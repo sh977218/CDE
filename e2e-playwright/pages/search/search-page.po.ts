@@ -3,7 +3,7 @@ import { AdministrativeStatus, CurationStatus } from 'shared/models.model';
 import { id } from '../../pages/util';
 import { MaterialPo } from '../../pages/shared/material.po';
 import { MyBoardPagePo } from '../../pages/board/my-board-page.po';
-import { DUPLICATE_PINS, MULTIPLE_PINS, SINGLE_PIN } from '../../data/constants';
+import { MULTIPLE_PINS, SINGLE_PIN } from '../../data/constants';
 
 export class SearchPagePo {
     protected page: Page;
@@ -14,6 +14,14 @@ export class SearchPagePo {
         this.page = page;
         this.materialPage = materialPage;
         this.myBoardPage = myBoardPage;
+    }
+
+    get organizationBox() {
+        return this.page.getByTestId('browse-org');
+    }
+
+    get noResultFoundMessage() {
+        return this.page.getByTestId('no-results-found-message');
     }
 
     searchResultList() {
@@ -52,8 +60,31 @@ export class SearchPagePo {
         return this.page.locator(`[data-testid="active-filter-data-type"]`);
     }
 
+    activeSearchTerm() {
+        return this.page.locator(`[data-testid="active-search-term"]`);
+    }
+
+    searchTermText() {
+        return this.page.locator(`[data-testid="search-term-text"]`);
+    }
+
+    activeFilterClassification() {
+        return this.page.locator(`[data-testid="active-filter-classification"]`);
+    }
+
+    classificationText() {
+        return this.page.locator(`[data-testid="classification-text"]`);
+    }
+
     activeFilterRegistrationStatus() {
         return this.page.locator(`[data-testid="active-filter-registration-status"]`);
+    }
+
+    excludeFilterModeToggle() {
+        return this.page.locator(`id=excludeFilterModeToggle`);
+    }
+    excludeAllOrgsButton() {
+        return this.page.locator(`id=exludeAllOrgs`);
     }
 
     administrativeStatus(status: AdministrativeStatus) {

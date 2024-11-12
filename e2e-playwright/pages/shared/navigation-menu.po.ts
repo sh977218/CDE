@@ -17,6 +17,14 @@ export class NavigationMenuPo {
         this.searchPage = searchPage;
     }
 
+    get cdeButton() {
+        return this.page.getByTestId('menu_cdes_link');
+    }
+
+    get formButton() {
+        return this.page.getByTestId('menu_forms_link');
+    }
+
     private clickUntilMenuShows(buttonLocator: Locator) {
         return new Promise<void>(async (resolve, reject) => {
             await this.page.waitForTimeout(2000); // Try this wait, there maybe some JS code block button click

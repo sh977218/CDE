@@ -30,6 +30,7 @@ test(`Browser search filter`, async ({ page, materialPage, navigationMenu, searc
         await expect(materialPage.paginatorRangeLabel()).toHaveText(/1 – 20 of \d*/);
         await materialPage.paginatorNext().click();
         await expect(materialPage.paginatorRangeLabel()).toHaveText(/21 – \d* of \d*/);
+        await expect(page).toHaveURL(/&page=2/);
     });
 
     await test.step(`registration status filter number`, async () => {

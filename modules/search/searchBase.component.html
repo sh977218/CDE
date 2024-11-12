@@ -79,11 +79,12 @@
                 <div *ngIf="searchedTerm" class="activeFilterClause">
                     <span id="term_crumb"
                           class="pill" role="button" tabindex="0"
+                          data-testid="active-search-term"
                           aria-label="Remove this search term filter"
                           matTooltip="Remove this search term filter"
                           matTooltipClass="cdeTooltip" matTooltipPosition="above"
                           (click)="searchSettings.q = ''; searchTerm = ''; doSearch()">
-                        <span class="text">{{ searchedTerm }}</span>
+                        <span class="text" data-testid="search-term-text">{{ searchedTerm }}</span>
                         <span class="close">X</span>
                     </span>
                 </div>
@@ -94,7 +95,7 @@
                         <span *ngIf="!isFirst" class="keyboard-arrow lightgray"></span>
                         <span class="classif_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this classification filter"
-                              data-testid="classification-filter-selected"
+                              data-testid="active-filter-classification"
                               matTooltip="Remove this classification filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedClassifications(c)">
@@ -155,7 +156,8 @@
                         <span class="status_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this copyright statuses filter"
                               matTooltip="Remove this copyright statuses filter"
-                              matTooltipClass="cdeTooltip" matTooltipPosition="above"
+                              matTooltipClass="cdeTooltip"
+                              matTooltipPosition="above"
                               (click)="clearSelectedCopyrightStatus(s)">
                             <span class="text">{{ s }}</span>
                             <span class="close">X</span>
@@ -166,12 +168,11 @@
                 <ng-container *ngIf="hasSelectedStatuses()">
                     <div *ngFor="let s of searchSettings.regStatuses" class="activeFilterClause">
                         <span class="status_crumb pill" role="button" tabindex="0"
-                              data-testid="active-filter-registration-status"
                               aria-label="Remove this registration statuses filter"
                               matTooltip="Remove this registration statuses filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedStatus(s)">
-                            <span class="text">{{ s }}</span>
+                            <span class="text" data-testid="active-filter-registration-status">{{ s }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -180,12 +181,12 @@
                 <ng-container *ngIf="hasSelectedAdminStatuses()">
                     <div *ngFor="let s of searchSettings.adminStatuses" class="activeFilterClause">
                         <span class="status_crumb pill" role="button" tabindex="0"
-                              data-testid="active-filter-administrative-status"
+
                               aria-label="Remove this administrative statuses filter"
                               matTooltip="Remove this administrative statuses filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedAdminStatus(s)">
-                            <span class="text">{{ s }}</span>
+                            <span class="text" data-testid="active-filter-administrative-status">{{ s }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -194,20 +195,21 @@
                 <ng-container *ngIf="module === 'cde' && hasSelectedDatatypes()">
                     <div *ngFor="let d of searchSettings.datatypes" class="activeFilterClause">
                         <span class="datatype_crumb pill" role="button" tabindex="0"
-                              data-testid="active-filter-data-type"
                               aria-label="Remove this datatype filter"
                               matTooltip="Remove this datatype filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
                               (click)="clearSelectedDatatype(d)">
-                            <span class="text">{{ d }}</span>
+                            <span class="text" data-testid="active-filter-data-type">{{ d }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
                     <div class="flex-break"></div>
                 </ng-container>
                 <div class="activeFilterClause">
-                    <span (click)="resetFilters()" class="clearAllPill" role="button" tabindex="0"
-                          data-testid="class-all-filters">
+                    <span class="clearAllPill" role="button" tabindex="0"
+                          data-testid="class-all-filters"
+                          aria-label="Reset filters"
+                          (click)="resetFilters()" >
                         Clear all
                         <span class="close">X</span>
                     </span>
@@ -570,7 +572,7 @@
             </ng-template>
         </ng-container>
         <ng-template #noResults>
-            <h1>No results were found.</h1>
+            <h1 data-testid="no-results-found-message">No results were found.</h1>
             <p>Try expanding your search or removing active filters.</p>
             <div>
                 <img style="width:100%; height: auto; max-width: 532px" alt="No Results"
