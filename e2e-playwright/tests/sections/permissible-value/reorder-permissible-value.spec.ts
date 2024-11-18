@@ -6,8 +6,8 @@ import { move } from '../../../pages/util';
 test.describe(`reorder permissible value`, async () => {
     test(`CDE`, async ({ page, permissibleValueSection, navigationMenu }) => {
         const cdeName = 'Reorder permissible values cde';
-        await navigationMenu.gotoCdeByName(cdeName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoCdeByName(cdeName, true);
 
         const cdePVsLocator = page.getByTestId('pvTable').getByTestId('pvValue').locator('cde-inline-view');
         const cdePVs = await cdePVsLocator.allInnerTexts();

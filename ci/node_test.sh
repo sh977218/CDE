@@ -73,7 +73,7 @@ chmod -R 755 $PWD
 
 ### Start node process with package nyc so coverage information can be outputed.
 ### Again pipe process ID to test.pid so later on teardown can kill this process too.
-npm i nyc
+NODE_OPTIONS="--max-old-space-size=8192" npm i nyc
 node --max-old-space-size=8192 node_modules/nyc/bin/nyc --reporter html npm start > test.log 2>&1 &
 echo $! > test.pid
 sleep 15
@@ -84,7 +84,7 @@ echo "+========Run Playwright test...========="
 #export PATH=/usr/nlm/apps/node/current/bin:$PATH
 echo "Install playwright dependencies"
 cd ..
-npx playwright install-deps
+# npx playwright install-deps # requires sudo as root
 npx playwright install
 npm run playwright
 

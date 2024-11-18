@@ -45,3 +45,7 @@ export function randomGen(min: number, max: number, howMany: number) {
 export function escapeRegex(str: string) {
     return str.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
+
+export function trimRegex(str: string) {
+    return new RegExp(`^\\s*${escapeRegex(str)}\\s*$`);
+}

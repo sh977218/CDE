@@ -111,8 +111,8 @@ test(`Add CDE concepts`, async ({
         await itemLogAuditPage.expandLogRecordByName(cdeName);
         const detailLocator = page.locator(`.example-element-detail`);
         await expect(detailLocator.getByText(cdeName).first()).toBeVisible();
-        await expect(detailLocator.getByText(newConcepts[0].conceptName)).toBeVisible();
-        await expect(detailLocator.getByText(newConcepts[1].conceptName)).toBeVisible();
-        await expect(detailLocator.getByText(newConcepts[2].conceptName)).toBeVisible();
+        await expect(detailLocator.getByText('name: ' + newConcepts[0].conceptName)).toBeVisible();
+        await expect(detailLocator.getByText('name: ' + newConcepts[1].conceptName)).toBeVisible();
+        await expect(detailLocator.getByText('name: ' + newConcepts[2].conceptName)).toBeVisible();
     });
 });

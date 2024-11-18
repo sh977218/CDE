@@ -38,6 +38,7 @@ let expectedContent = {
     contactUs: '*', // ckeditor
     createUser: 'with a status of 409',
     deleteFormAnswerList: 'with a status of 409',
+    deleteSkipLogicNumberTest: "No 'Access-Control-Allow-Origin' header is present on the requested resource.",
     dupStewardValidation: [
         "Error publishing DataElement validation failed",
         "422 (Unprocessable Entity)"

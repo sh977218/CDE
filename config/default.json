@@ -101,22 +101,14 @@
     ],
     "appData": {
       "db": "test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
-        "authSource": "admin",
-        "maxPoolSize": 20,
-        "ssl": false
+        "maxPoolSize": 20
       }
     },
     "log": {
       "db": "cde-logs-test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
-        "authSource": "admin",
-        "maxPoolSize": 20,
-        "ssl": false
+        "maxPoolSize": 20
       },
       "cappedCollectionSizeMB": 262144000,
       "loginRecordRetentionTime": 7776000000

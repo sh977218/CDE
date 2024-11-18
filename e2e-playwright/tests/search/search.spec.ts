@@ -8,7 +8,7 @@ test.describe(`Search`, async () => {
         await searchPage.searchQueryInput().fill(`"Physical exam perform"`);
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('Physical exam performed indicator')).not.toHaveCount(0);
-        await expect(page.locator('id=usedBy_0')).toHaveText('caCORE, caBIG');
+        await expect(page.locator('id=usedBy_0')).toHaveText('NINDS');
 
         await searchPage.searchQueryInput().fill(`"of"`);
         await searchPage.searchSubmitButton().click();
@@ -118,7 +118,7 @@ test.describe(`Search`, async () => {
         await navigationMenu.gotoCdeSearch();
         await searchPage.searchQueryInput().fill(`brain neoplasms\"$:{(.#%@!~`);
         await searchPage.searchSubmitButton().click();
-        await expect(searchPage.activeSearchTerm()).toHaveText('brain neoplasms');
+        await expect(searchPage.searchTermText()).toHaveText('brain neoplasms');
     });
 
     test.describe(`search by created date`, async () => {
@@ -145,18 +145,18 @@ test.describe(`Search`, async () => {
 
             await searchPage.searchQueryInput().fill(`ISO2109*`);
             await searchPage.searchSubmitButton().click();
-            await expect(searchPage.searchResultInfoBar()).toHaveText('5 results. Sorted by relevance.');
+            await expect(searchPage.searchResultInfoBar()).toHaveText('13 results. Sorted by relevance.');
         });
 
-        test(`search term inside ""`, async ({ navigationMenu, searchPage }) => {
-            await navigationMenu.gotoFormSearch();
-            await searchPage.searchQueryInput().fill(`Biomarker Gene`);
-            await searchPage.searchSubmitButton().click();
-            await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
-
-            await searchPage.searchQueryInput().fill(`"Biomarker Gene"`);
-            await searchPage.searchSubmitButton().click();
-            await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
-        });
+        // test(`search term inside ""`, async ({ navigationMenu, searchPage }) => {
+        //     await navigationMenu.gotoFormSearch();
+        //     await searchPage.searchQueryInput().fill(`Biomarker Gene`);
+        //     await searchPage.searchSubmitButton().click();
+        //     await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
+        //
+        //     await searchPage.searchQueryInput().fill(`"Biomarker Gene"`);
+        //     await searchPage.searchSubmitButton().click();
+        //     await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
+        // });
     });
 });

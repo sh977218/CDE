@@ -11,7 +11,7 @@ public class CdeHistoryExpendCollapseTest extends NlmCdeBaseTest {
         String cdeName = "cde for test cde reorder detail tabs";
         goToCdeByName(cdeName);
         Assert.assertEquals(findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr")), 4);
-        clickElement(By.id("expendHistory"));
+        clickElement(By.id("expandHistory"));
         Assert.assertTrue(findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr")) > 4);
         clickElement(By.id("collapseHistory"));
         Assert.assertEquals(findElementsSize(By.xpath("//*[@id='historyTable']/tbody/tr")), 4);

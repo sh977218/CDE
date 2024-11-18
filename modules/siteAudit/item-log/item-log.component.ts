@@ -12,11 +12,15 @@ import {
     NgTemplateOutlet,
     UpperCasePipe,
 } from '@angular/common';
-import { ClassificationAuditLogElement, ItemLog, ItemLogResponse } from 'shared/log/audit';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgxTextDiffModule } from '@winarg/ngx-text-diff';
+import { CamelCaseToHumanPipe } from 'non-core/camelCaseToHuman.pipe';
 import { merge, Observable, of } from 'rxjs';
 import {
     catchError,
@@ -28,12 +32,8 @@ import {
     switchMap,
     tap,
 } from 'rxjs/operators';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ignoredDiff, makeHumanReadable } from './cdeDiffPopulate.service';
-import { NgxTextDiffModule } from '@winarg/ngx-text-diff';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CamelCaseToHumanPipe } from '../../non-core/camelCaseToHuman.pipe';
+import { ClassificationAuditLogElement, ItemLog, ItemLogResponse } from 'shared/log/audit';
+import { ignoredDiff, makeHumanReadable } from 'siteAudit/item-log/cdeDiffPopulate.service';
 
 @Component({
     selector: 'cde-item-log',

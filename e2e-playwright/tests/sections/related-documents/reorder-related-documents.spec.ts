@@ -6,8 +6,8 @@ import { move } from '../../../pages/util';
 test.describe(`reorder related documents`, async () => {
     test(`CDE`, async ({ page, relatedDocumentSection, navigationMenu }) => {
         const cdeName = 'Reorder reference document cde';
-        await navigationMenu.gotoCdeByName(cdeName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoCdeByName(cdeName, true);
 
         const cdeRelatedDocumentsLocator = page
             .locator('id=reference-documents-div')

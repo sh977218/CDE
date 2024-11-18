@@ -33,7 +33,7 @@ async function extractedSyncLinkedForms(cde: DataElement) {
             tinyId: h._source.tinyId,
             registrationStatus: h._source.registrationState.registrationStatus,
             primaryName: h._source.primaryNameCopy,
-            noRenderAllowed: h._source.noRenderAllowed,
+            noRenderAllowed: !!h._source.noRenderAllowed,
         });
         linkedForms[h._source.registrationState.registrationStatus]++;
     });
@@ -45,9 +45,10 @@ async function extractedSyncLinkedForms(cde: DataElement) {
     linkedForms.Incomplete += linkedForms.Candidate;
     linkedForms.Retired += linkedForms.Incomplete;
 
-    const noRenderAllowed =
-        linkedForms.forms.length &&
-        linkedForms.forms.filter(f => f.noRenderAllowed).length === linkedForms.forms.length;
+    const noRenderAllowed: boolean =
+        linkedForms.forms.length
+            ? linkedForms.forms.filter(f => f.noRenderAllowed).length === linkedForms.forms.length
+            : false;
 
     esClient
         .update({

@@ -6,8 +6,8 @@ import { move } from '../../../pages/util';
 test.describe(`reorder name`, async () => {
     test(`CDE designation`, async ({ page, generateDetailsSection, navigationMenu }) => {
         const cdeName = 'Reorder designations cde';
-        await navigationMenu.gotoCdeByName(cdeName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoCdeByName(cdeName, true);
 
         const cdeDesignationsLocator = page.getByTestId('designation-container').locator('cde-inline-view');
         const cdeNames = await cdeDesignationsLocator.allInnerTexts();
@@ -27,8 +27,8 @@ test.describe(`reorder name`, async () => {
 
     test(`Form definition`, async ({ page, generateDetailsSection, navigationMenu }) => {
         const formName = 'Reorder definition form';
-        await navigationMenu.gotoFormByName(formName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoFormByName(formName, true);
 
         const formDefinitionsLocator = page.getByTestId('definitions-container').locator('cde-text-truncate');
         const formDefinitions = await formDefinitionsLocator.allInnerTexts();

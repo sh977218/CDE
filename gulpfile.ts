@@ -137,7 +137,7 @@ gulp.task('copyNpmDeps', ['copyCodeToBuildDir'], function copyNpmDeps() {
             .pipe(gulp.dest(buildDir()))
             .on('error', reject)
             .on('end', () => {
-                run('npm i --omit=dev', runInBuildOptions).then(resolve, reject);
+                run('npm i --omit=dev --ignore-scripts', Object.assign({env: {NODE_OPTIONS: '--max-old-space-size=8192'}}, runInBuildOptions)).then(resolve, reject);
             });
     });
 });
@@ -177,10 +177,10 @@ gulp.task('mongorestoretestlog', function mongorestore() {
     const password = config.database.log.password;
     const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     const db = config.database.log.db;
-    const args = ['--authenticationDatabase=admin -h', hostname, '-d', db, '--drop', 'test/data/cde-logs-test/'];
-    if (process.env.CI) {
-        args.push('--ssl', '--tlsInsecure')
-    }
+    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/cde-logs-test/'];
+    // if (process.env.CI) {
+    //     args.push('--ssl', '--tlsInsecure')
+    // }
     if (username) {
         args.push('-u', username, '-p', password)
     }
@@ -193,10 +193,10 @@ gulp.task('mongorestoretest', function mongorestore() {
     const password = config.database.appData.password;
     const hostname = config.database.servers[0].host + ':' + config.database.servers[0].port;
     const db = config.database.appData.db;
-    const args = ['--authenticationDatabase=admin -h', hostname, '-d', db, '--drop', 'test/data/test/'];
-    if (process.env.CI) {
-        args.push('--ssl', '--tlsInsecure')
-    }
+    const args = ['-h', hostname, '-d', db, '--drop', 'test/data/test/'];
+    // if (process.env.CI) {
+    //     args.push('--ssl', '--tlsInsecure')
+    // }
     if (username) {
         args.push('-u', username, '-p', password)
     }

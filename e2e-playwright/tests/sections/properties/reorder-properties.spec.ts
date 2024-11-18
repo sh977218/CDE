@@ -6,8 +6,8 @@ import { move } from '../../../pages/util';
 test.describe(`reorder properties`, async () => {
     test(`CDE`, async ({ page, propertySection, navigationMenu }) => {
         const cdeName = 'Reorder properties cde';
-        await navigationMenu.gotoCdeByName(cdeName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoCdeByName(cdeName, true);
 
         const cdePropertiesLocator = page.locator('id=properties-div').locator('dl dt span');
         const cdeProperties = await cdePropertiesLocator.allInnerTexts();

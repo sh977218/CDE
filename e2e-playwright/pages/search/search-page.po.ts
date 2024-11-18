@@ -131,7 +131,7 @@ export class SearchPagePo {
 
     classificationFilterSelected(classificationText: string, alt: boolean = false): Locator {
         return this.page
-            .getByTestId(`classification-${alt ? 'alt-' : ''}filter-selected`)
+            .getByTestId(`active-${alt ? 'alt-' : ''}filter-classification`)
             .locator('[data-testid="classification-text"]', {
                 hasText: classificationText,
             });
