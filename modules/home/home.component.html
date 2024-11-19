@@ -201,7 +201,7 @@
     <div *ngIf="updates?.length" class="displayBox tiles" style="align-items: stretch;">
         <div *ngFor="let card of updates" class="uswdsCard">
             <section *ngIf="card.image?.fileId" style="text-align: center">
-                <img [src]="getCardImage(card.image)">
+                <img [src]="getCardImage(card.image)" [alt]="card.imageAltText || ''">
             </section>
             <div>
                 <h2>{{card.title}}</h2>

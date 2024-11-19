@@ -42,6 +42,10 @@
                               (click)="deleteImage(u); autoSave(homepage)">delete_outline</mat-icon>
                     <input *ngIf="!u.image" class="form-control" type="file" (change)="attachmentUpload(homepage, u, $event)">
                 </label>
+                <label class="d-block mB">
+                    Image Alt Text:
+                    <input class="form-control" [(ngModel)]="u.imageAltText" (ngModelChange)="autoSave(homepage)">
+                </label>
                 <div class="mB">
                     <label class="d-block mN">
                         Body:

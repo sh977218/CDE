@@ -33,5 +33,6 @@ export interface UpdateCard {
         fileId: string;
         uploadedBy: ObjectId;
     };
+    imageAltText: string;
     title: string;
 }
