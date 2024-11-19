@@ -139,13 +139,15 @@
                     <div class="flex-break"></div>
                 </ng-container>
                 <ng-container *ngIf="hasSelectedTopics()">
-                    <div class="activeFilterClause">
+                    <div class="flex-break"></div>
+                    <div *ngFor="let t of getSelectedTopics(); index as i; first as isFirst" class="activeFilterClause">
+                        <span *ngIf="!isFirst" class="keyboard-arrow lightgray"></span>
                         <span class="status_crumb pill" role="button" tabindex="0"
                               aria-label="Remove this topics filter"
                               matTooltip="Remove this topics filter"
                               matTooltipClass="cdeTooltip" matTooltipPosition="above"
-                              (click)="clearSelectedTopics()">
-                            <span class="text">{{ getSelectedTopics() }}</span>
+                              (click)="clearSelectedTopics(i)">
+                            <span class="text">{{ t }}</span>
                             <span class="close">X</span>
                         </span>
                     </div>
@@ -335,10 +337,10 @@
             </div>
             <div class="searchFilterCollapseContent">
                 <ng-container *ngFor="let e of getCurrentSelectedTopic(); index as i; last as isLast">
-                    <div *ngIf="!isLast; else topicSelf" id="topic-{{e}}" class="treeParent hand-cursor"
+                    <div *ngIf="!isLast; else topicSelf" id="topic-{{e}}" class="treeParent input-hover"
                          (click)="selectTopic(e)" role="link">
-                        <mat-icon class="treeItemIcon">keyboard_arrow_left</mat-icon>
-                        <a class="treeItemText">{{ e }}</a>
+                        <span class="keyboard-arrow left treeItemIcon"></span>
+                        <span class="treeItemText">{{ e }}</span>
                     </div>
                     <ng-template #topicSelf>
                         <div class="treeCurrent treeItemText"
@@ -347,7 +349,7 @@
                     </ng-template>
                 </ng-container>
                 <div *ngFor="let b of aggregationsTopics; trackBy: trackByName"
-                     id="topic-{{b.name}}" class="treeChild hand-cursor"
+                     id="topic-{{b.name}}" class="treeChild input-hover"
                      [class.treeItem]="getCurrentSelectedTopic().length > 1"
                      (click)="selectTopic(b.name)" role="link">
                     <span class="keyboard-arrow treeItemIcon"></span>

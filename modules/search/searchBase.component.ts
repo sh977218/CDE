@@ -357,8 +357,11 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
         }
     }
 
-    clearSelectedTopics() {
-        this.searchSettings.meshTree = '';
+    clearSelectedTopics(index: number) {
+        const topics = this.getSelectedTopics();
+        if (index > -1 && index < topics.length) {
+            this.searchSettings.meshTree = topics.slice(0, index).join(';');
+        }
         this.doSearch();
     }
 
@@ -556,8 +559,7 @@ export abstract class SearchBaseComponent implements OnDestroy, OnInit {
     }
 
     getSelectedTopics() {
-        const res = this.searchSettings.meshTree.split(';').join(' > ');
-        return res.length > 50 ? res.substr(0, 49) + '...' : res;
+        return this.searchSettings.meshTree.split(';');
     }
 
     hasSelectedAdminStatuses() {

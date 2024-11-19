@@ -196,9 +196,7 @@ label.input-hover {
 
   &.collapsed {
     .searchFilterCollapseHeading {
-      color: $nlmColorSecondaryDark;
-      font-weight: initial;
-      letter-spacing: .01em;
+      //letter-spacing: .01em;
 
       .keyboard-arrow {
         border-color: $nlmColorSecondaryDark;
@@ -208,7 +206,6 @@ label.input-hover {
       &:hover {
         border-width: 2px;
         font-weight: bold;
-        letter-spacing: initial;
 
         .keyboard-arrow {
           border-width: 0 2px 2px 0;
