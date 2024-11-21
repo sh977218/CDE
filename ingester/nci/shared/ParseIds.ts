@@ -5,3 +5,10 @@ export function parseIds(nciXmlCde) {
         version: nciXmlCde.VERSION[0]
     }];
 }
+export function parseIds2(xml) {
+    return [{
+        source: 'caDSR',
+        id: xml.publicID,
+        version: xml.version
+    }];
+}

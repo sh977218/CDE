@@ -4,3 +4,9 @@ export function parseDefinitions(nciXmlCde) {
         tags: []
     }];
 }
+export function parseDefinitions2(xml) {
+    return [{
+        definition: xml.preferredDefinition,
+        tags: []
+    }];
+}

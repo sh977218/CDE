@@ -29,3 +29,19 @@ export function parseReferenceDocuments(nciXmlCde) {
     return referenceDocuments;
 
 }
+
+export function parseReferenceDocuments2(xml) {
+    const referenceDocuments = [];
+    xml.referenceDocument?.forEach(refDoc => {
+        const newRefDoc: any = {
+            title: refDoc.name,
+            docType: refDoc.type,
+            languageCode: refDoc.languageName,
+            text: refDoc.doctext,
+            url: refDoc.URL
+        };
+        referenceDocuments.push(newRefDoc);
+    })
+    return referenceDocuments;
+
+}

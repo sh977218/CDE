@@ -15,3 +15,11 @@ export function parseClassification(nciXmlCde, cde, orgInfo) {
         });
     }
 }
+export function parseClassification2(cadsrXml, cde, orgInfo) {
+    cadsrXml.classification.forEach((c)=>{
+        const classificationArray = []
+        classificationArray.push(c.name);
+        classificationArray.push(c.classificationSchemeItem.name);
+        classifyItem(cde, orgInfo.classificationOrgName, classificationArray);
+    })
+}

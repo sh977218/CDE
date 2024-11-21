@@ -1,6 +1,7 @@
-import {imported} from 'ingester/shared/utility';
+import {imported} from '../../shared/utility';
 import fetch from 'node-fetch';
 import {Parser} from 'xml2js';
+import {ORG_INFO} from "../../nci/shared/ORG_INFO_MAP";
 
 const parseString = new Parser({attrkey: 'attribute'}).parseString;
 
@@ -36,4 +37,15 @@ export function parseSources(nciXmlCde: any) {
                 });
             }, reject);
     });
+}
+
+export function parseSources2(xml, orgInfo: ORG_INFO) {
+    const sources = [];
+    const source = {
+        sourceName: orgInfo.stewardOrgName,
+        created: xml.dateCreated,
+        updated: xml.dateModified,
+    };
+    sources.push(source)
+    return sources
 }

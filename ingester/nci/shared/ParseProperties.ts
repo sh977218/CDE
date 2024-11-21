@@ -21,3 +21,22 @@ export function parseProperties(nciXmlCde) {
     }
     return properties;
 }
+
+export function parseProperties2(xml) {
+    const properties = [];
+    if (xml.context) {
+        properties.push({
+            key: 'caDSR_Context',
+            source: 'caDSR',
+            value: xml.context
+        })
+    }
+    if (xml.shortName) {
+        properties.push({
+            key: 'caDSR_Short_Name',
+            source: 'caDSR',
+            value: xml.shortName
+        })
+    }
+    return properties;
+}

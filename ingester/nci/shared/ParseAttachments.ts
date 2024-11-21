@@ -43,3 +43,6 @@ export function parseAttachments(nciXmlCde: any): Promise<Attachment[]> {
         return [attachment];
     });
 }
+export function parseAttachments2(nciXmlCde: any){
+    return []
+}

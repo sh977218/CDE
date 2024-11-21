@@ -20,3 +20,10 @@ export function parseDesignations(nciXmlCde) {
     }
     return designations;
 }
+export function parseDesignations2(xml) {
+    const designations = [{
+        designation: trimWhite(xml.longName),
+        tags: []
+    }];
+    return designations;
+}
