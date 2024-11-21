@@ -1,6 +1,5 @@
-import { createReadStream, existsSync, readdirSync } from 'fs';
-import { addAttachment, BATCHLOADER, TODAY } from 'ingester/shared/utility';
-import { redCapZipFolder } from 'ingester/createMigrationConnection';
+import {createReadStream, existsSync, readdirSync} from 'fs';
+import {addAttachment, BATCHLOADER, TODAY} from 'ingester/shared/utility';
 
 async function doImg(imgFolder) {
     const attachments: any[] = [];

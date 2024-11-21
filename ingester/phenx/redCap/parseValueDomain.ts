@@ -1,5 +1,5 @@
-import { isEmpty, trim } from 'lodash';
-import { map as RED_CAP_DATA_TYPE_MAP, validationTypeMap as VALIDATION_TYPE_MAP } from './REDCAP_DATATYPE_MAP';
+import {isEmpty, trim} from 'lodash';
+import {map as RED_CAP_DATA_TYPE_MAP, validationTypeMap as VALIDATION_TYPE_MAP} from './REDCAP_DATATYPE_MAP';
 
 export function parseValueDomain(row) {
     const valueDomain: any = {

@@ -1,17 +1,9 @@
-import { isEmpty, trim, groupBy } from 'lodash';
+import {groupBy} from 'lodash';
+import {formModel, formSourceModel} from 'server/form/mongo-form';
+import {createNichdForm} from 'ingester/nichd/csv/form/form';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
 
 const XLSX = require('xlsx');
-
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel, formSourceModel } from 'server/form/mongo-form';
-import {
-    BATCHLOADER, compareElt, findOneCde, imported, lastMigrationScript, mergeClassification, mergeElt,
-    updateCde, updateRawArtifact
-} from 'ingester/shared/utility';
-import { krabbeDataElementsXlsx } from 'ingester/createMigrationConnection';
-import { createNichdForm } from 'ingester/nichd/csv/form/form';
-import { createNichdCde } from 'ingester/nichd/csv/cde/cde';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
 
 let newFormCount = 0;
 

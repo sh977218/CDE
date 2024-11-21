@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import {By} from 'selenium-webdriver';
 
 export async function parseLanguageVariantsTable(driver, loincId, table) {
     let languageVariants = [];

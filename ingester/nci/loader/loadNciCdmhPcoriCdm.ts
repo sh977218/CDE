@@ -1,4 +1,4 @@
-import { runOrgs } from 'ingester/nci/loader/loadNci';
+import {runOrgs} from '../loader/loadNci';
 
 const cdmhPcoriCdmOrgNames = ['NCI-CDMH-PCORNet', 'NCI-CDMH-OMOP', 'NCI-CDMH-ACT', 'NCI-CDMH-Sentinel'];
 runOrgs(cdmhPcoriCdmOrgNames).then(

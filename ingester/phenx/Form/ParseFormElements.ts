@@ -13,9 +13,13 @@ export async function parseFormElements(protocol, registrationStatus, attachment
         } else {
             const loinc = loincStandard.loinc;
             if (isEmpty(loinc['Panel Hierarchy'])) {
-                console.log(`Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`);
+                console.log(
+                    `Protocol ${protocol.protocolID} has LOINC ${loinc['LOINC Code']} Panel Hierarchy is missing.`
+                );
             } else {
-                formElements = await parseLoincFormElements(loinc,registrationStatus, 'PhenX', [protocol.domainCollection]);
+                formElements = await parseLoincFormElements(loinc, registrationStatus, 'PhenX', [
+                    protocol.domainCollection,
+                ]);
             }
             newForm.formElements = formElements;
         }
@@ -26,16 +30,16 @@ export async function parseFormElements(protocol, registrationStatus, attachment
             elementType: 'section',
             instructions: {
                 value: protocol.specificInstructions,
-                valueFormat: 'html'
+                valueFormat: 'html',
             },
-            formElements: []
+            formElements: [],
         };
         if (isEmpty(newForm.formElements)) {
             newForm.formElements.unshift(instructionFormElement);
         } else {
             newForm.formElements[0].instructions = {
                 value: protocol.specificInstructions,
-                valueFormat: 'html'
+                valueFormat: 'html',
             };
         }
     }

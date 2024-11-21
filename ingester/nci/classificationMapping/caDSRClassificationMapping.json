@@ -1,656 +1,2616 @@
 {
-  "2614836v1.0": { "longName": "Generic Image", "workflowStatusName": "RELEASED" },
-  "3314563v1.0": { "longName": "Protocols", "workflowStatusName": "RETIRED DELETED" },
-  "2211656v1.0": { "longName": "UML-based Training Materials", "workflowStatusName": "RETIRED DELETED" },
-  "2857163v1.0": { "longName": "C3PR", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3793272v1.0": { "longName": "NCCN Guidelines (National Comprehensive Cancer Network) ", "workflowStatusName": "RELEASED" },
-  "2493167v1.0": { "longName": "CTMS Metadata Project", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2958244v1.0": { "longName": "Pediatrics", "workflowStatusName": "RETIRED PHASED OUT" },
-  "4011991v1.0": { "longName": "MDASI-BT (M.D. Anderson Symptom Inventory - Brain Tumor)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5557918v1.0": { "longName": "BITS (Breast-Impact of Treatment Scale)", "workflowStatusName": "RELEASED" },
-  "6305258v1.0": { "longName": "TCIA (The Cancer Imaging Archive)", "workflowStatusName": "RELEASED" },
-  "2179948v1.0": { "longName": "TESTING1", "workflowStatusName": "RETIRED DELETED" },
-  "5655939v1.0": { "longName": "BLGSP (Burkitt Lymphoma Genome Sequencing Project)", "workflowStatusName": "RELEASED" },
-  "2873983v1.0": { "longName": "Link to the BRIDG 2.1 Model", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2691542v1.0": { "longName": "Application Development", "workflowStatusName": "RELEASED" },
-  "2730636v0.1": { "longName": "CDC NCPHI Proof of Concept", "workflowStatusName": "RELEASED" },
-  "2802549v1.0": { "longName": "Center for Epidemiologic Studies Depression Scale (CES-D)", "workflowStatusName": "DRAFT NEW" },
-  "2714463v1.1": { "longName": "ChemBank", "workflowStatusName": "RELEASED" },
-  "2008604v1.0": { "longName": "TEST MIXED CASE TEST_CSCXZC", "workflowStatusName": "DRAFT NEW" },
-  "2927589v1.0": { "longName": "caGrid_Metadata_Models", "workflowStatusName": "RELEASED" },
-  "2554136v1.0": { "longName": "caTRIP Tumor Registry", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2857164v1.0": { "longName": "Cancer Molecular Pages", "workflowStatusName": "RELEASED" },
-  "5653600v1.0": { "longName": "Barthel Index (Barthel Index of Activities of Daily Living)", "workflowStatusName": "RELEASED" },
-  "3124057v1.0": { "longName": "Sarcoma Database", "workflowStatusName": "RELEASED" },
-  "5286431v1.0": { "longName": "MRCBS (Medical Research Council Breathlessness Scale)", "workflowStatusName": "RELEASED" },
-  "4551585v1.0": { "longName": "PRO-HRQoL", "workflowStatusName": "RELEASED" },
-  "5151329v1.0": { "longName": "PSS-14 (Perceived Stress Scale-14)", "workflowStatusName": "RELEASED" },
-  "6338162v1.0": { "longName": "CDISC (NCI Implementation)", "workflowStatusName": "RELEASED" },
-  "5675693v1.0": { "longName": "Quality of Life Measures (Patient Reported Outcomes - Health Related Quality of Life)", "workflowStatusName": "RELEASED" },
-  "2800332v1.0": { "longName": "SEER17", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3704366v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "2964591v1.0": { "longName": "Eligibility Criteria", "workflowStatusName": "RELEASED" },
-  "5855817v1.0": { "longName": "LabCAS", "workflowStatusName": "RELEASED" },
-  "2614832v1.0": { "longName": "BDT", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2534075v1.2": { "longName": "caTISSUE CAE", "workflowStatusName": "RELEASED" },
-  "2465726v1.0": { "longName": "RESERVED FOR SENTINEL MONITOR", "workflowStatusName": "DRAFT NEW" },
-  "3177537v1.0": { "longName": "Link to BRIDG 3.0.2 Model", "workflowStatusName": "RELEASED" },
-  "2462747v1.0": { "longName": "US-VISIT", "workflowStatusName": "RETIRED DELETED" },
-  "5334400v1.0": { "longName": "Single-Item Linear Analog Scale Assessment of Quality of Life", "workflowStatusName": "RELEASED" },
-  "2619399v2.0": { "longName": "caElmir", "workflowStatusName": "RELEASED" },
-  "3787524v1.0": { "longName": "TCGA 2.6 by Namespace", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2768607v1.0": { "longName": "TobaccoTax", "workflowStatusName": "RETIRED PHASED OUT" },
-  "4101003v1.0": { "longName": "HVMHQ (Healthy Volunteer Medical History Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2538651v1.0": { "longName": "EVS Core Grid Analytical Service", "workflowStatusName": "RELEASED" },
-  "2555333v1.0": { "longName": "Clinical Trials Lab Model", "workflowStatusName": "RELEASED" },
-  "2551427v2.0": { "longName": "C3PR", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2612100v1.4": { "longName": "caNanoLab", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6272292v1.0": { "longName": "NINDS", "workflowStatusName": "RELEASED" },
-  "3134868v1.0": { "longName": "General CDEs", "workflowStatusName": "RELEASED" },
-  "2686022v1.0": { "longName": "My Training Project", "workflowStatusName": "RETIRED DELETED" },
-  "3863411v1.0": { "longName": "OMC (6-Item Orientation-Memory-Concentration Test)", "workflowStatusName": "RELEASED" },
-  "6615075v1.0": { "longName": "HHIE (Hearing Handicap Inventory for the Elderly)", "workflowStatusName": "RELEASED" },
-  "2861003v1.0": { "longName": "caSeer_caBIG", "workflowStatusName": "RETIRED DELETED" },
-  "3134705v1.0": { "longName": "North American Association of Cancer Registries", "workflowStatusName": "DRAFT NEW" },
-  "2857182v1.0": { "longName": "Protocol Forms", "workflowStatusName": "RELEASED" },
-  "2238378v1.0": { "longName": "In-class Examples", "workflowStatusName": "RETIRED DELETED" },
-  "2192345v1.0": { "longName": "Data Standards", "workflowStatusName": "RELEASED" },
-  "2716603v1.2": { "longName": "Grid-enablement of Protein Information Resource (PIR) 1.2", "workflowStatusName": "RELEASED" },
-  "2738543v1.0": { "longName": "ICR-ASBP", "workflowStatusName": "RELEASED" },
-  "3553732v1.0": { "longName": "CEM", "workflowStatusName": "RELEASED" },
-  "6382887v1.0": { "longName": "Control Preferences Scale", "workflowStatusName": "RELEASED" },
-  "2008585v1.0": { "longName": "TEST_CSabc", "workflowStatusName": "DRAFT NEW" },
-  "6382883v1.0": { "longName": "PDMS (Preparation for Decision Making Scale)", "workflowStatusName": "RELEASED" },
-  "3793382v1.0": { "longName": "PHQ (Patient Health Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2008609v1.0": { "longName": "Director's Challenge Lung Study Forms", "workflowStatusName": "DRAFT MOD" },
-  "2857184v1.0": { "longName": "Potential CDEs for Reuse", "workflowStatusName": "RELEASED" },
-  "2928087v1.0": { "longName": "ISO21090v1_0", "workflowStatusName": "RELEASED" },
-  "5858960v1.0": { "longName": "Adopted", "workflowStatusName": "RELEASED" },
-  "5635298v1.0": { "longName": "All Mandatory CRF CDEs", "workflowStatusName": "RELEASED" },
-  "3791487v1.0": { "longName": "ESS (Epworth Sleepiness Scale)", "workflowStatusName": "RELEASED" },
-  "2803194v1.0": { "longName": "SEERStandardPopulation", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5187972v1.0": { "longName": "CARES (CAncer Rehabilitation Evaluation System for Research)", "workflowStatusName": "RELEASED" },
-  "2193114v1.0": { "longName": "Division of Cancer Control and Population Sciences", "workflowStatusName": "RELEASED" },
-  "3260882v1.0": { "longName": "Pulse", "workflowStatusName": "RELEASED" },
-  "5527905v1.0": { "longName": "ModelTest", "workflowStatusName": "RELEASED" },
-  "6272230v1.0": { "longName": "NINDS", "workflowStatusName": "RETIRED DELETED" },
-  "4039731v1.0": { "longName": "FACT-E (Functional Assessment of Cancer Therapy - Esophageal)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6093453v1.0": { "longName": "PCORNet CDM 4.0", "workflowStatusName": "RELEASED" },
-  "2857177v1.0": { "longName": "Genomic Identifiers", "workflowStatusName": "RELEASED" },
-  "2182125v1.0": { "longName": "CCR Implementation", "workflowStatusName": "RELEASED" },
-  "4631580v1.0": { "longName": "Exceptional Responder CDEs", "workflowStatusName": "RELEASED" },
-  "2670694v1.0": { "longName": "Disease Relapse", "workflowStatusName": "RELEASED" },
-  "2691302v1.0": { "longName": "Centers for Disease Control and Prevention", "workflowStatusName": "RELEASED" },
-  "2653801v1.0": { "longName": "Tobacco Informatics Grid", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "3121677v1.0": { "longName": "TEST CSI 24", "workflowStatusName": "DRAFT NEW" },
-  "3813441v1.0": { "longName": "MDASI-Core (M.D. Anderson Symptom Inventory Core Items)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2553603v1.0": { "longName": "NCIA (National Cancer Imaging Archive)2.0", "workflowStatusName": "RETIRED DELETED" },
-  "6093516v1.0": { "longName": "CDM CDISC SDTM", "workflowStatusName": "DRAFT NEW" },
-  "2828532v1.0": { "longName": "DNA Copy Analytical Service", "workflowStatusName": "RELEASED" },
-  "3886753v1.0": { "longName": "General Elements", "workflowStatusName": "RELEASED" },
-  "3190082v1.0": { "longName": "Taiwan Cancer Registry", "workflowStatusName": "DRAFT NEW" },
-  "3140556v1.0": { "longName": "Denise Test CS", "workflowStatusName": "RELEASED" },
-  "2681516v1.0": { "longName": "New Content Thomas Joshua", "workflowStatusName": "RETIRED DELETED" },
-  "2975196v1.0": { "longName": "omniSpect", "workflowStatusName": "RELEASED" },
-  "2756809v1.0": { "longName": "TCGA (The Cancer Genome Atlas)", "workflowStatusName": "RELEASED" },
-  "3595692v1.0": { "longName": "Miraca Life Sciences", "workflowStatusName": "RELEASED" },
-  "2008602v2.31": { "longName": "Trial_Type_Usage_Disease", "workflowStatusName": "RETIRED DELETED" },
-  "2863101v1.0": { "longName": "BootCampModel", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2691541v1.0": { "longName": "Data Warehouse", "workflowStatusName": "RELEASED" },
-  "2900483v1.0": { "longName": "TCGA", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2183536v1.0": { "longName": "Tissue Banks and Pathology Tools", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2451850v1.0": { "longName": "Advanced Training Examples", "workflowStatusName": "RETIRED DELETED" },
-  "5271072v1.0": { "longName": "Lung-Vanderbilt", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "5271073v1.0": { "longName": "MCL Core", "workflowStatusName": "RELEASED" },
-  "2611721v1.0": { "longName": "CGWB", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4134411v1.0": { "longName": "HHIE-S (Hearing Handicap Inventory for the Elderly Screening Version)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2956164v1.0": { "longName": "Transcend", "workflowStatusName": "RELEASED" },
-  "5236432v1.0": { "longName": "ABAS and BASC", "workflowStatusName": "RELEASED" },
-  "3626264v1.0": { "longName": "MBSRQ Appearance (Multidimensional Body Self-Relations Questionnaire-Appearance Scale)", "workflowStatusName": "RELEASED" },
-  "5675695v1.0": { "longName": "CDEs by Categories", "workflowStatusName": "RELEASED" },
-  "6235426v1.0": { "longName": "CPCI (Components of Primary Care Instrument)", "workflowStatusName": "RELEASED" },
-  "2751668v1.0": { "longName": "Behavioral_Research_Measures", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3121567v1.0": { "longName": "test CS21", "workflowStatusName": "DRAFT NEW" },
-  "2714661v4.0": { "longName": "caBIO 4.0", "workflowStatusName": "RELEASED" },
-  "2640373v2.1": { "longName": "LabKey CPAS Client API", "workflowStatusName": "RELEASED" },
-  "6424109v1.0": { "longName": "ASK-12 (Adherence Starts With Knowledge 12 Questionnaire)", "workflowStatusName": "RELEASED" },
-  "5428032v1.0": { "longName": "Case", "workflowStatusName": "RELEASED" },
-  "2586708v1.0": { "longName": "Cardiovascular Project", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3254040v1.0": { "longName": "NIDA Substance Abuse EHR", "workflowStatusName": "RELEASED" },
-  "5092553v1.0": { "longName": "CDEs Under Review", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2857188v1.0": { "longName": "caFE Server 1.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2857181v1.0": { "longName": "NCIA (National Cancer Imaging Archive)", "workflowStatusName": "RELEASED" },
-  "4272096v1.0": { "longName": "SDC Harmonized Metadata", "workflowStatusName": "DRAFT MOD" },
-  "2799145v1.0": { "longName": "SEERScreening", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "4811884v1.0": { "longName": "FACIT and FACT Measures", "workflowStatusName": "RELEASED" },
-  "2772168v1.1": { "longName": "caLIMS2", "workflowStatusName": "RELEASED" },
-  "2927077v1.5": { "longName": "C3D Connector", "workflowStatusName": "RETIRED PHASED OUT" },
-  "5188871v1.0": { "longName": "GTEx - Postmortem Biospecimen Acquisition", "workflowStatusName": "RELEASED" },
-  "2553133v1.1": { "longName": "caTissue_Core", "workflowStatusName": "RELEASED" },
-  "2688829v1.0": { "workflowStatusName": "RETIRED DELETED" },
-  "2008591v3.0": { "longName": "Type of Category", "workflowStatusName": "RETIRED DELETED" },
-  "3766361v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "2955778v1.0": { "longName": "Tobacco CDE Inventory", "workflowStatusName": "RETIRED PHASED OUT" },
-  "4735811v1.0": { "longName": "VHI-10 (Voice Handicap Index-10)", "workflowStatusName": "RELEASED" },
-  "2614823v1.0": { "longName": "ACRIN", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "4382692v1.0": { "longName": "FDA MedWatch Form 3500", "workflowStatusName": "RELEASED" },
-  "2857165v2.31": { "longName": "CRF Disease", "workflowStatusName": "DRAFT NEW" },
-  "5288334v1.0": { "longName": "MBSImP (Modified Barium Swallow Impairment Profile)", "workflowStatusName": "RELEASED" },
-  "3788451v1.0": { "longName": "FSS (Fatigue Severity Scale)", "workflowStatusName": "RELEASED" },
-  "6093515v1.0": { "longName": "CDMH 1.0", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2183534v1.0": { "longName": "Integrative Cancer Research", "workflowStatusName": "RELEASED" },
-  "2193046v1.0": { "longName": "Forms-based Training Materials", "workflowStatusName": "RETIRED DELETED" },
-  "2620091v1.0": { "longName": "GenePattern", "workflowStatusName": "RELEASED" },
-  "2866531v1.0": { "longName": "LinkageX", "workflowStatusName": "RELEASED" },
-  "2597546v1.0": { "longName": "Nordic Common Data Elements (NCDE)", "workflowStatusName": "RELEASED" },
-  "3461586v1.0": { "longName": "BOLD:Breast Oncology Local Disease", "workflowStatusName": "RELEASED" },
-  "3335728v1.0": { "longName": "Protocols", "workflowStatusName": "RELEASED" },
-  "2614824v1.0": { "longName": "AIM", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2008607v1.0": { "longName": "NEUROBLASTOMA", "workflowStatusName": "RETIRED DELETED" },
-  "4382693v1.0": { "longName": "AHRQ Common Formats", "workflowStatusName": "RELEASED" },
-  "3588366v1.0": { "longName": "Pediatrics Critical Care", "workflowStatusName": "RETIRED PHASED OUT" },
-  "5108334v1.0": { "longName": "WIWI (Was It Worth It Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2523764v1.0": { "longName": "NCI-60 SKY", "workflowStatusName": "RELEASED" },
-  "2958247v1.0": { "longName": "Newborn Examination", "workflowStatusName": "DRAFT NEW" },
-  "3357378v1.0": { "longName": "OPEN to Rave Template Forms", "workflowStatusName": "RETIRED DELETED" },
-  "5574838v1.0": { "longName": "Staging/Extent of Disease", "workflowStatusName": "RELEASED" },
-  "2008606v1.0": { "longName": "Test CS", "workflowStatusName": "RELEASED" },
-  "3396662v1.0": { "longName": "OMRS (Oral Mucositis Rating Scale)", "workflowStatusName": "RELEASED" },
-  "2854841v1.0": { "longName": "Gene Pattern", "workflowStatusName": "RELEASED" },
-  "2831137v1.0": { "longName": "caCORRECT", "workflowStatusName": "RELEASED" },
-  "2691543v1.0": { "longName": "BIC Scientific Analysis", "workflowStatusName": "RELEASED" },
-  "3098928v1.0": { "longName": "NHIS2005", "workflowStatusName": "RELEASED" },
-  "2672769v2.1": { "longName": "Patient Study Calendar", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2178524v1.0": { "longName": "DIRECTOR'S CHALLENGE LUNG STUDY", "workflowStatusName": "RETIRED DELETED" },
-  "2691303v1.0": { "longName": "HL7 2.3 Message Segments", "workflowStatusName": "RELEASED" },
-  "2691387v1.0": { "longName": "PV1 - Patient Visit", "workflowStatusName": "RELEASED" },
-  "3533741v1.0": { "longName": "NCORP (NCI Community Oncology Research Program", "workflowStatusName": "RELEASED" },
-  "6685474v1.0": { "longName": "Artificial Neural Network Algorithm for BRIDG Mapping", "workflowStatusName": "RELEASED" },
-  "2979232v1.0": { "longName": "LexEVS", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3354861v1.0": { "longName": "ISA-TAB-Nano", "workflowStatusName": "RELEASED" },
-  "3314514v1.0": { "longName": "Under Review", "workflowStatusName": "RELEASED" },
-  "2183712v1.0": { "longName": "caDSRTraining", "workflowStatusName": "RELEASED" },
-  "6607641v1.0": { "longName": "CHAMPS (Community Healthy Activities Model Program: Physical Activities Questionnaire for Older Adults)", "workflowStatusName": "RELEASED" },
-  "2857167v1.0": { "longName": "JAVA PACKAGES", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3876359v1.0": { "longName": "Exclusion Criteria", "workflowStatusName": "RELEASED" },
-  "2590783v1.0": { "longName": "Organism Identification", "workflowStatusName": "RELEASED" },
-  "2597547v1.0": { "longName": "Cancer(NCDE)", "workflowStatusName": "RELEASED" },
-  "2008605v1.0": { "longName": "Medical Imaging", "workflowStatusName": "DRAFT NEW" },
-  "2857172v1.0": { "longName": "Tissue Bank", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2180156v1.0": { "longName": "New CDEs per study", "workflowStatusName": "RELEASED" },
-  "3886759v1.0": { "longName": "Surgery Elements", "workflowStatusName": "RELEASED" },
-  "3766360v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "5090653v1.0": { "longName": "SEQ-12 (Smoking Self-Efficacy Questionnaire)", "workflowStatusName": "RELEASED" },
-  "3553940v1.0": { "longName": "BRIDG", "workflowStatusName": "RELEASED" },
-  "3166177v1.0": { "longName": "SubjectiveNumeracyScale", "workflowStatusName": "RELEASED" },
-  "2754761v1.0": { "longName": "Generic Parameters", "workflowStatusName": "RELEASED" },
-  "5589063v1.0": { "longName": "CDDP/CTSP (Cancer Driver Discovery Program/Clinical Trial Sequencing Project)", "workflowStatusName": "RELEASED" },
-  "5090547v1.0": { "longName": "KUJ (Knowledge, Understanding and Judgement Scale)", "workflowStatusName": "RELEASED" },
-  "3241357v1.0": { "longName": "Cancer Registries Project", "workflowStatusName": "RELEASED" },
-  "2519225v1.0": { "longName": "Imaging-Old", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "6382885v1.0": { "longName": "DQI-Breast Surgery (Decision Quality Instruments-Breast Surgery)", "workflowStatusName": "RELEASED" },
-  "3259219v1.0": { "longName": "University of Michigan", "workflowStatusName": "RELEASED" },
-  "4254096v1.0": { "longName": "Protocol Phase", "workflowStatusName": "RELEASED" },
-  "3253737v1.0": { "longName": "CSTE Position Statements", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2738503v1.0": { "longName": "DemoService", "workflowStatusName": "RELEASED" },
-  "3853071v1.0": { "longName": "New C3D CDEs", "workflowStatusName": "RETIRED DELETED" },
-  "2193113v1.0": { "longName": "Division of Cancer Epidemiology and Genetics", "workflowStatusName": "RELEASED" },
-  "2800331v1.0": { "longName": "SEER 17 caBIG", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "5279492v1.0": { "longName": "OMOP CDM 4.0 (Observational Medical Outcomes Partnership)", "workflowStatusName": "RELEASED" },
-  "2691530v1.0": { "longName": "Messaging Guide 1.5", "workflowStatusName": "RELEASED" },
-  "2691544v1.0": { "longName": "GIS Data", "workflowStatusName": "RELEASED" },
-  "2800181v1.0": { "longName": "SEER_17", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "5188870v1.0": { "longName": "BPV - Tumor Biospecimen Acquisition", "workflowStatusName": "RELEASED" },
-  "3799860v1.0": { "longName": "Link to BRIDG 3.2 Model", "workflowStatusName": "RELEASED" },
-  "5485865v1.0": { "longName": "FSFI (Female Sexual Function Index)", "workflowStatusName": "RELEASED" },
-  "3070837v1.0": { "longName": "TARGET/CGCI", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5855659v1.0": { "longName": "Biospecimen", "workflowStatusName": "RELEASED" },
-  "2534950v1.1": { "longName": "caArray_1.1", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2695312v1.0": { "longName": "New Content Jenni Bloomquist", "workflowStatusName": "RETIRED DELETED" },
-  "3232477v1.0": { "longName": "Parkinson's Disease CDEs", "workflowStatusName": "RELEASED" },
-  "5529781v1.0": { "longName": "RDAS (Revised Dyadic Adjustment Scale)", "workflowStatusName": "RELEASED" },
-  "3685569v1.0": { "longName": "Newborn Examination", "workflowStatusName": "RELEASED" },
-  "3952293v1.0": { "longName": "NIDA CTN Usage", "workflowStatusName": "RELEASED" },
-  "4986872v1.0": { "longName": "AHS (Adult Hope Scale)", "workflowStatusName": "RELEASED" },
-  "2614828v1.0": { "longName": "NCIA Collection", "workflowStatusName": "RELEASED" },
-  "3781022v1.0": { "longName": "FACT-L (Functional Assessment of Cancer Therapy - Lung)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3886754v1.0": { "longName": "Imaging Elements", "workflowStatusName": "RELEASED" },
-  "3852385v1.0": { "longName": "TSQM-9 (Abbreviated Treatment Satisfaction Questionnaire for Medication)", "workflowStatusName": "RELEASED" },
-  "2760132v1.0": { "longName": "caMatch", "workflowStatusName": "RELEASED" },
-  "2391015v1.0": { "longName": "CARRIAGE RETURN TEST CS\r\r\n\r\r\n", "workflowStatusName": "DRAFT NEW" },
-  "2802722v1.0": { "longName": "Center for Epidemiologic Studies Depression Scale_CESD", "workflowStatusName": "RELEASED" },
-  "6051063v1.0": { "longName": "Electronic Patient Reported Outcomes", "workflowStatusName": "RELEASED" },
-  "3766359v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "3886755v1.0": { "longName": "Preoperative Elements", "workflowStatusName": "RELEASED" },
-  "5097381v1.0": { "longName": "MAX-PC (Modified 18-Item Memorial Anxiety Scale for Prostate Cancer)", "workflowStatusName": "RELEASED" },
-  "5646652v1.0": { "longName": "CTD^2 (Cancer Target Discovery and Development", "workflowStatusName": "RELEASED" },
-  "2804620v1.0": { "longName": "GenePattern Based Copy Number Analytical Service", "workflowStatusName": "RELEASED" },
-  "2691538v1.0": { "longName": "PHINMS Receiver", "workflowStatusName": "RELEASED" },
-  "5428034v1.0": { "longName": "Clinical", "workflowStatusName": "RELEASED" },
-  "2528431v3.1": { "longName": "caCORE 3.1", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3875532v1.0": { "longName": "FACT-Br (Functional Assessment of Cancer Therapy - Brain)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3955259v1.0": { "longName": "BPI-SF (Brief Pain Inventory Short Form)", "workflowStatusName": "RELEASED" },
-  "3194026v1.0": { "longName": "KAI Research", "workflowStatusName": "RELEASED" },
-  "2726654v2.1": { "longName": "caArray", "workflowStatusName": "RELEASED" },
-  "2691545v1.0": { "longName": "Reference Data", "workflowStatusName": "RELEASED" },
-  "2008587v2.0": { "longName": "Type of Disease", "workflowStatusName": "RELEASED" },
-  "2399260v1.0": { "longName": "Security Componet", "workflowStatusName": "RETIRED DELETED" },
-  "3314482v1.0": { "longName": "Type of Category", "workflowStatusName": "RELEASED" },
-  "2857186v1.0": { "longName": "SNP500Cancer", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2496586v1.1": { "longName": "Grid-enablement of Protein Information Resource (PIR) 1.1", "workflowStatusName": "RELEASED" },
-  "3626262v1.0": { "longName": "BCT Outcomes (Breast Cancer Treatment Outcomes Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2691539v1.0": { "longName": "Data Brokering", "workflowStatusName": "RELEASED" },
-  "4748831v1.0": { "longName": "Prospective Sarcoma Patient Outcome Database", "workflowStatusName": "RELEASED" },
-  "2939361v1.0": { "longName": "DCTD (Division of Cancer Treatment and Diagnosis)", "workflowStatusName": "RELEASED" },
-  "3691271v1.0": { "longName": "FACT-Hep (Functional Assessment of Cancer Therapy - Hepatobiliary)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2661628v2.0": { "longName": "caFE Server", "workflowStatusName": "RELEASED" },
-  "2726207v1.0": { "longName": "caNano", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2819751v1.0": { "longName": "Copy Number Analysis Tool", "workflowStatusName": "RELEASED" },
-  "2961512v1.1": { "longName": "lungspore", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3079208v1.5": { "longName": "AIM 1.5", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6093484v1.0": { "longName": "CDM Harmonization Project", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "6545315v1.0": { "longName": "SI Workshop Query Categories", "workflowStatusName": "RELEASED" },
-  "2803148v1.0": { "longName": "SEER Standard Population Statistics", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "3190118v1.0": { "longName": "NHS National Cancer Dataset (United Kingdom)", "workflowStatusName": "RELEASED" },
-  "5999742v1.0": { "longName": "CRF CDEs", "workflowStatusName": "RELEASED" },
-  "3654497v1.0": { "longName": "EORTC QLQ", "workflowStatusName": "RELEASED" },
-  "4826262v1.0": { "longName": "COST-FACIT Version 1", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3813677v1.0": { "longName": "ESAS (Edmonton Symptom Assessment System)", "workflowStatusName": "RELEASED" },
-  "2767602v1.0": { "longName": "WCI1116-05", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2854844v1.0": { "longName": "GeneNeighbors", "workflowStatusName": "RELEASED" },
-  "2747429v1.0": { "longName": "caAERS", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5506117v1.0": { "longName": "Genomics", "workflowStatusName": "RELEASED" },
-  "2898532v2.3": { "longName": "caArray Internal", "workflowStatusName": "RELEASED" },
-  "2614824v4.0": { "longName": "AIM 4.0", "workflowStatusName": "RELEASED" },
-  "2839152v1.0": { "longName": "testing a bug in 4001", "workflowStatusName": "DRAFT NEW" },
-  "3173877v1.0": { "longName": "TCR", "workflowStatusName": "RELEASED" },
-  "3696642v1.0": { "longName": "NIDA CTN Instrument", "workflowStatusName": "RELEASED" },
-  "2183535v1.0": { "longName": "Clinical Trial Mgmt Systems", "workflowStatusName": "RELEASED" },
-  "2713346v1.0": { "longName": "HITSP Value Sets", "workflowStatusName": "RETIRED PHASED OUT" },
-  "4117611v1.0": { "longName": "DSQ (Dexamethasone Symptom Questionnaire)", "workflowStatusName": "RELEASED" },
-  "3121676v1.0": { "longName": "Test CS34", "workflowStatusName": "DRAFT NEW" },
-  "2714898v2.1": { "longName": "BRIDG 2.1", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3314438v1.0": { "longName": "Disease Site", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5092551v1.0": { "longName": "Approved CDEs", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2550736v1.0": { "workflowStatusName": "RETIRED DELETED" },
-  "2857185v1.0": { "longName": "RProteomics", "workflowStatusName": "RELEASED" },
-  "2751669v1.0": { "longName": "Lymphoma Enterprise Architecture Data System (LEADS)", "workflowStatusName": "RELEASED" },
-  "2008589v2.0": { "longName": "Type of Category", "workflowStatusName": "RELEASED" },
-  "4857911v1.0": { "longName": "PROMIS Item Banks (Patient Reported Outcomes Measurement Information System)", "workflowStatusName": "RELEASED" },
-  "3766358v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "3810955v1.0": { "longName": "NDII (Neck Dissection Impairment Index)", "workflowStatusName": "RELEASED" },
-  "2716207v1.0": { "longName": "ASCO (American Society of Clinical Oncology)", "workflowStatusName": "RELEASED" },
-  "2534690v2.5": { "longName": "caMOD_2.5", "workflowStatusName": "RELEASED" },
-  "3698731v1.0": { "longName": "MDASI-HN (M.D. Anderson Symptom Inventory - Head & Neck)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6093471v1.0": { "longName": "ACT Network CDM 1.4", "workflowStatusName": "RELEASED" },
-  "3813439v1.0": { "longName": "MDASI-LC (M.D. Anderson Symptom Inventory - Lung Chemoradiation)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2981932v5.0": { "longName": "LexEVS 5.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2487057v1.0": { "longName": "DCP Enterprise System Knowledgebase ", "workflowStatusName": "RELEASED" },
-  "5152111v1.0": { "longName": "MCL-Molecular Characterization Lesion", "workflowStatusName": "RETIRED DELETED" },
-  "2586709v1.0": { "longName": "Tuberculosis Project", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2495057v1.0": { "longName": "Jennys Project Metadata", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3378854v1.0": { "longName": "Measures", "workflowStatusName": "RELEASED" },
-  "5542681v1.0": { "longName": "EDRN_CDE_Project", "workflowStatusName": "RELEASED" },
-  "3704364v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "2632574v1.0": { "longName": "Bioconductor", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3204728v1.0": { "longName": "Common Biorepository Model", "workflowStatusName": "RELEASED" },
-  "2857180v1.0": { "longName": "Type of Category", "workflowStatusName": "RELEASED" },
-  "2611721v2.0": { "longName": "CGWB", "workflowStatusName": "RELEASED" },
-  "2842777v1.0": { "longName": "Labs", "workflowStatusName": "RELEASED" },
-  "2782636v1.0": { "longName": "caTissue_Suite", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2861601v1.0": { "longName": "KNearestNeighbors", "workflowStatusName": "RELEASED" },
-  "2857175v1.0": { "longName": "C3D Adopter CDEs for Reuse", "workflowStatusName": "RELEASED" },
-  "3232580v1.0": { "longName": "PRL0602", "workflowStatusName": "RELEASED" },
-  "3812926v1.0": { "longName": "GAD-7 (Generalized Anxiety Disorder 7-item Scale)", "workflowStatusName": "RELEASED" },
-  "3351909v1.0": { "longName": "OPEN to Rave Standard Forms", "workflowStatusName": "RELEASED" },
-  "2208181v1.0": { "longName": "Catalogue of Published Forms", "workflowStatusName": "RELEASED" },
-  "2802944v1.0": { "longName": "SEER United States Mortality Statistics", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2691537v1.0": { "longName": "PHINMS Sender", "workflowStatusName": "RELEASED" },
-  "3314439v1.0": { "longName": "Imaging Modality", "workflowStatusName": "RELEASED" },
-  "4117471v1.0": { "longName": "CTD2 (Cancer Target Discovery and Development)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2008595v1.0": { "longName": "Public Health Conceptual Data Model", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2183783v1.0": { "longName": "Site Usage", "workflowStatusName": "RETIRED DELETED" },
-  "4986873v1.0": { "longName": "WPAI:GH (Work Productivity and Activity Impairment General Health Problems Version 2.0 Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2008594v2.31": { "longName": "Trial Type Usages (CDE Disease Committees)", "workflowStatusName": "RELEASED" },
-  "2661745v1.0": { "longName": "caTissue_Core_caArray", "workflowStatusName": "RELEASED" },
-  "2008610v1.0": { "longName": "Electrocardiography Evaluation", "workflowStatusName": "RETIRED DELETED" },
-  "6235436v1.0": { "longName": "ACE-27 (Adult Comorbidity Evaluation-27)", "workflowStatusName": "RELEASED" },
-  "3896529v1.0": { "longName": "Consortia 2012 Studies", "workflowStatusName": "RELEASED" },
-  "2552643v1.0": { "longName": "Training Class Examples", "workflowStatusName": "RELEASED" },
-  "3638604v1.0": { "longName": "FACT-P (Functional Assessment of Cancer Therapy- Prostate)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3234177v1.0": { "longName": "Patient Outcomes Data System (PODS)", "workflowStatusName": "RELEASED" },
-  "2614824v3.0": { "longName": "AIM 3.0", "workflowStatusName": "RELEASED" },
-  "2857162v1.0": { "longName": "Cancer Models Database 2.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3121334v1.0": { "longName": "CTCAE v4.0 CDEs", "workflowStatusName": "RELEASED" },
-  "2590625v1.0": { "longName": "My Test Container", "workflowStatusName": "RELEASED" },
-  "2798952v1.0": { "longName": "SEERDemography", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2513254v1.0": { "longName": "caTISSUE Core", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4494394v1.0": { "longName": "FACT-ES (Functional Assessment of Cancer Therapy - Endocrine Symptoms)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2857170v1.0": { "longName": "Commercial Partners", "workflowStatusName": "RELEASED" },
-  "4925232v1.0": { "longName": "Test Tree Rendering", "workflowStatusName": "RETIRED DELETED" },
-  "2695319v1.0": { "longName": "NMDP: CDEs to review", "workflowStatusName": "RELEASED" },
-  "2691534v1.0": { "longName": "Data Provisioning", "workflowStatusName": "RELEASED" },
-  "2614829v1.0": { "longName": "NCIA Model Archived", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2179692v1.0": { "longName": "TYPE OF CATEGORY", "workflowStatusName": "RELEASED" },
-  "5187971v1.0": { "longName": "NHS II (Nurses' Health Study II: Activity and Inactivity Questionnaire)", "workflowStatusName": "RELEASED" },
-  "6032138v1.0": { "longName": "DART (Distress Assessment and Response Tool)", "workflowStatusName": "RELEASED" },
-  "2961451v1.0": { "longName": "Children's Oncology Group (COG)", "workflowStatusName": "RELEASED" },
-  "2857166v2.31": { "longName": "CRF Trial Type Usage", "workflowStatusName": "DRAFT NEW" },
-  "2180420v1.0": { "longName": "PHARMACOKINETICS", "workflowStatusName": "RETIRED DELETED" },
-  "3863413v1.0": { "longName": "OAMFQ (Older Americans Resource Scale Multidimensional Functional Assessment Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2514015v1.1": { "longName": "caFE Server 1.1", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6539441v1.0": { "longName": "SSPedi (Symptom Screening in Pediatrics)", "workflowStatusName": "RETIRED DELETED" },
-  "3180886v1.0": { "longName": "All Candidates", "workflowStatusName": "RELEASED" },
-  "3228346v1.0": { "longName": "Perceived Stress Scale", "workflowStatusName": "RETIRED PHASED OUT" },
-  "5506114v1.0": { "longName": "Pancreas", "workflowStatusName": "RELEASED" },
-  "3173038v1.0": { "longName": "gridTCR", "workflowStatusName": "RELEASED" },
-  "2861767v1.0": { "longName": "SVM", "workflowStatusName": "RELEASED" },
-  "2008590v2.0": { "longName": "STANDARD FORMS", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2746709v1.0": { "longName": "Jamie's Training", "workflowStatusName": "RETIRED DELETED" },
-  "3461150v1.0": { "longName": "Staging", "workflowStatusName": "RELEASED" },
-  "4551819v1.0": { "longName": "FKSI-15 (Functional Assessment of Cancer Therapy - Kidney Symptom Index)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4809902v1.0": { "longName": "PROMIS-43 Profile v2.0", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2539469v1.0": { "longName": "Family Blood Pressure Program", "workflowStatusName": "RELEASED" },
-  "2939183v4.3": { "longName": "caBIO 4.3", "workflowStatusName": "RELEASED" },
-  "5103138v1.0": { "longName": "TAPS Tool", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2614826v1.0": { "longName": "DICOM", "workflowStatusName": "RELEASED" },
-  "2597548v1.0": { "longName": "Clinic(NCDE)", "workflowStatusName": "RELEASED" },
-  "2751568v1.0": { "longName": "BehavioralResearchMeasures", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3852751v1.0": { "longName": "Therapeutic", "workflowStatusName": "RELEASED" },
-  "2899621v1.0": { "longName": "ImageMiner", "workflowStatusName": "RELEASED" },
-  "4319811v1.0": { "longName": "FAACT (Functional Assessment of Anorexia/Cachexia Treatment)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2842912v1.0": { "longName": "Therapy", "workflowStatusName": "RELEASED" },
-  "2898456v1.0": { "longName": "New Example", "workflowStatusName": "RELEASED" },
-  "3876594v1.0": { "longName": "Theradex", "workflowStatusName": "RELEASED" },
-  "2726654v2.0": { "longName": "caArray", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2557741v1.1": { "longName": "geworkbench", "workflowStatusName": "RELEASED" },
-  "3029677v1.0": { "longName": "UAMS Clinical Research", "workflowStatusName": "RELEASED" },
-  "3690872v1.0": { "longName": "LASA (Linear Analogue Self Assessment)", "workflowStatusName": "RELEASED" },
-  "2638539v1.0": { "longName": "Reactome Database Sharing", "workflowStatusName": "RELEASED" },
-  "2768653v2.0": { "longName": "caBIG Integration Hub", "workflowStatusName": "RELEASED" },
-  "2519060v1.0": { "longName": "Seed", "workflowStatusName": "RELEASED" },
-  "2857173v3.0": { "longName": "caCORE 3.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4735391v1.0": { "longName": "ACR NRDR", "workflowStatusName": "RELEASED" },
-  "2672769v2.0": { "longName": "Patient Study Calendar", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3165875v1.0": { "longName": "Subjective Numeracy Scale", "workflowStatusName": "RETIRED DELETED" },
-  "2557741v1.0": { "longName": "geworkbench", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2673170v1.0": { "longName": "BiospecimenCoreResource", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3886758v1.0": { "longName": "Radiation Elements", "workflowStatusName": "RELEASED" },
-  "2180030v1.0": { "longName": "TESTING DENISES CLASSIFICATION SCHEME", "workflowStatusName": "RETIRED DELETED" },
-  "2714898v3.02": { "longName": "BRIDG 3.0.2", "workflowStatusName": "RELEASED" },
-  "3727011v1.0": { "longName": "FACT-BMT (Functional Assessment of Cancer Therapy - Bone Marrow Transplant)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2008586v2.0": { "longName": "Type of Category", "workflowStatusName": "DRAFT NEW" },
-  "2967376v4.0": { "longName": "caDSR 4.0", "workflowStatusName": "RELEASED" },
-  "2724612v0.53": { "longName": "Clinical Trials Object Data System (CTODS)", "workflowStatusName": "RELEASED" },
-  "2780868v1.0": { "longName": "MDR", "workflowStatusName": "RELEASED" },
-  "2512690v1.0": { "longName": "Potential CDEs for Reuse", "workflowStatusName": "RELEASED" },
-  "2857179v1.0": { "longName": "Homework Examples", "workflowStatusName": "RETIRED DELETED" },
-  "3912355v1.0": { "longName": "FACT-Taxane (Functional Assessment of Cancer Therapy - Taxane)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2798698v1.0": { "longName": "SEER Healthy Goals", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "3539833v1.0": { "longName": "EQ-5D (EuroQol Group EQ-5D Health Questionnaire)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4280691v1.0": { "longName": "CRF CDEs", "workflowStatusName": "RELEASED" },
-  "2768653v1.0": { "longName": "caXchange", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2954884v1.0": { "longName": "GRANITE", "workflowStatusName": "RELEASED" },
-  "2839153v1.0": { "longName": "omniBiomarker", "workflowStatusName": "RELEASED" },
-  "2898532v2.4": { "longName": "caArray Internal", "workflowStatusName": "RELEASED" },
-  "2697804v1.0": { "longName": "Infusion form for Review", "workflowStatusName": "RETIRED DELETED" },
-  "2839207v1.0": { "longName": "Chromosomal Segment Overlap Finder Across Samples", "workflowStatusName": "RELEASED" },
-  "2858220v1.0": { "longName": "Taverna-caGrid", "workflowStatusName": "RELEASED" },
-  "5428053v1.0": { "longName": "Biospecimen", "workflowStatusName": "RELEASED" },
-  "5626752v1.0": { "longName": "RSCL (Rotterdam Symptom Checklist)", "workflowStatusName": "RELEASED" },
-  "5128551v1.0": { "longName": "Breast Cancer Prevention Trial (BCPT) Symptom Scales", "workflowStatusName": "RELEASED" },
-  "5218331v1.0": { "longName": "CESD-R (The Center for Epidemiologic Studies Depression Scale Revised)", "workflowStatusName": "RELEASED" },
-  "4254095v1.0": { "longName": "PBTC Standard Forms", "workflowStatusName": "RELEASED" },
-  "2691326v1.0": { "longName": "Biosense", "workflowStatusName": "RELEASED" },
-  "2960572v1.0": { "longName": "Eligibility Criteria", "workflowStatusName": "RELEASED" },
-  "5873904v1.0": { "longName": "PORPUS (Patient Oriented Prostate Utility Scale)", "workflowStatusName": "RETIRED DELETED" },
-  "2597552v1.0": { "longName": "Health(NCDE)", "workflowStatusName": "RELEASED" },
-  "6235424v1.0": { "longName": "BHLS (BRIEF Health Literacy Screening Tool)", "workflowStatusName": "RELEASED" },
-  "2985612v2.2": { "longName": "CTEP Enterprise Services", "workflowStatusName": "RELEASED" },
-  "2856819v1.0": { "longName": "Chromosomal Segment Overlap Finder Across Sources", "workflowStatusName": "RELEASED" },
-  "2691540v1.0": { "longName": "ETL", "workflowStatusName": "RELEASED" },
-  "5566511v1.0": { "longName": "CGI (Clinical Global Impression Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2919341v1.1": { "longName": "caTissue_Suite1_1", "workflowStatusName": "RELEASED" },
-  "5574822v1.0": { "longName": "PRO-CTCAE (Patient Reported Outcomes of CTCAE)", "workflowStatusName": "RELEASED" },
-  "3684652v1.0": { "longName": "MDADI (M.D. Anderson Dysphagia Inventory)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2467349v1.0": { "longName": "MySubtractionService", "workflowStatusName": "RELEASED" },
-  "4267018v1.0": { "longName": "HADS (Hospital Anxiety and Depression Scale)", "workflowStatusName": "RELEASED" },
-  "2976812v1.0": { "longName": "GO Trial", "workflowStatusName": "RELEASED" },
-  "2688442v1.0": { "longName": "Test", "workflowStatusName": "RETIRED DELETED" },
-  "2760571v1.0": { "longName": "HINTSSurvey", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2194255v1.0": { "longName": "Type of Condition", "workflowStatusName": "RELEASED" },
-  "5285151v1.0": { "longName": "C-TUQ (Cancer Patient Tobacco Use Questionnaire)", "workflowStatusName": "RETIRED DELETED" },
-  "6382879v1.0": { "longName": "HCCQ (The Health Care Climate Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2710221v1.0": { "longName": "NHLBI", "workflowStatusName": "RELEASED" },
-  "2897009v1.0": { "longName": "SNP Microarray Analytical Service", "workflowStatusName": "RELEASED" },
-  "5115671v1.0": { "longName": "PSQ-18 (Patient Satisfaction Questionnaire Short Form)", "workflowStatusName": "RELEASED" },
-  "4493471v1.0": { "longName": "MPN-SAF (Myeloproliferative Neoplasm Symptom Assessment Form)", "workflowStatusName": "RELEASED" },
-  "5724341v1.0": { "longName": "Integrations", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6093485v1.0": { "longName": "Sentinel CDM 6.02", "workflowStatusName": "RELEASED" },
-  "2544880v1.0": { "longName": "GeneConnect", "workflowStatusName": "RELEASED" },
-  "2548333v1.0": { "longName": "I-SPY", "workflowStatusName": "RELEASED" },
-  "2857178v1.0": { "longName": "Grid-enablement of Protein Information Resource (PIR) 1.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2693115v3.0": { "longName": "NCIA_Model", "workflowStatusName": "RELEASED" },
-  "4442461v1.0": { "longName": "Content for Review", "workflowStatusName": "RELEASED" },
-  "2958963v1.0": { "longName": "COPPA", "workflowStatusName": "RELEASED" },
-  "2523380v1.0": { "longName": "NCI-60 Drug", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2804809v1.0": { "longName": "Cardiovascular Model", "workflowStatusName": "RELEASED" },
-  "2180933v1.0": { "longName": "Lung Image Database Consortium", "workflowStatusName": "RELEASED" },
-  "3292694v1.0": { "longName": "Theradex", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2008596v1.0": { "longName": "NCI Concept Hierarchy", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "4280881v1.0": { "longName": "SF-36v2 (Short Form 36 Health Survey Standard, US Version 2.0 Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2190530v1.0": { "longName": "Demonstration Applications", "workflowStatusName": "RELEASED" },
-  "2598198v1.0": { "longName": "CTEP CDS Data Elements", "workflowStatusName": "RELEASED" },
-  "6601285v1.0": { "longName": "PDC (Proteomic Data Commons)", "workflowStatusName": "RELEASED" },
-  "4826811v1.0": { "longName": "Core", "workflowStatusName": "RELEASED" },
-  "2008598v1.0": { "longName": "NCI_CORE", "workflowStatusName": "RETIRED DELETED" },
-  "5273171v1.0": { "longName": "CRQ-SAS (Chronic Respiratory Questionnaire Self-Administered Standardized Format)", "workflowStatusName": "RELEASED" },
-  "2857187v1.0": { "longName": "CAP Cancer Checklists", "workflowStatusName": "RELEASED" },
-  "3370903v1.0": { "longName": "FAHI (Functional Assessment of HIV Infection)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2861024v1.0": { "longName": "caSEER", "workflowStatusName": "RELEASED" },
-  "5428323v1.0": { "longName": "Experiment Data", "workflowStatusName": "DRAFT NEW" },
-  "5506116v1.0": { "longName": "Pathology", "workflowStatusName": "RELEASED" },
-  "3178240v1.0": { "longName": "Measures", "workflowStatusName": "RELEASED" },
-  "2857176v1.0": { "longName": "TestFolderCS", "workflowStatusName": "RELEASED" },
-  "2521476v1.0": { "longName": "GoMiner", "workflowStatusName": "RELEASED" },
-  "2681512v1.0": { "longName": "New Content Robinette Aley", "workflowStatusName": "RETIRED DELETED" },
-  "2672769v2.6": { "longName": "Patient Study Calendar", "workflowStatusName": "RELEASED" },
-  "2803320v1.0": { "longName": "SEER US Population", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "6147165v1.0": { "longName": "Wake Forest Baptist Medical Center", "workflowStatusName": "RELEASED" },
-  "2854842v2.0": { "longName": "PrincipalComponentsAnalysis", "workflowStatusName": "RELEASED" },
-  "2898900v1.0": { "longName": "caArray", "workflowStatusName": "RELEASED" },
-  "2400281v1.0": { "longName": "Person", "workflowStatusName": "RETIRED DELETED" },
-  "2793652v1.0": { "longName": "PhenX", "workflowStatusName": "RELEASED" },
-  "4025071v1.0": { "longName": "TEST_PROD_10g", "workflowStatusName": "DRAFT NEW" },
-  "2738437v1.0": { "longName": "Breast and Colon Cancer Family Registries", "workflowStatusName": "RETIRED DELETED" },
-  "3232581v1.0": { "longName": "PEARL", "workflowStatusName": "RELEASED" },
-  "4659561v1.0": { "longName": "PROMIS Parent Proxy Item Bank v1.0 - Pain Interference 8", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3144420v1.0": { "longName": "FACT-G (Functional Assessment of Cancer Therapy General)", "workflowStatusName": "RELEASED" },
-  "2944977v5.0": { "longName": "NBIA (National Biomedical Imaging Archive)", "workflowStatusName": "RELEASED" },
-  "2663837v3.2": { "longName": "Testing caCORE ", "workflowStatusName": "RETIRED DELETED" },
-  "3335152v1.0": { "longName": "HTMCP (HIV+Tumor Molecular Characterization Project)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2201036v1.0": { "longName": "Head and Neck SPOREs ", "workflowStatusName": "RELEASED" },
-  "6235428v1.0": { "longName": "PSCC (Patient Satisfaction with Cancer Care Questionnaire)", "workflowStatusName": "RELEASED" },
-  "2950470v1.0": { "longName": "TobPRAC", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2614827v1.0": { "longName": "Middleware", "workflowStatusName": "RELEASED" },
-  "2953481v1.0": { "longName": "caArray Service", "workflowStatusName": "RELEASED" },
-  "2552422v3.1": { "longName": "caCORE Reload caDSR 3.1", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2182337v1.0": { "longName": "Hierarchical Disease Classification Scheme", "workflowStatusName": "DRAFT NEW" },
-  "4970851v1.0": { "longName": "Meaningful Use", "workflowStatusName": "RELEASED" },
-  "3241399v1.0": { "longName": "IARC Cancer Registry", "workflowStatusName": "RELEASED" },
-  "3704455v1.0": { "longName": "LBCQ (Lymphedema and Breast Cancer Questionnaire)", "workflowStatusName": "RELEASED" },
-  "5566512v1.0": { "longName": "BF-Diary (Bowel Function Diary)", "workflowStatusName": "RELEASED" },
-  "3787498v1.0": { "longName": "TCGA 2.6 by Disease", "workflowStatusName": "RELEASED" },
-  "3626263v1.0": { "longName": "BIS (Body Image Scale)", "workflowStatusName": "RELEASED" },
-  "3902628v1.0": { "longName": "HRQOL/PRO Legacy CDEs", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5725685v1.0": { "longName": "DRS (Decision Regret Scale)", "workflowStatusName": "RELEASED" },
-  "3704365v1.0": { "longName": "NCI Standard Template CDEs", "workflowStatusName": "RELEASED" },
-  "2551427v1.1": { "longName": "C3PR", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2008597v1.0": { "longName": "TEST", "workflowStatusName": "RETIRED DELETED" },
-  "3691273v1.0": { "longName": "FACT-H&N (Functional Assessment of Cancer Therapy - Head & Neck)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3588382v1.0": { "longName": "PICUcoreClinicalData", "workflowStatusName": "RELEASED" },
-  "3863415v1.0": { "longName": "MOS (Medical Outcomes Study)", "workflowStatusName": "RELEASED" },
-  "3384631v1.0": { "longName": "OHIP-14 (Oral Health Impact Profile)", "workflowStatusName": "RELEASED" },
-  "5377271v1.0": { "longName": "ICBO Tutorial", "workflowStatusName": "RELEASED" },
-  "2614824v2.0": { "longName": "AIM 2.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3024952v1.0": { "longName": "HINTS 2005", "workflowStatusName": "RETIRED DELETED" },
-  "2185453v1.0": { "longName": "TEST LOINC Classes", "workflowStatusName": "RETIRED DELETED" },
-  "2857174v1.0": { "longName": "CDISC Codelists", "workflowStatusName": "RELEASED" },
-  "3938979v1.0": { "longName": "Norton DICOM CDEs", "workflowStatusName": "RELEASED" },
-  "2190840v1.0": { "longName": "cc", "workflowStatusName": "RELEASED" },
-  "2482123v1.0": { "longName": "DHS", "workflowStatusName": "RETIRED DELETED" },
-  "4039732v1.0": { "longName": "FACT-Ga (Functional Assessment of Cancer Therapy - Gastric)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2786997v1.0": { "longName": "DigitalModelRepository(DMR)", "workflowStatusName": "RELEASED" },
-  "2437567v1.0": { "longName": "x", "workflowStatusName": "DRAFT NEW" },
-  "2672769v1.0": { "longName": "Patient Study Calendar", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2677906v1.0": { "longName": "CoCaNUT", "workflowStatusName": "RELEASED" },
-  "2551427v2.8": { "longName": "C3PR", "workflowStatusName": "RELEASED" },
-  "3757111v3.2": { "longName": "BRIDG 3.2", "workflowStatusName": "RELEASED" },
-  "4659568v1.0": { "longName": "PROMIS Item Bank v1.0 - Pain Interference - Short Form 6b", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2772168v1.0": { "longName": "caLIMS2", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2880281v1.0": { "longName": "VASARI", "workflowStatusName": "RELEASED" },
-  "2612100v1.0": { "longName": "caNanoLab", "workflowStatusName": "RETIRED ARCHIVED" },
-  "6437797v1.0": { "longName": "Pre-Cancer Atlas", "workflowStatusName": "RELEASED" },
-  "2184681v1.0": { "longName": "Test Java Packages", "workflowStatusName": "DRAFT NEW" },
-  "5650570v1.0": { "longName": "TARGET", "workflowStatusName": "RELEASED" },
-  "3855897v1.0": { "longName": "EPIC (Expanded Prostate Cancer Index Composite)", "workflowStatusName": "RELEASED" },
-  "2008601v1.0": { "longName": "C3D Domain", "workflowStatusName": "RELEASED" },
-  "2915522v1.5": { "longName": "caNanoLab", "workflowStatusName": "RELEASED" },
-  "3232567v1.0": { "longName": "PEARL 0602", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2589983v3.5": { "longName": "Caisis", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2607493v1.0": { "longName": "Retired CTOM (Clinical Trials Object Model)", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "3028392v1.0": { "longName": "HINTS2005", "workflowStatusName": "RELEASED" },
-  "3912352v1.0": { "longName": "FACT-NP (Functional Assessment of Cancer Therapy - Nasopharyngeal)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2931931v1.0": { "longName": "Iloprost Trial", "workflowStatusName": "RELEASED" },
-  "2857183v1.0": { "longName": "ProteomicsLIMS", "workflowStatusName": "RELEASED" },
-  "2799194v1.0": { "longName": "SEERScreeningStats", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2857168v1.0": { "longName": "CCR Common Data Element Collection", "workflowStatusName": "RELEASED" },
-  "2803049v1.0": { "longName": "SEERUSMortality", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3625128v1.0": { "longName": "Image Finding CS", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2557869v1.2": { "longName": "caFE Server", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5090651v1.0": { "longName": "DCS (Decisional Conflict Scale)", "workflowStatusName": "RELEASED" },
-  "2714661v4.2": { "longName": "caBIO 4.2", "workflowStatusName": "RELEASED" },
-  "3232464v1.0": { "longName": "PerceivedStressScale_PSS", "workflowStatusName": "RELEASED" },
-  "4925231v1.0": { "longName": "Test the Tree", "workflowStatusName": "RETIRED DELETED" },
-  "5635300v1.0": { "longName": "Case Report Form (CRF) Modules", "workflowStatusName": "RELEASED" },
-  "2676055v1.0": { "longName": "Training Models", "workflowStatusName": "RETIRED DELETED" },
-  "2629622v1.0": { "longName": "Transcription Annotation Prioritization and Screening System", "workflowStatusName": "RELEASED" },
-  "2321254v1.0": { "longName": "MicroArray Gene Expression Object Model (Mage-OM)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4659563v1.0": { "longName": "PROMIS Pediatric Item Bank v.1.0 - Pain Interference - Short Form 8a", "workflowStatusName": "RETIRED PHASED OUT" },
-  "6009267v1.0": { "longName": "CCTG CRF CDEs", "workflowStatusName": "RETIRED DELETED" },
-  "2707890v2.1": { "longName": "caIntegrator 2.1", "workflowStatusName": "RELEASED" },
-  "4057943v1.0": { "longName": "Disease Site", "workflowStatusName": "RELEASED" },
-  "2900334v1.0": { "longName": "PCTA", "workflowStatusName": "RELEASED" },
-  "4659559v1.0": { "longName": "PROMIS Item Bank v1.0 - Pain Interference - Short Form 8a, Investigator Format", "workflowStatusName": "RETIRED PHASED OUT" },
-  "5506112v1.0": { "longName": "Breast", "workflowStatusName": "RELEASED" },
-  "2008603v1.0": { "longName": "Adult Soft Tissue New", "workflowStatusName": "RETIRED DELETED" },
-  "3716018v1.0": { "longName": "BLSS (Breast Lymphedema Symptom Survey)", "workflowStatusName": "RELEASED" },
-  "3021954v1.0": { "longName": "Caris Life Sciences", "workflowStatusName": "RELEASED" },
-  "2008588v2.0": { "longName": "TYPE OF USAGE", "workflowStatusName": "DRAFT NEW" },
-  "2399264v1.0": { "longName": "Agency", "workflowStatusName": "RETIRED DELETED" },
-  "3626265v1.0": { "longName": "10 PROMIS Global Health Questionnaire", "workflowStatusName": "RELEASED" },
-  "2475251v2.0": { "longName": "caTIES 2.0", "workflowStatusName": "RELEASED" },
-  "2714661v4.1": { "longName": "caBIO 4.1", "workflowStatusName": "RELEASED" },
-  "2927833v1.0": { "longName": "caGrid", "workflowStatusName": "RELEASED" },
-  "2614746v1.0": { "longName": "Imaging", "workflowStatusName": "RELEASED" },
-  "6601273v1.0": { "longName": "CPTAC (Clinical Proteomic Tumor Analysis Consortium)", "workflowStatusName": "RELEASED" },
-  "2857171v1.0": { "longName": "Protocol Amendment", "workflowStatusName": "DRAFT NEW" },
-  "2983652v1.0": { "longName": "caBIGGridEnabledMeasures", "workflowStatusName": "RETIRED DELETED" },
-  "2799016v1.0": { "longName": "SEERDemographic", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2937835v2.0": { "longName": "TCGAPortal", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3006612v1.0": { "longName": "eMERGE", "workflowStatusName": "RELEASED" },
-  "3188337v1.0": { "longName": "Stroke CDEs", "workflowStatusName": "RELEASED" },
-  "2689825v1.0": { "longName": "PathwayInteractionDatabase", "workflowStatusName": "RELEASED" },
-  "6162769v1.0": { "longName": "University of Rochester", "workflowStatusName": "RELEASED" },
-  "2665304v1.0": { "longName": "TobaccoInformaticsGrid", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2857169v1.0": { "longName": "SAE Reporting Application", "workflowStatusName": "DRAFT NEW" },
-  "2718902v1.0": { "longName": "ONS (Oncology Nursing Society)", "workflowStatusName": "RELEASED" },
-  "2798876v1.0": { "longName": "SEERHealthGoals", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2714898v1.0": { "longName": "BRIDG 1.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3081758v1.0": { "longName": "NHIS_2005", "workflowStatusName": "RETIRED ARCHIVED" },
-  "4632204v1.0": { "longName": "Admin Training Example", "workflowStatusName": "RETIRED DELETED" },
-  "4320453v1.0": { "longName": "PTPQ (Prognosis and Treatment Perceptions Questionnaire)", "workflowStatusName": "RELEASED" },
-  "3852378v1.0": { "longName": "ONEM (Osoba Nausea and Emesis Module)", "workflowStatusName": "RELEASED" },
-  "5076153v1.0": { "longName": "FDA Global UDI Database", "workflowStatusName": "RELEASED" },
-  "3876352v1.0": { "longName": "Inclusion Criteria", "workflowStatusName": "RELEASED" },
-  "6382900v1.0": { "longName": "BAI (Brief Appraisal Inventory)", "workflowStatusName": "RELEASED" },
-  "2737760v2.3": { "longName": "LexBIG 2.3", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2737760v2.2": { "longName": "LexBIG", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3590028v1.0": { "longName": "BLGSP (Burkitt Lymphoma Genome Sequencing Project)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2983752v1.0": { "longName": "Grid Enabled Measures", "workflowStatusName": "RELEASED" },
-  "3144217v1.0": { "longName": "FACT G", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2958652v1.0": { "longName": "NewbornExamination", "workflowStatusName": "RETIRED PHASED OUT" },
-  "3228240v1.0": { "longName": "CHTN (Cooperative Human Tissue Network)", "workflowStatusName": "RELEASED" },
-  "2611677v1.0": { "longName": "CTOM (Clinical Trials Object Model)", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5806857v1.0": { "longName": "HCMI (Human Cancer Models Initiative)", "workflowStatusName": "RELEASED" },
-  "2747429v2.0": { "longName": "caAERS", "workflowStatusName": "RELEASED" },
-  "2182091v1.0": { "longName": "C3D Retired", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5024211v1.0": { "longName": "M. D. Anderson Symptom Inventory Measures", "workflowStatusName": "RELEASED" },
-  "5090662v1.0": { "longName": "CSDIR (Clark Symptom Distress Index and Regret)", "workflowStatusName": "RELEASED" },
-  "6382898v1.0": { "longName": "PPOS (Patient Provider Orientation Scale)", "workflowStatusName": "RELEASED" },
-  "2619399v1.0": { "longName": "caElmir", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3837553v1.0": { "longName": "Brief Patient PRO-CTCAE Feedback Survey ", "workflowStatusName": "RELEASED" },
-  "2220736v1.0": { "longName": "Protocol Epoch", "workflowStatusName": "DRAFT NEW" },
-  "2614831v1.0": { "longName": "RadLex", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2899264v1.0": { "longName": "Link to NCIP CDE Standards", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2680967v1.2": { "longName": "caTissue_Core_1_2", "workflowStatusName": "RELEASED" },
-  "2388918v1.0": { "longName": "caTIES 1.0", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2534690v2.1": { "longName": "caMOD", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2714463v1.0": { "longName": "ChemBank", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2695314v1.0": { "longName": "New Content Wendy Zhang", "workflowStatusName": "RETIRED DELETED" },
-  "2008600v1.0": { "longName": "NOS", "workflowStatusName": "RETIRED DELETED" },
-  "4659565v1.0": { "longName": "PROMIS SF v.1.0 - Pain Intensity 3a", "workflowStatusName": "RETIRED PHASED OUT" },
-  "2182094v1.0": { "longName": "net-Trials", "workflowStatusName": "RETIRED DELETED" },
-  "5858962v1.0": { "longName": "Under Review", "workflowStatusName": "RELEASED" },
-  "2962162v1.0": { "longName": "LexBIG", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3190117v1.0": { "longName": "Australian Cancer Registry", "workflowStatusName": "RELEASED" },
-  "2604617v1.0": { "longName": "Submission and Reporting", "workflowStatusName": "RELEASED" },
-  "5506115v1.0": { "longName": "Imaging", "workflowStatusName": "RELEASED" },
-  "5187973v1.0": { "longName": "HAP (Human Activity Profile)", "workflowStatusName": "RELEASED" },
-  "5506113v1.0": { "longName": "Prostate", "workflowStatusName": "RELEASED" },
-  "4272090v1.0": { "longName": "FDA MedWatch FDA 3500A", "workflowStatusName": "RELEASED" },
-  "2614835v1.0": { "longName": "DSD", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2926008v1.0": { "longName": "PeptideAtlas", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3638606v1.0": { "longName": "HFRDIS (Hot Flash Related Daily Interference Scale)", "workflowStatusName": "RELEASED" },
-  "2528431v3.2": { "longName": "caCORE 3.2", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3852371v1.0": { "longName": "MAT (MASCC Antiemesis Tool)", "workflowStatusName": "RELEASED" },
-  "6607649v1.0": { "longName": "EFS (Edmonton Frail Scale)", "workflowStatusName": "RELEASED" },
-  "2837876v1.0": { "longName": "Utah", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3775608v1.0": { "longName": "CCI (Charlson Comorbidity Index)", "workflowStatusName": "RELEASED" },
-  "5294254v1.0": { "longName": "Head and Neck Complication Tracking Tool", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "2528519v2.0": { "longName": "caIntegrator", "workflowStatusName": "RELEASED" },
-  "3187531v1.0": { "longName": "Grid Enabled Measures caBIG", "workflowStatusName": "RETIRED ARCHIVED" },
-  "3436920v1.0": { "longName": "GBC (Group Banking Committee)", "workflowStatusName": "RELEASED" },
-  "2614825v1.0": { "longName": "XIP", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "5655968v1.0": { "longName": "HTMCP (HIV+Tumor Molecular Characterization Project)", "workflowStatusName": "RELEASED" },
-  "5978242v1.0": { "longName": "G-8 (Geriatric 8 Screening Tool)", "workflowStatusName": "RELEASED" },
-  "2180102v1.0": { "longName": "PATIENT INFORMATION CHARACTERISTICS", "workflowStatusName": "RETIRED DELETED" },
-  "6382881v1.0": { "longName": "SURE Test", "workflowStatusName": "RELEASED" },
-  "2770367v1.0": { "longName": "Novartis", "workflowStatusName": "RETIRED WITHDRAWN" },
-  "3638608v1.0": { "longName": "PRO-CTCAE (Patient Reported Outcomes Version of CTCAE)", "workflowStatusName": "RELEASED" },
-  "2919341v1.2": { "longName": "caTissue_Suite1_2", "workflowStatusName": "RELEASED" },
-  "2008608v1.0": { "longName": "Phase", "workflowStatusName": "RELEASED" },
-  "3185645v1.0": { "longName": "BIGHealth ePRO Data Dictionary", "workflowStatusName": "RELEASED" },
-  "2180031v1.0": { "longName": "GF4057 Test (production)", "workflowStatusName": "RELEASED" },
-  "5090660v1.0": { "longName": "Contemplation Ladder", "workflowStatusName": "RELEASED" },
-  "2553954v1.0": { "longName": "caTRIP Annotation Engine", "workflowStatusName": "RELEASED" },
-  "6400437v1.0": { "longName": "PEPPI (Perceived efficacy in Patient-Physician Interactions)", "workflowStatusName": "RELEASED" },
-  "4320451v1.0": { "longName": "UW QoLv4 (University of Washington Quality of Life Questionnaire, Version 4)", "workflowStatusName": "RELEASED" },
-  "3626149v1.0": { "longName": "ASC (Assessment of Survivor Concerns)", "workflowStatusName": "RELEASED" },
-  "2614833v1.0": { "longName": "CAD Markup", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2803489v1.0": { "longName": "SEERUSPopulation", "workflowStatusName": "RETIRED ARCHIVED" },
-  "5242953v1.0": { "longName": "BCAN: Bladder Cancer Advocacy Network", "workflowStatusName": "RELEASED" },
-  "3835419v1.0": { "longName": "Pharmacovigilance-Gabapentin/Pregabalin", "workflowStatusName": "RELEASED" },
-  "2691304v1.0": { "longName": "PID - Patient Identification Segment", "workflowStatusName": "RELEASED" },
-  "3242017v1.0": { "longName": "IPq-USP", "workflowStatusName": "RELEASED" },
-  "4861351v1.0": { "longName": "NRDS", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2555333v0.5": { "longName": "Clinical Trials Lab Model", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2964508v2.0": { "longName": "LabViewer", "workflowStatusName": "RELEASED" },
-  "3886752v1.0": { "longName": "For Review", "workflowStatusName": "RELEASED" },
-  "3599505v4.0": { "longName": "AIM Foundation Model", "workflowStatusName": "RELEASED" },
-  "2837741v1.0": { "longName": "protExpress", "workflowStatusName": "RELEASED" },
-  "5506111v1.0": { "longName": "Lung", "workflowStatusName": "RELEASED" },
-  "3124706v1.0": { "longName": "cancer Ontology Based Resources", "workflowStatusName": "RELEASED" },
-  "2614834v1.0": { "longName": "CAD Order", "workflowStatusName": "RETIRED ARCHIVED" },
-  "2201295v1.0": { "longName": "Adverse Events", "workflowStatusName": "RELEASED" }
+  "2614836v1.0": {
+    "longName": "Generic Image",
+    "workflowStatusName": "RELEASED"
+  },
+  "3314563v1.0": {
+    "longName": "Protocols",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2211656v1.0": {
+    "longName": "UML-based Training Materials",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2857163v1.0": {
+    "longName": "C3PR",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3793272v1.0": {
+    "longName": "NCCN Guidelines (National Comprehensive Cancer Network) ",
+    "workflowStatusName": "RELEASED"
+  },
+  "2493167v1.0": {
+    "longName": "CTMS Metadata Project",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2958244v1.0": {
+    "longName": "Pediatrics",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "4011991v1.0": {
+    "longName": "MDASI-BT (M.D. Anderson Symptom Inventory - Brain Tumor)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5557918v1.0": {
+    "longName": "BITS (Breast-Impact of Treatment Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6305258v1.0": {
+    "longName": "TCIA (The Cancer Imaging Archive)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2179948v1.0": {
+    "longName": "TESTING1",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5655939v1.0": {
+    "longName": "BLGSP (Burkitt Lymphoma Genome Sequencing Project)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2873983v1.0": {
+    "longName": "Link to the BRIDG 2.1 Model",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2691542v1.0": {
+    "longName": "Application Development",
+    "workflowStatusName": "RELEASED"
+  },
+  "2730636v0.1": {
+    "longName": "CDC NCPHI Proof of Concept",
+    "workflowStatusName": "RELEASED"
+  },
+  "2802549v1.0": {
+    "longName": "Center for Epidemiologic Studies Depression Scale (CES-D)",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2714463v1.1": {
+    "longName": "ChemBank",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008604v1.0": {
+    "longName": "TEST MIXED CASE TEST_CSCXZC",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2927589v1.0": {
+    "longName": "caGrid_Metadata_Models",
+    "workflowStatusName": "RELEASED"
+  },
+  "2554136v1.0": {
+    "longName": "caTRIP Tumor Registry",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2857164v1.0": {
+    "longName": "Cancer Molecular Pages",
+    "workflowStatusName": "RELEASED"
+  },
+  "5653600v1.0": {
+    "longName": "Barthel Index (Barthel Index of Activities of Daily Living)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3124057v1.0": {
+    "longName": "Sarcoma Database",
+    "workflowStatusName": "RELEASED"
+  },
+  "5286431v1.0": {
+    "longName": "MRCBS (Medical Research Council Breathlessness Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4551585v1.0": {
+    "longName": "PRO-HRQoL",
+    "workflowStatusName": "RELEASED"
+  },
+  "5151329v1.0": {
+    "longName": "PSS-14 (Perceived Stress Scale-14)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6338162v1.0": {
+    "longName": "CDISC (NCI Implementation)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5675693v1.0": {
+    "longName": "Quality of Life Measures (Patient Reported Outcomes - Health Related Quality of Life)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2800332v1.0": {
+    "longName": "SEER17",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3704366v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2964591v1.0": {
+    "longName": "Eligibility Criteria",
+    "workflowStatusName": "RELEASED"
+  },
+  "5855817v1.0": {
+    "longName": "LabCAS",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614832v1.0": {
+    "longName": "BDT",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2534075v1.2": {
+    "longName": "caTISSUE CAE",
+    "workflowStatusName": "RELEASED"
+  },
+  "2465726v1.0": {
+    "longName": "RESERVED FOR SENTINEL MONITOR",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "3177537v1.0": {
+    "longName": "Link to BRIDG 3.0.2 Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "2462747v1.0": {
+    "longName": "US-VISIT",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5334400v1.0": {
+    "longName": "Single-Item Linear Analog Scale Assessment of Quality of Life",
+    "workflowStatusName": "RELEASED"
+  },
+  "2619399v2.0": {
+    "longName": "caElmir",
+    "workflowStatusName": "RELEASED"
+  },
+  "3787524v1.0": {
+    "longName": "TCGA 2.6 by Namespace",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2768607v1.0": {
+    "longName": "TobaccoTax",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "4101003v1.0": {
+    "longName": "HVMHQ (Healthy Volunteer Medical History Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2538651v1.0": {
+    "longName": "EVS Core Grid Analytical Service",
+    "workflowStatusName": "RELEASED"
+  },
+  "2555333v1.0": {
+    "longName": "Clinical Trials Lab Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "2551427v2.0": {
+    "longName": "C3PR",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2612100v1.4": {
+    "longName": "caNanoLab",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6272292v1.0": {
+    "longName": "NINDS",
+    "workflowStatusName": "RELEASED"
+  },
+  "3134868v1.0": {
+    "longName": "General CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2686022v1.0": {
+    "longName": "My Training Project",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3863411v1.0": {
+    "longName": "OMC (6-Item Orientation-Memory-Concentration Test)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6615075v1.0": {
+    "longName": "HHIE (Hearing Handicap Inventory for the Elderly)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2861003v1.0": {
+    "longName": "caSeer_caBIG",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3134705v1.0": {
+    "longName": "North American Association of Cancer Registries",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2857182v1.0": {
+    "longName": "Protocol Forms",
+    "workflowStatusName": "RELEASED"
+  },
+  "2238378v1.0": {
+    "longName": "In-class Examples",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2192345v1.0": {
+    "longName": "Data Standards",
+    "workflowStatusName": "RELEASED"
+  },
+  "2716603v1.2": {
+    "longName": "Grid-enablement of Protein Information Resource (PIR) 1.2",
+    "workflowStatusName": "RELEASED"
+  },
+  "2738543v1.0": {
+    "longName": "ICR-ASBP",
+    "workflowStatusName": "RELEASED"
+  },
+  "3553732v1.0": {
+    "longName": "CEM",
+    "workflowStatusName": "RELEASED"
+  },
+  "6382887v1.0": {
+    "longName": "Control Preferences Scale",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008585v1.0": {
+    "longName": "TEST_CSabc",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "6382883v1.0": {
+    "longName": "PDMS (Preparation for Decision Making Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3793382v1.0": {
+    "longName": "PHQ (Patient Health Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008609v1.0": {
+    "longName": "Director's Challenge Lung Study Forms",
+    "workflowStatusName": "DRAFT MOD"
+  },
+  "2857184v1.0": {
+    "longName": "Potential CDEs for Reuse",
+    "workflowStatusName": "RELEASED"
+  },
+  "2928087v1.0": {
+    "longName": "ISO21090v1_0",
+    "workflowStatusName": "RELEASED"
+  },
+  "5858960v1.0": {
+    "longName": "Adopted",
+    "workflowStatusName": "RELEASED"
+  },
+  "5635298v1.0": {
+    "longName": "All Mandatory CRF CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "3791487v1.0": {
+    "longName": "ESS (Epworth Sleepiness Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2803194v1.0": {
+    "longName": "SEERStandardPopulation",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5187972v1.0": {
+    "longName": "CARES (CAncer Rehabilitation Evaluation System for Research)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2193114v1.0": {
+    "longName": "Division of Cancer Control and Population Sciences",
+    "workflowStatusName": "RELEASED"
+  },
+  "3260882v1.0": {
+    "longName": "Pulse",
+    "workflowStatusName": "RELEASED"
+  },
+  "5527905v1.0": {
+    "longName": "ModelTest",
+    "workflowStatusName": "RELEASED"
+  },
+  "6272230v1.0": {
+    "longName": "NINDS",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4039731v1.0": {
+    "longName": "FACT-E (Functional Assessment of Cancer Therapy - Esophageal)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6093453v1.0": {
+    "longName": "PCORNet CDM 4.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857177v1.0": {
+    "longName": "Genomic Identifiers",
+    "workflowStatusName": "RELEASED"
+  },
+  "2182125v1.0": {
+    "longName": "CCR Implementation",
+    "workflowStatusName": "RELEASED"
+  },
+  "4631580v1.0": {
+    "longName": "Exceptional Responder CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2670694v1.0": {
+    "longName": "Disease Relapse",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691302v1.0": {
+    "longName": "Centers for Disease Control and Prevention",
+    "workflowStatusName": "RELEASED"
+  },
+  "2653801v1.0": {
+    "longName": "Tobacco Informatics Grid",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "3121677v1.0": {
+    "longName": "TEST CSI 24",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "3813441v1.0": {
+    "longName": "MDASI-Core (M.D. Anderson Symptom Inventory Core Items)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2553603v1.0": {
+    "longName": "NCIA (National Cancer Imaging Archive)2.0",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "6093516v1.0": {
+    "longName": "CDM CDISC SDTM",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2828532v1.0": {
+    "longName": "DNA Copy Analytical Service",
+    "workflowStatusName": "RELEASED"
+  },
+  "3886753v1.0": {
+    "longName": "General Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "3190082v1.0": {
+    "longName": "Taiwan Cancer Registry",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "3140556v1.0": {
+    "longName": "Denise Test CS",
+    "workflowStatusName": "RELEASED"
+  },
+  "2681516v1.0": {
+    "longName": "New Content Thomas Joshua",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2975196v1.0": {
+    "longName": "omniSpect",
+    "workflowStatusName": "RELEASED"
+  },
+  "2756809v1.0": {
+    "longName": "TCGA (The Cancer Genome Atlas)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3595692v1.0": {
+    "longName": "Miraca Life Sciences",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008602v2.31": {
+    "longName": "Trial_Type_Usage_Disease",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2863101v1.0": {
+    "longName": "BootCampModel",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2691541v1.0": {
+    "longName": "Data Warehouse",
+    "workflowStatusName": "RELEASED"
+  },
+  "2900483v1.0": {
+    "longName": "TCGA",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2183536v1.0": {
+    "longName": "Tissue Banks and Pathology Tools",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2451850v1.0": {
+    "longName": "Advanced Training Examples",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5271072v1.0": {
+    "longName": "Lung-Vanderbilt",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "5271073v1.0": {
+    "longName": "MCL Core",
+    "workflowStatusName": "RELEASED"
+  },
+  "2611721v1.0": {
+    "longName": "CGWB",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4134411v1.0": {
+    "longName": "HHIE-S (Hearing Handicap Inventory for the Elderly Screening Version)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2956164v1.0": {
+    "longName": "Transcend",
+    "workflowStatusName": "RELEASED"
+  },
+  "5236432v1.0": {
+    "longName": "ABAS and BASC",
+    "workflowStatusName": "RELEASED"
+  },
+  "3626264v1.0": {
+    "longName": "MBSRQ Appearance (Multidimensional Body Self-Relations Questionnaire-Appearance Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5675695v1.0": {
+    "longName": "CDEs by Categories",
+    "workflowStatusName": "RELEASED"
+  },
+  "6235426v1.0": {
+    "longName": "CPCI (Components of Primary Care Instrument)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2751668v1.0": {
+    "longName": "Behavioral_Research_Measures",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3121567v1.0": {
+    "longName": "test CS21",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2714661v4.0": {
+    "longName": "caBIO 4.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2640373v2.1": {
+    "longName": "LabKey CPAS Client API",
+    "workflowStatusName": "RELEASED"
+  },
+  "6424109v1.0": {
+    "longName": "ASK-12 (Adherence Starts With Knowledge 12 Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5428032v1.0": {
+    "longName": "Case",
+    "workflowStatusName": "RELEASED"
+  },
+  "2586708v1.0": {
+    "longName": "Cardiovascular Project",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3254040v1.0": {
+    "longName": "NIDA Substance Abuse EHR",
+    "workflowStatusName": "RELEASED"
+  },
+  "5092553v1.0": {
+    "longName": "CDEs Under Review",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2857188v1.0": {
+    "longName": "caFE Server 1.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2857181v1.0": {
+    "longName": "NCIA (National Cancer Imaging Archive)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4272096v1.0": {
+    "longName": "SDC Harmonized Metadata",
+    "workflowStatusName": "DRAFT MOD"
+  },
+  "2799145v1.0": {
+    "longName": "SEERScreening",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "4811884v1.0": {
+    "longName": "FACIT and FACT Measures",
+    "workflowStatusName": "RELEASED"
+  },
+  "2772168v1.1": {
+    "longName": "caLIMS2",
+    "workflowStatusName": "RELEASED"
+  },
+  "2927077v1.5": {
+    "longName": "C3D Connector",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "5188871v1.0": {
+    "longName": "GTEx - Postmortem Biospecimen Acquisition",
+    "workflowStatusName": "RELEASED"
+  },
+  "2553133v1.1": {
+    "longName": "caTissue_Core",
+    "workflowStatusName": "RELEASED"
+  },
+  "2688829v1.0": {
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2008591v3.0": {
+    "longName": "Type of Category",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3766361v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2955778v1.0": {
+    "longName": "Tobacco CDE Inventory",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "4735811v1.0": {
+    "longName": "VHI-10 (Voice Handicap Index-10)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614823v1.0": {
+    "longName": "ACRIN",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "4382692v1.0": {
+    "longName": "FDA MedWatch Form 3500",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857165v2.31": {
+    "longName": "CRF Disease",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "5288334v1.0": {
+    "longName": "MBSImP (Modified Barium Swallow Impairment Profile)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3788451v1.0": {
+    "longName": "FSS (Fatigue Severity Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6093515v1.0": {
+    "longName": "CDMH 1.0",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2183534v1.0": {
+    "longName": "Integrative Cancer Research",
+    "workflowStatusName": "RELEASED"
+  },
+  "2193046v1.0": {
+    "longName": "Forms-based Training Materials",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2620091v1.0": {
+    "longName": "GenePattern",
+    "workflowStatusName": "RELEASED"
+  },
+  "2866531v1.0": {
+    "longName": "LinkageX",
+    "workflowStatusName": "RELEASED"
+  },
+  "2597546v1.0": {
+    "longName": "Nordic Common Data Elements (NCDE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3461586v1.0": {
+    "longName": "BOLD:Breast Oncology Local Disease",
+    "workflowStatusName": "RELEASED"
+  },
+  "3335728v1.0": {
+    "longName": "Protocols",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614824v1.0": {
+    "longName": "AIM",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2008607v1.0": {
+    "longName": "NEUROBLASTOMA",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4382693v1.0": {
+    "longName": "AHRQ Common Formats",
+    "workflowStatusName": "RELEASED"
+  },
+  "3588366v1.0": {
+    "longName": "Pediatrics Critical Care",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "5108334v1.0": {
+    "longName": "WIWI (Was It Worth It Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2523764v1.0": {
+    "longName": "NCI-60 SKY",
+    "workflowStatusName": "RELEASED"
+  },
+  "2958247v1.0": {
+    "longName": "Newborn Examination",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "3357378v1.0": {
+    "longName": "OPEN to Rave Template Forms",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5574838v1.0": {
+    "longName": "Staging/Extent of Disease",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008606v1.0": {
+    "longName": "Test CS",
+    "workflowStatusName": "RELEASED"
+  },
+  "3396662v1.0": {
+    "longName": "OMRS (Oral Mucositis Rating Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2854841v1.0": {
+    "longName": "Gene Pattern",
+    "workflowStatusName": "RELEASED"
+  },
+  "2831137v1.0": {
+    "longName": "caCORRECT",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691543v1.0": {
+    "longName": "BIC Scientific Analysis",
+    "workflowStatusName": "RELEASED"
+  },
+  "3098928v1.0": {
+    "longName": "NHIS2005",
+    "workflowStatusName": "RELEASED"
+  },
+  "2672769v2.1": {
+    "longName": "Patient Study Calendar",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2178524v1.0": {
+    "longName": "DIRECTOR'S CHALLENGE LUNG STUDY",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2691303v1.0": {
+    "longName": "HL7 2.3 Message Segments",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691387v1.0": {
+    "longName": "PV1 - Patient Visit",
+    "workflowStatusName": "RELEASED"
+  },
+  "3533741v1.0": {
+    "longName": "NCORP (NCI Community Oncology Research Program",
+    "workflowStatusName": "RELEASED"
+  },
+  "6685474v1.0": {
+    "longName": "Artificial Neural Network Algorithm for BRIDG Mapping",
+    "workflowStatusName": "RELEASED"
+  },
+  "2979232v1.0": {
+    "longName": "LexEVS",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3354861v1.0": {
+    "longName": "ISA-TAB-Nano",
+    "workflowStatusName": "RELEASED"
+  },
+  "3314514v1.0": {
+    "longName": "Under Review",
+    "workflowStatusName": "RELEASED"
+  },
+  "2183712v1.0": {
+    "longName": "caDSRTraining",
+    "workflowStatusName": "RELEASED"
+  },
+  "6607641v1.0": {
+    "longName": "CHAMPS (Community Healthy Activities Model Program: Physical Activities Questionnaire for Older Adults)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857167v1.0": {
+    "longName": "JAVA PACKAGES",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3876359v1.0": {
+    "longName": "Exclusion Criteria",
+    "workflowStatusName": "RELEASED"
+  },
+  "2590783v1.0": {
+    "longName": "Organism Identification",
+    "workflowStatusName": "RELEASED"
+  },
+  "2597547v1.0": {
+    "longName": "Cancer(NCDE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008605v1.0": {
+    "longName": "Medical Imaging",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2857172v1.0": {
+    "longName": "Tissue Bank",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2180156v1.0": {
+    "longName": "New CDEs per study",
+    "workflowStatusName": "RELEASED"
+  },
+  "3886759v1.0": {
+    "longName": "Surgery Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "3766360v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "5090653v1.0": {
+    "longName": "SEQ-12 (Smoking Self-Efficacy Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3553940v1.0": {
+    "longName": "BRIDG",
+    "workflowStatusName": "RELEASED"
+  },
+  "3166177v1.0": {
+    "longName": "SubjectiveNumeracyScale",
+    "workflowStatusName": "RELEASED"
+  },
+  "2754761v1.0": {
+    "longName": "Generic Parameters",
+    "workflowStatusName": "RELEASED"
+  },
+  "5589063v1.0": {
+    "longName": "CDDP/CTSP (Cancer Driver Discovery Program/Clinical Trial Sequencing Project)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5090547v1.0": {
+    "longName": "KUJ (Knowledge, Understanding and Judgement Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3241357v1.0": {
+    "longName": "Cancer Registries Project",
+    "workflowStatusName": "RELEASED"
+  },
+  "2519225v1.0": {
+    "longName": "Imaging-Old",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "6382885v1.0": {
+    "longName": "DQI-Breast Surgery (Decision Quality Instruments-Breast Surgery)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3259219v1.0": {
+    "longName": "University of Michigan",
+    "workflowStatusName": "RELEASED"
+  },
+  "4254096v1.0": {
+    "longName": "Protocol Phase",
+    "workflowStatusName": "RELEASED"
+  },
+  "3253737v1.0": {
+    "longName": "CSTE Position Statements",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2738503v1.0": {
+    "longName": "DemoService",
+    "workflowStatusName": "RELEASED"
+  },
+  "3853071v1.0": {
+    "longName": "New C3D CDEs",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2193113v1.0": {
+    "longName": "Division of Cancer Epidemiology and Genetics",
+    "workflowStatusName": "RELEASED"
+  },
+  "2800331v1.0": {
+    "longName": "SEER 17 caBIG",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "5279492v1.0": {
+    "longName": "OMOP CDM 4.0 (Observational Medical Outcomes Partnership)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691530v1.0": {
+    "longName": "Messaging Guide 1.5",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691544v1.0": {
+    "longName": "GIS Data",
+    "workflowStatusName": "RELEASED"
+  },
+  "2800181v1.0": {
+    "longName": "SEER_17",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "5188870v1.0": {
+    "longName": "BPV - Tumor Biospecimen Acquisition",
+    "workflowStatusName": "RELEASED"
+  },
+  "3799860v1.0": {
+    "longName": "Link to BRIDG 3.2 Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "5485865v1.0": {
+    "longName": "FSFI (Female Sexual Function Index)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3070837v1.0": {
+    "longName": "TARGET/CGCI",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5855659v1.0": {
+    "longName": "Biospecimen",
+    "workflowStatusName": "RELEASED"
+  },
+  "2534950v1.1": {
+    "longName": "caArray_1.1",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2695312v1.0": {
+    "longName": "New Content Jenni Bloomquist",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3232477v1.0": {
+    "longName": "Parkinson's Disease CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "5529781v1.0": {
+    "longName": "RDAS (Revised Dyadic Adjustment Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3685569v1.0": {
+    "longName": "Newborn Examination",
+    "workflowStatusName": "RELEASED"
+  },
+  "3952293v1.0": {
+    "longName": "NIDA CTN Usage",
+    "workflowStatusName": "RELEASED"
+  },
+  "4986872v1.0": {
+    "longName": "AHS (Adult Hope Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614828v1.0": {
+    "longName": "NCIA Collection",
+    "workflowStatusName": "RELEASED"
+  },
+  "3781022v1.0": {
+    "longName": "FACT-L (Functional Assessment of Cancer Therapy - Lung)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3886754v1.0": {
+    "longName": "Imaging Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "3852385v1.0": {
+    "longName": "TSQM-9 (Abbreviated Treatment Satisfaction Questionnaire for Medication)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2760132v1.0": {
+    "longName": "caMatch",
+    "workflowStatusName": "RELEASED"
+  },
+  "2391015v1.0": {
+    "longName": "CARRIAGE RETURN TEST CS\r\r\n\r\r\n",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2802722v1.0": {
+    "longName": "Center for Epidemiologic Studies Depression Scale_CESD",
+    "workflowStatusName": "RELEASED"
+  },
+  "6051063v1.0": {
+    "longName": "Electronic Patient Reported Outcomes",
+    "workflowStatusName": "RELEASED"
+  },
+  "3766359v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "3886755v1.0": {
+    "longName": "Preoperative Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "5097381v1.0": {
+    "longName": "MAX-PC (Modified 18-Item Memorial Anxiety Scale for Prostate Cancer)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5646652v1.0": {
+    "longName": "CTD^2 (Cancer Target Discovery and Development",
+    "workflowStatusName": "RELEASED"
+  },
+  "2804620v1.0": {
+    "longName": "GenePattern Based Copy Number Analytical Service",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691538v1.0": {
+    "longName": "PHINMS Receiver",
+    "workflowStatusName": "RELEASED"
+  },
+  "5428034v1.0": {
+    "longName": "Clinical",
+    "workflowStatusName": "RELEASED"
+  },
+  "2528431v3.1": {
+    "longName": "caCORE 3.1",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3875532v1.0": {
+    "longName": "FACT-Br (Functional Assessment of Cancer Therapy - Brain)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3955259v1.0": {
+    "longName": "BPI-SF (Brief Pain Inventory Short Form)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3194026v1.0": {
+    "longName": "KAI Research",
+    "workflowStatusName": "RELEASED"
+  },
+  "2726654v2.1": {
+    "longName": "caArray",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691545v1.0": {
+    "longName": "Reference Data",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008587v2.0": {
+    "longName": "Type of Disease",
+    "workflowStatusName": "RELEASED"
+  },
+  "2399260v1.0": {
+    "longName": "Security Componet",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3314482v1.0": {
+    "longName": "Type of Category",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857186v1.0": {
+    "longName": "SNP500Cancer",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2496586v1.1": {
+    "longName": "Grid-enablement of Protein Information Resource (PIR) 1.1",
+    "workflowStatusName": "RELEASED"
+  },
+  "3626262v1.0": {
+    "longName": "BCT Outcomes (Breast Cancer Treatment Outcomes Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691539v1.0": {
+    "longName": "Data Brokering",
+    "workflowStatusName": "RELEASED"
+  },
+  "4748831v1.0": {
+    "longName": "Prospective Sarcoma Patient Outcome Database",
+    "workflowStatusName": "RELEASED"
+  },
+  "2939361v1.0": {
+    "longName": "DCTD (Division of Cancer Treatment and Diagnosis)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3691271v1.0": {
+    "longName": "FACT-Hep (Functional Assessment of Cancer Therapy - Hepatobiliary)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2661628v2.0": {
+    "longName": "caFE Server",
+    "workflowStatusName": "RELEASED"
+  },
+  "2726207v1.0": {
+    "longName": "caNano",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2819751v1.0": {
+    "longName": "Copy Number Analysis Tool",
+    "workflowStatusName": "RELEASED"
+  },
+  "2961512v1.1": {
+    "longName": "lungspore",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3079208v1.5": {
+    "longName": "AIM 1.5",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6093484v1.0": {
+    "longName": "CDM Harmonization Project",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "6545315v1.0": {
+    "longName": "SI Workshop Query Categories",
+    "workflowStatusName": "RELEASED"
+  },
+  "2803148v1.0": {
+    "longName": "SEER Standard Population Statistics",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "3190118v1.0": {
+    "longName": "NHS National Cancer Dataset (United Kingdom)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5999742v1.0": {
+    "longName": "CRF CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "3654497v1.0": {
+    "longName": "EORTC QLQ",
+    "workflowStatusName": "RELEASED"
+  },
+  "4826262v1.0": {
+    "longName": "COST-FACIT Version 1",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3813677v1.0": {
+    "longName": "ESAS (Edmonton Symptom Assessment System)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2767602v1.0": {
+    "longName": "WCI1116-05",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2854844v1.0": {
+    "longName": "GeneNeighbors",
+    "workflowStatusName": "RELEASED"
+  },
+  "2747429v1.0": {
+    "longName": "caAERS",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5506117v1.0": {
+    "longName": "Genomics",
+    "workflowStatusName": "RELEASED"
+  },
+  "2898532v2.3": {
+    "longName": "caArray Internal",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614824v4.0": {
+    "longName": "AIM 4.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2839152v1.0": {
+    "longName": "testing a bug in 4001",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "3173877v1.0": {
+    "longName": "TCR",
+    "workflowStatusName": "RELEASED"
+  },
+  "3696642v1.0": {
+    "longName": "NIDA CTN Instrument",
+    "workflowStatusName": "RELEASED"
+  },
+  "2183535v1.0": {
+    "longName": "Clinical Trial Mgmt Systems",
+    "workflowStatusName": "RELEASED"
+  },
+  "2713346v1.0": {
+    "longName": "HITSP Value Sets",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "4117611v1.0": {
+    "longName": "DSQ (Dexamethasone Symptom Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3121676v1.0": {
+    "longName": "Test CS34",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2714898v2.1": {
+    "longName": "BRIDG 2.1",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3314438v1.0": {
+    "longName": "Disease Site",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5092551v1.0": {
+    "longName": "Approved CDEs",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2550736v1.0": {
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2857185v1.0": {
+    "longName": "RProteomics",
+    "workflowStatusName": "RELEASED"
+  },
+  "2751669v1.0": {
+    "longName": "Lymphoma Enterprise Architecture Data System (LEADS)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008589v2.0": {
+    "longName": "Type of Category",
+    "workflowStatusName": "RELEASED"
+  },
+  "4857911v1.0": {
+    "longName": "PROMIS Item Banks (Patient Reported Outcomes Measurement Information System)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3766358v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "3810955v1.0": {
+    "longName": "NDII (Neck Dissection Impairment Index)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2716207v1.0": {
+    "longName": "ASCO (American Society of Clinical Oncology)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2534690v2.5": {
+    "longName": "caMOD_2.5",
+    "workflowStatusName": "RELEASED"
+  },
+  "3698731v1.0": {
+    "longName": "MDASI-HN (M.D. Anderson Symptom Inventory - Head & Neck)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6093471v1.0": {
+    "longName": "ACT Network CDM 1.4",
+    "workflowStatusName": "RELEASED"
+  },
+  "3813439v1.0": {
+    "longName": "MDASI-LC (M.D. Anderson Symptom Inventory - Lung Chemoradiation)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2981932v5.0": {
+    "longName": "LexEVS 5.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2487057v1.0": {
+    "longName": "DCP Enterprise System Knowledgebase ",
+    "workflowStatusName": "RELEASED"
+  },
+  "5152111v1.0": {
+    "longName": "MCL-Molecular Characterization Lesion",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2586709v1.0": {
+    "longName": "Tuberculosis Project",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2495057v1.0": {
+    "longName": "Jennys Project Metadata",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3378854v1.0": {
+    "longName": "Measures",
+    "workflowStatusName": "RELEASED"
+  },
+  "5542681v1.0": {
+    "longName": "EDRN_CDE_Project",
+    "workflowStatusName": "RELEASED"
+  },
+  "3704364v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2632574v1.0": {
+    "longName": "Bioconductor",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3204728v1.0": {
+    "longName": "Common Biorepository Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857180v1.0": {
+    "longName": "Type of Category",
+    "workflowStatusName": "RELEASED"
+  },
+  "2611721v2.0": {
+    "longName": "CGWB",
+    "workflowStatusName": "RELEASED"
+  },
+  "2842777v1.0": {
+    "longName": "Labs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2782636v1.0": {
+    "longName": "caTissue_Suite",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2861601v1.0": {
+    "longName": "KNearestNeighbors",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857175v1.0": {
+    "longName": "C3D Adopter CDEs for Reuse",
+    "workflowStatusName": "RELEASED"
+  },
+  "3232580v1.0": {
+    "longName": "PRL0602",
+    "workflowStatusName": "RELEASED"
+  },
+  "3812926v1.0": {
+    "longName": "GAD-7 (Generalized Anxiety Disorder 7-item Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3351909v1.0": {
+    "longName": "OPEN to Rave Standard Forms",
+    "workflowStatusName": "RELEASED"
+  },
+  "2208181v1.0": {
+    "longName": "Catalogue of Published Forms",
+    "workflowStatusName": "RELEASED"
+  },
+  "2802944v1.0": {
+    "longName": "SEER United States Mortality Statistics",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2691537v1.0": {
+    "longName": "PHINMS Sender",
+    "workflowStatusName": "RELEASED"
+  },
+  "3314439v1.0": {
+    "longName": "Imaging Modality",
+    "workflowStatusName": "RELEASED"
+  },
+  "4117471v1.0": {
+    "longName": "CTD2 (Cancer Target Discovery and Development)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2008595v1.0": {
+    "longName": "Public Health Conceptual Data Model",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2183783v1.0": {
+    "longName": "Site Usage",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4986873v1.0": {
+    "longName": "WPAI:GH (Work Productivity and Activity Impairment General Health Problems Version 2.0 Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008594v2.31": {
+    "longName": "Trial Type Usages (CDE Disease Committees)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2661745v1.0": {
+    "longName": "caTissue_Core_caArray",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008610v1.0": {
+    "longName": "Electrocardiography Evaluation",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "6235436v1.0": {
+    "longName": "ACE-27 (Adult Comorbidity Evaluation-27)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3896529v1.0": {
+    "longName": "Consortia 2012 Studies",
+    "workflowStatusName": "RELEASED"
+  },
+  "2552643v1.0": {
+    "longName": "Training Class Examples",
+    "workflowStatusName": "RELEASED"
+  },
+  "3638604v1.0": {
+    "longName": "FACT-P (Functional Assessment of Cancer Therapy- Prostate)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3234177v1.0": {
+    "longName": "Patient Outcomes Data System (PODS)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614824v3.0": {
+    "longName": "AIM 3.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857162v1.0": {
+    "longName": "Cancer Models Database 2.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3121334v1.0": {
+    "longName": "CTCAE v4.0 CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2590625v1.0": {
+    "longName": "My Test Container",
+    "workflowStatusName": "RELEASED"
+  },
+  "2798952v1.0": {
+    "longName": "SEERDemography",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2513254v1.0": {
+    "longName": "caTISSUE Core",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4494394v1.0": {
+    "longName": "FACT-ES (Functional Assessment of Cancer Therapy - Endocrine Symptoms)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2857170v1.0": {
+    "longName": "Commercial Partners",
+    "workflowStatusName": "RELEASED"
+  },
+  "4925232v1.0": {
+    "longName": "Test Tree Rendering",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2695319v1.0": {
+    "longName": "NMDP: CDEs to review",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691534v1.0": {
+    "longName": "Data Provisioning",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614829v1.0": {
+    "longName": "NCIA Model Archived",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2179692v1.0": {
+    "longName": "TYPE OF CATEGORY",
+    "workflowStatusName": "RELEASED"
+  },
+  "5187971v1.0": {
+    "longName": "NHS II (Nurses' Health Study II: Activity and Inactivity Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6032138v1.0": {
+    "longName": "DART (Distress Assessment and Response Tool)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2961451v1.0": {
+    "longName": "Children's Oncology Group (COG)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857166v2.31": {
+    "longName": "CRF Trial Type Usage",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2180420v1.0": {
+    "longName": "PHARMACOKINETICS",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3863413v1.0": {
+    "longName": "OAMFQ (Older Americans Resource Scale Multidimensional Functional Assessment Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2514015v1.1": {
+    "longName": "caFE Server 1.1",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6539441v1.0": {
+    "longName": "SSPedi (Symptom Screening in Pediatrics)",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3180886v1.0": {
+    "longName": "All Candidates",
+    "workflowStatusName": "RELEASED"
+  },
+  "3228346v1.0": {
+    "longName": "Perceived Stress Scale",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "5506114v1.0": {
+    "longName": "Pancreas",
+    "workflowStatusName": "RELEASED"
+  },
+  "3173038v1.0": {
+    "longName": "gridTCR",
+    "workflowStatusName": "RELEASED"
+  },
+  "2861767v1.0": {
+    "longName": "SVM",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008590v2.0": {
+    "longName": "STANDARD FORMS",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2746709v1.0": {
+    "longName": "Jamie's Training",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3461150v1.0": {
+    "longName": "Staging",
+    "workflowStatusName": "RELEASED"
+  },
+  "4551819v1.0": {
+    "longName": "FKSI-15 (Functional Assessment of Cancer Therapy - Kidney Symptom Index)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4809902v1.0": {
+    "longName": "PROMIS-43 Profile v2.0",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2539469v1.0": {
+    "longName": "Family Blood Pressure Program",
+    "workflowStatusName": "RELEASED"
+  },
+  "2939183v4.3": {
+    "longName": "caBIO 4.3",
+    "workflowStatusName": "RELEASED"
+  },
+  "5103138v1.0": {
+    "longName": "TAPS Tool",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2614826v1.0": {
+    "longName": "DICOM",
+    "workflowStatusName": "RELEASED"
+  },
+  "2597548v1.0": {
+    "longName": "Clinic(NCDE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2751568v1.0": {
+    "longName": "BehavioralResearchMeasures",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3852751v1.0": {
+    "longName": "Therapeutic",
+    "workflowStatusName": "RELEASED"
+  },
+  "2899621v1.0": {
+    "longName": "ImageMiner",
+    "workflowStatusName": "RELEASED"
+  },
+  "4319811v1.0": {
+    "longName": "FAACT (Functional Assessment of Anorexia/Cachexia Treatment)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2842912v1.0": {
+    "longName": "Therapy",
+    "workflowStatusName": "RELEASED"
+  },
+  "2898456v1.0": {
+    "longName": "New Example",
+    "workflowStatusName": "RELEASED"
+  },
+  "3876594v1.0": {
+    "longName": "Theradex",
+    "workflowStatusName": "RELEASED"
+  },
+  "2726654v2.0": {
+    "longName": "caArray",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2557741v1.1": {
+    "longName": "geworkbench",
+    "workflowStatusName": "RELEASED"
+  },
+  "3029677v1.0": {
+    "longName": "UAMS Clinical Research",
+    "workflowStatusName": "RELEASED"
+  },
+  "3690872v1.0": {
+    "longName": "LASA (Linear Analogue Self Assessment)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2638539v1.0": {
+    "longName": "Reactome Database Sharing",
+    "workflowStatusName": "RELEASED"
+  },
+  "2768653v2.0": {
+    "longName": "caBIG Integration Hub",
+    "workflowStatusName": "RELEASED"
+  },
+  "2519060v1.0": {
+    "longName": "Seed",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857173v3.0": {
+    "longName": "caCORE 3.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4735391v1.0": {
+    "longName": "ACR NRDR",
+    "workflowStatusName": "RELEASED"
+  },
+  "2672769v2.0": {
+    "longName": "Patient Study Calendar",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3165875v1.0": {
+    "longName": "Subjective Numeracy Scale",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2557741v1.0": {
+    "longName": "geworkbench",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2673170v1.0": {
+    "longName": "BiospecimenCoreResource",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3886758v1.0": {
+    "longName": "Radiation Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "2180030v1.0": {
+    "longName": "TESTING DENISES CLASSIFICATION SCHEME",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2714898v3.02": {
+    "longName": "BRIDG 3.0.2",
+    "workflowStatusName": "RELEASED"
+  },
+  "3727011v1.0": {
+    "longName": "FACT-BMT (Functional Assessment of Cancer Therapy - Bone Marrow Transplant)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2008586v2.0": {
+    "longName": "Type of Category",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2967376v4.0": {
+    "longName": "caDSR 4.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2724612v0.53": {
+    "longName": "Clinical Trials Object Data System (CTODS)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2780868v1.0": {
+    "longName": "MDR",
+    "workflowStatusName": "RELEASED"
+  },
+  "2512690v1.0": {
+    "longName": "Potential CDEs for Reuse",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857179v1.0": {
+    "longName": "Homework Examples",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3912355v1.0": {
+    "longName": "FACT-Taxane (Functional Assessment of Cancer Therapy - Taxane)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2798698v1.0": {
+    "longName": "SEER Healthy Goals",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "3539833v1.0": {
+    "longName": "EQ-5D (EuroQol Group EQ-5D Health Questionnaire)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4280691v1.0": {
+    "longName": "CRF CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2768653v1.0": {
+    "longName": "caXchange",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2954884v1.0": {
+    "longName": "GRANITE",
+    "workflowStatusName": "RELEASED"
+  },
+  "2839153v1.0": {
+    "longName": "omniBiomarker",
+    "workflowStatusName": "RELEASED"
+  },
+  "2898532v2.4": {
+    "longName": "caArray Internal",
+    "workflowStatusName": "RELEASED"
+  },
+  "2697804v1.0": {
+    "longName": "Infusion form for Review",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2839207v1.0": {
+    "longName": "Chromosomal Segment Overlap Finder Across Samples",
+    "workflowStatusName": "RELEASED"
+  },
+  "2858220v1.0": {
+    "longName": "Taverna-caGrid",
+    "workflowStatusName": "RELEASED"
+  },
+  "5428053v1.0": {
+    "longName": "Biospecimen",
+    "workflowStatusName": "RELEASED"
+  },
+  "5626752v1.0": {
+    "longName": "RSCL (Rotterdam Symptom Checklist)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5128551v1.0": {
+    "longName": "Breast Cancer Prevention Trial (BCPT) Symptom Scales",
+    "workflowStatusName": "RELEASED"
+  },
+  "5218331v1.0": {
+    "longName": "CESD-R (The Center for Epidemiologic Studies Depression Scale Revised)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4254095v1.0": {
+    "longName": "PBTC Standard Forms",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691326v1.0": {
+    "longName": "Biosense",
+    "workflowStatusName": "RELEASED"
+  },
+  "2960572v1.0": {
+    "longName": "Eligibility Criteria",
+    "workflowStatusName": "RELEASED"
+  },
+  "5873904v1.0": {
+    "longName": "PORPUS (Patient Oriented Prostate Utility Scale)",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2597552v1.0": {
+    "longName": "Health(NCDE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6235424v1.0": {
+    "longName": "BHLS (BRIEF Health Literacy Screening Tool)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2985612v2.2": {
+    "longName": "CTEP Enterprise Services",
+    "workflowStatusName": "RELEASED"
+  },
+  "2856819v1.0": {
+    "longName": "Chromosomal Segment Overlap Finder Across Sources",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691540v1.0": {
+    "longName": "ETL",
+    "workflowStatusName": "RELEASED"
+  },
+  "5566511v1.0": {
+    "longName": "CGI (Clinical Global Impression Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2919341v1.1": {
+    "longName": "caTissue_Suite1_1",
+    "workflowStatusName": "RELEASED"
+  },
+  "5574822v1.0": {
+    "longName": "PRO-CTCAE (Patient Reported Outcomes of CTCAE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3684652v1.0": {
+    "longName": "MDADI (M.D. Anderson Dysphagia Inventory)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2467349v1.0": {
+    "longName": "MySubtractionService",
+    "workflowStatusName": "RELEASED"
+  },
+  "4267018v1.0": {
+    "longName": "HADS (Hospital Anxiety and Depression Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2976812v1.0": {
+    "longName": "GO Trial",
+    "workflowStatusName": "RELEASED"
+  },
+  "2688442v1.0": {
+    "longName": "Test",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2760571v1.0": {
+    "longName": "HINTSSurvey",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2194255v1.0": {
+    "longName": "Type of Condition",
+    "workflowStatusName": "RELEASED"
+  },
+  "5285151v1.0": {
+    "longName": "C-TUQ (Cancer Patient Tobacco Use Questionnaire)",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "6382879v1.0": {
+    "longName": "HCCQ (The Health Care Climate Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2710221v1.0": {
+    "longName": "NHLBI",
+    "workflowStatusName": "RELEASED"
+  },
+  "2897009v1.0": {
+    "longName": "SNP Microarray Analytical Service",
+    "workflowStatusName": "RELEASED"
+  },
+  "5115671v1.0": {
+    "longName": "PSQ-18 (Patient Satisfaction Questionnaire Short Form)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4493471v1.0": {
+    "longName": "MPN-SAF (Myeloproliferative Neoplasm Symptom Assessment Form)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5724341v1.0": {
+    "longName": "Integrations",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6093485v1.0": {
+    "longName": "Sentinel CDM 6.02",
+    "workflowStatusName": "RELEASED"
+  },
+  "2544880v1.0": {
+    "longName": "GeneConnect",
+    "workflowStatusName": "RELEASED"
+  },
+  "2548333v1.0": {
+    "longName": "I-SPY",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857178v1.0": {
+    "longName": "Grid-enablement of Protein Information Resource (PIR) 1.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2693115v3.0": {
+    "longName": "NCIA_Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "4442461v1.0": {
+    "longName": "Content for Review",
+    "workflowStatusName": "RELEASED"
+  },
+  "2958963v1.0": {
+    "longName": "COPPA",
+    "workflowStatusName": "RELEASED"
+  },
+  "2523380v1.0": {
+    "longName": "NCI-60 Drug",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2804809v1.0": {
+    "longName": "Cardiovascular Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "2180933v1.0": {
+    "longName": "Lung Image Database Consortium",
+    "workflowStatusName": "RELEASED"
+  },
+  "3292694v1.0": {
+    "longName": "Theradex",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2008596v1.0": {
+    "longName": "NCI Concept Hierarchy",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "4280881v1.0": {
+    "longName": "SF-36v2 (Short Form 36 Health Survey Standard, US Version 2.0 Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2190530v1.0": {
+    "longName": "Demonstration Applications",
+    "workflowStatusName": "RELEASED"
+  },
+  "2598198v1.0": {
+    "longName": "CTEP CDS Data Elements",
+    "workflowStatusName": "RELEASED"
+  },
+  "6601285v1.0": {
+    "longName": "PDC (Proteomic Data Commons)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4826811v1.0": {
+    "longName": "Core",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008598v1.0": {
+    "longName": "NCI_CORE",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5273171v1.0": {
+    "longName": "CRQ-SAS (Chronic Respiratory Questionnaire Self-Administered Standardized Format)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857187v1.0": {
+    "longName": "CAP Cancer Checklists",
+    "workflowStatusName": "RELEASED"
+  },
+  "3370903v1.0": {
+    "longName": "FAHI (Functional Assessment of HIV Infection)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2861024v1.0": {
+    "longName": "caSEER",
+    "workflowStatusName": "RELEASED"
+  },
+  "5428323v1.0": {
+    "longName": "Experiment Data",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "5506116v1.0": {
+    "longName": "Pathology",
+    "workflowStatusName": "RELEASED"
+  },
+  "3178240v1.0": {
+    "longName": "Measures",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857176v1.0": {
+    "longName": "TestFolderCS",
+    "workflowStatusName": "RELEASED"
+  },
+  "2521476v1.0": {
+    "longName": "GoMiner",
+    "workflowStatusName": "RELEASED"
+  },
+  "2681512v1.0": {
+    "longName": "New Content Robinette Aley",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2672769v2.6": {
+    "longName": "Patient Study Calendar",
+    "workflowStatusName": "RELEASED"
+  },
+  "2803320v1.0": {
+    "longName": "SEER US Population",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "6147165v1.0": {
+    "longName": "Wake Forest Baptist Medical Center",
+    "workflowStatusName": "RELEASED"
+  },
+  "2854842v2.0": {
+    "longName": "PrincipalComponentsAnalysis",
+    "workflowStatusName": "RELEASED"
+  },
+  "2898900v1.0": {
+    "longName": "caArray",
+    "workflowStatusName": "RELEASED"
+  },
+  "2400281v1.0": {
+    "longName": "Person",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2793652v1.0": {
+    "longName": "PhenX",
+    "workflowStatusName": "RELEASED"
+  },
+  "4025071v1.0": {
+    "longName": "TEST_PROD_10g",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2738437v1.0": {
+    "longName": "Breast and Colon Cancer Family Registries",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3232581v1.0": {
+    "longName": "PEARL",
+    "workflowStatusName": "RELEASED"
+  },
+  "4659561v1.0": {
+    "longName": "PROMIS Parent Proxy Item Bank v1.0 - Pain Interference 8",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3144420v1.0": {
+    "longName": "FACT-G (Functional Assessment of Cancer Therapy General)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2944977v5.0": {
+    "longName": "NBIA (National Biomedical Imaging Archive)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2663837v3.2": {
+    "longName": "Testing caCORE ",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3335152v1.0": {
+    "longName": "HTMCP (HIV+Tumor Molecular Characterization Project)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2201036v1.0": {
+    "longName": "Head and Neck SPOREs ",
+    "workflowStatusName": "RELEASED"
+  },
+  "6235428v1.0": {
+    "longName": "PSCC (Patient Satisfaction with Cancer Care Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2950470v1.0": {
+    "longName": "TobPRAC",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2614827v1.0": {
+    "longName": "Middleware",
+    "workflowStatusName": "RELEASED"
+  },
+  "2953481v1.0": {
+    "longName": "caArray Service",
+    "workflowStatusName": "RELEASED"
+  },
+  "2552422v3.1": {
+    "longName": "caCORE Reload caDSR 3.1",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2182337v1.0": {
+    "longName": "Hierarchical Disease Classification Scheme",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "4970851v1.0": {
+    "longName": "Meaningful Use",
+    "workflowStatusName": "RELEASED"
+  },
+  "3241399v1.0": {
+    "longName": "IARC Cancer Registry",
+    "workflowStatusName": "RELEASED"
+  },
+  "3704455v1.0": {
+    "longName": "LBCQ (Lymphedema and Breast Cancer Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5566512v1.0": {
+    "longName": "BF-Diary (Bowel Function Diary)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3787498v1.0": {
+    "longName": "TCGA 2.6 by Disease",
+    "workflowStatusName": "RELEASED"
+  },
+  "3626263v1.0": {
+    "longName": "BIS (Body Image Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3902628v1.0": {
+    "longName": "HRQOL/PRO Legacy CDEs",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5725685v1.0": {
+    "longName": "DRS (Decision Regret Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3704365v1.0": {
+    "longName": "NCI Standard Template CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2551427v1.1": {
+    "longName": "C3PR",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2008597v1.0": {
+    "longName": "TEST",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3691273v1.0": {
+    "longName": "FACT-H&N (Functional Assessment of Cancer Therapy - Head & Neck)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3588382v1.0": {
+    "longName": "PICUcoreClinicalData",
+    "workflowStatusName": "RELEASED"
+  },
+  "3863415v1.0": {
+    "longName": "MOS (Medical Outcomes Study)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3384631v1.0": {
+    "longName": "OHIP-14 (Oral Health Impact Profile)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5377271v1.0": {
+    "longName": "ICBO Tutorial",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614824v2.0": {
+    "longName": "AIM 2.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3024952v1.0": {
+    "longName": "HINTS 2005",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2185453v1.0": {
+    "longName": "TEST LOINC Classes",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2857174v1.0": {
+    "longName": "CDISC Codelists",
+    "workflowStatusName": "RELEASED"
+  },
+  "3938979v1.0": {
+    "longName": "Norton DICOM CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2190840v1.0": {
+    "longName": "cc",
+    "workflowStatusName": "RELEASED"
+  },
+  "2482123v1.0": {
+    "longName": "DHS",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4039732v1.0": {
+    "longName": "FACT-Ga (Functional Assessment of Cancer Therapy - Gastric)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2786997v1.0": {
+    "longName": "DigitalModelRepository(DMR)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2437567v1.0": {
+    "longName": "x",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2672769v1.0": {
+    "longName": "Patient Study Calendar",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2677906v1.0": {
+    "longName": "CoCaNUT",
+    "workflowStatusName": "RELEASED"
+  },
+  "2551427v2.8": {
+    "longName": "C3PR",
+    "workflowStatusName": "RELEASED"
+  },
+  "3757111v3.2": {
+    "longName": "BRIDG 3.2",
+    "workflowStatusName": "RELEASED"
+  },
+  "4659568v1.0": {
+    "longName": "PROMIS Item Bank v1.0 - Pain Interference - Short Form 6b",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2772168v1.0": {
+    "longName": "caLIMS2",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2880281v1.0": {
+    "longName": "VASARI",
+    "workflowStatusName": "RELEASED"
+  },
+  "2612100v1.0": {
+    "longName": "caNanoLab",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "6437797v1.0": {
+    "longName": "Pre-Cancer Atlas",
+    "workflowStatusName": "RELEASED"
+  },
+  "2184681v1.0": {
+    "longName": "Test Java Packages",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "5650570v1.0": {
+    "longName": "TARGET",
+    "workflowStatusName": "RELEASED"
+  },
+  "3855897v1.0": {
+    "longName": "EPIC (Expanded Prostate Cancer Index Composite)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008601v1.0": {
+    "longName": "C3D Domain",
+    "workflowStatusName": "RELEASED"
+  },
+  "2915522v1.5": {
+    "longName": "caNanoLab",
+    "workflowStatusName": "RELEASED"
+  },
+  "3232567v1.0": {
+    "longName": "PEARL 0602",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2589983v3.5": {
+    "longName": "Caisis",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2607493v1.0": {
+    "longName": "Retired CTOM (Clinical Trials Object Model)",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "3028392v1.0": {
+    "longName": "HINTS2005",
+    "workflowStatusName": "RELEASED"
+  },
+  "3912352v1.0": {
+    "longName": "FACT-NP (Functional Assessment of Cancer Therapy - Nasopharyngeal)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2931931v1.0": {
+    "longName": "Iloprost Trial",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857183v1.0": {
+    "longName": "ProteomicsLIMS",
+    "workflowStatusName": "RELEASED"
+  },
+  "2799194v1.0": {
+    "longName": "SEERScreeningStats",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2857168v1.0": {
+    "longName": "CCR Common Data Element Collection",
+    "workflowStatusName": "RELEASED"
+  },
+  "2803049v1.0": {
+    "longName": "SEERUSMortality",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3625128v1.0": {
+    "longName": "Image Finding CS",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2557869v1.2": {
+    "longName": "caFE Server",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5090651v1.0": {
+    "longName": "DCS (Decisional Conflict Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2714661v4.2": {
+    "longName": "caBIO 4.2",
+    "workflowStatusName": "RELEASED"
+  },
+  "3232464v1.0": {
+    "longName": "PerceivedStressScale_PSS",
+    "workflowStatusName": "RELEASED"
+  },
+  "4925231v1.0": {
+    "longName": "Test the Tree",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5635300v1.0": {
+    "longName": "Case Report Form (CRF) Modules",
+    "workflowStatusName": "RELEASED"
+  },
+  "2676055v1.0": {
+    "longName": "Training Models",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2629622v1.0": {
+    "longName": "Transcription Annotation Prioritization and Screening System",
+    "workflowStatusName": "RELEASED"
+  },
+  "2321254v1.0": {
+    "longName": "MicroArray Gene Expression Object Model (Mage-OM)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4659563v1.0": {
+    "longName": "PROMIS Pediatric Item Bank v.1.0 - Pain Interference - Short Form 8a",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "6009267v1.0": {
+    "longName": "CCTG CRF CDEs",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2707890v2.1": {
+    "longName": "caIntegrator 2.1",
+    "workflowStatusName": "RELEASED"
+  },
+  "4057943v1.0": {
+    "longName": "Disease Site",
+    "workflowStatusName": "RELEASED"
+  },
+  "2900334v1.0": {
+    "longName": "PCTA",
+    "workflowStatusName": "RELEASED"
+  },
+  "4659559v1.0": {
+    "longName": "PROMIS Item Bank v1.0 - Pain Interference - Short Form 8a, Investigator Format",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "5506112v1.0": {
+    "longName": "Breast",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008603v1.0": {
+    "longName": "Adult Soft Tissue New",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3716018v1.0": {
+    "longName": "BLSS (Breast Lymphedema Symptom Survey)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3021954v1.0": {
+    "longName": "Caris Life Sciences",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008588v2.0": {
+    "longName": "TYPE OF USAGE",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2399264v1.0": {
+    "longName": "Agency",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "3626265v1.0": {
+    "longName": "10 PROMIS Global Health Questionnaire",
+    "workflowStatusName": "RELEASED"
+  },
+  "2475251v2.0": {
+    "longName": "caTIES 2.0",
+    "workflowStatusName": "RELEASED"
+  },
+  "2714661v4.1": {
+    "longName": "caBIO 4.1",
+    "workflowStatusName": "RELEASED"
+  },
+  "2927833v1.0": {
+    "longName": "caGrid",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614746v1.0": {
+    "longName": "Imaging",
+    "workflowStatusName": "RELEASED"
+  },
+  "6601273v1.0": {
+    "longName": "CPTAC (Clinical Proteomic Tumor Analysis Consortium)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2857171v1.0": {
+    "longName": "Protocol Amendment",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2983652v1.0": {
+    "longName": "caBIGGridEnabledMeasures",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2799016v1.0": {
+    "longName": "SEERDemographic",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2937835v2.0": {
+    "longName": "TCGAPortal",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3006612v1.0": {
+    "longName": "eMERGE",
+    "workflowStatusName": "RELEASED"
+  },
+  "3188337v1.0": {
+    "longName": "Stroke CDEs",
+    "workflowStatusName": "RELEASED"
+  },
+  "2689825v1.0": {
+    "longName": "PathwayInteractionDatabase",
+    "workflowStatusName": "RELEASED"
+  },
+  "6162769v1.0": {
+    "longName": "University of Rochester",
+    "workflowStatusName": "RELEASED"
+  },
+  "2665304v1.0": {
+    "longName": "TobaccoInformaticsGrid",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2857169v1.0": {
+    "longName": "SAE Reporting Application",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2718902v1.0": {
+    "longName": "ONS (Oncology Nursing Society)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2798876v1.0": {
+    "longName": "SEERHealthGoals",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2714898v1.0": {
+    "longName": "BRIDG 1.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3081758v1.0": {
+    "longName": "NHIS_2005",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "4632204v1.0": {
+    "longName": "Admin Training Example",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4320453v1.0": {
+    "longName": "PTPQ (Prognosis and Treatment Perceptions Questionnaire)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3852378v1.0": {
+    "longName": "ONEM (Osoba Nausea and Emesis Module)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5076153v1.0": {
+    "longName": "FDA Global UDI Database",
+    "workflowStatusName": "RELEASED"
+  },
+  "3876352v1.0": {
+    "longName": "Inclusion Criteria",
+    "workflowStatusName": "RELEASED"
+  },
+  "6382900v1.0": {
+    "longName": "BAI (Brief Appraisal Inventory)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2737760v2.3": {
+    "longName": "LexBIG 2.3",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2737760v2.2": {
+    "longName": "LexBIG",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3590028v1.0": {
+    "longName": "BLGSP (Burkitt Lymphoma Genome Sequencing Project)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2983752v1.0": {
+    "longName": "Grid Enabled Measures",
+    "workflowStatusName": "RELEASED"
+  },
+  "3144217v1.0": {
+    "longName": "FACT G",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2958652v1.0": {
+    "longName": "NewbornExamination",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "3228240v1.0": {
+    "longName": "CHTN (Cooperative Human Tissue Network)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2611677v1.0": {
+    "longName": "CTOM (Clinical Trials Object Model)",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5806857v1.0": {
+    "longName": "HCMI (Human Cancer Models Initiative)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2747429v2.0": {
+    "longName": "caAERS",
+    "workflowStatusName": "RELEASED"
+  },
+  "2182091v1.0": {
+    "longName": "C3D Retired",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5024211v1.0": {
+    "longName": "M. D. Anderson Symptom Inventory Measures",
+    "workflowStatusName": "RELEASED"
+  },
+  "5090662v1.0": {
+    "longName": "CSDIR (Clark Symptom Distress Index and Regret)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6382898v1.0": {
+    "longName": "PPOS (Patient Provider Orientation Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2619399v1.0": {
+    "longName": "caElmir",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3837553v1.0": {
+    "longName": "Brief Patient PRO-CTCAE Feedback Survey ",
+    "workflowStatusName": "RELEASED"
+  },
+  "2220736v1.0": {
+    "longName": "Protocol Epoch",
+    "workflowStatusName": "DRAFT NEW"
+  },
+  "2614831v1.0": {
+    "longName": "RadLex",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2899264v1.0": {
+    "longName": "Link to NCIP CDE Standards",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2680967v1.2": {
+    "longName": "caTissue_Core_1_2",
+    "workflowStatusName": "RELEASED"
+  },
+  "2388918v1.0": {
+    "longName": "caTIES 1.0",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2534690v2.1": {
+    "longName": "caMOD",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2714463v1.0": {
+    "longName": "ChemBank",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2695314v1.0": {
+    "longName": "New Content Wendy Zhang",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "2008600v1.0": {
+    "longName": "NOS",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "4659565v1.0": {
+    "longName": "PROMIS SF v.1.0 - Pain Intensity 3a",
+    "workflowStatusName": "RETIRED PHASED OUT"
+  },
+  "2182094v1.0": {
+    "longName": "net-Trials",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "5858962v1.0": {
+    "longName": "Under Review",
+    "workflowStatusName": "RELEASED"
+  },
+  "2962162v1.0": {
+    "longName": "LexBIG",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3190117v1.0": {
+    "longName": "Australian Cancer Registry",
+    "workflowStatusName": "RELEASED"
+  },
+  "2604617v1.0": {
+    "longName": "Submission and Reporting",
+    "workflowStatusName": "RELEASED"
+  },
+  "5506115v1.0": {
+    "longName": "Imaging",
+    "workflowStatusName": "RELEASED"
+  },
+  "5187973v1.0": {
+    "longName": "HAP (Human Activity Profile)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5506113v1.0": {
+    "longName": "Prostate",
+    "workflowStatusName": "RELEASED"
+  },
+  "4272090v1.0": {
+    "longName": "FDA MedWatch FDA 3500A",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614835v1.0": {
+    "longName": "DSD",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2926008v1.0": {
+    "longName": "PeptideAtlas",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3638606v1.0": {
+    "longName": "HFRDIS (Hot Flash Related Daily Interference Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2528431v3.2": {
+    "longName": "caCORE 3.2",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3852371v1.0": {
+    "longName": "MAT (MASCC Antiemesis Tool)",
+    "workflowStatusName": "RELEASED"
+  },
+  "6607649v1.0": {
+    "longName": "EFS (Edmonton Frail Scale)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2837876v1.0": {
+    "longName": "Utah",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3775608v1.0": {
+    "longName": "CCI (Charlson Comorbidity Index)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5294254v1.0": {
+    "longName": "Head and Neck Complication Tracking Tool",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "2528519v2.0": {
+    "longName": "caIntegrator",
+    "workflowStatusName": "RELEASED"
+  },
+  "3187531v1.0": {
+    "longName": "Grid Enabled Measures caBIG",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "3436920v1.0": {
+    "longName": "GBC (Group Banking Committee)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614825v1.0": {
+    "longName": "XIP",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "5655968v1.0": {
+    "longName": "HTMCP (HIV+Tumor Molecular Characterization Project)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5978242v1.0": {
+    "longName": "G-8 (Geriatric 8 Screening Tool)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2180102v1.0": {
+    "longName": "PATIENT INFORMATION CHARACTERISTICS",
+    "workflowStatusName": "RETIRED DELETED"
+  },
+  "6382881v1.0": {
+    "longName": "SURE Test",
+    "workflowStatusName": "RELEASED"
+  },
+  "2770367v1.0": {
+    "longName": "Novartis",
+    "workflowStatusName": "RETIRED WITHDRAWN"
+  },
+  "3638608v1.0": {
+    "longName": "PRO-CTCAE (Patient Reported Outcomes Version of CTCAE)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2919341v1.2": {
+    "longName": "caTissue_Suite1_2",
+    "workflowStatusName": "RELEASED"
+  },
+  "2008608v1.0": {
+    "longName": "Phase",
+    "workflowStatusName": "RELEASED"
+  },
+  "3185645v1.0": {
+    "longName": "BIGHealth ePRO Data Dictionary",
+    "workflowStatusName": "RELEASED"
+  },
+  "2180031v1.0": {
+    "longName": "GF4057 Test (production)",
+    "workflowStatusName": "RELEASED"
+  },
+  "5090660v1.0": {
+    "longName": "Contemplation Ladder",
+    "workflowStatusName": "RELEASED"
+  },
+  "2553954v1.0": {
+    "longName": "caTRIP Annotation Engine",
+    "workflowStatusName": "RELEASED"
+  },
+  "6400437v1.0": {
+    "longName": "PEPPI (Perceived efficacy in Patient-Physician Interactions)",
+    "workflowStatusName": "RELEASED"
+  },
+  "4320451v1.0": {
+    "longName": "UW QoLv4 (University of Washington Quality of Life Questionnaire, Version 4)",
+    "workflowStatusName": "RELEASED"
+  },
+  "3626149v1.0": {
+    "longName": "ASC (Assessment of Survivor Concerns)",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614833v1.0": {
+    "longName": "CAD Markup",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2803489v1.0": {
+    "longName": "SEERUSPopulation",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "5242953v1.0": {
+    "longName": "BCAN: Bladder Cancer Advocacy Network",
+    "workflowStatusName": "RELEASED"
+  },
+  "3835419v1.0": {
+    "longName": "Pharmacovigilance-Gabapentin/Pregabalin",
+    "workflowStatusName": "RELEASED"
+  },
+  "2691304v1.0": {
+    "longName": "PID - Patient Identification Segment",
+    "workflowStatusName": "RELEASED"
+  },
+  "3242017v1.0": {
+    "longName": "IPq-USP",
+    "workflowStatusName": "RELEASED"
+  },
+  "4861351v1.0": {
+    "longName": "NRDS",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2555333v0.5": {
+    "longName": "Clinical Trials Lab Model",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2964508v2.0": {
+    "longName": "LabViewer",
+    "workflowStatusName": "RELEASED"
+  },
+  "3886752v1.0": {
+    "longName": "For Review",
+    "workflowStatusName": "RELEASED"
+  },
+  "3599505v4.0": {
+    "longName": "AIM Foundation Model",
+    "workflowStatusName": "RELEASED"
+  },
+  "2837741v1.0": {
+    "longName": "protExpress",
+    "workflowStatusName": "RELEASED"
+  },
+  "5506111v1.0": {
+    "longName": "Lung",
+    "workflowStatusName": "RELEASED"
+  },
+  "3124706v1.0": {
+    "longName": "cancer Ontology Based Resources",
+    "workflowStatusName": "RELEASED"
+  },
+  "2614834v1.0": {
+    "longName": "CAD Order",
+    "workflowStatusName": "RETIRED ARCHIVED"
+  },
+  "2201295v1.0": {
+    "longName": "Adverse Events",
+    "workflowStatusName": "RELEASED"
+  }
 }

@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import {uniq} from 'lodash';
 
 export function parseProperties(nindsForms: any[]) {
     const previousTitleArray: string[] = [];

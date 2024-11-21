@@ -1,5 +1,5 @@
-import { By } from 'selenium-webdriver';
-import { runOneLoinc } from 'ingester/loinc/website/oldSite/loincLoader';
+import {By} from 'selenium-webdriver';
+import {runOneLoinc} from 'ingester/loinc/website/oldSite/loincLoader';
 
 export async function parsePanelHierarchyTable(driver, loincId, element) {
     const trs = await element.findElements(By.xpath('tbody/tr'));

@@ -1,15 +1,25 @@
-import { isEmpty, trim, groupBy } from 'lodash';
-
-const XLSX = require('xlsx');
-
 import { dataElementModel } from 'server/cde/mongo-cde';
-import { vteDataElementsMappingCsv } from 'ingester/createMigrationConnection';
-import { DEFAULT_NHLBI_CONFIG, NhlbiConfig } from 'ingester/nhlbi/shared/utility';
-import { formatRows, getCell, mergeDesignations, mergeDefinitions } from 'ingester/nhlbi/shared/utility';
-import { BATCHLOADER, findOneCde, imported, lastMigrationScript, updateCde, updateRawArtifact } from 'ingester/shared/utility';
+import {
+    DEFAULT_NHLBI_CONFIG,
+    formatRows,
+    getCell,
+    mergeDefinitions,
+    mergeDesignations,
+    NhlbiConfig,
+} from 'ingester/nhlbi/shared/utility';
+import {
+    BATCHLOADER,
+    findOneCde,
+    imported,
+    lastMigrationScript,
+    updateCde,
+    updateRawArtifact,
+} from 'ingester/shared/utility';
 import { createNhlbiCde } from 'ingester/nhlbi/cde/cde';
 import { parseNhlbiClassification } from 'ingester/nhlbi/cde/ParseClassification';
 import { CdeForm } from 'shared/form/form.model';
+
+const XLSX = require('xlsx');
 
 let deCount = 0;
 let existingDeCount = 0;
@@ -29,7 +39,7 @@ function assignIsthId(existingCde: CdeForm, row: any) {
         }
     });
     if (!isthIdExists) {
-        existingCde.ids.push({source: 'ISTH', id: isthID});
+        existingCde.ids.push({ source: 'ISTH', id: isthID });
     }
 }
 
@@ -38,14 +48,14 @@ async function doOneNhlbiCde(row: any) {
     const cond = {
         archived: false,
         tinyId: nlmId,
-        'registrationState.registrationStatus': {$ne: 'Retired'}
+        'registrationState.registrationStatus': { $ne: 'Retired' },
     };
     const existingCdes: any[] = await dataElementModel.find(cond);
     let existingCde: any = findOneCde(existingCdes);
     const nhlbiCde = await createNhlbiCde(row);
     const newCde = new dataElementModel(nhlbiCde);
     const newCdeObj = newCde.toObject();
-    if(existingCde){
+    if (existingCde) {
         console.log(`CDE already exists with NLM ID: ${getCell(row, 'NLM ID')}`);
         let existingCdeObj = existingCde.toObject();
         parseNhlbiClassification(existingCdeObj, row);
@@ -65,20 +75,24 @@ async function doOneNhlbiCde(row: any) {
         }
         assignIsthId(existingCde, row);
         existingCdeObj = existingCde.toObject();
-        await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch(err => {
+        await updateCde(existingCdeObj, BATCHLOADER, { updateSource: true }).catch(err => {
             console.log(newCdeObj);
             console.log(existingCdeObj);
             console.log(`NHLBI await updateCde(existingCdeObj error: ${JSON.stringify(err)}`);
             process.exit(1);
         });
         existingDeCount++;
-    }
-    else{
+    } else {
         existingCde = await newCde.save();
         console.log('Create new CDE with tinyId: ' + existingCde.tinyId);
         newDeCount++;
     }
-    await updateRawArtifact(existingCde, newCdeObj, 'International Society on Thrombosis and Haemostasis (ISTH)', 'NHLBI');
+    await updateRawArtifact(
+        existingCde,
+        newCdeObj,
+        'International Society on Thrombosis and Haemostasis (ISTH)',
+        'NHLBI'
+    );
 }
 
 async function run(config = DEFAULT_NHLBI_CONFIG) {
@@ -90,7 +104,6 @@ async function run(config = DEFAULT_NHLBI_CONFIG) {
         await doOneNhlbiCde(row);
     }
 }
-
 
 run(nhlbiConfig).then(() => {
     console.log('Finished loadNhlbiByCsv.');

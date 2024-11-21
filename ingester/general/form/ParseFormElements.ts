@@ -1,5 +1,5 @@
-import { getCell } from 'shared/loader/utilities/utility';
-import { isEmpty } from 'lodash';
+import {getCell} from 'shared/loader/utilities/utility';
+import {isEmpty} from 'lodash';
 
 
 export async function parseFormElements(form: any, rows: any[]) {

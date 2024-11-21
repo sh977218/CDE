@@ -1,4 +1,4 @@
-import { find, uniq } from 'lodash';
+import {find, uniq} from 'lodash';
 
 export function parseDesignations(loinc) {
     const designations: any[] = [{

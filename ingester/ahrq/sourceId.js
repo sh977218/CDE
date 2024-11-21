@@ -1,5 +1,5 @@
-var ahrqCdes = db.getCollection('dataelements').find({"source":"AHRQ"});
-ahrqCdes.forEach(function(cde){
+var ahrqCdes = db.getCollection('dataelements').find({"source": "AHRQ"});
+ahrqCdes.forEach(function (cde) {
     var id;
     if (cde.sourceId) cde.sourceId.split("v")[0];
     var v;

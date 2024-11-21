@@ -1,6 +1,6 @@
 import * as csv from 'csv-parse';
-import { createReadStream } from 'fs';
-import { isEmpty } from 'lodash';
+import {createReadStream} from 'fs';
+import {isEmpty} from 'lodash';
 
 export function parseCSV(csvFile) {
     return new Promise((resolve, reject) => {

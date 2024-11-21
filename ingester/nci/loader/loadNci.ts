@@ -1,12 +1,18 @@
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
-} from 'ingester/shared/utility';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { commentModel } from 'server/discuss/discussDb';
-import { createNciCde } from 'ingester/nci/CDE/cde';
-import { readFile } from 'fs';
-import { NCI_ORG_INFO_MAP } from 'ingester/nci/shared/ORG_INFO_MAP';
+    BATCHLOADER,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeClassificationByOrg,
+    mergeElt,
+    updateCde,
+    updateRawArtifact
+} from '../../shared/utility';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {createNciCde} from '../CDE/cde';
+import {readFile} from 'fs';
+import {NCI_ORG_INFO_MAP} from '../shared/ORG_INFO_MAP';
 
 const xml2js = require('xml2js');
 const xmlParser = new xml2js.Parser();
@@ -47,7 +53,7 @@ function runOneOrg(orgName: string) {
                             createdCdes.push(existingCde.tinyId);
                         } else {
                             const diff = compareElt(newCde.toObject(), existingCde.toObject(), 'NCI');
-                            mergeClassification(existingCde, newCde.toObject(), 'NCI');
+                            mergeClassificationByOrg(existingCde, newCde.toObject(), 'NCI');
                             if (isEmpty(diff)) {
                                 existingCde.imported = imported;
                                 existingCde.lastMigrationScript = lastMigrationScript;

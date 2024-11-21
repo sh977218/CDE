@@ -1,22 +1,30 @@
-import { generateTinyId } from 'server/system/mongo-data';
+import {generateTinyId} from 'server/system/mongo-data';
 import {
-    BATCHLOADER, created, findOneForm, imported, lastMigrationScript, mergeDefinitions, mergeDesignations,
+    BATCHLOADER,
+    created,
+    findOneForm,
+    imported,
+    lastMigrationScript,
+    mergeDefinitions,
+    mergeDesignations,
     mergeProperties,
-    mergeReferenceDocuments, NINR_SOCIAL_DETERMINANTS_OF_HEALTH, updateForm
+    mergeReferenceDocuments,
+    NINR_SOCIAL_DETERMINANTS_OF_HEALTH,
+    updateForm
 } from 'ingester/shared/utility';
-import { parseNinrFormElements } from 'ingester/ninr/csv/form/ParseFormElements';
-import { parseNinrClassification } from 'ingester/ninr/csv/form/ParseClassification';
-import { addNinrSource, parseNinrSources } from 'ingester/ninr/csv/cde/ParseSources';
-import { parseNinrDesignations } from 'ingester/ninr/csv/form/ParseDesignations';
-import { parseNinrProperties } from 'ingester/ninr/csv/form/ParseProperties';
-import { parseNinrDefinitions } from 'ingester/ninr/csv/form/ParseDefinitions';
-import { parseNinrIds } from 'ingester/ninr/csv/form/ParseIds';
-import { formModel, formSourceModel } from 'server/form/mongo-form';
-import { addNinrClassification } from 'ingester/ninr/csv/cde/ParseClassification';
-import { CdeForm } from 'shared/form/form.model';
-import { mergeNinrIds } from 'ingester/ninr/csv/cde/ParseIds';
-import { parseNinrReferenceDocuments } from 'ingester/ninr/csv/form/ParseReferenceDocuments';
-import { parseNinrAttachments } from 'ingester/ninr/csv/form/ParseAttachments';
+import {parseNinrFormElements} from 'ingester/ninr/csv/form/ParseFormElements';
+import {parseNinrClassification} from 'ingester/ninr/csv/form/ParseClassification';
+import {addNinrSource, parseNinrSources} from 'ingester/ninr/csv/cde/ParseSources';
+import {parseNinrDesignations} from 'ingester/ninr/csv/form/ParseDesignations';
+import {parseNinrProperties} from 'ingester/ninr/csv/form/ParseProperties';
+import {parseNinrDefinitions} from 'ingester/ninr/csv/form/ParseDefinitions';
+import {parseNinrIds} from 'ingester/ninr/csv/form/ParseIds';
+import {formModel, formSourceModel} from 'server/form/mongo-form';
+import {addNinrClassification} from 'ingester/ninr/csv/cde/ParseClassification';
+import {CdeForm} from 'shared/form/form.model';
+import {mergeNinrIds} from 'ingester/ninr/csv/cde/ParseIds';
+import {parseNinrReferenceDocuments} from 'ingester/ninr/csv/form/ParseReferenceDocuments';
+import {parseNinrAttachments} from 'ingester/ninr/csv/form/ParseAttachments';
 
 let updatedFormCount = 0;
 let newFormCount = 0;

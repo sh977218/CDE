@@ -1,5 +1,5 @@
-import { isEmpty, trim, uniq } from 'lodash';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
+import {isEmpty, trim, uniq} from 'lodash';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
 
 export function parseNichdDesignations(row: any, config: NichdConfig) {
     const designations = [];

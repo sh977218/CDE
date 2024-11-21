@@ -1,4 +1,4 @@
-import { isEmpty, isEqual, sortBy, toLower, trim } from 'lodash';
+import {isEmpty, isEqual, sortBy, toLower, trim} from 'lodash';
 
 export function parseDefinitions(protocol) {
     const definitions: any[] = [];

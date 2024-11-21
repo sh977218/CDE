@@ -1,20 +1,20 @@
-import { parseDesignations } from 'ingester/nci/Shared/ParseDesignations';
-import { parseDefinitions } from 'ingester/nci/Shared/ParseDefinitions';
-import { parseRegistrationState } from 'ingester/nci/Shared/ParseRegistrationState';
-import { parseSources } from 'ingester/nci/Shared/ParseSources';
-import { parseOrigin } from 'ingester/nci/Shared/ParseOrigin';
-import { parseIds } from 'ingester/nci/Shared/ParseIds';
-import { parseProperties } from 'ingester/nci/Shared/ParseProperties';
-import { parseAttachments } from 'ingester/nci/Shared/ParseAttachments';
-import { parseReferenceDocuments } from 'ingester/nci/Shared/ParseReferenceDocuments';
-import { parseValueDomain } from 'ingester/nci/CDE/ParseValueDomain';
-import { parseObjectClass } from 'ingester/nci/CDE/ParseObjectClass';
-import { parseProperty } from 'ingester/nci/CDE/ParseProperty';
-import { parseDataElementConcept } from 'ingester/nci/CDE/ParseDataElementConcept';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
-import { parseClassification } from 'ingester/nci/Shared/ParseClassification';
-import { generateTinyId } from 'server/system/mongo-data';
-import { parseStewardOrg } from 'ingester/nci/Shared/ParseStewardOrg';
+import {parseDesignations} from '../Shared/ParseDesignations';
+import {parseDefinitions} from '../Shared/ParseDefinitions';
+import {parseRegistrationState} from '../Shared/ParseRegistrationState';
+import {parseSources} from '../Shared/ParseSources';
+import {parseOrigin} from '../Shared/ParseOrigin';
+import {parseIds} from '../Shared/ParseIds';
+import {parseProperties} from '../Shared/ParseProperties';
+import {parseAttachments} from '../Shared/ParseAttachments';
+import {parseReferenceDocuments} from '../Shared/ParseReferenceDocuments';
+import {parseValueDomain} from '../CDE/ParseValueDomain';
+import {parseObjectClass} from '../CDE/ParseObjectClass';
+import {parseProperty} from '../CDE/ParseProperty';
+import {parseDataElementConcept} from '../CDE/ParseDataElementConcept';
+import {BATCHLOADER, created, imported} from 'ingester/shared/utility';
+import {parseClassification} from '../Shared/ParseClassification';
+import {generateTinyId} from 'server/system/mongo-data';
+import {parseStewardOrg} from '../Shared/ParseStewardOrg';
 
 export async function createNciCde(nciXmlCde: any, orgInfo: any) {
     const designations = parseDesignations(nciXmlCde);

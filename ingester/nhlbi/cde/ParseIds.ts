@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { DEFAULT_NHLBI_CONFIG, getCell } from 'ingester/nhlbi/shared/utility';
+import {isEmpty} from 'lodash';
+import {DEFAULT_NHLBI_CONFIG, getCell} from 'ingester/nhlbi/shared/utility';
 
 
 export function parseNhlbiIds(row: any) {

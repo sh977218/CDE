@@ -1,9 +1,9 @@
-import { isEmpty, isEqual, trim, uniq } from 'lodash';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { BATCHLOADER } from 'ingester/shared/utility';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
-import { parseFormId } from '../cde/ParseDesignations';
-import { runOneNinrDataElement } from 'ingester/ninr/csv/cde/cde';
+import {isEmpty, isEqual, trim, uniq} from 'lodash';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {BATCHLOADER} from 'ingester/shared/utility';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
+import {parseFormId} from '../cde/ParseDesignations';
+import {runOneNinrDataElement} from 'ingester/ninr/csv/cde/cde';
 
 function convertCsvRowToFormElement(row: any, cde: any) {
     if (cde.toObject) {

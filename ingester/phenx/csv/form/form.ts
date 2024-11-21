@@ -1,22 +1,17 @@
-import { generateTinyId } from 'server/system/mongo-data';
-import {
-    BATCHLOADER, compareElt, created, findOneForm, imported, lastMigrationScript, mergeElt, updateForm,
-    updateRawArtifact
-} from 'ingester/shared/utility';
-import { parseDesignations } from 'ingester/phenx/csv/form/ParseDesignations';
-import { parseDefinitions } from 'ingester/phenx/csv/form/ParseDefinitions';
-import { parseSources } from 'ingester/phenx/csv/form/ParseSources';
-import { parseReferenceDocuments } from 'ingester/phenx/csv/form/ParseReferenceDocuments';
-import { parseProperties } from 'ingester/phenx/csv/form/ParseProperties';
-import { parseIds } from 'ingester/phenx/csv/form/ParseIds';
-import { parseAttachments } from 'ingester/phenx/csv/form/ParseAttachments';
-import { parseClassification } from 'ingester/phenx/csv/form/ParseClassification';
-import { parseFormElements } from 'ingester/phenx/csv/form/ParseFormElements';
-import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
-import { parseStewardOrg } from 'ingester/phenx/csv/form/ParseStewardOrg';
-import { parseRegistrationState } from 'ingester/phenx/csv/form/ParseRegistrationState';
-import { isEmpty } from 'lodash';
-import { formModel } from 'server/form/mongo-form';
+import {generateTinyId} from 'server/system/mongo-data';
+import {BATCHLOADER, created, imported} from 'ingester/shared/utility';
+import {parseDesignations} from 'ingester/phenx/csv/form/ParseDesignations';
+import {parseDefinitions} from 'ingester/phenx/csv/form/ParseDefinitions';
+import {parseSources} from 'ingester/phenx/csv/form/ParseSources';
+import {parseReferenceDocuments} from 'ingester/phenx/csv/form/ParseReferenceDocuments';
+import {parseProperties} from 'ingester/phenx/csv/form/ParseProperties';
+import {parseIds} from 'ingester/phenx/csv/form/ParseIds';
+import {parseAttachments} from 'ingester/phenx/csv/form/ParseAttachments';
+import {parseClassification} from 'ingester/phenx/csv/form/ParseClassification';
+import {parseFormElements} from 'ingester/phenx/csv/form/ParseFormElements';
+import {DEFAULT_RADX_UP_CONFIG} from 'ingester/phenx/Shared/utility';
+import {parseStewardOrg} from 'ingester/phenx/csv/form/ParseStewardOrg';
+import {parseRegistrationState} from 'ingester/phenx/csv/form/ParseRegistrationState';
 
 export async function createRedCapForm(formName: string, rows: any[], config = DEFAULT_RADX_UP_CONFIG) {
     const designations = parseDesignations(formName);

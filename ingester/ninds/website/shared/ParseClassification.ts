@@ -1,7 +1,7 @@
-import { classifyItem } from 'server/classification/orgClassificationSvc';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
 
-import { uniq, isEmpty } from 'lodash';
-import { sortClassification } from 'shared/classification/classificationShared';
+import {isEmpty, uniq} from 'lodash';
+import {sortClassification} from 'shared/classification/classificationShared';
 
 export function parseClassification(nindsForms: any[], item: any) {
     const type = item.elementType;

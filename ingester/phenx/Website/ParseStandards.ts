@@ -1,5 +1,5 @@
-import { By } from 'selenium-webdriver';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import {By} from 'selenium-webdriver';
+import {loadLoincById} from 'ingester/loinc/website/newSite/loincLoader';
 
 export async function parseStandards(element) {
     const standards: any[] = [];

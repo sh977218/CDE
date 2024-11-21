@@ -1,4 +1,4 @@
-import { trim } from 'lodash';
+import {trim} from 'lodash';
 
 export function formatRows(rows: any[]) {
     const formattedRows: any[] = [];

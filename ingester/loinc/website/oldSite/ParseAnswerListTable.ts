@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import {By} from 'selenium-webdriver';
 
 export async function parseAnswerListTable(driver, loincId, table) {
     let answerListObj: any = {

@@ -1,5 +1,5 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
-import { sortClassification } from 'shared/classification/classificationShared';
+import {BATCHLOADER} from 'ingester/shared/utility';
+import {sortClassification} from 'shared/classification/classificationShared';
 
 var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');

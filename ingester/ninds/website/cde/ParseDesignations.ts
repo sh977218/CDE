@@ -1,5 +1,5 @@
-import { uniq, indexOf } from 'lodash';
-import { sortDesignations } from 'ingester/shared/utility';
+import {indexOf, uniq} from 'lodash';
+import {sortDesignations} from 'ingester/shared/utility';
 
 export function parseDesignations(nindsForms: any[]) {
     const cdeNameArray: any[] = [];

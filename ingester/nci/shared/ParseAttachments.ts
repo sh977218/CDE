@@ -1,8 +1,8 @@
-import { BATCHLOADER, TODAY } from 'ingester/shared/utility';
-import { Readable } from 'stream';
-import { addFile } from 'server/mongo/mongo/gfs';
-import { Attachment } from 'shared/models.model';
-import { copyDeep } from 'shared/util';
+import {BATCHLOADER, TODAY} from 'ingester/shared/utility';
+import {Readable} from 'stream';
+import {addFile} from 'server/mongo/mongo/gfs';
+import {Attachment} from 'shared/models.model';
+import {copyDeep} from 'shared/util';
 
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();

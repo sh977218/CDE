@@ -1,4 +1,4 @@
-import { isEmpty, trim } from 'lodash';
+import {isEmpty, trim} from 'lodash';
 
 export function parseIds() {
     return [];

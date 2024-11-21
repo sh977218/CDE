@@ -1,12 +1,12 @@
-import { isEmpty } from 'lodash';
-import { generateTinyId } from 'server/system/mongo-data';
-import { parseDesignations } from 'ingester/general/form/ParseDesignations';
-import { parseDefinitions } from 'ingester/general/form/ParseDefinitions';
-import { parseSources } from 'ingester/general/form/ParseSources';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
-import { parseFormElements } from 'ingester/general/form/ParseFormElements';
-import { parseOrigin } from 'ingester/general/form/ParseOrigin';
-import { parseProperties } from 'ingester/general/form/ParseProperties';
+import {isEmpty} from 'lodash';
+import {generateTinyId} from 'server/system/mongo-data';
+import {parseDesignations} from 'ingester/general/form/ParseDesignations';
+import {parseDefinitions} from 'ingester/general/form/ParseDefinitions';
+import {parseSources} from 'ingester/general/form/ParseSources';
+import {BATCHLOADER, created, imported} from 'ingester/shared/utility';
+import {parseFormElements} from 'ingester/general/form/ParseFormElements';
+import {parseOrigin} from 'ingester/general/form/ParseOrigin';
+import {parseProperties} from 'ingester/general/form/ParseProperties';
 
 
 export async function createForm(row: any, formCdes: any[]) {

@@ -3,7 +3,7 @@
 var webpage = require('webpage')
     , system = require('system')
     , fs = require('fs')
-    ;
+;
 
 var page = webpage.create();
 
@@ -21,11 +21,11 @@ var outputFileName = "./nida-forms.json";
 
 setPage(page);
 
-var saveFile = function(content){
+var saveFile = function (content) {
     fs.write(outputFileName, content, 'a');
 };
 
-var loadDone = function(){
+var loadDone = function () {
     fs.write(outputFileName, "]", 'a');
     phantom.exit();
 };
@@ -33,9 +33,9 @@ var loadDone = function(){
 fs.remove(outputFileName);
 fs.write(outputFileName, "[", 'a');
 
-page.open('http://cde.drugabuse.gov/instruments', function(status) {
+page.open('http://cde.drugabuse.gov/instruments', function (status) {
 
-    if(status !== "success") {
+    if (status !== "success") {
         console.log("Cannot connect");
 
     }
@@ -48,7 +48,7 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         return results;
     };
 
-    var getTextContent = function(selector){
+    var getTextContent = function (selector) {
         return document.querySelector(selector).innerHTML;
     };
 
@@ -64,38 +64,40 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         var nidaForm = forms[index];
         var subPage = webpage.create();
         setPage(subPage);
-        subPage.open(nidaForm.url, function(status) {
+        subPage.open(nidaForm.url, function (status) {
             if (status !== "success") {
-                console.log("\n\nERROR Loading "+nidaForm.name+"\n\n");
+                console.log("\n\nERROR Loading " + nidaForm.name + "\n\n");
             }
             var sections = subPage.evaluate(findChildrenLinks, "div.content > table.tableheader-processed td a");
             var pdfForm = subPage.evaluate(findChildrenLinks, ".file a");
             var v;
-            if(pdfForm[0]) v = pdfForm[0].name.split(/(-|_)/).filter(function(s, i){return s.length>1 && i!==0;}).join(" ");
-            if (v) v = v.replace(".pdf","");
+            if (pdfForm[0]) v = pdfForm[0].name.split(/(-|_)/).filter(function (s, i) {
+                return s.length > 1 && i !== 0;
+            }).join(" ");
+            if (v) v = v.replace(".pdf", "");
             var desc = subPage.evaluate(getTextContent, ".field-name-field-description .field-item");
             var cdeForm = {name: nidaForm.name, sections: [], classification: [classif], description: desc};
             if (v) cdeForm.version = v;
-            var getSection = function(i){
+            var getSection = function (i) {
                 var s = sections[i];
                 var sectionPage = webpage.create();
-                sectionPage.open(s.url, function(status) {
+                sectionPage.open(s.url, function (status) {
                     if (status !== "success") throw "cannot load url" + s.url;
                     var ids = sectionPage.evaluate(findChildrenLinks, "td:nth-child(2) a");
                     var labels = sectionPage.evaluate(findChildrenLinks, "td:nth-child(1) a");
                     var newSection = {name: s.name, questions: []};
-                    ids.forEach(function(id, ind){
+                    ids.forEach(function (id, ind) {
                         newSection.questions.push({id: id.name, label: labels[ind].name});
                     });
                     cdeForm.sections.push(newSection);
                     sectionPage.close();
-                    if (sections[i+1]) {
-                        getSection(i+1);
+                    if (sections[i + 1]) {
+                        getSection(i + 1);
                     } else {
-                        saveFile(JSON.stringify(cdeForm) + (forms[index+1]?",":"") +"\n");
+                        saveFile(JSON.stringify(cdeForm) + (forms[index + 1] ? "," : "") + "\n");
                         console.log("Saving form: " + cdeForm.name);
                         subPage.close();
-                        if (forms[index+1] && forms[index+1].name.indexOf('PROMIS')==-1) getForm(index+1);
+                        if (forms[index + 1] && forms[index + 1].name.indexOf('PROMIS') == -1) getForm(index + 1);
                         else loadDone();
                     }
 

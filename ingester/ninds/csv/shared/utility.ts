@@ -1,6 +1,6 @@
 const CSV = require('csv');
-import { readFileSync } from 'fs';
-import { filter, isEmpty, isEqual, join, replace, trim, words } from 'lodash';
+import {readFileSync} from 'fs';
+import {filter, isEmpty, isEqual, join, replace, trim, words} from 'lodash';
 
 const NINDS_CSV_HEADER_MAP = {
     'Category/Group': 'Group Name',

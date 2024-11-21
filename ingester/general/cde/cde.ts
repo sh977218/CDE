@@ -1,18 +1,16 @@
-import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { DEFAULT_LOADER_CONFIG } from 'ingester/general/shared/utility';
+import {generateTinyId} from 'server/system/mongo-data';
+import {BATCHLOADER, created, imported, lastMigrationScript} from 'ingester/shared/utility';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {DEFAULT_LOADER_CONFIG} from 'ingester/general/shared/utility';
 
-import { parseDesignations } from 'ingester/general/cde/ParseDesignations';
-import { parseDefinitions } from 'ingester/general/cde/ParseDefinitions';
-import { parseSources } from 'ingester/general/cde/ParseSources';
-import { parseIds } from 'ingester/general/cde/ParseIds';
-import { parseValueDomain } from 'ingester/general/cde/ParseValueDomain';
-import { parseClassification } from 'ingester/general/cde/ParseClassification';
-import { parseConcepts } from 'ingester/general/cde/ParseConcept';
-import { parseOrigin } from 'ingester/general/cde/ParseOrigin';
-import { parseProperties } from 'ingester/general/cde/ParseProperties';
-import { parseReferenceDocuments } from 'ingester/general/cde/ParseReferenceDocuments';
+import {parseDesignations} from 'ingester/general/cde/ParseDesignations';
+import {parseDefinitions} from 'ingester/general/cde/ParseDefinitions';
+import {parseSources} from 'ingester/general/cde/ParseSources';
+import {parseIds} from 'ingester/general/cde/ParseIds';
+import {parseValueDomain} from 'ingester/general/cde/ParseValueDomain';
+import {parseClassification} from 'ingester/general/cde/ParseClassification';
+import {parseConcepts} from 'ingester/general/cde/ParseConcept';
+import {parseProperties} from 'ingester/general/cde/ParseProperties';
 
 
 export async function createCde(row: any) {

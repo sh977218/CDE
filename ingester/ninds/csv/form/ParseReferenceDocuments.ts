@@ -1,6 +1,6 @@
-import { findIndex, isEmpty } from 'lodash';
-import { parseReferenceDocuments as parseCdeReferenceDocuments } from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
-import { sortReferenceDocuments } from 'ingester/shared/utility';
+import {findIndex, isEmpty} from 'lodash';
+import {parseReferenceDocuments as parseCdeReferenceDocuments} from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
+import {sortReferenceDocuments} from 'ingester/shared/utility';
 
 export async function parseReferenceDocuments(rows: any[]) {
     const referenceDocuments = [];

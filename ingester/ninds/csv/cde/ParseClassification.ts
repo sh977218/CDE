@@ -1,6 +1,6 @@
-import { filter, replace, isEmpty, capitalize, forEach } from 'lodash';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { getCell } from '../shared/utility';
+import {capitalize, filter, forEach, isEmpty, replace} from 'lodash';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {getCell} from '../shared/utility';
 
 function classifyPopulation(cde: any, row: any, defaultClassification) {
     const allKeys: string[] = Object.keys(row);

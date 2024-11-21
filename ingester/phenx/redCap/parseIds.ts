@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
+import {isEmpty} from 'lodash';
+import {leadingZerosProtocolId} from 'ingester/phenx/Form/ParseAttachments';
 
 export function parseIds(row, newForm) {
     const ids: any[] = [];

@@ -1,4 +1,4 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import {BATCHLOADER} from 'ingester/shared/utility';
 
 const async = require('async');
 const fs = require('fs');

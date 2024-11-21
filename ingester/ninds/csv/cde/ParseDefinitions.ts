@@ -1,5 +1,5 @@
-import { isEmpty, isEqual } from 'lodash';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import {isEmpty, isEqual} from 'lodash';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
 
 export function parseDefinitions(row: any) {
     const definitions = [];

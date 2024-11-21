@@ -1,5 +1,5 @@
-import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
-import { DEFAULT_NHLBI_CONFIG, NhlbiConfig, getCell } from 'ingester/nhlbi/shared/utility';
+import { QuestionTypeText } from 'shared/de/dataElement.model';
+import { DEFAULT_NHLBI_CONFIG, getCell } from 'ingester/nhlbi/shared/utility';
 import { isEmpty } from 'lodash';
 
 const UOM_MAP: any = {
@@ -104,19 +104,19 @@ const UOM_MAP: any = {
     'Time: Hour': 'h',
     'Time: Day': 'd',
     'Time: Month': 'mo',
-    'Time: Week' : 'wk',
+    'Time: Week': 'wk',
     'Time: Minute': 'min',
     'Time: Second': 's',
     'Pressure: Millimeters of Mercury': 'mm[Hg]',
     'Length: Centimeter': 'cm',
     'Percentage: Percentage': '%',
     'pH: pH': '[pH]',
-    'Count': '{count}',
+    Count: '{count}',
     'Volume: Liters/minute': 'L/min',
     'Length: Millimeter': 'mm',
     'Rate: Meter per Second': 'm/s',
     'Area: Square Centimeter': 'cm2',
-    'Pulmonary vascular resistance: dynes per second per centimeters to the negative fifth power': 'dyn/s/cm-5'
+    'Pulmonary vascular resistance: dynes per second per centimeters to the negative fifth power': 'dyn/s/cm-5',
 };
 
 export function parseNhlbiValueDomain(row: any) {
@@ -126,7 +126,7 @@ export function parseNhlbiValueDomain(row: any) {
     let uom = UOM_MAP[unitOfMeasure];
     if (uom === undefined) {
         uom = getCell(row, 'Unit of Measure (UCUM)');
-        if(uom === undefined){
+        if (uom === undefined) {
             console.log(`${unitOfMeasure} is not in the uom map, or mapped in CSV. NhlbiValueDomain`);
             process.exit(1);
         }
@@ -134,7 +134,7 @@ export function parseNhlbiValueDomain(row: any) {
     const valueDomain: any = {
         datatype: 'Text',
         uom,
-        permissibleValues: []
+        permissibleValues: [],
     };
 
     const datatype = getCell(row, 'CDE-R Data Type');
@@ -142,17 +142,19 @@ export function parseNhlbiValueDomain(row: any) {
     if (datatype === 'Value List') {
         valueDomain.datatype = 'Value List';
         const permissibleValueString = getCell(row, 'Permissible Values');
-        if(permissibleValueString){
+        if (permissibleValueString) {
             const permissibleValueArray = permissibleValueString.split(';').filter(t => t);
             permissibleValueArray.forEach((pv: any, i) => {
                 const permissibleValue: any = {
                     permissibleValue: pv,
-                    valueMeaningName: pv
+                    valueMeaningName: pv,
                 };
                 valueDomain.permissibleValues.push(permissibleValue);
             });
         } else {
-            console.log(`Error: bad pvs: ISTH ID '${isthId}' datatype: '${datatype}' permissibleValue '${permissibleValueString}'`);
+            console.log(
+                `Error: bad pvs: ISTH ID '${isthId}' datatype: '${datatype}' permissibleValue '${permissibleValueString}'`
+            );
             process.exit(1);
         }
     } else if (datatype === 'Text') {

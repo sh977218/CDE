@@ -3,7 +3,7 @@
 var webpage = require('webpage')
     , system = require('system')
     , fs = require('fs')
-    ;
+;
 
 var page = webpage.create();
 
@@ -19,8 +19,8 @@ var setPage = function (p) {
 
 setPage(page);
 
-page.open('http://cde.drugabuse.gov/instruments', function(status) {
-    if(status !== "success") {
+page.open('http://cde.drugabuse.gov/instruments', function (status) {
+    if (status !== "success") {
         console.log("Cannot connect");
         phantom.exit();
     }
@@ -37,13 +37,13 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
     var moduleGroupsCR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(1) a");
     var moduleGroupsEHR = page.evaluate(findChildrenLinks, "fieldset:nth-of-type(2) a");
 
-    var processCdeList = function() {
-        cdes.forEach(function(line){
-            fileContent += line.id + "," + topLevel + ","+line.moduleGroup+","+line.module+"\n";
+    var processCdeList = function () {
+        cdes.forEach(function (line) {
+            fileContent += line.id + "," + topLevel + "," + line.moduleGroup + "," + line.module + "\n";
         });
     };
 
-    var endOfCdeList1 = function() {
+    var endOfCdeList1 = function () {
         endOfCdeList = endOfCdeList2;
         moduleGroups = moduleGroupsEHR;
         topLevel = "Electronic Health Records";
@@ -52,31 +52,31 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         processModuleGroup(0);
     };
 
-    var endOfCdeList2 = function() {
+    var endOfCdeList2 = function () {
         fs.write("./nida-cdes.csv", fileContent, 'w');
         phantom.exit();
     };
 
-    var processModule = function(index) {
+    var processModule = function (index) {
         var module = allModules[index];
         console.log("Opening 2nd level: " + module.name);
 
         var modulePage = webpage.create();
         setPage(modulePage);
-        modulePage.open(module.url, function(status){
+        modulePage.open(module.url, function (status) {
             console.log("Opened 2nd level: " + module.moduleGroup + " > " + module.name);
             if (status !== "success") {
-                console.log("\n\nERROR Loading "+module.name+"\n\n");
+                console.log("\n\nERROR Loading " + module.name + "\n\n");
             }
             var ids = modulePage.evaluate(findChildrenLinks, "td:nth-child(2) a");
-            ids.forEach(function(id, i){
+            ids.forEach(function (id, i) {
                 cdes.push({
                     id: ids[i].name
                     , module: module.name
                     , moduleGroup: module.moduleGroup
                 });
             });
-            if (allModules[index+1]) processModule(index+1);
+            if (allModules[index + 1]) processModule(index + 1);
             else {
                 processCdeList();
                 endOfCdeList();
@@ -91,19 +91,19 @@ page.open('http://cde.drugabuse.gov/instruments', function(status) {
         var subPage = webpage.create();
         setPage(subPage);
         console.log("Opening 1st level: " + moduleGroup.name);
-        subPage.open(moduleGroup.url, function(status) {
+        subPage.open(moduleGroup.url, function (status) {
             console.log("Opened 1st level: " + moduleGroup.name);
             if (status !== "success") {
-                console.log("\n\nERROR Loading "+moduleGroup.name+"\n\n");
+                console.log("\n\nERROR Loading " + moduleGroup.name + "\n\n");
             }
             var modules = subPage.evaluate(findChildrenLinks, "div.content > table.tableheader-processed td a");
-            modules = modules.map(function(m){
+            modules = modules.map(function (m) {
                 m.moduleGroup = moduleGroup.name;
                 return m;
             });
             allModules = allModules.concat(modules);
             subPage.close();
-            if (moduleGroups[index+1]) processModuleGroup(index+1);
+            if (moduleGroups[index + 1]) processModuleGroup(index + 1);
             else processModule(0);
         });
     };

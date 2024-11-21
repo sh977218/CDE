@@ -1,14 +1,14 @@
-import { BATCHLOADER, created, imported, lastMigrationScript } from 'ingester/shared/utility';
-import { generateTinyId } from 'server/system/mongo-data';
-import { parseDefinitions } from 'ingester/ninds/website/form/ParseDefinitions';
-import { parseDesignations } from 'ingester/ninds/website/form/ParseDesignations';
-import { parseSources } from 'ingester/ninds/website/form/ParseSources';
-import { parseIds } from 'ingester/ninds/website/form/ParseIds';
-import { parseProperties } from 'ingester/ninds/website/form/ParseProperties';
-import { parseReferenceDocuments } from 'ingester/ninds/website/form/ParseReferenceDocuments';
-import { parseCopyright } from 'ingester/ninds/website/form/ParseCopyright';
-import { parseFormElements } from 'ingester/ninds/website/form/ParseFormElements';
-import { parseClassification } from 'ingester/ninds/website/shared/ParseClassification';
+import {BATCHLOADER, created, imported, lastMigrationScript} from 'ingester/shared/utility';
+import {generateTinyId} from 'server/system/mongo-data';
+import {parseDefinitions} from 'ingester/ninds/website/form/ParseDefinitions';
+import {parseDesignations} from 'ingester/ninds/website/form/ParseDesignations';
+import {parseSources} from 'ingester/ninds/website/form/ParseSources';
+import {parseIds} from 'ingester/ninds/website/form/ParseIds';
+import {parseProperties} from 'ingester/ninds/website/form/ParseProperties';
+import {parseReferenceDocuments} from 'ingester/ninds/website/form/ParseReferenceDocuments';
+import {parseCopyright} from 'ingester/ninds/website/form/ParseCopyright';
+import {parseFormElements} from 'ingester/ninds/website/form/ParseFormElements';
+import {parseClassification} from 'ingester/ninds/website/shared/ParseClassification';
 
 export async function createNindsForm(nindsForms: any[]) {
     const designations = parseDesignations(nindsForms);

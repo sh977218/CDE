@@ -1,4 +1,4 @@
-import { capitalize, forEach, forOwn, isEmpty, keys, sortBy, words } from 'lodash';
+import {capitalize, forEach, forOwn, isEmpty, keys, sortBy, words} from 'lodash';
 
 export function parseProperties(protocol) {
     const properties: any[] = [];

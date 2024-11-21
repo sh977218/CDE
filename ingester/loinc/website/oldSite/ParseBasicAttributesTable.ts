@@ -1,5 +1,5 @@
-import { By } from 'selenium-webdriver';
-import { sanitizeText } from 'ingester/shared/utility';
+import {By} from 'selenium-webdriver';
+import {sanitizeText} from 'ingester/shared/utility';
 
 export async function parseBasicAttributesTable(driver, loincId, element) {
     const result = {};

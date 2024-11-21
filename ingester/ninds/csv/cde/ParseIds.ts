@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import {isEmpty} from 'lodash';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
 
 export function parseIds(row: any) {
     const ids = [];

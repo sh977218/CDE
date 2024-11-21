@@ -1,8 +1,12 @@
-import { PROTOCOL } from 'ingester/createMigrationConnection';
 import { dataElementModel } from 'server/cde/mongo-cde';
 import { formModel } from 'server/form/mongo-form';
 import {
-    BATCHLOADER, imported, lastMigrationScript, mergeClassificationByOrg, updateCde, updateForm
+    BATCHLOADER,
+    imported,
+    lastMigrationScript,
+    mergeClassificationByOrg,
+    updateCde,
+    updateForm,
 } from 'ingester/shared/utility';
 import { loadPhenxById } from 'ingester/phenx/loader/loadPhenxById';
 import { Classification } from 'shared/models.model';
@@ -12,46 +16,52 @@ function retirePhenxCdes() {
         let retiredCdeCount = 0;
         const condition = {
             archived: false,
-            'ids.source': {$in: ['LOINC', 'PhenX', 'PhenX Variable']},
-            'registrationState.registrationStatus': {$ne: 'Retired'},
-            lastMigrationScript: {$ne: lastMigrationScript}
+            'ids.source': { $in: ['LOINC', 'PhenX', 'PhenX Variable'] },
+            'registrationState.registrationStatus': { $ne: 'Retired' },
+            lastMigrationScript: { $ne: lastMigrationScript },
         };
-        dataElementModel.find(condition)
-            .cursor({batchSize: 10})
+        dataElementModel
+            .find(condition)
+            .cursor({ batchSize: 10 })
             .eachAsync(async cdeToRetire => {
                 const cdeObj = cdeToRetire.toObject();
                 const linkedForms = await formModel.find({
                     archived: false,
-                    'registrationState.registrationStatus': {$ne: 'Retired'},
+                    'registrationState.registrationStatus': { $ne: 'Retired' },
                     $or: [
                         {
-                            'formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.question.cde.tinyId': cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.question.cde.tinyId': cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.formElements.formElements.question.cde.tinyId':
+                                cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId':
+                                cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId':
+                                cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
+                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId':
+                                cdeObj.tinyId,
                         },
                         {
-                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId': cdeObj.tinyId
-                        }
-                    ]
+                            'formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.formElements.question.cde.tinyId':
+                                cdeObj.tinyId,
+                        },
+                    ],
                 });
                 if (linkedForms.length > 0) {
                     const phenxForms = linkedForms.filter(linkedForm => {
@@ -61,7 +71,7 @@ function retirePhenxCdes() {
                     if (phenxForms.length === 0) {
                         cdeToRetire.classification = cdeObj.classification.filter(c => c.stewardOrg.name !== 'PhenX');
                     } else {
-                        const fakeElt: {classification: Classification[]} = {classification: []};
+                        const fakeElt: { classification: Classification[] } = { classification: [] };
                         phenxForms.forEach(phenxForm => {
                             mergeClassificationByOrg(fakeElt, phenxForm, 'PhenX');
                         });
@@ -76,11 +86,14 @@ function retirePhenxCdes() {
                     console.log(`Retired Cde: ${retiredCdeCount} ${cdeObj.tinyId}`);
                 }
             })
-            .then(() => {
-                console.log('retiredCdeCount: ' + retiredCdeCount);
-                console.log('Finished retirePhenxCdes().');
-                resolve();
-            }, err => reject(err));
+            .then(
+                () => {
+                    console.log('retiredCdeCount: ' + retiredCdeCount);
+                    console.log('Finished retirePhenxCdes().');
+                    resolve();
+                },
+                err => reject(err)
+            );
     });
 }
 
@@ -89,12 +102,13 @@ function retirePhenxForms() {
         let retiredFormCount = 0;
         const condition = {
             archived: false,
-            'ids.source': {$in: ['PhenX', 'PhenX Variable']},
-            'registrationState.registrationStatus': {$ne: 'Retired'},
-            lastMigrationScript: {$ne: lastMigrationScript}
+            'ids.source': { $in: ['PhenX', 'PhenX Variable'] },
+            'registrationState.registrationStatus': { $ne: 'Retired' },
+            lastMigrationScript: { $ne: lastMigrationScript },
         };
-        formModel.find(condition)
-            .cursor({batchSize: 10})
+        formModel
+            .find(condition)
+            .cursor({ batchSize: 10 })
             .eachAsync(async form => {
                 const formObj = form.toObject();
                 formObj.registrationState.registrationStatus = 'Retired';
@@ -105,18 +119,21 @@ function retirePhenxForms() {
                     console.log('retiredFormCount: ' + retiredFormCount);
                 }
             })
-            .then(() => {
-                console.log('retiredFormCount: ' + retiredFormCount);
-                console.log('Finished retirePhenxForms().');
-                resolve();
-            }, err => reject(err));
+            .then(
+                () => {
+                    console.log('retiredFormCount: ' + retiredFormCount);
+                    console.log('Finished retirePhenxForms().');
+                    resolve();
+                },
+                err => reject(err)
+            );
     });
 }
 
 async function run() {
-//    const cond = {protocolID: {$in: ['300101']}};
+    //    const cond = {protocolID: {$in: ['300101']}};
     const cond = {};
-    const phenxIds = await PROTOCOL.find(cond, {protocolID: 1}).lean();
+    const phenxIds = await PROTOCOL.find(cond, { protocolID: 1 }).lean();
     for (const phenxId of phenxIds) {
         await loadPhenxById(phenxId.protocolID);
     }
@@ -124,11 +141,13 @@ async function run() {
     await retirePhenxForms();
 }
 
-run().then(result => {
+run().then(
+    result => {
         console.log(result);
         console.log('Finished all phenx.');
         process.exit(0);
-    }, err => {
+    },
+    err => {
         console.log(err);
         process.exit(1);
     }

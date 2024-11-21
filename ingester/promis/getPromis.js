@@ -30,10 +30,10 @@ var req = fetch(request)
         processForms();
     });
 
-var processForms = function(){
-    fs.readFile(allFiles, function(err, data) {
+var processForms = function () {
+    fs.readFile(allFiles, function (err, data) {
         var allForms = JSON.parse(data);
-        allForms.Form.forEach(function(form) {
+        allForms.Form.forEach(function (form) {
             var request = {
                 url: 'https://www.assessmentcenter.net' + '/ac_api/' + formsDate + '/Forms/' + form.OID + '.json',
                 port: 443,

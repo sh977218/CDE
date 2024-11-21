@@ -1,13 +1,21 @@
 import * as DiffJson from 'diff-json';
-import { isEmpty } from 'lodash';
-import { dataElementModel } from 'server/cde/mongo-cde';
+import {isEmpty} from 'lodash';
+import {dataElementModel} from 'server/cde/mongo-cde';
 import {
-    BATCHLOADER, compareElt, findOneCde, findOneForm, formRawArtifact, imported, lastMigrationScript, mergeElt, updateCde, updateForm,
+    BATCHLOADER,
+    compareElt,
+    findOneCde,
+    findOneForm,
+    formRawArtifact,
+    imported,
+    lastMigrationScript,
+    mergeElt,
+    updateCde,
+    updateForm,
     updateRawArtifact
 } from 'ingester/shared/utility';
-import { formModel } from 'server/form/mongo-form';
-import { commentModel } from 'server/discuss/discussDb';
-import { CdeForm } from 'shared/form/form.model';
+import {formModel} from 'server/form/mongo-form';
+import {CdeForm} from 'shared/form/form.model';
 
 export function doNindsClassification(existingCde: any, newCdeObj: any) {
     const nindsClassifications = existingCde.classification.filter((c: any) => c.stewardOrg.name === 'NINDS');

@@ -1,5 +1,4 @@
-import { Builder, By } from 'selenium-webdriver';
-import { NindsModel } from 'ingester/createMigrationConnection';
+import {Builder, By} from 'selenium-webdriver';
 
 require('chromedriver');
 

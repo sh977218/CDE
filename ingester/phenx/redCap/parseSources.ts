@@ -1,4 +1,4 @@
-import { imported } from 'ingester/shared/utility';
+import {imported} from 'ingester/shared/utility';
 
 export function parseSources() {
     const sources: any[] = [];

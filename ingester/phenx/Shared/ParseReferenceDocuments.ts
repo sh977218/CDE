@@ -1,4 +1,4 @@
-import { forEach, isEmpty, sortBy } from 'lodash';
+import {forEach, isEmpty, sortBy} from 'lodash';
 
 export function parseReferenceDocuments(protocol) {
     const referenceDocuments: any[] = [];

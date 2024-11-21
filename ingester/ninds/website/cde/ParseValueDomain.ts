@@ -1,5 +1,5 @@
-import { uniq, uniqWith, isEqual, isEmpty } from 'lodash';
-import { map as DATA_TYPE_MAP } from 'ingester/ninds/website/cde/DATA_TYPE_MAP';
+import {isEmpty, isEqual, uniq, uniqWith} from 'lodash';
+import {map as DATA_TYPE_MAP} from 'ingester/ninds/website/cde/DATA_TYPE_MAP';
 
 export function parseAnswers(ninds: any) {
     if (isEmpty(ninds)) {

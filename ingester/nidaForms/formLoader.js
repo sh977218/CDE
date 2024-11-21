@@ -5,7 +5,7 @@ var forms = require("../../nida-forms.json")
 
 console.log(JSON.stringify(forms));
 
-setTimeout(function() {
+setTimeout(function () {
 
     forms.forEach(function (nidaForm) {
         var newCdeForm = {
@@ -19,10 +19,8 @@ setTimeout(function() {
                 name: "NIDA"
             }
             , registrationState: {registrationStatus: "Incomplete"}
-            , properties: [
-            ]
-            , ids: [
-            ]
+            , properties: []
+            , ids: []
             , isCopyrighted: true
             , copyright: {
                 authority: "NIDA"
@@ -51,15 +49,15 @@ setTimeout(function() {
 
         if (nidaForm.version) newCdeForm.version = nidaForm.version;
 
-        async.eachSeries(nidaForm.sections, function(sec, scb){
+        async.eachSeries(nidaForm.sections, function (sec, scb) {
             var newSection = {
                 elementType: 'section'
                 , label: sec.name
                 , cardinality: "1"
                 , formElements: []
             };
-            async.eachSeries(sec.questions, function(q, qcb){
-                mongo_cde.byOtherId("caDSR", q.id, function(err, cde){
+            async.eachSeries(sec.questions, function (q, qcb) {
+                mongo_cde.byOtherId("caDSR", q.id, function (err, cde) {
                     if (!cde) throw "cannot find cde of id " + q.id + "\nform " + nidaForm.name;
                     newSection.formElements.push({
                         elementType: 'question'
@@ -79,12 +77,12 @@ setTimeout(function() {
                     newSection.formElements.push();
                     qcb();
                 });
-            }, function(){
+            }, function () {
                 newCdeForm.formElements.push(newSection);
                 scb();
             });
-        }, function(){
-            mongo_form.create(newCdeForm, {username: "bashloader"}, function(err){
+        }, function () {
+            mongo_form.create(newCdeForm, {username: "bashloader"}, function (err) {
                 if (err) throw err;
             });
         });

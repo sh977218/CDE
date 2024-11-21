@@ -1,23 +1,27 @@
-import { sortBy, isEmpty } from 'lodash';
+import {isEmpty, sortBy} from 'lodash';
 import * as DiffJson from 'diff-json';
-import { generateTinyId } from 'server/system/mongo-data';
+import {generateTinyId} from 'server/system/mongo-data';
 import {
-    BATCHLOADER, created, findOneCde, imported, lastMigrationScript, NINR_SOCIAL_DETERMINANTS_OF_HEALTH, updateCde
+    BATCHLOADER,
+    created,
+    findOneCde,
+    imported,
+    lastMigrationScript,
+    NINR_SOCIAL_DETERMINANTS_OF_HEALTH,
+    updateCde
 } from 'ingester/shared/utility';
-import { mergeNinrDesignations, parseNinrDesignations } from 'ingester/Ninr/csv/cde/ParseDesignations';
-import { mergeNinrDefinitions, parseNinrDefinitions } from 'ingester/Ninr/csv/cde/ParseDefinitions';
-import { addNinrSource, parseNinrSources } from 'ingester/Ninr/csv/cde/ParseSources';
-import { mergeNinrIds, parseNinrIds } from 'ingester/Ninr/csv/cde/ParseIds';
-import { parseNinrValueDomain } from 'ingester/Ninr/csv/cde/ParseValueDomain';
-import { mergeNinrProperties, parseNinrProperties } from 'ingester/Ninr/csv/cde/ParseProperties';
-import { addNinrClassification, parseNinrClassification } from 'ingester/Ninr/csv/cde/ParseClassification';
-import { parseNinrAttachments } from 'ingester/ninr/csv/cde/ParseAttachments';
-import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
-import { CdeForm } from 'shared/form/form.model';
-import {
-    mergeNinrReferenceDocuments, parseNinrReferenceDocuments
-} from 'ingester/ninr/csv/cde/ParseReferenceDocuments';
+import {mergeNinrDesignations, parseNinrDesignations} from 'ingester/Ninr/csv/cde/ParseDesignations';
+import {mergeNinrDefinitions, parseNinrDefinitions} from 'ingester/Ninr/csv/cde/ParseDefinitions';
+import {addNinrSource, parseNinrSources} from 'ingester/Ninr/csv/cde/ParseSources';
+import {mergeNinrIds, parseNinrIds} from 'ingester/Ninr/csv/cde/ParseIds';
+import {parseNinrValueDomain} from 'ingester/Ninr/csv/cde/ParseValueDomain';
+import {mergeNinrProperties, parseNinrProperties} from 'ingester/Ninr/csv/cde/ParseProperties';
+import {addNinrClassification, parseNinrClassification} from 'ingester/Ninr/csv/cde/ParseClassification';
+import {parseNinrAttachments} from 'ingester/ninr/csv/cde/ParseAttachments';
+import {dataElementModel, dataElementSourceModel} from 'server/cde/mongo-cde';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
+import {CdeForm} from 'shared/form/form.model';
+import {mergeNinrReferenceDocuments, parseNinrReferenceDocuments} from 'ingester/ninr/csv/cde/ParseReferenceDocuments';
 
 
 let updatedDeCount = 0;

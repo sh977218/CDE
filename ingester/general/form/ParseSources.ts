@@ -1,6 +1,5 @@
-import { imported } from 'ingester/shared/utility';
-import { DEFAULT_LOADER_CONFIG } from 'ingester/general/shared/utility';
-import { getCell } from 'shared/loader/utilities/utility';
+import {imported} from 'ingester/shared/utility';
+import {DEFAULT_LOADER_CONFIG} from 'ingester/general/shared/utility';
 
 export function parseSources(row: any) {
     /*let source = getCell(row, 'source');

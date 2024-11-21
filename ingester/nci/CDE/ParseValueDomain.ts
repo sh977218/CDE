@@ -1,6 +1,6 @@
-import { isEmpty } from 'lodash';
-import { QuestionTypeNumber, QuestionTypeText } from 'shared/de/dataElement.model';
-import { PermissibleValue } from 'shared/models.model';
+import {isEmpty} from 'lodash';
+import {QuestionTypeNumber, QuestionTypeText} from 'shared/de/dataElement.model';
+import {PermissibleValue} from 'shared/models.model';
 
 const datatypeMapping: any = {
     CHARACTER: 'Text',

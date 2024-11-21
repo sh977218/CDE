@@ -1,9 +1,9 @@
-import { isEmpty, isEqual, trim, uniqWith } from 'lodash';
+import {isEmpty, isEqual, trim, uniqWith} from 'lodash';
 import * as cheerio from 'cheerio';
-import { EXCLUDE_REF_DOC, sortReferenceDocuments } from 'ingester/shared/utility';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import {EXCLUDE_REF_DOC, sortReferenceDocuments} from 'ingester/shared/utility';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
 import fetch from 'node-fetch';
-import { isStatus, text } from 'shared/fetch';
+import {isStatus, text} from 'shared/fetch';
 
 const PUBMED_REF_DOC_CACHE: any = {};
 

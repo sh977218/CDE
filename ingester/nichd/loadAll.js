@@ -1,4 +1,4 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import {BATCHLOADER} from 'ingester/shared/utility';
 
 const fs = require('fs');
 const parse = require('csv-parse/lib/sync');

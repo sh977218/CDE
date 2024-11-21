@@ -1,8 +1,8 @@
-import { readFile } from 'fs';
-import { isEmpty, uniqWith, unionWith, isEqual } from 'lodash';
-import { parseString } from 'xml2js';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { parseAnswers } from 'ingester/ninds/website/cde/ParseValueDomain';
+import {readFile} from 'fs';
+import {isEmpty, isEqual, unionWith, uniqWith} from 'lodash';
+import {parseString} from 'xml2js';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {parseAnswers} from 'ingester/ninds/website/cde/ParseValueDomain';
 
 const NINDS_XML_PATH = 'S:/MLB/CDE/NINDS/11-20-2019/Forms_Report_20190910.xml';
 let formCdeOrderMap = {};

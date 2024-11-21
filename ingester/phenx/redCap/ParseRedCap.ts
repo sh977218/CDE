@@ -1,16 +1,22 @@
 import * as csv from 'csv-parse';
-import { createReadStream, existsSync } from 'fs';
-import { find, isEmpty } from 'lodash';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { createRedCde } from 'ingester/phenx/redCap/cde';
-import { convert } from 'ingester/phenx/redCap/RedCapCdeToQuestion';
+import {createReadStream, existsSync} from 'fs';
+import {find, isEmpty} from 'lodash';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {createRedCde} from 'ingester/phenx/redCap/cde';
+import {convert} from 'ingester/phenx/redCap/RedCapCdeToQuestion';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
+    BATCHLOADER,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeClassification,
+    mergeElt,
+    updateCde,
+    updateRawArtifact
 } from 'ingester/shared/utility';
-import { leadingZerosProtocolId } from 'ingester/phenx/Form/ParseAttachments';
-import { commentModel } from 'server/discuss/discussDb';
-import { redCapZipFolder } from 'ingester/createMigrationConnection';
-import { RedcapLogger } from 'ingester/log/RedcapLogger';
+import {leadingZerosProtocolId} from 'ingester/phenx/Form/ParseAttachments';
+import {RedcapLogger} from 'ingester/log/RedcapLogger';
+
 const iconv = require('iconv-lite');
 
 function doInstrument(instrumentFilePath): Promise<(string | Buffer)[]> {

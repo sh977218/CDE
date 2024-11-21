@@ -10,7 +10,6 @@ import { BATCHLOADER, created, imported, lastMigrationScript, version } from 'in
 import { generateTinyId } from 'server/system/mongo-data';
 import { existsSync } from 'fs';
 import * as AdmZip from 'adm-zip';
-import { redCapZipFolder } from 'ingester/createMigrationConnection';
 import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
 
 async function extractRedCapZip(protocolId) {
@@ -24,7 +23,7 @@ async function extractRedCapZip(protocolId) {
     }
 }
 
-export async function createPhenxForm(protocol, isExistingFormQualified, registrationStatus='Qualified') {
+export async function createPhenxForm(protocol, isExistingFormQualified, registrationStatus = 'Qualified') {
     await extractRedCapZip(protocol.protocolID);
     const designations = parseDesignations(protocol);
     const definitions = parseDefinitions(protocol);
@@ -55,9 +54,9 @@ export async function createPhenxForm(protocol, isExistingFormQualified, registr
         imported,
         isCopyrighted: false,
         noRenderAllowed: false,
-        stewardOrg: {name: 'PhenX'},
-        registrationState: {registrationStatus: 'Candidate'},
-        lastMigrationScript
+        stewardOrg: { name: 'PhenX' },
+        registrationState: { registrationStatus: 'Candidate' },
+        lastMigrationScript,
     };
 
     await parseFormElements(protocol, registrationStatus, attachments, newForm, isExistingFormQualified);

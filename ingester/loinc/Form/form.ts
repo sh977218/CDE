@@ -29,7 +29,7 @@ export async function createLoincForm(loinc, config = DEFAULT_LOINC_CONFIG) {
         imported,
         source: 'LOINC',
         version,
-        registrationState: {registrationStatus:config.registrationStatus},
+        registrationState: { registrationStatus: config.registrationStatus },
         sources,
         designations,
         definitions,
@@ -39,7 +39,7 @@ export async function createLoincForm(loinc, config = DEFAULT_LOINC_CONFIG) {
         stewardOrg,
         classification: [],
         formElements,
-        attachments: []
+        attachments: [],
     };
     await parseClassification(form, loinc, config);
 

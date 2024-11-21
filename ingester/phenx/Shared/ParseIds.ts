@@ -1,4 +1,4 @@
-import { isEmpty, sortBy } from 'lodash';
+import {isEmpty, sortBy} from 'lodash';
 
 export function parseIds(protocol) {
     const ids: any[] = [];

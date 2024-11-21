@@ -1,5 +1,5 @@
-import { isEmpty, isEqual, trim, uniq, uniqBy } from 'lodash';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import {isEmpty, isEqual, trim, uniq, uniqBy} from 'lodash';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
 
 
 export function parseDesignations(row: any) {

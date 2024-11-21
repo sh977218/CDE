@@ -1,4 +1,4 @@
-import { map as CONCEPT_TYPE_MAP } from '../Mapping/LOINC_CONCEPT_TYPE_MAP';
+import {map as CONCEPT_TYPE_MAP} from '../Mapping/LOINC_CONCEPT_TYPE_MAP';
 
 export function parseConcepts(loinc) {
     const concepts = {objectClass: [], property: [], dataElementConcept: []};

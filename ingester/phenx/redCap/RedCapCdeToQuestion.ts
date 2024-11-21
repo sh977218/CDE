@@ -1,6 +1,6 @@
-import { convertSkipLogic } from './BranchLogic';
-import { map as REDCAP_MULTISELECT_MAP } from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
-import { BATCHLOADER, replaceDashAndCapitalize } from 'ingester/shared/utility';
+import {convertSkipLogic} from './BranchLogic';
+import {map as REDCAP_MULTISELECT_MAP} from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
+import {BATCHLOADER, replaceDashAndCapitalize} from 'ingester/shared/utility';
 
 export async function convert(redCapCde, redCapCdes, cde, newForm) {
     if (cde.toObject) {

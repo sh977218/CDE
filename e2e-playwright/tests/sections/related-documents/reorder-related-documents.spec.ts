@@ -30,8 +30,8 @@ test.describe(`reorder related documents`, async () => {
 
     test(`Form`, async ({ page, relatedDocumentSection, navigationMenu }) => {
         const formName = 'Reorder reference document form';
-        await navigationMenu.gotoFormByName(formName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoFormByName(formName, true);
 
         const formRelatedDocumentsLocator = page
             .locator('id=reference-documents-div')

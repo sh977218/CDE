@@ -1,5 +1,5 @@
-import { uniq } from 'lodash';
-import { sortReferenceDocuments } from 'ingester/shared/utility';
+import {uniq} from 'lodash';
+import {sortReferenceDocuments} from 'ingester/shared/utility';
 
 export function parseReferenceDocuments(nindsForms: any[]) {
     const downloadLinkArray: string[] = [];

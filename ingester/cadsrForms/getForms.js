@@ -23,8 +23,8 @@
 //});
 
 import fetch from 'node-fetch';
-import { BATCHLOADER } from 'ingester/shared/utility';
-import { addCategory } from 'shared/classification/classificationShared';
+import {BATCHLOADER} from 'ingester/shared/utility';
+import {addCategory} from 'shared/classification/classificationShared';
 
 var formIncrement = 100;
 var startPage = process.argv[2];
@@ -101,10 +101,10 @@ var getResource = function (url, cb) {
             var ro = {timeout: 120000};
             fetch(url, ro)
                 .then(res => {
-                  if (!res.ok) {
-                      return Promise.reject();
-                  }
-                  return res.text();
+                    if (!res.ok) {
+                        return Promise.reject();
+                    }
+                    return res.text();
                 })
                 .catch(() =>
                     fetch(url, ro).then(res => {

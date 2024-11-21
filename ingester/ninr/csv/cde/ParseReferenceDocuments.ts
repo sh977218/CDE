@@ -1,6 +1,6 @@
-import { parseReferenceDocuments } from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
-import { CdeForm } from 'shared/form/form.model';
-import { isEqual, uniqWith } from 'lodash';
+import {parseReferenceDocuments} from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
+import {CdeForm} from 'shared/form/form.model';
+import {isEqual, uniqWith} from 'lodash';
 
 export async function parseNinrReferenceDocuments(ninrRow) {
     return await parseReferenceDocuments(ninrRow);

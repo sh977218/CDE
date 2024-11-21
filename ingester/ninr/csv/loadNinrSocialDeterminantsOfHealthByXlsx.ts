@@ -1,9 +1,8 @@
 const XLSX = require('xlsx');
 
-import { runOneNinrForm } from 'ingester/ninr/csv/form/form';
-import { sleep } from 'ingester/shared/utility';
-import { formatRows } from 'ingester/ninds/csv/shared/utility';
-import { SocialDeterminantsOfHealthXlsx } from 'ingester/createMigrationConnection';
+import {runOneNinrForm} from 'ingester/ninr/csv/form/form';
+import {sleep} from 'ingester/shared/utility';
+import {formatRows} from 'ingester/ninds/csv/shared/utility';
 
 async function run() {
     await sleep(20000);

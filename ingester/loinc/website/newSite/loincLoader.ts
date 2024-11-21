@@ -1,6 +1,6 @@
-import { Builder, By } from 'selenium-webdriver';
-import { findIndex, isEqual, sortBy, words } from 'lodash';
-import { tasks } from 'ingester/loinc/website/newSite/loincSectionParser';
+import {Builder, By} from 'selenium-webdriver';
+import {findIndex, isEqual, sortBy, words} from 'lodash';
+import {tasks} from 'ingester/loinc/website/newSite/loincSectionParser';
 
 require('chromedriver');
 

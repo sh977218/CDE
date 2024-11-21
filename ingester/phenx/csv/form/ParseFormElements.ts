@@ -1,7 +1,7 @@
-import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
-import { groupBy, isEmpty, words } from 'lodash';
-import { map as REDCAP_MULTISELECT_MAP } from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
-import { doOnePhenXCde } from 'ingester/phenx/csv/cde/cde';
+import {DEFAULT_RADX_UP_CONFIG} from 'ingester/phenx/Shared/utility';
+import {groupBy, isEmpty, words} from 'lodash';
+import {map as REDCAP_MULTISELECT_MAP} from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
+import {doOnePhenXCde} from 'ingester/phenx/csv/cde/cde';
 
 export async function parseFormElements(form, rows: any[], config = DEFAULT_RADX_UP_CONFIG) {
     const sectionNames = groupBy(rows, 'Form Name');

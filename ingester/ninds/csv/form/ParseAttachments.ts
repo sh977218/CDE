@@ -1,6 +1,6 @@
-import { addAttachment, BATCHLOADER, TODAY } from 'ingester/shared/utility';
-import { createReadStream } from 'fs';
-import { basename, extname } from 'path';
+import {addAttachment, BATCHLOADER, TODAY} from 'ingester/shared/utility';
+import {createReadStream} from 'fs';
+import {basename, extname} from 'path';
 
 export async function parseAttachments(formName: string, filePath: string) {
     const attachments = [];

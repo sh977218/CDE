@@ -1,4 +1,4 @@
-import { Builder, By } from 'selenium-webdriver';
+import {Builder, By} from 'selenium-webdriver';
 
 let driver = new Builder().forBrowser('firefox').build();
 

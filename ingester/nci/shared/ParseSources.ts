@@ -1,6 +1,6 @@
-import { imported } from 'ingester/shared/utility';
+import {imported} from 'ingester/shared/utility';
 import fetch from 'node-fetch';
-import { Parser } from 'xml2js';
+import {Parser} from 'xml2js';
 
 const parseString = new Parser({attrkey: 'attribute'}).parseString;
 

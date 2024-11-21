@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import {By} from 'selenium-webdriver';
 
 export function parseShortname(element) {
     return new Promise(async (resolve, reject) => {

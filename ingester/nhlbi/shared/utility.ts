@@ -17,7 +17,6 @@ export class NhlbiConfig {
 
 export const DEFAULT_NHLBI_CONFIG = new NhlbiConfig();
 
-
 export function formatRows(csvFileName: string, rows: any[]) {
     const formattedRows: any[] = [];
     rows.forEach((row, i) => {
@@ -68,11 +67,13 @@ function formatKey(key: string) {
     }
 }
 
-export function mergeDesignations(existingEltObj: any, newEltObj: any){
+export function mergeDesignations(existingEltObj: any, newEltObj: any) {
     const existingDesignations: Designation[] = existingEltObj.designations;
     const newDesignations: Designation[] = newEltObj.designations;
     newDesignations.forEach(newDesignation => {
-        const foundDesignation: Designation | undefined = find(existingDesignations, {designation: newDesignation.designation});
+        const foundDesignation: Designation | undefined = find(existingDesignations, {
+            designation: newDesignation.designation,
+        });
         if (!foundDesignation) {
             existingDesignations.push(newDesignation);
         } else {
@@ -82,11 +83,13 @@ export function mergeDesignations(existingEltObj: any, newEltObj: any){
     });
 }
 
-export function mergeDefinitions(existingEltObj: any, newEltObj: any){
+export function mergeDefinitions(existingEltObj: any, newEltObj: any) {
     const existingDefinitions: Definition[] = existingEltObj.definitions;
     const newDefinitions: Definition[] = newEltObj.definitions;
     newDefinitions.forEach(newDefinition => {
-        const foundDefinition: Definition | undefined = find(existingDefinitions, {definition: newDefinition.definition});
+        const foundDefinition: Definition | undefined = find(existingDefinitions, {
+            definition: newDefinition.definition,
+        });
         if (!foundDefinition) {
             existingDefinitions.push(newDefinition);
         } else {
@@ -97,6 +100,4 @@ export function mergeDefinitions(existingEltObj: any, newEltObj: any){
     });
 }
 
-const NHLBI_CSV_HEADER_MAP: any = {
-
-};
+const NHLBI_CSV_HEADER_MAP: any = {};

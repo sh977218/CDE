@@ -1,10 +1,9 @@
-import { groupBy, trim, words, isEmpty } from 'lodash';
-import { map as REDCAP_MULTISELECT_MAP } from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
-import { createNichdCde, loadNichdRow, loadNichdRowWithLoinc, loadNichdRowWithNlm } from 'ingester/nichd/csv/cde/cde';
-import { replaceDashAndCapitalize, updateRawArtifact } from 'ingester/shared/utility';
-import { LoincModel } from 'ingester/createMigrationConnection';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import {groupBy, isEmpty, trim, words} from 'lodash';
+import {map as REDCAP_MULTISELECT_MAP} from 'ingester/phenx/redCap/REDCAP_MULTISELECT_MAP';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
+import {createNichdCde, loadNichdRow, loadNichdRowWithLoinc, loadNichdRowWithNlm} from 'ingester/nichd/csv/cde/cde';
+import {replaceDashAndCapitalize, updateRawArtifact} from 'ingester/shared/utility';
+import {loadLoincById} from 'ingester/loinc/website/newSite/loincLoader';
 
 let allDeCount = 0;
 let nlmDeCount = 0

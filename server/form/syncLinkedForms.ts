@@ -45,10 +45,9 @@ async function extractedSyncLinkedForms(cde: DataElement) {
     linkedForms.Incomplete += linkedForms.Candidate;
     linkedForms.Retired += linkedForms.Incomplete;
 
-    const noRenderAllowed: boolean =
-        linkedForms.forms.length
-            ? linkedForms.forms.filter(f => f.noRenderAllowed).length === linkedForms.forms.length
-            : false;
+    const noRenderAllowed: boolean = linkedForms.forms.length
+        ? linkedForms.forms.filter(f => f.noRenderAllowed).length === linkedForms.forms.length
+        : false;
 
     esClient
         .update({

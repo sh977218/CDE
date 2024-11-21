@@ -1,6 +1,6 @@
-import { convertFileNameToFormName } from 'ingester/ninds/csv/shared/utility';
-import { createNindsForm } from 'ingester/ninds/csv/form/form';
-import { loadNindsForm } from 'ingester/ninds/shared';
+import {convertFileNameToFormName} from 'ingester/ninds/csv/shared/utility';
+import {createNindsForm} from 'ingester/ninds/csv/form/form';
+import {loadNindsForm} from 'ingester/ninds/shared';
 
 export async function loadFormByCsv(csvFileName: string, rows: any[]) {
     const formName = convertFileNameToFormName(csvFileName);

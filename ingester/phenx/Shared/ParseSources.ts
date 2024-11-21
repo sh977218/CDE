@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { imported } from 'ingester/shared/utility';
+import {isEmpty} from 'lodash';
+import {imported} from 'ingester/shared/utility';
 
 export function parseSources(protocol) {
     const sources: any[] = [];

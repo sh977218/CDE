@@ -1,5 +1,5 @@
-import { uniq, trim } from 'lodash';
-import { sortDesignations } from 'ingester/shared/utility';
+import {trim, uniq} from 'lodash';
+import {sortDesignations} from 'ingester/shared/utility';
 
 export function parseDesignations(nindsForms: any[]) {
     const formNameArray: string[] = [];

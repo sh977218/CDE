@@ -1,5 +1,5 @@
-import { trim } from 'lodash';
-import { convertFileNameToFormName } from 'ingester/ninds/csv/shared/utility';
+import {trim} from 'lodash';
+import {convertFileNameToFormName} from 'ingester/ninds/csv/shared/utility';
 
 export function parseDesignations(csvFileName: string) {
     const formName = convertFileNameToFormName(csvFileName);

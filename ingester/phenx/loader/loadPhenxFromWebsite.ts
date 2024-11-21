@@ -1,6 +1,5 @@
-import { PROTOCOL } from 'ingester/createMigrationConnection';
-import { runOnePhenX } from 'ingester/phenx/Website/phenxLoader';
-import { getDomainCollectionSite } from 'ingester/shared/utility';
+import {runOnePhenX} from 'ingester/phenx/Website/phenxLoader';
+import {getDomainCollectionSite} from 'ingester/shared/utility';
 
 async function run() {
     const domainCollectionMap = await getDomainCollectionSite();

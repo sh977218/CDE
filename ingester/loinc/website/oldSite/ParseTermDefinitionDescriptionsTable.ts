@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import {By} from 'selenium-webdriver';
 
 export async function parseTermDefinitionDescriptionsTable(driver, loincId, element) {
     let trs = await element.findElements(By.xpath('tbody/tr'));

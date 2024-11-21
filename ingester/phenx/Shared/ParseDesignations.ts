@@ -1,5 +1,5 @@
-import { isEmpty, trim } from 'lodash';
-import { trimWhite } from '../../shared/utility';
+import {isEmpty, trim} from 'lodash';
+import {trimWhite} from '../../shared/utility';
 
 export function parseDesignations(protocol) {
     const designations = [];

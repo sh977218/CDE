@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
+import {isEmpty} from 'lodash';
+import {DEFAULT_RADX_UP_CONFIG} from 'ingester/phenx/Shared/utility';
 
 export function parseProperties(row: any, config = DEFAULT_RADX_UP_CONFIG) {
     const source = config.source;

@@ -1,15 +1,14 @@
-import { isEmpty, trim } from 'lodash';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel } from 'server/form/mongo-form';
-import { formatRows, getCell } from 'ingester/ninds/csv/shared/utility';
-import { createNhlbiCde } from 'ingester/ninds/csv/cde/cde';
-import { createNhlbiForm } from 'ingester/ninds/csv/form/form';
-import { createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript } from 'ingester/shared/utility';
-import { sickleCellDataElementsXlsx, sickleCellFormMappingXlsx } from 'ingester/createMigrationConnection';
-import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
-import { parseNhlbiClassification as parseNhlbiFormClassification } from 'ingester/ninds/csv/form/ParseClassification';
-import { parseNhlbiDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
-import { CdeForm } from 'shared/form/form.model';
+import {isEmpty, trim} from 'lodash';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {formModel} from 'server/form/mongo-form';
+import {formatRows, getCell} from 'ingester/ninds/csv/shared/utility';
+import {createNhlbiCde} from 'ingester/ninds/csv/cde/cde';
+import {createNhlbiForm} from 'ingester/ninds/csv/form/form';
+import {createCde, createForm, findOneCde, findOneForm, imported, lastMigrationScript} from 'ingester/shared/utility';
+import {parseNhlbiClassification as parseNhlbiCdeClassification} from 'ingester/ninds/csv/cde/ParseClassification';
+import {parseNhlbiClassification as parseNhlbiFormClassification} from 'ingester/ninds/csv/form/ParseClassification';
+import {parseNhlbiDesignations} from 'ingester/ninds/csv/cde/ParseDesignations';
+import {CdeForm} from 'shared/form/form.model';
 
 const XLSX = require('xlsx');
 

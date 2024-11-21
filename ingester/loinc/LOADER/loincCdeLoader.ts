@@ -1,11 +1,18 @@
-import { isEmpty } from 'lodash';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { createLoincCde } from 'ingester/loinc/CDE/cde';
+import {isEmpty} from 'lodash';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {createLoincCde} from 'ingester/loinc/CDE/cde';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateCde, updateRawArtifact
+    BATCHLOADER,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeClassification,
+    mergeElt,
+    updateCde,
+    updateRawArtifact
 } from 'ingester/shared/utility';
-import { LoincLogger } from 'ingester/log/LoincLogger';
-import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
+import {LoincLogger} from 'ingester/log/LoincLogger';
+import {DEFAULT_LOINC_CONFIG} from 'ingester/loinc/Shared/utility';
 
 export async function runOneCde(loinc, config = DEFAULT_LOINC_CONFIG) {
     if (!config.classificationOrgName) {

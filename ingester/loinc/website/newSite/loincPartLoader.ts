@@ -1,5 +1,5 @@
-import { Builder, By } from 'selenium-webdriver';
-import { parseDl } from 'ingester/loinc/website/newSite/loincSectionParser';
+import {Builder, By} from 'selenium-webdriver';
+import {parseDl} from 'ingester/loinc/website/newSite/loincSectionParser';
 
 async function selectionWithDl(htmlElement) {
     const dlElements = await htmlElement.findElements(By.xpath('./dl'));

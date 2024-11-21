@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import {uniq} from 'lodash';
 
 export function parseCopyright(nindsForms: any[]) {
     const formNameArray: string[] = [];

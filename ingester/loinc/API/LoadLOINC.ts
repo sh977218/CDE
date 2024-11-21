@@ -1,6 +1,6 @@
-import { forEachSeries } from 'async';
-import fetch, { RequestInit } from 'node-fetch';
-import { isStatus, json } from 'shared/fetch';
+import {forEachSeries} from 'async';
+import fetch, {RequestInit} from 'node-fetch';
+import {isStatus, json} from 'shared/fetch';
 
 exports.runArray = (loincArray: string[], doneOne: any, doneAll: any) => {
     const results: any[] = [];

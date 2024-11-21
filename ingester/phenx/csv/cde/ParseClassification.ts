@@ -1,6 +1,6 @@
-import { words } from 'lodash';
-import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
+import {words} from 'lodash';
+import {DEFAULT_RADX_UP_CONFIG} from 'ingester/phenx/Shared/utility';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
 
 export function parseClassification(form: any, row: any, config = DEFAULT_RADX_UP_CONFIG) {
     const classificationArray = [];

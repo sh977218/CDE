@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { map } from 'ingester/loinc/Mapping/LOINC_UOM_DATATYPE_MAP';
+import {isEmpty} from 'lodash';
+import {map} from 'ingester/loinc/Mapping/LOINC_UOM_DATATYPE_MAP';
 
 export function parseValueDomain(loinc) {
     const valueDomain: any = {

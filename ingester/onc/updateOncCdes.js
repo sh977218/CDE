@@ -1,9 +1,9 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import {BATCHLOADER} from 'ingester/shared/utility';
+import {sortClassification} from 'shared/classification/classificationShared';
 
 var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdeDiff = require('../../server/cde/cdediff');
-import { sortClassification } from 'shared/classification/classificationShared';
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.dataElementModel;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
@@ -146,8 +146,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
                     throw err;
-                }
-                else migrationCde.remove(function (err) {
+                } else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     processCdeCb();
                     changed++;
@@ -220,6 +219,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
         }
     });
 }
+
 var migStream;
 
 function streamOnData(migrationCde) {

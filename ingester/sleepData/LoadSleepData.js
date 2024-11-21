@@ -1,5 +1,3 @@
-import { NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
-
 const fs = require('fs');
 const LoadSleepDataByFolder = require('./LoadSleepDataByFolder');
 

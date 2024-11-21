@@ -1,4 +1,4 @@
-import { uniq, isEmpty } from 'lodash';
+import {isEmpty, uniq} from 'lodash';
 
 export function parseReferenceDocuments(nindsForms: any[]) {
     const referenceArray: any[] = [];

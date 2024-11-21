@@ -1,4 +1,3 @@
-import { LoincModel } from 'ingester/createMigrationConnection';
 import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
 
 // const loincIds = ['19925-7'];
@@ -846,12 +845,12 @@ const loincIds = ['69865-4',
     '24547-2'];
 */
 
-const loincIds= ['66067-0'];
+const loincIds = ['66067-0'];
 
 async function run() {
     console.log(`Starting fetching LOINCs ${loincIds}`);
     for (const loincId of loincIds) {
-        const existingLoincs = await LoincModel.find({'LOINC Code': loincId});
+        const existingLoincs = await LoincModel.find({ 'LOINC Code': loincId });
         if (existingLoincs.length) {
             console.log(`LOINC ${loincId} is loaded. Skipping.`);
         } else {
@@ -865,7 +864,10 @@ async function run() {
     }
 }
 
-run().then(() => process.exit(0), err => {
-    console.log(err);
-    process.exit(1);
-});
+run().then(
+    () => process.exit(0),
+    err => {
+        console.log(err);
+        process.exit(1);
+    }
+);

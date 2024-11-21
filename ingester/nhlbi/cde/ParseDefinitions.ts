@@ -1,8 +1,7 @@
 import { getCell } from 'ingester/nhlbi/shared/utility';
-import { isEmpty, isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 
-
-export function parseNhlbiDefinitions(row: any){
+export function parseNhlbiDefinitions(row: any) {
     const definitions = [];
 
     let description = getCell(row, 'Definition');
@@ -12,7 +11,7 @@ export function parseNhlbiDefinitions(row: any){
         definitions.push({
             definition: description,
             tags: [],
-            definitionFormat: 'html'
+            definitionFormat: 'html',
         });
     }
 

@@ -1,7 +1,15 @@
 import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
 import { generateTinyId } from 'server/system/mongo-data';
 import {
-    BATCHLOADER, compareElt, created, findOneCde, imported, lastMigrationScript, mergeElt, updateCde, updateRawArtifact
+    BATCHLOADER,
+    compareElt,
+    created,
+    findOneCde,
+    imported,
+    lastMigrationScript,
+    mergeElt,
+    updateCde,
+    updateRawArtifact,
 } from 'ingester/shared/utility';
 import { parseRadxDesignations } from 'ingester/phenx/csv/cde/ParseDesignations';
 import { parseDefinitions } from 'ingester/phenx/csv/cde/ParseDefinitions';
@@ -43,23 +51,23 @@ export function createPhenXCde(row: any, config = DEFAULT_RADX_UP_CONFIG) {
         attachments: [],
         properties,
         ids,
-        classification: []
+        classification: [],
     };
     parseRadxClassification(phenXCde, row, config);
 
     return phenXCde;
 }
 
-export async function doOnePhenXCde(row:any, config = DEFAULT_RADX_UP_CONFIG) {
+export async function doOnePhenXCde(row: any, config = DEFAULT_RADX_UP_CONFIG) {
     const phenXCde = await createPhenXCde(row, config);
     const newCde = new dataElementModel(phenXCde);
     const newCdeObj = newCde.toObject();
     const cond = {
-        'registrationState.registrationStatus': {$ne: 'Retired'},
+        'registrationState.registrationStatus': { $ne: 'Retired' },
         archived: false,
         'ids.id': row['Variable / Field Name'],
-        loadAsNewCde: true
-    }
+        loadAsNewCde: true,
+    };
     const existingCdes: any[] = await dataElementModel.find(cond);
     let existingCde: any = findOneCde(existingCdes);
     if (!existingCde) {
@@ -74,15 +82,19 @@ export async function doOnePhenXCde(row:any, config = DEFAULT_RADX_UP_CONFIG) {
             existingCde.lastMigrationScript = lastMigrationScript;
             existingCde.imported = imported;
             existingCde = await existingCde.save().catch((err: any) => {
-                console.log(`Not able to save cde when save existing ${config.source} cde ${existingCde.tinyId} ${err}`);
+                console.log(
+                    `Not able to save cde when save existing ${config.source} cde ${existingCde.tinyId} ${err}`
+                );
                 process.exit(1);
             });
             console.log(`same cde tinyId: ${existingCde.tinyId}`);
         } else {
             const existingCdeObj = existingCde.toObject();
             mergeElt(existingCdeObj, newCdeObj, config.source);
-            await updateCde(existingCdeObj, BATCHLOADER, {updateSource: true}).catch((err: any) => {
-                console.log(`Not able to update cde when update existing ${config.source} cde ${existingCde.tinyId} ${err}`);
+            await updateCde(existingCdeObj, BATCHLOADER, { updateSource: true }).catch((err: any) => {
+                console.log(
+                    `Not able to update cde when update existing ${config.source} cde ${existingCde.tinyId} ${err}`
+                );
                 process.exit(1);
             });
             console.log(`updated cde tinyId: ${existingCde.tinyId}`);
@@ -90,9 +102,9 @@ export async function doOnePhenXCde(row:any, config = DEFAULT_RADX_UP_CONFIG) {
     }
     await updateRawArtifact(existingCde, newCdeObj, config.source, config.classificationOrgName);
 
-//    const savedCde: any = await dataElementModel.findOne(cond);
+    //    const savedCde: any = await dataElementModel.findOne(cond);
     const savedCde: any = await dataElementModel.findOne({
-        'registrationState.registrationStatus': {$ne: 'Retired'},
+        'registrationState.registrationStatus': { $ne: 'Retired' },
         archived: false,
         'ids.id': row['Variable / Field Name'],
     });

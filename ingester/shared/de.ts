@@ -1,8 +1,5 @@
-import { isEmpty } from 'lodash';
-import {
-    fixClassification, fixCreated, fixCreatedBy, fixEmptyDesignation, fixSources,
-} from 'ingester/shared/utility';
-import { idSchema } from 'server/system/schemas';
+import {isEmpty} from 'lodash';
+import {fixClassification, fixCreated, fixCreatedBy, fixEmptyDesignation, fixSources,} from 'ingester/shared/utility';
 
 export function fixValueDomain(cdeObj) {
     const valueDomain: any = {

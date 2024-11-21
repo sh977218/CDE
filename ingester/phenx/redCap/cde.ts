@@ -1,11 +1,11 @@
-import { parseDesignations } from 'ingester/phenx/redCap/parseDesignations';
-import { parseProperties } from 'ingester/phenx/redCap/parseProperties';
-import { parseValueDomain } from 'ingester/phenx/redCap/parseValueDomain';
-import { parseIds } from 'ingester/phenx/redCap/parseIds';
-import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, version } from 'ingester/shared/utility';
-import { parseSources } from 'ingester/phenx/redCap/parseSources';
-import { parseClassification } from 'ingester/phenx/Shared/ParseClassification';
+import {parseDesignations} from 'ingester/phenx/redCap/parseDesignations';
+import {parseProperties} from 'ingester/phenx/redCap/parseProperties';
+import {parseValueDomain} from 'ingester/phenx/redCap/parseValueDomain';
+import {parseIds} from 'ingester/phenx/redCap/parseIds';
+import {generateTinyId} from 'server/system/mongo-data';
+import {BATCHLOADER, created, version} from 'ingester/shared/utility';
+import {parseSources} from 'ingester/phenx/redCap/parseSources';
+import {parseClassification} from 'ingester/phenx/Shared/ParseClassification';
 
 export async function createRedCde(row, protocol, newForm) {
     const classification = parseClassification(protocol);

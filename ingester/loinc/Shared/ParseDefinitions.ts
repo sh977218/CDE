@@ -1,4 +1,4 @@
-import { find, isEmpty, uniq } from 'lodash';
+import {find, isEmpty, uniq} from 'lodash';
 
 export function parseDefinitions(loinc) {
     const definitions: any[] = [];

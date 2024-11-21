@@ -1,6 +1,6 @@
-import { isEmpty } from 'lodash';
-import { sortProperties } from 'ingester/shared/utility';
-import { getCell } from 'ingester/ninds/csv/shared/utility';
+import {isEmpty} from 'lodash';
+import {sortProperties} from 'ingester/shared/utility';
+import {getCell} from 'ingester/ninds/csv/shared/utility';
 
 
 export function parseProperties(row) {

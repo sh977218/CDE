@@ -1,7 +1,7 @@
-import { By } from 'selenium-webdriver';
-import { parseFullySpecifiedName } from './ParseFullySpecifiedName';
-import { parseLongCommonName } from './ParseLongCommonName';
-import { parseShortname } from './ParseShortname';
+import {By} from 'selenium-webdriver';
+import {parseFullySpecifiedName} from './ParseFullySpecifiedName';
+import {parseLongCommonName} from './ParseLongCommonName';
+import {parseShortname} from './ParseShortname';
 
 export async function parseNameTable(driver, loincId, table) {
     const result: any = {};

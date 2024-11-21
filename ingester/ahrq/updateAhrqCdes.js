@@ -1,9 +1,9 @@
-import { BATCHLOADER } from 'ingester/shared/utility';
+import {BATCHLOADER} from 'ingester/shared/utility';
+import {sortClassification} from 'shared/classification/classificationShared';
 
 var async = require('async');
 var mongo_cde = require('../../server/cde/mongo-cde');
 var cdediff = require('../../server/cde/cdediff');
-import { sortClassification } from 'shared/classification/classificationShared';
 var MigrationDataElement = require('../createMigrationConnection').MigrationDataElementModel;
 var DataElement = mongo_cde.dataElementModel;
 var MigrationOrg = require('../createMigrationConnection').MigrationOrgModel;
@@ -144,8 +144,7 @@ function processCde(migrationCde, existingCde, processCdeCb) {
                     console.log("Cannot save CDE.");
                     console.log(newDe);
                     throw err;
-                }
-                else migrationCde.remove(function (err) {
+                } else migrationCde.remove(function (err) {
                     if (err) console.log("unable to remove " + err);
                     processCdeCb();
                     changed++;
@@ -218,6 +217,7 @@ function findCde(cdeId, migrationCde, idv, findCdeDone) {
         }
     });
 }
+
 var migStream;
 
 function streamOnData(migrationCde) {
@@ -237,12 +237,12 @@ function streamOnData(migrationCde) {
             migStream.resume();
         });
     } else {
-        console.log("CDE with no AHRQ ID. !! tinyId: " + migrationCde.tinyId+" create cde.");
+        console.log("CDE with no AHRQ ID. !! tinyId: " + migrationCde.tinyId + " create cde.");
         var newCde = migrationCde.toObject();
-        new DataElement(newCde).save(function (e,o) {
+        new DataElement(newCde).save(function (e, o) {
             if (e) throw e;
             changed++;
-            console.log("created cde tinyId: "+o.tinyId);
+            console.log("created cde tinyId: " + o.tinyId);
             migStream.resume();
         });
     }
@@ -255,7 +255,7 @@ function streamOnClose() {
         'imported': {$lt: lastEightHours},
         'source': 'AHRQ',
         'archived': false,
-        'stewardOrg.name':'AHRQ'
+        'stewardOrg.name': 'AHRQ'
     }).exec(function (retiredCdeError, retireCdes) {
         if (retiredCdeError) throw retiredCdeError;
         else {

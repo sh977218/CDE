@@ -1,17 +1,17 @@
-import { isEmpty } from 'lodash';
-import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported, NINDS_PRECLINICAL_NEI_FILE_PATH } from 'ingester/shared/utility';
-import { parseDesignations, parseNhlbiDesignations } from 'ingester/ninds/csv/form/ParseDesignations';
-import { parseDefinitions } from 'ingester/ninds/csv/form/ParseDefinitions';
-import { parseNhlbiSources, parseSources } from 'ingester/ninds/csv/shared/ParseSources';
-import { parseNhlbiReferenceDocuments, parseReferenceDocuments } from 'ingester/ninds/csv/form/ParseReferenceDocuments';
-import { parseProperties } from 'ingester/ninds/csv/form/ParseProperties';
-import { parseIds, parseNhlbiIds } from 'ingester/ninds/csv/form/ParseIds';
-import { parseAttachments, parseNhlbiAttachments } from 'ingester/ninds/csv/form/ParseAttachments';
-import { parseClassification } from 'ingester/ninds/csv/form/ParseClassification';
-import { parseFormElements, parseNhlbiFormElements } from 'ingester/ninds/csv/form/ParseFormElements';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { parseNhlbiClassification as parseNhlbiCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
+import {isEmpty} from 'lodash';
+import {generateTinyId} from 'server/system/mongo-data';
+import {BATCHLOADER, created, imported, NINDS_PRECLINICAL_NEI_FILE_PATH} from 'ingester/shared/utility';
+import {parseDesignations, parseNhlbiDesignations} from 'ingester/ninds/csv/form/ParseDesignations';
+import {parseDefinitions} from 'ingester/ninds/csv/form/ParseDefinitions';
+import {parseNhlbiSources, parseSources} from 'ingester/ninds/csv/shared/ParseSources';
+import {parseNhlbiReferenceDocuments, parseReferenceDocuments} from 'ingester/ninds/csv/form/ParseReferenceDocuments';
+import {parseProperties} from 'ingester/ninds/csv/form/ParseProperties';
+import {parseIds, parseNhlbiIds} from 'ingester/ninds/csv/form/ParseIds';
+import {parseAttachments, parseNhlbiAttachments} from 'ingester/ninds/csv/form/ParseAttachments';
+import {parseClassification} from 'ingester/ninds/csv/form/ParseClassification';
+import {parseFormElements, parseNhlbiFormElements} from 'ingester/ninds/csv/form/ParseFormElements';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {parseNhlbiClassification as parseNhlbiCdeClassification} from 'ingester/ninds/csv/cde/ParseClassification';
 
 export async function createNindsForm(formName: string, csvFileName: string, rows: any[]) {
     const designations = parseDesignations(formName);

@@ -1,12 +1,17 @@
-import { isEmpty } from 'lodash';
-import { createPhenxForm } from 'ingester/phenx/Form/form';
-import { formModel } from 'server/form/mongo-form';
-import { PhenxLogger } from 'ingester/log/PhenxLogger';
+import {isEmpty} from 'lodash';
+import {createPhenxForm} from 'ingester/phenx/Form/form';
+import {formModel} from 'server/form/mongo-form';
+import {PhenxLogger} from 'ingester/log/PhenxLogger';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
+    BATCHLOADER,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeClassification,
+    mergeElt,
+    updateForm,
+    updateRawArtifact
 } from 'ingester/shared/utility';
-import { commentModel } from 'server/discuss/discussDb';
-import { PROTOCOL } from 'ingester/createMigrationConnection';
 
 let protocolCount = 0;
 

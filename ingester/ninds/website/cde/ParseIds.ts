@@ -1,4 +1,4 @@
-import { uniq } from 'lodash';
+import {uniq} from 'lodash';
 
 export function parseIds(nindsForms: any[]) {
     const cdeIdArray: any[] = [];

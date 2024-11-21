@@ -1,11 +1,18 @@
-import { isEmpty } from 'lodash';
-import { formModel } from 'server/form/mongo-form';
-import { createLoincForm } from 'ingester/loinc/Form/form';
+import {isEmpty} from 'lodash';
+import {formModel} from 'server/form/mongo-form';
+import {createLoincForm} from 'ingester/loinc/Form/form';
 import {
-    BATCHLOADER, compareElt, imported, lastMigrationScript, mergeClassification, mergeElt, updateForm, updateRawArtifact
+    BATCHLOADER,
+    compareElt,
+    imported,
+    lastMigrationScript,
+    mergeClassification,
+    mergeElt,
+    updateForm,
+    updateRawArtifact
 } from 'ingester/shared/utility';
-import { LoincLogger } from 'ingester/log/LoincLogger';
-import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
+import {LoincLogger} from 'ingester/log/LoincLogger';
+import {DEFAULT_LOINC_CONFIG} from 'ingester/loinc/Shared/utility';
 
 export async function runOneForm(loinc, config = DEFAULT_LOINC_CONFIG) {
     const loincForm = await createLoincForm(loinc, config);

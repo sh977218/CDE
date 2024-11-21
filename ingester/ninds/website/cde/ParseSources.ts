@@ -1,5 +1,5 @@
-import { uniq } from 'lodash';
-import { imported } from 'ingester/shared/utility';
+import {uniq} from 'lodash';
+import {imported} from 'ingester/shared/utility';
 
 export function parseSources(nindsForms: any[]) {
     const versionDateArray: string[] = [];

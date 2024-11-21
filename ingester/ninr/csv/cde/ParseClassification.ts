@@ -1,4 +1,4 @@
-import { mergeClassificationByOrg } from 'ingester/shared/utility';
+import {mergeClassificationByOrg} from 'ingester/shared/utility';
 
 export function parseNinrClassification() {
     const classification = [];

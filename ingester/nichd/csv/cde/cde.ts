@@ -1,23 +1,28 @@
-import { generateTinyId } from 'server/system/mongo-data';
+import {generateTinyId} from 'server/system/mongo-data';
 import {
-    BATCHLOADER, compareElt, created, findOneCde, imported, lastMigrationScript, mergeElt, updateCde
+    BATCHLOADER,
+    compareElt,
+    created,
+    findOneCde,
+    imported,
+    lastMigrationScript,
+    mergeElt,
+    updateCde
 } from 'ingester/shared/utility';
-import { parseNichdDesignations } from 'ingester/nichd/csv/cde/ParseDesignations';
-import { parseNichdDefinitions } from 'ingester/nichd/csv/cde/ParseDefinitions';
-import { parseSources } from 'ingester/nichd/csv/cde/ParseSources';
-import { parseNichdIds } from 'ingester/nichd/csv/cde/ParseIds';
-import { parseNichdValueDomain } from 'ingester/nichd/csv/cde/ParseValueDomain';
-import { parseNichdReferenceDocuments } from 'ingester/nichd/csv/cde/ParseReferenceDocuments';
-import { parseNichdProperties } from 'ingester/nichd/csv/cde/ParseProperties';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
-import { parseStewardOrg } from 'ingester/nichd/csv/cde/ParseStewardOrg';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { addNichdMetaInfo } from 'ingester/nichd/csv/shared/utility';
-import { isEmpty, trim } from 'lodash';
-import { LoincModel } from 'ingester/createMigrationConnection';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
-import { runOneCde } from 'ingester/loinc/LOADER/loincCdeLoader';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
+import {parseNichdDesignations} from 'ingester/nichd/csv/cde/ParseDesignations';
+import {parseNichdDefinitions} from 'ingester/nichd/csv/cde/ParseDefinitions';
+import {parseSources} from 'ingester/nichd/csv/cde/ParseSources';
+import {parseNichdIds} from 'ingester/nichd/csv/cde/ParseIds';
+import {parseNichdValueDomain} from 'ingester/nichd/csv/cde/ParseValueDomain';
+import {parseNichdReferenceDocuments} from 'ingester/nichd/csv/cde/ParseReferenceDocuments';
+import {parseNichdProperties} from 'ingester/nichd/csv/cde/ParseProperties';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
+import {parseStewardOrg} from 'ingester/nichd/csv/cde/ParseStewardOrg';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {addNichdMetaInfo} from 'ingester/nichd/csv/shared/utility';
+import {isEmpty, trim} from 'lodash';
+import {runOneCde} from 'ingester/loinc/LOADER/loincCdeLoader';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
 
 let existingCdeCount = 0;
 let newCdeCount = 0;

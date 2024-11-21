@@ -1,5 +1,5 @@
-import { BATCHLOADER, updateCde } from 'ingester/shared/utility';
-import { dbPlugins } from 'server';
+import {BATCHLOADER, updateCde} from 'ingester/shared/utility';
+import {dbPlugins} from 'server';
 
 const _ = require('lodash');
 const fs = require('fs');
@@ -55,8 +55,7 @@ fs.readFile(xmlFile, function (err, data) {
             if (!existingCde) {
                 await newCde.save();
                 console.log('newCde tinyId: ' + newCde.tinyId);
-            }
-            else {
+            } else {
                 let diff = CompareCDE.compareCde(newCde, existingCde);
                 if (_.isEmpty(diff)) {
                     existingCde.imported = today;

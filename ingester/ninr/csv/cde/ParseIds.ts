@@ -1,6 +1,6 @@
-import { parseIds } from 'ingester/ninds/csv/cde/ParseIds';
-import { isEqual, uniqWith } from 'lodash';
-import { CdeForm } from 'shared/form/form.model';
+import {parseIds} from 'ingester/ninds/csv/cde/ParseIds';
+import {isEqual, uniqWith} from 'lodash';
+import {CdeForm} from 'shared/form/form.model';
 
 export function parseNinrIds(ninrRow) {
     return parseIds(ninrRow);

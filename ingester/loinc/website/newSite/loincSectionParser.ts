@@ -1,7 +1,7 @@
-import { By } from 'selenium-webdriver';
-import { isEmpty } from 'lodash';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
-import { loadLoincPartById } from 'ingester/loinc/website/newSite/loincPartLoader';
+import {By} from 'selenium-webdriver';
+import {isEmpty} from 'lodash';
+import {loadLoincById} from 'ingester/loinc/website/newSite/loincLoader';
+import {loadLoincPartById} from 'ingester/loinc/website/newSite/loincPartLoader';
 
 async function parseVersion(htmlElement) {
     const versionText = await htmlElement.getText();

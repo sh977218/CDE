@@ -1,4 +1,4 @@
-import { getCell } from 'shared/loader/utilities/utility';
+import {getCell} from 'shared/loader/utilities/utility';
 
 
 export function parseOrigin(row: any) {

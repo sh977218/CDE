@@ -7,19 +7,18 @@ var fs = require('fs');
 var formPath = process.argv[2];
 var formNameMap = {};
 
-var readDir = function(path){
+var readDir = function (path) {
     var dirContent = fs.readdirSync(formPath + "/" + path.join("/"));
-    dirContent.forEach(function(element){
+    dirContent.forEach(function (element) {
         if (element.substr(element.length - 4) === ".pdf") {
             var formName = element.substr(0, element.length - 4);
 
             // remove date expected to be at end of file name
             formName = element.substr(0, formName.lastIndexOf(" "));
 
-            if (formName.indexOf("_")>-1) formName = formName.substr(0, formName.length - 11);
+            if (formName.indexOf("_") > -1) formName = formName.substr(0, formName.length - 11);
             formNameMap[formName] = path;
-        }
-        else {
+        } else {
             var pCopy = JSON.parse(JSON.stringify(path));
             pCopy.push(element);
             readDir(pCopy);

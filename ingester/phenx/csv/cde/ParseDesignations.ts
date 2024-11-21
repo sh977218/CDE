@@ -10,7 +10,7 @@ export function parseDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG) {
         designations.push({
             designation: fieldLabel,
             source,
-            tags: ['Question Text']
+            tags: ['Question Text'],
         });
     }
     const sectionHeader = row['Section Header'];
@@ -18,7 +18,7 @@ export function parseDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG) {
         designations.push({
             designation: sectionHeader,
             source,
-            tags: ['Question Text']
+            tags: ['Question Text'],
         });
     }
 
@@ -28,14 +28,12 @@ export function parseDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG) {
         designations.push({
             designation: variableName,
             source,
-            tags: []
+            tags: [],
         });
     }
 
     return designations;
 }
-
-
 
 export function parseRadxDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG) {
     const source = config.source;
@@ -46,7 +44,7 @@ export function parseRadxDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG)
         designations.push({
             designation: fieldLabel,
             source,
-            tags: ['RADx Question Text']
+            tags: ['RADx Question Text'],
         });
     }
     const sectionHeader = row['Section Header'];
@@ -54,7 +52,7 @@ export function parseRadxDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG)
         designations.push({
             designation: sectionHeader,
             source,
-            tags: ['RADx Question Text']
+            tags: ['RADx Question Text'],
         });
     }
 
@@ -64,11 +62,9 @@ export function parseRadxDesignations(row: any, config = DEFAULT_RADX_UP_CONFIG)
         designations.push({
             designation: variableName,
             source,
-            tags: ['RADx-UP Variable Name']
+            tags: ['RADx-UP Variable Name'],
         });
     }
 
     return designations;
 }
-
-

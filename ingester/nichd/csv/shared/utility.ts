@@ -1,8 +1,8 @@
-import { addNichdDesignation } from 'ingester/nichd/csv/cde/ParseDesignations';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
-import { imported, lastMigrationScript } from 'ingester/shared/utility';
-import { addNichdIdentifier } from 'ingester/nichd/csv/cde/ParseIds';
+import {addNichdDesignation} from 'ingester/nichd/csv/cde/ParseDesignations';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
+import {imported, lastMigrationScript} from 'ingester/shared/utility';
+import {addNichdIdentifier} from 'ingester/nichd/csv/cde/ParseIds';
 
 export function addNichdMetaInfo(elt: any, row: any, config: NichdConfig) {
     let eltObj = elt;

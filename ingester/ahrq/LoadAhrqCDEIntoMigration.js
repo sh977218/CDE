@@ -51,19 +51,19 @@ function run() {
             })
         },
         function (cb) {
-            LoadLoincCdeIntoMigration.runArray(loincIdArray, org,orgInfo, function (one, next) {
+            LoadLoincCdeIntoMigration.runArray(loincIdArray, org, orgInfo, function (one, next) {
                 MigrationDataElementModel.find({'ids.id': one.ids[0].id}).exec(function (findMigrationDataElementError, existingCdes) {
                     if (findMigrationDataElementError) throw findMigrationDataElementError;
                     if (existingCdes.length === 0) {
                         one.classification = [{
-                                elements: [{
-                                    name: "Common Formats / Form",
-                                    elements: []
-                                }],
-                                stewardOrg: {
-                                    name: "AHRQ"
-                                }
+                            elements: [{
+                                name: "Common Formats / Form",
+                                elements: []
+                            }],
+                            stewardOrg: {
+                                name: "AHRQ"
                             }
+                        }
                         ];
                         var obj = new MigrationDataElementModel(one);
                         obj.save(function (e) {

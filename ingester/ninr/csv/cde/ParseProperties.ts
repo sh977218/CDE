@@ -1,14 +1,16 @@
 import { parseProperties } from 'ingester/ninds/csv/cde/ParseProperties';
 import { CdeForm } from 'shared/form/form.model';
-import { isEqual, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 export function parseNinrProperties(ninrRow) {
     return parseProperties(ninrRow);
 }
 
-export function mergeNinrProperties(existingCdeObj: CdeForm,
-                                      newCdeObj: CdeForm,
-                                      otherSourceRawArtifacts: CdeForm[] = []) {
+export function mergeNinrProperties(
+    existingCdeObj: CdeForm,
+    newCdeObj: CdeForm,
+    otherSourceRawArtifacts: CdeForm[] = []
+) {
     const reducer = (accumulator, currentValue) => {
         return accumulator.concat(currentValue.properties);
     };

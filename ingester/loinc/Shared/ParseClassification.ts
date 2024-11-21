@@ -1,8 +1,7 @@
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { isEmpty } from 'lodash';
-import { LOINC_CLASSIFICATION_MAPPING } from 'ingester/createMigrationConnection';
-import { loinc_classification_type_map } from 'ingester/loinc/Mapping/LOINC_CLASSIFICATION_TYPE_MAP';
-import { DEFAULT_LOINC_CONFIG } from 'ingester/loinc/Shared/utility';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {isEmpty} from 'lodash';
+import {loinc_classification_type_map} from 'ingester/loinc/Mapping/LOINC_CLASSIFICATION_TYPE_MAP';
+import {DEFAULT_LOINC_CONFIG} from 'ingester/loinc/Shared/utility';
 
 export async function parseClassification(elt, loinc, config = DEFAULT_LOINC_CONFIG) {
     if (isEmpty(config.classificationArray)) {

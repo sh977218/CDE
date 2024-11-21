@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { chunkArray } from 'ingester/shared/chunkArray';
+import {isEmpty} from 'lodash';
+import {chunkArray} from 'ingester/shared/chunkArray';
 
 function arrayStringToTableWithThreePerRow(array) {
     const chunkedArray = chunkArray(array, 3);

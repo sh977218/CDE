@@ -1,28 +1,32 @@
 const {Builder, By} = require('selenium-webdriver');
-import { isEmpty, sortBy } from 'lodash';
-import { parsePanelHierarchyTable } from 'ingester/loinc/website/oldSite/ParsePanelHierarchyTable';
-import { parseLoincIdTable } from 'ingester/loinc/website/oldSite/ParseLoincIdTable';
-import { parseLoincNameTable } from 'ingester/loinc/website/oldSite/ParseLoincNameTable';
-import { parse3rdPartyCopyrightTable } from 'ingester/loinc/website/oldSite/Parse3rdPartyCopyrightTable';
-import { parseNameTable } from 'ingester/loinc/website/oldSite/NameTable/ParseNameTable';
-import { parseCopyrightNotice } from 'ingester/loinc/website/oldSite/ParseCopyrightNotice';
-import { parsePartDefinitionDescriptionsTable } from 'ingester/loinc/website/oldSite/ParsePartDefinitionDescriptionsTable';
-import { parseTermDefinitionDescriptionsTable } from 'ingester/loinc/website/oldSite/ParseTermDefinitionDescriptionsTable';
-import { parsePartTable } from 'ingester/loinc/website/oldSite/ParsePartTable';
-import { parseFormCodingInstructionsTable } from 'ingester/loinc/website/oldSite/ParseFormCodingInstructionsTable';
-import { parseBasicAttributesTable } from 'ingester/loinc/website/oldSite/ParseBasicAttributesTable';
-import { parseHL7AttributesTable } from 'ingester/loinc/website/oldSite/ParseHL7AttributesTable';
-import { parseSubmittersInformationTable } from 'ingester/loinc/website/oldSite/ParseSubmittersInformationTable';
-import { parseLanguageVariantsTable } from 'ingester/loinc/website/oldSite/ParseLanguageVariantsTable';
-import { parseRelatedNamesTable } from 'ingester/loinc/website/oldSite/ParseRelatedNamesTable';
-import { parseExampleUnitsTable } from 'ingester/loinc/website/oldSite/ParseExampleUnitsTable';
-import { parseCopyrightTable } from 'ingester/loinc/website/oldSite/ParseCopyrightTable';
-import { parseAnswerListTable } from 'ingester/loinc/website/oldSite/ParseAnswerListTable';
-import { parseSurveyQuestionTable } from 'ingester/loinc/website/oldSite/ParseSurveyQuestionTable';
-import { parseWebContentTable } from 'ingester/loinc/website/oldSite/ParseWebContentTable';
-import { parseArticleTable } from 'ingester/loinc/website/oldSite/ParseArticleTable';
-import { parseCopyrightText } from 'ingester/loinc/website/oldSite/ParseCopyrightText';
-import { parseVersion } from 'ingester/loinc/website/oldSite/ParseVersion';
+import {isEmpty, sortBy} from 'lodash';
+import {parsePanelHierarchyTable} from 'ingester/loinc/website/oldSite/ParsePanelHierarchyTable';
+import {parseLoincIdTable} from 'ingester/loinc/website/oldSite/ParseLoincIdTable';
+import {parseLoincNameTable} from 'ingester/loinc/website/oldSite/ParseLoincNameTable';
+import {parse3rdPartyCopyrightTable} from 'ingester/loinc/website/oldSite/Parse3rdPartyCopyrightTable';
+import {parseNameTable} from 'ingester/loinc/website/oldSite/NameTable/ParseNameTable';
+import {parseCopyrightNotice} from 'ingester/loinc/website/oldSite/ParseCopyrightNotice';
+import {
+    parsePartDefinitionDescriptionsTable
+} from 'ingester/loinc/website/oldSite/ParsePartDefinitionDescriptionsTable';
+import {
+    parseTermDefinitionDescriptionsTable
+} from 'ingester/loinc/website/oldSite/ParseTermDefinitionDescriptionsTable';
+import {parsePartTable} from 'ingester/loinc/website/oldSite/ParsePartTable';
+import {parseFormCodingInstructionsTable} from 'ingester/loinc/website/oldSite/ParseFormCodingInstructionsTable';
+import {parseBasicAttributesTable} from 'ingester/loinc/website/oldSite/ParseBasicAttributesTable';
+import {parseHL7AttributesTable} from 'ingester/loinc/website/oldSite/ParseHL7AttributesTable';
+import {parseSubmittersInformationTable} from 'ingester/loinc/website/oldSite/ParseSubmittersInformationTable';
+import {parseLanguageVariantsTable} from 'ingester/loinc/website/oldSite/ParseLanguageVariantsTable';
+import {parseRelatedNamesTable} from 'ingester/loinc/website/oldSite/ParseRelatedNamesTable';
+import {parseExampleUnitsTable} from 'ingester/loinc/website/oldSite/ParseExampleUnitsTable';
+import {parseCopyrightTable} from 'ingester/loinc/website/oldSite/ParseCopyrightTable';
+import {parseAnswerListTable} from 'ingester/loinc/website/oldSite/ParseAnswerListTable';
+import {parseSurveyQuestionTable} from 'ingester/loinc/website/oldSite/ParseSurveyQuestionTable';
+import {parseWebContentTable} from 'ingester/loinc/website/oldSite/ParseWebContentTable';
+import {parseArticleTable} from 'ingester/loinc/website/oldSite/ParseArticleTable';
+import {parseCopyrightText} from 'ingester/loinc/website/oldSite/ParseCopyrightText';
+import {parseVersion} from 'ingester/loinc/website/oldSite/ParseVersion';
 
 require('chromedriver');
 

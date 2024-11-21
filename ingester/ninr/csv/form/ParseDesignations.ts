@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 
 export function parseNinrDesignations(ninrFormName: string) {
     const designations = [];

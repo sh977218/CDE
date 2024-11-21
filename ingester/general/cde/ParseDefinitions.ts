@@ -1,7 +1,7 @@
 import { getCell } from 'shared/loader/utilities/utility';
 import { isEmpty } from 'lodash';
 
-export function parseDefinitions(row: any){
+export function parseDefinitions(row: any) {
     const definitions = [];
 
     const def = getCell(row, 'naming.definiton');

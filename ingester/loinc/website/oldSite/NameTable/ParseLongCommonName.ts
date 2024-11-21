@@ -1,4 +1,4 @@
-import { By } from 'selenium-webdriver';
+import {By} from 'selenium-webdriver';
 
 export async function parseLongCommonName(element) {
     let tds = await element.findElements(By.xpath('td'));

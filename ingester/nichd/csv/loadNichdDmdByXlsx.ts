@@ -1,19 +1,23 @@
-import { groupBy, isEmpty, trim } from 'lodash';
+import {isEmpty, trim} from 'lodash';
+import {dataElementModel, dataElementSourceModel} from 'server/cde/mongo-cde';
+import {formModel, formSourceModel} from 'server/form/mongo-form';
+import {
+    BATCHLOADER,
+    findOneCde,
+    imported,
+    lastMigrationScript,
+    mergeClassificationByOrg,
+    updateCde,
+    updateRawArtifact
+} from 'ingester/shared/utility';
+import {createNichdCde} from 'ingester/nichd/csv/cde/cde';
+import {addNichdIdentifier} from 'ingester/nichd/csv/cde/ParseIds';
+import {addNichdDesignation} from 'ingester/nichd/csv/cde/ParseDesignations';
+import {addNichdSource} from 'ingester/nichd/csv/cde/ParseSources';
+import {DEFAULT_NICHD_CONFIG, NichdConfig} from 'ingester/nichd/shared/utility';
+import {createNichdForm} from 'ingester/nichd/csv/form/form';
 
 const XLSX = require('xlsx');
-
-import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
-import { formModel, formSourceModel } from 'server/form/mongo-form';
-import {
-    BATCHLOADER, findOneCde, imported, lastMigrationScript, mergeClassificationByOrg, updateCde, updateRawArtifact
-} from 'ingester/shared/utility';
-import { DMDXlsx } from 'ingester/createMigrationConnection';
-import { createNichdCde } from 'ingester/nichd/csv/cde/cde';
-import { addNichdIdentifier } from 'ingester/nichd/csv/cde/ParseIds';
-import { addNichdDesignation } from 'ingester/nichd/csv/cde/ParseDesignations';
-import { addNichdSource } from 'ingester/nichd/csv/cde/ParseSources';
-import { DEFAULT_NICHD_CONFIG, NichdConfig } from 'ingester/nichd/shared/utility';
-import { createNichdForm } from 'ingester/nichd/csv/form/form';
 
 let updatedDeCount = 0;
 let newDeCount = 0;

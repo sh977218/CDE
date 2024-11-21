@@ -1,12 +1,19 @@
-import { readdirSync } from 'fs';
-import { groupBy, sortBy } from 'lodash';
-import { BATCHLOADER, imported, mergeElt, NINDS_PRECLINICAL_NEI_FILE_PATH, updateCde, updateForm, } from 'ingester/shared/utility';
-import { createNindsCde } from 'ingester/ninds/csv/cde/cde';
-import { dataElementModel } from 'server/cde/mongo-cde';
-import { formModel } from 'server/form/mongo-form';
-import { loadFormByCsv } from 'ingester/ninds/csv/loadNindsFormByCsv';
-import { loadNindsCde } from 'ingester/ninds/shared';
-import { parseOneCsv } from 'ingester/ninds/csv/shared/utility';
+import {readdirSync} from 'fs';
+import {groupBy, sortBy} from 'lodash';
+import {
+    BATCHLOADER,
+    imported,
+    mergeElt,
+    NINDS_PRECLINICAL_NEI_FILE_PATH,
+    updateCde,
+    updateForm,
+} from 'ingester/shared/utility';
+import {createNindsCde} from 'ingester/ninds/csv/cde/cde';
+import {dataElementModel} from 'server/cde/mongo-cde';
+import {formModel} from 'server/form/mongo-form';
+import {loadFormByCsv} from 'ingester/ninds/csv/loadNindsFormByCsv';
+import {loadNindsCde} from 'ingester/ninds/shared';
+import {parseOneCsv} from 'ingester/ninds/csv/shared/utility';
 
 async function loadNindsCdes(folder: string) {
     const csvFiles = readdirSync(folder);

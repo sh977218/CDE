@@ -1,8 +1,8 @@
 import * as cheerio from 'cheerio';
-import { getDomainCollectionSite } from 'ingester/shared/utility';
-import { loadLoincById } from 'ingester/loinc/website/newSite/loincLoader';
+import {getDomainCollectionSite} from 'ingester/shared/utility';
+import {loadLoincById} from 'ingester/loinc/website/newSite/loincLoader';
 import fetch from 'node-fetch';
-import { handleErrors, text } from 'shared/fetch';
+import {handleErrors, text} from 'shared/fetch';
 
 const SECTIONS: any[] = [
     {

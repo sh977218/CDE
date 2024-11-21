@@ -1,15 +1,15 @@
-import { generateTinyId } from 'server/system/mongo-data';
-import { BATCHLOADER, created, imported } from 'ingester/shared/utility';
+import {generateTinyId} from 'server/system/mongo-data';
+import {BATCHLOADER, created, imported} from 'ingester/shared/utility';
 
-import { parseProperties } from 'ingester/ninds/csv/cde/ParseProperties';
-import { parseIds, parseNhlbiIds } from 'ingester/ninds/csv/cde/ParseIds';
-import { parseNhlbiValueDomain, parseValueDomain } from 'ingester/ninds/csv/cde/ParseValueDomain';
-import { parseReferenceDocuments } from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
-import { parseDesignations, parseNhlbiDesignations } from 'ingester/ninds/csv/cde/ParseDesignations';
-import { parseDefinitions, parseNhlbiDefinitions } from 'ingester/ninds/csv/cde/ParseDefinitions';
-import { parseClassification, parseNhlbiClassification } from 'ingester/ninds/csv/cde/ParseClassification';
-import { classifyItem } from 'server/classification/orgClassificationSvc';
-import { parseNhlbiSources, parseSources } from 'ingester/ninds/csv/shared/ParseSources';
+import {parseProperties} from 'ingester/ninds/csv/cde/ParseProperties';
+import {parseIds, parseNhlbiIds} from 'ingester/ninds/csv/cde/ParseIds';
+import {parseNhlbiValueDomain, parseValueDomain} from 'ingester/ninds/csv/cde/ParseValueDomain';
+import {parseReferenceDocuments} from 'ingester/ninds/csv/cde/ParseReferenceDocuments';
+import {parseDesignations, parseNhlbiDesignations} from 'ingester/ninds/csv/cde/ParseDesignations';
+import {parseDefinitions, parseNhlbiDefinitions} from 'ingester/ninds/csv/cde/ParseDefinitions';
+import {parseClassification, parseNhlbiClassification} from 'ingester/ninds/csv/cde/ParseClassification';
+import {classifyItem} from 'server/classification/orgClassificationSvc';
+import {parseNhlbiSources, parseSources} from 'ingester/ninds/csv/shared/ParseSources';
 
 export async function createNindsCde(row: any) {
     const designations = parseDesignations(row);

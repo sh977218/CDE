@@ -124,7 +124,7 @@ test.describe(`CDE name`, async () => {
             });
         });
 
-        test(`edit designation `, async ({
+        test(`edit designation`, async ({
             request,
             page,
             materialPage,
@@ -149,7 +149,6 @@ test.describe(`CDE name`, async () => {
                 if (await page.locator('id=expandHistory').isVisible()) {
                     await page.locator('id=expandHistory').click();
                 }
-
                 const versionHistories = [editDesignationVersionInfo];
                 for (let [index, versionInfo] of versionHistories.reverse().entries()) {
                     const historyTableRow = historySection.historyTableRows().nth(index);
@@ -232,7 +231,6 @@ test.describe(`CDE name`, async () => {
                 if (await page.locator('id=expandHistory').isVisible()) {
                     await page.locator('id=expandHistory').click();
                 }
-
                 const versionHistories = [deleteDesignationVersionInfo];
                 for (let [index, versionInfo] of versionHistories.reverse().entries()) {
                     const historyTableRow = historySection.historyTableRows().nth(index);

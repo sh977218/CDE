@@ -1,5 +1,5 @@
-import { isEmpty } from 'lodash';
-import { DEFAULT_RADX_UP_CONFIG } from 'ingester/phenx/Shared/utility';
+import {isEmpty} from 'lodash';
+import {DEFAULT_RADX_UP_CONFIG} from 'ingester/phenx/Shared/utility';
 
 export function parseIds(row: any, config = DEFAULT_RADX_UP_CONFIG) {
     const ids: any[] = [];

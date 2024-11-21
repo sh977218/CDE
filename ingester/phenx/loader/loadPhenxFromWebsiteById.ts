@@ -1,5 +1,4 @@
-import { PROTOCOL } from 'ingester/createMigrationConnection';
-import { runOnePhenX } from 'ingester/phenx/Website/phenxLoader';
+import {runOnePhenX} from 'ingester/phenx/Website/phenxLoader';
 
 const protocolId = '641001';
 

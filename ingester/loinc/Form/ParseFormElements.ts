@@ -26,9 +26,9 @@ export async function parseFormElements(loinc, config = DEFAULT_LOINC_CONFIG) {
             elementType: 'section',
             label: '',
             instructions: {
-                value: ''
+                value: '',
             },
-            formElements: []
+            formElements: [],
         });
         tempFormElements = formElements[0].formElements;
     }
@@ -48,12 +48,12 @@ export async function parseFormElements(loinc, config = DEFAULT_LOINC_CONFIG) {
 
 function elementToQuestion(existingCde, element) {
     const question: any = {
-        instructions: {value: ''},
+        instructions: { value: '' },
         cde: {
             tinyId: existingCde.tinyId,
             name: existingCde.designations[0].designation,
             permissibleValues: existingCde.valueDomain.permissibleValues,
-            ids: existingCde.ids
+            ids: existingCde.ids,
         },
         required: REQUIRED_MAP[element.Cardinality],
         multiselect: MULTISELECT_MAP[element.Cardinality],
@@ -69,7 +69,7 @@ function elementToQuestion(existingCde, element) {
         question.multiselect = false;
     }
     if (element.exUcumUnitsText) {
-        const uom: any = {system: '', code: element['Example UCUM Units']};
+        const uom: any = { system: '', code: element['Example UCUM Units'] };
         question.unitsOfMeasure.push(uom);
     }
     return {
@@ -78,11 +78,11 @@ function elementToQuestion(existingCde, element) {
         cardinality: CARDINALITY_MAP[element.Cardinality],
         label: element.Name.trim(),
         question,
-        formElements: []
+        formElements: [],
     };
 }
 
-async function loadCde(element, config=DEFAULT_LOINC_CONFIG) {
+async function loadCde(element, config = DEFAULT_LOINC_CONFIG) {
     const existingCde = await runOneCde(element.loinc, config);
     return elementToQuestion(existingCde, element);
 }
@@ -91,8 +91,8 @@ function elementToInForm(existingForm, element) {
     const inForm: any = {
         form: {
             tinyId: existingForm.tinyId,
-            name: existingForm.designations[0].designation
-        }
+            name: existingForm.designations[0].designation,
+        },
     };
     if (existingForm.version) {
         inForm.form.version = existingForm.version;
@@ -100,15 +100,15 @@ function elementToInForm(existingForm, element) {
 
     return {
         elementType: 'form',
-        instructions: {value: '', valueFormat: ''},
+        instructions: { value: '', valueFormat: '' },
         cardinality: CARDINALITY_MAP[element.Cardinality],
         label: element.Name.trim(),
         inForm,
-        formElements: []
+        formElements: [],
     };
 }
 
-async function loadForm(element, config=DEFAULT_LOINC_CONFIG) {
+async function loadForm(element, config = DEFAULT_LOINC_CONFIG) {
     const existingForm = await runOneForm(element.loinc, config);
     return elementToInForm(existingForm, element);
 }

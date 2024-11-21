@@ -1,4 +1,4 @@
-import { trimWhite } from 'ingester/shared/utility';
+import {trimWhite} from 'ingester/shared/utility';
 
 export function parseDesignations(nciXmlCde) {
     const designations = [{

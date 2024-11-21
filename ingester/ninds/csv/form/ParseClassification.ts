@@ -1,4 +1,4 @@
-import { parseClassification as parseCdeClassification } from 'ingester/ninds/csv/cde/ParseClassification';
+import {parseClassification as parseCdeClassification} from 'ingester/ninds/csv/cde/ParseClassification';
 
 export function parseClassification(form, rows, defaultClassification = []) {
     for (const row of rows) {

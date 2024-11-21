@@ -27,8 +27,8 @@ test.describe(`reorder properties`, async () => {
 
     test(`Form`, async ({ page, propertySection, navigationMenu }) => {
         const formName = 'form for test cde reorder detail tabs';
-        await navigationMenu.gotoFormByName(formName, true);
         await navigationMenu.login(Accounts.testEditor);
+        await navigationMenu.gotoFormByName(formName, true);
 
         const cdePropertiesLocator = page.locator('id=properties-div').locator('dl dt span');
         const cdeProperties = await cdePropertiesLocator.allInnerTexts();

@@ -2,15 +2,26 @@ import { Builder, By } from 'selenium-webdriver';
 import * as DiffJson from 'diff-json';
 import * as moment from 'moment';
 import {
-    find, findIndex, includes, isEmpty, isEqual, lastIndexOf, lowerCase, noop, sortBy, trim, uniq, uniqBy, uniqWith,
-    words
+    find,
+    findIndex,
+    includes,
+    isEmpty,
+    isEqual,
+    lastIndexOf,
+    lowerCase,
+    noop,
+    sortBy,
+    trim,
+    uniq,
+    uniqBy,
+    uniqWith,
+    words,
 } from 'lodash';
 import { words as wordCapitalize } from 'capitalize';
 import * as mongo_cde from 'server/cde/mongo-cde';
 import { dataElementModel, dataElementSourceModel } from 'server/cde/mongo-cde';
 import * as mongo_form from 'server/form/mongo-form';
 import { formModel, formSourceModel } from 'server/form/mongo-form';
-import { PhenxURL } from 'ingester/createMigrationConnection';
 import {
     Attachment,
     CdeId,
@@ -19,7 +30,7 @@ import {
     Designation,
     Item,
     Property,
-    ReferenceDocument
+    ReferenceDocument,
 } from 'shared/models.model';
 import { CdeForm, FormElement } from 'shared/form/form.model';
 import { addFile } from 'server/mongo/mongo/gfs';
@@ -35,10 +46,24 @@ export const sourceMap: any = {
     PhenX: ['PhenX', 'PhenX Variable'],
     NINDS: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name'],
     // tslint:disable-next-line:max-line-length
-    'NINDS Preclinical TBI': ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
+    'NINDS Preclinical TBI': [
+        'NINDS',
+        'NINDS Variable Name',
+        'NINDS caDSR',
+        'NINDS Preclinical',
+        'BRICS Variable Name',
+        'NINDS Preclinical TBI',
+    ],
     NCI: ['NCI', 'caDSR'],
     NICHD: ['NICHD'],
-    NINR: ['NINDS', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS Preclinical', 'BRICS Variable Name', 'NINDS Preclinical TBI'],
+    NINR: [
+        'NINDS',
+        'NINDS Variable Name',
+        'NINDS caDSR',
+        'NINDS Preclinical',
+        'BRICS Variable Name',
+        'NINDS Preclinical TBI',
+    ],
 };
 export const TODAY = new Date().toJSON();
 export const lastMigrationScript = `load NHLBI on ${moment().format('DD MMMM YYYY')}`;
@@ -46,7 +71,7 @@ export const lastMigrationScript = `load NHLBI on ${moment().format('DD MMMM YYY
 export const BATCHLOADER_USERNAME = 'NIH CDE Repository Team';
 export const BATCHLOADER = {
     username: BATCHLOADER_USERNAME,
-    roles: []
+    roles: [],
 };
 
 export const created = TODAY;
@@ -62,7 +87,7 @@ export function sanitizeText(s: string) {
 export function replaceDashAndCapitalize(s: string) {
     const sArray = words(s.replace(/_/g, ' ')).join(' ');
     const formattedS = wordCapitalize(sArray);
-    return formattedS
+    return formattedS;
 }
 
 export function wipeBeforeCompare(obj: any) {
@@ -129,7 +154,12 @@ export function trimWhite(text: string) {
     }
 }
 
-export async function updateRawArtifact(existingElt: Item, newElt: CdeForm, source: string, classificationOrgName: string) {
+export async function updateRawArtifact(
+    existingElt: Item,
+    newElt: CdeForm,
+    source: string,
+    classificationOrgName: string
+) {
     if (!existingElt || !newElt) {
         return;
     }
@@ -141,10 +171,14 @@ export async function updateRawArtifact(existingElt: Item, newElt: CdeForm, sour
         mongooseModel = formSourceModel;
     }
     newElt.source = source;
-    const updateResult = await mongooseModel.updateOne({
-        tinyId: existingElt.tinyId,
-        source
-    }, newElt, {upsert: true});
+    const updateResult = await mongooseModel.updateOne(
+        {
+            tinyId: existingElt.tinyId,
+            source,
+        },
+        newElt,
+        { upsert: true }
+    );
     printUpdateResult(updateResult, existingElt);
 }
 
@@ -174,7 +208,13 @@ function mergeElements(existingElements, newElements) {
     });
 }
 
-export function mergeClassificationByOrg(existingObj: { classification: Classification[] }, newObj: CdeForm, orgName: string = '') {
+export function mergeClassificationByOrg(
+    existingObj: {
+        classification: Classification[];
+    },
+    newObj: CdeForm,
+    orgName: string = ''
+) {
     const newClassification = newObj.classification;
     const existingClassification = existingObj.classification;
     newClassification
@@ -186,8 +226,10 @@ export function mergeClassificationByOrg(existingObj: { classification: Classifi
             }
         })
         .forEach(c => {
-            const foundClassification: Classification | undefined = find(existingClassification,
-                o => o.stewardOrg.name === c.stewardOrg.name);
+            const foundClassification: Classification | undefined = find(
+                existingClassification,
+                o => o.stewardOrg.name === c.stewardOrg.name
+            );
             if (!foundClassification) {
                 existingObj.classification.unshift(c);
             } else {
@@ -201,11 +243,13 @@ export function mergeClassificationByOrg(existingObj: { classification: Classifi
 export async function createCde(cde: any) {
     if (cde.classification.length === 0) {
         cde.classification.push({
-            stewardOrg: {name: 'TEXT'},
-            elements: [{
-                name: 'non-classified',
-                elements: []
-            }]
+            stewardOrg: { name: 'TEXT' },
+            elements: [
+                {
+                    name: 'non-classified',
+                    elements: [],
+                },
+            ],
         });
     }
     await new dataElementModel(cde).save();
@@ -214,11 +258,13 @@ export async function createCde(cde: any) {
 export async function createForm(form: any) {
     if (form.classification.length === 0) {
         form.classification.push({
-            stewardOrg: {name: 'TEXT'},
-            elements: [{
-                name: 'non-classified',
-                elements: []
-            }]
+            stewardOrg: { name: 'TEXT' },
+            elements: [
+                {
+                    name: 'non-classified',
+                    elements: [],
+                },
+            ],
         });
     }
     await new formModel(form).save();
@@ -291,7 +337,7 @@ export async function getDomainCollectionSite() {
             DOMAIN_COLLECTION_MAP[protocolId] = {
                 phenXProtocol,
                 protocolLink: href,
-                domainCollection: domainCollection.trim()
+                domainCollection: domainCollection.trim(),
             };
         }
         await driver.findElement(By.id('myTable_next')).click();
@@ -311,7 +357,7 @@ function getChildren(formElements: FormElement[]) {
             } else if (formElement.elementType === 'question') {
                 ids.push({
                     id: formElement.question.cde.tinyId,
-                    version: formElement.question.cde.version
+                    version: formElement.question.cde.version,
                 });
             }
         });
@@ -319,11 +365,14 @@ function getChildren(formElements: FormElement[]) {
     return ids;
 }
 
-export function loopFormElements(formElements: FormElement[], options: any = {
-    onQuestion: noop,
-    onSection: noop,
-    onForm: noop
-}) {
+export function loopFormElements(
+    formElements: FormElement[],
+    options: any = {
+        onQuestion: noop,
+        onSection: noop,
+        onForm: noop,
+    }
+) {
     if (formElements) {
         formElements.forEach(formElement => {
             if (formElement.elementType === 'question') {
@@ -340,7 +389,9 @@ export function loopFormElements(formElements: FormElement[], options: any = {
 // Compare two elements
 export function compareElt(newEltObj: CdeForm, existingEltObj: CdeForm, source: string) {
     if (newEltObj.elementType !== existingEltObj.elementType) {
-        console.log(`Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `);
+        console.log(
+            `Two element type different. newEltObj: ${newEltObj.tinyId} existingEltObj: ${existingEltObj.tinyId} `
+        );
         process.exit(1);
     }
 
@@ -362,14 +413,16 @@ export function compareElt(newEltObj: CdeForm, existingEltObj: CdeForm, source: 
         eltObj.properties = sortBy(eltObj.properties, ['key']);
         eltObj.referenceDocuments = sortBy(eltObj.referenceDocuments, ['docType', 'languageCode', 'document']);
 
-        eltObj.ids = sortBy(eltObj.ids.filter(id => sourceMap[source].indexOf(id.source) !== -1), ['source', 'id']);
-        ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids']
-            .forEach(field => {
-                eltObj[field].forEach(o => {
-                    delete o.sources;
-                    delete o.source;
-                });
+        eltObj.ids = sortBy(
+            eltObj.ids.filter(id => sourceMap[source].indexOf(id.source) !== -1),
+            ['source', 'id']
+        );
+        ['designations', 'definitions', 'properties', 'referenceDocuments', 'ids'].forEach(field => {
+            eltObj[field].forEach(o => {
+                delete o.sources;
+                delete o.source;
             });
+        });
 
         if (isForm) {
             eltObj.cdeTinyIds = getChildren(eltObj.formElements);
@@ -402,7 +455,9 @@ export function mergeDesignations(existingObj: CdeForm, newObj: CdeForm) {
         const existingDesignations: Designation[] = existingObj.designations;
         const newDesignations: Designation[] = newObj.designations;
         newDesignations.forEach(newDesignation => {
-            const foundDesignation: Designation | undefined = find(existingDesignations, {designation: newDesignation.designation});
+            const foundDesignation: Designation | undefined = find(existingDesignations, {
+                designation: newDesignation.designation,
+            });
             if (!foundDesignation) {
                 existingDesignations.push(newDesignation);
             } else {
@@ -422,7 +477,9 @@ export function mergeDefinitions(existingObj: CdeForm, newObj: CdeForm) {
         const existingDefinitions: Definition[] = existingObj.definitions;
         const newDefinitions: Definition[] = newObj.definitions;
         newDefinitions.forEach(newDefinition => {
-            const foundDefinition: Definition | undefined = find(existingDefinitions, {definition: newDefinition.definition});
+            const foundDefinition: Definition | undefined = find(existingDefinitions, {
+                definition: newDefinition.definition,
+            });
             if (!foundDefinition) {
                 existingDefinitions.push(newDefinition);
             } else {
@@ -471,14 +528,17 @@ export function mergeReferenceDocuments(existingObj: CdeForm, newObj: CdeForm) {
         const newReferenceDocuments: ReferenceDocument[] = newObj.referenceDocuments;
 
         newReferenceDocuments.forEach(newReferenceDocument => {
-            const i = findIndex(existingReferenceDocuments, o =>
-                isEqual(o.docType, newReferenceDocument.docType) &&
-                isEqual(o.title, newReferenceDocument.title) &&
-                isEqual(o.providerOrg, newReferenceDocument.providerOrg) &&
-                isEqual(o.uri, newReferenceDocument.uri) &&
-                isEqual(o.languageCode, newReferenceDocument.languageCode) &&
-                isEqual(o.document, newReferenceDocument.document) &&
-                isEqual(o.source, newReferenceDocument.source));
+            const i = findIndex(
+                existingReferenceDocuments,
+                o =>
+                    isEqual(o.docType, newReferenceDocument.docType) &&
+                    isEqual(o.title, newReferenceDocument.title) &&
+                    isEqual(o.providerOrg, newReferenceDocument.providerOrg) &&
+                    isEqual(o.uri, newReferenceDocument.uri) &&
+                    isEqual(o.languageCode, newReferenceDocument.languageCode) &&
+                    isEqual(o.document, newReferenceDocument.document) &&
+                    isEqual(o.source, newReferenceDocument.source)
+            );
             if (i === -1) {
                 existingReferenceDocuments.push(newReferenceDocument);
             } else {
@@ -489,7 +549,13 @@ export function mergeReferenceDocuments(existingObj: CdeForm, newObj: CdeForm) {
 }
 
 export function mergeIds(existingObj: CdeForm, newObj: CdeForm, source: string) {
-    const NINDS_SOURCES = ['NINDS Preclinical', 'BRICS Variable Name', 'NINDS Variable Name', 'NINDS caDSR', 'NINDS CDISC'];
+    const NINDS_SOURCES = [
+        'NINDS Preclinical',
+        'BRICS Variable Name',
+        'NINDS Variable Name',
+        'NINDS caDSR',
+        'NINDS CDISC',
+    ];
 
     const existingIds: CdeId[] = existingObj.ids;
     const newIds: CdeId[] = newObj.ids;
@@ -534,7 +600,6 @@ function increaseVersion(existingEltObj: CdeForm) {
         const minorVersionNum = parseInt(minorVersion, 10);
         const increasedMinorVersion = minorVersionNum + 1;
         existingEltObj.version = majorVersion + '.' + increasedMinorVersion;
-
     } else {
         existingEltObj.version = '1.0';
     }
@@ -559,7 +624,7 @@ export function mergeElt(existingEltObj: any, newEltObj: any, source: string) {
     mergeProperties(existingEltObj, newEltObj);
     mergeReferenceDocuments(existingEltObj, newEltObj);
 
-//    mergeSources(existingEltObj, newEltObj, source);
+    //    mergeSources(existingEltObj, newEltObj, source);
 
     existingEltObj.attachments = newEltObj.attachments;
     if (existingEltObj.lastMigrationScript !== lastMigrationScript) {
@@ -727,7 +792,9 @@ export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
     }
 
     if (datatype === 'Dynamic Code List' && !isEmpty(datatype.datatypeDynamicCodeList)) {
-        valueDomainOrQuestion.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(valueDomainOrQuestion.datatypeDynamicCodeList);
+        valueDomainOrQuestion.datatypeDynamicCodeList = fixDatatypeDynamicCodeList(
+            valueDomainOrQuestion.datatypeDynamicCodeList
+        );
     }
 
     if (datatype === 'Value List' && !isEmpty(datatype.datatypeValueList)) {
@@ -735,7 +802,9 @@ export function fixValueDomainOrQuestion(valueDomainOrQuestion) {
     }
 
     if (datatype === 'Externally Defined' && !isEmpty(datatype.datatypeExternallyDefined)) {
-        valueDomainOrQuestion.datatypeExternallyDefined = fixDatatypeExternallyDefined(valueDomainOrQuestion.datatypeExternallyDefined);
+        valueDomainOrQuestion.datatypeExternallyDefined = fixDatatypeExternallyDefined(
+            valueDomainOrQuestion.datatypeExternallyDefined
+        );
     }
 }
 
@@ -754,13 +823,13 @@ export function addAttachment(readable: Readable, attachment: Attachment): Promi
     return addFile(
         {
             filename: attachment.filename,
-            stream: readable
+            stream: readable,
         },
         {
             contentType: attachment.filetype,
             metadata: {
-                status: 'approved'
-            }
+                status: 'approved',
+            },
         }
     ).then(fileId => {
         attachment.fileid = fileId.toString();
@@ -821,9 +890,8 @@ export function retiredElt(elt: any) {
 }
 
 export async function formRawArtifact(tinyId: string, sourceName: string) {
-    return formSourceModel.findOne({tinyId, source: sourceName}).lean();
+    return formSourceModel.findOne({ tinyId, source: sourceName }).lean();
 }
-
 
 export function fixProperties(formObj: CdeForm) {
     return formObj.properties.filter(p => !isEmpty(p.value));
@@ -850,7 +918,6 @@ export function fixSources(obj: CdeForm) {
     return obj.sources.filter(s => !isEmpty(s));
 }
 
-
 export function fixEmptyDesignation(cdeObj: CdeForm) {
     return cdeObj.designations.filter(d => d.designation);
 }
@@ -870,16 +937,12 @@ export function fixClassification(eltObj: CdeForm) {
 }
 
 export function sleep(ms: number) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         setTimeout(resolve, ms);
     });
 }
 
-export const EXCLUDE_REF_DOC = [
-    'No references available',
-    'Please fill out',
-    'SCKLCELL:'
-];
+export const EXCLUDE_REF_DOC = ['No references available', 'Please fill out', 'SCKLCELL:'];
 
 function fixReferenceDocuments(elt: any) {
     elt.referenceDocuments = elt.referenceDocuments.filter((rd: ReferenceDocument) => {

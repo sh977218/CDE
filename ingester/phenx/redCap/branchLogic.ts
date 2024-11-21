@@ -3,7 +3,7 @@ import { map as SYMBOL_MAP } from 'ingester/phenx/redCap/REDCAP_SYMBOL_MAP';
 
 import { map as CONJUNCTION_MAP } from 'ingester/phenx/redCap/REDCAP_CONJUNCTION_MAP';
 
-const formatSkipLogic = function(equationText, redCapCdes) {
+const formatSkipLogic = function (equationText, redCapCdes) {
     let result = '';
     const foundLabelArray = equationText.match(/\[[^\[\]]*]\s*/);
     if (foundLabelArray && foundLabelArray.length === 1) {
@@ -44,12 +44,12 @@ const formatSkipLogic = function(equationText, redCapCdes) {
         const foundValueWithSingQuoteArray = equationText.match(/'.*'/);
         if (foundValueWithSingQuoteArray && foundValueWithSingQuoteArray.length === 1) {
             const foundValueWithSingQuote = foundValueWithSingQuoteArray[0];
-            return result += foundValueWithSingQuote.replace(/'/g, '"').trim();
+            return (result += foundValueWithSingQuote.replace(/'/g, '"').trim());
         }
         const foundValueWithDoubleQuoteArray = equationText.match(/".*"/);
         if (foundValueWithDoubleQuoteArray && foundValueWithDoubleQuoteArray.length === 1) {
             const foundValueWithDoubleQuote = foundValueWithDoubleQuoteArray[0];
-            return result += foundValueWithDoubleQuote.trim();
+            return (result += foundValueWithDoubleQuote.trim());
         }
         if (equationText.match(/'.*"/) && equationText.match(/".*'/)) {
             return null;

@@ -1,5 +1,5 @@
-import { hostname } from 'os';
-import { createConnection, Schema } from 'mongoose';
+import {hostname} from 'os';
+import {createConnection, Schema} from 'mongoose';
 
 const migrationConn = createConnection('mongodb://miguser:password@localhost:27017/migration', {
     ssl: false

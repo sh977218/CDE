@@ -1,5 +1,5 @@
-import { imported } from 'ingester/shared/utility';
-import { NichdConfig } from 'ingester/nichd/shared/utility';
+import {imported} from 'ingester/shared/utility';
+import {NichdConfig} from 'ingester/nichd/shared/utility';
 
 export function parseSources(config: NichdConfig) {
     return [{sourceName: config.source, imported}];
