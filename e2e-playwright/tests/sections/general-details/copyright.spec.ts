@@ -38,7 +38,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
         await generateDetailsSection.addCopyright({ url: 'https://www.usa.gov/' });
 
         await test.step(`Publish form`, async () => {
-            await saveModal.newVersionByType('form');
+            await saveModal.publishNewVersionByType('form');
         });
 
         await test.step(`Form is in 'Copyrighted, but free to use'`, async () => {
@@ -60,7 +60,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
         });
 
         await test.step(`Publish form`, async () => {
-            await saveModal.newVersionByType('form');
+            await saveModal.publishNewVersionByType('form');
         });
 
         await test.step(`Verify 'hhs url' is not there`, async () => {
@@ -73,7 +73,7 @@ test(`Edit Form Copyright`, async ({ navigationMenu, searchPage, generateDetails
         await generateDetailsSection.disallowRenderingCheckbox().check();
 
         await test.step(`Publish form`, async () => {
-            await saveModal.newVersionByType('form');
+            await saveModal.publishNewVersionByType('form');
         });
 
         await test.step(`Form is in 'Copyrighted, with restrictions'`, async () => {

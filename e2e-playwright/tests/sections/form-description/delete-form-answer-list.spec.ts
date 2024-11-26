@@ -25,7 +25,7 @@ test(`Form delete answer list`, async ({ page, navigationMenu, saveModal, previe
 
     await test.step(`Save form`, async () => {
         await formDescription.saveFormEdit();
-        await saveModal.newVersionByType('form', versionInfo);
+        await saveModal.publishNewVersionByType('form', versionInfo);
     });
 
     await test.step(`Verify Form`, async () => {

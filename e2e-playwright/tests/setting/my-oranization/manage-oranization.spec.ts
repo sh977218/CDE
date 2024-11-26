@@ -15,13 +15,7 @@ const newOrganization: Organization = {
 };
 
 test.describe(`My organization`, async () => {
-    test(`Rename organization`, async ({
-        materialPage,
-        inlineEdit,
-        settingMenu,
-        navigationMenu,
-        manageOrganizationsPage,
-    }) => {
+    test(`Rename organization`, async ({ settingMenu, navigationMenu, manageOrganizationsPage }) => {
         await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await settingMenu.manageOrganizationsMenu().click();

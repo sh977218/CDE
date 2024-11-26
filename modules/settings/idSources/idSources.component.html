@@ -1,45 +1,60 @@
 <h1>ID Sources</h1>
 
-<ng-container *ngIf="sources">
-    <div *ngIf="!sources.length" class="m-4">
-        No Item Sources
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput placeholder="New Id:" [formControl]="newOrgName">
+</mat-form-field>
+<button mat-icon-button type="submit" [disabled]="newOrgName.invalid" color="primary" (click)="add()" aria-label="add">
+    <mat-icon>add</mat-icon>
+</button>
+
+<div class="example-container mat-elevation-z8">
+    <div class="example-loading-shade"
+         *ngIf="isLoadingResults">
+        <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
     </div>
 
-    <table *ngIf="sources?.length" class="table">
-        <tr *ngFor="let source of sources;let i = index;">
-            <td style="min-width: 30px">
-                <a class="hand-cursor" href="javascript:void(0);" (click)="delete(source,i)">
-                    <mat-icon style="margin-left: .5rem">delete_outline</mat-icon>
-                </a>
-            </td>
-            <td style="min-width: 50px">
-                {{source._id}}
-            </td>
-            <td style="padding-top: 1.25em">
-                <mat-form-field style="width: 95%;">
-                    <input matInput placeholder="Data Element Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
-                           [(ngModel)]="source.linkTemplateDe" (change)="update(source)">
-                </mat-form-field>
-                <mat-form-field style="width: 95%;">
-                    <input matInput placeholder="Form Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
-                           [(ngModel)]="source.linkTemplateForm" (change)="update(source)">
-                </mat-form-field>
-            </td>
-            <td style="width: 20%">
-                <mat-form-field style="width: 95%;">
-                    <input matInput placeholder="Version:" [(ngModel)]="source.version" (change)="update(source)">
-                </mat-form-field>
-            </td>
-        </tr>
-    </table>
+    <div class="example-table-container">
+        <table mat-table [dataSource]="data$ | async" class="example-table">
+            <ng-container matColumnDef="_id">
+                <th mat-header-cell *matHeaderCellDef>Source name</th>
+                <td mat-cell *matCellDef="let row">
+                    <div class="flex items-center">
+                        <button mat-icon-button color="primary" (click)="delete(row)">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                        {{row._id}}
+                    </div>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="links">
+                <th mat-header-cell *matHeaderCellDef>Links</th>
+                <td mat-cell *matCellDef="let row">
+                    <div class="flex flex-col">
+                        <mat-form-field>
+                            <input matInput placeholder="Data Element Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
+                                   [(ngModel)]="row.linkTemplateDe" (change)="update(row)">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput placeholder="Form Link URL: (Use {{'{{id}\} and {{version}\}.'}})"
+                                   [(ngModel)]="row.linkTemplateForm" (change)="update(row)">
+                        </mat-form-field>
+                    </div>
+            </ng-container>
+            <ng-container matColumnDef="version">
+                <th mat-header-cell *matHeaderCellDef>Version</th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-form-field>
+                        <input matInput placeholder="Version:" [(ngModel)]="row.version" (change)="update(row)">
+                    </mat-form-field>
+                </td>
+            </ng-container>
 
-    <div class="stack">
-        <mat-form-field>
-            <input matInput placeholder="New Id:" [(ngModel)]="newId">
-        </mat-form-field>
-        <button class="button" [disabled]="!newId" (click)="add()">
-            <mat-icon>add</mat-icon>
-            Add
-        </button>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No Item Sources</td>
+            </tr>
+        </table>
     </div>
-</ng-container>
+</div>

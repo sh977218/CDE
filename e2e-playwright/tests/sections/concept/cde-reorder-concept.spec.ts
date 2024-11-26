@@ -43,7 +43,7 @@ test(`Reorder CDE concepts`, async ({
         const conceptNamesAfterOrder = await page.getByTestId(`concept-name`).allInnerTexts();
 
         expect(conceptNamesBeforeOrder).toEqual(conceptNamesAfterOrder);
-        await saveModal.newVersionByType('cde', versionInfo);
+        await saveModal.publishNewVersionByType('cde', versionInfo);
     });
 
     await test.step(`Verify version number`, async () => {

@@ -1,14 +1,17 @@
 import { expect, Page } from '@playwright/test';
 import { Identifier, Version } from '../../model/type';
 import { MaterialPo } from './material.po';
+import { SaveModalPo } from '../../pages/shared/save-modal.po';
 
 export class IdentifierPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
+    private readonly saveModal: SaveModalPo;
 
-    constructor(page: Page, materialPage: MaterialPo) {
+    constructor(page: Page, materialPage: MaterialPo, saveModal: SaveModalPo) {
         this.page = page;
         this.materialPage = materialPage;
+        this.saveModal = saveModal;
     }
 
     addIdentifierButton() {
@@ -33,13 +36,14 @@ export class IdentifierPo {
     async addIdentifier({ source, id, version }: Identifier) {
         await this.addIdentifierButton().click();
         await this.materialPage.matDialog().waitFor();
-        await this.materialPage.matDialog().getByTestId(`new-source`).selectOption(source);
+        await this.materialPage.matDialog().getByTestId('new-source').selectOption(source);
         await this.materialPage.matDialog().getByPlaceholder(`Identifier`).fill(id);
         if (version) {
-            await this.materialPage.matDialog().getByPlaceholder(`Version`).fill(id);
+            await this.materialPage.matDialog().getByPlaceholder(`Version`).fill(version);
         }
         await this.materialPage.matDialog().getByRole('button', { name: 'Save' }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.saveModal.waitForDraftSaveComplete();
     }
 
     /**

@@ -40,7 +40,7 @@ test(`Remove CDE concepts`, async ({
         await conceptSection.removeConceptByIndex('Data Element Concept', 0);
         await conceptSection.removeConceptByIndex('Object Class', 0);
         await conceptSection.removeConceptByIndex('Property', 0);
-        await saveModal.newVersionByType('cde', versionInfo);
+        await saveModal.publishNewVersionByType('cde', versionInfo);
     });
 
     await test.step(`Verify version number`, async () => {

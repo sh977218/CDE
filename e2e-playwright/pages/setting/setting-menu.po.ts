@@ -55,11 +55,15 @@ export class SettingMenuPo {
         return this.page.getByTestId(`spell-check`);
     }
 
+    siteAdminMenu() {
+        return this.page.getByTestId('site-admins');
+    }
+
     serverStatusMenu() {
         return this.page.getByTestId(`server-status`);
     }
 
-    siteAdminMenu() {
-        return this.page.getByTestId('site-admins');
+    idSourcesMenu() {
+        return this.page.getByTestId('id-sources');
     }
 }

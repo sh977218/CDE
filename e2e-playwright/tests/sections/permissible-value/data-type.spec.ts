@@ -46,7 +46,7 @@ test(`Edit CDE data type`, async ({
 
     await test.step(`edit data type, then save`, async () => {
         await permissibleValueSection.editDataType(newDataType);
-        await saveModal.newVersionByType('cde', versionInfo);
+        await saveModal.publishNewVersionByType('cde', versionInfo);
     });
     await test.step(`Verify version number`, async () => {
         await identifierSection.verifyVersion(versionInfo, existingVersion);

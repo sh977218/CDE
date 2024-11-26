@@ -60,6 +60,7 @@ import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
 import { ManageTagsPropertiesPo } from '../pages/setting/my-organizations/manage-tags-properties.po';
 import { UsersPagePo } from '../pages/setting/users-page.po';
+import { IdSourcesPagePo } from '../pages/setting/id-sources-page.po';
 import { ArticlePagePo } from '../pages/setting/article-page.po';
 
 // Manage classification page
@@ -134,6 +135,7 @@ const baseFixture = baseTest.extend<{
     manageTagsPropertiesPage: ManageTagsPropertiesPo;
     profilePage: ProfilePagePo;
     usersPage: UsersPagePo;
+    idSourcesPage: IdSourcesPagePo;
     articlePage: ArticlePagePo;
     settingMenu: SettingMenuPo;
     submissionEditPage: SubmissionEditPo;
@@ -189,8 +191,8 @@ const baseFixture = baseTest.extend<{
     ) => {
         await use(new GenerateDetailsPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
-    identifierSection: async ({ page, materialPage }, use) => {
-        await use(new IdentifierPo(page, materialPage));
+    identifierSection: async ({ page, materialPage, saveModal }, use) => {
+        await use(new IdentifierPo(page, materialPage, saveModal));
     },
     relatedDocumentSection: async (
         { page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal },
@@ -264,7 +266,9 @@ const baseFixture = baseTest.extend<{
     usersPage: async ({ page, materialPage }, use) => {
         await use(new UsersPagePo(page, materialPage));
     },
-
+    idSourcesPage: async ({ page, materialPage }, use) => {
+        await use(new IdSourcesPagePo(page, materialPage));
+    },
     articlePage: async ({ page, materialPage, inlineEdit }, use) => {
         await use(new ArticlePagePo(page, materialPage, inlineEdit));
     },

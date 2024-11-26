@@ -60,7 +60,7 @@ test(`Add UMLS permissible value`, async ({
     });
 
     await test.step(`Publish CDE to new version`, async () => {
-        await saveModal.newVersionByType('cde', versionInfo);
+        await saveModal.publishNewVersionByType('cde', versionInfo);
     });
 
     await test.step(`Logout and Verify NCI and UMLS code`, async () => {

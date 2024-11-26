@@ -80,6 +80,6 @@ test(`pv validation`, async ({ page, saveModal, materialPage, navigationMenu, pe
     });
 
     await test.step(`Save CDE`, async () => {
-        await saveModal.newVersionByType('cde', versionInfo);
+        await saveModal.publishNewVersionByType('cde', versionInfo);
     });
 });

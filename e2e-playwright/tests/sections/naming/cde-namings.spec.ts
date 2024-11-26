@@ -57,7 +57,7 @@ test.describe(`CDE name`, async () => {
         }) => {
             await test.step(`add designation, then save`, async () => {
                 await generateDetailsSection.addName(newDesignation);
-                await saveModal.newVersionByType('cde', addDesignationVersionInfo);
+                await saveModal.publishNewVersionByType('cde', addDesignationVersionInfo);
 
                 await test.step(`Verify version number`, async () => {
                     await identifierSection.verifyVersion(addDesignationVersionInfo);
@@ -138,7 +138,7 @@ test.describe(`CDE name`, async () => {
         }) => {
             await test.step(`edit designation, then save`, async () => {
                 await generateDetailsSection.editDesignationByIndex(1, updatedDesignation, { replace: true });
-                await saveModal.newVersionByType('cde', editDesignationVersionInfo);
+                await saveModal.publishNewVersionByType('cde', editDesignationVersionInfo);
 
                 await test.step(`Verify version number`, async () => {
                     await identifierSection.verifyVersion(editDesignationVersionInfo);
@@ -220,7 +220,7 @@ test.describe(`CDE name`, async () => {
             await test.step(`delete designation, then save`, async () => {
                 await generateDetailsSection.deleteDesignationByIndex(1);
                 // await expect(page.getByText(newDesignation.designation)).toBeHidden();
-                await saveModal.newVersionByType('cde', deleteDesignationVersionInfo);
+                await saveModal.publishNewVersionByType('cde', deleteDesignationVersionInfo);
 
                 await test.step(`Verify version number`, async () => {
                     await identifierSection.verifyVersion(deleteDesignationVersionInfo);
@@ -326,7 +326,7 @@ test.describe(`CDE name`, async () => {
         }) => {
             await test.step(`add definition, then save`, async () => {
                 await generateDetailsSection.addDefinition(newDefinition);
-                await saveModal.newVersionByType('cde', addDefinitionVersionInfo);
+                await saveModal.publishNewVersionByType('cde', addDefinitionVersionInfo);
 
                 await test.step(`Verify version number`, async () => {
                     await identifierSection.verifyVersion(addDefinitionVersionInfo);

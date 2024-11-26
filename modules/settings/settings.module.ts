@@ -288,13 +288,14 @@ const appRoutes: Routes = [
         SearchModule,
         SubmissionModule,
         UsernameAutocompleteModule,
+
+        IdSourcesComponent,
     ],
     declarations: [
         ArticleHelpDialogComponent,
         ArticleAdminComponent,
         DraftsComponent,
         EditSiteAdminsComponent,
-        IdSourcesComponent,
         DataValidationComponent,
         SpellCheckComponent,
         SubmissionWorkbookValidationComponent,

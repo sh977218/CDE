@@ -54,7 +54,7 @@ export class SaveModalPo {
      * @param alertMessage - snack message to check during save
      * @param version - optional versioning information, but highly recommended to provide
      */
-    async newVersion(alertMessage: AlertType, version?: Version) {
+    async publishNewVersion(alertMessage: AlertType, version?: Version) {
         if (!version) version = { newVersion: '', changeNote: '' };
         // To not override input parameter 'version', make a copy
         let newVersion = version.newVersion;
@@ -77,11 +77,11 @@ export class SaveModalPo {
         await this.materialPage.checkAlert(alertMessage);
     }
 
-    async newVersionByType(type: 'cde' | 'form', version?: Version) {
+    async publishNewVersionByType(type: 'cde' | 'form', version?: Version) {
         if (type.toLowerCase() === 'cde') {
-            await this.newVersion('Data Element saved.', version);
+            await this.publishNewVersion('Data Element saved.', version);
         } else if (type.toLowerCase() === 'form') {
-            await this.newVersion('Form saved.', version);
+            await this.publishNewVersion('Form saved.', version);
         } else {
             throw new Error(`Unexpected type ${type}`);
         }

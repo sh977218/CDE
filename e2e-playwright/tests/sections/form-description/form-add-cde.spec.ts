@@ -85,7 +85,7 @@ test(`From add cde`, async ({ saveModal, navigationMenu, previewSection, formDes
 
     await test.step(`Save form`, async () => {
         await formDescription.saveFormEdit();
-        await saveModal.newVersionByType('form', versionInfo);
+        await saveModal.publishNewVersionByType('form', versionInfo);
     });
 
     await test.step(`Verify questions`, async () => {

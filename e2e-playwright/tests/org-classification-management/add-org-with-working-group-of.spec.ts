@@ -44,7 +44,7 @@ test(`Add Org working group classification`, async ({
             await generateDetailsSection.editRegistrationStatus({ status: 'Qualified' });
         });
 
-        await saveModal.newVersionByType('cde');
+        await saveModal.publishNewVersionByType('cde');
 
         await test.step(`Classify cde with working group org`, async () => {
             await classificationSection.addClassification(workingGroupOrgClassificationArray);
