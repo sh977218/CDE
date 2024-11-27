@@ -191,4 +191,30 @@ test.describe(`Form view export`, async () => {
             expect(fileContent.size).toBe(9285);
         }
     });
+
+    test(`fhirQuestionnaire export`, async ({ page, materialPage, navigationMenu }) => {
+        const formName = `Empty Logic`;
+        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoFormByName(formName);
+        await page.locator('#export').click();
+        const downloadPromise = page.waitForEvent('download');
+        await materialPage.matMenuItem(' FHIR Questionnaire JSON file ').click();
+        await materialPage.checkAlert(`Export downloaded.`);
+        const download = await downloadPromise;
+        await download.saveAs(download.suggestedFilename());
+        const downloadedFile = await download.path();
+        if (downloadedFile) {
+            const expectedContents = [
+                '/deView?tinyId=OtsN78xANu1',
+                `{"valueCoding":{"code":"Unknown","userSelected":false}`,
+                `"linkId":"0-2`,
+                `"enableWhen":[`,
+            ];
+
+            const fileContent = readFileSync(downloadedFile, { encoding: 'utf8' });
+            for (const expectedContent of expectedContents) {
+                expect(fileContent).toContain(expectedContent);
+            }
+        }
+    });
 });
