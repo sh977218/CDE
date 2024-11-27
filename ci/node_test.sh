@@ -98,10 +98,6 @@ fi
 set -x
 if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     echo "============Run selenium test with Gradle on on-prem server...=============="
-    export downloadFolder=/usr/nlm/selenium/cde/downloads/$host_name
-    export chromeDownloadFolder=\\\\NLMSAMBASERVER\\selenium\\cde\\downloads\\$host_name
-    rm -rf $downloadFolder
-    mkdir $downloadFolder
 
     export forkNb=6
     cd test/selenium || exit 1
@@ -110,18 +106,18 @@ if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
     then
         if [ "$BROWSER" == 'oneTest' ]
         then
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DchromeDownloadFolder=$chromeDownloadFolder -DdownloadFolder=$downloadFolder -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
+            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
         else
             #../../node_modules/protractor/bin/protractor --baseUrl=http://local-cde-dev-1.nlm.nih.gov:3001 --seleniumAddress=http://130.14.175.7/wd/hub ../protractor-conf.js &
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DchromeDownloadFolder=$chromeDownloadFolder -DdownloadFolder=$downloadFolder -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
+            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
         fi
     else
         if [ "$BROWSER" == 'oneTest' ]
         then
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DchromeDownloadFolder=$chromeDownloadFolder -DdownloadFolder=$downloadFolder -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL}  -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
+            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL}  -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
         else
             #../../node_modules/protractor/bin/protractor --baseUrl=http://local-cde-dev-2.nlm.nih.gov:3001 --seleniumAddress=http://130.14.175.7/wd/hub ../protractor-conf.js &
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DchromeDownloadFolder=$chromeDownloadFolder -DdownloadFolder=$downloadFolder -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
+            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
         fi
     fi
     if [ $? -ne 0 ]

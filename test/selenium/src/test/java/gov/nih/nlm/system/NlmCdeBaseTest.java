@@ -57,10 +57,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
     public static boolean hubLogged = false;
 
     private static int defaultTimeout = Integer.parseInt(System.getProperty("timeout"));
-    protected static String downloadFolder = System.getProperty("seleniumDownloadFolder");
-    //    protected static String downloadFolder = "\\\\NLMSAMBASERVER\\selenium\\cde\\downloads";
-    private static String chromeDownloadFolder = System.getProperty("chromeDownloadFolder");
-    //    private static String chromeDownloadFolder = "\\\\NLMSAMBASERVER\\selenium\\cde\\downloads";
     protected static String tempFolder = System.getProperty("tempFolder");
 
     protected static String browser = System.getProperty("browser");
@@ -105,7 +101,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
                 chromeOptions.addArguments("(--test-type");
             }
             Map<String, Object> prefs = new HashMap<>();
-            prefs.put("download.default_directory", chromeDownloadFolder);
             prefs.put("profile.default_content_settings.geolocation", 2);
             chromeOptions.setExperimentalOption("prefs", prefs);
             chromeOptions.addArguments("disable-shared-workers");
@@ -143,9 +138,6 @@ public class NlmCdeBaseTest implements USERNAME, MAP_HELPER, USER_ROLES {
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(defaultTimeout));
         shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
-
-        System.out.println("downloadFolder: " + downloadFolder);
-        System.out.println("chromeDownloadFolder: " + chromeDownloadFolder);
 
         JavascriptExecutor js = (JavascriptExecutor) driver;
         driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(9));

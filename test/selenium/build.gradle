@@ -35,8 +35,6 @@ tasks.withType(Test) {
     systemProperty 'hubUrl', System.getProperty('hubUrl')
     systemProperty 'timeout', System.getProperty('timeout')
     systemProperty 'browser', project.hasProperty('browser') ? browser : "chrome"
-    systemProperty 'seleniumDownloadFolder', System.getProperty('downloadFolder')
-    systemProperty 'chromeDownloadFolder', System.getProperty('chromeDownloadFolder')
     systemProperty 'tempFolder', project.hasProperty('tempFolder') ? tempFolder : "/tmp/"
 
 }
