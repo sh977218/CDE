@@ -33,7 +33,7 @@ test(`Form classify classification`, async ({
         await classificationSection.addRecentClassification(classificationArray);
     });
 
-    await test.step(`Verify Classification audit`, async () => {
+    await test.step(`Verify Add Classification audit`, async () => {
         await navigationMenu.gotoAudit();
         await auditTab.classificationAuditLog().click();
         await page.route(`/server/log/itemLog/classification`, async route => {
@@ -42,6 +42,34 @@ test(`Form classify classification`, async ({
         });
         await page.getByRole('button', { name: 'Search', exact: true }).click();
         await materialPage.matSpinnerShowAndGone();
-        expect(await page.getByText(classificationArray.join(' > ')).count()).toBeGreaterThanOrEqual(1);
+
+        await page
+            .locator('cde-item-log table tbody tr')
+            .filter({ has: page.getByRole('cell', { name: classificationArray.join(' > ') }) })
+            .first()
+            .click();
+        await expect(page.getByText(`add ${classificationArray.join(' > ')}`)).toBeVisible();
+    });
+
+    await test.step(`Delete classification`, async () => {
+        await navigationMenu.gotoFormByName(formName);
+        await classificationSection.removeClassification(classificationArray);
+    });
+
+    await test.step(`Verify Delete Classification audit`, async () => {
+        await navigationMenu.gotoAudit();
+        await auditTab.classificationAuditLog().click();
+        await page.route(`/server/log/itemLog/classification`, async route => {
+            await page.waitForTimeout(5000);
+            await route.continue();
+        });
+        await page.getByRole('button', { name: 'Search', exact: true }).click();
+        await materialPage.matSpinnerShowAndGone();
+        await page
+            .locator('cde-item-log table tbody tr')
+            .filter({ has: page.getByRole('cell', { name: classificationArray.join(' > ') }) })
+            .first()
+            .click();
+        await expect(page.getByText(`delete ${classificationArray.join(' > ')}`)).toBeVisible();
     });
 });

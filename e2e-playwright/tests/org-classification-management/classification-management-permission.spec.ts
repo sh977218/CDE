@@ -21,5 +21,13 @@ test.describe(`Classification Management Permission`, async () => {
         await expect(materialPage.matEdit()).toBeHidden();
         await expect(materialPage.matDelete()).toBeHidden();
         await expect(materialPage.matTransform()).toBeHidden();
+
+        await test.step(`classification link`, async () => {
+            const [, newPage] = await Promise.all([
+                page.getByRole('link', { name: 'CRF_TTU' }).click(),
+                page.waitForEvent('popup'),
+            ]);
+            await expect(newPage).toHaveURL(/search\?selectedOrg=CTEP&classification=CRF_TTU/);
+        });
     });
 });
