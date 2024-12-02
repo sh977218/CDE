@@ -25,12 +25,13 @@ import { fileInputToFormData } from 'non-core/browser';
 import { ExportService } from 'non-core/export.service';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { checkPvUnicity, checkDefinitions } from 'shared/de/dataElement.model';
 import { deepCopyElt, filterClassificationPerUser } from 'shared/elt/elt';
 import { Item } from 'shared/item';
 import { Cb1, Elt } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { canEditCuratedItem, hasPrivilegeForOrg, isOrgAuthority } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { WINDOW, WINDOW_PROVIDERS } from 'window.service';
@@ -342,7 +343,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return (this.draftSaving = lastValueFrom(
+        return (this.draftSaving = toPromise(
             this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, elt)
         ).then(
             newElt => {

@@ -14,12 +14,12 @@ import JXON from 'jxon';
 import { intersectionWith } from 'lodash';
 import { fetchFormStringById } from 'nativeRender/form.service';
 import { processRules, RegistrationValidatorService, RuleStatus } from 'non-core/registrationValidator.service';
-import { lastValueFrom } from 'rxjs';
 import { DataElement, DataElementElastic } from 'shared/de/dataElement.model';
 import { ElasticSearchResponseBody, responseHitsTotal } from 'shared/elastic';
 import { CdeForm, CdeFormElastic, ElasticResponseDataForm } from 'shared/form/form.model';
 import { Item, ItemElastic } from 'shared/item';
 import { Cb1, CurationStatus, ModuleItem } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { SearchSettings } from 'shared/search/search.model';
 import { noop } from 'shared/util';
 
@@ -67,7 +67,7 @@ export class ExportService {
                 }
             } else {
                 const lfSettings = this.elasticService.buildElasticQuerySettings(new SearchSettings());
-                let esResp = await lastValueFrom(
+                let esResp = await toPromise(
                     this.http.post<ElasticSearchResponseBody<ItemElastic>>('/server/form/scrollExport', lfSettings)
                 );
                 let totalNbOfForms = 0;
@@ -110,7 +110,7 @@ export class ExportService {
                 while (keepScrolling) {
                     keepScrolling = intersectOnBatch(esResp);
                     // tslint:disable-next-line:max-line-length
-                    esResp = await lastValueFrom(
+                    esResp = await toPromise(
                         this.http.get<ScrollResponse<CdeFormElastic>>(
                             '/server/form/scrollExport/' + (esResp as any)._scroll_id
                         )
@@ -293,7 +293,7 @@ export class ExportService {
 
     async formCdeExport(form: CdeForm) {
         const tinyIdList = getFormQuestionsAsQuestionCde(form).map(f => f.tinyId);
-        const elts = await lastValueFrom(this.http.get<DataElement[]>('/server/de/list/' + tinyIdList)).catch(noop);
+        const elts = await toPromise(this.http.get<DataElement[]>('/server/de/list/' + tinyIdList)).catch(noop);
         let csv;
         if (elts) {
             csv = await this.resultToCsv(elts as DataElementElastic[]);

@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
-import { lastValueFrom } from 'rxjs';
 import { IdSourcesResponse } from 'shared/boundaryInterfaces/API/system';
 import { isCdeForm, Item } from 'shared/item';
 import { CdeId, IdSource } from 'shared/models.model';
 import { AddIdentifierModalComponent } from 'adminItem/identfifiers/add-identifier-modal/add-identifier-modal.component';
+import { toPromise } from 'shared/observable';
 
 @Component({
     selector: 'cde-identifiers',
@@ -55,7 +55,7 @@ export class IdentifiersComponent {
         if (this.idSourcesPromise) {
             return this.idSourcesPromise;
         } else {
-            return (this.idSourcesPromise = lastValueFrom(
+            return (this.idSourcesPromise = toPromise(
                 this.http.get<IdSourcesResponse>('/server/system/idSources')
             ).catch(err => {
                 this.alert.httpErrorAlert(err);

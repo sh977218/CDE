@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { fileInputToFormData } from 'non-core/browser';
-import { lastValueFrom } from 'rxjs';
 import {
     AttachmentAttachResponse,
     AttachmentDetachRequest,
@@ -15,6 +14,7 @@ import {
     HomepagePutRequest,
     HomepagePutResponse,
 } from 'shared/boundaryInterfaces/API/system';
+import { toPromise } from 'shared/observable';
 import { HomePageDraft, UpdateCard } from 'shared/singleton.model';
 import { isT } from 'shared/util';
 
@@ -40,7 +40,7 @@ export class HomeEditComponent {
     }
 
     attachmentDelete(fileId: string): Promise<void> {
-        return lastValueFrom(
+        return toPromise(
             this.http.post<void>('/server/homeDetach', {
                 fileId,
             } as AttachmentDetachRequest)
@@ -66,7 +66,7 @@ export class HomeEditComponent {
             return;
         }
         this.autoSaveLock = true;
-        lastValueFrom(
+        toPromise(
             this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
                 updated: homepage.updated,
                 updateInProgress: true,
@@ -93,8 +93,8 @@ export class HomeEditComponent {
 
     deleteDraft() {
         Promise.all([
-            lastValueFrom(this.http.get<HomepageDraftGetResponse>('/server/homeEdit')),
-            lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')),
+            toPromise(this.http.get<HomepageDraftGetResponse>('/server/homeEdit')),
+            toPromise(this.http.get<HomepageGetResponse>('/server/home')),
         ])
             .then(drafts => {
                 const [draft, original] = drafts;
@@ -109,7 +109,7 @@ export class HomeEditComponent {
                     );
                 }
             })
-            .then(() => lastValueFrom(this.http.delete('/server/homeEdit')))
+            .then(() => toPromise(this.http.delete('/server/homeEdit')))
             .then(() => this.router.navigate(['/home']))
             .catch(err => this.alert.httpErrorAlert(err));
     }
@@ -119,7 +119,7 @@ export class HomeEditComponent {
             .then(() => {
                 const fileId = update.image?.fileId;
                 if (fileId) {
-                    lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')).then(original => {
+                    toPromise(this.http.get<HomepageGetResponse>('/server/home')).then(original => {
                         if ((original ? original.body.updates : []).every(u => u.image?.fileId !== fileId)) {
                             return this.attachmentDelete(fileId);
                         }
@@ -150,7 +150,7 @@ export class HomeEditComponent {
     }
 
     getEditLock(homepage: HomePageDraft) {
-        lastValueFrom(
+        toPromise(
             this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
                 updated: homepage.updated,
                 updateInProgress: true,
@@ -180,8 +180,8 @@ export class HomeEditComponent {
     }
 
     publish(homepage: HomePageDraft) {
-        lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')).then(original => {
-            return lastValueFrom(
+        toPromise(this.http.get<HomepageGetResponse>('/server/home')).then(original => {
+            return toPromise(
                 this.http.put<HomepageDraftPutResponse>('/server/homeEdit', homepage as HomepageDraftPutRequest)
             )
                 .then(newHomepage => {
@@ -190,9 +190,9 @@ export class HomeEditComponent {
                     // homepage.updateInProgress = undefined;
                 })
                 .then(() =>
-                    lastValueFrom(this.http.put<HomepagePutResponse>('/server/home', homepage as HomepagePutRequest))
+                    toPromise(this.http.put<HomepagePutResponse>('/server/home', homepage as HomepagePutRequest))
                 )
-                .then(() => lastValueFrom(this.http.delete('/server/homeEdit')))
+                .then(() => toPromise(this.http.delete('/server/homeEdit')))
                 .then(() =>
                     Promise.all(
                         (original ? original.body.updates : [])
@@ -208,14 +208,14 @@ export class HomeEditComponent {
     }
 
     refresh() {
-        lastValueFrom(this.http.get<HomepageDraftGetResponse>('/server/homeEdit')).then(
+        toPromise(this.http.get<HomepageDraftGetResponse>('/server/homeEdit')).then(
             homepage => {
                 if (homepage) {
                     this.noDraft = false;
                     this.postLoad(homepage);
                     return;
                 }
-                lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')).then(
+                toPromise(this.http.get<HomepageGetResponse>('/server/home')).then(
                     homepage => {
                         this.noDraft = true;
                         if (!homepage) {
@@ -237,7 +237,7 @@ export class HomeEditComponent {
     }
 
     stopEditing(homepage: HomePageDraft) {
-        lastValueFrom(
+        toPromise(
             this.http.put<HomepageDraftPutResponse>('/server/homeEdit', {
                 updated: homepage.updated,
                 updateInProgress: false,

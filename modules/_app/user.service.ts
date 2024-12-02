@@ -4,9 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from '_app/notifications/notification.service';
 import { InactivityLoggedOutModalComponent } from 'inactivity-logged-out-modal/inactivity-logged-out-modal.component';
 import { isEmpty } from 'lodash';
-import { BehaviorSubject, lastValueFrom, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Cb1, User } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { Organization } from 'shared/organization/organization';
 import {
     isOrgCurator,
@@ -101,7 +102,7 @@ export class UserService {
     }
 
     reload(): Promise<User | undefined> {
-        return (this.promise = lastValueFrom(this.http.get<User>('/server/user/')).then(user => {
+        return (this.promise = toPromise(this.http.get<User>('/server/user/')).then(user => {
             return this.reloadFrom(user);
         }));
     }
@@ -141,7 +142,7 @@ export class UserService {
 
     setOrganizations(): Promise<void> {
         if (hasRolePrivilege(this.user, 'universalCreate')) {
-            return lastValueFrom(this.http.get<Organization[]>('/server/orgManagement/managedOrgs')).then(orgs => {
+            return toPromise(this.http.get<Organization[]>('/server/orgManagement/managedOrgs')).then(orgs => {
                 this.userOrgs = orgs.map(org => org.name);
             });
         } else {

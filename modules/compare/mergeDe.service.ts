@@ -10,12 +10,12 @@ import {
     mergeArrayByReferenceDocuments,
     mergeArrayBySources,
 } from 'core/adminItem/classification';
-import { lastValueFrom } from 'rxjs';
 import { transferClassifications } from 'shared/classification/classificationShared';
 import { ITEM_MAP } from 'shared/item';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { DataElement } from 'shared/de/dataElement.model';
+import { toPromise } from 'shared/observable';
 
 @Injectable({ providedIn: 'root' })
 export class MergeDeService {
@@ -25,8 +25,8 @@ export class MergeDeService {
         if (tinyIdFrom === tinyIdTo) {
             throw new Error('You cannot merge same data elements.');
         }
-        const cdeFrom = await lastValueFrom(this.http.get<DataElement>(ITEM_MAP.cde.api + tinyIdFrom));
-        const cdeTo = await lastValueFrom(this.http.get<DataElement>(ITEM_MAP.cde.api + tinyIdTo));
+        const cdeFrom = await toPromise(this.http.get<DataElement>(ITEM_MAP.cde.api + tinyIdFrom));
+        const cdeTo = await toPromise(this.http.get<DataElement>(ITEM_MAP.cde.api + tinyIdTo));
         if (cdeFrom.isDraft) {
             throw new Error(`You cannot merge draft data element. ${cdeFrom.tinyId}`);
         }
@@ -72,8 +72,8 @@ export class MergeDeService {
         }
         cdeTo.changeNote = 'Merged from tinyId ' + cdeFrom.tinyId;
         return {
-            left: await lastValueFrom(this.http.post('/server/de/publishExternal', cdeFrom)),
-            right: await lastValueFrom(this.http.post('/server/de/publishExternal', cdeTo)),
+            left: await toPromise(this.http.post('/server/de/publishExternal', cdeFrom)),
+            right: await toPromise(this.http.post('/server/de/publishExternal', cdeTo)),
         };
     }
 }

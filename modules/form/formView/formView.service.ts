@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { lastValueFrom } from 'rxjs';
 import { CdeForm, CdeFormDraft } from 'shared/form/form.model';
 import { ITEM_MAP } from 'shared/item';
+import { toPromise } from 'shared/observable';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +21,7 @@ export class FormViewService {
                     if (!canEditCuratedItem(user, elt)) {
                         return elt;
                     }
-                    return lastValueFrom(this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams.tinyId))
+                    return toPromise(this.http.get<CdeForm>(ITEM_MAP.form.apiDraft + queryParams.tinyId))
                         .then(draft => draft || elt)
                         .catch((err: HttpErrorResponse) => {
                             if (err.status === 403) {
@@ -36,7 +36,7 @@ export class FormViewService {
     }
 
     fetchEltPublishedForEditing(queryParams: Params): Promise<CdeForm> {
-        return lastValueFrom(
+        return toPromise(
             this.http.get<CdeForm>(
                 queryParams.formId
                     ? '/server/form/forEditById/' + queryParams.formId
@@ -48,7 +48,7 @@ export class FormViewService {
     }
 
     fetchPublished(queryParams: Params): Promise<CdeForm> {
-        return lastValueFrom(
+        return toPromise(
             this.http.get<CdeForm>(
                 queryParams.formId
                     ? ITEM_MAP.form.apiById + queryParams.formId

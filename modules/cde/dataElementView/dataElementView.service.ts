@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 import { UserService } from '_app/user.service';
-import { lastValueFrom } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { ITEM_MAP } from 'shared/item';
+import { toPromise } from 'shared/observable';
 import { canEditCuratedItem } from 'shared/security/authorizationShared';
 
 @Injectable({ providedIn: 'root' })
@@ -21,7 +21,7 @@ export class DataElementViewService {
                     if (!canEditCuratedItem(user, elt)) {
                         return elt;
                     }
-                    return lastValueFrom(this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams.tinyId))
+                    return toPromise(this.http.get<DataElement>(ITEM_MAP.cde.apiDraft + queryParams.tinyId))
                         .then(draft => draft || elt)
                         .catch((err: HttpErrorResponse) => {
                             if (err.status === 403) {
@@ -36,7 +36,7 @@ export class DataElementViewService {
     }
 
     fetchPublished(queryParams: Params): Promise<DataElement> {
-        return lastValueFrom(
+        return toPromise(
             this.http.get<DataElement>(
                 queryParams.cdeId
                     ? ITEM_MAP.cde.apiById + queryParams.cdeId

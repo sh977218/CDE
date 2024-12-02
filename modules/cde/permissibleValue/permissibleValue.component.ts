@@ -14,7 +14,7 @@ import { NewPermissibleValueModalComponent } from 'cde/permissibleValue/new-perm
 import { InlineAreaEditModule } from 'inlineAreaEdit/inlineAreaEdit.module';
 import { InlineEditModule } from 'inlineEdit/inlineEdit.module';
 import { NonCoreModule } from 'non-core/noncore.module';
-import { lastValueFrom, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
     DataElement,
@@ -24,6 +24,7 @@ import {
     fixDataElement,
 } from 'shared/de/dataElement.model';
 import { PermissibleValue, PermissibleValueCodeSystem, permissibleValueCodeSystems } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { mapSeries } from 'shared/promise';
 import { SortableArrayModule } from 'sortableArray/sortableArray.module';
 
@@ -308,7 +309,7 @@ export class PermissibleValueComponent {
                         },
                     ];
                 } else if (src === 'UMLS') {
-                    lastValueFrom(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
+                    toPromise(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
                         res => {
                             this.SOURCES[src].codes[code] = res.result.results.map((r: any) => {
                                 return {
@@ -320,7 +321,7 @@ export class PermissibleValueComponent {
                         () => this.alert.addAlert('danger', 'Error query UMLS.')
                     );
                 } else if (source === 'UMLS') {
-                    lastValueFrom(this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)).then(
+                    toPromise(this.http.get<any>(`/server/uts/umlsAtomsBridge/${code}/${targetSource}`)).then(
                         res => {
                             this.SOURCES[src].codes[code] = res.result
                                 .filter((r: any) => r.termType === this.SOURCES[src].termType)
@@ -342,11 +343,11 @@ export class PermissibleValueComponent {
                         }
                     );
                 } else {
-                    lastValueFrom(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
+                    toPromise(this.http.get<any>(`/server/uts/umlsCuiFromSrc/${code}/${source}`)).then(
                         umlsResult => {
                             if (umlsResult?.result?.results?.length > 0) {
                                 const umlsCui = umlsResult.result.results[0].ui;
-                                lastValueFrom(
+                                toPromise(
                                     this.http.get<any>(`/server/uts/umlsPtSource/${umlsCui}/${targetSource}`)
                                 ).then(
                                     srcResult => {
@@ -467,7 +468,7 @@ export class PermissibleValueComponent {
 
     async validatePVAgainstUMLS(vd: ValueDomainValueList) {
         this.umlsValidationLoading = true;
-        this.umlsValidationResults = await lastValueFrom(
+        this.umlsValidationResults = await toPromise(
             this.http.post('/server/de/umls', vd.permissibleValues, {
                 responseType: 'text',
             })

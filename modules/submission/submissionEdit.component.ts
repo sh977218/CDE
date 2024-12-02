@@ -9,7 +9,7 @@ import { UserService } from '_app/user.service';
 import { AlertService } from 'alert/alert.service';
 import { httpErrorMessage } from 'non-core/angularHelper';
 import { fileInputToFormData, interruptEvent, openUrl } from 'non-core/browser';
-import { lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { orderedSetAdd } from 'shared/array';
 import { SubmissionAttachResponse, VerifySubmissionFileProgress } from 'shared/boundaryInterfaces/API/submission';
@@ -17,6 +17,7 @@ import { Submission, SubmissionAttachment } from 'shared/boundaryInterfaces/db/s
 import { joinCb } from 'shared/callback';
 import { SubmissionAttachmentType } from 'shared/loader/submission';
 import { administrativeStatuses, User } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { canSubmissionReview } from 'shared/security/authorizationShared';
 import { noop } from 'shared/util';
 import { SubmissionWorkbookValidationReportService } from 'submission/submissionWorkbookValidationReport.service';
@@ -169,7 +170,7 @@ export class SubmissionEditComponent implements OnDestroy {
             (submissionId: string) => {},
             (user, submissionId) => {
                 if (submissionId !== this.submission._id) {
-                    lastValueFrom(this.http.get<Submission>('/server/submission/' + submissionId)).then(
+                    toPromise(this.http.get<Submission>('/server/submission/' + submissionId)).then(
                         (s: Submission) => {
                             this.submissionLoaded(s);
                         },
@@ -402,7 +403,7 @@ export class SubmissionEditComponent implements OnDestroy {
         }
         this.endorsed = true;
         this.save()
-            .then(() => lastValueFrom(this.http.post('/server/submission/endorse', { _id: this.submission._id })))
+            .then(() => toPromise(this.http.post('/server/submission/endorse', { _id: this.submission._id })))
             .then(() => this.alert.addAlert('info', 'Endorsed'))
             .then(() => this.close())
             .catch(err => this.alert.addAlert('error', httpErrorMessage(err)));
@@ -476,7 +477,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     getSubmissionFileUpdate(): Promise<void> {
-        return lastValueFrom(
+        return toPromise(
             this.http.post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFileUpdate', {
                 _id: this.submission._id,
             })
@@ -565,7 +566,7 @@ export class SubmissionEditComponent implements OnDestroy {
             return Promise.reject('Version is required');
         }
         this.defaultValues(submission);
-        return lastValueFrom(this.http.put<Submission>('/server/submission/', submission)).then(
+        return toPromise(this.http.put<Submission>('/server/submission/', submission)).then(
             s => {
                 this.forwardToExisting(s._id);
                 this.submissionLoaded(s);
@@ -642,13 +643,13 @@ export class SubmissionEditComponent implements OnDestroy {
             return;
         }
         this.save()
-            .then(() => lastValueFrom(this.http.post('/server/submission/submit', { _id: this.submission._id })))
+            .then(() => toPromise(this.http.post('/server/submission/submit', { _id: this.submission._id })))
             .then(() => this.alert.addAlert('info', 'Submitted'))
             .then(() => this.close());
     }
 
     updateNlmCurators() {
-        lastValueFrom(this.http.get<string[]>('/server/user/nlmCuratorNames')).then(users => {
+        toPromise(this.http.get<string[]>('/server/user/nlmCuratorNames')).then(users => {
             this.allNlmCurators = users.length ? users : [''];
             this.searchCtrlNlmCurator.setValue(null);
         });
@@ -659,7 +660,7 @@ export class SubmissionEditComponent implements OnDestroy {
         if (!this.page2.value.submitterOrganization) {
             return;
         }
-        lastValueFrom(
+        toPromise(
             this.http.get<string[]>('/server/user/orgCuratorNames/' + this.page2.value.submitterOrganization)
         ).then(users => {
             this.allOrgCurators = users.length ? users : [''];
@@ -669,7 +670,7 @@ export class SubmissionEditComponent implements OnDestroy {
     }
 
     updateReviewers() {
-        lastValueFrom(this.http.get<string[]>('/server/user/governanceReviewerNames')).then(users => {
+        toPromise(this.http.get<string[]>('/server/user/governanceReviewerNames')).then(users => {
             this.allReviewers = users.length ? users : [''];
             this.searchCtrlReviewer.setValue(null);
         });
@@ -685,7 +686,7 @@ export class SubmissionEditComponent implements OnDestroy {
             cde: 0,
         };
         this.r.report = undefined;
-        lastValueFrom(
+        toPromise(
             this.http.post<VerifySubmissionFileProgress>('/server/submission/validateSubmissionFile', {
                 _id: this.submission._id,
             })

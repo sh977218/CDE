@@ -3,11 +3,11 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertService } from 'alert/alert.service';
 import { CompareHistoryContentComponent } from 'compare/compareHistory/compareHistoryContent.component';
-import { lastValueFrom } from 'rxjs';
 import { DataElement } from 'shared/de/dataElement.model';
 import { CdeForm } from 'shared/form/form.model';
 import { Item, ITEM_MAP } from 'shared/item';
 import { UserService } from '_app/user.service';
+import { toPromise } from 'shared/observable';
 
 class HistoryDe extends DataElement {
     promise?: Promise<History>;
@@ -87,7 +87,7 @@ export class HistoryComponent {
                 .map(priorElt => {
                     const url =
                         ITEM_MAP[priorElt.elementType][priorElt.isDraft ? 'apiDraftById' : 'apiById'] + priorElt._id;
-                    return lastValueFrom(this.http.get<History>(url)).then(res => {
+                    return toPromise(this.http.get<History>(url)).then(res => {
                         res.url = ITEM_MAP[res.elementType].viewById + res._id;
                         res.selected = true;
                         this.priorElementsFull[this.priorElementsFull.indexOf(priorElt)] = res;

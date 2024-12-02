@@ -23,7 +23,7 @@ import { fileInputToFormData, isIe } from 'non-core/browser';
 import { LocalStorageService } from 'non-core/localStorage.service';
 import { ExportService } from 'non-core/export.service';
 import { OrgHelperService } from 'non-core/orgHelper.service';
-import { lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Item } from 'shared/item';
 import { assertUnreachable, Cb, Cb1, Elt } from 'shared/models.model';
 import {
@@ -45,6 +45,7 @@ import {
     QuestionCdeValueList,
 } from 'shared/form/form.model';
 import { addFormIds, getLabel, iterateFe, iterateFes, iterateFeSync, noopSkipIterCb } from 'shared/form/fe';
+import { toPromise } from 'shared/observable';
 import { canEditCuratedItem, hasPrivilegeForOrg } from 'shared/security/authorizationShared';
 import { getQuestionPriorByLabel } from 'shared/form/skipLogic';
 import { noop } from 'shared/util';
@@ -396,7 +397,7 @@ export class FormViewComponent implements OnInit, OnDestroy {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return (this.draftSaving = lastValueFrom(this.http.put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)).then(
+        return (this.draftSaving = toPromise(this.http.put<CdeForm>('/server/form/draft/' + elt.tinyId, elt)).then(
             newElt => {
                 this.draftSaving = undefined;
                 elt.__v = newElt.__v;

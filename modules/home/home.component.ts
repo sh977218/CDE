@@ -3,9 +3,9 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '_app/user.service';
 import { environment } from 'environments/environment';
-import { lastValueFrom } from 'rxjs';
 import { HomepageGetResponse } from 'shared/boundaryInterfaces/API/system';
 import { assertUnreachable } from 'shared/models.model';
+import { toPromise } from 'shared/observable';
 import { SearchSettings, SearchType } from 'shared/search/search.model';
 import { hasRole } from 'shared/security/authorizationShared';
 import { UpdateCard } from 'shared/singleton.model';
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
         }
 
         if (!this.updates) {
-            lastValueFrom(this.http.get<HomepageGetResponse>('/server/home')).then(homeData => {
+            toPromise(this.http.get<HomepageGetResponse>('/server/home')).then(homeData => {
                 this.updates = homeData && Array.isArray(homeData?.body?.updates) ? homeData.body.updates : [];
             });
         }
