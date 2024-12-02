@@ -27,4 +27,6 @@ export const FormTinyIds: Record<string, string> = {
     'Reorder definition form': 'myYlSJAQD',
     'form for test cde reorder detail tabs': '7JfJ_nlhg',
     'Reorder reference document form': '7yxjmyAQP',
+    'PROMIS SF v1.0-Anxiety 8a': '7yxet43OYUg',
+    'Form Property Test': '099111dkjdfd',
 };

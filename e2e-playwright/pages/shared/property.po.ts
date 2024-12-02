@@ -27,13 +27,24 @@ export class PropertyPo {
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
     }
 
-    async addProperty(newProperty: Property) {
+    async addProperty(newProperty: Property, config = { html: false }) {
         await this.page.getByRole('button', { name: `Add Property`, exact: true }).click();
         await this.materialPage.matDialog().waitFor();
         await this.materialPage.matDialog().locator(`[name="newKey"]`).selectOption(newProperty.key);
-        await this.materialPage.matDialog().getByPlaceholder(`Property Value`).fill(newProperty.value);
+        if (config.html) {
+            // @TODO html format edit to be implemented
+        } else {
+            await this.materialPage.matDialog().getByPlaceholder(`Property Value`).fill(newProperty.value);
+        }
         await this.materialPage.matDialog().getByRole('button', { name: `Save`, exact: true }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.saveModal.waitForDraftSaveComplete();
+    }
+
+    async deletePropertyByIndex(index: number) {
+        const designationRow = this.page.locator(`cde-properties dl dt`).nth(index);
+        await designationRow.locator('[title="Delete Property"]').click();
+        await designationRow.locator('[title="Confirm Delete"]').click();
         await this.saveModal.waitForDraftSaveComplete();
     }
 

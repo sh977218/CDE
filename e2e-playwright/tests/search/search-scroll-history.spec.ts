@@ -39,6 +39,7 @@ test(`Search page reserve scroll history`, async ({ page, navigationMenu, search
 
     await test.step(`Verify scroll Y`, async () => {
         await page.reload();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         let currentOffset = await page.evaluate(() => window.scrollY);
         expect(currentOffset).toBe(painOffset);
         await page.goBack();

@@ -20,7 +20,7 @@ export class SaveModalPo {
     }
 
     overrideVersionCheckbox() {
-        return this.materialPage.matDialog().locator(`id=overrideVersion`);
+        return this.materialPage.matDialog().getByTestId(`version-override`);
     }
 
     publishDraftButton() {
@@ -60,9 +60,13 @@ export class SaveModalPo {
         let newVersion = version.newVersion;
         await this.page.getByTestId(`publish-draft`).click();
         await this.materialPage.matDialog().waitFor();
+        const existingVersionString = await this.newVersionInput().inputValue();
+        const existingVersion = existingVersionString.trim();
+        if (existingVersion && existingVersion === version.newVersion) {
+            await this.overrideVersionCheckbox().check();
+        }
         if (!newVersion) {
-            const existingVersion = await this.newVersionInput().inputValue();
-            if (existingVersion.trim().length) {
+            if (existingVersion.length) {
                 newVersion = existingVersion + '.1';
             } else {
                 newVersion = '1';

@@ -84,8 +84,8 @@
             </div>
             <div *ngIf="duplicatedVersion">
                 <label for="overrideVersion">This version number has already been used. Override rule? </label>
-                <input id="overrideVersion" name="overrideVersion" type="checkbox"
-                       [(ngModel)]="overrideVersion"/>
+                <input id="overrideVersion" name="overrideVersion"
+                       data-testid="version-override" type="checkbox" [(ngModel)]="overrideVersion"/>
             </div>
         </div>
     </mat-dialog-content>

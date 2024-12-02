@@ -11,7 +11,7 @@ import {
 } from '../../model/type';
 import { MaterialPo } from './material.po';
 import { SaveModalPo } from './save-modal.po';
-import { SORT_DIRECTION_MAP, SORT_DIRECTION_MAP_SORTABLE_ARRAY } from '../../data/constants';
+import { SORT_DIRECTION_MAP_SORTABLE_ARRAY } from '../../data/constants';
 
 export class GenerateDetailsPo {
     private readonly page: Page;

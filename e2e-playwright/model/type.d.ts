@@ -134,6 +134,16 @@ export type Copyright = {
     url?: string;
 };
 
+export type RelatedDocument = {
+    id: string;
+    title: string;
+    docType: string;
+    uri: string;
+    providerOrg: string;
+    languageCode: string;
+    document: string;
+};
+
 export type Property = {
     key: string;
     value: string;

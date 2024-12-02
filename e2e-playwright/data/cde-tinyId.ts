@@ -33,4 +33,6 @@ export const CdeTinyIds: Record<string, string> = {
     'Reorder properties cde': 'mkgGjDg4D',
     'Reorder reference document cde': 'QJE9qwgEP',
     'Tissue Donor Genetic Testing Other Disease or Disorder Specify': 'nsMXB5NdFBA',
+    'Post traumatic amnesia verify type': '2oFE4xEhYv0',
+    'Vision (aura) typical symptom type': 'rRqc8KG1RNO',
 };
