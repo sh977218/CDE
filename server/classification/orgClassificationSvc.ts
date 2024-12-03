@@ -21,6 +21,7 @@ import {
 import { Classification, ItemClassification, ItemClassificationNew, User } from 'shared/models.model';
 import { SearchSettingsElastic } from 'shared/search/search.model';
 import { buildElasticSearchQueryOrg } from 'server/system/buildElasticSearchQuery';
+import { esqTerm } from 'shared/elastic';
 
 export function classifyItem(item: ItemDocument, orgName: string, categories: string[]): void {
     item.classification = defaultArray(item.classification);
@@ -101,7 +102,7 @@ export async function deleteOrgClassification(
                 result => {
                     if (result && result.forms && result.forms.length > 0) {
                         const tinyIds = result.forms.map(c => c.tinyId);
-                        eachLimit(tinyIds, 100, async (tinyId, cb) => {
+                        eachLimit(tinyIds, 100, async tinyId => {
                             const form = await formByTinyId(tinyId);
                             /* istanbul ignore if */
                             if (!form) {
@@ -282,13 +283,16 @@ export async function reclassifyOrgClassification(
     settings.selectedOrg = oldClassification.orgName;
     settings.selectedElements = oldClassification.categories;
     const query = buildElasticSearchQueryOrg(user, settings);
+    query.query?.bool?.must_not?.push(
+        esqTerm('flatClassifications', [newClassification.orgName, ...newClassification.categories].join(';'))
+    );
     return parallel([
         done =>
             elasticsearchPromise('cde', query).then(
                 result => {
                     if (result && result.cdes && result.cdes.length > 0) {
                         const tinyIds = result.cdes.map(c => c.tinyId);
-                        eachLimit(tinyIds, 100, async tinyId => {
+                        eachLimit(tinyIds, 500, async tinyId => {
                             const de = await deByTinyId(tinyId);
                             /* istanbul ignore if */
                             if (!de) {
@@ -320,7 +324,7 @@ export async function reclassifyOrgClassification(
                 result => {
                     if (result && result.forms && result.forms.length > 0) {
                         const tinyIds = result.forms.map(c => c.tinyId);
-                        eachLimit(tinyIds, 100, async tinyId => {
+                        eachLimit(tinyIds, 500, async tinyId => {
                             const form = await formByTinyId(tinyId);
                             /* istanbul ignore if */
                             if (!form) {
