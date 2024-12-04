@@ -286,6 +286,7 @@ export async function reclassifyOrgClassification(
     query.query?.bool?.must_not?.push(
         esqTerm('flatClassifications', [newClassification.orgName, ...newClassification.categories].join(';'))
     );
+    query.size = 500;
     return parallel([
         done =>
             elasticsearchPromise('cde', query).then(
