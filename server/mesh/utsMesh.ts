@@ -2,6 +2,11 @@ import { config } from 'server';
 import { umlsServerRequestJson } from 'server/uts/utsSvc';
 import { filter } from 'shared/dictionary';
 import { meshLevel1Map } from 'shared/mesh/mesh';
+import {
+    MESH_TREE_ROOT_SUFFIX,
+    MESH_TREE_ROOT_SUFFIX_LENGTH,
+    ROOT_MESH_SOURCE_CODE
+} from 'shared/mesh/meshMappingFileConstants';
 import { isT } from 'shared/util';
 
 // type UtsMeshNonpaginatedReponse = UtsNode[]; // blindly returns only the first 5 results if no pageNumber is included
@@ -11,14 +16,14 @@ interface UtsNode {
     childAui: string;
     paui: string;
     cui: string;
-    rootSource: 'MSH';
+    rootSource: typeof ROOT_MESH_SOURCE_CODE;
     relationship: unknown;
     parentTree: UtsNodeParent[];
     children: unknown[];
 }
 
 interface UtsNodeParent {
-    rootSource: 'MSH';
+    rootSource: typeof ROOT_MESH_SOURCE_CODE;
     ui: string;
     name: string;
 }
@@ -52,11 +57,12 @@ export function getTreeForDescriptor(descriptor: string): Promise<UtsNode[]> {
     return fetchNodes(descriptor, 1).then(() => nodes);
 }
 
+
 export function getTreePaths(descriptor: string): Promise<UtsNodeParent[][]> {
     return getTreeForDescriptor(descriptor).then(nodes => {
         return nodes
             .map(node => {
-                if (node.rootSource !== 'MSH') {
+                if (node.rootSource !== ROOT_MESH_SOURCE_CODE) {
                     return null;
                 }
                 const parents: UtsNodeParent[] = [];
@@ -65,13 +71,12 @@ export function getTreePaths(descriptor: string): Promise<UtsNodeParent[][]> {
                     if (foundRoot) {
                         parents.push(parent);
                     } else {
-                        if (parent.name.endsWith(' (MeSH Category)')) {
-                            // magic string, length 16
+                        if (parent.name.endsWith(MESH_TREE_ROOT_SUFFIX)) {
                             foundRoot = true;
-                            const rootName = parent.name.substring(0, parent.name.length - 16);
+                            const rootName = parent.name.substring(0, parent.name.length - MESH_TREE_ROOT_SUFFIX_LENGTH);
                             const meshCode = filter(meshLevel1Map, (code, value) => value === rootName)[0];
                             parents.push({
-                                rootSource: 'MSH',
+                                rootSource: ROOT_MESH_SOURCE_CODE,
                                 ui: meshCode,
                                 name: rootName,
                             });

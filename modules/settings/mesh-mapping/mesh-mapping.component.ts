@@ -6,8 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AlertService } from 'alert/alert.service';
 import { fileInputToFormData } from 'non-core/browser';
-import { tap } from 'rxjs/operators';
 import { MeshSyncService } from 'settings/mesh-mapping/meshSync.service';
+import { XLS_SHEET_NAME } from 'shared/mesh/meshMappingFileConstants';
 
 @Component({
     templateUrl: './mesh-mapping.component.html',
@@ -17,7 +17,7 @@ import { MeshSyncService } from 'settings/mesh-mapping/meshSync.service';
 export class MeshMappingComponent {
     confirmDelete: boolean = false;
     loading: boolean = false;
-    selectedFile: any = null;
+    readonly sheetName = XLS_SHEET_NAME;
 
     constructor(private http: HttpClient, private alert: AlertService, public meshSync: MeshSyncService) {}
 
@@ -35,25 +35,41 @@ export class MeshMappingComponent {
         );
     }
 
-    onFileSelected(event: any) {
+    onFileSelectedCsv(event: any) {
         this.loading = true;
         const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
         if (formData) {
             this.http
-                .post('/server/mesh/updateMeshMapping', formData, { responseType: 'text' })
-                .pipe(
-                    tap({
-                        next: () => {
-                            this.loading = false;
-                            this.alert.addAlert('success', 'Mesh mapping updated');
-                        },
-                        error: e => {
-                            this.loading = false;
-                            this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
-                        },
-                    })
-                )
-                .subscribe();
+                .post<[number, number]>('/server/mesh/updateMeshMappingCsv', formData)
+                .subscribe({
+                    next: ([rowsCount, dbCount]) => {
+                        this.loading = false;
+                        this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
+                    },
+                    error: e => {
+                        this.loading = false;
+                        this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
+                    },
+                });
+        }
+    }
+
+    onFileSelectedXls(event: any) {
+        this.loading = true;
+        const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
+        if (formData) {
+            this.http
+                .post<[number, number]>('/server/mesh/updateMeshMappingXls', formData)
+                .subscribe({
+                    next: ([rowsCount, dbCount]) => {
+                        this.loading = false;
+                        this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
+                    },
+                    error: e => {
+                        this.loading = false;
+                        this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
+                    },
+                });
         }
     }
 }

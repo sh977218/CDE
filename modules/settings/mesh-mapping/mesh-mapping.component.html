@@ -1,7 +1,7 @@
 <h1>Mesh Mapping</h1>
 
 <div>
-    <p>Upload Mesh Mapping Excel</p>
+    <p>Upload Mesh Mapping File</p>
     <div *ngIf="!loading else loadingTemplate">
         <button *ngIf="!confirmDelete; else askConfirmDelete" class="button fail" (click)="confirmDelete = true">
             <mat-icon>delete</mat-icon>
@@ -17,11 +17,17 @@
         </ng-template>
 
         <label style="vertical-align: top">
-            <button class="button"  (click)="fileInput.click()">
+            <button class="button" (click)="fileInputXls.click()">
                 <mat-icon>cloud_upload</mat-icon>
-                Upload Excel file with Sheet "SmallestClassDedup"
+                Upload Excel file with Sheet "{{sheetName}}"
             </button>
-            <span class="file-name">{{ selectedFile?.name }}</span>
+        </label>
+
+        <label style="vertical-align: top">
+            <button class="button" (click)="fileInputCsv.click()">
+                <mat-icon>cloud_upload</mat-icon>
+                Upload CSV file with classification,descriptors(no header)
+            </button>
         </label>
 
         <button class="button" (click)="meshSync.syncMesh()" id="syncWithMeshButton">Sync MeSH to ElasticSearch</button>
@@ -34,6 +40,8 @@
     <ng-template #loadingTemplate>
         <mat-icon class="spin">autorenew</mat-icon>
     </ng-template>
-    <input hidden (change)="onFileSelected($event)" #fileInput type="file"
+    <input hidden (change)="onFileSelectedXls($event)" #fileInputXls type="file"
            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+    <input hidden (change)="onFileSelectedCsv($event)" #fileInputCsv type="file"
+           accept="text/csv">
 </div>

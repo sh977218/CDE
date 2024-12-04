@@ -6,7 +6,7 @@ import { config } from 'server';
 import { respondError } from 'server/errorHandler';
 import { meshSyncStatus, syncWithMesh } from 'server/mesh/elastic';
 import { byEltId, byFlatClassification, byId, deleteAll, findAll, newMesh } from 'server/mesh/meshDb';
-import { updateMeshMappings } from 'server/mesh/meshService';
+import { updateMeshMappingsCsv, updateMeshMappingsXls } from 'server/mesh/meshService';
 import { handleErrors, json } from 'shared/fetch';
 import { meshLevel1Map } from 'shared/mesh/mesh';
 import { Cb1 } from 'shared/models.model';
@@ -65,15 +65,26 @@ export function module(roleConfig: { allowSyncMesh: RequestHandler }) {
     });
 
     router.post(
-        '/updateMeshMapping',
+        '/updateMeshMappingCsv',
         multer({
             ...config.multer,
             storage: multer.memoryStorage(),
         }).any(),
         async (req, res) => {
-            const csvFileBuffer = (req.files as any)[0].buffer;
-            await updateMeshMappings(csvFileBuffer);
-            res.send();
+            const fileBuffer = (req.files as any)[0].buffer;
+            res.send(await updateMeshMappingsCsv(fileBuffer));
+        }
+    );
+
+    router.post(
+        '/updateMeshMappingXls',
+        multer({
+            ...config.multer,
+            storage: multer.memoryStorage(),
+        }).any(),
+        async (req, res) => {
+            const fileBuffer = (req.files as any)[0].buffer;
+            res.send(await updateMeshMappingsXls(fileBuffer));
         }
     );
 

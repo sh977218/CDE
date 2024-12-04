@@ -38,6 +38,10 @@ export function byFlatClassification(flatClassification: string): Promise<MeshCl
     return meshClassificationModal.find({ flatClassification });
 }
 
+export function count(query: any) {
+    return meshClassificationModal.countDocuments(query).then();
+}
+
 export function deleteAll() {
     return meshClassificationModal.deleteMany({});
 }
