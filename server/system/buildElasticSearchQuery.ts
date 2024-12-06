@@ -2,7 +2,7 @@ import {
     AggregationsAggregationContainer,
     QueryDslOperator,
     QueryDslQueryContainer,
-    SearchHighlight,
+    SearchHighlight, SortCombinations,
 } from '@elastic/elasticsearch/api/types';
 import { myOrgs } from 'server/orgManagement/orgSvc';
 import {
@@ -282,14 +282,17 @@ function generateSize(settings: SearchSettingsElastic) {
     return size;
 }
 
-function generateSort(settings: SearchSettingsElastic) {
+function generateSort(settings: SearchSettingsElastic): SortCombinations[] {
     const hasSearchTerm = !!settings.searchTerm;
-    let sort: Record<string, 'asc' | 'desc'> = {};
+    let sort: SortCombinations[] = [
+        {_score: {order: 'desc'}}, // Primary sort by relevance
+        {'primaryNameCopy.raw': 'asc'}, // sort by name over tinyId
+        {tinyId: 'asc'}, // default sort by identity to break ties
+    ];
     if (!hasSearchTerm) {
-        sort = {
-            nihEndorsed: 'desc',
-            'primaryNameCopy.raw': 'asc',
-        };
+        sort.unshift({
+            nihEndorsed: 'desc', // endorsed is boosted anyway so this might not be necessary
+        });
     }
     return sort;
 }

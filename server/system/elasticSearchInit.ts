@@ -227,6 +227,7 @@ export const createFormIndexJson = {
                 },
             },
             views: { type: 'integer' },
+            tinyId: { type: 'keyword' },
             created: { type: 'date' },
             updated: { type: 'date' },
             imported: { type: 'date' },

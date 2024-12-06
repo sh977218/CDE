@@ -160,7 +160,7 @@ pkill -TERM -P "$(cat build/test.pid)"
 pkill -TERM -P "$(cat testLogin.pid)"
 echo $?
 
-if [ $PW_TEST -ne 0 ]
+if [ "$PW_TEST" -ne 0 ]
 then
     echo "Error: Playwright test failed"
     exit 1

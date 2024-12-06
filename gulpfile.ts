@@ -61,7 +61,7 @@ gulp.task('environmentInfo', async function npm() {
     await run('npm -v', runInAppOptions);
     await run('npm cache verify', runInAppOptions);
     await run('mongorestore --version', runInAppOptions);
-    await run('echo NODE_ENV:$NODE_ENV');
+    await run("echo NODE_ENV:$NODE_ENV");
 });
 
 gulp.task('buildNode', function buildNode() {
@@ -198,7 +198,7 @@ gulp.task('mongorestoretest', function mongorestore() {
     //     args.push('--ssl', '--tlsInsecure')
     // }
     if (username) {
-        args.push('-u', username, '-p', password)
+        args.push('-u', username, '-p', password);
     }
 
     return run('mongorestore ' + args.join(' '), runInAppOptions);
