@@ -170,12 +170,9 @@ export class SubmissionEditComponent implements OnDestroy {
             (submissionId: string) => {},
             (user, submissionId) => {
                 if (submissionId !== this.submission._id) {
-                    toPromise(this.http.get<Submission>('/server/submission/' + submissionId)).then(
-                        (s: Submission) => {
-                            this.submissionLoaded(s);
-                        },
-                        noop
-                    );
+                    toPromise(this.http.get<Submission>('/server/submission/' + submissionId)).then((s: Submission) => {
+                        this.submissionLoaded(s);
+                    }, noop);
                 }
             }
         );

@@ -38,6 +38,11 @@
       }
     ]
   },
+  "test": {
+    "testLoginServer": {
+      "port": 3002
+    }
+  },
   "uts": {
     "federatedLogin": "https://uts-qa.nlm.nih.gov/uts/login",
     "federatedService": "https://uts-ws-qa.nlm.nih.gov",

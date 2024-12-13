@@ -101,16 +101,12 @@
     ],
     "appData": {
       "db": "test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
         "maxPoolSize": 20
       }
     },
     "log": {
       "db": "cde-logs-test",
-      "username": "cdeuser",
-      "password": "password",
       "options": {
         "maxPoolSize": 20
       },

@@ -1,10 +1,12 @@
 import { defineConfig, devices, PlaywrightTestConfig } from '@playwright/test';
+import * as os from 'os';
 
 const config: PlaywrightTestConfig = defineConfig({
-    testDir: './tests',
+    testDir: './e2e-playwright/tests',
     testMatch: ['*spec.ts'],
-    globalSetup: require.resolve('./setup.e2e-spec'),
-    globalTeardown: require.resolve('./teardown.e2e-spec'),
+    timeout: 10 * 60 * 1000,
+    globalSetup: require.resolve('./e2e-playwright/setup.e2e-spec'),
+    globalTeardown: require.resolve('./e2e-playwright/teardown.e2e-spec'),
     /* Maximum time one test can run for. */
     maxFailures: !!process.env.CI ? 10 : 0,
     /* Run tests in files in parallel */
@@ -17,8 +19,22 @@ const config: PlaywrightTestConfig = defineConfig({
     workers: process.env.CI ? 8 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { outputFolder: `../playwright-report` }],
-        ['junit', { outputFile: `../playwright-report/report-junit.xml` }],
+        ['blob'],
+        ['html', {outputFolder: `playwright-report`}],
+        [
+            'allure-playwright',
+            {
+                detail: true,
+                suiteTitle: false,
+                environmentInfo: {
+                    os_platform: os.platform(),
+                    os_release: os.release(),
+                    os_version: os.version(),
+                    node_version: process.version,
+                },
+            },
+        ],
+        ['junit', {outputFile: `playwright-report/report-junit.xml`}],
     ],
     /* Folder for test artifacts such as screenshots, videos, traces, etc. */
     outputDir: 'test-results',
@@ -44,7 +60,7 @@ const config: PlaywrightTestConfig = defineConfig({
                 timeout: 20 * 1000,
             },
             name: 'CDE-e2e',
-            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            use: {...devices['Desktop Chrome'], ignoreHTTPSErrors: true},
             fullyParallel: true,
         },
         {
@@ -53,7 +69,7 @@ const config: PlaywrightTestConfig = defineConfig({
                 timeout: 10 * 1000,
             },
             name: 'CDE-oneTest',
-            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            use: {...devices['Desktop Chrome'], ignoreHTTPSErrors: true},
             grep: [/@oneTest/],
             fullyParallel: true,
         },
@@ -63,7 +79,7 @@ const config: PlaywrightTestConfig = defineConfig({
                 timeout: 10 * 1000,
             },
             name: 'CDE-smokeTest',
-            use: { ...devices['Desktop Chrome'], ignoreHTTPSErrors: true },
+            use: {...devices['Desktop Chrome'], ignoreHTTPSErrors: true},
             grep: [/@smoke/, /@debug/],
             fullyParallel: true,
             retries: 0,
@@ -71,11 +87,25 @@ const config: PlaywrightTestConfig = defineConfig({
     ],
 
     /* Run your local dev server before starting the tests */
-    webServer: {
-        command: 'npm run devApp:coverage',
-        port: 4200,
-        timeout: 150 * 1000,
-        reuseExistingServer: true,
-    },
+    webServer: [
+        {
+            command: 'npm run devApp:coverage',
+            port: 4200,
+            timeout: 5 * 60 * 1000,
+            reuseExistingServer: true,
+        },
+        {
+            command: 'npm run start',
+            port: 3001,
+            timeout: 6 * 60 * 1000,
+            reuseExistingServer: true,
+        },
+        {
+            command: 'npm run testServer',
+            port: 3002,
+            timeout: 7 * 60 * 1000,
+            reuseExistingServer: true,
+        },
+    ],
 });
 export default config;

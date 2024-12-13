@@ -7,8 +7,7 @@ const favicon = require('serve-favicon');
 const {randomUUID} = require("node:crypto");
 
 const database = config.database.appData;
-const url = 'mongodb://' + (database.username ? database.username + ':' + database.password + '@' : '')
-    + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+const url = 'mongodb://' + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
 let db;
 
 MongoClient.connect(url).then(client => {
@@ -84,7 +83,7 @@ app.get('/serviceValidate', (req, res) => {
 if (![
     'dev-test', // CI
     'my-test', // additional local
-    // 'test' // default local, uses UTS login
+    'test', // default local, uses UTS login
     'test-local' // local required for test server
 ].includes(process.env.NODE_ENV)) {
     console.error(`Test Login Server not started. Current test configuration NODE_ENV=${process.env.NODE_ENV} is not recognized.`);
