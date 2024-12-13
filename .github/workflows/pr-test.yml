@@ -57,7 +57,7 @@ jobs:
       - run: ng build nativeRender --output-path dist/nativeRender
 
       - name: Run Playwright tests
-        run: npm run playwright:oneTest
+        run: playwright test --project=CDE-oneTest --debug
 
       - name: Upload playwright blob report to Artifacts
         uses: actions/upload-artifact@v3
@@ -109,7 +109,7 @@ jobs:
           path: blob-report
 
       - name: Generate playwright report
-        run: playwright test --project=CDE-oneTest --debug
+        run: npm run playwright-report
 
       - name: Azure Login
         uses: azure/login@v2
