@@ -239,6 +239,7 @@
     "@typescript-eslint/parser": "^5.53.0",
     "@winarg/ngx-text-diff": "^16.0.1",
     "adm-zip": "^0.5.10",
+    "allure-commandline": "^2.29.0",
     "allure-playwright": "^3.0.7",
     "angular2-hotkeys": "^15.0.0",
     "angular2-template-loader": "^0.6.2",

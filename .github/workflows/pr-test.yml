@@ -109,7 +109,7 @@ jobs:
           path: blob-report
 
       - name: Generate playwright report
-        run: npm run playwright-report
+        run: playwright test --project=CDE-oneTest --debug
 
       - name: Azure Login
         uses: azure/login@v2
