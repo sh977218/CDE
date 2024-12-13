@@ -56,6 +56,9 @@ jobs:
       - run: ng build cde-cli --output-path dist/cde-cli
       - run: ng build nativeRender --output-path dist/nativeRender
 
+      - name: start backend server
+        run: npm run start
+
       - name: Run Playwright tests
         run: playwright test --project=CDE-oneTest --debug
 
