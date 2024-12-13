@@ -46,18 +46,18 @@ jobs:
 
       - run: node --version
       - run: npm i
-      - run: npm i -g @angular/cli
+#      - run: npm i -g @angular/cli
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+#      - name: Install Playwright Browsers
+#        run: npx playwright install --with-deps
 
       - name: Compile server ts
         run: npm run build
-      - run: ng build cde-cli --output-path dist/cde-cli
-      - run: ng build nativeRender --output-path dist/nativeRender
+#      - run: ng build cde-cli --output-path dist/cde-cli
+#      - run: ng build nativeRender --output-path dist/nativeRender
 
-      - name: start backend server
-        run: npm run start
+#      - name: start backend server
+#        run: npm run start
 
       - name: Run Playwright tests
         run: playwright test --project=CDE-oneTest --debug

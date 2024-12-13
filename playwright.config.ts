@@ -95,7 +95,7 @@ const config: PlaywrightTestConfig = defineConfig({
             reuseExistingServer: true,
         },
         {
-            command: 'npm run start',
+            command: 'npm run start &> /dev/stdout',
             port: 3001,
             timeout: 6 * 60 * 1000,
             reuseExistingServer: true,
