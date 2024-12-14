@@ -39,10 +39,14 @@
       }
     ],
     "appData": {
-      "db": "test"
+      "db": "test",
+      "username": "",
+      "password": ""
     },
     "log": {
       "db": "cde-logs-test",
+      "username": "",
+      "password": "",
       "cappedCollectionSizeMB": 262144000,
       "loginRecordRetentionTime": 7776000000
     }
