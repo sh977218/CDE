@@ -42,7 +42,7 @@
       "db": "test"
     },
     "log": {
-      "db": "cde-logs-test", ,
+      "db": "cde-logs-test",
       "cappedCollectionSizeMB": 262144000,
       "loginRecordRetentionTime": 7776000000
     }
