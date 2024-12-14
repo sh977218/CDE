@@ -1,4 +1,4 @@
-name: pr tests
+name: Pull Request Test
 on:
   pull_request:
     branches: [ master ]
@@ -23,17 +23,22 @@ jobs:
           --health-retries 10
         ports:
           - 9200:9200
+        volumes:
+          - esData:/usr/share/elasticsearch/data
       mongodb:
         image: mongo
         ports:
           - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: cdeuser
+          MONGO_INITDB_ROOT_PASSWORD: password
         options: >-
           --health-cmd mongosh
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         volumes:
-          - db_vol:/data/db
+          - mongoData:/data/db
     steps:
       - name: Add hosts to /etc/hosts # this is to let nodeJs output ip address with 127.0.0.1 instead of ::1
         run: |
