@@ -6,8 +6,8 @@ on:
     types: [ closed ]
 
 jobs:
-  clean_up_azure:
-    name: Clean up Azure Static content storage
+  copy-playwright-report:
+    name: Publish latest merged playwright report
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
@@ -29,9 +29,8 @@ jobs:
           inlineScript: |
             az storage fs directory delete --account-name commondataelement --file-system playwright --name ${{github.event.pull_request.number}} --yes
 
-
-  copy-code-coverage:
-    name: Publish latest merged code coverage
+  copy-coverage-report:
+    name: Publish latest merged coverage report
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
