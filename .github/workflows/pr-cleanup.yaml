@@ -32,7 +32,6 @@ jobs:
 
   copy-code-coverage:
     name: Publish latest merged code coverage
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
