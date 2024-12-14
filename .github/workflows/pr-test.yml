@@ -29,9 +29,6 @@ jobs:
         image: mongo
         ports:
           - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: cdeuser
-          MONGO_INITDB_ROOT_PASSWORD: password
         options: >-
           --health-cmd mongosh
           --health-interval 10s
@@ -50,8 +47,8 @@ jobs:
         run: |
           wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2204-x86_64-100.6.1.deb
           sudo apt install ./mongodb-database-tools-*-100.6.1.deb
-      - run: mongorestore -u cdeuser -p password --nsInclude 'test.*' test/data/
-      - run: mongorestore -u cdeuser -p password --nsInclude 'cde-logs-test.*' test/data/
+      - run: mongorestore -nsInclude 'test.*' test/data/
+      - run: mongorestore --nsInclude 'cde-logs-test.*' test/data/
 
       - run: node --version
       - run: npm i

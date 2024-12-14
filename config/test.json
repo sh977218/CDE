@@ -38,7 +38,17 @@
         "host": "localhost",
         "port": 27017
       }
-    ]
+    ],
+    "appData": {
+      "db": "test",
+      "username": "",
+      "password": ""
+    },
+    "log": {
+      "db": "cde-logs-test",
+      "username": "",
+      "password": ""
+    }
   },
   "test": {
     "testLoginServer": {
