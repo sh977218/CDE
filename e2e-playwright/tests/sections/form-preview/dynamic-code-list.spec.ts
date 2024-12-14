@@ -15,10 +15,7 @@ test(`Verify form preview dynamic code list`, async ({ page, navigationMenu }) =
 
     await test.step(`Verify data list`, async () => {
         await page.waitForLoadState('networkidle');
-        const codeNameLongListInnerHtml = await page.locator(`//*[@id='Long Dynamic Code List_0-0']`).innerHTML();
-        expect(codeNameLongListInnerHtml).toContain(foundCodeNameLongList);
-
-        const codeNameShortListInnerHtml = await page.locator(`//*[@id='Short Dynamic Code List_0-1']`).innerHTML();
-        expect(codeNameShortListInnerHtml).toContain(foundCodeNameShortList);
+        await expect(page.locator(`//*[@id='Long Dynamic Code List_0-0']`)).toContainText(foundCodeNameLongList);
+        await expect(page.locator(`//*[@id='Short Dynamic Code List_0-1']`)).toContainText(foundCodeNameShortList);
     });
 });

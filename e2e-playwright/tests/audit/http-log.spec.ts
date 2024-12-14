@@ -13,7 +13,7 @@ test.describe(`Http log`, async () => {
 
         await test.step(`Search with date range and ip`, async () => {
             const todayDate = new Date().getDate();
-            await page.getByLabel('Filter by IP Address').fill('127');
+            await page.getByLabel('Filter by IP Address').fill('(127|::1)');
             await materialPage.matDatePicker(page.locator(`[data-testid="http-log-date-picker-toggle"]`)).click();
             await materialPage.matDatePickerSelectDay(1).click();
             await materialPage.matDatePickerSelectDay(todayDate).click();
@@ -63,7 +63,7 @@ test.describe(`Http log`, async () => {
         });
 
         await test.step(`Search resets page to '1'`, async () => {
-            await page.getByLabel('Filter by IP Address').fill('127.0.0.1');
+            await page.getByLabel('Filter by IP Address').fill('(127|::1)');
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-http-log`).locator(`table td`).count()).toBeGreaterThan(0);

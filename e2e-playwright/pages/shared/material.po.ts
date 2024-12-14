@@ -65,7 +65,6 @@ export class MaterialPo {
     }
 
     async matSpinnerShowAndGone() {
-        await this.matSpinner().waitFor({ state: 'visible', timeout: 20 * 1000 });
         await this.page.waitForTimeout(5000); // this line really should not be here, @TODO remove this wait.
         await this.matSpinner().waitFor({ state: 'detached', timeout: 20 * 1000 });
     }

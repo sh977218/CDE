@@ -4,6 +4,7 @@
     "faas": "ON_PREM"
   },
   "publicUrl": "http://localhost:3001",
+  "logFile": "app.log",
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
@@ -36,13 +37,34 @@
         "host": "localhost",
         "port": 27017
       }
-    ]
+    ],
+    "appData": {
+      "db": "test"
+    },
+    "log": {
+      "db": "cde-logs-test", ,
+      "cappedCollectionSizeMB": 262144000,
+      "loginRecordRetentionTime": 7776000000
+    }
+  },
+  "test": {
+    "testLoginServer": {
+      "port": 3002
+    }
+  },
+  "vsac": {
+    "host": "https://vsac.nlm.nih.gov",
+    "ticket": {
+      "path": "/vsac/ws/Ticket"
+    },
+    "port": 443
+  },
+  "umls": {
+    "apikey": "d26b33f8-5d8e-45d4-b40c-aec74d354cf5"
   },
   "uts": {
-    "federatedLogin": "https://uts-qa.nlm.nih.gov/uts/login",
-    "federatedService": "https://uts-ws-qa.nlm.nih.gov",
-    "federatedServiceValidate": "https://uts-ws-qa.nlm.nih.gov/rest/serviceValidate",
-    "ssoServerOrigin": "https://uts-qa.nlm.nih.gov",
-    "ssoServerReceiver": "https://uts-qa.nlm.nih.gov/uts/messenger"
+    "apikey": "754912bf-b890-4710-9fbf-18f7aeefdc17",
+    "federatedLogin": "http://localhost:3002/home",
+    "federatedServiceValidate": "http://localhost:3002/serviceValidate",
   }
 }
