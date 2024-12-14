@@ -63,12 +63,20 @@ jobs:
       - name: Run Playwright tests
         run: NODE_ENV=test npm run playwright
 
-      - name: Upload nodeJs app log
+      - name: Upload app log
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: app.log
           path: app.log
+          retention-days: 30
+
+      - name: Upload express log
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cde.log
+          path: cde.log
           retention-days: 30
 
       - name: Upload playwright blob report to Artifacts
@@ -93,13 +101,6 @@ jobs:
         with:
           name: allure-results
           path: allure-results
-          retention-days: 30
-      - name: Upload error log to Artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: error.log
-          path: error.log
           retention-days: 30
 
   playwright-html-report:

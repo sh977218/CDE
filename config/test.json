@@ -5,6 +5,7 @@
   },
   "publicUrl": "http://localhost:3001",
   "logFile": "app.log",
+  "expressLogFile": "cde.log",
   "debugEnabled": true,
   "pmRunOnStartup": [],
   "viewsIncrementThreshold": 1,
