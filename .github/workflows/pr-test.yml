@@ -79,183 +79,61 @@ jobs:
           path: cde.log
           retention-days: 30
 
-      - name: Upload playwright blob report to Artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: blob-report
-          path: blob-report
-          retention-days: 30
-
-      - name: Upload nyc report row data to Artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: nyc_output
-          path: nyc_output
-          retention-days: 30
-
-      - name: Upload current run allure result to Artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: allure-results
-          path: allure-results
-          retention-days: 30
-
-  playwright-html-report:
-    name: Playwright HTML Report
-    needs: [ e2e-test ]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm i
-
-      - name: Download playwright blob report from Previous job(s)
-        uses: actions/download-artifact@v3
-        with:
-          name: blob-report
-          path: blob-report
-
-      - name: Generate playwright report
-        run: npm run playwright-report
-
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Generate playwright report
+        run: npm run playwright-report
       - name: Upload playwright report to Azure
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az storage blob upload-batch --account-name commondataelement -s ./playwright-report -d playwright --destination-path ${{github.event.pull_request.number}} --overwrite
-
-      - name: update job summary
+      - name: populate playwright report to job summary
         if: always()
         run: |
           echo "# Deployed playwright report to https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/index.html" >> $GITHUB_STEP_SUMMARY
 
-
-  generate-coverage-html-report:
-    name: Coverage HTML Report
-    needs: [ e2e-test ]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download nyc report row data from Previous job(s)
-        uses: actions/download-artifact@v3
-        with:
-          name: nyc_output
-          path: nyc_output
-
       - name: Generate coverage report
         run: npm run coverage-report
-
-      - name: Upload playwright code coverage to Artifacts
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: coverage-e2e
-          path: coverage-e2e
-          retention-days: 30
-
-  publish-coverage-html-report:
-    name: Publish Coverage HTML Report
-    needs: [ generate-coverage-html-report ]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download coverage report from Previous job
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-e2e
-          path: coverage-e2e
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Upload coverage report to Azure
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az storage blob upload-batch --account-name commondataelement -s ./coverage-e2e -d coverage --destination-path ${{github.event.pull_request.number}} --overwrite
-
-      - name: update job summary
+      - name: populate coverage report to job summary
         if: always()
         run: |
           echo "# Deployed coverage report to https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/lcov-report/index.html" >> $GITHUB_STEP_SUMMARY
-
-
-  playwright-allure-report:
-    # GitHub CLI is not available in playwright image container, so this needs a seperated job
-    name: playwright-allure-report
-    needs: [ e2e-test ]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
 
       - name: Setup JDK
         uses: actions/setup-java@v4.2.1
         with:
           distribution: 'microsoft'
           java-version: '21'
-
-      - name: Install dependencies
-        run: npm i
-
-      - name: Download current run allure report from e2e test job
-        uses: actions/download-artifact@v3
-        with:
-          name: allure-results          # the artifact name uploaded
-          path: allure-results
-
-      - name: Azure Login
-        uses: Azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Create previous-allure-report folder
         run: mkdir previous-allure-report
-
       - name: Download previous allure report from Azure
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az storage blob download-batch --account-name commondataelement -s allure-report -d previous-allure-report
-
       - name: Copy historical data into current run
         run: cp previous-allure-report/history allure-results/history -r
-
       - name: Generate allure report
         run: npx allure generate allure-results
-
       - name: Upload allure report to Azure
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az storage blob upload-batch --account-name commondataelement -s ./allure-report -d allure-report --overwrite
-
-      - name: update job summary
+      - name: populate allure report to job summary
         if: always()
         run: |
           echo "# Deployed allure report to https://commondataelement.blob.core.windows.net/allure-report/index.html" >> $GITHUB_STEP_SUMMARY
