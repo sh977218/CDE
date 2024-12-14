@@ -45,10 +45,12 @@ test(`Search page reserve scroll history`, async ({ page, navigationMenu, search
         await page.goBack();
         await page.goBack();
         await page.goBack();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         await expect(await page.evaluate(() => window.scrollY)).toBe(patientOffset);
         await page.goBack();
         await page.goBack();
         await page.goBack();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         await expect(await page.evaluate(() => window.scrollY)).toBe(appleOffset);
     });
 });
