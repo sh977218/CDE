@@ -9,6 +9,7 @@ test(`Browser search filter`, async ({ page, materialPage, navigationMenu, searc
         await searchPage.classificationFilterSelected(`caBIG`).hover();
         await expect(materialPage.matTooltip()).toHaveText('Remove this classification filter');
         await searchPage.searchResultInfoBar().click();
+        await materialPage.matTooltip().waitFor({ state: 'hidden' });
 
         await searchPage.classificationFilter().filter({ hasText: `caBIG` }).hover();
         await expect(materialPage.matTooltip()).toHaveText('Cancer Biomedical Informatics Grid');
