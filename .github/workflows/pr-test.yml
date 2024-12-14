@@ -80,13 +80,16 @@ jobs:
           retention-days: 30
 
       - name: Azure Login
+        if: always()
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Generate playwright report
+        if: always()
         run: npm run playwright-report
       - name: Upload playwright report to Azure
+        if: always()
         uses: azure/cli@v2
         with:
           azcliversion: latest
@@ -98,8 +101,10 @@ jobs:
           echo "# Deployed playwright report to https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/index.html" >> $GITHUB_STEP_SUMMARY
 
       - name: Generate coverage report
+        if: always()
         run: npm run coverage-report
       - name: Upload coverage report to Azure
+        if: always()
         uses: azure/cli@v2
         with:
           azcliversion: latest
@@ -111,23 +116,29 @@ jobs:
           echo "# Deployed coverage report to https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/lcov-report/index.html" >> $GITHUB_STEP_SUMMARY
 
       - name: Setup JDK
+        if: always()
         uses: actions/setup-java@v4.2.1
         with:
           distribution: 'microsoft'
           java-version: '21'
       - name: Create previous-allure-report folder
+        if: always()
         run: mkdir previous-allure-report
       - name: Download previous allure report from Azure
+        if: always()
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
             az storage blob download-batch --account-name commondataelement -s allure-report -d previous-allure-report
       - name: Copy historical data into current run
+        if: always()
         run: cp previous-allure-report/history allure-results/history -r
       - name: Generate allure report
+        if: always()
         run: npx allure generate allure-results
       - name: Upload allure report to Azure
+        if: always()
         uses: azure/cli@v2
         with:
           azcliversion: latest
