@@ -15,12 +15,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Install azcopy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+
+          # when ubuntu-latest changes this needs updating from 22.04
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y azcopy
+          rm -f packages-microsoft-prod.deb
+
       - name: Copy playwright report from PR
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage blob copy start-batch --account-name commondataelement --destination-container playwright  --source-account-name commondataelement --source-container playwright --pattern ${{github.event.pull_request.number}}*
+        run: |
+          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
       - name: Remove PR playwright report from Azure
         uses: azure/cli@v2
@@ -31,7 +40,7 @@ jobs:
 
   copy-coverage-report:
     name: Publish latest merged coverage report
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
@@ -39,12 +48,21 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Copy PR coverage from PR
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage blob copy start-batch --account-name commondataelement --destination-container coverage  --source-account-name commondataelement --source-container coverage --pattern ${{github.event.pull_request.number}}*
+      - name: Install azcopy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+
+          # when ubuntu-latest changes this needs updating from 22.04
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y azcopy
+          rm -f packages-microsoft-prod.deb
+
+      - name: Copy playwright report from PR
+        run: |
+          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
       - name: Remove PR coverage from Azure
         uses: azure/cli@v2
