@@ -343,9 +343,7 @@ export class DataElementViewComponent implements OnDestroy, OnInit {
             this.unsaved = true;
             return this.draftSaving;
         }
-        return (this.draftSaving = toPromise(
-            this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, elt)
-        ).then(
+        return (this.draftSaving = toPromise(this.http.put<DataElement>('/server/de/draft/' + elt.tinyId, elt)).then(
             newElt => {
                 this.draftSaving = undefined;
                 if (newElt) {

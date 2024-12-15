@@ -3,6 +3,7 @@ import { Accounts } from '../../data/user';
 
 test.describe(`App log`, async () => {
     test(`search app log`, async ({ page, navigationMenu, auditTab, materialPage }) => {
+        test.slow();
         await navigationMenu.login(Accounts.nlm);
         await page.route(`/server/log/appLogs`, async route => {
             await page.waitForTimeout(5000);
@@ -16,7 +17,9 @@ test.describe(`App log`, async () => {
             await materialPage.matDatePicker(page.locator(`[data-testid="app-log-date-picker-toggle"]`)).click();
             await page.click('.mat-calendar-previous-button');
             await materialPage.matDatePickerSelectDay(1).click();
-            await materialPage.matDatePickerSelectDay(28).click();
+            await page.click('.mat-calendar-next-button');
+            await page.click('.mat-calendar-next-button');
+            await materialPage.matDatePickerSelectDay(1).click();
             await page.getByRole('button', { name: 'Submit', exact: true }).click();
             await materialPage.matSpinnerShowAndGone();
             test.expect(await page.locator(`cde-app-log`).locator(`table td`).count()).toBeGreaterThan(0);

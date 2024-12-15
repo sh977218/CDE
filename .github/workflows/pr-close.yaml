@@ -1,0 +1,54 @@
+name: Close Pull Request
+
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  copy-playwright-report:
+    name: Publish latest merged playwright report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Copy playwright report from PR
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob copy start-batch --account-name commondataelement --destination-container playwright  --source-account-name commondataelement --source-container playwright --pattern ${{github.event.pull_request.number}}*
+
+      - name: Remove PR playwright report from Azure
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage fs directory delete --account-name commondataelement --file-system playwright --name ${{github.event.pull_request.number}} --yes
+
+  copy-coverage-report:
+    name: Publish latest merged coverage report
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Copy PR coverage from PR
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob copy start-batch --account-name commondataelement --destination-container coverage  --source-account-name commondataelement --source-container coverage --pattern ${{github.event.pull_request.number}}*
+
+      - name: Remove PR coverage from Azure
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage fs directory delete --account-name commondataelement --file-system coverage --name ${{github.event.pull_request.number}} --yes

@@ -60,6 +60,7 @@ export class SaveModalPo {
         let newVersion = version.newVersion;
         await this.page.getByTestId(`publish-draft`).click();
         await this.materialPage.matDialog().waitFor();
+        await this.page.waitForTimeout(3000); //wait for cursor autofocus completes.
         const existingVersionString = await this.newVersionInput().inputValue();
         const existingVersion = existingVersionString.trim();
         if (existingVersion && existingVersion === version.newVersion) {
