@@ -3,6 +3,7 @@ import { test } from '../../fixtures/base-fixtures';
 
 test.use({ viewport: { width: 1000, height: 500 } });
 test(`Search page reserve scroll history`, async ({ page, navigationMenu, searchPage }) => {
+    test.slow();
     const elementId = `[id="linkToElt_4"]`;
     let appleOffset = -1;
     let patientOffset = -1;
@@ -14,6 +15,7 @@ test(`Search page reserve scroll history`, async ({ page, navigationMenu, search
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('Godin Leisure-Time Exercise Questionnaire')).not.toHaveCount(0);
         await page.locator(elementId).isVisible();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         appleOffset = await page.evaluate(() => window.scrollY);
         await page.locator(elementId).click();
     });
@@ -24,6 +26,7 @@ test(`Search page reserve scroll history`, async ({ page, navigationMenu, search
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('Patient Health Questionnaire')).not.toHaveCount(0);
         await page.locator(elementId).isVisible();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         patientOffset = await page.evaluate(() => window.scrollY);
         await page.locator(elementId).click();
     });
@@ -34,6 +37,7 @@ test(`Search page reserve scroll history`, async ({ page, navigationMenu, search
         await searchPage.searchSubmitButton().click();
         await expect(page.getByText('Test of Memory Malingering (TOMM) - Trial')).not.toHaveCount(0);
         await page.locator(elementId).isVisible();
+        await page.waitForTimeout(5000); // wait for page auto scroll happens
         painOffset = await page.evaluate(() => window.scrollY);
     });
 
