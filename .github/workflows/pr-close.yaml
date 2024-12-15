@@ -1,0 +1,72 @@
+name: Close Pull Request
+
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  copy-playwright-report:
+    name: Publish latest merged playwright report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install azcopy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+
+          # when ubuntu-latest changes this needs updating from 22.04
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y azcopy
+          rm -f packages-microsoft-prod.deb
+
+      - name: Copy playwright report from PR
+        run: |
+          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
+
+      - name: Remove PR playwright report from Azure
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage fs directory delete --account-name commondataelement --file-system playwright --name ${{github.event.pull_request.number}} --yes
+
+  copy-coverage-report:
+    name: Publish latest merged coverage report
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Install azcopy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+
+          # when ubuntu-latest changes this needs updating from 22.04
+          wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y azcopy
+          rm -f packages-microsoft-prod.deb
+
+      - name: Copy playwright report from PR
+        run: |
+          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
+
+      - name: Remove PR coverage from Azure
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage fs directory delete --account-name commondataelement --file-system coverage --name ${{github.event.pull_request.number}} --yes

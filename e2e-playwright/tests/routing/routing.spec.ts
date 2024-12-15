@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 
-test.describe(`App Routing @oneTest`, async () => {
+test.describe(`App Routing`, async () => {
     test.describe(`Logged In required routes`, async () => {
         const loggedInRequiredRoutes = [
             `classificationManagement`,
@@ -43,7 +43,7 @@ test.describe(`App Routing @oneTest`, async () => {
         }
     });
 
-    test.describe(`404 page`, async () => {
+    test.describe(`404 page @oneTest`, async () => {
         test(`wrong route`, async ({ page }) => {
             await page.goto(`/abc`);
             await expect(page).toHaveTitle('Page Not Found');
