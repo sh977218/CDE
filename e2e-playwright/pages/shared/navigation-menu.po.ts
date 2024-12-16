@@ -273,7 +273,7 @@ export class NavigationMenuPo {
     async gotoResources() {
         await this.clickUntilMenuShows(this.page.locator(`#helpLink`));
         await this.materialPage.matMenuItem('Resources').click();
-        await this.page.waitForURL(/\/resources/, { timeout: 10000 }); //resources take very long to load
+        await this.page.waitForURL(/\/resources/, { timeout: 20000 }); //resources take very long to load
     }
 
     async gotoAbout() {

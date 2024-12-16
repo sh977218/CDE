@@ -96,7 +96,7 @@ test.describe(`Submission Reuse`, async () => {
 
         await page.locator('button').getByText('Endorse').click();
 
-        await page.goto('http://localhost:3001/cde/search?selectedOrg=reuseSubmission');
+        await page.goto('/cde/search?selectedOrg=reuseSubmission');
         await expect(page.getByText('6 results. Sorted by relevance.')).toBeVisible();
         await expect(page.locator('a').getByText('reuseSubmission A')).toBeVisible();
         await expect(page.locator('a').getByText('reuseSubmission B')).toBeVisible();
@@ -111,12 +111,12 @@ test.describe(`Submission Reuse`, async () => {
         await expect(page.locator('cde-classification-view a').getByText('reuseSubmission').first()).toBeVisible();
         await expect(page.locator('cde-classification-view a').getByText('CCBB').first()).toBeVisible();
 
-        await page.goto('http://localhost:3001/cde/search?q=reuseSubmission');
+        await page.goto('/cde/search?q=reuseSubmission');
         await expect(page.getByText('8 results. Sorted by relevance.')).toBeVisible();
         expect(await page.locator('a').getByText('reuseSubmission D').count()).toBe(2);
         expect(await page.locator('a').getByText('reuseSubmission F').count()).toBe(2);
 
-        await page.goto('http://localhost:3001/form/search?selectedOrg=reuseSubmission');
+        await page.goto('/form/search?selectedOrg=reuseSubmission');
         await expect(page.locator('a').getByText('reuseSubmission combo 1')).toBeVisible();
         await expect(page.locator('a').getByText('reuseSubmission combo 2')).toBeVisible();
         await page.locator('a').getByText('reuseSubmission combo 1').click();
