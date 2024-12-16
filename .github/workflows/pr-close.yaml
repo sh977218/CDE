@@ -60,9 +60,9 @@ jobs:
           sudo apt-get install -y azcopy
           rm -f packages-microsoft-prod.deb
 
-      - name: Copy playwright report from PR
+      - name: Copy coverage report from PR
         run: |
-          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
+          azcopy copy "https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/coverage/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
       - name: Remove PR coverage from Azure
         uses: azure/cli@v2
