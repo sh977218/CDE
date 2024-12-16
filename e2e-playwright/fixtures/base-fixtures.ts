@@ -78,7 +78,7 @@ import { SubmissionEditPo } from '../pages/submission/submissionEdit.po';
 import { SubmissionManagePo } from '../pages/submission/submissionManage.po';
 
 const PROJECT_ROOT_FOLDER = join(__dirname, '../..');
-const NYC_OUTPUT_FOLDER = join(PROJECT_ROOT_FOLDER, '.nyc_output');
+const NYC_OUTPUT_FOLDER = join(PROJECT_ROOT_FOLDER, 'nyc_output');
 
 async function codeCoverage(page: Page, testInfo: TestInfo) {
     const coverage: string = await page.evaluate('JSON.stringify(window.__coverage__);');

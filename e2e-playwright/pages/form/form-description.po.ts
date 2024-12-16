@@ -182,6 +182,7 @@ export class FormDescriptionPo {
     async addQuestionByNameHotKey(cdeName: string) {
         await this.page.keyboard.press('q');
         await this.materialPage.matDialog().waitFor();
+        await this.page.waitForTimeout(3000);
         await this.page.keyboard.type(cdeName);
         await this.page.keyboard.press('Enter');
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });

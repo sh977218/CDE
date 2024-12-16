@@ -39,18 +39,16 @@ export class MeshMappingComponent {
         this.loading = true;
         const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
         if (formData) {
-            this.http
-                .post<[number, number]>('/server/mesh/updateMeshMappingCsv', formData)
-                .subscribe({
-                    next: ([rowsCount, dbCount]) => {
-                        this.loading = false;
-                        this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
-                    },
-                    error: e => {
-                        this.loading = false;
-                        this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
-                    },
-                });
+            this.http.post<[number, number]>('/server/mesh/updateMeshMappingCsv', formData).subscribe({
+                next: ([rowsCount, dbCount]) => {
+                    this.loading = false;
+                    this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
+                },
+                error: e => {
+                    this.loading = false;
+                    this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
+                },
+            });
         }
     }
 
@@ -58,18 +56,16 @@ export class MeshMappingComponent {
         this.loading = true;
         const formData = fileInputToFormData(event.srcElement as HTMLInputElement);
         if (formData) {
-            this.http
-                .post<[number, number]>('/server/mesh/updateMeshMappingXls', formData)
-                .subscribe({
-                    next: ([rowsCount, dbCount]) => {
-                        this.loading = false;
-                        this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
-                    },
-                    error: e => {
-                        this.loading = false;
-                        this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
-                    },
-                });
+            this.http.post<[number, number]>('/server/mesh/updateMeshMappingXls', formData).subscribe({
+                next: ([rowsCount, dbCount]) => {
+                    this.loading = false;
+                    this.alert.addAlert('success', `Mesh mapping updated (rows=${rowsCount})(mappings=${dbCount})`);
+                },
+                error: e => {
+                    this.loading = false;
+                    this.alert.addAlert('danger', `Mesh mapping update failed. ErrorL: ${e}`);
+                },
+            });
         }
     }
 }

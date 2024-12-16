@@ -1,0 +1,152 @@
+name: Pull Request Test
+on:
+  pull_request:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref  }}
+  cancel-in-progress: false
+
+jobs:
+  e2e-test:
+    name: e2e-test
+    runs-on: ubuntu-latest
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.26
+        env:
+          discovery.type: single-node
+        options:
+          --health-cmd "curl http://localhost:9200/_cluster/health"
+          --health-interval 10s
+          --health-timeout 30s
+          --health-retries 10
+        ports:
+          - 9200:9200
+        volumes:
+          - esData:/usr/share/elasticsearch/data
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd mongosh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        volumes:
+          - mongoData:/data/db
+    steps:
+      - name: Add hosts to /etc/hosts # this is to let nodeJs output ip address with 127.0.0.1 instead of ::1
+        run: |
+          echo "127.0.0.1 localhost" | sudo tee -a /etc/hosts
+
+      - uses: actions/checkout@v4
+
+      - name: Setup mongodb-tools
+        run: |
+          wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2204-x86_64-100.6.1.deb
+          sudo apt install ./mongodb-database-tools-*-100.6.1.deb
+      - run: mongorestore --nsInclude 'test.*' test/data/
+      - run: mongorestore --nsInclude 'cde-logs-test.*' test/data/
+
+      - run: node --version
+      - run: npm i
+      - run: npm i -g @angular/cli
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Compile server ts
+        run: npm run build
+      - run: ng build cde-cli --output-path dist/cde-cli
+      - run: ng build nativeRender --output-path dist/nativeRender
+
+      - name: Run Playwright tests
+        run: NODE_ENV=test npm run playwright
+
+      - name: Upload app log
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: app.log
+          path: app.log
+          retention-days: 30
+
+      - name: Upload express log
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: cde.log
+          path: cde.log
+          retention-days: 30
+
+      - name: Azure Login
+        if: always()
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Generate playwright report
+        if: always()
+        run: npm run playwright-report
+      - name: Upload playwright report to Azure
+        if: always()
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob upload-batch --account-name commondataelement -s ./playwright-report -d playwright --destination-path ${{github.event.pull_request.number}} --overwrite
+      - name: populate playwright report to job summary
+        if: always()
+        run: |
+          echo "# Deployed playwright report to https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/index.html" >> $GITHUB_STEP_SUMMARY
+
+      - name: Generate coverage report
+        if: always()
+        run: npm run coverage-report
+      - name: Upload coverage report to Azure
+        if: always()
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob upload-batch --account-name commondataelement -s ./coverage-e2e -d coverage --destination-path ${{github.event.pull_request.number}} --overwrite
+      - name: populate coverage report to job summary
+        if: always()
+        run: |
+          echo "# Deployed coverage report to https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/lcov-report/index.html" >> $GITHUB_STEP_SUMMARY
+
+      - name: Setup JDK
+        if: always()
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: 'microsoft'
+          java-version: '21'
+      - name: Create previous-allure-report folder
+        if: always()
+        run: mkdir previous-allure-report
+      - name: Download previous allure report from Azure
+        if: always()
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob download-batch --account-name commondataelement -s allure-report -d previous-allure-report
+      - name: Copy historical data into current run
+        if: always()
+        run: cp previous-allure-report/history allure-results/history -r
+      - name: Generate allure report
+        if: always()
+        run: npx allure generate allure-results
+      - name: Upload allure report to Azure
+        if: always()
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage blob upload-batch --account-name commondataelement -s ./allure-report -d allure-report --overwrite
+      - name: populate allure report to job summary
+        if: always()
+        run: |
+          echo "# Deployed allure report to https://commondataelement.blob.core.windows.net/allure-report/index.html" >> $GITHUB_STEP_SUMMARY
