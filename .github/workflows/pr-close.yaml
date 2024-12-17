@@ -32,11 +32,8 @@ jobs:
           azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
       - name: Remove PR playwright report from Azure
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage fs directory delete --account-name commondataelement --file-system playwright --name ${{github.event.pull_request.number}} --yes
+        run: |
+          azcopy rm "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
   copy-coverage-report:
     name: Publish latest merged coverage report
@@ -60,13 +57,11 @@ jobs:
           sudo apt-get install -y azcopy
           rm -f packages-microsoft-prod.deb
 
-      - name: Copy playwright report from PR
+      - name: Copy coverage report from PR
         run: |
-          azcopy copy "https://commondataelement.blob.core.windows.net/playwright/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/playwright/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
+          azcopy copy "https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/*?${{ secrets.AZURE_SAS_TOKEN }}"  "https://commondataelement.blob.core.windows.net/coverage/master?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
 
-      - name: Remove PR coverage from Azure
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage fs directory delete --account-name commondataelement --file-system coverage --name ${{github.event.pull_request.number}} --yes
+      - name: Remove PR coverage report from Azure
+        run: |
+          azcopy rm "https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}?${{ secrets.AZURE_SAS_TOKEN }}" --recursive=true
+
