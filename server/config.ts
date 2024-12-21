@@ -28,15 +28,15 @@ export const config = Config as any;
         if (database.options.tlsAllowInvalidCertificates) {
             uriOptions.push('tlsAllowInvalidCertificates=true');
         }
-        database.uri = 'mongodb://';
-        if (database.username) {
-            database.uri = database.uri + database.username + ':' + database.password + '@';
-        }
-        database.uri =
-            database.uri +
-            config.database.servers.map((srv: any) => srv.host + ':' + srv.port).join(',') +
-            '/' +
-            database.db;
+        const protocol = config.database.protocol || 'mongodb://';
+        const username = database.username;
+        const password = process.env.MONGO_DB_PASSWORD || database.password;
+        const authenticationCredentials = username ? `${username}:${password}@` : '';
+        const hosts = config.database.servers.map((srv: { host: string; port?: string }) => {
+            return `${srv.host}${srv.port ? `:${srv.port}` : ''}`;
+        });
+        const host = hosts.join(',');
+        database.uri = `${protocol}${authenticationCredentials}${host}/${database.db}`;
         // OOO: --authenticationDatabase comes from:   1. authSource   2. this uri '/db'   3. 'admin'
         if (uriOptions.length) {
             database.uri += '?' + uriOptions.join('&');
