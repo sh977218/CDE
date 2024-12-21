@@ -1,0 +1,48 @@
+name: Deployment to In house Linux
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and deploy
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Build Angular
+        run: |
+          npx ng b cde-cli -c development --output-path buildNode/dist/cde-cli |
+          npx ng b nativeRender -c development --output-path buildNode/dist/nativeRender
+
+      - name: Build NodeJS
+        run: npm run buildNode
+
+      - name: Install dependencies
+        run: npm i --omit=dev --prefix ./buildNode
+
+      - name: Remove unused config
+        run: |
+         rm buildNode/config/ci1.json |
+         rm buildNode/config/ci2.json |
+         rm buildNode/config/prod.json |
+         rm buildNode/config/qa.json |
+         rm buildNode/config/test.json |
+         rm buildNode/config/test-local.json |
+         rm buildNode/config/test-ssl.json |
+         rm buildNode/config/test-uts.json |
+
+      - name: Deploy master branch to S3
+        if: github.ref == 'refs/heads/master'
+        run: aws s3 sync ./dist/ ${{ secrets.AWS_SECRET_S3_BUCKET }} --delete

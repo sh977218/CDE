@@ -6,11 +6,24 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const {randomUUID} = require("node:crypto");
 
+const uriOptions = [];
 const database = config.database.appData;
-const url = 'mongodb://' + config.database.servers.map((srv) => srv.host + ':' + srv.port).join(',') + '/' + database.db;
+if (database.options.appName) {
+    uriOptions.push('appName=' + database.options.appName);
+}
+const protocol = config.database.protocol || 'mongodb://';
+const username = database.username;
+const password = process.env.MONGO_DB_PASSWORD || database.password;
+const authenticationCredentials = username ? `${username}:${password}@` : '';
+const hosts = config.database.servers.map((srv) => `${srv.host}${srv.port ? `:${srv.port}` : ''}`)
+const host = hosts.join(',');
+let uri = `${protocol}${authenticationCredentials}${host}/${database.db}`
+if (uriOptions.length) {
+    uri += '?' + uriOptions.join('&');
+}
 let db;
 
-MongoClient.connect(url).then(client => {
+MongoClient.connect(uri).then(client => {
     db = client.db(database.db);
     if (!db) {
         throw new Error('login server initialization failed');
@@ -84,6 +97,7 @@ if (![
     'dev-test', // CI
     'my-test', // additional local
     'test', // default local, uses UTS login
+    'qastage', // qastage env, where GitHub master branch deployed to
     'test-local' // local required for test server
 ].includes(process.env.NODE_ENV)) {
     console.error(`Test Login Server not started. Current test configuration NODE_ENV=${process.env.NODE_ENV} is not recognized.`);
