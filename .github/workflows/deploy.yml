@@ -1,14 +1,17 @@
-name: Deployment to In house Linux
+name: Deployment to qastage
 on:
   pull_request:
-  push:
+    types:
+      - closed
     branches:
       - master
+
 
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and deploy
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -30,7 +33,7 @@ jobs:
         run: npm run buildNode
 
       - name: Install dependencies
-        run: npm i --omit=dev --prefix ./buildNode
+        run: npm i --omit=dev --ignore-scripts --prefix ./buildNode
 
       - name: Remove unused config
         run: |
@@ -41,8 +44,7 @@ jobs:
          rm buildNode/config/test.json |
          rm buildNode/config/test-local.json |
          rm buildNode/config/test-ssl.json |
-         rm buildNode/config/test-uts.json |
+         rm buildNode/config/test-uts.json
 
-      - name: Deploy master branch to S3
-        if: github.ref == 'refs/heads/master'
-        run: aws s3 sync ./dist/ ${{ secrets.AWS_SECRET_S3_BUCKET }} --delete
+      - name: Deploy master branch to qastage
+        run: tar -cf cde-master.tar buildNode
