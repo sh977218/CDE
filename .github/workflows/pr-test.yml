@@ -10,7 +10,6 @@ concurrency:
 jobs:
   e2e-test:
     name: e2e-test
-    if: false
     runs-on: ubuntu-latest
     services:
       elasticsearch:
