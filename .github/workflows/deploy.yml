@@ -1,8 +1,8 @@
 name: Deployment to qastage
 on:
   pull_request:
-    types:
-      - closed
+#    types:
+#      - closed
     branches:
       - master
 
@@ -11,7 +11,7 @@ jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and deploy
-    if: github.event.pull_request.merged == true
+#    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -37,6 +37,7 @@ jobs:
 
       - name: Remove unused config
         run: |
+         rm -rf buildNode/scripts |
          rm buildNode/config/ci1.json |
          rm buildNode/config/ci2.json |
          rm buildNode/config/prod.json |
