@@ -148,6 +148,38 @@ test.describe(`Search`, async () => {
             await searchPage.searchSubmitButton().click();
             await expect(searchPage.searchResultInfoBar()).toHaveText('13 results. Sorted by relevance.');
         });
+        test(`search by date range`, async ({
+            page,
+            materialPage,
+            navigationMenu,
+            searchPage,
+            customizeTableModal,
+        }) => {
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.searchQueryInput().fill(`created:<2015-05-14`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(850);
+
+            await searchPage.searchQueryInput().fill(`created:<1960-05-13`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`updated:<2015-09-21`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`updated:<2015-09-22`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(9790);
+
+            await searchPage.searchQueryInput().fill(`imported:<2014-12-10`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`imported:<2014-12-11`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(330);
+        });
 
         test(`search number of PVs`, async ({
             page,
@@ -164,6 +196,16 @@ test.describe(`Search`, async () => {
             await page.getByRole('button', { name: 'Table View' }).click();
             await expect(page.getByText('Nb of PVs')).toBeVisible();
             await expect(page.locator('.nbOfPVs')).toHaveText('249');
+        });
+
+        test(`search number of questions`, async ({ page, navigationMenu, searchPage }) => {
+            await navigationMenu.gotoFormSearch();
+            await searchPage.searchQueryInput().fill(`numQuestions:>200`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.searchResultInfoBar()).toHaveText('3 results. Sorted by relevance.');
+            await expect(page.locator('cde-summary-list-item').first()).toContainText('239 Questions');
+            await expect(page.locator('cde-summary-list-item').nth(1)).toContainText('218 Questions');
+            await expect(page.locator('cde-summary-list-item').nth(2)).toContainText('360 Questions');
         });
     });
 
