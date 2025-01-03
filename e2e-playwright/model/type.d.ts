@@ -43,7 +43,22 @@ export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move t
 export type ConceptType = 'Object Class' | 'Property' | 'Data Element Concept';
 export type Module = 'cde' | 'form';
 type BoardType = 'CDEs' | 'Forms';
-
+export type TableViewSetting = {
+    otherName?: boolean;
+    usedBy?: boolean;
+    updated?: boolean;
+    permissibleValues?: boolean;
+    numberOfPermissibleValues?: boolean;
+    unitOfMeasure?: boolean;
+    source?: boolean;
+    nlmId?: boolean;
+    steward?: boolean;
+    linkedForms?: boolean;
+    registrationStatus?: boolean;
+    adminStatus?: boolean;
+    questionTexts?: boolean;
+    identifiers?: string[];
+};
 export type Account = {
     username: string;
     password: string;

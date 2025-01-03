@@ -198,34 +198,6 @@ export class MaterialPo {
         await this.checkAlert(`Pinned to ${boardName}Dismiss`);
     }
 
-    async loadDefaultTableViewSettings() {
-        await this.page.locator('#list_gridView').click();
-        await this.page.locator('#tableViewSettings').click();
-        await this.matDialog().waitFor();
-        await this.page.locator('#loadDefaultTableViewSettingsBtn').click();
-        await this.checkAlert('Default settings loaded. Click Close to save your settings.');
-        await this.page.locator('#closeTableViewSettingsBtn').click();
-        await this.matDialog().waitFor({ state: 'hidden' });
-    }
-
-    async loadTableViewSettingsForExport() {
-        await this.page.locator('#list_gridView').click();
-        const waitForIdSourceApiPromise = this.page.waitForResponse('/server/system/idSources');
-        await this.page.locator('#tableViewSettings').click();
-        await this.matDialog().waitFor();
-        await waitForIdSourceApiPromise;
-        await this.page.locator('#uom').click();
-        await this.page.locator('#naming').click();
-        await this.page.locator('#administrativeStatus').click();
-        await this.page.locator('#source').click();
-        await this.page.locator('#updated').click();
-        await this.page.locator(`//*[@id='identifiers']//input`).click();
-        await this.matDialog().locator(`#identifiers`).click();
-        await this.matOptionByText(`NINDS Variable Name`).click();
-        await this.page.locator('#closeTableViewSettingsBtn').click();
-        await this.matDialog().waitFor({ state: 'hidden' });
-    }
-
     /**
      * Description - Expand the mat tree according to the input, and return the leaf node
      * @param classificationsArray - Classification array contains the text from root to leaf (branch)

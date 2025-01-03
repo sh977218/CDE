@@ -76,6 +76,7 @@ import { ConsoleMessage } from 'playwright-core';
 // Submission
 import { SubmissionEditPo } from '../pages/submission/submissionEdit.po';
 import { SubmissionManagePo } from '../pages/submission/submissionManage.po';
+import { CustomizeTableModalPo } from '../pages/search/customize-table-modal.po';
 
 const PROJECT_ROOT_FOLDER = join(__dirname, '../..');
 const NYC_OUTPUT_FOLDER = join(PROJECT_ROOT_FOLDER, 'nyc_output');
@@ -87,13 +88,19 @@ async function codeCoverage(page: Page, testInfo: TestInfo) {
         const nycOutput = join(NYC_OUTPUT_FOLDER, `${name}`);
         await fs.writeFile(nycOutput, coverage);
     } else {
-        // API testing don't output coverage
+        // API testing, debug/smoke don't output coverage
         const isDebug = ['CDE-smokeTest', 'CDE-oneTest'].includes(testInfo.project.name);
         const isApiTesting = testInfo.titlePath.filter(t => t.includes('API') || t.includes('api')).length > 0;
-        if (isDebug || isApiTesting) {
-            console.info(`No coverage needed for debug or api testing: ${testInfo.titlePath.join(' -> ')}`);
+
+        const coverageEnabled = process.env.COVERAGE;
+        if (!coverageEnabled) {
+            console.info(`No coverage needed because process.env.COVERAGE is not set`);
         } else {
-            throw new Error(`No coverage found for ${testInfo.titlePath.join(' -> ')}`);
+            if (isDebug || isApiTesting) {
+                console.info(`No coverage needed for debug or api testing: ${testInfo.titlePath.join(' -> ')}`);
+            } else {
+                throw new Error(`No coverage found for ${testInfo.titlePath.join(' -> ')}`);
+            }
         }
     }
 }
@@ -124,6 +131,7 @@ const baseFixture = baseTest.extend<{
     aioTocViewMenu: AioTocViewMenuPo;
     navigationMenu: NavigationMenuPo;
     searchPage: SearchPagePo;
+    customizeTableModal: CustomizeTableModalPo;
     searchPreferencesPage: SearchPreferencesPagePo;
     inlineEdit: InlineEditPo;
     itemLogAuditPage: ItemLogAuditPagePo;
@@ -228,6 +236,9 @@ const baseFixture = baseTest.extend<{
     },
     searchPage: async ({ page, materialPage, myBoardPage }, use) => {
         await use(new SearchPagePo(page, materialPage, myBoardPage));
+    },
+    customizeTableModal: async ({ page, materialPage }, use) => {
+        await use(new CustomizeTableModalPo(page, materialPage));
     },
     searchPreferencesPage: async ({ page }, use) => {
         await use(new SearchPreferencesPagePo(page));

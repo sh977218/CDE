@@ -35,4 +35,9 @@ export const CdeTinyIds: Record<string, string> = {
     'Tissue Donor Genetic Testing Other Disease or Disorder Specify': 'nsMXB5NdFBA',
     'Post traumatic amnesia verify type': '2oFE4xEhYv0',
     'Vision (aura) typical symptom type': 'rRqc8KG1RNO',
+    'Neoadjuvant Therapy': '7yN4tn_EW',
+    'Post traumatic amnesia duration range': '1Wd849ONU81',
+    'Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode':
+        'qPsdBFBSTRc',
+    'Patient Visual Change Chief Complaint Indicator': 'q3bWgQN1wCq',
 };
