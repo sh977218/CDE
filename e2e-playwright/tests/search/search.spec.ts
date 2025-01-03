@@ -136,6 +136,7 @@ test.describe(`Search`, async () => {
             await expect(searchPage.searchResultInfoBar()).toHaveText('4 results. Sorted by relevance.');
         });
     });
+
     test.describe(`search by es query language`, async () => {
         test(`search with *`, async ({ navigationMenu, searchPage }) => {
             await navigationMenu.gotoCdeSearch();
@@ -148,15 +149,29 @@ test.describe(`Search`, async () => {
             await expect(searchPage.searchResultInfoBar()).toHaveText('13 results. Sorted by relevance.');
         });
 
-        // test(`search term inside ""`, async ({ navigationMenu, searchPage }) => {
-        //     await navigationMenu.gotoFormSearch();
-        //     await searchPage.searchQueryInput().fill(`Biomarker Gene`);
-        //     await searchPage.searchSubmitButton().click();
-        //     await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
-        //
-        //     await searchPage.searchQueryInput().fill(`"Biomarker Gene"`);
-        //     await searchPage.searchSubmitButton().click();
-        //     await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
-        // });
+        test(`search number of PVs`, async ({
+            page,
+            materialPage,
+            navigationMenu,
+            searchPage,
+            customizeTableModal,
+        }) => {
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.searchQueryInput().fill(`valueDomain.nbOfPVs: 249`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
+            await expect(page.locator('cde-summary-list-item')).toContainText('(249 total)');
+            await page.getByRole('button', { name: 'Table View' }).click();
+            await expect(page.getByText('Nb of PVs')).toBeVisible();
+            await expect(page.locator('.nbOfPVs')).toHaveText('249');
+        });
+    });
+
+    test(`search by concept`, async ({ page, navigationMenu }) => {
+        const cdeName = 'Classification Scheme Item Relationship Database Identifier java.lang.String';
+        await navigationMenu.gotoCdeByName(cdeName);
+        await page.getByText('Database', { exact: true }).click();
+        await expect(page.getByText('3 results. Sorted by relevance.')).toBeVisible();
+        await expect(page.getByText(cdeName)).toBeVisible();
     });
 });

@@ -143,4 +143,17 @@ test.describe(`API testing`, async () => {
         await page.goto(`/api/de/${cdeTinyId}?apiKey=${apiKey}`);
         await expect(page.getByText(`Login to see the value.`)).toBeHidden();
     });
+
+    test(`NotL login cannot see loinc`, async ({ page }) => {
+        const endpoints = [
+            '/api/de/mkmhYJOnk7l',
+            '/api/de/mkmhYJOnk7l/version/',
+            '/server/de/byId/5b55fc19c805703830125b6a/',
+            '/server/de/list/mkmhYJOnk7l',
+        ];
+        for (const endpoint of endpoints) {
+            await page.goto(endpoint);
+            await expect(page.getByText('LA6270-8')).toBeHidden();
+        }
+    });
 });

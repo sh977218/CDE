@@ -5,12 +5,12 @@ import { Accounts } from '../../data/user';
 
 test.describe(`Board export`, async () => {
     test.describe(`private board`, async () => {
-        test.beforeEach(async ({ materialPage, navigationMenu, myBoardPage }) => {
+        test.beforeEach(async ({ customizeTableModal, navigationMenu, myBoardPage }) => {
             await test.step(`Login and go to board`, async () => {
                 await navigationMenu.login(Accounts.classifyBoardUser);
                 await navigationMenu.gotoMyBoard();
                 await myBoardPage.boardTitle('My private board').click();
-                await materialPage.loadDefaultTableViewSettings();
+                await customizeTableModal.loadDefaultTableViewSettings();
             });
         });
 
@@ -48,12 +48,12 @@ test.describe(`Board export`, async () => {
     });
 
     test.describe(`public board`, async () => {
-        test.beforeEach(async ({ materialPage, navigationMenu, myBoardPage }) => {
+        test.beforeEach(async ({ customizeTableModal, navigationMenu, myBoardPage }) => {
             await test.step(`Login and go to board`, async () => {
                 await navigationMenu.login(Accounts.classifyBoardUser);
                 await navigationMenu.gotoMyBoard();
                 await myBoardPage.boardTitle('My public board').click();
-                await materialPage.loadDefaultTableViewSettings();
+                await customizeTableModal.loadDefaultTableViewSettings();
             });
         });
 

@@ -38,9 +38,9 @@ test.describe(`Search CDE export`, async () => {
             }
         });
 
-        test(`custom setting`, async ({ page, materialPage }) => {
+        test(`custom setting`, async ({ page, materialPage, customizeTableModal }) => {
             test.fixme();
-            await materialPage.loadTableViewSettingsForExport();
+            await customizeTableModal.loadTableViewSettingsForExport();
             await page.locator('#export').click();
             const downloadPromise = page.waitForEvent('download');
             await page.locator('#csvExport').click();
