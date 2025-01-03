@@ -84,7 +84,7 @@ app.get('/serviceValidate', (req, res) => {
 if (![
     'dev-test', // CI
     'my-test', // additional local
-    'test' // default local, uses UTS login
+    'test', // default local, uses UTS login
     'test-local' // local required for test server
 ].includes(process.env.NODE_ENV)) {
     console.error(`Test Login Server not started. Current test configuration NODE_ENV=${process.env.NODE_ENV} is not recognized.`);
