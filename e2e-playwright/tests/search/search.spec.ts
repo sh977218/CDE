@@ -136,6 +136,7 @@ test.describe(`Search`, async () => {
             await expect(searchPage.searchResultInfoBar()).toHaveText('4 results. Sorted by relevance.');
         });
     });
+
     test.describe(`search by es query language`, async () => {
         test(`search with *`, async ({ navigationMenu, searchPage }) => {
             await navigationMenu.gotoCdeSearch();
@@ -147,16 +148,72 @@ test.describe(`Search`, async () => {
             await searchPage.searchSubmitButton().click();
             await expect(searchPage.searchResultInfoBar()).toHaveText('13 results. Sorted by relevance.');
         });
+        test(`search by date range`, async ({
+            page,
+            materialPage,
+            navigationMenu,
+            searchPage,
+            customizeTableModal,
+        }) => {
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.searchQueryInput().fill(`created:<2015-05-14`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(850);
 
-        // test(`search term inside ""`, async ({ navigationMenu, searchPage }) => {
-        //     await navigationMenu.gotoFormSearch();
-        //     await searchPage.searchQueryInput().fill(`Biomarker Gene`);
-        //     await searchPage.searchSubmitButton().click();
-        //     await expect(searchPage.searchResultInfoBar()).toHaveText('2 results. Sorted by relevance.');
-        //
-        //     await searchPage.searchQueryInput().fill(`"Biomarker Gene"`);
-        //     await searchPage.searchSubmitButton().click();
-        //     await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
-        // });
+            await searchPage.searchQueryInput().fill(`created:<1960-05-13`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`updated:<2015-09-21`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`updated:<2015-09-22`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(9790);
+
+            await searchPage.searchQueryInput().fill(`imported:<2014-12-10`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+            await searchPage.searchQueryInput().fill(`imported:<2014-12-11`);
+            await searchPage.searchSubmitButton().click();
+            expect(await searchPage.numberOfResults()).toBeGreaterThan(330);
+        });
+
+        test(`search number of PVs`, async ({
+            page,
+            materialPage,
+            navigationMenu,
+            searchPage,
+            customizeTableModal,
+        }) => {
+            await navigationMenu.gotoCdeSearch();
+            await searchPage.searchQueryInput().fill(`valueDomain.nbOfPVs: 249`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.searchResultInfoBar()).toHaveText('1 results. Sorted by relevance.');
+            await expect(page.locator('cde-summary-list-item')).toContainText('(249 total)');
+            await page.getByRole('button', { name: 'Table View' }).click();
+            await expect(page.getByText('Nb of PVs')).toBeVisible();
+            await expect(page.locator('.nbOfPVs')).toHaveText('249');
+        });
+
+        test(`search number of questions`, async ({ page, navigationMenu, searchPage }) => {
+            await navigationMenu.gotoFormSearch();
+            await searchPage.searchQueryInput().fill(`numQuestions:>200`);
+            await searchPage.searchSubmitButton().click();
+            await expect(searchPage.searchResultInfoBar()).toHaveText('3 results. Sorted by relevance.');
+            await expect(page.locator('cde-summary-list-item').first()).toContainText('239 Questions');
+            await expect(page.locator('cde-summary-list-item').nth(1)).toContainText('218 Questions');
+            await expect(page.locator('cde-summary-list-item').nth(2)).toContainText('360 Questions');
+        });
+    });
+
+    test(`search by concept`, async ({ page, navigationMenu }) => {
+        const cdeName = 'Classification Scheme Item Relationship Database Identifier java.lang.String';
+        await navigationMenu.gotoCdeByName(cdeName);
+        await page.getByText('Database', { exact: true }).click();
+        await expect(page.getByText('3 results. Sorted by relevance.')).toBeVisible();
+        await expect(page.getByText(cdeName)).toBeVisible();
     });
 });
