@@ -12,4 +12,12 @@ test.describe(`linked form`, async () => {
             'No permission required to reproduce, translate, display or distribute.'
         );
     });
+
+    test(`find form by cde`, async ({ page, navigationMenu }) => {
+        const cdeName = 'Therapeutic Procedure Created Date java.util.Date';
+        const formName = 'Find By CDE';
+        await navigationMenu.gotoCdeByName(cdeName);
+        await page.getByRole('link', { name: formName }).click();
+        await expect(page).toHaveURL(/formView\?tinyId=myIxS474_/);
+    });
 });

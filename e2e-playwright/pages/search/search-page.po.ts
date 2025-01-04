@@ -36,6 +36,10 @@ export class SearchPagePo {
         return id(this.page, 'searchResultNum');
     }
 
+    async numberOfResults() {
+        return Number.parseInt(await this.searchResultNumber().innerText());
+    }
+
     organizationTitleLink() {
         return this.page.getByTestId(`browse-org`);
     }
