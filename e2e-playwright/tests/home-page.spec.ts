@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { test } from '../fixtures/base-fixtures';
-import { Accounts } from '../../e2e-playwright/data/user';
+import { Accounts } from '../data/user';
 
 test(`Home page edit`, async ({ page, navigationMenu }) => {
     await navigationMenu.login(Accounts.nlm);

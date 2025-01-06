@@ -18,10 +18,9 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
     });
 
     test(`'acrin' (OrgCurator) can see ACRIN all registration status regardless of their role`, async ({
-        page,
-        materialPage,
         navigationMenu,
         searchPage,
+        searchSettingPage,
         settingMenu,
     }) => {
         await navigationMenu.login(Accounts.acrin);
@@ -42,8 +41,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
         await test.step(`Enable view draft cannot see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
-            await page.locator(`id=viewPublishAndDraftButton-input`).check();
-            await materialPage.checkAlert('Saved');
+            await searchSettingPage.setViewPublishAndDraft();
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
@@ -52,10 +50,9 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
     });
 
     test(`'cabigEditor' (orgEditor) can see caBIG all registration status regardless of their role`, async ({
-        page,
-        materialPage,
         navigationMenu,
         searchPage,
+        searchSettingPage,
         settingMenu,
     }) => {
         await navigationMenu.login(Accounts.cabigEditor);
@@ -72,8 +69,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
         await test.step(`Enable view draft cannot see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
-            await page.locator(`id=viewPublishAndDraftButton-input`).check();
-            await materialPage.checkAlert('Saved');
+            await searchSettingPage.setViewPublishAndDraft();
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
@@ -82,8 +78,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
     });
 
     test(`'ctepAdmin' (orgAdmin) can see CTEP all registration status regardless of their role`, async ({
-        page,
-        materialPage,
+        searchSettingPage,
         navigationMenu,
         searchPage,
         settingMenu,
@@ -101,8 +96,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
         await test.step(`Enable view draft cannot see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
-            await page.locator(`id=viewPublishAndDraftButton-input`).check();
-            await materialPage.checkAlert('Saved');
+            await searchSettingPage.setViewPublishAndDraft();
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();
@@ -111,8 +105,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
     });
 
     test(`'universal search can see all org all registration status`, async ({
-        page,
-        materialPage,
+        searchSettingPage,
         navigationMenu,
         searchPage,
         settingMenu,
@@ -130,8 +123,7 @@ test.describe(`Org specific roles can see 'Candidate', 'Incomplete', 'Recorded'`
         await test.step(`Enable view draft can see all status`, async () => {
             await navigationMenu.gotoSettings();
             await settingMenu.searchSettingsMenu().click();
-            await page.locator(`id=viewPublishAndDraftButton-input`).check();
-            await materialPage.checkAlert('Saved');
+            await searchSettingPage.setViewPublishAndDraft();
 
             await navigationMenu.gotoCdeSearch();
             await searchPage.organizationTitleLink().filter({ hasText: `CCR` }).click();

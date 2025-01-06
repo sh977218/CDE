@@ -3,7 +3,7 @@
   "overrides": [
     {
       "files": [
-        "*.{html,ts}"
+        "modules/*.{html,ts}"
       ],
       "parserOptions": {
         "project": [
@@ -55,6 +55,20 @@
         "@typescript-eslint/default-param-last": "off",
         "@typescript-eslint/naming-convention": "off"
       }
+    },
+    {
+      "files": [
+        "e2e-playwright/*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.playwright.json"
+        ]
+      },
+      "extends": [
+        "airbnb-typescript/base",
+        "prettier"
+      ]
     }
   ]
 }

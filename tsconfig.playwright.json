@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": false,
+    "allowJs": false,
+    "allowUnreachableCode": true,
+    "baseUrl": "./e2e-playwright",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": "./buildE2e",
+    "pretty": false,
+    "rootDir": ".",
+    "sourceMap": true,
+    "strict": true,
+    "target": "ESNext"
+  },
+  "angularCompilerOptions": {
+  },
+  "awesomeTypescriptLoaderOptions": {
+    "useWebpackText": true
+  },
+  "exclude": [
+    "build",
+    "buildNode",
+    "buildWebStorm",
+    "deploy",
+    "dist",
+    "frontEnd",
+    "ingester",
+    "modules",
+    "node_modules",
+    "protractor",
+    "test",
+    "server"
+  ]
+}
