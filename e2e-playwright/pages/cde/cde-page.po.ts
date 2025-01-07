@@ -22,6 +22,9 @@ export class CdePagePo {
     outOfDateAlert() {
         return this.page.getByTestId(`data-element-view-out-of-date-warning`);
     }
+    bundleInfo() {
+        return this.page.getByTestId(`data-element-view-bundle-info`);
+    }
 
     addToBoard() {
         return this.page.locator(`[id="addToBoard"]`);
