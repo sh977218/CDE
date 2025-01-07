@@ -101,7 +101,7 @@
     <dd>{{elt.version}}</dd>
 
     <dt>Steward:</dt>
-    <dd>
+    <dd data-testid="steward-org">
         <cde-inline-select-edit [value]="elt.stewardOrg.name" [selectOptions]="userOrgs"
                                 (save)="changeStewardOrg($event);" [isAllowed]="canEdit && !elt.isDraft"
                                 [attr.aria-label]="orgHelperService.createOrgDetailedInfoHtml(elt.stewardOrg.name || '')"

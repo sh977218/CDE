@@ -1,10 +1,17 @@
+import { expect } from '@playwright/test';
+
 import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
 import { Version } from '../../../model/type';
-import { expect } from '@playwright/test';
+import { FormTinyIds } from '../../../data/form-tinyId';
 
 test.describe.configure({ retries: 0 });
 test.describe(`add remove identifier`, async () => {
+    test.beforeEach(async ({ navigationMenu }) => {
+        await test.step(`Login`, async () => {
+            await navigationMenu.login(Accounts.nlm);
+        });
+    });
     test(`cde add identifier`, async ({
         page,
         saveModal,
@@ -15,7 +22,6 @@ test.describe(`add remove identifier`, async () => {
         identifierSection,
     }) => {
         const cdeName = 'Prostatectomy Performed Date';
-        await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSettings();
         await settingMenu.idSourcesMenu().click();
         await idSourcesPage.addIdSource(
@@ -49,9 +55,7 @@ test.describe(`add remove identifier`, async () => {
 
     test(`cde remove identifier`, async ({ page, navigationMenu, identifierSection }) => {
         const cdeName = 'Malignant Neoplasm Surgical Margin Distance Value';
-        await navigationMenu.login(Accounts.ctepEditor);
         await navigationMenu.gotoCdeByName(cdeName);
-
         await identifierSection.removeIdentifierByIndex(1);
 
         await expect(page.locator('cde-identifiers')).not.toContainText('caDSR');
@@ -60,33 +64,83 @@ test.describe(`add remove identifier`, async () => {
 
     test(`form remove identifier`, async ({
         page,
-        searchSettingPage,
+        materialPage,
         saveModal,
-        settingMenu,
         navigationMenu,
         identifierSection,
+        historySection,
+        auditTab,
+        itemLogAuditPage,
     }) => {
+        const identifier1 = { source: 'PhenX', id: 'MyId1', version: 'MyVersion1' };
+        const identifier2 = { source: 'caDSR', id: 'MyId2' };
         const versionInfo: Version = {
-            newVersion: '',
+            newVersion: '2',
             changeNote: '[form remove identifier]',
         };
-
         const formName = `Vision Deficit Report`;
-        await navigationMenu.login(Accounts.nlm);
+        await navigationMenu.gotoFormByName(formName, true);
 
-        await navigationMenu.gotoSettings();
-        await settingMenu.searchSettingsMenu().click();
-        await searchSettingPage.setViewPublishAndDraft();
+        await test.step(`add identifiers, then save`, async () => {
+            await identifierSection.addIdentifier(identifier1);
+            await identifierSection.addIdentifier(identifier2);
 
-        await navigationMenu.gotoFormByName(formName);
-        await identifierSection.addIdentifier({ source: 'PhenX', id: 'MyId1', version: 'MyVersion1' });
-        await identifierSection.addIdentifier({ source: 'caDSR', id: 'MyId2' });
+            await identifierSection.removeIdentifierByIndex(1);
 
-        await identifierSection.removeIdentifierByIndex(1);
+            await saveModal.publishNewVersionByType('form', versionInfo);
+            await test.step(`Verify version number`, async () => {
+                await identifierSection.verifyVersion(versionInfo);
+            });
+        });
 
-        await saveModal.publishNewVersionByType('form', versionInfo);
+        await test.step(`verify identifiers`, async () => {
+            await expect(page.getByText('MyId1')).toBeHidden();
+            await expect(page.getByText('MyId2')).toBeVisible();
+        });
 
-        await expect(page.getByText('MyId1')).toBeHidden();
-        await expect(page.getByText('MyId2')).toBeVisible();
+        await test.step(`Verify history`, async () => {
+            await test.step(`Verify compare`, async () => {
+                await historySection.selectHistoryTableRowsToCompare(0, 1);
+                await expect(materialPage.matDialog().getByText(identifier2.id)).toBeVisible();
+                await materialPage.closeMatDialog();
+            });
+
+            const versionHistories = [versionInfo];
+            for (let [index, versionInfo] of versionHistories.reverse().entries()) {
+                const historyTableRow = historySection.historyTableRows().nth(index);
+                await expect(historyTableRow.locator(historySection.historyTableVersion())).toHaveText(
+                    versionInfo.newVersion
+                );
+                await expect(historyTableRow.locator(historySection.historyTableChangeNote())).toHaveText(
+                    versionInfo.changeNote
+                );
+            }
+
+            await test.step(`Verify prior element`, async () => {
+                const [newPage] = await Promise.all([
+                    page.context().waitForEvent('page'),
+                    historySection.historyTableRows().nth(1).locator('mat-icon').click(),
+                ]);
+                await expect(newPage.getByText(`this form is archived.`)).toBeVisible();
+                await newPage.getByText(`view the current version here`).click();
+                await expect(newPage).toHaveURL(`/formView?tinyId=${FormTinyIds[formName]}`);
+                await expect(newPage.getByText(identifier2.id).first()).toBeVisible();
+                await newPage.close();
+            });
+        });
+
+        await test.step(`Verify Form audit`, async () => {
+            await navigationMenu.gotoAudit();
+            await auditTab.formAuditLog().click();
+            await page.route(`/server/log/itemLog/form`, async route => {
+                await page.waitForTimeout(5000);
+                await route.continue();
+            });
+            await page.getByRole('button', { name: 'Search', exact: true }).click();
+            await materialPage.matSpinnerShowAndGone();
+            await itemLogAuditPage.expandLogRecordByName(formName);
+            const detailLocator = page.locator(`.example-element-detail`);
+            await expect(detailLocator.getByText(identifier2.id).first()).toBeVisible();
+        });
     });
 });
