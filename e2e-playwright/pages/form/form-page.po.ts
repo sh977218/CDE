@@ -11,6 +11,10 @@ export class FormPagePo {
         return this.page.getByTestId(`form-view-alert`);
     }
 
+    bundleInfo() {
+        return this.page.getByTestId(`form-view-bundle-info`);
+    }
+
     mergeToLink(): Locator {
         return this.page.getByTestId('form-view-mergeTo-link');
     }
