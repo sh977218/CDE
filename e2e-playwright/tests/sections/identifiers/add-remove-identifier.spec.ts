@@ -60,7 +60,7 @@ test.describe(`add remove identifier`, async () => {
 
     test(`form remove identifier`, async ({
         page,
-        materialPage,
+        searchSettingPage,
         saveModal,
         settingMenu,
         navigationMenu,
@@ -76,8 +76,7 @@ test.describe(`add remove identifier`, async () => {
 
         await navigationMenu.gotoSettings();
         await settingMenu.searchSettingsMenu().click();
-        await page.locator(`id=viewPublishAndDraftButton-input`).check();
-        await materialPage.checkAlert('Saved');
+        await searchSettingPage.setViewPublishAndDraft();
 
         await navigationMenu.gotoFormByName(formName);
         await identifierSection.addIdentifier({ source: 'PhenX', id: 'MyId1', version: 'MyVersion1' });

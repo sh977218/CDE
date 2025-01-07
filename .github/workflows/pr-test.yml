@@ -63,7 +63,7 @@ jobs:
       - run: ng build nativeRender --output-path dist/nativeRender
 
       - name: Run Playwright tests
-        run: NODE_ENV=test npm run playwright
+        run: NODE_ENV=test COVERAGE=true npm run playwright
 
       - name: Upload app log
         uses: actions/upload-artifact@v3

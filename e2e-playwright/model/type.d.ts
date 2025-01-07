@@ -36,7 +36,8 @@ export type ACCOUNT_KEYS =
     | 'boarduser'
     | 'boarduser1'
     | 'boarduser2'
-    | 'testuser';
+    | 'testuser'
+    | 'governanceUser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
 
@@ -109,18 +110,50 @@ export type Definition = {
     sources: string[];
 };
 
+export const enum DATATYPE {
+    TEXT = 'Text',
+    NUMBER = 'Number',
+    DATE = 'Date',
+    DYNAMIC_CODE_LIST = 'Dynamic Code List',
+}
+
 type DataTypeBase = {
-    datatype: string;
+    datatype: `${DATATYPE}`;
 };
 
-type DataTypeText = DataTypeBase & {
-    maximalLength?: number;
-    minimalLength?: number;
-    datatypeTextRegex?: string;
-    datatypeTextRule?: string;
+export const enum PRECISION {
+    YEAR = 'Year',
+    MONTH = 'Month',
+    DAY = 'Day',
+    HOUR = 'Hour',
+    MINUTE = 'Minute',
+    SECOND = 'Second',
+}
+
+export type DataTypeText = DataTypeBase & {
+    maximalLength: number;
+    minimalLength: number;
+    datatypeTextRegex: string;
+    datatypeTextRule: string;
 };
 
-export type DataType = DataTypeText;
+export type DataTypeNumber = DataTypeBase & {
+    minValue: number;
+    maxValue: number;
+    precision: string;
+    uom: string;
+};
+
+export type DataTypeDate = DataTypeBase & {
+    precision: `${PRECISION}`;
+};
+
+export type DataTypeDynamicCodeList = DataTypeBase & {
+    system: string;
+    code: string;
+};
+
+export type DataType = DataTypeText | DataTypeNumber | DataTypeDate | DataTypeDynamicCodeList;
 
 export type Concept = {
     conceptName: string;

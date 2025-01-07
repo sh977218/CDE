@@ -55,6 +55,7 @@ import { HistoryPo } from '../pages/shared/history.po';
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
+import { SearchSettingPagePo } from '../pages/setting/search-setting-page.po';
 import { AdminsPo } from '../pages/setting/my-organizations/admins.po';
 import { CuratorsPo } from '../pages/setting/my-organizations/curators.po';
 import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
@@ -144,6 +145,7 @@ const baseFixture = baseTest.extend<{
     manageOrganizationsPage: ManageOrganizationsPo;
     manageTagsPropertiesPage: ManageTagsPropertiesPo;
     profilePage: ProfilePagePo;
+    searchSettingPage: SearchSettingPagePo;
     usersPage: UsersPagePo;
     idSourcesPage: IdSourcesPagePo;
     articlePage: ArticlePagePo;
@@ -278,6 +280,9 @@ const baseFixture = baseTest.extend<{
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
+    },
+    searchSettingPage: async ({ page, materialPage }, use) => {
+        await use(new SearchSettingPagePo(page, materialPage));
     },
     usersPage: async ({ page, materialPage }, use) => {
         await use(new UsersPagePo(page, materialPage));

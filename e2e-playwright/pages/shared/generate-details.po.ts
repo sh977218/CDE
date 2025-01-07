@@ -3,6 +3,9 @@ import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
 import {
     Copyright,
+    DataType,
+    DataTypeDate,
+    DataTypeNumber,
     Definition,
     Designation,
     EditDefinitionConfig,

@@ -40,4 +40,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Pattern Transfer Retrieval Storage Data Research Activity Consortium or Network Or Professional Organization or Group Funding Mechanism FundingMechanismCode':
         'qPsdBFBSTRc',
     'Patient Visual Change Chief Complaint Indicator': 'q3bWgQN1wCq',
+    'Assessment date and time': 'b_uxkkx7WMZ',
 };
