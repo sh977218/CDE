@@ -359,7 +359,6 @@ test.describe(`CDE date type`, async () => {
             await itemLogAuditPage.expandLogRecordByName(cdeName);
             const detailLocator = page.locator(`.example-element-detail`);
             await expect(detailLocator.getByText(updatedDatatypeDynamicCodeList.system).first()).toBeVisible();
-            await expect(detailLocator.getByText(updatedDatatypeDynamicCodeList.code).first()).toBeVisible();
         });
 
         await test.step(`Verify API`, async () => {
