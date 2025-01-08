@@ -25,6 +25,11 @@ export class ArticlePagePo {
         return this.page.getByTestId(`article-edit-container`);
     }
 
+    /**
+     * resource is en exception case that it does input HTML code in the CK edit and save as HTML encoded value.
+     * @param text
+     * @param config
+     */
     async editArticle(text: string, config = { replace: false, html: false }) {
         const articleEditContainer = this.articleEditContainer();
         await this.page.waitForTimeout(2000); // give 2 seconds before click edit, this wait is not a 100% sure fix.
@@ -36,7 +41,12 @@ export class ArticlePagePo {
         if (config.replace) {
             await this.inlineEdit.clearTextField(articleEditContainer, config.html);
         }
-        await this.inlineEdit.typeTextField(articleEditContainer, text, config.html);
+
+        const textareaLocator = this.inlineEdit.ckEditTextarea(articleEditContainer, config.html);
+        await textareaLocator.fill(text);
+        await this.page.waitForTimeout(2000);
+
+        await this.inlineEdit.confirmButton(articleEditContainer).click();
         await this.materialPage.checkAlert(`Saved`);
     }
 }

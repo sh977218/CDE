@@ -1,4 +1,4 @@
-<div *ngIf="deCompletionService.suggestedCdes?.length > 0" id="accordionList" style="margin-top: 1rem">
+<div *ngIf="deCompletionService.suggestedCdes?.length > 0" id="accordionList" style="margin-top: 1rem" data-testid="possible-match-div">
     <h4>Possible Matches</h4>
     <div class="card mB" *ngFor="let de of deCompletionService.suggestedCdes;let index = index;">
         <div class="card-header">

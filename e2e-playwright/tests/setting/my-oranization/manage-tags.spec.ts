@@ -11,7 +11,7 @@ test(`Manage tags`, async ({
     generateDetailsSection,
 }) => {
     const orgName = 'TEST';
-    const tag = 'canYouSeeThis' + new Date().toISOString();
+    const tag = 'canYouSeeThis' + new Date().valueOf();
     const cdeName = 'Distance from Closest Margin Value';
 
     await test.step(`Login`, async () => {

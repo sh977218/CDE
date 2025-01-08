@@ -35,6 +35,10 @@ export class CreateEltPo {
         return this.page.locator(`[data-testid="validation-error"]`);
     }
 
+    possibleMatchDiv() {
+        return this.page.getByTestId('possible-match-div');
+    }
+
     /**
      *
      * @param eltName designation

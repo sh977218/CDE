@@ -1,4 +1,4 @@
-{
+module.exports = {
   "root": true,
   "parser": "@typescript-eslint/parser",
   "overrides": [
@@ -10,6 +10,7 @@
         "project": [
           "tsconfigApp.json"
         ],
+        tsconfigRootDir: __dirname,
         "sourceType": "module"
       },
       "extends": [
@@ -63,6 +64,7 @@
         "project": [
           "tsconfigApp.json"
         ],
+        tsconfigRootDir: __dirname,
         "sourceType": "module"
       },
       "extends": [
@@ -116,7 +118,8 @@
       "parserOptions": {
         "project": [
           "tsconfig.playwright.json"
-        ]
+        ],
+        tsconfigRootDir: __dirname,
       },
       "extends": [
         "airbnb-typescript/base",

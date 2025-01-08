@@ -126,6 +126,13 @@ export class GenerateDetailsPo {
         return this.page.getByTestId('copyright-checkbox');
     }
 
+    editStewardOrg = async (newStewardOrg: string) => {
+        const stewardOrgLocator = this.stewardOrg();
+        await this.inlineEdit.editIcon(stewardOrgLocator).click();
+        await this.inlineEdit.selectField(stewardOrgLocator).selectOption(newStewardOrg);
+        await this.inlineEdit.confirmButton(stewardOrgLocator).click();
+    };
+
     editRegistrationStatusButton() {
         return this.page.getByTestId('edit-registration-status-button');
     }
@@ -319,9 +326,6 @@ export class GenerateDetailsPo {
         await this.page.waitForTimeout(2000); // give 2 seconds before click edit, this wait is not a 100% sure fix.
         await this.inlineEdit.editIcon(definitionRow).click();
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
-        if (config.html) {
-            await this.inlineEdit.richTextButton(definitionRow).click();
-        }
         if (config.replace) {
             await this.inlineEdit.clearTextField(definitionRow, config.html);
         }

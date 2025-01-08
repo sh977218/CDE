@@ -1,11 +1,11 @@
 <div>
     <div *ngIf="!editMode">
-        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button" role="button" tabindex="0" (click)="edit()">edit</mat-icon>
+        <mat-icon *ngIf="isAllowed" title="Edit" class="fake-button" data-testid="inline-edit-icon"  role="button" tabindex="0" (click)="edit()">edit</mat-icon>
         <span [matTooltip]="cdeTooltip" [matTooltipClass]="cdeTooltipClass"
               [matTooltipPosition]="cdeTooltipPosition">{{value}}</span>
     </div>
     <div *ngIf="editMode">
-        <select class="form-control" [(ngModel)]="_value" name="inlineSelect">
+        <select class="form-control" [(ngModel)]="_value" name="inlineSelect" data-testid="inline-edit-select">
             <option *ngFor="let selectOption of selectOptions;" [selected]="selectOption === _value">
                 {{selectOption}}
             </option>

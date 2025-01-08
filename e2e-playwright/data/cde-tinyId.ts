@@ -43,4 +43,5 @@ export const CdeTinyIds: Record<string, string> = {
     'Assessment date and time': 'b_uxkkx7WMZ',
     'Adverse Event Related Radiation Therapy Ind-2': 'j1rmcA0hMcJ',
     'Left Lymph Node Positive Total Count': 'xNugcDxoqKW',
+    'Patient Tissue Specimen Colorectal Research Consent Ind-2': '_Cf53cpvmY4',
 };

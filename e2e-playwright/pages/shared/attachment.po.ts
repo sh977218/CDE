@@ -13,6 +13,10 @@ export class AttachmentPo {
         this.inlineEdit = inlineEdit;
     }
 
+    attachmentNotAvailableMessage() {
+        return this.page.getByTestId('attachment-not-available-message');
+    }
+
     uploadMoreFile() {
         return this.page.locator(`[for="fileToUpload"]`);
     }

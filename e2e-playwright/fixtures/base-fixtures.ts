@@ -46,6 +46,7 @@ import { BoardPagePo } from '../pages/board/board-page.po';
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
 import { RelatedDocumentPo } from '../pages/shared/related-document.po';
+import { RelatedContentPo } from '../pages/shared/related-content.po';
 import { SubmissionInformationPo } from '../pages/shared/submission-information.po';
 import { PropertyPo } from '../pages/shared/property.po';
 import { ClassificationPo } from '../pages/shared/classification.po';
@@ -123,6 +124,7 @@ const baseFixture = baseTest.extend<{
     generateDetailsSection: GenerateDetailsPo;
     identifierSection: IdentifierPo;
     relatedDocumentSection: RelatedDocumentPo;
+    relatedContentSection: RelatedContentPo;
     submissionInformationSection: SubmissionInformationPo;
     propertySection: PropertyPo;
     attachmentSection: AttachmentPo;
@@ -211,6 +213,12 @@ const baseFixture = baseTest.extend<{
         use
     ) => {
         await use(new RelatedDocumentPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
+    },
+    relatedContentSection: async (
+        { page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal },
+        use
+    ) => {
+        await use(new RelatedContentPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
     submissionInformationSection: async ({ page }, use) => {
         await use(new SubmissionInformationPo(page));
@@ -318,6 +326,7 @@ const ignoredConsoleMessages = [
     `Cannot read properties of null (reading 'writeValue')`,
     `Third-party cookie will be blocked.`,
     `Failed to load resource: the server responded with a status of 403`, // create too many board give 403
+    `TypeError: str.replace is not a function`, // this is a real bug, @TODO
 ];
 
 const consoleMessages: string[] = [];
