@@ -6,7 +6,6 @@ import { button, tag } from '../../pages/util';
 test.describe.configure({ retries: 0 }); // no retries for edits
 test.use({ video: 'on', trace: 'on' });
 test.describe(`Submission Reuse`, async () => {
-    test.fixme();
     test.beforeEach(async ({ page, navigationMenu, submissionManagePage }) => {
         await navigationMenu.login(Accounts.nlm);
         await navigationMenu.gotoSubmissions();

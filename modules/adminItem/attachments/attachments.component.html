@@ -1,6 +1,6 @@
 <ng-container *ngIf="elt">
     <h3>Attachments</h3>
-    <div *ngIf="elt.isDraft; else displayAttachments" style="font-size: 20px; line-height: 1">
+    <div *ngIf="elt.isDraft; else displayAttachments" style="font-size: 20px; line-height: 1" data-testid="attachment-not-available-message">
         Attachments are not available in Drafts. Click the Draft slider above to view the current Published version.
     </div>
 </ng-container>

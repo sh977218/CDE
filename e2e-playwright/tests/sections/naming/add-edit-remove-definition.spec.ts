@@ -7,9 +7,9 @@ import { Accounts } from '../../../data/user';
 test.describe.configure({ retries: 0, mode: 'serial' });
 test.describe(`CDE definition`, async () => {
     const cdeName = 'Adverse Event Related Radiation Therapy Ind-2';
-    const rightNow = new Date().toISOString();
+    const rightNow = new Date().valueOf();
     const updatedDefinition: Definition = {
-        definition: `updated definition on ${rightNow}`,
+        definition: `<strong>updated definition on ${rightNow}</strong>`,
         sources: [],
         tags: [],
     };
@@ -115,7 +115,7 @@ test.describe(`CDE definition`, async () => {
         });
     });
 
-    test(`edit definition`, async ({
+    test(`edit definition with html format`, async ({
         request,
         page,
         materialPage,
@@ -132,7 +132,7 @@ test.describe(`CDE definition`, async () => {
             changeNote: '[edit definition]',
         };
         await test.step(`edit definition, then save`, async () => {
-            await generateDetailsSection.editDefinitionByIndex(0, updatedDefinition);
+            await generateDetailsSection.editDefinitionByIndex(0, updatedDefinition, { replace: true, html: true });
             await saveModal.publishNewVersionByType('cde', editDefinitionVersionInfo);
 
             await test.step(`Verify version number`, async () => {
@@ -167,7 +167,10 @@ test.describe(`CDE definition`, async () => {
                 await newPage.getByText(`view the current version here`).click();
                 await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
                 await newPage.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
-                await expect(newPage.getByText(updatedDefinition.definition).first()).toBeVisible();
+                const strippedDefinition = updatedDefinition.definition
+                    .replace('<strong>', '')
+                    .replace('</strong>', '');
+                await expect(newPage.getByText(strippedDefinition).first()).toBeVisible();
                 await newPage.close();
             });
         });

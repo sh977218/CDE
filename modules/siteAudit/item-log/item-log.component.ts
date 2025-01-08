@@ -135,8 +135,7 @@ export class ItemLogComponent implements AfterViewInit {
                             try {
                                 makeHumanReadable(d);
                             } catch (e) {
-                                console.info(`error occurred in makeHumanReadable(d), with exception: ${e}`);
-                                console.info(`d ${d}`);
+                                console.info(`error occurred in makeHumanReadable(d), with exception: ${e} \n d: ${d}`);
                             }
                         });
                     }

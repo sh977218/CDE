@@ -7,7 +7,7 @@ import { Accounts } from '../../../data/user';
 test.describe.configure({ retries: 0, mode: 'serial' });
 test.describe(`CDE designation`, async () => {
     const cdeName = 'Left Lymph Node Positive Total Count';
-    const rightNow = new Date().toISOString();
+    const rightNow = new Date().valueOf();
 
     test.beforeEach(async ({ page, navigationMenu }) => {
         await test.step(`Navigate to CDE and login`, async () => {

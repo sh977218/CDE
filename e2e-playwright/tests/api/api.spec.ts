@@ -163,7 +163,23 @@ test.describe(`API testing`, async () => {
     });
 
     test(`empty form list`, async ({ page }) => {
-        await page.goto('/server/form/list/xyz');
+        await page.goto('http://localhost:3001/server/form/list/xyz');
         await expect(page.getByText('[]')).toBeVisible();
+    });
+
+    test(`check schemas`, async ({ page }) => {
+        await page.goto('http://localhost:3001/de/schema');
+        await expect(page.getByText(`{"title":"DataElement"`)).toBeVisible();
+
+        await page.goto('http://localhost:3001/schema/form');
+        await expect(page.getByText(`{"title":"Form"`)).toBeVisible();
+
+        await page.goto('http://localhost:3001/schema/cde?type=xml');
+        await expect(page.getByText(`<xs:schema`)).toBeVisible();
+    });
+
+    test(`site status`, async ({ page }) => {
+        await page.goto('/server/system/status/cde');
+        await expect(page.getByText(`ALL SERVICES UP`)).toBeVisible();
     });
 });
