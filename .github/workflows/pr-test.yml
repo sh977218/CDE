@@ -117,36 +117,36 @@ jobs:
         run: |
           echo "# Deployed coverage report to https://commondataelement.blob.core.windows.net/coverage/${{github.event.pull_request.number}}/lcov-report/index.html" >> $GITHUB_STEP_SUMMARY
 
-      - name: Setup JDK
-        if: always()
-        uses: actions/setup-java@v4.2.1
-        with:
-          distribution: 'microsoft'
-          java-version: '21'
-      - name: Create previous-allure-report folder
-        if: always()
-        run: mkdir previous-allure-report
-      - name: Download previous allure report from Azure
-        if: always()
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage blob download-batch --account-name commondataelement -s allure-report -d previous-allure-report
-      - name: Copy historical data into current run
-        if: always()
-        run: cp previous-allure-report/history allure-results/history -r
-      - name: Generate allure report
-        if: always()
-        run: npx allure generate allure-results
-      - name: Upload allure report to Azure
-        if: always()
-        uses: azure/cli@v2
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az storage blob upload-batch --account-name commondataelement -s ./allure-report -d allure-report --overwrite
-      - name: populate allure report to job summary
-        if: always()
-        run: |
-          echo "# Deployed allure report to https://commondataelement.blob.core.windows.net/allure-report/index.html" >> $GITHUB_STEP_SUMMARY
+#      - name: Setup JDK
+#        if: always()
+#        uses: actions/setup-java@v4.2.1
+#        with:
+#          distribution: 'microsoft'
+#          java-version: '21'
+#      - name: Create previous-allure-report folder
+#        if: always()
+#        run: mkdir previous-allure-report
+#      - name: Download previous allure report from Azure
+#        if: always()
+#        uses: azure/cli@v2
+#        with:
+#          azcliversion: latest
+#          inlineScript: |
+#            az storage blob download-batch --account-name commondataelement -s allure-report -d previous-allure-report
+#      - name: Copy historical data into current run
+#        if: always()
+#        run: cp previous-allure-report/history allure-results/history -r
+#      - name: Generate allure report
+#        if: always()
+#        run: npx allure generate allure-results
+#      - name: Upload allure report to Azure
+#        if: always()
+#        uses: azure/cli@v2
+#        with:
+#          azcliversion: latest
+#          inlineScript: |
+#            az storage blob upload-batch --account-name commondataelement -s ./allure-report -d allure-report --overwrite
+#      - name: populate allure report to job summary
+#        if: always()
+#        run: |
+#          echo "# Deployed allure report to https://commondataelement.blob.core.windows.net/allure-report/index.html" >> $GITHUB_STEP_SUMMARY

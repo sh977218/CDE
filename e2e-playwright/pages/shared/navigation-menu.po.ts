@@ -118,6 +118,20 @@ export class NavigationMenuPo {
         await this.page.getByRole('heading', { name: 'Create Data Element' }).waitFor();
     }
 
+    /**
+     * Description - This method search CDE/From name with double quotes, make sure login first
+     * @param eltName
+     * @param type - 'CDE' or 'Form'
+     * @param byPassSearch - Go to the elt directly by URL, which by pass search CDE/Form name or tinyId, due to data visibility for current logged-in user's permission
+     */
+    async gotoEltByName(eltName: string, type = 'cde', byPassSearch = false) {
+        if (type.toLowerCase() === 'cde') {
+            await this.gotoCdeByName(eltName, byPassSearch);
+        } else {
+            await this.gotoFormByName(eltName, byPassSearch);
+        }
+    }
+
     async searchCdeByName(cdeName: string) {
         await this.gotoCdeSearch();
         await this.searchPage.searchWithString(`"${cdeName}"`, 1);
@@ -126,7 +140,7 @@ export class NavigationMenuPo {
     /**
      * Description - This method search CDE name with double quotes, make sure login first
      * @param cdeName
-     * @param byPassSearch - Go to form directly by URL, which by pass search CDE name or tinyId
+     * @param byPassSearch - Go to form directly by URL, which by pass search CDE name or tinyId, due to data visibility for current logged-in user's permission
      */
     async gotoCdeByName(cdeName: string, byPassSearch = false) {
         const tinyId = CdeTinyIds[cdeName];
@@ -165,7 +179,7 @@ export class NavigationMenuPo {
     /**
      * Description - This method search Form name with double quote, make sure login first
      * @param formName
-     * @param byPassSearch - Go to form directly by URL, which by pass search form name or tinyId
+     * @param byPassSearch - Go to form directly by URL, which by pass search form name or tinyId, due to data visibility for current logged-in user's permission
      */
     async gotoFormByName(formName: string, byPassSearch = false) {
         const tinyId = FormTinyIds[formName];

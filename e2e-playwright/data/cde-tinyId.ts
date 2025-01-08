@@ -41,4 +41,6 @@ export const CdeTinyIds: Record<string, string> = {
         'qPsdBFBSTRc',
     'Patient Visual Change Chief Complaint Indicator': 'q3bWgQN1wCq',
     'Assessment date and time': 'b_uxkkx7WMZ',
+    'Adverse Event Related Radiation Therapy Ind-2': 'j1rmcA0hMcJ',
+    'Left Lymph Node Positive Total Count': 'xNugcDxoqKW',
 };

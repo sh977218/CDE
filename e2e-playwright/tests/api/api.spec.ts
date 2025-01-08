@@ -156,4 +156,14 @@ test.describe(`API testing`, async () => {
             await expect(page.getByText('LA6270-8')).toBeHidden();
         }
     });
+
+    test(`empty cde list`, async ({ page }) => {
+        await page.goto('/server/de/list/xyz');
+        await expect(page.getByText('[]')).toBeVisible();
+    });
+
+    test(`empty form list`, async ({ page }) => {
+        await page.goto('/server/form/list/xyz');
+        await expect(page.getByText('[]')).toBeVisible();
+    });
 });

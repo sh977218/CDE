@@ -37,8 +37,12 @@ export class GenerateDetailsPo {
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
     }
 
-    get viewCount() {
+    viewCount() {
         return this.page.getByTestId('views-count');
+    }
+
+    stewardOrg() {
+        return this.page.getByTestId('steward-org');
     }
 
     // copyright locators
