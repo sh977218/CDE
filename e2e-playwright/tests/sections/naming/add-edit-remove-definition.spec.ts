@@ -13,6 +13,9 @@ test.describe(`CDE definition`, async () => {
         sources: [],
         tags: [],
     };
+
+    const strippedUpdatedDefinition = updatedDefinition.definition.replace('<strong>', '').replace('</strong>', '');
+
     test.beforeEach(async ({ page, navigationMenu }) => {
         await test.step(`Navigate to CDE and login`, async () => {
             await navigationMenu.gotoCdeByName(cdeName);
@@ -167,10 +170,7 @@ test.describe(`CDE definition`, async () => {
                 await newPage.getByText(`view the current version here`).click();
                 await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
                 await newPage.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
-                const strippedDefinition = updatedDefinition.definition
-                    .replace('<strong>', '')
-                    .replace('</strong>', '');
-                await expect(newPage.getByText(strippedDefinition).first()).toBeVisible();
+                await expect(newPage.getByText(strippedUpdatedDefinition).first()).toBeVisible();
                 await newPage.close();
             });
         });
@@ -224,7 +224,7 @@ test.describe(`CDE definition`, async () => {
         };
 
         await test.step(`delete definition, then save`, async () => {
-            await generateDetailsSection.deleteDefinitionByDefinition(updatedDefinition.definition);
+            await generateDetailsSection.deleteDefinitionByDefinition(strippedUpdatedDefinition);
             await saveModal.publishNewVersionByType('cde', deleteDefinitionVersionInfo);
 
             await test.step(`Verify version number`, async () => {

@@ -63,10 +63,10 @@ test.describe(`CDE Origin`, async () => {
                     historySection.historyTableRows().nth(1).locator('mat-icon').click(),
                 ]);
                 await expect(newPage.getByText(`this data element is archived.`)).toBeVisible();
+                await expect(newPage.getByText(updatedOrigin)).toBeHidden();
                 await newPage.getByText(`view the current version here`).click();
                 await expect(newPage).toHaveURL(`/deView?tinyId=${CdeTinyIds[cdeName]}`);
                 await newPage.getByRole('heading', { name: 'CDE Details' }).scrollIntoViewIfNeeded();
-                await expect(newPage.getByText(updatedOrigin)).toBeHidden();
                 await newPage.close();
             });
         });

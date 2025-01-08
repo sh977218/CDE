@@ -27,7 +27,7 @@ export class InlineEditPo {
      * @param html - Depends on Plain or Rich text, the textarea locator differs based on this flag
      * @private
      */
-    private ckEditTextarea(containerLocator: Locator, html = false) {
+    ckEditTextarea(containerLocator: Locator, html = false) {
         if (html) {
             return containerLocator.getByRole(`textbox`);
         } else {
