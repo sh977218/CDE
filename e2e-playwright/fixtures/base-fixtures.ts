@@ -62,6 +62,7 @@ import { CuratorsPo } from '../pages/setting/my-organizations/curators.po';
 import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
 import { ManageTagsPropertiesPo } from '../pages/setting/my-organizations/manage-tags-properties.po';
+import { StewardTransferPo } from '../pages/setting/my-organizations/steward-transfer.po';
 import { UsersPagePo } from '../pages/setting/users-page.po';
 import { IdSourcesPagePo } from '../pages/setting/id-sources-page.po';
 import { ArticlePagePo } from '../pages/setting/article-page.po';
@@ -146,6 +147,7 @@ const baseFixture = baseTest.extend<{
     editorsPage: EditorsPo;
     manageOrganizationsPage: ManageOrganizationsPo;
     manageTagsPropertiesPage: ManageTagsPropertiesPo;
+    stewardTransferPage: StewardTransferPo;
     profilePage: ProfilePagePo;
     searchSettingPage: SearchSettingPagePo;
     usersPage: UsersPagePo;
@@ -285,6 +287,9 @@ const baseFixture = baseTest.extend<{
     },
     manageTagsPropertiesPage: async ({ page, materialPage }, use) => {
         await use(new ManageTagsPropertiesPo(page, materialPage));
+    },
+    stewardTransferPage: async ({ page, materialPage }, use) => {
+        await use(new StewardTransferPo(page, materialPage));
     },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));

@@ -37,7 +37,8 @@ export type ACCOUNT_KEYS =
     | 'boarduser1'
     | 'boarduser2'
     | 'testuser'
-    | 'governanceUser';
+    | 'governanceUser'
+    | 'transferStewardUser';
 
 export type ReorderDirection = 'Move up' | 'Move down' | 'Move to top' | 'Move to bottom';
 

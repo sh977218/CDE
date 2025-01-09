@@ -2,6 +2,9 @@ import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
+/**
+ * We shall use `request` instead of `page` in API testing.
+ */
 test.describe(`API testing`, async () => {
     test.describe(`Form API`, async () => {
         test(`form edit by tinyId version`, async ({ request }) => {
@@ -163,7 +166,7 @@ test.describe(`API testing`, async () => {
     });
 
     test(`empty form list`, async ({ page }) => {
-        await page.goto('http://localhost:3001/server/form/list/xyz');
+        await page.goto('/server/form/list/xyz');
         await expect(page.getByText('[]')).toBeVisible();
     });
 
@@ -181,5 +184,48 @@ test.describe(`API testing`, async () => {
     test(`site status`, async ({ page }) => {
         await page.goto('/server/system/status/cde');
         await expect(page.getByText(`ALL SERVICES UP`)).toBeVisible();
+    });
+
+    test(`value set page`, async ({ page }) => {
+        await page.goto('/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?page=2');
+        await expect(page.getByText(`"page":2`)).toBeVisible();
+    });
+
+    test(`value set term`, async ({ page }) => {
+        await page.goto(
+            '/server/uts/searchValueSet/2.16.840.1.113883.3.526.2.39?term=azilsartan medoxomil 40 MG Oral Tablet'
+        );
+        await expect(page.getByText(`"records":1`)).toBeVisible();
+        await expect(page.getByText(`"displayname":"azilsartan medoxomil 40 MG Oral Tablet"`)).toBeVisible();
+    });
+
+    test(`need login`, async ({ request }) => {
+        const endpoints = ['/server/uts/umlsPtSource/111/LNC', '/server/uts/umlsAtomsBridge/111/LNC'];
+        for (const endpoint of endpoints) {
+            const response = await request.get(endpoint);
+            expect(response.status()).toBe(403);
+        }
+    });
+    test(`wrong source`, async ({ request }) => {
+        const endpoints = [
+            '/server/uts/umlsPtSource/111/WRONG',
+            '/server/uts/umlsAtomsBridge/111/WRONG',
+            '/server/uts/umlsCuiFromSrc/111/WRONG',
+        ];
+        for (const endpoint of endpoints) {
+            const response = await request.get(endpoint);
+            const body = await response.text();
+            expect(body).toBe('Source cannot be looked up, use UTS instead.');
+        }
+    });
+
+    test(`transfer steward error`, async ({ request }) => {
+        const response = await request.post('/server/orgManagement/transferSteward', {
+            data: JSON.stringify({
+                from: 'NINDS',
+                to: 'ACRIN',
+            }),
+        });
+        expect(response.status()).toBe(403);
     });
 });
