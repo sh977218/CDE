@@ -1,7 +1,7 @@
 <div class="container-fluid">
-    <div *ngIf="missingCdes.length > 0" class="alert alert-warning" role="alert">
+    <div *ngIf="missingCdes.length > 0" class="alert alert-warning" role="alert" data-testid="form-description-warning-alert-div">
         <mat-icon>warning</mat-icon>
-        The following CDEs are part of a score but are missing from this form:
+        <span data-testid="form-description-warning-alert-message">The following CDEs are part of a score but are missing from this form:</span>
         <ul class="list-inline">
             <li *ngFor="let missCde of missingCdes;let i = index;">
                 <a href="/deView?tinyId={{missCde}}" target="_blank">CDE {{i + 1}},id: {{missCde}}</a>
@@ -27,6 +27,7 @@
         <div>
             <div *ngIf="canEdit()" class="descriptionToolbox" [style.top]="topSpacing + 'px'">
                 <button role="button" id="addSectionTop" class="toolButton formDescriptionTool"
+                        data-testid="add-section-button"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref:'section'}" [treeDragEnabled]="true"
                         style="width: 75px;">
@@ -43,6 +44,7 @@
                     <span class="toolQuestion"></span>
                 </button>
                 <button role="button" id="startAddingForms" class="toolButton formDescriptionTool"
+                        data-testid="add-form-button"
                         (dragstart)="dragActive = true" (dragend)="dragActive = false"
                         [treeDrag]="{ref: 'form'}" [treeDragEnabled]="true"
                         style="width: 68px;">

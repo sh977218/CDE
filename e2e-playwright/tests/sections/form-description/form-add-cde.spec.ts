@@ -4,7 +4,6 @@ import { Accounts } from '../../../data/user';
 import { Version } from '../../../model/type';
 
 test.describe.configure({ retries: 0 });
-test.use({ video: 'on', trace: 'on' });
 test(`From add cde`, async ({ saveModal, navigationMenu, previewSection, formDescription }) => {
     test.slow();
     const formName = `formAddCdeTest`;

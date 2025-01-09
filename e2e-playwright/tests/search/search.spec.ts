@@ -148,37 +148,59 @@ test.describe(`Search`, async () => {
             await searchPage.searchSubmitButton().click();
             await expect(searchPage.searchResultInfoBar()).toHaveText('13 results. Sorted by relevance.');
         });
-        test(`search by date range`, async ({
-            page,
-            materialPage,
-            navigationMenu,
-            searchPage,
-            customizeTableModal,
-        }) => {
-            await navigationMenu.gotoCdeSearch();
-            await searchPage.searchQueryInput().fill(`created:<2015-05-14`);
-            await searchPage.searchSubmitButton().click();
-            expect(await searchPage.numberOfResults()).toBeGreaterThan(850);
+        test.describe(`search by date range`, async () => {
+            test(`CDE`, async ({ navigationMenu, searchPage }) => {
+                await navigationMenu.gotoCdeSearch();
+                await searchPage.searchQueryInput().fill(`created:<2015-05-14`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBeGreaterThan(850);
 
-            await searchPage.searchQueryInput().fill(`created:<1960-05-13`);
-            await searchPage.searchSubmitButton().click();
-            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+                await searchPage.searchQueryInput().fill(`created:<1960-05-13`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
 
-            await searchPage.searchQueryInput().fill(`updated:<2015-09-21`);
-            await searchPage.searchSubmitButton().click();
-            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+                await searchPage.searchQueryInput().fill(`updated:<2015-09-21`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
 
-            await searchPage.searchQueryInput().fill(`updated:<2015-09-22`);
-            await searchPage.searchSubmitButton().click();
-            expect(await searchPage.numberOfResults()).toBeGreaterThan(9790);
+                await searchPage.searchQueryInput().fill(`updated:<2015-09-22`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBeGreaterThan(9790);
 
-            await searchPage.searchQueryInput().fill(`imported:<2014-12-10`);
-            await searchPage.searchSubmitButton().click();
-            await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+                await searchPage.searchQueryInput().fill(`imported:<2014-12-10`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
 
-            await searchPage.searchQueryInput().fill(`imported:<2014-12-11`);
-            await searchPage.searchSubmitButton().click();
-            expect(await searchPage.numberOfResults()).toBeGreaterThan(330);
+                await searchPage.searchQueryInput().fill(`imported:<2014-12-11`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBeGreaterThan(330);
+            });
+            test(`Form`, async ({ navigationMenu, searchPage }) => {
+                await navigationMenu.gotoFormSearch();
+                await searchPage.searchQueryInput().fill(`created:<2015-01-01 AND created:>1980-01-01`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBe(1);
+
+                await searchPage.searchQueryInput().fill(`created:<1960-01-01`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+                await searchPage.searchQueryInput().fill(`updated:<2015-01-01`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+                await searchPage.searchQueryInput().fill(`updated:<2016-01-01`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBe(4);
+
+                await searchPage.searchQueryInput().fill(`imported:<2015-01-01`);
+                await searchPage.searchSubmitButton().click();
+                await expect(searchPage.noResultFoundMessage).toHaveText('No results were found.');
+
+                await searchPage.searchQueryInput().fill(`imported:<2016-01-01`);
+                await searchPage.searchSubmitButton().click();
+                expect(await searchPage.numberOfResults()).toBe(2);
+            });
         });
 
         test(`search number of PVs`, async ({

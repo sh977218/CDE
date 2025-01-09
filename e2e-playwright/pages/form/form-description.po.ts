@@ -14,8 +14,23 @@ export class FormDescriptionPo {
         this.inlineEdit = inlineEdit;
     }
 
+    warningAlertDiv() {
+        return this.page.getByTestId('form-description-warning-alert-div');
+    }
+    warningAlertMessage() {
+        return this.page.getByTestId('form-description-warning-alert-message');
+    }
+
     addQuestionButton() {
         return this.page.getByTestId(`add-question-button`);
+    }
+
+    addSectionButton() {
+        return this.page.getByTestId(`add-section-button`);
+    }
+
+    addFormButton() {
+        return this.page.getByTestId(`add-form-button`);
     }
 
     questionContainer(id: string) {
@@ -23,7 +38,25 @@ export class FormDescriptionPo {
     }
 
     questionLabel() {
-        return this.page.locator(`.questionLabel`);
+        return this.page.getByTestId(`question-label`);
+    }
+
+    questionRule() {
+        return this.page.getByTestId(`question-rule`);
+    }
+    questionPartOf() {
+        return this.page.getByTestId(`question-part-of`);
+    }
+
+    sectionDiv() {
+        return this.page.locator('cde-form-description-section');
+    }
+    questionDiv() {
+        return this.page.locator('cde-form-description-question');
+    }
+
+    sectionLabelEdit() {
+        return this.page.getByTestId(`section-label-edit`);
     }
 
     questionDatatype() {
@@ -56,6 +89,31 @@ export class FormDescriptionPo {
 
     async saveFormEdit() {
         await this.page.locator(`//button[contains(.,'Back to Preview')]`).click();
+    }
+
+    async addSection(title: string, repeat = '') {
+        const dropLocator = this.page.locator(`tree-node-drop-slot`).first();
+        await this.addSectionButton().dragTo(dropLocator);
+        await this.materialPage.checkAlert(`Saved`);
+        const sectionLocator = this.sectionDiv().first();
+        await sectionLocator.locator('.sectionLabel').click();
+        await this.inlineEdit.editInlineEdit(sectionLocator.locator(this.sectionLabelEdit()), title);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async addQuestionToSection(cdeName: string, sectionIndex = 0) {
+        const dropLocator = this.sectionDiv().nth(sectionIndex);
+        await this.addQuestionButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
+        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage
+            .matDialog()
+            .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
+            .click();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert(`Saved`);
     }
 
     async questionEditAddUom(id: string, type: string, text: string) {

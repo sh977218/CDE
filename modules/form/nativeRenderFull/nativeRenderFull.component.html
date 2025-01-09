@@ -48,7 +48,7 @@
         We do not have permission to display this form due to copyright/licensing restrictions. For more information,
         see the Copyright section below.
     </div>
-    <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" style="max-width: 600px; margin: auto">
+    <p *ngIf="!elt.noRenderAllowed && !(elt.formElements.length > 0)" style="max-width: 600px; margin: auto" data-testid="form-empty-cde-message">
         This form is empty. Form Editors can add content to this form by navigating
         to "Form Description" on the left side of the screen.
     </p>

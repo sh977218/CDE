@@ -65,7 +65,7 @@
             </div>
         </div>
         <div *ngIf="canEditSection()">
-            <div class="section_label">
+            <div class="section_label" data-testid="section-label-edit">
                 <span style="font-weight: bold">Label:</span>
                 <cde-inline-edit [(model)]="section.label" [isAllowed]="canEditSection()"
                                  (modelChange)="eltChange.emit()"></cde-inline-edit>
