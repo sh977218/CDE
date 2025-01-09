@@ -26,6 +26,9 @@ export class SettingMenuPo {
     manageProperties() {
         return this.page.getByTestId('manage-properties');
     }
+    stewardTransfer() {
+        return this.page.getByTestId('steward-transfer');
+    }
 
     manageTags() {
         return this.page.getByTestId('manage-tags');

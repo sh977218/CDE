@@ -18,7 +18,7 @@
         </ng-container>
         <ng-container *ngIf="elt.registrationState.administrativeNote">
             <dt>Administrative Note:</dt>
-            <dd>{{elt.registrationState.administrativeNote}}</dd>
+            <dd data-testid="administrative-note">{{elt.registrationState.administrativeNote}}</dd>
         </ng-container>
         <ng-container *ngIf="elt.registrationState.unresolvedIssue">
             <dt>Unresolved Issue:</dt>
