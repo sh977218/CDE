@@ -275,7 +275,7 @@ export class FormDescriptionPo {
             await this.materialPage.checkAlert(`Saved`);
         }
         await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
-        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.matDialog().waitFor({ state: 'detached' });
     }
 
     async addNewDesignationByQuestionId(questionId: string, newDesignation: string) {
