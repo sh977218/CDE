@@ -2,6 +2,9 @@ import { expect } from '@playwright/test';
 import { test } from '../../fixtures/base-fixtures';
 import { Accounts } from '../../data/user';
 
+/**
+ * We shall use `request` instead of `page` in API testing.
+ */
 test.describe(`API testing`, async () => {
     test.describe(`Form API`, async () => {
         test(`form edit by tinyId version`, async ({ request }) => {
@@ -168,13 +171,13 @@ test.describe(`API testing`, async () => {
     });
 
     test(`check schemas`, async ({ page }) => {
-        await page.goto('/de/schema');
+        await page.goto('http://localhost:3001/de/schema');
         await expect(page.getByText(`{"title":"DataElement"`)).toBeVisible();
 
-        await page.goto('/schema/form');
+        await page.goto('http://localhost:3001/schema/form');
         await expect(page.getByText(`{"title":"Form"`)).toBeVisible();
 
-        await page.goto('/schema/cde?type=xml');
+        await page.goto('http://localhost:3001/schema/cde?type=xml');
         await expect(page.getByText(`<xs:schema`)).toBeVisible();
     });
 
