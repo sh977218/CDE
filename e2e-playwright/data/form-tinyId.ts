@@ -43,4 +43,9 @@ export const FormTinyIds: Record<string, string> = {
     'Skip Logic Date Test Form': '71t5G120U',
     'Skip Logic Text Test Form': 'mJjMCG30U',
     'Skip Logic Value List Test Form': 'mJVPzQ2C8',
+    'Skip Logic No Label Form': 'myMbx38V7',
+    'Study Discontinuation/Completion': 'myWQUJrHFg',
+    'Question Repeat': 'XkCtybYXB',
+    'Multi SubQuestion': 'mk4r3nH77',
+    'SDC Adrenal': 'XySUBn_NZ',
 };

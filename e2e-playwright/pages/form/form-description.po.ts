@@ -26,6 +26,10 @@ export class FormDescriptionPo {
         return this.page.getByTestId('form-description-warning-alert-message');
     }
 
+    questionUsedBySkipLogicAlertMessage() {
+        return this.page.getByTestId('question-used-by-skip-logic-alert-message');
+    }
+
     addQuestionButton() {
         return this.page.getByTestId(`add-question-button`);
     }
@@ -162,10 +166,13 @@ export class FormDescriptionPo {
      * @param questionLocator
      * @param index zero based index, -1 to select 'No Label'
      */
-    async selectQuestionLabelByIndex(questionLocatorId: string, index: number) {
+    async selectQuestionLabelByIndex(questionLocatorId: string, index: number, usedBySkipLogic = false) {
         const questionLocator = this.page.locator(`#${questionLocatorId}`);
         await questionLocator.locator(`[title="Change question label"]`).click();
         await this.materialPage.matDialog().waitFor();
+        if (usedBySkipLogic) {
+            await this.questionUsedBySkipLogicAlertMessage().waitFor();
+        }
         if (index === -1) {
             await this.materialPage.matDialog().getByRole('button', { name: 'No Label', exact: true }).click();
         } else {
