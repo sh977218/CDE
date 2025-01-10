@@ -14,9 +14,14 @@ export class FormDescriptionPo {
         this.inlineEdit = inlineEdit;
     }
 
+    backToPreviewButton() {
+        return this.page.getByRole('button', { name: 'Back to Preview' });
+    }
+
     warningAlertDiv() {
         return this.page.getByTestId('form-description-warning-alert-div');
     }
+
     warningAlertMessage() {
         return this.page.getByTestId('form-description-warning-alert-message');
     }
@@ -44,6 +49,7 @@ export class FormDescriptionPo {
     questionRule() {
         return this.page.getByTestId(`question-rule`);
     }
+
     questionPartOf() {
         return this.page.getByTestId(`question-part-of`);
     }
@@ -51,6 +57,7 @@ export class FormDescriptionPo {
     sectionDiv() {
         return this.page.locator('cde-form-description-section');
     }
+
     questionDiv() {
         return this.page.locator('cde-form-description-question');
     }
@@ -58,6 +65,7 @@ export class FormDescriptionPo {
     sectionLabelEdit() {
         return this.page.getByTestId(`section-label-edit`);
     }
+
     logic() {
         return this.page.getByTestId(`logic`);
     }
@@ -88,6 +96,10 @@ export class FormDescriptionPo {
 
     async startEditQuestionById(id: string) {
         await this.questionLabelByIndex(id).click();
+    }
+
+    async startEditQuestionByLabel(label: string) {
+        await this.questionLabel().filter({ hasText: label }).click();
     }
 
     async saveEditQuestionById(id: string) {
@@ -182,13 +194,34 @@ export class FormDescriptionPo {
         await this.materialPage.checkAlert('Saved');
     }
 
-    async addEmptyQuestionLogicByIndex(questions: string[]) {
+    async addEmptyQuestionLogic(questions: string[]) {
         const matDialog = this.materialPage.matDialog();
         await this.logicEditButton().click();
         await matDialog.waitFor();
         for (const [i, question] of questions.entries()) {
             await matDialog.getByRole('button', { name: 'Add Condition' }).click();
             await matDialog.getByPlaceholder('Question Label').nth(i).selectOption(question);
+        }
+        await matDialog.getByRole('button', { name: 'Save' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async addQuestionLogic(label: string, operator: string, answer: string, answerType: string) {
+        const matDialog = this.materialPage.matDialog();
+        await this.logicEditButton().click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('button', { name: 'Add Condition' }).click();
+        await matDialog.getByPlaceholder('Question Label').selectOption(label);
+        await matDialog.getByPlaceholder('Operator').selectOption(operator);
+        if (answerType.toLowerCase() === 'text') {
+            await matDialog.getByPlaceholder('Text Answer').fill(answer);
+        } else if (answerType.toLowerCase() === 'number') {
+            await matDialog.getByPlaceholder('Number Value').fill(answer);
+        } else if (answerType.toLowerCase() === 'date') {
+            await matDialog.getByPlaceholder('Date').fill(answer);
+        } else if (answerType.toLowerCase() === 'value list') {
+            await matDialog.getByPlaceholder('Answer').selectOption(answer);
         }
         await matDialog.getByRole('button', { name: 'Save' }).click();
         await matDialog.waitFor({ state: 'hidden' });

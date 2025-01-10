@@ -37,4 +37,10 @@ export const FormTinyIds: Record<string, string> = {
     'Mean Value Test': 'X17IaQ_NQ',
     'Body Mass Index': 'XyZ43DXGU',
     'Behavioral History': 'mJCZyrSte',
+    'MultiSelect Logic': 'mJSv499pz',
+    'Not Equals Test': 'QJBWLKc47',
+    'Skip Logic Number Test Form': '7ycTkMnAI',
+    'Skip Logic Date Test Form': '71t5G120U',
+    'Skip Logic Text Test Form': 'mJjMCG30U',
+    'Skip Logic Value List Test Form': 'mJVPzQ2C8',
 };
