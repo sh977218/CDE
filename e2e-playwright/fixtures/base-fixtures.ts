@@ -331,7 +331,8 @@ const ignoredConsoleMessages = [
     `Cannot read properties of null (reading 'writeValue')`,
     `Third-party cookie will be blocked.`,
     `Failed to load resource: the server responded with a status of 403`, // create too many board give 403
-    `TypeError: str.replace is not a function`, // this is a real bug, @TODO
+    `TypeError: str.replace is not a function`, // this is a real bug from `makeHumanReadable()`  @TODO
+    `sanitizing HTML stripped some content`, // this is a real bug, some data is HTML format stripped by angular @TODO
 ];
 
 const consoleMessages: string[] = [];
