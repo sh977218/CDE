@@ -22,6 +22,14 @@ export class PreviewPo {
         return this.previewDiv().locator('cde-native-render');
     }
 
+    questionLabel() {
+        return this.previewDiv().getByTestId('native-question-label');
+    }
+
+    labelClause() {
+        return this.previewDiv().getByTestId('label-clause');
+    }
+
     editFormDescriptionButton() {
         return this.previewDiv().getByRole('button', { name: 'Edit', exact: true });
     }
@@ -38,5 +46,11 @@ export class PreviewPo {
     async goToFormDescription() {
         await this.page.getByRole('heading', { name: 'Preview' }).waitFor();
         await this.editFormDescriptionButton().click();
+    }
+
+    async togglePrintView() {
+        await this.previewDiv().getByRole('button', { name: 'Options' }).click();
+        await this.materialPage.matMenuItem('Print View:').click();
+        await this.materialPage.matOverlay().waitFor({ state: 'hidden' });
     }
 }

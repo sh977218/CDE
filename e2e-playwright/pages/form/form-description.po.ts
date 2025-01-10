@@ -58,6 +58,13 @@ export class FormDescriptionPo {
     sectionLabelEdit() {
         return this.page.getByTestId(`section-label-edit`);
     }
+    logic() {
+        return this.page.getByTestId(`logic`);
+    }
+
+    logicEditButton() {
+        return this.page.getByTestId(`edit-logic`);
+    }
 
     questionDatatype() {
         return this.page.locator(`.questionDataType`);
@@ -172,6 +179,19 @@ export class FormDescriptionPo {
         await this.inlineEdit.editIcon(instructionLocator).click();
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
         await this.inlineEdit.typeTextField(instructionLocator, newInstruction);
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async addEmptyQuestionLogicByIndex(questions: string[]) {
+        const matDialog = this.materialPage.matDialog();
+        await this.logicEditButton().click();
+        await matDialog.waitFor();
+        for (const [i, question] of questions.entries()) {
+            await matDialog.getByRole('button', { name: 'Add Condition' }).click();
+            await matDialog.getByPlaceholder('Question Label').nth(i).selectOption(question);
+        }
+        await matDialog.getByRole('button', { name: 'Save' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert('Saved');
     }
 
