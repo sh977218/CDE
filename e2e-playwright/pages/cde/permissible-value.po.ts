@@ -237,7 +237,7 @@ export class PermissibleValuePo {
         } = pv;
         await this.addPermissibleValueButton().click();
         await this.materialPage.matDialog().waitFor();
-
+        await this.page.waitForTimeout(5000); // wait for autofocus happens first
         await this.materialPage.matDialog().getByPlaceholder('Permissible Value').fill(permissibleValue);
         await this.materialPage.matDialog().getByPlaceholder('Description').fill(valueMeaningDefinition);
         if (conceptId) {
