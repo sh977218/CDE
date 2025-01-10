@@ -36,4 +36,5 @@ export const FormTinyIds: Record<string, string> = {
     'Neurological Assessment: TBI Symptoms and Signs': 'mkqnEJHrtl',
     'Mean Value Test': 'X17IaQ_NQ',
     'Body Mass Index': 'XyZ43DXGU',
+    'Behavioral History': 'mJCZyrSte',
 };
