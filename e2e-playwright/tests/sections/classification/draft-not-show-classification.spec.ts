@@ -18,4 +18,19 @@ test.describe(`Draft does not show classification`, async () => {
             );
         });
     });
+    test(`Form page`, async ({ page, navigationMenu, classificationSection }) => {
+        const formName = 'Draft Form Test';
+
+        await test.step(`Navigate to CDE`, async () => {
+            await navigationMenu.gotoFormByName(formName);
+            await navigationMenu.login(Accounts.nlm);
+            await expect(page.getByRole('button', { name: 'Classify this Form' })).toBeHidden();
+        });
+
+        await test.step(`not show classification`, async () => {
+            await expect(classificationSection.classificationNotAvailableMessage()).toHaveText(
+                'Classification is not available in Drafts. Click the Draft slider above to view the current Published version.'
+            );
+        });
+    });
 });

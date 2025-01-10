@@ -14,18 +14,18 @@
          [ngClass]="{'hand-cursor':!isSubForm && canEdit}"
          (mouseover)="hoverInQuestion(question)" (mouseout)="hoverOutQuestion(question)">
         <span *ngIf="isScore(question.question)">Score:</span>
-        <span class="questionLabel" style="font-weight: bold; margin-left: .25rem" title="{{question.label}}">
+        <span class="questionLabel"  data-testid="question-label" style="font-weight: bold; margin-left: .25rem" title="{{question.label}}">
             <strong *ngIf="question.label; else labelHidden">{{question.label}} </strong>
             <ng-template #labelHidden>
                 <mat-icon aria-label="This question has no label" matTooltip="This question has no label"
                           matTooltipClass="cdeTooltip" matTooltipPosition="right">help</mat-icon>
                 ( {{question.label || question.question.cde.name}} )
             </ng-template>
-            <small *ngIf="question.question.partOf" class="text-info"> (part of {{question.question.partOf}})</small>
+            <small *ngIf="question.question.partOf" class="text-info" data-testid="question-part-of"> (part of {{question.question.partOf}})</small>
         </span>
         <div class="questionDataType" style="display: inline-block; margin-left: .25rem">{{getDatatypeLabel(question)}}</div>
     </div>
-    <div style="line-height: 24px">
+    <div style="line-height: 24px" data-testid="question-rule">
         <span *ngIf="question.incompleteRule" style="margin-left: .25rem">(Incomplete Rule)</span>
         <span *ngIf="question.question.cde.outdated" style="margin-left: .25rem">(Outdated)</span>
     </div>

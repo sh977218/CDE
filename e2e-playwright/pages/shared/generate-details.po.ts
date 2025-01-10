@@ -114,6 +114,10 @@ export class GenerateDetailsPo {
         return this.page.getByTestId(`updated-by`);
     }
 
+    sources() {
+        return this.page.locator('cde-admin-item-sources');
+    }
+
     registrationStatus() {
         return this.page.getByTestId(`registration-status`);
     }

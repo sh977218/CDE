@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
 
 export class PreviewPo {
@@ -12,6 +12,14 @@ export class PreviewPo {
 
     previewDiv() {
         return this.page.locator(`[id="preview-div"]`);
+    }
+
+    formEmptyCdeMessage() {
+        return this.previewDiv().getByTestId('form-empty-cde-message');
+    }
+
+    formRenderDiv() {
+        return this.previewDiv().locator('cde-native-render');
     }
 
     editFormDescriptionButton() {
@@ -28,7 +36,7 @@ export class PreviewPo {
     };
 
     async goToFormDescription() {
-        await expect(this.page.getByRole('heading', { name: 'Preview' })).toBeVisible();
+        await this.page.getByRole('heading', { name: 'Preview' }).waitFor();
         await this.editFormDescriptionButton().click();
     }
 }

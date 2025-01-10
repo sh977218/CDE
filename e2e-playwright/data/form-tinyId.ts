@@ -32,4 +32,8 @@ export const FormTinyIds: Record<string, string> = {
     'Acute Admission/Discharge': 'XkS5WJHrtg',
     'Vision Deficit Report': 'xxx22214aaa',
     'Form: Answer List Test': 'XyWvhfX4W',
+    'Type, Place, Cause and Mechanism of Injury': 'XyqIIyrBtx',
+    'Neurological Assessment: TBI Symptoms and Signs': 'mkqnEJHrtl',
+    'Mean Value Test': 'X17IaQ_NQ',
+    'Body Mass Index': 'XyZ43DXGU',
 };
