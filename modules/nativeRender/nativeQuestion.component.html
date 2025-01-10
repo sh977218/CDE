@@ -64,7 +64,7 @@
                                 *ngIf="nrs.nativeRenderType !== 'Dynamic' || formElement.question.displayAs !== 'likert scale' || formElement.question.multiselect; else likertDisplay">
                             <ng-container
                                     *ngIf="nrs.nativeRenderType !== 'Dynamic' || nrs.profile?.answerDropdownLimit <= 0 || nrs.profile.answerDropdownLimit >= formElement.question?.answers.length; else dropdownValueList">
-                                <div class="row-sm">
+                                <div class="row-sm" role="radiogroup" [attr.title]="formElement.label">
                                     <div *ngFor="let pv of formElement.question.answers; index as i"
                                          [ngClass]="classColumns(pv.index, i)">
                                         <div *ngIf="!pv.nonValuelist" class="form-check">
@@ -80,6 +80,7 @@
                                                            (click)="nrs.radioButtonSelect(formElement, $event.target.value)"
                                                            [value]="pv.permissibleValue"
                                                            [attr.value]="pv.permissibleValue"
+                                                           [attr.title]="pv.permissibleValue"
                                                            [required]="formElement.question.required"
                                                            [disabled]="!formElement.question.editable"/>
                                                 </ng-container>
@@ -91,6 +92,7 @@
                                                            (change)="nrs.checkboxOnChange($event.target.checked, formElement.question, pv.permissibleValue, formElement)"
                                                            [value]="pv.permissibleValue"
                                                            [attr.value]="pv.permissibleValue"
+                                                           [attr.title]="pv.permissibleValue"
                                                            [required]="formElement.question.required"
                                                            [disabled]="!formElement.question.editable"/>
                                                 </ng-template>
@@ -130,6 +132,7 @@
                             <select #inputValueListDropDown class="form-control"
                                     [name]="formElement.feId"
                                     [attr.name]="formElement.feId"
+                                    [attr.title]="formElement.label"
                                     [multiple]="formElement.question.multiselect"
                                     [ngModel]="nrs.selectModel(formElement)"
                                     (ngModelChange)="nrs.selectModelChange($event, formElement)"
