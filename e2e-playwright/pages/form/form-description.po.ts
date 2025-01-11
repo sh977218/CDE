@@ -78,6 +78,10 @@ export class FormDescriptionPo {
         return this.page.getByTestId(`edit-logic`);
     }
 
+    answerListEditButton() {
+        return this.page.getByTestId(`edit-answer-list`);
+    }
+
     questionDatatype() {
         return this.page.locator(`.questionDataType`);
     }
@@ -260,6 +264,15 @@ export class FormDescriptionPo {
             await this.materialPage.removeMatChipRowByName(questionContainerLocator, answerToBeDeleted);
             await this.materialPage.checkAlert('Saved');
         }
+    }
+
+    async deleteAllAnswerListByIndex() {
+        const matDialog = this.materialPage.matDialog();
+        await this.answerListEditButton().click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('button', { name: 'Clear All' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert('Saved');
     }
 
     /**

@@ -36,7 +36,7 @@
                        [attr.value]="nrs.elt.formInput[ni + q.name]"
                        [(ngModel)]="nrs.elt.formInput[ni + q.name]"/>
             </div>
-            <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list">
+            <div *ngIf="q.type === 'list'" class="radio native-table-cell native-table-list" [attr.title]="q.fe.label">
                 <label class="d-block" *ngFor="let a of q.fe.question.answers">
                     <input type="radio"
                            [name]="ni + q.name"

@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 
-test(`One liner @smoke`, async ({ page, navigationMenu, previewSection }) => {
+test(`One liner`, async ({ page, navigationMenu, previewSection }) => {
     const formName = 'SDC Adrenal';
     await test.step(`Navigate to Form and login`, async () => {
         await navigationMenu.gotoFormByName(formName, true);
@@ -21,5 +21,12 @@ test(`One liner @smoke`, async ({ page, navigationMenu, previewSection }) => {
         if (radioButton && input) {
             expect(radioButton.y - input.y).toBeLessThan(8);
         }
+    });
+
+    await test.step(`Verify printable`, async () => {
+        const printablePage = await previewSection.printableView();
+        await expect(
+            printablePage.getByText('Does your health now limit you in climbing one flight of stairs?')
+        ).not.toHaveCount(0);
     });
 });
