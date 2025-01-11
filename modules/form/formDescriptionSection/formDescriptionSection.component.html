@@ -1,4 +1,4 @@
-<div class="sectionTitle">
+<div class="sectionTitle" attr.data-testid="section-title{{formSection?.inForm?.form?'-subform':''}}">
     <div class="stretchBar text-truncate" style="padding: .25rem"
          [ngClass]="{'outdated-bg': formSection?.inForm?.form?.outdated && !section.hover,'hover-bg':section.hover}">
         <div *ngIf="!isSubForm && canEdit">

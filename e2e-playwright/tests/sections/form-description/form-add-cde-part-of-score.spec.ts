@@ -50,6 +50,10 @@ test(`From add cde part of score`, async ({ saveModal, navigationMenu, previewSe
         await expect(formDescription.questionDiv().last().locator(formDescription.questionRule())).toContainText(
             '(Incomplete Rule)'
         );
+
+        await test.step(`verify answer list are added`, async () => {
+            await expect(formDescription.questionDiv().last().locator(`.answerList`)).toHaveText(['']);
+        });
     });
 
     await test.step(`Add reset score CDEs and validation errors are gone`, async () => {

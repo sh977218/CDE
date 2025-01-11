@@ -163,4 +163,12 @@ test.describe('Role permission', async () => {
         await navigationMenu.gotoCdeByName(cdeName);
         await expect(page.getByText('Delete Draft')).toHaveCount(0);
     });
+
+    test(`Not 'form editor' cannot edit form`, async ({ page, navigationMenu, previewSection }) => {
+        const formName = 'Traumatic Brain Injury - Adverse Events';
+        await navigationMenu.gotoFormByName(formName);
+        await navigationMenu.login(Accounts.ctepOnlyEditor);
+        await previewSection.goToFormDescription();
+        await expect(page.locator(`id=addSection`)).toHaveCount(0);
+    });
 });
