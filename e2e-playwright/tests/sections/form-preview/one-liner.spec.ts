@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 
+test.use({ baseURL: 'http://localhost:3001' });
 test(`One liner`, async ({ page, navigationMenu, previewSection }) => {
     const formName = 'SDC Adrenal';
     await test.step(`Navigate to Form and login`, async () => {

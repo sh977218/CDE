@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { test } from '../../../fixtures/base-fixtures';
 
+test.use({ baseURL: 'http://localhost:3001' });
 test(`Lform render`, async ({ page, navigationMenu, previewSection, formDescription }) => {
     const formName = 'Loinc Widget Test Form';
 
