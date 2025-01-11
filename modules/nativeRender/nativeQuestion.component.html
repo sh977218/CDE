@@ -122,9 +122,9 @@
                                             </ng-container>
                                         </div>
                                     </div>
-                                </div>
-                                <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
-                                    <code>Please fill out this field.</code>
+                                    <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
+                                        <code>Please fill out this field.</code>
+                                    </div>
                                 </div>
                             </ng-container>
                         </ng-container>
@@ -296,6 +296,7 @@
                                       attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                       [name]="formElement.feId"
                                       [attr.name]="formElement.feId"
+                                      [attr.title]="formElement.label"
                                       [(ngModel)]="formElement.question.answer"
                                       (change)="nrs.emit(formElement)"
                                       [required]="formElement.question.required"

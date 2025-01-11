@@ -35,6 +35,10 @@ export class SaveModalPo {
         return this.materialPage.matDialog().getByTestId(`save-modal`);
     }
 
+    toggleDraftPublish() {
+        return this.page.locator(`cde-draft-slider .toggle-switch__tongue`).click();
+    }
+
     async waitForDraftSaveComplete() {
         const viewChangeButton = this.page.locator(`#viewChangesBtn`);
         await viewChangeButton.waitFor();

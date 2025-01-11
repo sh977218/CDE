@@ -48,4 +48,6 @@ export const FormTinyIds: Record<string, string> = {
     'Question Repeat': 'XkCtybYXB',
     'Multi SubQuestion': 'mk4r3nH77',
     'SDC Adrenal': 'XySUBn_NZ',
+    'Required and Default Test': 'QyBYny_lu',
+    'Form Table Test': '713d9u1vX',
 };

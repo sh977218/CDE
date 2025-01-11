@@ -22,6 +22,14 @@ export class PreviewPo {
         return this.previewDiv().locator('cde-native-render');
     }
 
+    geoLocator() {
+        return this.previewDiv().getByTitle('Fill in with current location');
+    }
+
+    questionDiv() {
+        return this.previewDiv().locator('cde-native-question');
+    }
+
     questionLabel() {
         return this.previewDiv().getByTestId('native-question-label');
     }
@@ -52,5 +60,22 @@ export class PreviewPo {
         await this.previewDiv().getByRole('button', { name: 'Options' }).click();
         await this.materialPage.matMenuItem('Print View:').click();
         await this.materialPage.matOverlay().waitFor({ state: 'hidden' });
+    }
+
+    async printableView() {
+        await this.previewDiv().getByRole('button', { name: 'Options' }).click();
+        const [newPage] = await Promise.all([
+            this.page.waitForEvent('popup'),
+            this.materialPage.matMenuItem('Printable').click(),
+        ]);
+        return newPage;
+    }
+    async lformView() {
+        await this.previewDiv().getByRole('button', { name: 'Options' }).click();
+        const [newPage] = await Promise.all([
+            this.page.waitForEvent('popup'),
+            this.materialPage.matMenuItem('LHC-Forms (Provided by LHNCBC)').click(),
+        ]);
+        return newPage;
     }
 }
