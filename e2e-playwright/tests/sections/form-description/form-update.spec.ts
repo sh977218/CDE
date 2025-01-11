@@ -23,7 +23,7 @@ test(`From update`, async ({
     };
 
     const cdeVersionInfo: Version = {
-        newVersion: '',
+        newVersion: '2',
         changeNote: '[update cde name]',
     };
     const formVersionInfo: Version = {
