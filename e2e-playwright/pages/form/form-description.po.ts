@@ -149,9 +149,9 @@ export class FormDescriptionPo {
             .matDialog()
             .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
             .click();
+        await this.materialPage.checkAlert(`Saved`);
         await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-        await this.materialPage.checkAlert(`Saved`);
     }
 
     async questionEditAddUom(id: string, type: string, text: string) {
