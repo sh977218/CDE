@@ -32,7 +32,7 @@ export class ClassificationViewComponent {
         public dialog: MatDialog,
         public isAllowedModel: IsAllowedService,
         protected userService: UserService,
-        private orgHelperService: OrgHelperService
+        private orgHelperService: OrgHelperService,
     ) {
         this.orgHelperService.then(() => (this.orgHelperLoaded = true), noop);
         this.breakpointObserver.observe(['(min-width: 768px)']).subscribe(state => {
@@ -58,7 +58,7 @@ export class ClassificationViewComponent {
         function countElements(elements: ClassificationElement[]): number {
             return (Array.isArray(elements) ? elements : []).reduce(
                 (count, element) => count + 1 + countElements(element.elements),
-                0
+                0,
             );
         }
         const sectionEmptyHeight = 57;
@@ -68,10 +68,10 @@ export class ClassificationViewComponent {
             this.elt.classification.map(c =>
                 this.showWorkingGroups(c)
                     ? countElements(c.elements) * linkHeight + sectionEmptyHeight + sectionGapHeight
-                    : 0
+                    : 0,
             ),
             (acc, sectionHeight) => acc + sectionHeight,
-            0
+            0,
         );
     }
 
