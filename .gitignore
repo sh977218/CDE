@@ -5,8 +5,8 @@
 *.log
 .nide
 bin
-build
-buildNode
+build/
+buildNode/
 buildWebStorm/
 dependencies/
 dist/
@@ -46,7 +46,6 @@ logs
 
 ## Tests
 .nyc_output/
-.e2e_nyc_output
 coverage/
 *.iml
 .gradle/
@@ -59,23 +58,10 @@ test/.settings/
 test/bin/
 test/build/
 test/report/
-test/selenium/.gradle
-test/selenium/.nb-gradle/private/
-test/selenium/.nb-gradle/profiles/private/
-test/selenium/*.log
-test/selenium/*.png
-test/selenium/build/
-test/selenium/gradle/
-test/selenium/gradlew
-test/selenium/gradlew.bat
-test/selenium/dependency/
-test/selenium/nlm-cde-test.iml
-test/selenium/out/
-test/selenium/IntegerDatatypeTest_integerDatatype.gif
-test/selenium/selenium-server-standalone*
-test/selenium/driver
 test-console.out
 test-console.o
+allure-results
+blob-report
 
 ## WebStorm - TODO: temporary until settings are moved here
 .angular
@@ -100,7 +86,6 @@ test-results
 playwright-report
 playwright-report-a11y
 e2e-playwright/.nyc_output
-e2e-playwright/.e2e_nyc_output
 e2e-playwright/playwright-report
 e2e-playwright/playwright-report-a11y
 playwright/.cache
@@ -120,14 +105,3 @@ Frontal Behavioral Inventory (FBI).zip
 SearchExport.csv
 BoardExport.csv
 
-allure-results
-blob-report
-buildNode
-build
-.allure
-allure-report
-app.log
-cde.log
-nyc_output
-7kAx6i5af.json
-XkZpBf60z.json

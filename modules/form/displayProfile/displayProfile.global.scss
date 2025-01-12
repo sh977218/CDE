@@ -1,7 +1,6 @@
 $zoom: .7;
 
 .nativeRenderPreview {
-  //zoom: $zoom; cannot use due to selenium visibility problems
   font-size: 1rem * $zoom;
 
   input {
