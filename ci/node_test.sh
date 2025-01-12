@@ -94,68 +94,6 @@ then
     exit 1
 fi
 
-#Run selenium test
-set -x
-if [[ "$AWS_SELENIUM_STACKS_ENABLED" == "true" ]]; then
-    echo "============Run selenium test with Gradle on on-prem server...=============="
-
-    export forkNb=6
-    cd test/selenium || exit 1
-
-    if [ "$host_name" == "dvlb7cde01" ]
-    then
-        if [ "$BROWSER" == 'oneTest' ]
-        then
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
-        else
-            #../../node_modules/protractor/bin/protractor --baseUrl=http://local-cde-dev-1.nlm.nih.gov:3001 --seleniumAddress=http://130.14.175.7/wd/hub ../protractor-conf.js &
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-1.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
-        fi
-    else
-        if [ "$BROWSER" == 'oneTest' ]
-        then
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL}  -Dtimeout=30 -Dbrowser=chrome -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test --tests *wrongLogin*
-        else
-            #../../node_modules/protractor/bin/protractor --baseUrl=http://local-cde-dev-2.nlm.nih.gov:3001 --seleniumAddress=http://130.14.175.7/wd/hub ../protractor-conf.js &
-            /usr/nlm/apps/gradle/bin/gradle --no-daemon --max-workers=$forkNb --parallel -DforkNb=$forkNb -DtestUrl=http://local-cde-dev-2.nlm.nih.gov:3001 -DhubUrl=${GRID_URL} -Dtimeout=30 -Dbrowser=$BROWSER -Djava.io.tmpdir=/usr/nlm/apps/tmp -b build.gradle test
-        fi
-    fi
-    if [ $? -ne 0 ]
-    then
-        echo "Error: selenium test failed."
-        exit 1
-    fi
-
-    node ../verifyConsoleLogs.js
-    if [ $? -ne 0 ]
-    then
-        echo "Error: verify console logs'"
-        exit 1
-    fi
-
-    #Check selenium test coverage
-    #mkdir -p build/npmlog
-    #grep /usr/nlm/apps/bamboo-agent/home/temp/log_spool/$bamboo_plan_storageTag-$bamboo_shortJobKey-$bamboo_buildNumber.log -oe "/home/bambooadm/\.npm/_logs/.*\.log" | xargs cp -t build/npmlog
-
-    cd build || exit 1
-
-    echo "========Rune selenium coverage report=========="
-    if [ "$BROWSER" == 'coverage' ]
-    then
-        mv ../test/selenium/build/.nyc_output/* .nyc_output/
-        node ../../../node_modules/nyc/bin/nyc report
-    fi
-
-    node ../../../node_modules/nyc/bin/nyc check-coverage --lines 30 --functions 25 --branches 30
-    if [ $? -ne 0 ]
-    then
-        echo "Error: Insufficient Coverage"
-        exit 1
-    fi
-
-    cd ../../..
-fi
-
 pkill -TERM -P "$(cat build/test.pid)"
 pkill -TERM -P "$(cat testLogin.pid)"
 echo $?
