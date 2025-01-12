@@ -23,7 +23,7 @@ test(`From add subform`, async ({ saveModal, navigationMenu, previewSection, for
 
     await test.step(`Edit subform`, async () => {
         await formDescription.startEditSubformByLabel(subformName);
-        await formDescription.editSectionLabelByIndex('form_0-0', newFormLabel);
+        await formDescription.editSectionLabelById('form_0-0', newFormLabel);
     });
 
     await test.step(`Save form`, async () => {

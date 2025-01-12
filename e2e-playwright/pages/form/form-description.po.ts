@@ -81,6 +81,10 @@ export class FormDescriptionPo {
         return this.page.getByTestId(`section-label-edit`);
     }
 
+    repeatEdit() {
+        return this.page.getByTestId(`repeat-edit`);
+    }
+
     logic() {
         return this.page.getByTestId(`logic`);
     }
@@ -101,20 +105,20 @@ export class FormDescriptionPo {
         return this.page.locator(`.answerList .badge`);
     }
 
-    questionLabelByIndex(id: string) {
+    questionLabelById(id: string) {
         return this.questionContainer(id).locator(this.questionLabel());
     }
 
-    questionDataTypeByIndex(id: string) {
+    questionDataTypeById(id: string) {
         return this.questionContainer(id).locator(this.questionDatatype());
     }
 
-    questionAnswerListByIndex(id: string) {
+    questionAnswerListById(id: string) {
         return this.questionContainer(id).locator(this.questionAnswerList());
     }
 
     async startEditQuestionById(id: string) {
-        await this.questionLabelByIndex(id).click();
+        await this.questionLabelById(id).click();
     }
 
     async startEditQuestionByLabel(label: string) {
@@ -126,17 +130,61 @@ export class FormDescriptionPo {
     }
 
     async saveEditQuestionById(id: string) {
-        await this.questionLabelByIndex(id).click();
+        await this.questionLabelById(id).click();
     }
 
-    async addSection(title: string, repeat = '') {
-        const dropLocator = this.page.locator(`tree-node-drop-slot`).first();
+    /**
+     * This method requires section to be toggled to edit first
+     * @param title
+     */
+    async editSectionLabel(title: string) {
+        await this.inlineEdit.editInlineEdit(this.sectionLabelEdit(), title);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async editSectionLabelById(sectionLocatorId: string, newLabel: string) {
+        const sectionLabelLocator = this.page.locator(`#${sectionLocatorId} .section_label`);
+        await this.inlineEdit.editInlineEdit(sectionLabelLocator, newLabel);
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    /**
+     * This method requires section to be toggled to edit first
+     * @param repeat
+     */
+    async editSectionRepeat(repeat: number | string = 0) {
+        if (repeat) {
+            const repeatLocator = this.repeatEdit();
+            if (repeat === 'F') {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Over first question');
+            } else if (repeat === '=') {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Over answer of specified question');
+            } else {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Set Number of Times');
+                await this.materialPage.checkAlert(`Saved`);
+                await this.page.getByTitle('Repeat Maximum Times').fill(repeat + '');
+                await this.page.keyboard.press('Tab');
+            }
+            await this.materialPage.checkAlert(`Saved`);
+        }
+    }
+
+    async addSection(title: string, repeat: number | string = 0) {
+        let dropLocator = this.page.locator(`tree-node-drop-slot`).first();
         await this.addSectionButton().dragTo(dropLocator);
+        await this.sectionTitle().first().click();
         await this.materialPage.checkAlert(`Saved`);
-        const sectionLocator = this.sectionDiv().first();
-        await sectionLocator.locator('.sectionLabel').click();
-        await this.inlineEdit.editInlineEdit(sectionLocator.locator(this.sectionLabelEdit()), title);
+        await this.editSectionLabel(title);
+        await this.editSectionRepeat(repeat);
+    }
+
+    async addSectionBottom(title: string, repeat: number | string = 0) {
+        let dropLocator = this.page.locator(`tree-node-drop-slot`).last();
+        await this.addSectionButton().dragTo(dropLocator);
+        await this.sectionTitle().last().click();
         await this.materialPage.checkAlert(`Saved`);
+        await this.editSectionLabel(title);
+        await this.editSectionRepeat(repeat);
     }
 
     async addQuestionToSection(cdeName: string, sectionIndex = 0) {
@@ -205,12 +253,6 @@ export class FormDescriptionPo {
                     .first()
             ).toContainText(`(No Label)`);
         }
-    }
-
-    async editSectionLabelByIndex(sectionLocatorId: string, newLabel: string) {
-        const sectionLabelLocator = this.page.locator(`#${sectionLocatorId} .section_label`);
-        await this.inlineEdit.editInlineEdit(sectionLabelLocator, newLabel);
-        await this.materialPage.checkAlert('Saved');
     }
 
     async editQuestionInstructionByIndex(questionLocatorId: string, newInstruction: string) {

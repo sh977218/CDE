@@ -33,6 +33,9 @@ export class PreviewPo {
     questionLabel() {
         return this.previewDiv().getByTestId('native-question-label');
     }
+    sectionLabel() {
+        return this.previewDiv().getByTestId('section-label');
+    }
 
     labelClause() {
         return this.previewDiv().getByTestId('label-clause');
