@@ -2,8 +2,8 @@ import { Response, Router } from 'express';
 import * as Parser from 'rss-parser';
 import { dbPlugins } from 'server';
 import { Article } from 'shared/article/article.model';
-import { canEditArticleMiddleware } from 'server/system/authorization';
 import * as cors from 'cors';
+import { canEditArticleMiddleware } from 'server/system/authorization';
 
 const parser = new Parser();
 require('express-async-errors');
@@ -13,7 +13,9 @@ export function module() {
 
     router.options('/shutdownBanner', cors()); // <-- enable pre-flight request for GET.
 
-    router.get('/shutdownBanner', cors(), async (req, res) => res.send(await dbPlugins.article.byKey('shutdownBanner')));
+    router.get('/shutdownBanner', cors(), async (req, res) =>
+        res.send(await dbPlugins.article.byKey('shutdownBanner'))
+    );
 
     ['whatsNew', 'contactUs', 'resources', 'videos', 'guides', 'about', 'nihDataSharing'].forEach(a => {
         router.get('/' + a, async (req, res): Promise<Response> => {
@@ -67,7 +69,10 @@ export function module() {
         const tokenMatches = article.body.match(tokenRegex);
         if (tokenMatches) {
             for (const match of tokenMatches) {
-                const videoId = match.replace('&lt;cde-youtube-video&gt;', '').replace('&lt;/cde-youtube-video&gt;', '').trim();
+                const videoId = match
+                    .replace('&lt;cde-youtube-video&gt;', '')
+                    .replace('&lt;/cde-youtube-video&gt;', '')
+                    .trim();
                 const url = `https://www.youtube.com/embed/${videoId}?ref=0`;
                 // tslint:disable-next-line:max-line-length
                 const iframe = `<iframe width="560" height="315" src="${url}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
