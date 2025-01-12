@@ -123,36 +123,40 @@ export class ItemLogComponent implements AfterViewInit {
             pageSize: this.paginator.pageSize,
         };
         return this._httpClient.post<ItemLogResponse>(`/server/log/itemLog/${this.module}`, body).pipe(
-            tap({
-                complete: () => (this.isLoadingResults = false),
-            }),
             map(res => {
                 // Flip flag to show that loading has finished.
                 if (res === null) {
                     return [];
                 }
                 this.resultsLength = res.totalItems;
-                return res.logs;
-            }),
-            // for cde and form audit log
-            map(logs => {
-                logs.forEach((log: any) => {
+                res.logs.forEach((log: any) => {
                     if (log.diff) {
-                        log.diff.forEach((d: any) => makeHumanReadable(d));
+                        log.diff.forEach((d: any) => {
+                            try {
+                                makeHumanReadable(d);
+                            } catch (e) {
+                                console.info(`error occurred in makeHumanReadable(d), with exception: ${e} \n d: ${d}`);
+                            }
+                        });
                     }
-                });
-                return logs;
-            }),
-            // for classification audit log
-            map(logs => {
-                logs.forEach((log: any) => {
                     if (log.elements) {
                         log.elements.forEach((e: ClassificationAuditLogElement, i: number) => {
                             e.name = e.name || `Element ${++i}`;
                         });
                     }
                 });
-                return logs;
+                return res.logs;
+            }),
+            tap({
+                next: () => {
+                    this.isLoadingResults = false;
+                },
+                complete: () => {
+                    this.isLoadingResults = false;
+                },
+                error: err => {
+                    this.isLoadingResults = false;
+                },
             }),
             catchError(() => of([]))
         );

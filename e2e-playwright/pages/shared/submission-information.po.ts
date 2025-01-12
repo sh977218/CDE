@@ -10,4 +10,11 @@ export class SubmissionInformationPo {
     sourceContainer() {
         return this.page.locator(`cde-admin-item-sources fieldset`);
     }
+
+    registrationStatus() {
+        return this.page.getByTestId('registration-status');
+    }
+    administrativeNote() {
+        return this.page.getByTestId('administrative-note');
+    }
 }

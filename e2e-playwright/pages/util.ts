@@ -1,6 +1,12 @@
 import { Locator, Page } from '@playwright/test';
 import { random } from 'lodash';
 
+export function getRandomEnumValue(enumObject: object) {
+    const values = Object.values(enumObject);
+    const randomIndex = Math.floor(Math.random() * values.length);
+    return values[randomIndex];
+}
+
 export function button(page: Page | Locator, text: string): Locator {
     return tag(page, 'button', text);
 }

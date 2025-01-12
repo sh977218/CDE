@@ -16,7 +16,7 @@
                [(ngModel)]="value" [placeholder]="placeholder"/>
     </ng-container>
     <ng-container *ngIf="inputType.toLowerCase() === 'select'">
-        <select name="inlineSelect" class="form-control" data-testid="inline-edit-select" [(ngModel)]="value" [textContent]="placeholder">
+        <select class="form-control" data-testid="inline-edit-select" name="inlineSelect" [(ngModel)]="value" [textContent]="placeholder">
             <option *ngFor="let selectOption of selectOptions" [selected]="selectOption === value">
                 {{selectOption}}
             </option>

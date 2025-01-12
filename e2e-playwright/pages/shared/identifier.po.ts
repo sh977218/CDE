@@ -14,6 +14,14 @@ export class IdentifierPo {
         this.saveModal = saveModal;
     }
 
+    identifierDiv() {
+        return this.page.locator('cde-identifiers');
+    }
+
+    identifierTable() {
+        return this.identifierDiv().getByRole('table');
+    }
+
     addIdentifierButton() {
         return this.page.getByRole('button', { name: 'Add Identifier' });
     }

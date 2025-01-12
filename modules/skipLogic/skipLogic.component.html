@@ -1,4 +1,4 @@
-{{formElement.skipLogic?.condition}}
-<button *ngIf="canEdit" class="button light" (click)="editSkipLogic()">
+<span data-testid="logic">{{formElement.skipLogic?.condition}}</span>
+<button *ngIf="canEdit" class="button light" (click)="editSkipLogic()" data-testid="edit-logic">
     <mat-icon>edit</mat-icon>
 </button>

@@ -17,6 +17,9 @@ export class InlineEditPo {
     inputField(locator: Locator) {
         return locator.getByTestId('inline-edit-input');
     }
+    selectField(locator: Locator) {
+        return locator.getByTestId('inline-edit-select');
+    }
 
     /**
      * Description - Return ck edit textarea
@@ -24,7 +27,7 @@ export class InlineEditPo {
      * @param html - Depends on Plain or Rich text, the textarea locator differs based on this flag
      * @private
      */
-    private ckEditTextarea(containerLocator: Locator, html = false) {
+    ckEditTextarea(containerLocator: Locator, html = false) {
         if (html) {
             return containerLocator.getByRole(`textbox`);
         } else {
@@ -55,25 +58,24 @@ export class InlineEditPo {
     }
 
     /**
-     * Description - Type string in the ck edit textarea
+     * Description - Type string in the ck edit textarea.
      * @param containerLocator - The outer locator where the inline area edit contained by
      * @param inputString - String to be typed in, char by char
      * @param html - Whether is Rich text or not, the textarea locator diffs based on this flag
      */
     async typeTextField(containerLocator: Locator, inputString: string, html = false) {
-        const textareaLocator = this.ckEditTextarea(containerLocator, html);
-        await expect(textareaLocator).toBeVisible();
-        const box = await textareaLocator.boundingBox();
-        // click 50 px left top from bottom right corner of the textarea.
-        await textareaLocator.click({
-            position: {
-                x: (box?.width || 0) - INLINE_EDIT_TEXTAREA_OFFSET_X,
-                y: (box?.height || 0) - INLINE_EDIT_TEXTAREA_OFFSET_Y,
-            },
-            force: html,
-        });
-        await this.page.keyboard.type(inputString);
+        /**
+         * html format string can only be inputted through plain textarea,
+         * then click rich button right before click save button.
+         */
+        await this.plainTextButton(containerLocator).click();
+
+        const textareaLocator = this.ckEditTextarea(containerLocator, false);
+        await textareaLocator.fill(inputString);
         await this.page.waitForTimeout(2000);
+        if (html) {
+            await this.richTextButton(containerLocator).click();
+        }
         await this.confirmButton(containerLocator).click();
     }
 

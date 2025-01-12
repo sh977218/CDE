@@ -3,6 +3,9 @@ import { InlineEditPo } from './inline-edit.po';
 import { UpdateRegistrationStatusModalPo } from './update-registration-status-modal.po';
 import {
     Copyright,
+    DataType,
+    DataTypeDate,
+    DataTypeNumber,
     Definition,
     Designation,
     EditDefinitionConfig,
@@ -34,8 +37,12 @@ export class GenerateDetailsPo {
         this.updateRegistrationStatusModal = updateRegistrationStatusModal;
     }
 
-    get viewCount() {
+    viewCount() {
         return this.page.getByTestId('views-count');
+    }
+
+    stewardOrg() {
+        return this.page.getByTestId('steward-org');
     }
 
     // copyright locators
@@ -107,6 +114,10 @@ export class GenerateDetailsPo {
         return this.page.getByTestId(`updated-by`);
     }
 
+    sources() {
+        return this.page.locator('cde-admin-item-sources');
+    }
+
     registrationStatus() {
         return this.page.getByTestId(`registration-status`);
     }
@@ -118,6 +129,13 @@ export class GenerateDetailsPo {
     copyright() {
         return this.page.getByTestId('copyright-checkbox');
     }
+
+    editStewardOrg = async (newStewardOrg: string) => {
+        const stewardOrgLocator = this.stewardOrg();
+        await this.inlineEdit.editIcon(stewardOrgLocator).click();
+        await this.inlineEdit.selectField(stewardOrgLocator).selectOption(newStewardOrg);
+        await this.inlineEdit.confirmButton(stewardOrgLocator).click();
+    };
 
     editRegistrationStatusButton() {
         return this.page.getByTestId('edit-registration-status-button');
@@ -312,9 +330,6 @@ export class GenerateDetailsPo {
         await this.page.waitForTimeout(2000); // give 2 seconds before click edit, this wait is not a 100% sure fix.
         await this.inlineEdit.editIcon(definitionRow).click();
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
-        if (config.html) {
-            await this.inlineEdit.richTextButton(definitionRow).click();
-        }
         if (config.replace) {
             await this.inlineEdit.clearTextField(definitionRow, config.html);
         }

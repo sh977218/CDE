@@ -30,7 +30,7 @@
                         Form: {{elt?.designations[0]?.designation}}
                     </h1>
                     <div data-testid="form-view-alert">
-                        <div *ngIf="elt.isBundle" class="bundle-box">
+                        <div *ngIf="elt.isBundle" class="bundle-box" data-testid="form-view-bundle-info">
                             <mat-icon fill="1">error_circle_rounded</mat-icon>
                             <b>This form is a bundle.</b> Bundles are indivisible. They are not considered valid and reliable if not used in their entirety, as intended.
                         </div>

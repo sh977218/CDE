@@ -35,7 +35,7 @@
 
     <div>
         <dt>Steward:</dt>
-        <dd id="stewardOrg" itemprop="steward">
+        <dd id="stewardOrg" itemprop="steward" data-testid="steward-org">
             <cde-inline-select-edit
                     [value]="elt.stewardOrg.name" [selectOptions]="userOrgs" (save)="changeStewardOrg($event);"
                     [isAllowed]="canEdit"

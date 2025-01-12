@@ -148,4 +148,12 @@ export const Accounts: Record<ACCOUNT_KEYS, Account> = {
         username: 'testuser',
         password: DEFAULT_PASSWORD,
     },
+    governanceUser: {
+        username: 'governanceUser',
+        password: DEFAULT_PASSWORD,
+    },
+    transferStewardUser: {
+        username: 'transferStewardUser',
+        password: DEFAULT_PASSWORD,
+    },
 };

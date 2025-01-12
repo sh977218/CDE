@@ -231,7 +231,7 @@
             <ng-container *ngIf="question.question.cde.tinyId">
                 <dt class="answerListLabel">Answer List
                     <mat-icon *ngIf="question.question.answers.length > 0" class="fake-button" role="button"
-                              tabindex="0"
+                              tabindex="0" data-testid="edit-answer-list"
                               (click)="openEditAnswerModal()">edit
                     </mat-icon>
                     :

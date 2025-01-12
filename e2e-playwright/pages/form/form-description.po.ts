@@ -1,21 +1,48 @@
-import { expect, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { ReorderDirection } from '../../model/type';
+import { SearchPagePo } from '../../pages/search/search-page.po';
 
 export class FormDescriptionPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
     private readonly inlineEdit: InlineEditPo;
+    private readonly searchPage: SearchPagePo;
 
-    constructor(page: Page, materialPage: MaterialPo, inlineEdit: InlineEditPo) {
+    constructor(page: Page, materialPage: MaterialPo, inlineEdit: InlineEditPo, searchPage: SearchPagePo) {
         this.page = page;
         this.materialPage = materialPage;
         this.inlineEdit = inlineEdit;
+        this.searchPage = searchPage;
+    }
+
+    backToPreviewButton() {
+        return this.page.getByRole('button', { name: 'Back to Preview' });
+    }
+
+    warningAlertDiv() {
+        return this.page.getByTestId('form-description-warning-alert-div');
+    }
+
+    warningAlertMessage() {
+        return this.page.getByTestId('form-description-warning-alert-message');
+    }
+
+    questionUsedBySkipLogicAlertMessage() {
+        return this.page.getByTestId('question-used-by-skip-logic-alert-message');
     }
 
     addQuestionButton() {
         return this.page.getByTestId(`add-question-button`);
+    }
+
+    addSectionButton() {
+        return this.page.getByTestId(`add-section-button`);
+    }
+
+    addFormButton() {
+        return this.page.getByTestId(`add-form-button`);
     }
 
     questionContainer(id: string) {
@@ -23,7 +50,51 @@ export class FormDescriptionPo {
     }
 
     questionLabel() {
-        return this.page.locator(`.questionLabel`);
+        return this.page.getByTestId(`question-label`);
+    }
+
+    sectionTitle() {
+        return this.page.getByTestId(`section-title`);
+    }
+
+    sectionTitleSubform() {
+        return this.page.getByTestId(`section-title-subform`);
+    }
+
+    questionRule() {
+        return this.page.getByTestId(`question-rule`);
+    }
+
+    questionPartOf() {
+        return this.page.getByTestId(`question-part-of`);
+    }
+
+    sectionDiv() {
+        return this.page.locator('cde-form-description-section');
+    }
+
+    questionDiv() {
+        return this.page.locator('cde-form-description-question');
+    }
+
+    sectionLabelEdit() {
+        return this.page.getByTestId(`section-label-edit`);
+    }
+
+    repeatEdit() {
+        return this.page.getByTestId(`repeat-edit`);
+    }
+
+    logic() {
+        return this.page.getByTestId(`logic`);
+    }
+
+    logicEditButton() {
+        return this.page.getByTestId(`edit-logic`);
+    }
+
+    answerListEditButton() {
+        return this.page.getByTestId(`edit-answer-list`);
     }
 
     questionDatatype() {
@@ -34,28 +105,103 @@ export class FormDescriptionPo {
         return this.page.locator(`.answerList .badge`);
     }
 
-    questionLabelByIndex(id: string) {
+    questionLabelById(id: string) {
         return this.questionContainer(id).locator(this.questionLabel());
     }
 
-    questionDataTypeByIndex(id: string) {
+    questionDataTypeById(id: string) {
         return this.questionContainer(id).locator(this.questionDatatype());
     }
 
-    questionAnswerListByIndex(id: string) {
+    questionAnswerListById(id: string) {
         return this.questionContainer(id).locator(this.questionAnswerList());
     }
 
     async startEditQuestionById(id: string) {
-        await this.questionLabelByIndex(id).click();
+        await this.questionLabelById(id).click();
+    }
+
+    async startEditQuestionByLabel(label: string) {
+        await this.questionLabel().filter({ hasText: label }).click();
+    }
+
+    async startEditSubformByLabel(label: string) {
+        await this.sectionTitleSubform().filter({ hasText: label }).click();
     }
 
     async saveEditQuestionById(id: string) {
-        await this.questionLabelByIndex(id).click();
+        await this.questionLabelById(id).click();
     }
 
-    async saveFormEdit() {
-        await this.page.locator(`//button[contains(.,'Back to Preview')]`).click();
+    /**
+     * This method requires section to be toggled to edit first
+     * @param title
+     */
+    async editSectionLabel(title: string) {
+        await this.inlineEdit.editInlineEdit(this.sectionLabelEdit(), title);
+        await this.materialPage.checkAlert(`Saved`);
+        await this.page.waitForTimeout(3000); // @TODO something wrong with draft. Alert does not mean it's updated successfully.
+    }
+
+    async editSectionLabelById(sectionLocatorId: string, newLabel: string) {
+        const sectionLabelLocator = this.page.locator(`#${sectionLocatorId} .section_label`);
+        await this.inlineEdit.editInlineEdit(sectionLabelLocator, newLabel);
+        await this.materialPage.checkAlert('Saved');
+        await this.page.waitForTimeout(3000); // @TODO something wrong with draft. Alert does not mean it's updated successfully.
+    }
+
+    /**
+     * This method requires section to be toggled to edit first
+     * @param repeat
+     */
+    async editSectionRepeat(repeat: number | string = 0) {
+        if (repeat) {
+            const repeatLocator = this.repeatEdit();
+            if (repeat === 'F') {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Over first question');
+            } else if (repeat === '=') {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Over answer of specified question');
+            } else {
+                await this.materialPage.selectMatSelect(repeatLocator, 'Set Number of Times');
+                await this.materialPage.checkAlert(`Saved`);
+                await this.page.getByTitle('Repeat Maximum Times').fill(repeat + '');
+                await this.page.keyboard.press('Tab');
+            }
+            await this.materialPage.checkAlert(`Saved`);
+        }
+    }
+
+    async addSection(title: string, repeat: number | string = 0) {
+        let dropLocator = this.page.locator(`tree-node-drop-slot`).first();
+        await this.addSectionButton().dragTo(dropLocator);
+        await this.sectionTitle().first().click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.editSectionLabel(title);
+        await this.editSectionRepeat(repeat);
+    }
+
+    async addSectionBottom(title: string, repeat: number | string = 0) {
+        let dropLocator = this.page.locator(`tree-node-drop-slot`).last();
+        await this.addSectionButton().dragTo(dropLocator);
+        await this.sectionTitle().last().click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.editSectionLabel(title);
+        await this.editSectionRepeat(repeat);
+    }
+
+    async addQuestionToSection(cdeName: string, sectionIndex = 0) {
+        const dropLocator = this.sectionDiv().nth(sectionIndex);
+        await this.addQuestionButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
+        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage
+            .matDialog()
+            .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
+            .click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
     }
 
     async questionEditAddUom(id: string, type: string, text: string) {
@@ -85,10 +231,13 @@ export class FormDescriptionPo {
      * @param questionLocator
      * @param index zero based index, -1 to select 'No Label'
      */
-    async selectQuestionLabelByIndex(questionLocatorId: string, index: number) {
+    async selectQuestionLabelByIndex(questionLocatorId: string, index: number, usedBySkipLogic = false) {
         const questionLocator = this.page.locator(`#${questionLocatorId}`);
         await questionLocator.locator(`[title="Change question label"]`).click();
         await this.materialPage.matDialog().waitFor();
+        if (usedBySkipLogic) {
+            await this.questionUsedBySkipLogicAlertMessage().waitFor();
+        }
         if (index === -1) {
             await this.materialPage.matDialog().getByRole('button', { name: 'No Label', exact: true }).click();
         } else {
@@ -114,6 +263,40 @@ export class FormDescriptionPo {
         await this.inlineEdit.editIcon(instructionLocator).click();
         await this.page.waitForTimeout(2000); // give 2 seconds so cd editor can be loaded.
         await this.inlineEdit.typeTextField(instructionLocator, newInstruction);
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async addEmptyQuestionLogic(questions: string[]) {
+        const matDialog = this.materialPage.matDialog();
+        await this.logicEditButton().click();
+        await matDialog.waitFor();
+        for (const [i, question] of questions.entries()) {
+            await matDialog.getByRole('button', { name: 'Add Condition' }).click();
+            await matDialog.getByPlaceholder('Question Label').nth(i).selectOption(question);
+        }
+        await matDialog.getByRole('button', { name: 'Save' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    async addQuestionLogic(label: string, operator: string, answer: string, answerType: string) {
+        const matDialog = this.materialPage.matDialog();
+        await this.logicEditButton().click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('button', { name: 'Add Condition' }).click();
+        await matDialog.getByPlaceholder('Question Label').selectOption(label);
+        await matDialog.getByPlaceholder('Operator').selectOption(operator);
+        if (answerType.toLowerCase() === 'text') {
+            await matDialog.getByPlaceholder('Text Answer').fill(answer);
+        } else if (answerType.toLowerCase() === 'number') {
+            await matDialog.getByPlaceholder('Number Value').fill(answer);
+        } else if (answerType.toLowerCase() === 'date') {
+            await matDialog.getByPlaceholder('Date').fill(answer);
+        } else if (answerType.toLowerCase() === 'value list') {
+            await matDialog.getByPlaceholder('Answer').selectOption(answer);
+        }
+        await matDialog.getByRole('button', { name: 'Save' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert('Saved');
     }
 
@@ -144,6 +327,32 @@ export class FormDescriptionPo {
         }
     }
 
+    async deleteAllAnswerListByIndex() {
+        const matDialog = this.materialPage.matDialog();
+        await this.answerListEditButton().click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('button', { name: 'Clear All' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
+        await this.materialPage.checkAlert('Saved');
+    }
+
+    /**
+     *
+     * @param subformName - Subform name to be searched
+     * @param dropSlotIndex - drop slot index where subform to be dropped to
+     */
+    async addSubformByNameBeforeId(subformName: string, dropSlotIndex: number) {
+        const dropLocator = this.page.locator(`tree-node-drop-slot`).nth(dropSlotIndex);
+        await this.addFormButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().locator(this.searchPage.searchQueryInput()).fill(`"${subformName}"`);
+        await this.materialPage.matDialog().locator(this.searchPage.searchSubmitButton()).click();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Add', exact: true }).click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
     /**
      *
      * @param cdeName - CDE name to be searched or created
@@ -164,8 +373,8 @@ export class FormDescriptionPo {
         const dropLocator = this.page.locator(`//*[@id='${questionId}']//tree-node-drop-slot[1]`);
         await this.addQuestionButton().dragTo(dropLocator);
         await this.materialPage.matDialog().waitFor();
-        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
-        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage.matDialog().locator(this.searchPage.searchQueryInput()).fill(cdeName);
+        await this.materialPage.matDialog().locator(this.searchPage.searchSubmitButton()).click();
         await this.materialPage
             .matDialog()
             .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
@@ -177,7 +386,6 @@ export class FormDescriptionPo {
     /**
      * This method create CDE by name using keyboard shortcut "q"
      * @param cdeName - CDE name to be searched
-     * @param selectSuggested - Select first suggested result if true, default to false
      */
     async addQuestionByNameHotKey(cdeName: string) {
         await this.page.keyboard.press('q');
@@ -217,7 +425,7 @@ export class FormDescriptionPo {
             await this.materialPage.checkAlert(`Saved`);
         }
         await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
-        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+        await this.materialPage.matDialog().waitFor({ state: 'detached' });
     }
 
     async addNewDesignationByQuestionId(questionId: string, newDesignation: string) {
@@ -259,6 +467,16 @@ export class FormDescriptionPo {
     async deleteCdePvById(questionId: string, pv: string) {
         const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdePvs')]`;
         await this.materialPage.removeMatChipRowByName(this.page.locator(xpath), pv);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async updateQuestionOrSubform(containerLocator: Locator) {
+        const matDialog = this.materialPage.matDialog();
+        await containerLocator.getByRole('button', { name: 'Update' }).click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('heading', { name: 'Confirm Changes:' }).waitFor();
+        await matDialog.getByRole('button', { name: 'OK' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(`Saved`);
     }
 }

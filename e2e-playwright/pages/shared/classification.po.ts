@@ -13,6 +13,10 @@ export class ClassificationPo {
         this.saveModal = saveModal;
     }
 
+    classificationNotAvailableMessage() {
+        return this.page.getByTestId('classification-not-available-message');
+    }
+
     /**
      * Description - Expand the tree node (not mat-tree) according to the input, and return the leaf node
      * @param classificationsArray - Classification array contains the text from root to leaf (branch)

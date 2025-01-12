@@ -47,7 +47,7 @@ test(`Validate UOM`, async ({
         await expect(
             page.locator(`//*[@id='question_0-3']//*[contains(@class,'questionUom')]//*[normalize-space()='Kilo']`)
         ).toBeVisible();
-        await formDescription.saveFormEdit();
+        await formDescription.backToPreviewButton().click();
     });
 
     await test.step(`Add UOM`, async () => {

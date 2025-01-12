@@ -46,6 +46,7 @@ import { BoardPagePo } from '../pages/board/board-page.po';
 import { GenerateDetailsPo } from '../pages/shared/generate-details.po';
 import { IdentifierPo } from '../pages/shared/identifier.po';
 import { RelatedDocumentPo } from '../pages/shared/related-document.po';
+import { RelatedContentPo } from '../pages/shared/related-content.po';
 import { SubmissionInformationPo } from '../pages/shared/submission-information.po';
 import { PropertyPo } from '../pages/shared/property.po';
 import { ClassificationPo } from '../pages/shared/classification.po';
@@ -55,11 +56,13 @@ import { HistoryPo } from '../pages/shared/history.po';
 // Setting page
 import { SettingMenuPo } from '../pages/setting/setting-menu.po';
 import { ProfilePagePo } from '../pages/setting/profile-page.po';
+import { SearchSettingPagePo } from '../pages/setting/search-setting-page.po';
 import { AdminsPo } from '../pages/setting/my-organizations/admins.po';
 import { CuratorsPo } from '../pages/setting/my-organizations/curators.po';
 import { EditorsPo } from '../pages/setting/my-organizations/editors.po';
 import { ManageOrganizationsPo } from '../pages/setting/my-organizations/manage-organizations.po';
 import { ManageTagsPropertiesPo } from '../pages/setting/my-organizations/manage-tags-properties.po';
+import { StewardTransferPo } from '../pages/setting/my-organizations/steward-transfer.po';
 import { UsersPagePo } from '../pages/setting/users-page.po';
 import { IdSourcesPagePo } from '../pages/setting/id-sources-page.po';
 import { ArticlePagePo } from '../pages/setting/article-page.po';
@@ -122,6 +125,7 @@ const baseFixture = baseTest.extend<{
     generateDetailsSection: GenerateDetailsPo;
     identifierSection: IdentifierPo;
     relatedDocumentSection: RelatedDocumentPo;
+    relatedContentSection: RelatedContentPo;
     submissionInformationSection: SubmissionInformationPo;
     propertySection: PropertyPo;
     attachmentSection: AttachmentPo;
@@ -143,7 +147,9 @@ const baseFixture = baseTest.extend<{
     editorsPage: EditorsPo;
     manageOrganizationsPage: ManageOrganizationsPo;
     manageTagsPropertiesPage: ManageTagsPropertiesPo;
+    stewardTransferPage: StewardTransferPo;
     profilePage: ProfilePagePo;
+    searchSettingPage: SearchSettingPagePo;
     usersPage: UsersPagePo;
     idSourcesPage: IdSourcesPagePo;
     articlePage: ArticlePagePo;
@@ -180,8 +186,8 @@ const baseFixture = baseTest.extend<{
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
     },
-    formDescription: async ({ page, materialPage, inlineEdit }, use) => {
-        await use(new FormDescriptionPo(page, materialPage, inlineEdit));
+    formDescription: async ({ page, materialPage, inlineEdit, searchPage }, use) => {
+        await use(new FormDescriptionPo(page, materialPage, inlineEdit, searchPage));
     },
     previewSection: async ({ page, materialPage }, use) => {
         await use(new PreviewPo(page, materialPage));
@@ -209,6 +215,12 @@ const baseFixture = baseTest.extend<{
         use
     ) => {
         await use(new RelatedDocumentPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
+    },
+    relatedContentSection: async (
+        { page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal },
+        use
+    ) => {
+        await use(new RelatedContentPo(page, materialPage, inlineEdit, saveModal, updateRegistrationStatusModal));
     },
     submissionInformationSection: async ({ page }, use) => {
         await use(new SubmissionInformationPo(page));
@@ -276,8 +288,14 @@ const baseFixture = baseTest.extend<{
     manageTagsPropertiesPage: async ({ page, materialPage }, use) => {
         await use(new ManageTagsPropertiesPo(page, materialPage));
     },
+    stewardTransferPage: async ({ page, materialPage }, use) => {
+        await use(new StewardTransferPo(page, materialPage));
+    },
     profilePage: async ({ page }, use) => {
         await use(new ProfilePagePo(page));
+    },
+    searchSettingPage: async ({ page, materialPage }, use) => {
+        await use(new SearchSettingPagePo(page, materialPage));
     },
     usersPage: async ({ page, materialPage }, use) => {
         await use(new UsersPagePo(page, materialPage));
@@ -313,6 +331,8 @@ const ignoredConsoleMessages = [
     `Cannot read properties of null (reading 'writeValue')`,
     `Third-party cookie will be blocked.`,
     `Failed to load resource: the server responded with a status of 403`, // create too many board give 403
+    `TypeError: str.replace is not a function`, // this is a real bug from `makeHumanReadable()`  @TODO
+    `sanitizing HTML stripped some content`, // this is a real bug, some data is HTML format stripped by angular @TODO
 ];
 
 const consoleMessages: string[] = [];

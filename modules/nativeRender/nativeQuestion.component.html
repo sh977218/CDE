@@ -2,12 +2,14 @@
     <fieldset>
         <legend class="native-question-label"></legend>
         <ng-template #labelClause>
-            <ng-container *ngIf="parentValue">If {{parentValue}}:</ng-container>
-            {{formElement.label}}
-            <ng-container
-                    *ngIf="nrs.profile.metadata.device && !metadataTagsNew && (!formElement.metadataTags || !formElement.metadataTags.length)">
-                <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
-            </ng-container>
+            <span data-testid="native-question-label">
+                <ng-container *ngIf="parentValue">If {{parentValue}}:</ng-container>
+                    {{formElement.label}}
+                    <ng-container
+                            *ngIf="nrs.profile.metadata.device && !metadataTagsNew && (!formElement.metadataTags || !formElement.metadataTags.length)">
+                    <ng-container *ngTemplateOutlet="metadataAddButton"></ng-container>
+                </ng-container>
+            </span>
         </ng-template>
         <div *ngIf="formElement.question.datatype === 'Value List'; else titleOnALabel"
              class="native-question-label"
@@ -32,15 +34,17 @@
                 <span class="text-muted">{{formElement.instructions.value}}</span>
             </ng-template>
         </div>
-        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}" style="overflow: hidden">
+        <div attr.id="{{formElement.label}}_{{formElement.feId}}" [ngClass]="{'native-box': hasHeading(formElement)}"
+             style="overflow: hidden">
             <ng-template #scoreDisplay>Score:
                 {{formElement.question.answer | number }}{{formElement.question.scoreError}}
             </ng-template>
             <ng-container *ngIf="!isScore(formElement.question); else scoreDisplay">
                 <ng-container [ngSwitch]="formElement.question.datatype">
-                    <ng-container *ngSwitchCase="'Value List'" >
+                    <ng-container *ngSwitchCase="'Value List'">
                         <ng-template #likertDisplay>
-                            <input type="range" class="likertSlider" min="0" [max]="formElement.question.answers.length-1" step="1"
+                            <input type="range" class="likertSlider" min="0"
+                                   [max]="formElement.question.answers.length-1" step="1"
                                    [value]="likertSliderValueGet(formElement.question)"
                                    (change)="likertSliderValueSet(formElement.question, $event.target.value)">
                             <ul class="likertLabels">
@@ -49,28 +53,34 @@
                                     [class.selected]="formElement.question.answer === pv.permissibleValue"
                                     (click)="formElement.question.answer=pv.permissibleValue"
                                 >{{pv.valueMeaningName || (nrs.profile.displayValues ? '' : '&nbsp;')}}
-                                    <span class="native-value" data-testid="native-value" *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(pv)}}</span>
+                                    <span class="native-value" data-testid="native-value"
+                                          *ngIf="nrs.profile.displayValues">{{NRS.getPvDisplayValue(pv)}}</span>
                                 </li>
                             </ul>
-                            <input type="text" style="display: none" [name]="formElement.feId" [attr.name]="formElement.feId" [(ngModel)]="formElement.question.answer"/>
+                            <input type="text" style="display: none" [name]="formElement.feId"
+                                   [attr.name]="formElement.feId" [(ngModel)]="formElement.question.answer"/>
                         </ng-template>
-                        <ng-container *ngIf="nrs.nativeRenderType !== 'Dynamic' || formElement.question.displayAs !== 'likert scale' || formElement.question.multiselect; else likertDisplay">
+                        <ng-container
+                                *ngIf="nrs.nativeRenderType !== 'Dynamic' || formElement.question.displayAs !== 'likert scale' || formElement.question.multiselect; else likertDisplay">
                             <ng-container
                                     *ngIf="nrs.nativeRenderType !== 'Dynamic' || nrs.profile?.answerDropdownLimit <= 0 || nrs.profile.answerDropdownLimit >= formElement.question?.answers.length; else dropdownValueList">
-                                <div class="row-sm">
+                                <div class="row-sm" role="radiogroup" [attr.title]="formElement.label">
                                     <div *ngFor="let pv of formElement.question.answers; index as i"
                                          [ngClass]="classColumns(pv.index, i)">
                                         <div *ngIf="!pv.nonValuelist" class="form-check">
                                             <label class="form-check-label native-valuelist-label"
                                                    [ngClass]="{'native-question-oneline-l': pv.formElements
                                                           && isOneLiner(pv.formElements[0], pv.formElements.length)}">
-                                                <ng-container *ngIf="!questionMulti(formElement.question); else checkMulti">
+                                                <ng-container
+                                                        *ngIf="!questionMulti(formElement.question); else checkMulti">
                                                     <input type="radio" class="form-check-input"
                                                            [name]="formElement.feId"
                                                            [attr.name]="formElement.feId"
                                                            [ngModel]="formElement.question.answer"
                                                            (click)="nrs.radioButtonSelect(formElement, $event.target.value)"
-                                                           [value]="pv.permissibleValue" [attr.value]="pv.permissibleValue"
+                                                           [value]="pv.permissibleValue"
+                                                           [attr.value]="pv.permissibleValue"
+                                                           [attr.title]="pv.permissibleValue"
                                                            [required]="formElement.question.required"
                                                            [disabled]="!formElement.question.editable"/>
                                                 </ng-container>
@@ -82,11 +92,13 @@
                                                            (change)="nrs.checkboxOnChange($event.target.checked, formElement.question, pv.permissibleValue, formElement)"
                                                            [value]="pv.permissibleValue"
                                                            [attr.value]="pv.permissibleValue"
+                                                           [attr.title]="pv.permissibleValue"
                                                            [required]="formElement.question.required"
                                                            [disabled]="!formElement.question.editable"/>
                                                 </ng-template>
                                                 {{NRS.getPvLabel(pv)}}
-                                                <span class="native-value" data-testid="native-value" *ngIf="nrs.profile.displayValues">
+                                                <span class="native-value" data-testid="native-value"
+                                                      *ngIf="nrs.profile.displayValues">
                                                     {{NRS.getPvDisplayValue(pv)}}
                                                 </span>
                                             </label>
@@ -110,9 +122,9 @@
                                             </ng-container>
                                         </div>
                                     </div>
-                                </div>
-                                <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
-                                    <code>Please fill out this field.</code>
+                                    <div *ngIf="formElement.question.required && !NRS.answeredValueList(formElement.question)">
+                                        <code>Please fill out this field.</code>
+                                    </div>
                                 </div>
                             </ng-container>
                         </ng-container>
@@ -120,6 +132,7 @@
                             <select #inputValueListDropDown class="form-control"
                                     [name]="formElement.feId"
                                     [attr.name]="formElement.feId"
+                                    [attr.title]="formElement.label"
                                     [multiple]="formElement.question.multiselect"
                                     [ngModel]="nrs.selectModel(formElement)"
                                     (ngModelChange)="nrs.selectModelChange($event, formElement)"
@@ -211,7 +224,8 @@
                         <div *ngIf="formElement.question.required && (!formElement.question.answer || !formElement.question.answer.latitude || !formElement.question.answer.longitude)">
                             <code>Please fill out this field.</code>
                         </div>
-                        <div *ngIf="nrs.locationDenied"><code>Enable location for this site to use autofill.</code></div>
+                        <div *ngIf="nrs.locationDenied"><code>Enable location for this site to use autofill.</code>
+                        </div>
                     </ng-container>
                     <ng-container *ngSwitchCase="'Number'">
                         <div [ngClass]="{'input-group': formElement.question.uomsAlias.length > 0}">
@@ -273,7 +287,8 @@
                                                [disabled]="!formElement.question.editable"/>{{uom}}</label>
                                 </div>
                             </div>
-                            <div [hidden]="!inputText.validationMessage"><code>{{inputText.validationMessage}}</code></div>
+                            <div [hidden]="!inputText.validationMessage"><code>{{inputText.validationMessage}}</code>
+                            </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="true">
                             <textarea #inputTextArea
@@ -281,12 +296,14 @@
                                       attr.id="{{formElement.label}}_{{formElement.feId}}_box"
                                       [name]="formElement.feId"
                                       [attr.name]="formElement.feId"
+                                      [attr.title]="formElement.label"
                                       [(ngModel)]="formElement.question.answer"
                                       (change)="nrs.emit(formElement)"
                                       [required]="formElement.question.required"
                                       [disabled]="!formElement.question.editable">
                             </textarea>
-                            <div [hidden]="!inputTextArea.validationMessage"><code>{{inputTextArea.validationMessage}}</code></div>
+                            <div [hidden]="!inputTextArea.validationMessage">
+                                <code>{{inputTextArea.validationMessage}}</code></div>
                         </ng-container>
                     </ng-container>
                 </ng-container>
@@ -325,7 +342,7 @@
 </div>
 
 <ng-template #metadataAddButton>
-    <span class="dropdown noPrint" style="vertical-align: text-bottom" >
+    <span class="dropdown noPrint" style="vertical-align: text-bottom">
         <i class="material-icons iconButton" (click)="nrs.openMenu($event, dropdownMenu)"
            data-toggle="dropdown" aria-haspopup="true"
            data-testid="meta-device-add-button"

@@ -84,44 +84,40 @@ test(`From add cde`, async ({ saveModal, navigationMenu, previewSection, formDes
     });
 
     await test.step(`Save form`, async () => {
-        await formDescription.saveFormEdit();
+        await formDescription.backToPreviewButton().click();
         await saveModal.publishNewVersionByType('form', versionInfo);
     });
 
     await test.step(`Verify questions`, async () => {
         await previewSection.goToFormDescription();
 
-        await expect(formDescription.questionLabelByIndex('question_0-0')).toHaveText(`newCde2`);
+        await expect(formDescription.questionLabelById('question_0-0')).toHaveText(`newCde2`);
 
-        await expect(formDescription.questionLabelByIndex('question_0-1')).toHaveText(`newCde3`);
-        await expect(formDescription.questionDataTypeByIndex('question_0-1')).toHaveText('(Date)');
+        await expect(formDescription.questionLabelById('question_0-1')).toHaveText(`newCde3`);
+        await expect(formDescription.questionDataTypeById('question_0-1')).toHaveText('(Date)');
 
-        await expect(formDescription.questionLabelByIndex('question_0-2')).toHaveText(`newCde4`);
-        await expect(formDescription.questionDataTypeByIndex('question_0-2')).toHaveText('(Number)');
+        await expect(formDescription.questionLabelById('question_0-2')).toHaveText(`newCde4`);
+        await expect(formDescription.questionDataTypeById('question_0-2')).toHaveText('(Number)');
 
-        await expect(formDescription.questionLabelByIndex('question_0-3')).toHaveText(`newCde5`);
-        await expect(formDescription.questionAnswerListByIndex('question_0-3')).toHaveText(['1', '2']);
+        await expect(formDescription.questionLabelById('question_0-3')).toHaveText(`newCde5`);
+        await expect(formDescription.questionAnswerListById('question_0-3')).toHaveText(['1', '2']);
 
-        await expect(formDescription.questionLabelByIndex('question_1-0')).toHaveText(`smile`);
-        await expect(formDescription.questionAnswerListByIndex('question_1-0')).toHaveText([
+        await expect(formDescription.questionLabelById('question_1-0')).toHaveText(`smile`);
+        await expect(formDescription.questionAnswerListById('question_1-0')).toHaveText([
             'word pronounced correctly',
             'word pronounced incorrectly',
         ]);
 
-        await expect(formDescription.questionLabelByIndex('question_1-1')).toHaveText(`Patient Name`);
+        await expect(formDescription.questionLabelById('question_1-1')).toHaveText(`Patient Name`);
 
-        await expect(formDescription.questionLabelByIndex('question_1-2')).toHaveText(`Patient Gender Code`);
-        await expect(formDescription.questionAnswerListByIndex('question_1-2')).toHaveText([
-            'Males',
-            'Female',
-            'Unknown',
-        ]);
+        await expect(formDescription.questionLabelById('question_1-2')).toHaveText(`Patient Gender Code`);
+        await expect(formDescription.questionAnswerListById('question_1-2')).toHaveText(['Males', 'Female', 'Unknown']);
 
-        await expect(formDescription.questionLabelByIndex('question_1-3')).toHaveText(`Headache`);
-        await expect(formDescription.questionAnswerListByIndex('question_1-3')).toHaveText(['Yes', 'No', 'Unknown']);
+        await expect(formDescription.questionLabelById('question_1-3')).toHaveText(`Headache`);
+        await expect(formDescription.questionAnswerListById('question_1-3')).toHaveText(['Yes', 'No', 'Unknown']);
 
-        await expect(formDescription.questionLabelByIndex('question_1-4')).toHaveText(`Start of Feeding Schedule:`);
-        await expect(formDescription.questionDataTypeByIndex('question_1-4')).toHaveText(`(Date)`);
+        await expect(formDescription.questionLabelById('question_1-4')).toHaveText(`Start of Feeding Schedule:`);
+        await expect(formDescription.questionDataTypeById('question_1-4')).toHaveText(`(Date)`);
     });
 
     await test.step(`Verify CDE creation`, async () => {

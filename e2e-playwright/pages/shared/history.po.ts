@@ -26,6 +26,14 @@ export class HistoryPo {
         return this.page.getByTestId('historyTableVersion');
     }
 
+    expandListLink() {
+        return this.page.locator('cde-history').locator(`id=expandHistory`);
+    }
+
+    collapseListLink() {
+        return this.page.locator('cde-history').locator(`id=collapseHistory`);
+    }
+
     /**
      * Description - Select 2 history table rows to compare
      * @param row1 - zero base index, first row to select
