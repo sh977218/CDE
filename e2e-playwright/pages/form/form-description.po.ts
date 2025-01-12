@@ -140,12 +140,14 @@ export class FormDescriptionPo {
     async editSectionLabel(title: string) {
         await this.inlineEdit.editInlineEdit(this.sectionLabelEdit(), title);
         await this.materialPage.checkAlert(`Saved`);
+        await this.page.waitForTimeout(3000); // @TODO something wrong with draft. Alert does not mean it's updated successfully.
     }
 
     async editSectionLabelById(sectionLocatorId: string, newLabel: string) {
         const sectionLabelLocator = this.page.locator(`#${sectionLocatorId} .section_label`);
         await this.inlineEdit.editInlineEdit(sectionLabelLocator, newLabel);
         await this.materialPage.checkAlert('Saved');
+        await this.page.waitForTimeout(3000); // @TODO something wrong with draft. Alert does not mean it's updated successfully.
     }
 
     /**
