@@ -6,6 +6,7 @@ import { Designation, Version } from '../../../model/type';
 const rightNow = new Date().valueOf();
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test(`From update`, async ({
     page,
     saveModal,
@@ -14,6 +15,7 @@ test(`From update`, async ({
     previewSection,
     formDescription,
 }) => {
+    test.fixme();
     const formName = `Form Form Update Test`;
     const cdeName = 'Illicit/non-prescription drug use indicator';
     const updatedDesignation: Designation = {

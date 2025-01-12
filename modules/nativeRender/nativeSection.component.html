@@ -1,6 +1,6 @@
 <div *ngIf="formElement" class="native-section" id="formRenderSection_{{formElement.label?formElement.label:formElement.feId}}">
     <div *ngIf="formElement.label" [ngClass]="{'native-section-header': isSectionDisplayed(formElement)}" class="keep-together">
-        <h4>{{formElement.label}}</h4>
+        <h4 data-testid="section-label">{{formElement.label}}</h4>
     </div>
     <div *ngIf="nrs.profile.displayInstructions && formElement.instructions?.value"
          class="native-instructions">

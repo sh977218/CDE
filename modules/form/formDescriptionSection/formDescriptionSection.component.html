@@ -78,7 +78,7 @@
                         [isAllowed]="canEditSection()" (modelChange)="eltChange.emit()"></cde-inline-area-edit>
             </div>
             <div class="section_cardinality" style="font-weight: bold">Repeats:
-                <mat-form-field>
+                <mat-form-field data-testid="repeat-edit">
                     <mat-select [(ngModel)]="section.repeatOption" (ngModelChange)="repeatChange(section)">
                         <mat-option *ngFor="let item of repeatOptions" [value]="item.value">{{item.label}}</mat-option>
                     </mat-select>
