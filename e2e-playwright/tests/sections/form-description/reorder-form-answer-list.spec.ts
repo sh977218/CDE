@@ -28,7 +28,7 @@ test(`Form reorder answer list`, async ({ page, navigationMenu, saveModal, previ
     });
 
     await test.step(`Save form`, async () => {
-        await formDescription.saveFormEdit();
+        await formDescription.backToPreviewButton().click();
         await saveModal.publishNewVersionByType('form', versionInfo);
     });
 

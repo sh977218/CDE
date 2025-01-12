@@ -186,8 +186,8 @@ const baseFixture = baseTest.extend<{
     formPage: async ({ page }, use) => {
         await use(new FormPagePo(page));
     },
-    formDescription: async ({ page, materialPage, inlineEdit }, use) => {
-        await use(new FormDescriptionPo(page, materialPage, inlineEdit));
+    formDescription: async ({ page, materialPage, inlineEdit, searchPage }, use) => {
+        await use(new FormDescriptionPo(page, materialPage, inlineEdit, searchPage));
     },
     previewSection: async ({ page, materialPage }, use) => {
         await use(new PreviewPo(page, materialPage));

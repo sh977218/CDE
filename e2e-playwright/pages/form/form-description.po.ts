@@ -1,17 +1,20 @@
-import { expect, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { MaterialPo } from '../shared/material.po';
 import { InlineEditPo } from '../shared/inline-edit.po';
 import { ReorderDirection } from '../../model/type';
+import { SearchPagePo } from '../../pages/search/search-page.po';
 
 export class FormDescriptionPo {
     private readonly page: Page;
     private readonly materialPage: MaterialPo;
     private readonly inlineEdit: InlineEditPo;
+    private readonly searchPage: SearchPagePo;
 
-    constructor(page: Page, materialPage: MaterialPo, inlineEdit: InlineEditPo) {
+    constructor(page: Page, materialPage: MaterialPo, inlineEdit: InlineEditPo, searchPage: SearchPagePo) {
         this.page = page;
         this.materialPage = materialPage;
         this.inlineEdit = inlineEdit;
+        this.searchPage = searchPage;
     }
 
     backToPreviewButton() {
@@ -48,6 +51,14 @@ export class FormDescriptionPo {
 
     questionLabel() {
         return this.page.getByTestId(`question-label`);
+    }
+
+    sectionTitle() {
+        return this.page.getByTestId(`section-title`);
+    }
+
+    sectionTitleSubform() {
+        return this.page.getByTestId(`section-title-subform`);
     }
 
     questionRule() {
@@ -110,12 +121,12 @@ export class FormDescriptionPo {
         await this.questionLabel().filter({ hasText: label }).click();
     }
 
-    async saveEditQuestionById(id: string) {
-        await this.questionLabelByIndex(id).click();
+    async startEditSubformByLabel(label: string) {
+        await this.sectionTitleSubform().filter({ hasText: label }).click();
     }
 
-    async saveFormEdit() {
-        await this.page.locator(`//button[contains(.,'Back to Preview')]`).click();
+    async saveEditQuestionById(id: string) {
+        await this.questionLabelByIndex(id).click();
     }
 
     async addSection(title: string, repeat = '') {
@@ -138,9 +149,9 @@ export class FormDescriptionPo {
             .matDialog()
             .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
             .click();
+        await this.materialPage.checkAlert(`Saved`);
         await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
         await this.materialPage.matDialog().waitFor({ state: 'hidden' });
-        await this.materialPage.checkAlert(`Saved`);
     }
 
     async questionEditAddUom(id: string, type: string, text: string) {
@@ -194,6 +205,12 @@ export class FormDescriptionPo {
                     .first()
             ).toContainText(`(No Label)`);
         }
+    }
+
+    async editSectionLabelByIndex(sectionLocatorId: string, newLabel: string) {
+        const sectionLabelLocator = this.page.locator(`#${sectionLocatorId} .section_label`);
+        await this.inlineEdit.editInlineEdit(sectionLabelLocator, newLabel);
+        await this.materialPage.checkAlert('Saved');
     }
 
     async editQuestionInstructionByIndex(questionLocatorId: string, newInstruction: string) {
@@ -277,6 +294,23 @@ export class FormDescriptionPo {
 
     /**
      *
+     * @param subformName - Subform name to be searched
+     * @param dropSlotIndex - drop slot index where subform to be dropped to
+     */
+    async addSubformByNameBeforeId(subformName: string, dropSlotIndex: number) {
+        const dropLocator = this.page.locator(`tree-node-drop-slot`).nth(dropSlotIndex);
+        await this.addFormButton().dragTo(dropLocator);
+        await this.materialPage.matDialog().waitFor();
+        await this.materialPage.matDialog().locator(this.searchPage.searchQueryInput()).fill(`"${subformName}"`);
+        await this.materialPage.matDialog().locator(this.searchPage.searchSubmitButton()).click();
+        await this.materialPage.matDialog().getByRole('button', { name: 'Add', exact: true }).click();
+        await this.materialPage.checkAlert(`Saved`);
+        await this.materialPage.matDialog().getByRole('button', { name: 'Close' }).click();
+        await this.materialPage.matDialog().waitFor({ state: 'hidden' });
+    }
+
+    /**
+     *
      * @param cdeName - CDE name to be searched or created
      * @param questionId - Question id where CDE to be dropped before
      */
@@ -295,8 +329,8 @@ export class FormDescriptionPo {
         const dropLocator = this.page.locator(`//*[@id='${questionId}']//tree-node-drop-slot[1]`);
         await this.addQuestionButton().dragTo(dropLocator);
         await this.materialPage.matDialog().waitFor();
-        await this.materialPage.matDialog().getByTestId(`search-query-input`).fill(cdeName);
-        await this.materialPage.matDialog().getByTestId(`search-submit-button`).click();
+        await this.materialPage.matDialog().locator(this.searchPage.searchQueryInput()).fill(cdeName);
+        await this.materialPage.matDialog().locator(this.searchPage.searchSubmitButton()).click();
         await this.materialPage
             .matDialog()
             .locator("(//*[@id='accordionList']//div[@class='card-header']//button)[1]")
@@ -308,7 +342,6 @@ export class FormDescriptionPo {
     /**
      * This method create CDE by name using keyboard shortcut "q"
      * @param cdeName - CDE name to be searched
-     * @param selectSuggested - Select first suggested result if true, default to false
      */
     async addQuestionByNameHotKey(cdeName: string) {
         await this.page.keyboard.press('q');
@@ -390,6 +423,16 @@ export class FormDescriptionPo {
     async deleteCdePvById(questionId: string, pv: string) {
         const xpath = `//*[@id='${questionId}']//mat-card//*[contains(@class,'newCdePvs')]`;
         await this.materialPage.removeMatChipRowByName(this.page.locator(xpath), pv);
+        await this.materialPage.checkAlert(`Saved`);
+    }
+
+    async updateQuestionOrSubform(containerLocator: Locator) {
+        const matDialog = this.materialPage.matDialog();
+        await containerLocator.getByRole('button', { name: 'Update' }).click();
+        await matDialog.waitFor();
+        await matDialog.getByRole('heading', { name: 'Confirm Changes:' }).waitFor();
+        await matDialog.getByRole('button', { name: 'OK' }).click();
+        await matDialog.waitFor({ state: 'hidden' });
         await this.materialPage.checkAlert(`Saved`);
     }
 }
