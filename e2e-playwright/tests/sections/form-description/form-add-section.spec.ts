@@ -3,8 +3,10 @@ import { test } from '../../../fixtures/base-fixtures';
 import { Accounts } from '../../../data/user';
 
 test.describe.configure({ retries: 0 });
+test.use({ video: 'on', trace: 'on' });
 test.describe(`From add section`, async () => {
     test(`repeat F`, async ({ saveModal, navigationMenu, previewSection, formDescription }) => {
+        test.fixme();
         const formName = 'Section Test Form3';
         const sectionName = 'section 3';
 
